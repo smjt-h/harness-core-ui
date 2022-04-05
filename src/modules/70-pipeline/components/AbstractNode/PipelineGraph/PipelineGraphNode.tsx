@@ -6,7 +6,7 @@
  */
 
 import React, { useRef, useState, useLayoutEffect, ForwardedRef } from 'react'
-import { debounce, defaultTo, throttle } from 'lodash-es'
+import { defaultTo, throttle } from 'lodash-es'
 import classNames from 'classnames'
 import { BaseReactComponentProps, FireEventMethod, NodeType } from '../types'
 import GroupNode from '../Nodes/GroupNode/GroupNode'
@@ -14,10 +14,11 @@ import type { NodeCollapsibleProps, NodeDetails, NodeIds, PipelineGraphState, Ge
 import { useNodeResizeObserver } from '../hooks/useResizeObserver'
 import { isFirstNodeAGroupNode, isNodeParallel, shouldAttachRef, shouldRenderGroupNode, showChildNode } from './utils'
 import css from './PipelineGraph.module.scss'
+const IS_RENDER_OPTIMIZATION_ENABLED = false
 export interface PipelineGraphRecursiveProps {
   nodes?: PipelineGraphState[]
   getNode: GetNodeMethod
-  getDefaultNode(): GetNodeMethod
+  getDefaultNode: GetNodeMethod
   updateGraphLinks?: () => void
   fireEvent?: FireEventMethod
   selectedNode: string
@@ -29,6 +30,7 @@ export interface PipelineGraphRecursiveProps {
   isDragging?: boolean
   optimizeRender?: boolean
   parentSelector?: string
+  createNodeTitle?: string
 }
 export function PipelineGraphRecursive({
   nodes,
@@ -44,7 +46,8 @@ export function PipelineGraphRecursive({
   readonly = false,
   isDragging,
   optimizeRender = true,
-  parentSelector
+  parentSelector,
+  createNodeTitle
 }: PipelineGraphRecursiveProps): React.ReactElement {
   const StartNode: React.FC<BaseReactComponentProps> | undefined = getNode(NodeType.StartNode)?.component
   const CreateNode: React.FC<BaseReactComponentProps> | undefined = getNode(NodeType.CreateNode)?.component
@@ -64,7 +67,7 @@ export function PipelineGraphRecursive({
             selectedNode={selectedNode}
             data={node}
             index={index}
-            key={node?.identifier}
+            key={index}
             getNode={getNode}
             isNextNodeParallel={isNodeParallel(nodes?.[index + 1])}
             isPrevNodeParallel={isNodeParallel(nodes?.[index - 1])}
@@ -83,7 +86,7 @@ export function PipelineGraphRecursive({
         <CreateNode
           id={uniqueNodeIds?.createNode as string}
           identifier={uniqueNodeIds?.createNode}
-          name={'Add Stage'}
+          name={createNodeTitle || 'Add'}
           fireEvent={fireEvent}
           getNode={getNode}
         />
@@ -139,8 +142,7 @@ const PipelineGraphNodeWithoutCollapse = React.forwardRef(
       collapseOnIntersect,
       getDefaultNode,
       intersectingIndex = -1,
-      readonly,
-      parentSelector
+      readonly
     }: PipelineGraphNodeWithoutCollapseProps,
     ref: ForwardedRef<HTMLDivElement>
   ): React.ReactElement | null => {
@@ -241,7 +243,7 @@ const PipelineGraphNodeWithoutCollapse = React.forwardRef(
                 id={`ref_${currentNodeData?.identifier}`}
                 key={currentNodeData?.identifier}
               >
-                {shouldRenderGroupNode(attachRef, isCurrentChildLast) || index > 5 ? (
+                {shouldRenderGroupNode(attachRef, isCurrentChildLast) ? (
                   <GroupNode
                     {...data}
                     fireEvent={fireEvent}
@@ -349,7 +351,7 @@ function PipelineGraphNodeObserved(
   const [elementRect, setElementRect] = useState<DOMRect | null>(null)
   React.useEffect(() => {
     let observer: IntersectionObserver
-    if (ref && props?.parentSelector) {
+    if (ref && props?.parentSelector && IS_RENDER_OPTIMIZATION_ENABLED) {
       const rootElement = document.querySelector(props?.parentSelector as string)
 
       observer = new IntersectionObserver(
@@ -372,7 +374,7 @@ function PipelineGraphNodeObserved(
       observer.observe(ref as HTMLDivElement)
     }
     return () => {
-      if (observer && ref) observer.unobserve(ref as HTMLDivElement)
+      if (observer && ref && IS_RENDER_OPTIMIZATION_ENABLED) observer.unobserve(ref as HTMLDivElement)
     }
   }, [ref, elementRect])
 
@@ -385,7 +387,7 @@ function PipelineGraphNodeObserved(
 
   return (
     <div data-graph-node={props.index} ref={setRef}>
-      <div style={{ width: elementRect?.width, visibility: 'hidden' }} />
+      {IS_RENDER_OPTIMIZATION_ENABLED && <div style={{ width: elementRect?.width, visibility: 'hidden' }} />}
       {visible ? <PipelineGraphNode {...props} /> : null}
     </div>
   )

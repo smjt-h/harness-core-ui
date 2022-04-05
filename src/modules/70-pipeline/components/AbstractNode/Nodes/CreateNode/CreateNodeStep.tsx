@@ -27,7 +27,9 @@ interface CreateNodeStepProps {
   node: CreateNodeStepProps & { isSelected?: boolean }
   titleClassName?: string
   className?: string
+  hidden?: boolean
 }
+
 function CreateNodeStep(props: CreateNodeStepProps): React.ReactElement {
   return (
     <div
@@ -35,27 +37,21 @@ function CreateNodeStep(props: CreateNodeStepProps): React.ReactElement {
         props.onMouseOver?.()
       }}
       onMouseLeave={() => {
-        if (props?.onMouseLeave) {
-          props.onMouseLeave()
-        }
+        props.onMouseLeave?.()
       }}
       className={cssDefault.defaultNode}
       onDragOver={event => {
         event.preventDefault()
         event.stopPropagation()
-
         props.onDragOver?.()
       }}
       onDragLeave={event => {
         event.preventDefault()
         event.stopPropagation()
-
         props.onDragLeave?.()
       }}
       onDrop={event => {
-        if (props.onDrop) {
-          props.onDrop(event)
-        }
+        props.onDrop?.(event)
         event.stopPropagation()
         props?.fireEvent?.({
           type: Event.DropNodeEvent,
@@ -71,10 +67,7 @@ function CreateNodeStep(props: CreateNodeStepProps): React.ReactElement {
       onClick={event => {
         event.preventDefault()
         event.stopPropagation()
-        if (props?.onClick) {
-          props?.onClick(event)
-          return
-        }
+        props?.onClick?.(event)
         props?.fireEvent?.({
           type: Event.AddLinkClicked,
           target: event.target,
@@ -97,6 +90,7 @@ function CreateNodeStep(props: CreateNodeStepProps): React.ReactElement {
           { [css.disabled]: props.disabled || false },
           { [css.selected]: props?.node?.isSelected }
         )}
+        hidden={props.hidden}
       />
     </div>
   )

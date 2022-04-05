@@ -5,6 +5,7 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
+/* stylelint-disable color-no-hex */
 @keyframes fadeIn {
   0% {
     opacity: 0;
@@ -36,15 +37,15 @@
 }
 
 .defaultNode {
-  --pipeline-selected-node: linear-gradient(123.92deg, #0092e4 32.53%, #0778fc 112.21%);
+  --pipeline-selected-node: linear-gradient(123.92deg, var(--primary-6) 32.53%, #0778fc 112.21%);
   --execution-pipeline-selected-running-bg: linear-gradient(
     to top left,
     transparent 33%,
     rgba(100, 100, 100, 0.1) 50%,
     transparent 66%
   );
-  --pipeline-studio-bg: linear-gradient(90deg, #f6fcff 9px, transparent 1%) center,
-    linear-gradient(#f6fcff 9px, transparent 1%) center, #bbc1c4;
+  --pipeline-studio-bg: linear-gradient(90deg, var(--pipeline-bg) 9px, transparent 1%) center,
+    linear-gradient(var(--pipeline-bg) 9px, transparent 1%) center, var(--pipeline-bg-dot);
 
   --execution-pipeline-selected-running-bg-selected: linear-gradient(
     to top left,
@@ -76,6 +77,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
+
     box-shadow: 0px 2px 4px 0px #60617029;
 
     &.selected {
@@ -112,7 +114,7 @@
     top: -10px;
     left: -10px;
     background: var(--pipeline-barrier-yellow) !important;
-    border: 2px solid #fff;
+    border: 2px solid var(--white);
     border-radius: 50%;
     padding: 1px !important;
   }
@@ -142,6 +144,7 @@
       }
       rect {
         // TODO: Replace color once it is available in UIKit
+
         stroke: #f79400 !important;
       }
     }
@@ -241,8 +244,11 @@
   &.left {
     left: -40px;
   }
+  &.stepGroupLeft {
+    left: -60px;
+  }
   &.right {
-    right: -40px;
+    right: -20px;
   }
 }
 
@@ -319,7 +325,6 @@
   overflow-wrap: normal;
   word-break: break-all;
   height: 46px;
-  padding-left: 0 !important;
 }
 
 .primaryIcon {

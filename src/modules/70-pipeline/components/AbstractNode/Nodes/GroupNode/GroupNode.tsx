@@ -18,7 +18,7 @@ function GroupNode(props: any): React.ReactElement {
   const allowAdd = defaultTo(props.allowAdd, false)
   const [showAdd, setVisibilityOfAdd] = React.useState(false)
   const CreateNode: React.FC<any> | undefined = props?.getNode?.(NodeType.CreateNode)?.component
-  console.log(props)
+
   const nodesInfo = React.useMemo(() => {
     const nodesArr = props.intersectingIndex < 1 ? props?.children : props?.children?.slice(props.intersectingIndex - 1)
     return nodesArr.map((node: any) => ({
@@ -104,7 +104,7 @@ function GroupNode(props: any): React.ReactElement {
         ></div>
 
         <div
-          id={props.id}
+          id={id}
           data-nodeid={id}
           className={cx(css.defaultCard, { [css.selected]: props?.isSelected })}
           style={{

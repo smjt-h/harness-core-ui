@@ -34,7 +34,7 @@ export interface PipelineGraphProps {
   data: PipelineGraphState[]
   fireEvent: (event: any) => void
   getNode: GetNodeMethod
-  getDefaultNode(): GetNodeMethod
+  getDefaultNode: GetNodeMethod
   selectedNodeId?: string
   collapsibleProps?: NodeCollapsibleProps
   readonly?: boolean
@@ -42,6 +42,7 @@ export interface PipelineGraphProps {
   /** parent element selector to listen resize event on */
   parentSelector?: string
   panZoom?: boolean
+  createNodeTitle?: string
 }
 
 function PipelineGraph({
@@ -54,7 +55,8 @@ function PipelineGraph({
   readonly,
   loaderComponent,
   parentSelector,
-  panZoom
+  panZoom = true,
+  createNodeTitle
 }: PipelineGraphProps): React.ReactElement {
   const [svgPath, setSvgPath] = useState<SVGPathRecord[]>([])
   const [isLoading, setLoading] = useState<boolean>(false)
@@ -129,9 +131,9 @@ function PipelineGraph({
     updateTreeRect()
     const draggableParent = draggableRef.current
     const overlay = overlayRef.current as HTMLElement
-    if (draggableParent && overlay && panZoom) {
+    if (draggableParent && overlay) {
       setupDragEventListeners(draggableParent, overlay)
-      scrollZoom(overlay, 40, 0.01, updateGraphScale)
+      panZoom && scrollZoom(overlay, 40, 0.01, updateGraphScale)
     }
   }, [])
 
@@ -173,6 +175,7 @@ function PipelineGraph({
                 readonly={readonly}
                 isDragging={isDragging}
                 parentSelector={parentSelector}
+                createNodeTitle={createNodeTitle}
               />
             </div>
           </div>

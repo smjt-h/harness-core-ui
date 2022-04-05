@@ -188,6 +188,7 @@ export function IconNode(props: IconNodeProps): React.ReactElement {
             }
           )}
           data-nodeid="add-parallel"
+          id=""
         />
       ) : null}
       {!props.isParallelNode && !props.readonly && (
@@ -197,11 +198,14 @@ export function IconNode(props: IconNodeProps): React.ReactElement {
             event.stopPropagation()
             props?.fireEvent?.({
               type: Event.AddLinkClicked,
-              entityType: DiagramType.Link,
-              node: props,
-              prevNodeIdentifier: props?.prevNodeIdentifier,
-              parentIdentifier: props?.parentIdentifier,
-              identifier: props?.identifier
+              target: event.target,
+              data: {
+                entityType: DiagramType.Link,
+                node: props,
+                prevNodeIdentifier: props?.prevNodeIdentifier,
+                parentIdentifier: props?.parentIdentifier,
+                identifier: props?.identifier
+              }
             })
           }}
           onDragOver={event => {
@@ -212,10 +216,12 @@ export function IconNode(props: IconNodeProps): React.ReactElement {
             event.stopPropagation()
             props?.fireEvent?.({
               type: Event.DropLinkEvent,
-              linkBeforeStepGroup: false,
-              entityType: DiagramType.Link,
-              node: JSON.parse(event.dataTransfer.getData(DiagramDrag.NodeDrag)),
-              destination: props
+              target: event.target,
+              data: {
+                entityType: DiagramType.Link,
+                node: JSON.parse(event.dataTransfer.getData(DiagramDrag.NodeDrag)),
+                destination: props
+              }
             })
           }}
           className={cx(
@@ -240,12 +246,14 @@ export function IconNode(props: IconNodeProps): React.ReactElement {
               event.stopPropagation()
               props?.fireEvent?.({
                 type: Event.AddLinkClicked,
-                linkBeforeStepGroup: true,
-                prevNodeIdentifier: props?.prevNodeIdentifier,
-                parentIdentifier: props?.parentIdentifier,
-                entityType: DiagramType.Link,
-                identifier: props?.identifier,
-                node: props
+                target: event.target,
+                data: {
+                  prevNodeIdentifier: props?.prevNodeIdentifier,
+                  parentIdentifier: props?.parentIdentifier,
+                  entityType: DiagramType.Link,
+                  identifier: props?.identifier,
+                  node: props
+                }
               })
             }}
             onDragOver={event => {
@@ -256,10 +264,12 @@ export function IconNode(props: IconNodeProps): React.ReactElement {
               event.stopPropagation()
               props?.fireEvent?.({
                 type: Event.DropLinkEvent,
-                linkBeforeStepGroup: true,
-                entityType: DiagramType.Link,
-                node: JSON.parse(event.dataTransfer.getData(DiagramDrag.NodeDrag)),
-                destination: props
+                target: event.target,
+                data: {
+                  entityType: DiagramType.Link,
+                  node: JSON.parse(event.dataTransfer.getData(DiagramDrag.NodeDrag)),
+                  destination: props
+                }
               })
             }}
             className={cx(

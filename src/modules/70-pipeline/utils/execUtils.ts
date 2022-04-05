@@ -18,11 +18,12 @@ import {
   RollbackContainerCss,
   getIconDataBasedOnType,
   LITE_ENGINE_TASK,
-  processLiteEngineTask,
   RollbackIdentifier,
   TopLevelNodes,
   hasOnlyLiteEngineTask,
-  StepTypeIconsMap
+  StepTypeIconsMap,
+  ServiceDependency,
+  STATIC_SERVICE_GROUP_NAME
 } from './executionUtils'
 import type { ExecutionStatus } from './statusHelpers'
 interface ProcessParalellNodeArgs {
@@ -39,6 +40,91 @@ interface StepPipelineGraphState {
 interface ParallelStepPipelineGraphState {
   parallel: StepPipelineGraphState
 }
+
+const addDependencyToArray = (service: ServiceDependency, arr: Array<PipelineGraphState>): void => {
+  const stepItem: PipelineGraphState = {
+    identifier: service.identifier as string,
+    name: service.name as string,
+    status: service.status as ExecutionStatus,
+    icon: 'dependency-step',
+    data: { ...(service as ExecutionNode), icon: 'dependency-step' },
+    type: 'service-dependency',
+    nodeType: 'service-dependency',
+    id: service.identifier
+  }
+
+  // add step node
+  arr.push(stepItem)
+}
+
+const addDependencies = (dependencies: ServiceDependency[], stepsPipelineNodes: Array<PipelineGraphState>): void => {
+  if (dependencies && dependencies.length > 0) {
+    const items: Array<PipelineGraphState> = []
+
+    dependencies.forEach(_service => addDependencyToArray(_service, items))
+
+    const dependenciesGroup: PipelineGraphState = {
+      name: 'Dependencies',
+      identifier: STATIC_SERVICE_GROUP_NAME,
+      status: dependencies[0].status as ExecutionStatus,
+      icon: 'step-group',
+      nodeType: NodeType.STEP_GROUP,
+      type: NodeType.STEP_GROUP,
+      id: STATIC_SERVICE_GROUP_NAME,
+      data: {
+        icon: 'step-group',
+        identifier: STATIC_SERVICE_GROUP_NAME,
+        stepGroup: {
+          name: 'Dependencies',
+          identifier: STATIC_SERVICE_GROUP_NAME,
+          status: dependencies[0].status as ExecutionStatus,
+          nodeType: NodeType.STEP_GROUP,
+          type: NodeType.STEP_GROUP,
+          data: {},
+          steps: [{ parallel: items.map(stepData => ({ step: stepData })) }] // processStepGroupSteps({ nodeAdjacencyListMap, id: parentNodeId, nodeMap, rootNodes })
+        }
+      }
+    }
+    stepsPipelineNodes.unshift(dependenciesGroup)
+  }
+}
+export const processLiteEngineTask = (
+  nodeData: ExecutionNode | undefined,
+  rootNodes: Array<PipelineGraphState>,
+  parentNode?: ExecutionNode
+): void => {
+  // NOTE: liteEngineTask contains information about dependencies
+  const serviceDependencyList: ServiceDependency[] =
+    // Array check is required for legacy support
+    (Array.isArray(nodeData?.outcomes)
+      ? nodeData?.outcomes?.find((_item: any) => !!_item.serviceDependencyList)?.serviceDependencyList
+      : nodeData?.outcomes?.dependencies?.serviceDependencyList) || []
+
+  // 1. Add dependency services
+  addDependencies(serviceDependencyList, rootNodes)
+
+  // 2. Exclude Initialize duration from the parent
+  if (nodeData && parentNode) {
+    const taskDuration = nodeData.endTs! - nodeData.startTs!
+    parentNode.startTs = Math.min(parentNode.startTs! + taskDuration, parentNode.endTs!)
+  }
+
+  // 3. Add Initialize step ( at the first place in array )
+
+  const iconData = getIconDataBasedOnType(nodeData)
+  const stepItem: PipelineGraphState = {
+    name: 'Initialize',
+    identifier: nodeData?.identifier as string,
+    id: nodeData?.uuid as string,
+    status: nodeData?.status as ExecutionStatus,
+    type: nodeData?.stepType as string,
+    data: { ...nodeData, when: nodeData?.nodeRunInfo, ...iconData, icon: 'initialize-step' },
+    icon: 'initialize-step'
+  }
+
+  rootNodes.unshift(stepItem)
+}
+
 const processParallelNodeData = ({
   items,
   nodeMap,
@@ -472,7 +558,7 @@ export const getExecutionStageDiagramListeners = ({
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     [Event.MouseEnterNode]: (event: any) => {
       const stageData = allNodeMap[event?.data?.id]
-      const target = document.querySelector(`[data-nodeid=${event?.data?.id}]`)
+      const target = document.querySelector(`[data-nodeid="${event?.data?.id}"]`)
       if (stageData) {
         onMouseEnter({ data: stageData, event: { ...event, target } })
       }

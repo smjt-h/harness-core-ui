@@ -25,6 +25,7 @@ const CODE_ICON: IconName = 'command-echo'
 interface PipelineStepNodeProps extends BaseReactComponentProps {
   status: string
 }
+
 function PipelineStepNode(props: PipelineStepNodeProps): JSX.Element {
   const allowAdd = defaultTo(props.allowAdd, false)
   const [showAddNode, setVisibilityOfAdd] = React.useState(false)
@@ -49,13 +50,21 @@ function PipelineStepNode(props: PipelineStepNodeProps): JSX.Element {
     }
     setVisibilityOfAdd(visibility)
   }
+  const stepIcon = defaultTo(defaultTo(stepData?.icon, props?.icon), props?.data?.step?.icon)
+  const isPrevNodeParallel = !!defaultTo(props.prevNode?.children?.length, 1)
   return (
     <div
       className={cx(defaultCss.defaultNode, 'default-node', {
         draggable: !props.readonly
       })}
-      onMouseOver={() => setAddVisibility(true)}
-      onMouseLeave={() => setAddVisibility(false)}
+      onMouseOver={e => {
+        e.stopPropagation()
+        setAddVisibility(true)
+      }}
+      onMouseLeave={e => {
+        e.stopPropagation()
+        setAddVisibility(false)
+      }}
       onClick={event => {
         event.stopPropagation()
         if (props?.onClick) {
@@ -151,11 +160,11 @@ function PipelineStepNode(props: PipelineStepNodeProps): JSX.Element {
         }}
       >
         <div className="execution-running-animation" />
-        {(stepData?.icon || props?.icon) && (
+        {stepIcon && (
           <Icon
             size={28}
             color={isNodeSelected ? Color.WHITE : stepIconColor}
-            name={(stepData?.icon || props?.icon || 'cross') as IconName}
+            name={defaultTo(stepIcon, 'cross') as IconName}
             inverse={isNodeSelected || (stepStatus as string) === ExecutionStatusEnum.Failed}
             className={defaultCss.primaryIcon}
           />
@@ -201,7 +210,7 @@ function PipelineStepNode(props: PipelineStepNodeProps): JSX.Element {
       {props.name && (
         <Text
           width={90}
-          font={{ size: 'normal', align: 'center' }}
+          font={{ size: 'normal', align: 'left' }}
           color={props.defaultSelected ? Color.GREY_900 : Color.GREY_600}
           className={defaultCss.stepNameText}
           padding={'small'}
@@ -241,7 +250,11 @@ function PipelineStepNode(props: PipelineStepNodeProps): JSX.Element {
           fireEvent={props.fireEvent}
           identifier={props.identifier}
           prevNodeIdentifier={props.prevNodeIdentifier as string}
-          className={cx(defaultCss.addNodeIcon, defaultCss.left, defaultCss.stepAddIcon)}
+          className={cx(
+            defaultCss.addNodeIcon,
+            { [defaultCss.left]: !isPrevNodeParallel, [defaultCss.stepGroupLeft]: isPrevNodeParallel },
+            defaultCss.stepAddIcon
+          )}
         />
       )}
       {!props?.nextNode && !isServiceStep && props?.parentIdentifier && !props.readonly && !props.isParallelNode && (

@@ -41,7 +41,11 @@ import ConditionalExecutionTooltipWrapper from '@pipeline/components/Conditional
 import { StepMode as Modes } from '@pipeline/utils/stepUtils'
 import { useExecutionContext } from '@pipeline/context/ExecutionContext'
 import type { PipelineGraphState } from '@pipeline/components/AbstractNode/types'
-import { DiagramFactory, NodeType as DiagramNodeType } from '@pipeline/components/AbstractNode/DiagramFactory'
+import {
+  DiagramFactory,
+  NodeType as DiagramNodeType,
+  BaseReactComponentProps
+} from '@pipeline/components/AbstractNode/DiagramFactory'
 import { DiamondNodeWidget } from '@pipeline/components/AbstractNode/Nodes/DiamondNode/DiamondNode'
 import PipelineStageNode from '@pipeline/components/AbstractNode/Nodes/DefaultNode/PipelineStageNode/PipelineStageNode'
 import CreateNodeStage from '@pipeline/components/AbstractNode/Nodes/CreateNode/CreateNodeStage'
@@ -54,8 +58,8 @@ import css from './ExecutionGraph.module.scss'
 
 const NEW_PIP_STUDIO = localStorage.getItem('IS_NEW_PIP_STUDIO_ACTIVE') === 'true'
 const diagram = new DiagramFactory('graph')
-diagram.registerNode(['Deployment', 'CI'], PipelineStageNode, true)
-diagram.registerNode(DiagramNodeType.CreateNode, CreateNodeStage)
+diagram.registerNode(['Deployment', 'CI'], PipelineStageNode as unknown as React.FC<BaseReactComponentProps>, true)
+diagram.registerNode(DiagramNodeType.CreateNode, CreateNodeStage as unknown as React.FC<BaseReactComponentProps>)
 diagram.registerNode(DiagramNodeType.EndNode, EndNodeStage)
 diagram.registerNode(DiagramNodeType.StartNode, StartNodeStage)
 diagram.registerNode(['Approval', 'JiraApproval', 'HarnessApproval', 'default-diamond'], DiamondNodeWidget)

@@ -24,13 +24,20 @@ import { StepMode as Modes } from '@pipeline/utils/stepUtils'
 import type { ExecutionLayoutState } from '@pipeline/components/ExecutionLayout/ExecutionLayoutContext'
 import ConditionalExecutionTooltipWrapper from '@pipeline/components/ConditionalExecutionToolTip/ConditionalExecutionTooltipWrapper'
 import { getExecutionStageDiagramListeners, processExecutionDataV1 } from '@pipeline/utils/execUtils'
-import { DiagramFactory, DiagramNodes, NodeType } from '@pipeline/components/AbstractNode/DiagramFactory'
+
+import {
+  DiagramFactory,
+  DiagramNodes,
+  NodeType,
+  BaseReactComponentProps
+} from '@pipeline/components/AbstractNode/DiagramFactory'
 import { DiamondNodeWidget } from '@pipeline/components/AbstractNode/Nodes/DiamondNode/DiamondNode'
 import PipelineStepNode from '@pipeline/components/AbstractNode/Nodes/DefaultNode/PipelineStepNode/PipelineStepNode'
 import { IconNode } from '@pipeline/components/AbstractNode/Nodes/IconNode/IconNode'
 import CreateNodeStep from '@pipeline/components/AbstractNode/Nodes/CreateNode/CreateNodeStep'
 import EndNodeStep from '@pipeline/components/AbstractNode/Nodes/EndNode/EndNodeStep'
 import StartNodeStep from '@pipeline/components/AbstractNode/Nodes/StartNode/StartNodeStep'
+import DiagramLoader from '@pipeline/components/DiagramLoader/DiagramLoader'
 import BarrierStepTooltip from './components/BarrierStepTooltip/BarrierStepTooltip'
 import ResourceConstraintTooltip from './components/ResourceConstraints/ResourceConstraints'
 import VerifyStepTooltip from './components/VerifyStepTooltip/VerifyStepTooltip'
@@ -39,8 +46,8 @@ import css from './ExecutionStageDetails.module.scss'
 
 const diagram = new DiagramFactory('graph')
 
-diagram.registerNode('Deployment', PipelineStepNode, true)
-diagram.registerNode(NodeType.CreateNode, CreateNodeStep)
+diagram.registerNode('Deployment', PipelineStepNode as unknown as React.FC<BaseReactComponentProps>, true)
+diagram.registerNode(NodeType.CreateNode, CreateNodeStep as unknown as React.FC<BaseReactComponentProps>)
 diagram.registerNode(NodeType.EndNode, EndNodeStep)
 diagram.registerNode(NodeType.StartNode, StartNodeStep)
 diagram.registerNode('STEP_GROUP', DiagramNodes[NodeType.StepGroupNode])
@@ -239,7 +246,13 @@ export default function ExecutionStageDetails(props: ExecutionStageDetailsProps)
   return (
     <div className={css.main} data-layout={props.layout}>
       {!isEmpty(selectedStageId) && data.items?.length > 0 && NEW_PIP_STUDIO ? (
-        <CDPipelineStudioNew readonly data={data.items} />
+        <CDPipelineStudioNew
+          readonly
+          loaderComponent={DiagramLoader}
+          data={data.items}
+          selectedNodeId={selectedStepId}
+          panZoom={false}
+        />
       ) : (
         <ExecutionStageDiagram
           selectedIdentifier={selectedStepId}

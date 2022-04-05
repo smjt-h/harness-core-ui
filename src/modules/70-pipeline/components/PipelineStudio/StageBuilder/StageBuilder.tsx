@@ -6,7 +6,7 @@
  */
 
 import React, { useMemo } from 'react'
-import { Layout, useToaster, useConfirmationDialog, PageSpinner } from '@wings-software/uicore'
+import { Layout, useToaster, useConfirmationDialog } from '@wings-software/uicore'
 import { Intent } from '@harness/design-system'
 import cx from 'classnames'
 import { cloneDeep, debounce, isNil } from 'lodash-es'
@@ -31,7 +31,7 @@ import { getPipelineGraphData } from '@pipeline/components/AbstractNode/Pipeline
 import PipelineStageNode from '@pipeline/components/AbstractNode/Nodes/DefaultNode/PipelineStageNode/PipelineStageNode'
 import { DiamondNodeWidget } from '@pipeline/components/AbstractNode/Nodes/DiamondNode/DiamondNode'
 import { IconNode } from '@pipeline/components/AbstractNode/Nodes/IconNode/IconNode'
-import { DiagramFactory, NodeType } from '@pipeline/components/AbstractNode/DiagramFactory'
+import { DiagramFactory, NodeType, BaseReactComponentProps } from '@pipeline/components/AbstractNode/DiagramFactory'
 import CreateNodeStage from '@pipeline/components/AbstractNode/Nodes/CreateNode/CreateNodeStage'
 import EndNodeStage from '@pipeline/components/AbstractNode/Nodes/EndNode/EndNodeStage'
 import StartNodeStage from '@pipeline/components/AbstractNode/Nodes/StartNode/StartNodeStage'
@@ -70,11 +70,11 @@ import css from './StageBuilder.module.scss'
 
 const diagram = new DiagramFactory('graph')
 
-diagram.registerNode('Deployment', PipelineStageNode)
-diagram.registerNode('CI', PipelineStageNode)
+diagram.registerNode('Deployment', PipelineStageNode as unknown as React.FC<BaseReactComponentProps>)
+diagram.registerNode('CI', PipelineStageNode as unknown as React.FC<BaseReactComponentProps>)
 diagram.registerNode('Approval', DiamondNodeWidget)
 diagram.registerNode('Barrier', IconNode)
-diagram.registerNode(NodeType.CreateNode, CreateNodeStage)
+diagram.registerNode(NodeType.CreateNode, CreateNodeStage as unknown as React.FC<BaseReactComponentProps>)
 diagram.registerNode(NodeType.EndNode, EndNodeStage)
 diagram.registerNode(NodeType.StartNode, StartNodeStage)
 
@@ -810,7 +810,7 @@ function StageBuilder(): JSX.Element {
               <CDPipelineStudioNew
                 selectedNodeId={selectedStageId}
                 data={stageData}
-                loaderComponent={PageSpinner}
+                loaderComponent={DiagramLoader}
                 parentSelector={'.Pane1'}
                 collapsibleProps={{ percentageNodeVisible: 0.8, bottomMarginInPixels: 80 }}
               />

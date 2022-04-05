@@ -239,7 +239,7 @@ function PipelineStageNode(props: PipelineStageNodeProps): JSX.Element {
           data={props}
           fireEvent={props.fireEvent}
           identifier={props.identifier}
-          prevNodeIdentifier={props.prevNodeIdentifier}
+          prevNodeIdentifier={props.prevNodeIdentifier as string}
           className={cx(defaultCss.addNodeIcon, defaultCss.left, defaultCss.stageAddIcon)}
         />
       )}

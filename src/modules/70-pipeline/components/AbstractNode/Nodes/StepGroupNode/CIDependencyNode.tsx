@@ -9,6 +9,7 @@ import * as React from 'react'
 import classnames from 'classnames'
 import { Icon, Layout, Text } from '@wings-software/uicore'
 import { Event, DiagramType } from '@pipeline/components/Diagram'
+import { useStrings } from 'framework/strings'
 import StepGroupGraph from '../StepGroupGraph/StepGroupGraph'
 import { NodeType } from '../../DiagramFactory'
 import css from './StepGroupNode.module.scss'
@@ -19,9 +20,11 @@ export function CIDependencyNode(props: any): JSX.Element {
 
   const CreateNode: React.FC<any> | undefined = props?.getNode?.(NodeType.CreateNode)?.component
   const stepsData = props?.data?.steps
+  const { getString } = useStrings()
   React.useEffect(() => {
     props?.updateGraphLinks?.()
   }, [isNodeCollapsed])
+
   return (
     <>
       {isNodeCollapsed && DefaultNode ? (
@@ -31,6 +34,7 @@ export function CIDependencyNode(props: any): JSX.Element {
           }}
           {...props}
           icon="step-group"
+          readonly
         />
       ) : (
         <div style={{ position: 'relative' }}>
@@ -83,7 +87,7 @@ export function CIDependencyNode(props: any): JSX.Element {
                         }
                       })
                     }}
-                    name={'Add Service Dependency (optional)'}
+                    name={getString('pipelines-studio.addDependency')}
                   />
                 )}
               </div>

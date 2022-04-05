@@ -34,7 +34,7 @@ export class DiagramFactory {
   constructor(diagramType?: string) {
     this.nodeBank = new Map<string, NodeDetails>()
     this.type = diagramType || 'graph'
-    this.registerNode(NodeType.Default, DefaultNode)
+    this.registerNode(NodeType.Default, DefaultNode as React.FC<BaseReactComponentProps>)
     this.registerNode(NodeType.StepGroupNode, StepGroupNode)
     this.listeners = {}
   }
@@ -110,8 +110,13 @@ export class DiagramFactory {
     return listenerHandle
   }
 
-  getNode(type?: string): NodeDetails | undefined {
-    return this.nodeBank.get(type as string)
+  getNode(type?: string): NodeDetails | null {
+    const node = this.nodeBank.get(type as string)
+    if (node) {
+      return node
+    } else {
+      return null
+    }
   }
 
   deregisterNode(type: string): void {
@@ -121,7 +126,7 @@ export class DiagramFactory {
     }
   }
 
-  fireEvent?(event: any): void {
+  fireEvent(event: any): void {
     this.getListenerHandle(event.type)?.listener?.(event)
   }
 
@@ -133,6 +138,7 @@ export class DiagramFactory {
     loaderComponent: React.FC
     parentSelector?: string
     panZoom?: boolean
+    createNodeTitle?: string
   }> {
     function PipelineStudioHOC(
       this: DiagramFactory,
@@ -145,6 +151,7 @@ export class DiagramFactory {
         /** parent element selector to apply node grouping  */
         parentSelector?: string
         panZoom?: boolean
+        createNodeTitle?: string
       }
     ): React.ReactElement {
       return (
@@ -166,4 +173,4 @@ const DiagramNodes = {
   [NodeType.StepGroupNode]: StepGroupNode
 }
 
-export { DiagramNodes, NodeType }
+export { DiagramNodes, NodeType, BaseReactComponentProps }

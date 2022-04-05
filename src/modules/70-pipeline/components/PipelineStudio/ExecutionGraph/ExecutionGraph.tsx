@@ -31,7 +31,12 @@ import type {
 import type { DependencyElement } from 'services/ci'
 import { useFeatureFlag } from '@common/hooks/useFeatureFlag'
 import { FeatureFlag } from '@common/featureFlags'
-import { DiagramFactory, DiagramNodes, NodeType } from '@pipeline/components/AbstractNode/DiagramFactory'
+import {
+  DiagramFactory,
+  DiagramNodes,
+  NodeType,
+  BaseReactComponentProps
+} from '@pipeline/components/AbstractNode/DiagramFactory'
 import { DiamondNodeWidget } from '@pipeline/components/AbstractNode/Nodes/DiamondNode/DiamondNode'
 import { getPipelineGraphData } from '@pipeline/components/AbstractNode/PipelineGraph/PipelineGraphUtils'
 import PipelineStepNode from '@pipeline/components/AbstractNode/Nodes/DefaultNode/PipelineStepNode/PipelineStepNode'
@@ -87,8 +92,8 @@ import css from './ExecutionGraph.module.scss'
 
 const diagram = new DiagramFactory('graph')
 
-diagram.registerNode('ShellScript', PipelineStepNode, true)
-diagram.registerNode(NodeType.CreateNode, CreateNodeStep)
+diagram.registerNode('ShellScript', PipelineStepNode as React.FC<BaseReactComponentProps>, true)
+diagram.registerNode(NodeType.CreateNode, CreateNodeStep as unknown as React.FC<BaseReactComponentProps>)
 diagram.registerNode(NodeType.EndNode, EndNodeStep)
 diagram.registerNode(NodeType.StartNode, StartNodeStep)
 diagram.registerNode('StepGroup', DiagramNodes[NodeType.StepGroupNode])
@@ -1048,7 +1053,7 @@ function ExecutionGraphRef<T extends StageElementConfig>(
               selectedNodeId={selectedStepId}
               loaderComponent={DiagramLoader}
               data={stepsData}
-              pan
+              createNodeTitle={getString('addStep')}
             />
             {hasRollback && (
               <RollbackToggleSwitch

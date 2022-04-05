@@ -9,14 +9,18 @@ import * as React from 'react'
 import classnames from 'classnames'
 import { Icon, Layout, Text, Button, ButtonVariation } from '@wings-software/uicore'
 import { Color } from '@harness/design-system'
+import { defaultTo } from 'lodash-es'
 import { Event, DiagramDrag, DiagramType } from '@pipeline/components/Diagram'
+import { STATIC_SERVICE_GROUP_NAME } from '@pipeline/utils/executionUtils'
+import { useStrings } from 'framework/strings'
 import StepGroupGraph from '../StepGroupGraph/StepGroupGraph'
 import { NodeType } from '../../types'
 import css from './StepGroupNode.module.scss'
 import defaultCss from '../DefaultNode/DefaultNode.module.scss'
 
 export function StepGroupNode(props: any): JSX.Element {
-  const allowAdd = props.allowAdd ?? false
+  const allowAdd = defaultTo(props.allowAdd, false)
+  const { getString } = useStrings()
   const [showAdd, setVisibilityOfAdd] = React.useState(false)
   const [showAddLink, setShowAddLink] = React.useState(false)
   const [isNodeCollapsed, setNodeCollapsed] = React.useState(false)
@@ -40,8 +44,14 @@ export function StepGroupNode(props: any): JSX.Element {
       ) : (
         <div style={{ position: 'relative' }}>
           <div
-            onMouseOver={() => allowAdd && setVisibilityOfAdd(true)}
-            onMouseLeave={() => allowAdd && setVisibilityOfAdd(false)}
+            onMouseOver={e => {
+              e.stopPropagation()
+              allowAdd && setVisibilityOfAdd(true)
+            }}
+            onMouseLeave={e => {
+              e.stopPropagation()
+              allowAdd && setVisibilityOfAdd(false)
+            }}
             onDragLeave={() => allowAdd && setVisibilityOfAdd(false)}
             className={classnames(
               css.stepGroup,
@@ -77,9 +87,10 @@ export function StepGroupNode(props: any): JSX.Element {
                 data={stepsData}
                 isNodeCollapsed={isNodeCollapsed}
                 parentIdentifier={props?.identifier}
+                hideLinks={props?.identifier === STATIC_SERVICE_GROUP_NAME}
               />
             </div>
-            {!props.readonly && (
+            {!props.readonly && props?.identifier !== STATIC_SERVICE_GROUP_NAME && (
               <Button
                 className={classnames(css.closeNode, { [css.readonly]: props.readonly })}
                 minimal
@@ -142,7 +153,7 @@ export function StepGroupNode(props: any): JSX.Element {
                   }
                 })
               }}
-              className={classnames(defaultCss.addNodeIcon, defaultCss.left, defaultCss.stepAddIcon, {
+              className={classnames(defaultCss.addNodeIcon, defaultCss.stepGroupLeft, defaultCss.stepAddIcon, {
                 [defaultCss.show]: showAddLink
               })}
             >
@@ -182,6 +193,8 @@ export function StepGroupNode(props: any): JSX.Element {
                   }
                 })
               }}
+              name={getString('addStep')}
+              hidden={!showAdd}
             />
           )}
         </div>

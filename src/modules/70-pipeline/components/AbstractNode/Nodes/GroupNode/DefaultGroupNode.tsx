@@ -80,7 +80,7 @@ function GroupNode(props: GroupNodeProps): React.ReactElement {
             nodesInfo
           }
         })
-        props?.setSelectedNode?.(props?.identifier)
+        props?.setSelectedNode?.(props?.identifier as string)
       }}
       onDragOver={event => {
         if (event.dataTransfer.types.indexOf(DiagramDrag.AllowDropOnNode) !== -1) {
