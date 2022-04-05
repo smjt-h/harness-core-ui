@@ -62,7 +62,7 @@
     "@harness/monaco-yaml": "^1.0.0",
     "@harness/ng-tooltip": "^1.30.75",
     "@harness/telemetry": "^1.0.37",
-    "@harness/uicore": "2.54.0",
+    "@harness/uicore": "2.59.0",
     "@harness/use-modal": "1.1.0",
     "@popperjs/core": "^2.4.2",
     "@projectstorm/react-diagrams-core": "^6.6.0",

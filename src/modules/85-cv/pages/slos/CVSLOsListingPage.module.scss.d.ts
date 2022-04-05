@@ -12,6 +12,7 @@ declare const styles: {
   readonly errorBudgetGaugeContainer: string
   readonly errorBudgetRemaining: string
   readonly flexGrowOne: string
+  readonly menuIcon: string
   readonly pageBody: string
   readonly pillToggle: string
   readonly sloCard: string
