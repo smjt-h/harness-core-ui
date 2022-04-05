@@ -263,6 +263,7 @@ export default function ExecutionGraph(props: ExecutionGraphProps): React.ReactE
               loaderComponent={DiagramLoader}
               data={data.items as PipelineGraphState[]}
               selectedNodeId={selectedStageId}
+              panZoom={false}
             />
           ) : (
             <ExecutionStageDiagram
