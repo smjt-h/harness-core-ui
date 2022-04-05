@@ -19,6 +19,7 @@
 
 .draggableParent {
   overflow: hidden;
+  cursor: move !important;
 }
 
 .graph-main {
@@ -85,7 +86,7 @@
   cursor: default;
 }
 .svg-arrow {
-  stroke: #3dc7f6;
+  stroke: var(--primary-4);
   stroke-width: 2;
   stroke-dasharray: 0;
   fill: none;
@@ -95,6 +96,7 @@
 .graph-tree {
   display: flex;
   column-gap: 80px;
+  cursor: move;
 }
 
 .parallel {

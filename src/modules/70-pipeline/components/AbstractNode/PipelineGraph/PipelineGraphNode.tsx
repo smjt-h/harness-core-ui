@@ -146,6 +146,7 @@ const PipelineGraphNodeWithoutCollapse = React.forwardRef(
     }: PipelineGraphNodeWithoutCollapseProps,
     ref: ForwardedRef<HTMLDivElement>
   ): React.ReactElement | null => {
+    console.log(data?.type)
     const defaultNode = getDefaultNode()?.component
     const NodeComponent: React.FC<BaseReactComponentProps> = defaultTo(
       getNode?.(data?.type)?.component,

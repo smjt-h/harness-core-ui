@@ -13,8 +13,7 @@ import { StepTypeToPipelineIconMap } from '@pipeline/components/PipelineStudio/E
 import { stageTypeToIconMap } from '@pipeline/utils/constants'
 import type { DependencyElement } from 'services/ci'
 import { getDefaultBuildDependencies } from '@pipeline/utils/stageHelpers'
-import { NodeType, PipelineGraphState, SVGPathRecord } from '../types'
-import { PipelineGraphType } from '../types'
+import { NodeType, PipelineGraphState, SVGPathRecord, PipelineGraphType } from '../types'
 
 const INITIAL_ZOOM_LEVEL = 1
 const ZOOM_INC_DEC_LEVEL = 0.1
