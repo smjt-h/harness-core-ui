@@ -5,16 +5,29 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import type { CellProps } from 'react-table'
 import { isEmpty as _isEmpty } from 'lodash-es'
 import { Radio } from '@blueprintjs/core'
-import { Text, Container, ExpandingSearchInput, Layout, Button, Icon, TableV2 } from '@wings-software/uicore'
+import {
+  Text,
+  Container,
+  ExpandingSearchInput,
+  Layout,
+  Button,
+  Icon,
+  TableV2,
+  Select,
+  SelectOption
+} from '@wings-software/uicore'
 import { Color } from '@harness/design-system'
 import type { GatewayDetails } from '@ce/components/COCreateGateway/models'
 import { useStrings } from 'framework/strings'
-import type { ASGMinimal, PortConfig, TargetGroupMinimal } from 'services/lw'
+import { ASGMinimal, PortConfig, TargetGroupMinimal, useAllZones } from 'services/lw'
 import { Utils } from '@ce/common/Utils'
+import { useParams } from 'react-router'
+import useRegionsForSelection from '@ce/common/hooks/useRegionsForSelection'
+import type { AccountPathProps } from '@common/interfaces/RouteInterfaces'
 
 interface COAsgSelectorprops {
   scalingGroups: ASGMinimal[]
@@ -24,7 +37,7 @@ interface COAsgSelectorprops {
   gatewayDetails: GatewayDetails
   onAsgAddSuccess?: (updatedGatewayDetails: GatewayDetails) => void
   loading: boolean
-  refresh?: () => void
+  refresh?: (text?: string) => void
 }
 
 function TableCell(tableProps: CellProps<ASGMinimal>): JSX.Element {
@@ -47,8 +60,11 @@ const TOTAL_ITEMS_PER_PAGE = 5
 const COAsgSelector: React.FC<COAsgSelectorprops> = props => {
   const [selectedAsg, setSelectedAsg] = useState<ASGMinimal | undefined>(props.selectedScalingGroup)
   const [pageIndex, setPageIndex] = useState<number>(0)
+  const [gcpFilters, setGcpFilters] = useState<GCPFiltersProps>()
+  const [isLoading, setIsLoading] = useState<boolean>(false)
   const isAsgSelected = !_isEmpty(selectedAsg)
   const { getString } = useStrings()
+
   function TableCheck(tableProps: CellProps<ASGMinimal>): JSX.Element {
     return (
       <Radio
@@ -96,46 +112,75 @@ const COAsgSelector: React.FC<COAsgSelectorprops> = props => {
     props.refresh?.()
   }
 
+  const onGcpFiltersChange = (filters: GCPFiltersProps, loadingFilters: boolean) => {
+    setGcpFilters(filters)
+    let filterText = ''
+    if (filters.region) {
+      filterText = `regions=['${filters.region.label}']`
+    }
+    if (filters.zone) {
+      filterText += `\n zones=['${filters.zone.label}']`
+    }
+    !_isEmpty(filterText) && props.refresh?.(filterText)
+    setIsLoading(loadingFilters)
+  }
+
+  const loadingEnabled = props.loading || isLoading
+
   return (
     <Container>
       <Layout.Vertical spacing="large">
         <Container style={{ paddingBottom: 20, borderBottom: '1px solid #CDD3DD' }}>
           <Text font={'large'}>Select Auto scaling group</Text>
         </Container>
-        <Layout.Horizontal
-          style={{
-            paddingBottom: 20,
-            paddingTop: 20,
-            borderBottom: '1px solid #CDD3DD',
-            justifyContent: 'space-between'
-          }}
-        >
-          <Layout.Horizontal flex={{ alignItems: 'center' }}>
-            <Button
-              onClick={addAsg}
-              disabled={!isAsgSelected}
-              style={{
-                backgroundColor: isAsgSelected ? '#0278D5' : 'inherit',
-                color: isAsgSelected ? '#F3F3FA' : 'inherit',
-                marginRight: 20
-              }}
-            >
-              {'Add selected'}
-            </Button>
-            <div onClick={handleRefresh}>
-              <Icon name="refresh" color="primary7" size={14} />
-              <span style={{ color: 'var(--primary-7)', margin: '0 5px', cursor: 'pointer' }}>Refresh</span>
-            </div>
-          </Layout.Horizontal>
-          <ExpandingSearchInput onChange={(text: string) => props.search(text)} />
-        </Layout.Horizontal>
         <Container>
-          {props.loading && (
+          <Layout.Horizontal
+            style={{
+              paddingBottom: 20,
+              paddingTop: 20,
+              borderBottom: '1px solid #CDD3DD',
+              justifyContent: 'space-between'
+            }}
+          >
+            <Layout.Horizontal flex={{ alignItems: 'center' }}>
+              <Button
+                onClick={addAsg}
+                disabled={!isAsgSelected}
+                style={{
+                  backgroundColor: isAsgSelected ? '#0278D5' : 'inherit',
+                  color: isAsgSelected ? '#F3F3FA' : 'inherit',
+                  marginRight: 20
+                }}
+              >
+                {'Add selected'}
+              </Button>
+              <div onClick={handleRefresh}>
+                <Icon name="refresh" color="primary7" size={14} />
+                <span style={{ color: 'var(--primary-7)', margin: '0 5px', cursor: 'pointer' }}>Refresh</span>
+              </div>
+            </Layout.Horizontal>
+            <ExpandingSearchInput onChange={(text: string) => props.search(text)} />
+          </Layout.Horizontal>
+          <GroupsFilter
+            gatewayDetails={props.gatewayDetails}
+            isEditFlow={false}
+            onGcpFiltersChangeCallback={onGcpFiltersChange}
+          />
+        </Container>
+        <Container style={{ minHeight: 250 }}>
+          {loadingEnabled && (
             <Layout.Horizontal flex={{ justifyContent: 'center' }}>
               <Icon name="spinner" size={24} color="blue500" />
             </Layout.Horizontal>
           )}
-          {!props.loading && (
+          {!loadingEnabled && _isEmpty(gcpFilters?.region) ? (
+            <Layout.Horizontal flex={{ justifyContent: 'center' }}>
+              <Text icon={'execution-warning'} font={{ size: 'medium' }} iconProps={{ size: 20 }}>
+                {getString('ce.co.autoStoppingRule.configuration.instanceModal.gcpFiltersNotSelectedDescription')}
+              </Text>
+            </Layout.Horizontal>
+          ) : null}
+          {!loadingEnabled && !_isEmpty(props.scalingGroups) && (
             <TableV2<ASGMinimal>
               data={(props.scalingGroups || []).slice(
                 pageIndex * TOTAL_ITEMS_PER_PAGE,
@@ -184,6 +229,96 @@ const COAsgSelector: React.FC<COAsgSelectorprops> = props => {
       </Layout.Vertical>
     </Container>
   )
+}
+
+interface GCPFiltersProps {
+  region?: SelectOption
+  zone?: SelectOption
+}
+
+interface GroupsFilterProps {
+  gatewayDetails: GatewayDetails
+  onGcpFiltersChangeCallback: (values: GCPFiltersProps, loading: boolean) => void
+  isEditFlow: boolean
+}
+
+const GroupsFilter: React.FC<GroupsFilterProps> = ({ gatewayDetails, onGcpFiltersChangeCallback, isEditFlow }) => {
+  const { accountId } = useParams<AccountPathProps>()
+  const { getString } = useStrings()
+  const isGcpProvider = Utils.isProviderGcp(gatewayDetails.provider)
+
+  // GCP filters data
+  const { data: regionsData, loading: regionsLoading } = useRegionsForSelection({
+    cloudAccountId: gatewayDetails.cloudAccount.id,
+    additionalProps: {}
+  })
+  const [selectedRegion, setSelectedRegion] = useState<SelectOption>()
+  const [zonesData, setZonesData] = useState<SelectOption[]>([])
+  const [selectedZone, setSelectedZone] = useState<SelectOption>()
+
+  const {
+    data: zones,
+    loading: zonesLoading,
+    refetch: fetchZones
+  } = useAllZones({
+    account_id: accountId,
+    queryParams: {
+      cloud_account_id: gatewayDetails.cloudAccount.id,
+      accountIdentifier: accountId,
+      region: ''
+    },
+    lazy: true
+  })
+
+  useEffect(() => {
+    if (selectedRegion) {
+      fetchZones({
+        queryParams: {
+          cloud_account_id: gatewayDetails.cloudAccount.id,
+          accountIdentifier: accountId,
+          region: selectedRegion.label
+        }
+      })
+    }
+    if (isGcpProvider) {
+      onGcpFiltersChangeCallback({ region: selectedRegion }, regionsLoading)
+    }
+  }, [selectedRegion, regionsLoading])
+
+  useEffect(() => {
+    if (zones?.response) {
+      setZonesData(zones.response.map(z => ({ label: z, value: z })))
+    }
+  }, [zones?.response])
+
+  if (isGcpProvider) {
+    return (
+      <Layout.Horizontal flex={{ justifyContent: 'flex-start' }} spacing={'large'} style={{ maxWidth: '40%' }}>
+        <Select
+          disabled={regionsLoading || isEditFlow}
+          items={regionsData}
+          onChange={setSelectedRegion}
+          value={selectedRegion}
+          inputProps={{
+            placeholder: getString('ce.allRegions')
+          }}
+          name="regionsSelector"
+        />
+        <Select
+          disabled={zonesLoading || isEditFlow}
+          items={zonesData}
+          onChange={setSelectedZone}
+          value={selectedZone}
+          inputProps={{
+            placeholder: getString('ce.co.accessPoint.zone')
+          }}
+          name="zoneSelector"
+        />
+      </Layout.Horizontal>
+    )
+  }
+
+  return null
 }
 
 export default COAsgSelector

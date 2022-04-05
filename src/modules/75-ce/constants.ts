@@ -116,7 +116,8 @@ export enum RESOURCES {
   ASG = 'ASG',
   KUBERNETES = 'KUBERNETES',
   ECS = 'ECS',
-  RDS = 'RDS'
+  RDS = 'RDS',
+  IG = 'IG'
 }
 
 export const CONFIG_TOTAL_STEP_COUNTS = {

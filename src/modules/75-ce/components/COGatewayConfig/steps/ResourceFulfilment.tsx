@@ -53,7 +53,7 @@ const instanceTypeCardData: CardData[] = [
   }
 ]
 
-const allowedResources = [RESOURCES.INSTANCES, RESOURCES.ASG, RESOURCES.ECS]
+const allowedResources = [RESOURCES.INSTANCES, RESOURCES.ASG, RESOURCES.ECS, RESOURCES.IG]
 
 const ResourceFulfilment: React.FC<ResourceFulfilmentProps> = props => {
   const { getString } = useStrings()
@@ -206,7 +206,7 @@ const ResourceFulfilment: React.FC<ResourceFulfilmentProps> = props => {
           </Layout.Horizontal>
         </Layout.Vertical>
       )}
-      {props.selectedResource === RESOURCES.ASG && (
+      {(props.selectedResource === RESOURCES.ASG || props.selectedResource === RESOURCES.IG) && (
         <Layout.Horizontal className={css.asgInstanceSelectionContianer}>
           <div className={css.asgInstanceDetails}>
             <Text className={css.asgDetailRow}>
@@ -257,26 +257,28 @@ const ResourceFulfilment: React.FC<ResourceFulfilmentProps> = props => {
                         }
                       />
                     </Layout.Vertical>
-                    <Layout.Vertical className={css.instanceTypeInput}>
-                      <FormInput.Text
-                        name={'spotInstance'}
-                        inputGroup={{ type: 'number', pattern: '[0-9]*' }}
-                        disabled={!props.gatewayDetails.routing?.instance?.scale_group?.mixed_instance}
-                        helperText={
-                          !props.gatewayDetails.routing?.instance?.scale_group?.mixed_instance &&
-                          getString('ce.co.autoStoppingRule.configuration.step3.policyNotEnabled')
-                        }
-                        label={
-                          <Layout.Horizontal>
-                            <img src={spotIcon} />
-                            <Text>Spot</Text>
-                          </Layout.Horizontal>
-                        }
-                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                          handleAsgInstancesChange(formik, e.target.value, 'SPOT')
-                        }
-                      />
-                    </Layout.Vertical>
+                    {!isGcpProvider && (
+                      <Layout.Vertical className={css.instanceTypeInput}>
+                        <FormInput.Text
+                          name={'spotInstance'}
+                          inputGroup={{ type: 'number', pattern: '[0-9]*' }}
+                          disabled={!props.gatewayDetails.routing?.instance?.scale_group?.mixed_instance}
+                          helperText={
+                            !props.gatewayDetails.routing?.instance?.scale_group?.mixed_instance &&
+                            getString('ce.co.autoStoppingRule.configuration.step3.policyNotEnabled')
+                          }
+                          label={
+                            <Layout.Horizontal>
+                              <img src={spotIcon} />
+                              <Text>Spot</Text>
+                            </Layout.Horizontal>
+                          }
+                          onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                            handleAsgInstancesChange(formik, e.target.value, 'SPOT')
+                          }
+                        />
+                      </Layout.Vertical>
+                    )}
                   </Layout.Horizontal>
                 </FormikForm>
               )}

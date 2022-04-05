@@ -185,14 +185,22 @@ export const createApDetailsFromLoadBalancer = ({
 }
 
 export const getGcpApFromLoadBalancer = (gatewayDetails: GatewayDetails, accountId: string, lb?: AccessPointCore) => {
+  const region = _defaultTo(
+    gatewayDetails.routing?.instance?.scale_group?.region,
+    gatewayDetails.selectedInstances?.[0]?.region
+  )
+  const zone = _defaultTo(
+    gatewayDetails.routing?.instance?.scale_group?.availability_zones?.[0],
+    gatewayDetails.selectedInstances?.[0]?.metadata?.availabilityZone
+  )
   return {
     cloud_account_id: gatewayDetails.cloudAccount.id,
     account_id: accountId,
-    region: _defaultTo(gatewayDetails.selectedInstances?.[0]?.region, ''),
+    region: _defaultTo(region, ''),
     vpc: (lb?.details as GCPAccessPointCore)?.vpc,
     type: gatewayDetails.provider.value,
     metadata: {
-      zone: _defaultTo(gatewayDetails.selectedInstances[0].metadata?.availabilityZone, ''),
+      zone: _defaultTo(zone, ''),
       security_groups: (lb?.details as GCPAccessPointCore)?.security_groups,
       subnet: (lb?.details as GCPAccessPointCore)?.subnet
     }
