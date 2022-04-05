@@ -107,7 +107,6 @@ exports[`CI enabled CI READONLY mode: CI stage readonly mode 1`] = `
         >
           <div
             class="nestedAccordions"
-            style="width: 50%;"
           >
             <div
               class="Layout--vertical Layout--layout-spacing-small StyledProps--main"
@@ -152,6 +151,10 @@ exports[`CI enabled CI READONLY mode: CI stage readonly mode 1`] = `
                   pipeline.gitPullRequest
                 </label>
               </div>
+              <div
+                class="StyledProps--font StyledProps--main"
+                style="width: 50%;"
+              />
             </div>
           </div>
         </div>
@@ -192,7 +195,6 @@ exports[`CI enabled CI present in one of the stages: CI codebase input set form 
         >
           <div
             class="nestedAccordions"
-            style="width: 50%;"
           >
             <div
               class="Layout--vertical Layout--layout-spacing-small StyledProps--main"
@@ -234,6 +236,10 @@ exports[`CI enabled CI present in one of the stages: CI codebase input set form 
                   pipeline.gitPullRequest
                 </label>
               </div>
+              <div
+                class="StyledProps--font StyledProps--main"
+                style="width: 50%;"
+              />
             </div>
           </div>
         </div>
@@ -274,7 +280,6 @@ exports[`CI enabled PR Number build radio option should not be visible for CodeC
         >
           <div
             class="nestedAccordions"
-            style="width: 50%;"
           >
             <div
               class="Layout--vertical Layout--layout-spacing-small StyledProps--main"
@@ -307,6 +312,10 @@ exports[`CI enabled PR Number build radio option should not be visible for CodeC
                   gitTag
                 </label>
               </div>
+              <div
+                class="StyledProps--font StyledProps--main"
+                style="width: 50%;"
+              />
             </div>
           </div>
         </div>

@@ -43,8 +43,8 @@ import NoResultsView from '@templates-library/pages/TemplatesPage/views/NoResult
 import templateDoesNotExistSvg from '@templates-library/pages/TemplatesPage/images/template-does-not-exist.svg'
 import type { ModulePathParams, ProjectPathProps } from '@common/interfaces/RouteInterfaces'
 import { getVersionLabelText } from '@templates-library/utils/templatesUtils'
+import { TemplateInputs } from '@templates-library/components/TemplateInputs/TemplateInputs'
 import { TemplateContext } from '../TemplateStudio/TemplateContext/TemplateContext'
-import { TemplateInputs } from '../TemplateInputs/TemplateInputs'
 import { TemplateActivityLog } from '../TemplateActivityLog/TemplateActivityLog'
 import css from './TemplateDetails.module.scss'
 
