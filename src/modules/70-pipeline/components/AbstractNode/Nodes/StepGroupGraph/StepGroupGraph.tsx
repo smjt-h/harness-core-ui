@@ -63,13 +63,13 @@ const getCalculatedStyles = (data: PipelineGraphState[]): LayoutStyles => {
       maxChildLength = Math.max(maxChildLength, count)
       width += childSteps.length * 170
     }
-    if (node.children?.length) {
+    if (node.children?.length && data.length > 1) {
       width += 40
     }
-    width += 170
+    width += 150
     maxChildLength = Math.max(maxChildLength, node?.children?.length || 0)
   })
-  return { height: `${(maxChildLength + 1) * 100}px`, width: `${width - 80}px` }
+  return { height: `${(maxChildLength + 1) * 100}px`, width: `${width - 80}px` } // 80 is link gap that we dont need for last stepgroup node
 }
 
 function StepGroupGraph(props: StepGroupGraphProps): React.ReactElement {

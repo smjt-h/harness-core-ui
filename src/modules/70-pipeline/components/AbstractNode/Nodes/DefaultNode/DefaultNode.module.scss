@@ -58,6 +58,7 @@
   height: fit-content;
   cursor: default;
   position: relative;
+  margin-bottom: 55px;
   &.marginBottom {
     margin-bottom: 20px;
   }
@@ -191,6 +192,7 @@
   &.stepAddNode {
     width: 64px;
     height: 64px;
+    margin-top: 48px;
   }
   &.stageAddNode {
     width: 90px;
@@ -246,6 +248,9 @@
   }
   &.stepGroupLeft {
     left: -60px;
+    &.stepGroupLeftAddLink {
+      left: -35px !important;
+    }
   }
   &.right {
     right: -20px;
@@ -270,6 +275,7 @@
   }
   &.stepGroupMarkerLeft {
     left: -10px !important;
+    top: 68px !important;
   }
   &.diamondStageLeft {
     left: -9px !important;
@@ -295,11 +301,12 @@
     top: 9px !important;
   }
   &.stepMarkerRight {
-    right: 15px !important;
+    right: -9px !important;
     top: 22px !important;
   }
   &.stepGroupMarkerRight {
-    right: 30px !important;
+    right: -9px !important;
+    top: 68px !important;
   }
   &.diamondStageRight {
     right: -9px !important;
@@ -357,8 +364,14 @@
   cursor: pointer;
   line-height: 1.5;
   overflow-wrap: normal;
-  word-break: break-all;
-  height: 46px;
+  position: absolute;
+
+  left: -50%;
+  height: 48px;
+  overflow: hidden;
+  p {
+    word-break: break-word !important;
+  }
 }
 
 .primaryIcon {
@@ -369,4 +382,7 @@
       }
     }
   }
+}
+.stepGroupRightAddLink {
+  right: -35px !important;
 }

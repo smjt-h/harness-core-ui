@@ -208,16 +208,17 @@ function PipelineStepNode(props: PipelineStepNodeProps): JSX.Element {
         <SVGMarker />
       </div>
       {props.name && (
-        <Text
-          width={90}
-          font={{ size: 'normal', align: 'left' }}
-          color={props.defaultSelected ? Color.GREY_900 : Color.GREY_600}
-          className={defaultCss.stepNameText}
-          padding={'small'}
-          lineClamp={2}
-        >
-          {props.name}
-        </Text>
+        <div className={defaultCss.stepNameText}>
+          <Text
+            width={125}
+            font={{ size: 'normal', align: 'center' }}
+            color={props.defaultSelected ? Color.GREY_900 : Color.GREY_600}
+            padding={'small'}
+            lineClamp={2}
+          >
+            {props.name}
+          </Text>
+        </div>
       )}
       {allowAdd && CreateNode && !props.readonly && !isServiceStep && (
         <CreateNode
@@ -253,7 +254,8 @@ function PipelineStepNode(props: PipelineStepNodeProps): JSX.Element {
           className={cx(
             defaultCss.addNodeIcon,
             { [defaultCss.left]: !isPrevNodeParallel, [defaultCss.stepGroupLeft]: isPrevNodeParallel },
-            defaultCss.stepAddIcon
+            defaultCss.stepAddIcon,
+            { [defaultCss.stepGroupLeftAddLink]: !!props.parentIdentifier }
           )}
         />
       )}
@@ -268,7 +270,9 @@ function PipelineStepNode(props: PipelineStepNodeProps): JSX.Element {
           isRightAddIcon={true}
           identifier={props.identifier}
           prevNodeIdentifier={props.prevNodeIdentifier as string}
-          className={cx(defaultCss.addNodeIcon, defaultCss.right, defaultCss.stepAddIcon)}
+          className={cx(defaultCss.addNodeIcon, defaultCss.right, defaultCss.stepAddIcon, {
+            [defaultCss.stepGroupRightAddLink]: !!props.parentIdentifier
+          })}
         />
       )}
     </div>

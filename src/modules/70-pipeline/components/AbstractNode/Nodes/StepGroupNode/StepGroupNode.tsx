@@ -44,12 +44,6 @@ export function StepGroupNode(props: any): JSX.Element {
         />
       ) : (
         <div style={{ position: 'relative' }}>
-          <div className={classnames(defaultCss.markerStart, defaultCss.stepMarker, defaultCss.stepGroupMarkerLeft)}>
-            <SVGMarker />
-          </div>
-          <div className={classnames(defaultCss.markerEnd, defaultCss.stepMarker, defaultCss.stepGroupMarkerRight)}>
-            <SVGMarker />
-          </div>
           <div
             onMouseOver={e => {
               e.stopPropagation()
@@ -66,6 +60,12 @@ export function StepGroupNode(props: any): JSX.Element {
               { [css.marginBottom]: props?.isParallelNode }
             )}
           >
+            <div className={classnames(defaultCss.markerStart, defaultCss.stepMarker, defaultCss.stepGroupMarkerLeft)}>
+              <SVGMarker />
+            </div>
+            <div className={classnames(defaultCss.markerEnd, defaultCss.stepMarker, defaultCss.stepGroupMarkerRight)}>
+              <SVGMarker />
+            </div>
             <div id={props?.id} className={css.horizontalBar}></div>
             <div className={css.stepGroupHeader}>
               <Layout.Horizontal

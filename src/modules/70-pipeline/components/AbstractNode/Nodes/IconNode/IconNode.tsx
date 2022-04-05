@@ -10,7 +10,6 @@ import { isEmpty } from 'lodash-es'
 import cx from 'classnames'
 import { Text, IconName, Icon, Button, ButtonVariation } from '@wings-software/uicore'
 import { Color } from '@harness/design-system'
-import { Position } from '@blueprintjs/core'
 import { DiagramDrag, DiagramType, Event } from '@pipeline/components/Diagram'
 import { PipelineGraphType, NodeType, BaseReactComponentProps } from '../../types'
 import cssDefault from '../DefaultNode/DefaultNode.module.scss'
@@ -78,7 +77,6 @@ export function IconNode(props: IconNodeProps): React.ReactElement {
       }}
       onMouseEnter={event => {
         event.stopPropagation()
-
         props?.fireEvent?.({
           type: Event.MouseEnterNode,
           target: event.target,
@@ -143,22 +141,17 @@ export function IconNode(props: IconNodeProps): React.ReactElement {
         </div>
       </div>
       {!isEmpty(props.name) && (
-        <Text
-          font={{ size: 'normal', align: 'center' }}
-          style={{
-            cursor: 'pointer',
-            lineHeight: '1.6',
-            overflowWrap: 'normal',
-            wordBreak: 'keep-all',
-            marginLeft: '0px',
-            marginRight: '0px'
-          }}
-          padding="xsmall"
-          lineClamp={2}
-          tooltipProps={{ position: Position.RIGHT, portalClassName: css.hoverName }}
-        >
-          {props.name}
-        </Text>
+        <div className={cssDefault.stepNameText}>
+          <Text
+            width={125}
+            font={{ size: 'normal', align: 'center' }}
+            color={props.defaultSelected ? Color.GREY_900 : Color.GREY_600}
+            padding={'small'}
+            lineClamp={2}
+          >
+            {props.name}
+          </Text>
+        </div>
       )}
       {allowAdd && !props.readonly && CreateNode ? (
         <CreateNode

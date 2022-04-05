@@ -47,8 +47,10 @@ declare const styles: {
   readonly stepAddNode: string
   readonly stepGroupAddNode: string
   readonly stepGroupLeft: string
+  readonly stepGroupLeftAddLink: string
   readonly stepGroupMarkerLeft: string
   readonly stepGroupMarkerRight: string
+  readonly stepGroupRightAddLink: string
   readonly stepMarker: string
   readonly stepMarkerLeft: string
   readonly stepMarkerRight: string

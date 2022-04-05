@@ -67,7 +67,10 @@ function CreateNodeStep(props: CreateNodeStepProps): React.ReactElement {
       onClick={event => {
         event.preventDefault()
         event.stopPropagation()
-        props?.onClick?.(event)
+        if (props?.onClick) {
+          props?.onClick(event)
+          return
+        }
         props?.fireEvent?.({
           type: Event.AddLinkClicked,
           target: event.target,

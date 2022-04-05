@@ -163,16 +163,17 @@ export function DiamondNodeWidget(props: any): JSX.Element {
         )}
       </div>
       {props.name && (
-        <Text
-          width={64}
-          font={{ size: 'normal', align: 'center' }}
-          color={props.defaultSelected ? Color.GREY_900 : Color.GREY_600}
-          className={cssDefault.nameText}
-          padding={'small'}
-          lineClamp={2}
-        >
-          {props.name}
-        </Text>
+        <div className={cssDefault.stepNameText}>
+          <Text
+            width={125}
+            font={{ size: 'normal', align: 'center' }}
+            color={props.defaultSelected ? Color.GREY_900 : Color.GREY_600}
+            padding={'small'}
+            lineClamp={2}
+          >
+            {props.name}
+          </Text>
+        </div>
       )}
       {!props.isParallelNode && (
         <div
