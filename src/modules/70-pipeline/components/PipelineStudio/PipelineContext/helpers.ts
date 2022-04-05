@@ -14,8 +14,11 @@ export function getStageFromPipeline<T extends StageElementConfig = StageElement
 ): PipelineStageWrapper<T> {
   let stage: StageElementWrapperConfig | undefined = undefined
   let parent: StageElementWrapperConfig | undefined = undefined
-  if (localPipeline?.stages) {
-    localPipeline.stages?.some?.(item => {
+  const stages = localPipeline.template
+    ? (localPipeline.template.templateInputs as PipelineInfoConfig)?.stages
+    : localPipeline?.stages
+  if (stages) {
+    stages.some?.(item => {
       if (item?.stage && item.stage.identifier === stageId) {
         stage = item
         return true
@@ -32,9 +35,10 @@ export function getStageFromPipeline<T extends StageElementConfig = StageElement
 }
 
 export function getStagePathFromPipeline(stageId: string, prefix: string, pipeline: PipelineInfoConfig): string {
-  if (Array.isArray(pipeline.stages)) {
-    for (let i = 0; i < pipeline.stages.length; i++) {
-      const item = pipeline.stages[i]
+  const stages = pipeline.template ? (pipeline.template.templateInputs as PipelineInfoConfig)?.stages : pipeline?.stages
+  if (Array.isArray(stages)) {
+    for (let i = 0; i < stages.length; i++) {
+      const item = stages[i]
 
       if (item?.stage?.identifier === stageId) {
         return `${prefix}.${i}`

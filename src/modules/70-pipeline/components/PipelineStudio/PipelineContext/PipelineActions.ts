@@ -163,8 +163,7 @@ export interface PipelineReducerState {
 
 export const DefaultPipeline: PipelineInfoConfig = {
   name: '',
-  identifier: DefaultNewPipelineId,
-  allowStageExecutions: false
+  identifier: DefaultNewPipelineId
 }
 
 export interface ActionResponse {
