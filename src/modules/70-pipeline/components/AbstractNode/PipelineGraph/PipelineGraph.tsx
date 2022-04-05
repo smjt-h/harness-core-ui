@@ -59,7 +59,8 @@ function PipelineGraph({
   createNodeTitle
 }: PipelineGraphProps): React.ReactElement {
   const [svgPath, setSvgPath] = useState<SVGPathRecord[]>([])
-  const [isLoading, setLoading] = useState<boolean>(false)
+  const [isLoading, setLoading] = useState<boolean>(true)
+  const [resetScale, setScaleReset] = useState<null | number>(null)
   const [treeRectangle, setTreeRectangle] = useState<DOMRect | void>()
   const [state, setState] = useState<PipelineGraphState[]>(data)
   const [graphScale, setGraphScale] = useState(INITIAL_ZOOM_LEVEL)
@@ -97,16 +98,26 @@ function PipelineGraph({
   const redrawSVGLinks = (): void => {
     setLoading(true)
     const lastGraphScaleValue = graphScale
-
-    setGraphScale(1)
-    setTimeout(setSVGLinks, 200)
-    setTimeout(() => {
-      setGraphScale(lastGraphScaleValue)
-      setLoading(false)
-    }, 300)
-
+    if (lastGraphScaleValue === 1) {
+      setTimeout(setSVGLinks, 200)
+    } else {
+      setGraphScale(1)
+      setTimeout(setSVGLinks, 200)
+      setScaleReset(lastGraphScaleValue)
+      return
+    }
     setLoading(false)
   }
+
+  React.useEffect(() => {
+    if (resetScale !== null) {
+      setTimeout(() => {
+        setGraphScale(resetScale)
+        setLoading(false)
+      }, 500)
+      setScaleReset(null)
+    }
+  }, [resetScale])
 
   const setSVGLinks = (): void => {
     const lastNode = state?.[state?.length - 1]
@@ -124,6 +135,7 @@ function PipelineGraph({
       undefined,
       readonly ? uniqueNodeIds.endNode : uniqueNodeIds.createNode
     )
+
     return setSvgPath([...SVGLinks, ...terminalNodeLinks])
   }
 

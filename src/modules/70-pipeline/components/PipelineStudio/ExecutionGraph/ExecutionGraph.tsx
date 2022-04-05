@@ -1054,7 +1054,6 @@ function ExecutionGraphRef<T extends StageElementConfig>(
               loaderComponent={DiagramLoader}
               data={stepsData}
               createNodeTitle={getString('addStep')}
-              panZoom={false}
             />
             {hasRollback && (
               <RollbackToggleSwitch
