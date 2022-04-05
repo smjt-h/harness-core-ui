@@ -8,3 +8,8 @@
 .textToLowercase {
   text-transform: lowercase;
 }
+
+.main {
+  padding: 0px !important;
+  --layout-spacing: var(--spacing-xsmall) !important;
+}

@@ -863,7 +863,7 @@ budgets:
     alertsAt: Alerts at
 anomalyDetection:
   sideNavText: Anomalies
-  settingsBtn: settings
+  settingsBtn: '{{ $.settingsLabel }}'
   filters:
     groupByNoneLabel: 'GroupBy: None (Show all anomalies)'
     groupByNonePlaceholder: 'GroupBy: None'
@@ -873,7 +873,7 @@ anomalyDetection:
   summary:
     totalCountText: Anomalies Detected
     costImpacted: Total Cost Impact
-    perspectiveWise: Top 3 perspectives by anomalies
+    perspectiveWise: Top 3 Anomalies
     cloudProvidersWise: Anomalies by Cloud Providers
     statusWise: Anomalies by Status
   tableHeaders:
@@ -891,6 +891,36 @@ anomalyDetection:
     countText: '{{ count }} Anomalies'
     anomaliesRedirectionText: View anomalies
     filterText: Apply anomaly filters
+  settings:
+    heading: Alerts and notifications
+    subtext: You can set up alerts for anomalies in Perspectives.
+    newAlertBtn: Create New Alert
+    perspectiveNameColumn: Alert name / Perspective
+    options:
+      header: '{{ $.settingsLabel }}'
+  notificationAlerts:
+    heading: Anomaly Alerts
+    overviewStep: '{{ $.overview }}'
+    selectPerspective: '{{$.ce.perspectives.budgets.defineTarget.selectPerspective}}'
+    notificationStep: '{{$.notificationMethod}}'
+    notificationStepSubtext: You can set up channels to recieve alerts whenever an anomaly is observed on a Persepctive via Slack, Email or Microsoft Teams
+    alertChannelHeading: Anomaly alert channels
+    addChannelBtn: add Channel
+    selectChannelPlaceholder: Select Channel
+    selectMethod: '{{ $.UrlLabel }}'
+    urlInputPlaceholder: Enter webhook url or user groups
+    addAlertSuccessMsg: Notification alert added successfully!
+    deleteAlertSuccessMsg: Alert notification deleted successfully!
+    updateAlertSuccessMsg: Alert notification updated successfully!
+    slackChannelLabel: Slack webhook url
+    emailChannelLabel: '{{ $.email }}'
+    microsoftTeamChannelLabel: '{{ $.notifications.labelMS }}'
+  perspectiveCreateAnomalyAlertTitle: '{{ $.ce.anomalyDetection.notificationAlerts.heading}}({{ count }})'
+  addNewAnomalyAlert: add Anomaly Alert
+  addAnoamlyAlertDesc: You can recieve alerts whenever an anomaly occurs in the persepective. This can help you rectify any unfavourable cost spikes at the earliest.
+  createNewAnomalyAlert: + create new Anomaly Alert
+  alertType: Alert Type
+  alertReciepients: Reciepients
 businessMapping:
   newButton: New Business Mapping
   sideNavText: 'Business Mapping'

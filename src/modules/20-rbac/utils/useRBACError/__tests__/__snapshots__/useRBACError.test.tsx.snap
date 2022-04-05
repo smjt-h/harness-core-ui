@@ -1,0 +1,181 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`useRbacError testRBACError rbac errors 1`] = `
+<Layout.Vertical
+  className="main"
+  padding="small"
+  spacing="small"
+>
+  <v
+    color="grey800"
+    font={
+      Object {
+        "size": "small",
+        "weight": "semi-bold",
+      }
+    }
+  >
+    rbac.youAreNotAuthorizedTo 
+    <span
+      className="textToLowercase"
+    >
+      rbac.permissionLabels.createEdit
+    </span>
+    <span
+      className="textToLowercase"
+    >
+       pipelines.
+    </span>
+  </v>
+  <v
+    color="grey800"
+    font={
+      Object {
+        "size": "small",
+      }
+    }
+  >
+    rbac.youAreMissingTheFollowingPermission
+  </v>
+  <v
+    color="grey800"
+    font={
+      Object {
+        "size": "small",
+      }
+    }
+  >
+    "
+    rbac.permissionLabels.createEdit
+    <span
+      className="textToLowercase"
+    >
+       pipelines
+    </span>
+    "
+    <span>
+       rbac.in rbac.project "test"
+    </span>
+  </v>
+</Layout.Vertical>
+`;
+
+exports[`useRbacError testRBACError rbac errors 2`] = `
+<Layout.Vertical
+  className="main"
+  padding="small"
+  spacing="small"
+>
+  <v
+    color="grey800"
+    font={
+      Object {
+        "size": "small",
+        "weight": "semi-bold",
+      }
+    }
+  >
+    rbac.youAreNotAuthorizedTo 
+    <span
+      className="textToLowercase"
+    >
+      core_organization_edit
+    </span>
+    <span
+      className="textToLowercase"
+    >
+       pipelines.
+    </span>
+  </v>
+  <v
+    color="grey800"
+    font={
+      Object {
+        "size": "small",
+      }
+    }
+  >
+    rbac.youAreMissingTheFollowingPermission
+  </v>
+  <v
+    color="grey800"
+    font={
+      Object {
+        "size": "small",
+      }
+    }
+  >
+    "
+    core_organization_edit
+    <span
+      className="textToLowercase"
+    >
+       pipelines
+    </span>
+    "
+    <span>
+       rbac.in rbac.accountScope
+    </span>
+  </v>
+</Layout.Vertical>
+`;
+
+exports[`useRbacError testRBACError rbac errors 3`] = `
+<Layout.Vertical
+  className="main"
+  padding="small"
+  spacing="small"
+>
+  <v
+    color="grey800"
+    font={
+      Object {
+        "size": "small",
+        "weight": "semi-bold",
+      }
+    }
+  >
+    rbac.youAreNotAuthorizedTo 
+    <span
+      className="textToLowercase"
+    >
+      core_project_edit
+    </span>
+    <span
+      className="textToLowercase"
+    >
+       pipelines.
+    </span>
+  </v>
+  <v
+    color="grey800"
+    font={
+      Object {
+        "size": "small",
+      }
+    }
+  >
+    rbac.youAreMissingTheFollowingPermission
+  </v>
+  <v
+    color="grey800"
+    font={
+      Object {
+        "size": "small",
+      }
+    }
+  >
+    "
+    core_project_edit
+    <span
+      className="textToLowercase"
+    >
+       pipelines
+    </span>
+    "
+    <span>
+       rbac.in rbac.org "testOrg"
+    </span>
+  </v>
+</Layout.Vertical>
+`;

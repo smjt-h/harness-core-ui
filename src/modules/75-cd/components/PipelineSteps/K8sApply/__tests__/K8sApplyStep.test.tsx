@@ -258,7 +258,7 @@ describe('Test K8sApplyStep', () => {
         spec: {
           skipDryRun: false,
           skipSteadyStateCheck: false,
-          filePaths: ['test-1', 'test-2']
+          filePaths: null
         }
       },
       template: {
@@ -311,6 +311,12 @@ describe('Test K8sApplyStep', () => {
         type={StepType.K8sApply}
         stepViewType={StepViewType.InputSet}
       />
+    )
+    expect(container).toMatchSnapshot()
+  })
+  test('should render null for StepviewType.template', () => {
+    const { container } = render(
+      <TestStepWidget initialValues={{}} type={StepType.K8sApply} stepViewType={StepViewType.Template} />
     )
     expect(container).toMatchSnapshot()
   })

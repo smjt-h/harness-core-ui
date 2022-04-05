@@ -9,7 +9,7 @@ import React, { useState } from 'react'
 import cx from 'classnames'
 import { useParams } from 'react-router-dom'
 import { Radio } from '@blueprintjs/core'
-import { Button, Card, Container, getErrorInfoFromErrorObject, Layout, StepProps, Text } from '@wings-software/uicore'
+import { Button, Card, Container, Layout, StepProps, Text } from '@wings-software/uicore'
 import { defaultTo, pick } from 'lodash-es'
 import { Color } from '@harness/design-system'
 import { useStrings } from 'framework/strings'
@@ -18,6 +18,7 @@ import { useToaster } from '@common/exports'
 import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
 import DelegatesGit from '@gitsync/icons/DelegatesGit.svg'
 import PlatformGit from '@gitsync/icons/PlatformGit.svg'
+import useRBACError from '@rbac/utils/useRBACError/useRBACError'
 import css from './GitConnection.module.scss'
 
 interface GitConnectionStepProps {
@@ -36,6 +37,7 @@ enum Agent {
 
 const GitConnection: React.FC<StepProps<GitConnectionStepProps> & GitConnectionProps> = props => {
   const { accountId, projectIdentifier, orgIdentifier } = useParams<ProjectPathProps>()
+  const { getRBACErrorMessage } = useRBACError()
   const { prevStepData, onSuccess, isLastStep } = props
   const [isSaaS, setIsSaaS] = useState<boolean | undefined>()
   const [loading, setLoading] = useState<boolean>(true)
@@ -73,7 +75,7 @@ const GitConnection: React.FC<StepProps<GitConnectionStepProps> & GitConnectionP
         }
       })
       .catch(e => {
-        showError(getErrorInfoFromErrorObject(e))
+        showError(getRBACErrorMessage(e))
       })
   }, [prevStepData?.repo])
 
@@ -109,7 +111,7 @@ const GitConnection: React.FC<StepProps<GitConnectionStepProps> & GitConnectionP
         props.nextStep?.(prevStepData)
       }
     } catch (e) {
-      showError(e.data?.message || e.message)
+      showError(getRBACErrorMessage(e))
     }
     setLoading(false)
   }

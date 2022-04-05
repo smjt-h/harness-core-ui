@@ -6,12 +6,13 @@
  */
 
 import { useParams } from 'react-router-dom'
-import { getErrorInfoFromErrorObject, useToaster } from '@harness/uicore'
+import { useToaster } from '@harness/uicore'
 import patch from '@cf/utils/instructions'
 import { PatchFeatureQueryParams, usePatchFeature } from 'services/cf'
 import useActiveEnvironment from '@cf/hooks/useActiveEnvironment'
 import { showToaster } from '@cf/utils/CFUtils'
 import { useStrings } from 'framework/strings'
+import useRBACError from '@rbac/utils/useRBACError/useRBACError'
 import type { FormVariationMap, TargetingRulesFormValues } from '../Types.types'
 import { PatchFeatureFlagUtils } from './utils/PatchFeatureFlagUtils'
 export interface UsePatchFeatureFlagProps {
@@ -32,6 +33,7 @@ const usePatchFeatureFlag = ({
 }: UsePatchFeatureFlagProps): UsePatchFeatureFlagReturn => {
   const { projectIdentifier, orgIdentifier, accountId: accountIdentifier } = useParams<Record<string, string>>()
   const { activeEnvironment: environmentIdentifier } = useActiveEnvironment()
+  const { getRBACErrorMessage } = useRBACError()
   const { showError } = useToaster()
   const { getString } = useStrings()
 
@@ -102,7 +104,7 @@ const usePatchFeatureFlag = ({
         showToaster(getString('cf.messages.flagUpdated'))
       } catch (error: any) {
         patch.feature.reset()
-        showError(getErrorInfoFromErrorObject(error))
+        showError(getRBACErrorMessage(error))
       }
     })
   }

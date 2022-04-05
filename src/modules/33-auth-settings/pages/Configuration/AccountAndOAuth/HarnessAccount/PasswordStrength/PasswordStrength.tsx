@@ -16,6 +16,7 @@ import type { AccountPathProps } from '@common/interfaces/RouteInterfaces'
 import { usePasswordStrengthModal } from '@auth-settings/modals/PasswordStrength/usePasswordStrength'
 import { usePutLoginSettings } from 'services/cd-ng'
 import { useStrings } from 'framework/strings'
+import useRBACError from '@rbac/utils/useRBACError/useRBACError'
 import cssConfiguration from '@auth-settings/pages/Configuration/Configuration.module.scss'
 import cssHarnessAccount from '@auth-settings/pages/Configuration/AccountAndOAuth/HarnessAccount/HarnessAccount.module.scss'
 
@@ -28,6 +29,7 @@ interface Props {
 
 const PasswordStrength: React.FC<Props> = ({ loginSettings, refetchAuthSettings, canEdit, setUpdating }) => {
   const { accountId } = useParams<AccountPathProps>()
+  const { getRBACErrorMessage } = useRBACError()
   const { getString } = useStrings()
   const { showSuccess, showError } = useToaster()
   const passwordStrengthSettings = loginSettings.passwordStrengthPolicy
@@ -71,7 +73,7 @@ const PasswordStrength: React.FC<Props> = ({ loginSettings, refetchAuthSettings,
             showSuccess(getString('authSettings.passwordStrengthDisabled'), 5000)
           }
         } catch (e) {
-          /* istanbul ignore next */ showError(e.data?.message || e.message, 5000)
+          /* istanbul ignore next */ showError(getRBACErrorMessage(e), 5000)
         }
       }
     }

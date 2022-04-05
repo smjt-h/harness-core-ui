@@ -43,7 +43,7 @@ import { IdentifierSchema, NameSchema } from '@common/utils/Validation'
 import type { UseGetMockData } from '@common/utils/testUtils'
 import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
 import { useStrings } from 'framework/strings'
-import { getRBACErrorMessage } from '@rbac/utils/utils'
+import useRBACError from '@rbac/utils/useRBACError/useRBACError'
 import { useTelemetry } from '@common/hooks/useTelemetry'
 import { Category, SecretActions } from '@common/constants/TrackingConstants'
 import VaultFormFields from './views/VaultFormFields'
@@ -69,6 +69,7 @@ interface CreateUpdateSecretProps {
 
 const LocalFormFieldsSMList = ['Local', 'GcpKms', 'AwsKms']
 const CreateUpdateSecret: React.FC<CreateUpdateSecretProps> = props => {
+  const { getRBACErrorMessage } = useRBACError()
   const { getString } = useStrings()
   const { onSuccess, connectorTypeContext, privateSecret } = props
   const propsSecret = props.secret

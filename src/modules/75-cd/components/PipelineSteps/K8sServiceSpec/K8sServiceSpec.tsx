@@ -92,7 +92,7 @@ export class KubernetesServiceSpec extends Step<ServiceSpec> {
 
     if (pipelineObj) {
       const obj = get(pipelineObj, path.replace('.spec.connectorRef', ''))
-      if (obj.type === ManifestConnectorRefType) {
+      if (obj?.type === ManifestConnectorRefType) {
         return getConnectorListV2Promise({
           queryParams: {
             accountIdentifier: accountId,
@@ -136,7 +136,7 @@ export class KubernetesServiceSpec extends Step<ServiceSpec> {
     }
     if (pipelineObj) {
       const obj = get(pipelineObj, path.replace('.spec.connectorRef', ''))
-      if (allowedArtifactTypes.includes(obj.type)) {
+      if (allowedArtifactTypes.includes(obj?.type)) {
         return getConnectorListV2Promise({
           queryParams: {
             accountIdentifier: accountId,
@@ -183,7 +183,7 @@ export class KubernetesServiceSpec extends Step<ServiceSpec> {
     }
     if (pipelineObj) {
       const obj = get(pipelineObj, path.replace('.spec.connectorRef', ''))
-      if (allowedArtifactTypes.includes(obj.type)) {
+      if (allowedArtifactTypes.includes(obj?.type)) {
         return getConnectorListV2Promise({
           queryParams: {
             accountIdentifier: accountId,
@@ -231,7 +231,7 @@ export class KubernetesServiceSpec extends Step<ServiceSpec> {
     }
     if (pipelineObj) {
       const obj = get(pipelineObj, path.replace('.spec.tag', ''))
-      if (allowedArtifactTypes.includes(obj.type)) {
+      if (allowedArtifactTypes.includes(obj?.type)) {
         switch (obj.type) {
           case ENABLED_ARTIFACT_TYPES.DockerRegistry: {
             return getBuildDetailsForDockerPromise({

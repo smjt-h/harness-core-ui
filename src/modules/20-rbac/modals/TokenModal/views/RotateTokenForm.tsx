@@ -25,7 +25,7 @@ import { useToaster } from '@common/components'
 import { useStrings } from 'framework/strings'
 import { TokenDTO, useRotateToken } from 'services/cd-ng'
 import type { ProjectPathProps, ServiceAccountPathProps } from '@common/interfaces/RouteInterfaces'
-import { getRBACErrorMessage } from '@rbac/utils/utils'
+import useRBACError from '@rbac/utils/useRBACError/useRBACError'
 import { TokenValueRenderer } from './TokenValueRenderer'
 import css from '@rbac/modals/TokenModal/useTokenModal.module.scss'
 
@@ -46,6 +46,7 @@ const RotateTokenForm: React.FC<TokenModalData> = props => {
   const { accountId, orgIdentifier, projectIdentifier, serviceAccountIdentifier } = useParams<
     ProjectPathProps & ServiceAccountPathProps
   >()
+  const { getRBACErrorMessage } = useRBACError()
   const [expiry, setExpiry] = useState<boolean>(tokenData?.validTo ? true : false)
   const { getString } = useStrings()
   const { showSuccess } = useToaster()

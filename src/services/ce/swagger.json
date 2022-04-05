@@ -19,6 +19,9 @@
       "name": "testconnection"
     },
     {
+      "name": "notificationSetting"
+    },
+    {
       "name": "license-util"
     },
     {
@@ -60,40 +63,6 @@
   ],
   "schemes": ["https", "http"],
   "paths": {
-    "/anomaly": {
-      "post": {
-        "tags": ["anomaly"],
-        "summary": "List Anomalies",
-        "description": "",
-        "operationId": "listAnomalies",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
-        "parameters": [
-          {
-            "name": "accountIdentifier",
-            "in": "query",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "in": "body",
-            "name": "body",
-            "required": false,
-            "schema": {
-              "$ref": "#/definitions/AnomalyQueryDTO"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "successful operation",
-            "schema": {
-              "$ref": "#/definitions/ResponseListAnomalyData"
-            }
-          }
-        }
-      }
-    },
     "/anomaly/perspective/{perspectiveId}": {
       "post": {
         "tags": ["anomaly"],
@@ -129,6 +98,40 @@
             "description": "successful operation",
             "schema": {
               "$ref": "#/definitions/ResponseListPerspectiveAnomalyData"
+            }
+          }
+        }
+      }
+    },
+    "/anomaly": {
+      "post": {
+        "tags": ["anomaly"],
+        "summary": "List Anomalies",
+        "description": "",
+        "operationId": "listAnomalies",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "accountIdentifier",
+            "in": "query",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/AnomalyQueryDTO"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/ResponseListAnomalyData"
             }
           }
         }
@@ -468,25 +471,25 @@
         }
       }
     },
-    "/budgets/forecastCost": {
+    "/budgets/{id}/costDetails": {
       "get": {
         "tags": ["budgets"],
-        "summary": "Deprecated use /perspective/forecastCost instead, Get forecast cost for Perspective.",
+        "summary": "Get cost details for budget",
         "description": "",
-        "operationId": "getForecastCost",
+        "operationId": "getCostDetails",
         "consumes": ["application/json"],
         "produces": ["application/json"],
         "parameters": [
           {
             "name": "accountIdentifier",
             "in": "query",
-            "required": false,
+            "required": true,
             "type": "string"
           },
           {
-            "name": "perspectiveId",
-            "in": "query",
-            "required": false,
+            "name": "id",
+            "in": "path",
+            "required": true,
             "type": "string"
           }
         ],
@@ -494,11 +497,10 @@
           "200": {
             "description": "successful operation",
             "schema": {
-              "$ref": "#/definitions/ResponseDouble"
+              "$ref": "#/definitions/ResponseBudgetData"
             }
           }
-        },
-        "deprecated": true
+        }
       }
     },
     "/budgets/lastMonthCost": {
@@ -534,25 +536,25 @@
         "deprecated": true
       }
     },
-    "/budgets/{id}/costDetails": {
+    "/budgets/forecastCost": {
       "get": {
         "tags": ["budgets"],
-        "summary": "Get cost details for budget",
+        "summary": "Deprecated use /perspective/forecastCost instead, Get forecast cost for Perspective.",
         "description": "",
-        "operationId": "getCostDetails",
+        "operationId": "getForecastCost",
         "consumes": ["application/json"],
         "produces": ["application/json"],
         "parameters": [
           {
             "name": "accountIdentifier",
             "in": "query",
-            "required": true,
+            "required": false,
             "type": "string"
           },
           {
-            "name": "id",
-            "in": "path",
-            "required": true,
+            "name": "perspectiveId",
+            "in": "query",
+            "required": false,
             "type": "string"
           }
         ],
@@ -560,10 +562,11 @@
           "200": {
             "description": "successful operation",
             "schema": {
-              "$ref": "#/definitions/ResponseBudgetData"
+              "$ref": "#/definitions/ResponseDouble"
             }
           }
-        }
+        },
+        "deprecated": true
       }
     },
     "/business-mapping/{id}": {
@@ -771,6 +774,170 @@
         }
       }
     },
+    "/notificationSetting/perspective/{perspectiveId}": {
+      "get": {
+        "tags": ["notificationSetting"],
+        "summary": "Get Notification Settings for a Perspective",
+        "description": "",
+        "operationId": "getNotificationSettings",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "accountIdentifier",
+            "in": "query",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "perspectiveId",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/ResponseCCMNotificationSetting"
+            }
+          }
+        }
+      }
+    },
+    "/notificationSetting": {
+      "get": {
+        "tags": ["notificationSetting"],
+        "summary": "List Notification Settings for an account",
+        "description": "",
+        "operationId": "listNotificationSettings",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "accountIdentifier",
+            "in": "query",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/ResponseListCCMPerspectiveNotificationChannelsDTO"
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": ["notificationSetting"],
+        "summary": "Create Notification Setting",
+        "description": "",
+        "operationId": "createNotificationSetting",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "accountIdentifier",
+            "in": "query",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "perspectiveId",
+            "in": "query",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/CCMNotificationSetting"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/ResponseCCMNotificationSetting"
+            }
+          }
+        }
+      },
+      "put": {
+        "tags": ["notificationSetting"],
+        "summary": "Update Notification Setting",
+        "description": "",
+        "operationId": "updateNotificationSetting",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "accountIdentifier",
+            "in": "query",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "perspectiveId",
+            "in": "query",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/CCMNotificationSetting"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/ResponseCCMNotificationSetting"
+            }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["notificationSetting"],
+        "summary": "Delete Notification Settings for a Perspective",
+        "description": "",
+        "operationId": "deleteNotificationSettings",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "accountIdentifier",
+            "in": "query",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "perspectiveId",
+            "in": "query",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/ResponseBoolean"
+            }
+          }
+        }
+      }
+    },
     "/license-util": {
       "get": {
         "tags": ["license-util"],
@@ -799,6 +966,89 @@
             "description": "successful operation",
             "schema": {
               "$ref": "#/definitions/ResponseCELicenseUsageDTO"
+            }
+          }
+        }
+      }
+    },
+    "/yaml/generate-cost-optimisation-yaml": {
+      "post": {
+        "tags": ["yaml"],
+        "summary": "Get Cost Optimisation Yaml",
+        "description": "",
+        "operationId": "getCostOptimisationYamlTemplate",
+        "produces": ["application/json", "application/yaml"],
+        "parameters": [
+          {
+            "name": "accountIdentifier",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "name": "connectorIdentifier",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/Failure"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/Error"
+            }
+          }
+        },
+        "deprecated": true
+      }
+    },
+    "/yaml/cloudCostCapabilityCheck": {
+      "post": {
+        "tags": ["yaml"],
+        "summary": "check if the existing k8s cloud provider have necessary permissions to enable Cloud Cost Visibility",
+        "description": "",
+        "operationId": "cloudCostCapabilityCheck",
+        "produces": ["application/json", "application/yaml"],
+        "parameters": [
+          {
+            "name": "accountIdentifier",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          },
+          {
+            "in": "body",
+            "name": "body",
+            "required": false,
+            "schema": {
+              "$ref": "#/definitions/K8sClusterSetupRequest"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/ResponseConnectorValidationResult"
+            }
+          },
+          "400": {
+            "description": "Bad Request",
+            "schema": {
+              "$ref": "#/definitions/Failure"
+            }
+          },
+          "500": {
+            "description": "Internal server error",
+            "schema": {
+              "$ref": "#/definitions/Error"
             }
           }
         }
@@ -880,89 +1130,6 @@
           }
         ],
         "responses": {
-          "400": {
-            "description": "Bad Request",
-            "schema": {
-              "$ref": "#/definitions/Failure"
-            }
-          },
-          "500": {
-            "description": "Internal server error",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          }
-        }
-      }
-    },
-    "/yaml/generate-cost-optimisation-yaml": {
-      "post": {
-        "tags": ["yaml"],
-        "summary": "Get Cost Optimisation Yaml",
-        "description": "",
-        "operationId": "getCostOptimisationYamlTemplate",
-        "produces": ["application/json", "application/yaml"],
-        "parameters": [
-          {
-            "name": "accountIdentifier",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "name": "connectorIdentifier",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "400": {
-            "description": "Bad Request",
-            "schema": {
-              "$ref": "#/definitions/Failure"
-            }
-          },
-          "500": {
-            "description": "Internal server error",
-            "schema": {
-              "$ref": "#/definitions/Error"
-            }
-          }
-        },
-        "deprecated": true
-      }
-    },
-    "/yaml/cloudCostCapabilityCheck": {
-      "post": {
-        "tags": ["yaml"],
-        "summary": "check if the existing k8s cloud provider have necessary permissions to enable Cloud Cost Visibility",
-        "description": "",
-        "operationId": "cloudCostCapabilityCheck",
-        "produces": ["application/json", "application/yaml"],
-        "parameters": [
-          {
-            "name": "accountIdentifier",
-            "in": "query",
-            "required": false,
-            "type": "string"
-          },
-          {
-            "in": "body",
-            "name": "body",
-            "required": false,
-            "schema": {
-              "$ref": "#/definitions/K8sClusterSetupRequest"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "successful operation",
-            "schema": {
-              "$ref": "#/definitions/ResponseConnectorValidationResult"
-            }
-          },
           "400": {
             "description": "Bad Request",
             "schema": {
@@ -1609,6 +1776,32 @@
         }
       }
     },
+    "/perspective/getAllPerspectives": {
+      "get": {
+        "tags": ["perspective"],
+        "summary": "Get All perspectives",
+        "description": "",
+        "operationId": "getAllPerspectives",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "accountIdentifier",
+            "in": "query",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/ResponseListQLCEView"
+            }
+          }
+        }
+      }
+    },
     "/perspective": {
       "get": {
         "tags": ["perspective"],
@@ -1779,70 +1972,12 @@
         }
       }
     },
-    "/perspective/getAllPerspectives": {
+    "/perspective/forecastCostForPeriod": {
       "get": {
         "tags": ["perspective"],
-        "summary": "Get All perspectives",
+        "summary": "Get forecast cost for perspective for given period",
         "description": "",
-        "operationId": "getAllPerspectives",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
-        "parameters": [
-          {
-            "name": "accountIdentifier",
-            "in": "query",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "successful operation",
-            "schema": {
-              "$ref": "#/definitions/ResponseListQLCEView"
-            }
-          }
-        }
-      }
-    },
-    "/perspective/forecastCost": {
-      "get": {
-        "tags": ["perspective"],
-        "summary": "Get forecast cost for perspective",
-        "description": "",
-        "operationId": "getForecastCostV2",
-        "consumes": ["application/json"],
-        "produces": ["application/json"],
-        "parameters": [
-          {
-            "name": "accountIdentifier",
-            "in": "query",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "perspectiveId",
-            "in": "query",
-            "required": true,
-            "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "successful operation",
-            "schema": {
-              "$ref": "#/definitions/ResponseDouble"
-            }
-          }
-        }
-      }
-    },
-    "/perspective/lastPeriodCost": {
-      "get": {
-        "tags": ["perspective"],
-        "summary": "Get last period cost for perspective",
-        "description": "",
-        "operationId": "getLastPeriodCost",
+        "operationId": "getForecastCostForPeriod",
         "consumes": ["application/json"],
         "produces": ["application/json"],
         "parameters": [
@@ -1915,12 +2050,44 @@
         }
       }
     },
-    "/perspective/forecastCostForPeriod": {
+    "/perspective/forecastCost": {
       "get": {
         "tags": ["perspective"],
-        "summary": "Get forecast cost for perspective for given period",
+        "summary": "Get forecast cost for perspective",
         "description": "",
-        "operationId": "getForecastCostForPeriod",
+        "operationId": "getForecastCostV2",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "name": "accountIdentifier",
+            "in": "query",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "perspectiveId",
+            "in": "query",
+            "required": true,
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "successful operation",
+            "schema": {
+              "$ref": "#/definitions/ResponseDouble"
+            }
+          }
+        }
+      }
+    },
+    "/perspective/lastPeriodCost": {
+      "get": {
+        "tags": ["perspective"],
+        "summary": "Get last period cost for perspective",
+        "description": "",
+        "operationId": "getLastPeriodCost",
         "consumes": ["application/json"],
         "produces": ["application/json"],
         "parameters": [
@@ -2232,6 +2399,255 @@
     }
   },
   "definitions": {
+    "EntityInfo": {
+      "type": "object",
+      "properties": {
+        "field": {
+          "type": "string"
+        },
+        "clusterName": {
+          "type": "string"
+        },
+        "clusterId": {
+          "type": "string"
+        },
+        "namespace": {
+          "type": "string"
+        },
+        "workloadName": {
+          "type": "string"
+        },
+        "workloadType": {
+          "type": "string"
+        },
+        "gcpProjectId": {
+          "type": "string"
+        },
+        "gcpProduct": {
+          "type": "string"
+        },
+        "gcpSKUId": {
+          "type": "string"
+        },
+        "gcpSKUDescription": {
+          "type": "string"
+        },
+        "awsUsageAccountId": {
+          "type": "string"
+        },
+        "awsServiceCode": {
+          "type": "string"
+        },
+        "awsInstancetype": {
+          "type": "string"
+        },
+        "awsUsageType": {
+          "type": "string"
+        }
+      }
+    },
+    "PerspectiveAnomalyData": {
+      "type": "object",
+      "properties": {
+        "timestamp": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "anomalyCount": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "actualCost": {
+          "type": "number",
+          "format": "double"
+        },
+        "differenceFromExpectedCost": {
+          "type": "number",
+          "format": "double"
+        },
+        "associatedResources": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/EntityInfo"
+          }
+        },
+        "resourceType": {
+          "type": "string"
+        }
+      }
+    },
+    "Response": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": ["SUCCESS", "FAILURE", "ERROR"]
+        },
+        "data": {
+          "type": "object"
+        },
+        "metaData": {
+          "type": "object"
+        },
+        "correlationId": {
+          "type": "string"
+        }
+      }
+    },
+    "ResponseListPerspectiveAnomalyData": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": ["SUCCESS", "FAILURE", "ERROR"]
+        },
+        "data": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/PerspectiveAnomalyData"
+          }
+        },
+        "metaData": {
+          "type": "object"
+        },
+        "correlationId": {
+          "type": "string"
+        }
+      }
+    },
+    "Number": {
+      "type": "object"
+    },
+    "PerspectiveQueryDTO": {
+      "type": "object",
+      "properties": {
+        "filters": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/QLCEViewFilterWrapper"
+          }
+        },
+        "groupBy": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/QLCEViewGroupBy"
+          }
+        }
+      }
+    },
+    "QLCEViewFieldInput": {
+      "type": "object",
+      "properties": {
+        "fieldId": {
+          "type": "string"
+        },
+        "fieldName": {
+          "type": "string"
+        },
+        "identifier": {
+          "type": "string",
+          "enum": ["CLUSTER", "AWS", "GCP", "AZURE", "COMMON", "CUSTOM", "BUSINESS_MAPPING", "LABEL"]
+        },
+        "identifierName": {
+          "type": "string"
+        }
+      }
+    },
+    "QLCEViewFilter": {
+      "type": "object",
+      "properties": {
+        "field": {
+          "$ref": "#/definitions/QLCEViewFieldInput"
+        },
+        "operator": {
+          "type": "string",
+          "enum": ["NOT_IN", "IN", "EQUALS", "NOT_NULL", "NULL", "LIKE"]
+        },
+        "values": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "QLCEViewFilterWrapper": {
+      "type": "object",
+      "properties": {
+        "idFilter": {
+          "$ref": "#/definitions/QLCEViewFilter"
+        },
+        "timeFilter": {
+          "$ref": "#/definitions/QLCEViewTimeFilter"
+        },
+        "viewMetadataFilter": {
+          "$ref": "#/definitions/QLCEViewMetadataFilter"
+        },
+        "ruleFilter": {
+          "$ref": "#/definitions/QLCEViewRule"
+        }
+      }
+    },
+    "QLCEViewGroupBy": {
+      "type": "object",
+      "properties": {
+        "entityGroupBy": {
+          "$ref": "#/definitions/QLCEViewFieldInput"
+        },
+        "timeTruncGroupBy": {
+          "$ref": "#/definitions/QLCEViewTimeTruncGroupBy"
+        }
+      }
+    },
+    "QLCEViewMetadataFilter": {
+      "type": "object",
+      "properties": {
+        "viewId": {
+          "type": "string"
+        },
+        "isPreview": {
+          "type": "boolean"
+        },
+        "preview": {
+          "type": "boolean"
+        }
+      }
+    },
+    "QLCEViewRule": {
+      "type": "object",
+      "properties": {
+        "conditions": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/QLCEViewFilter"
+          }
+        }
+      }
+    },
+    "QLCEViewTimeFilter": {
+      "type": "object",
+      "properties": {
+        "field": {
+          "$ref": "#/definitions/QLCEViewFieldInput"
+        },
+        "operator": {
+          "type": "string",
+          "enum": ["AFTER", "BEFORE"]
+        },
+        "value": {
+          "$ref": "#/definitions/Number"
+        }
+      }
+    },
+    "QLCEViewTimeTruncGroupBy": {
+      "type": "object",
+      "properties": {
+        "resolution": {
+          "type": "string",
+          "enum": ["HOUR", "DAY", "MONTH", "WEEK", "QUARTER", "YEAR"]
+        }
+      }
+    },
     "AnomalyData": {
       "type": "object",
       "properties": {
@@ -2288,71 +2704,6 @@
         "userFeedback": {
           "type": "string",
           "enum": ["TRUE_ANOMALY", "FALSE_ANOMALY", "NOT_RESPONDED"]
-        }
-      }
-    },
-    "EntityInfo": {
-      "type": "object",
-      "properties": {
-        "field": {
-          "type": "string"
-        },
-        "clusterName": {
-          "type": "string"
-        },
-        "clusterId": {
-          "type": "string"
-        },
-        "namespace": {
-          "type": "string"
-        },
-        "workloadName": {
-          "type": "string"
-        },
-        "workloadType": {
-          "type": "string"
-        },
-        "gcpProjectId": {
-          "type": "string"
-        },
-        "gcpProduct": {
-          "type": "string"
-        },
-        "gcpSKUId": {
-          "type": "string"
-        },
-        "gcpSKUDescription": {
-          "type": "string"
-        },
-        "awsAccount": {
-          "type": "string"
-        },
-        "awsService": {
-          "type": "string"
-        },
-        "awsInstancetype": {
-          "type": "string"
-        },
-        "awsUsageType": {
-          "type": "string"
-        }
-      }
-    },
-    "Response": {
-      "type": "object",
-      "properties": {
-        "status": {
-          "type": "string",
-          "enum": ["SUCCESS", "FAILURE", "ERROR"]
-        },
-        "data": {
-          "type": "object"
-        },
-        "metaData": {
-          "type": "object"
-        },
-        "correlationId": {
-          "type": "string"
         }
       }
     },
@@ -2851,190 +3202,6 @@
         }
       }
     },
-    "Number": {
-      "type": "object"
-    },
-    "PerspectiveAnomalyData": {
-      "type": "object",
-      "properties": {
-        "timestamp": {
-          "type": "integer",
-          "format": "int64"
-        },
-        "anomalyCount": {
-          "type": "integer",
-          "format": "int32"
-        },
-        "actualCost": {
-          "type": "number",
-          "format": "double"
-        },
-        "differenceFromExpectedCost": {
-          "type": "number",
-          "format": "double"
-        },
-        "associatedResources": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/EntityInfo"
-          }
-        },
-        "resourceType": {
-          "type": "string"
-        }
-      }
-    },
-    "ResponseListPerspectiveAnomalyData": {
-      "type": "object",
-      "properties": {
-        "status": {
-          "type": "string",
-          "enum": ["SUCCESS", "FAILURE", "ERROR"]
-        },
-        "data": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/PerspectiveAnomalyData"
-          }
-        },
-        "metaData": {
-          "type": "object"
-        },
-        "correlationId": {
-          "type": "string"
-        }
-      }
-    },
-    "PerspectiveQueryDTO": {
-      "type": "object",
-      "properties": {
-        "filters": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/QLCEViewFilterWrapper"
-          }
-        },
-        "groupBy": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/QLCEViewGroupBy"
-          }
-        }
-      }
-    },
-    "QLCEViewFieldInput": {
-      "type": "object",
-      "properties": {
-        "fieldId": {
-          "type": "string"
-        },
-        "fieldName": {
-          "type": "string"
-        },
-        "identifier": {
-          "type": "string",
-          "enum": ["CLUSTER", "AWS", "GCP", "AZURE", "COMMON", "CUSTOM", "BUSINESS_MAPPING", "LABEL"]
-        },
-        "identifierName": {
-          "type": "string"
-        }
-      }
-    },
-    "QLCEViewFilter": {
-      "type": "object",
-      "properties": {
-        "field": {
-          "$ref": "#/definitions/QLCEViewFieldInput"
-        },
-        "operator": {
-          "type": "string",
-          "enum": ["NOT_IN", "IN", "EQUALS", "NOT_NULL", "NULL", "LIKE"]
-        },
-        "values": {
-          "type": "array",
-          "items": {
-            "type": "string"
-          }
-        }
-      }
-    },
-    "QLCEViewFilterWrapper": {
-      "type": "object",
-      "properties": {
-        "idFilter": {
-          "$ref": "#/definitions/QLCEViewFilter"
-        },
-        "timeFilter": {
-          "$ref": "#/definitions/QLCEViewTimeFilter"
-        },
-        "viewMetadataFilter": {
-          "$ref": "#/definitions/QLCEViewMetadataFilter"
-        },
-        "ruleFilter": {
-          "$ref": "#/definitions/QLCEViewRule"
-        }
-      }
-    },
-    "QLCEViewGroupBy": {
-      "type": "object",
-      "properties": {
-        "entityGroupBy": {
-          "$ref": "#/definitions/QLCEViewFieldInput"
-        },
-        "timeTruncGroupBy": {
-          "$ref": "#/definitions/QLCEViewTimeTruncGroupBy"
-        }
-      }
-    },
-    "QLCEViewMetadataFilter": {
-      "type": "object",
-      "properties": {
-        "viewId": {
-          "type": "string"
-        },
-        "isPreview": {
-          "type": "boolean"
-        },
-        "preview": {
-          "type": "boolean"
-        }
-      }
-    },
-    "QLCEViewRule": {
-      "type": "object",
-      "properties": {
-        "conditions": {
-          "type": "array",
-          "items": {
-            "$ref": "#/definitions/QLCEViewFilter"
-          }
-        }
-      }
-    },
-    "QLCEViewTimeFilter": {
-      "type": "object",
-      "properties": {
-        "field": {
-          "$ref": "#/definitions/QLCEViewFieldInput"
-        },
-        "operator": {
-          "type": "string",
-          "enum": ["AFTER", "BEFORE"]
-        },
-        "value": {
-          "$ref": "#/definitions/Number"
-        }
-      }
-    },
-    "QLCEViewTimeTruncGroupBy": {
-      "type": "object",
-      "properties": {
-        "resolution": {
-          "type": "string",
-          "enum": ["HOUR", "DAY", "MONTH", "WEEK", "QUARTER", "YEAR"]
-        }
-      }
-    },
     "ResponseBoolean": {
       "type": "object",
       "properties": {
@@ -3296,6 +3463,9 @@
       "type": "object",
       "discriminator": "type",
       "properties": {
+        "budgetScopeType": {
+          "type": "string"
+        },
         "entityIds": {
           "type": "array",
           "items": {
@@ -3307,9 +3477,6 @@
           "items": {
             "type": "string"
           }
-        },
-        "budgetScopeType": {
-          "type": "string"
         }
       }
     },
@@ -3406,25 +3573,6 @@
         }
       }
     },
-    "ResponseDouble": {
-      "type": "object",
-      "properties": {
-        "status": {
-          "type": "string",
-          "enum": ["SUCCESS", "FAILURE", "ERROR"]
-        },
-        "data": {
-          "type": "number",
-          "format": "double"
-        },
-        "metaData": {
-          "type": "object"
-        },
-        "correlationId": {
-          "type": "string"
-        }
-      }
-    },
     "BudgetCostData": {
       "type": "object",
       "properties": {
@@ -3487,6 +3635,25 @@
         }
       }
     },
+    "ResponseDouble": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": ["SUCCESS", "FAILURE", "ERROR"]
+        },
+        "data": {
+          "type": "number",
+          "format": "double"
+        },
+        "metaData": {
+          "type": "object"
+        },
+        "correlationId": {
+          "type": "string"
+        }
+      }
+    },
     "BusinessMapping": {
       "type": "object",
       "properties": {
@@ -3512,6 +3679,9 @@
           "items": {
             "$ref": "#/definitions/SharedCost"
           }
+        },
+        "unallocatedCost": {
+          "$ref": "#/definitions/UnallocatedCost"
         },
         "createdAt": {
           "type": "integer",
@@ -3871,7 +4041,8 @@
             "POLICY_EVALUATION_FAILURE",
             "POLICY_SET_ERROR",
             "INVALID_ARTIFACTORY_REGISTRY_REQUEST",
-            "INVALID_NEXUS_REGISTRY_REQUEST"
+            "INVALID_NEXUS_REGISTRY_REQUEST",
+            "ENTITY_NOT_FOUND"
           ]
         },
         "level": {
@@ -4022,6 +4193,28 @@
           "type": "array",
           "items": {
             "$ref": "#/definitions/Throwable"
+          }
+        }
+      }
+    },
+    "UnallocatedCost": {
+      "type": "object",
+      "properties": {
+        "strategy": {
+          "type": "string",
+          "enum": ["DISPLAY_NAME", "HIDE", "SHARE"]
+        },
+        "label": {
+          "type": "string"
+        },
+        "sharingStrategy": {
+          "type": "string",
+          "enum": ["FIXED", "PROPORTIONAL"]
+        },
+        "splits": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/SharedCostSplit"
           }
         }
       }
@@ -4487,7 +4680,7 @@
         },
         {
           "type": "object",
-          "required": ["kmsArn"],
+          "required": ["credential", "kmsArn", "region"],
           "properties": {
             "credential": {
               "$ref": "#/definitions/AwsKmsConnectorCredential"
@@ -4710,6 +4903,97 @@
         }
       ]
     },
+    "AzureAuthCredentialDTO": {
+      "type": "object"
+    },
+    "AzureAuthDTO": {
+      "type": "object",
+      "required": ["spec", "type"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["Secret", "Certificate"]
+        },
+        "spec": {
+          "$ref": "#/definitions/AzureAuthCredentialDTO"
+        }
+      }
+    },
+    "AzureClientKeyCertDTO": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/AzureAuthCredentialDTO"
+        },
+        {
+          "type": "object",
+          "required": ["certificateRef"],
+          "properties": {
+            "certificateRef": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
+    "AzureClientSecretKeyDTO": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/AzureAuthCredentialDTO"
+        },
+        {
+          "type": "object",
+          "required": ["secretRef"],
+          "properties": {
+            "secretRef": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
+    "AzureConnector": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/ConnectorConfigDTO"
+        },
+        {
+          "type": "object",
+          "required": ["azureEnvironmentType", "credential"],
+          "properties": {
+            "credential": {
+              "$ref": "#/definitions/AzureCredential"
+            },
+            "delegateSelectors": {
+              "type": "array",
+              "uniqueItems": true,
+              "items": {
+                "type": "string"
+              }
+            },
+            "azureEnvironmentType": {
+              "type": "string",
+              "enum": ["AZURE", "AZURE_US_GOVERNMENT"]
+            }
+          }
+        }
+      ]
+    },
+    "AzureCredential": {
+      "type": "object",
+      "required": ["type"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["InheritFromDelegate", "ManualConfig"]
+        },
+        "spec": {
+          "$ref": "#/definitions/AzureCredentialSpec"
+        }
+      }
+    },
+    "AzureCredentialSpec": {
+      "type": "object"
+    },
     "AzureKeyVaultConnectorDTO": {
       "allOf": [
         {
@@ -4747,6 +5031,29 @@
             },
             "default": {
               "type": "boolean"
+            }
+          }
+        }
+      ]
+    },
+    "AzureManualDetails": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/AzureCredentialSpec"
+        },
+        {
+          "type": "object",
+          "required": ["auth", "clientId", "tenantId"],
+          "properties": {
+            "clientId": {
+              "type": "string"
+            },
+            "tenantId": {
+              "type": "string"
+            },
+            "auth": {
+              "readOnly": true,
+              "$ref": "#/definitions/AzureAuthDTO"
             }
           }
         }
@@ -5090,6 +5397,7 @@
             "AwsSecretManager",
             "Gcp",
             "Aws",
+            "Azure",
             "Artifactory",
             "Jira",
             "Nexus",
@@ -5108,7 +5416,8 @@
             "PagerDuty",
             "CustomHealth",
             "ServiceNow",
-            "ErrorTracking"
+            "ErrorTracking",
+            "Pdc"
           ]
         },
         "spec": {
@@ -5491,7 +5800,7 @@
         },
         {
           "type": "object",
-          "required": ["credentials"],
+          "required": ["credentials", "keyName", "keyRing", "projectId", "region"],
           "properties": {
             "projectId": {
               "type": "string"
@@ -5998,6 +6307,21 @@
         }
       ]
     },
+    "HostDTO": {
+      "type": "object",
+      "required": ["hostname"],
+      "properties": {
+        "hostname": {
+          "type": "string"
+        },
+        "hostAttributes": {
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        }
+      }
+    },
     "HttpHelmAuthCredentialsDTO": {
       "type": "object"
     },
@@ -6405,6 +6729,35 @@
         }
       ]
     },
+    "PhysicalDataCenterConnectorDTO": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/ConnectorConfigDTO"
+        },
+        {
+          "type": "object",
+          "required": ["sshKeyRef"],
+          "properties": {
+            "hosts": {
+              "type": "array",
+              "items": {
+                "$ref": "#/definitions/HostDTO"
+              }
+            },
+            "sshKeyRef": {
+              "type": "string"
+            },
+            "delegateSelectors": {
+              "type": "array",
+              "uniqueItems": true,
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      ]
+    },
     "PrometheusConnectorDTO": {
       "allOf": [
         {
@@ -6549,6 +6902,7 @@
         },
         {
           "type": "object",
+          "required": ["renewalIntervalMinutes", "vaultUrl"],
           "properties": {
             "authToken": {
               "type": "string"
@@ -6607,6 +6961,15 @@
             "xvaultAwsIamServerId": {
               "type": "string"
             },
+            "useK8sAuth": {
+              "type": "boolean"
+            },
+            "vaultK8sAuthRole": {
+              "type": "string"
+            },
+            "serviceAccountTokenPath": {
+              "type": "string"
+            },
             "default": {
               "type": "boolean"
             },
@@ -6615,7 +6978,7 @@
             },
             "accessType": {
               "type": "string",
-              "enum": ["APP_ROLE", "TOKEN", "VAULT_AGENT", "AWS_IAM"]
+              "enum": ["APP_ROLE", "TOKEN", "VAULT_AGENT", "AWS_IAM", "K8s_AUTH"]
             }
           }
         }
@@ -6645,6 +7008,160 @@
         },
         "data": {
           "$ref": "#/definitions/CCMConnectorDetails"
+        },
+        "metaData": {
+          "type": "object"
+        },
+        "correlationId": {
+          "type": "string"
+        }
+      }
+    },
+    "CCMNotificationChannel": {
+      "type": "object",
+      "discriminator": "type",
+      "properties": {
+        "notificationChannelType": {
+          "type": "string",
+          "enum": ["EMAIL", "SLACK", "PAGERDUTY", "MSTEAMS"]
+        },
+        "channelUrls": {
+          "type": "array",
+          "items": {
+            "type": "string"
+          }
+        }
+      }
+    },
+    "CCMNotificationSetting": {
+      "type": "object",
+      "properties": {
+        "uuid": {
+          "type": "string"
+        },
+        "accountId": {
+          "type": "string"
+        },
+        "perspectiveId": {
+          "type": "string"
+        },
+        "channels": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/CCMNotificationChannel"
+          }
+        },
+        "createdAt": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "lastUpdatedAt": {
+          "type": "integer",
+          "format": "int64"
+        },
+        "createdBy": {
+          "$ref": "#/definitions/EmbeddedUser"
+        },
+        "lastUpdatedBy": {
+          "$ref": "#/definitions/EmbeddedUser"
+        }
+      }
+    },
+    "EmailNotificationChannel": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/CCMNotificationChannel"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "emails": {
+              "type": "array",
+              "items": {
+                "type": "string"
+              }
+            }
+          }
+        }
+      ]
+    },
+    "MicrosoftTeamsNotificationChannel": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/CCMNotificationChannel"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "microsoftTeamsUrl": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
+    "ResponseCCMNotificationSetting": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": ["SUCCESS", "FAILURE", "ERROR"]
+        },
+        "data": {
+          "$ref": "#/definitions/CCMNotificationSetting"
+        },
+        "metaData": {
+          "type": "object"
+        },
+        "correlationId": {
+          "type": "string"
+        }
+      }
+    },
+    "SlackNotificationChannel": {
+      "allOf": [
+        {
+          "$ref": "#/definitions/CCMNotificationChannel"
+        },
+        {
+          "type": "object",
+          "properties": {
+            "slackWebHookUrl": {
+              "type": "string"
+            }
+          }
+        }
+      ]
+    },
+    "CCMPerspectiveNotificationChannelsDTO": {
+      "type": "object",
+      "properties": {
+        "perspectiveId": {
+          "type": "string"
+        },
+        "perspectiveName": {
+          "type": "string"
+        },
+        "channels": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/CCMNotificationChannel"
+          }
+        }
+      }
+    },
+    "ResponseListCCMPerspectiveNotificationChannelsDTO": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": ["SUCCESS", "FAILURE", "ERROR"]
+        },
+        "data": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/CCMPerspectiveNotificationChannelsDTO"
+          }
         },
         "metaData": {
           "type": "object"
@@ -7043,7 +7560,8 @@
             "POLICY_EVALUATION_FAILURE",
             "POLICY_SET_ERROR",
             "INVALID_ARTIFACTORY_REGISTRY_REQUEST",
-            "INVALID_NEXUS_REGISTRY_REQUEST"
+            "INVALID_NEXUS_REGISTRY_REQUEST",
+            "ENTITY_NOT_FOUND"
           ]
         },
         "message": {
@@ -7386,7 +7904,8 @@
             "POLICY_EVALUATION_FAILURE",
             "POLICY_SET_ERROR",
             "INVALID_ARTIFACTORY_REGISTRY_REQUEST",
-            "INVALID_NEXUS_REGISTRY_REQUEST"
+            "INVALID_NEXUS_REGISTRY_REQUEST",
+            "ENTITY_NOT_FOUND"
           ]
         },
         "message": {
@@ -8550,24 +9069,6 @@
         }
       }
     },
-    "ResponseCEView": {
-      "type": "object",
-      "properties": {
-        "status": {
-          "type": "string",
-          "enum": ["SUCCESS", "FAILURE", "ERROR"]
-        },
-        "data": {
-          "$ref": "#/definitions/CEView"
-        },
-        "metaData": {
-          "type": "object"
-        },
-        "correlationId": {
-          "type": "string"
-        }
-      }
-    },
     "QLCEView": {
       "type": "object",
       "properties": {
@@ -8653,6 +9154,24 @@
           "items": {
             "$ref": "#/definitions/QLCEView"
           }
+        },
+        "metaData": {
+          "type": "object"
+        },
+        "correlationId": {
+          "type": "string"
+        }
+      }
+    },
+    "ResponseCEView": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "type": "string",
+          "enum": ["SUCCESS", "FAILURE", "ERROR"]
+        },
+        "data": {
+          "$ref": "#/definitions/CEView"
         },
         "metaData": {
           "type": "object"
@@ -8756,6 +9275,9 @@
         },
         "recommended": {
           "$ref": "#/definitions/RecommendationResponse"
+        },
+        "totalResourceUsage": {
+          "$ref": "#/definitions/TotalResourceUsage"
         }
       }
     },
@@ -8869,6 +9391,27 @@
         },
         "correlationId": {
           "type": "string"
+        }
+      }
+    },
+    "TotalResourceUsage": {
+      "type": "object",
+      "properties": {
+        "sumcpu": {
+          "type": "number",
+          "format": "double"
+        },
+        "summemory": {
+          "type": "number",
+          "format": "double"
+        },
+        "maxcpu": {
+          "type": "number",
+          "format": "double"
+        },
+        "maxmemory": {
+          "type": "number",
+          "format": "double"
         }
       }
     },

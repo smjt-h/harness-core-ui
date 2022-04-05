@@ -90,9 +90,9 @@ describe('HealthScoreCard Tests', () => {
       </TestWrapper>
     )
 
-    expect(screen.queryByText('cv.monitoredServices.dependencyHealth')).not.toBeInTheDocument()
     expect(screen.queryByText('cv.monitoredServices.dependencyHealthScoreDataNotAvailable')).not.toBeInTheDocument()
-    expect(screen.getByText('cv.monitoredServices.serviceHealthScoreDataNotAvailable')).toBeInTheDocument()
+    expect(screen.queryByText('cv.monitoredServices.serviceHealthScoreDataNotAvailable')).not.toBeInTheDocument()
+    expect(screen.queryByText('cv.monitoredServices.healthScoreDataNotAvailable')).toBeInTheDocument()
   })
 
   test('Loading state', () => {

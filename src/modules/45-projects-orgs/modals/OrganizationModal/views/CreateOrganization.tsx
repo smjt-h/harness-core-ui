@@ -14,12 +14,13 @@ import { usePostOrganization } from 'services/cd-ng'
 import { useStrings } from 'framework/strings'
 import { useToaster, PageSpinner } from '@common/components'
 import type { AccountPathProps } from '@common/interfaces/RouteInterfaces'
-import { getRBACErrorMessage } from '@rbac/utils/utils'
+import useRBACError from '@rbac/utils/useRBACError/useRBACError'
 import OrganizationForm from './OrganizationForm'
 import type { OrgModalData } from './StepAboutOrganization'
 
 const CreateOrganization: React.FC<StepProps<Organization> & OrgModalData> = props => {
   const { nextStep, onSuccess } = props
+  const { getRBACErrorMessage } = useRBACError()
   const { accountId } = useParams<AccountPathProps>()
   const { showSuccess } = useToaster()
   const { getString } = useStrings()

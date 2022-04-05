@@ -13,7 +13,7 @@ import { Organization, useGetOrganization, usePutOrganization } from 'services/c
 import { useStrings } from 'framework/strings'
 import { PageSpinner } from '@common/components'
 import type { AccountPathProps } from '@common/interfaces/RouteInterfaces'
-import { getRBACErrorMessage } from '@rbac/utils/utils'
+import useRBACError from '@rbac/utils/useRBACError/useRBACError'
 import OrganizationForm from './OrganizationForm'
 
 interface EditModalData {
@@ -25,6 +25,7 @@ interface EditModalData {
 
 const EditOrganization: React.FC<StepProps<Organization> & EditModalData> = props => {
   const { prevStepData, nextStep, onSuccess, identifier, isStep } = props
+  const { getRBACErrorMessage } = useRBACError()
   const { accountId } = useParams<AccountPathProps>()
   const { showSuccess } = useToaster()
   const [version, setVersion] = useState<string>()

@@ -6,16 +6,7 @@
  */
 
 import React, { useState } from 'react'
-import {
-  Text,
-  Checkbox,
-  Layout,
-  ButtonVariation,
-  shouldShowError,
-  useToaster,
-  getErrorInfoFromErrorObject,
-  Popover
-} from '@wings-software/uicore'
+import { Text, Checkbox, Layout, ButtonVariation, shouldShowError, useToaster, Popover } from '@wings-software/uicore'
 import { Color, FontVariation } from '@harness/design-system'
 import { PopoverInteractionKind } from '@blueprintjs/core'
 import { useParams } from 'react-router-dom'
@@ -26,6 +17,7 @@ import { useStrings } from 'framework/strings'
 import { PermissionIdentifier } from '@rbac/interfaces/PermissionIdentifier'
 import RbacButton from '@rbac/components/Button/Button'
 import { ResourceType } from '@rbac/interfaces/ResourceType'
+import useRBACError from '@rbac/utils/useRBACError/useRBACError'
 import css from '../AccountSettings.module.scss'
 
 interface ConnectorSettingProps {
@@ -34,6 +26,7 @@ interface ConnectorSettingProps {
 }
 
 const ConnectorSettings: React.FC<ConnectorSettingProps> = props => {
+  const { getRBACErrorMessage } = useRBACError()
   const { getString } = useStrings()
   const { showError, showSuccess } = useToaster()
   const { accountId, orgIdentifier, projectIdentifier } = useParams<ProjectPathProps>()
@@ -74,7 +67,7 @@ const ConnectorSettings: React.FC<ConnectorSettingProps> = props => {
       showSuccess(getString('common.accountSetting.connector.saveSettingSuccess'))
     } catch (e) {
       if (shouldShowError(e)) {
-        showError(getErrorInfoFromErrorObject(e))
+        showError(getRBACErrorMessage(e))
       }
     }
   }

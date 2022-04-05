@@ -20,6 +20,7 @@ import {
 import { Color } from '@harness/design-system'
 import { Form } from 'formik'
 import { useParams } from 'react-router-dom'
+import useRBACError from '@rbac/utils/useRBACError/useRBACError'
 import { useStrings } from 'framework/strings'
 import { ApiKeyDTO, TokenDTO, useCreateApiKey, useUpdateApiKey } from 'services/cd-ng'
 import type { ProjectPathProps, ServiceAccountPathProps } from '@common/interfaces/RouteInterfaces'
@@ -39,6 +40,7 @@ interface ApiKeyModalData {
 
 const ApiKeyForm: React.FC<ApiKeyModalData> = ({ data, isEdit, onSubmit, apiKeyType, parentIdentifier, onClose }) => {
   const { getString } = useStrings()
+  const { getRBACErrorMessage } = useRBACError()
   const [modalErrorHandler, setModalErrorHandler] = useState<ModalErrorHandlerBinding>()
   const { accountId, projectIdentifier, orgIdentifier, serviceAccountIdentifier } = useParams<
     ProjectPathProps & ServiceAccountPathProps
@@ -66,7 +68,7 @@ const ApiKeyForm: React.FC<ApiKeyModalData> = ({ data, isEdit, onSubmit, apiKeyT
       }
     } catch (e) {
       /* istanbul ignore next */
-      modalErrorHandler?.showDanger(e.data?.message || e.message)
+      modalErrorHandler?.showDanger(getRBACErrorMessage(e))
     }
   }
   return (

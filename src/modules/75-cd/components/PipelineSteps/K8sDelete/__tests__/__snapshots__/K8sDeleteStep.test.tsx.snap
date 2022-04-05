@@ -34,13 +34,20 @@ Object {
       "type": "ManifestPath",
     },
   },
-  "timeout": "5s",
+  "timeout": "<+input>",
   "type": "K8sDelete",
 }
 `;
 
 exports[`Test K8sDeleteStep Validate timeout is min 10s with manifestPaths runtime 2`] = `
 Object {
+  "spec": Object {
+    "deleteResources": Object {
+      "spec": Object {
+        "manifestPaths": "spec.deleteResources.spec.manifestPaths is a required field",
+      },
+    },
+  },
   "timeout": "Value must be greater than or equal to \\"10s\\"",
 }
 `;
@@ -79,13 +86,20 @@ Object {
       "type": "ResourceName",
     },
   },
-  "timeout": "5s",
+  "timeout": "<+input>",
   "type": "K8sDelete",
 }
 `;
 
 exports[`Test K8sDeleteStep Validate timeout is min 10s with resourceNames as runtime 2`] = `
 Object {
+  "spec": Object {
+    "deleteResources": Object {
+      "spec": Object {
+        "resourceNames": "spec.deleteResources.spec.resourceNames is a required field",
+      },
+    },
+  },
   "timeout": "Value must be greater than or equal to \\"10s\\"",
 }
 `;

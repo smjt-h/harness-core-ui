@@ -6,7 +6,7 @@
  */
 
 import React, { ReactNode } from 'react'
-import { IconName, ModalErrorHandlerBinding, getErrorInfoFromErrorObject, SelectOption } from '@wings-software/uicore'
+import type { IconName, ModalErrorHandlerBinding, SelectOption } from '@wings-software/uicore'
 import { defaultTo, pick } from 'lodash-es'
 import type { StringsMap } from 'stringTypes'
 import type {
@@ -25,14 +25,12 @@ import type {
 import { RbacResourceGroupTypes } from '@rbac/constants/utils'
 import RBACTooltip from '@rbac/components/RBACTooltip/RBACTooltip'
 import type { PermissionIdentifier } from '@rbac/interfaces/PermissionIdentifier'
-import type { ResourceType } from '@rbac/interfaces/ResourceType'
 import type { FeatureRequest } from 'framework/featureStore/featureStoreUtil'
 import type { PermissionsRequest } from '@rbac/hooks/usePermission'
 import { FeatureWarningTooltip } from '@common/components/FeatureWarning/FeatureWarningWithTooltip'
 import type { StringKeys, UseStringsReturn } from 'framework/strings'
 import type { ProjectSelectOption } from '@audit-trail/components/FilterDrawer/FilterDrawer'
 import type { RbacMenuItemProps } from '@rbac/components/MenuItem/MenuItem'
-import css from './utils.module.scss'
 
 export const DEFAULT_RG = '_all_resources_including_child_scopes'
 export const PROJECT_DEFAULT_RG = '_all_project_level_resources'
@@ -234,26 +232,8 @@ export const isScopeResourceSelector = (value: string): boolean => {
   return value === RbacResourceGroupTypes.SCOPE_RESOURCE_SELECTOR
 }
 
-interface ErrorHandlerProps {
+export interface ErrorHandlerProps {
   data: AccessControlCheckError
-}
-
-export const getRBACErrorMessage = (error: ErrorHandlerProps): string | React.ReactElement => {
-  const err = error?.data
-  if (err?.code === 'NG_ACCESS_DENIED' && err?.failedPermissionChecks?.length) {
-    const { permission, resourceType, resourceScope } = err.failedPermissionChecks[0]
-    if (permission && resourceType && resourceScope) {
-      return (
-        <RBACTooltip
-          permission={permission as PermissionIdentifier}
-          resourceType={resourceType as ResourceType}
-          resourceScope={resourceScope}
-          className={css.tooltip}
-        />
-      )
-    }
-  }
-  return getErrorInfoFromErrorObject(error)
 }
 
 export const getAssignments = (roleBindings: RoleAssignmentMetadataDTO[]): Assignment[] => {

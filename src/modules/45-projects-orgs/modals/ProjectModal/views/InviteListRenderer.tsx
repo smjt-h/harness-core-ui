@@ -17,6 +17,7 @@ import { useDeleteInvite, useUpdateInvite, Invite } from 'services/cd-ng'
 import { useStrings } from 'framework/strings'
 import type { AccountPathProps } from '@common/interfaces/RouteInterfaces'
 import { InviteType } from '@rbac/modals/RoleAssignmentModal/views/RoleAssignmentForm'
+import useRBACError from '@rbac/utils/useRBACError/useRBACError'
 import css from './Steps.module.scss'
 
 interface InviteListProps {
@@ -33,6 +34,7 @@ const CustomSelect = Select.ofType<SelectOption>()
 const InviteListRenderer: React.FC<InviteListProps> = props => {
   const { user, reload, roles, isCommunity } = props
   const { accountId } = useParams<AccountPathProps>()
+  const { getRBACErrorMessage } = useRBACError()
   const { getString } = useStrings()
   const [approved, setApproved] = useState<boolean>(false)
   const { mutate: deleteInvite } = useDeleteInvite({})
@@ -56,7 +58,7 @@ const InviteListRenderer: React.FC<InviteListProps> = props => {
       showSuccess(getString('projectsOrgs.projectInviteSuccess'))
     } catch (err) {
       /* istanbul ignore next */
-      showError(err.data?.message || err.message)
+      showError(getRBACErrorMessage(err))
     }
   }
 
@@ -67,7 +69,7 @@ const InviteListRenderer: React.FC<InviteListProps> = props => {
       showSuccess(getString('projectsOrgs.projectDeleteSuccess'))
     } catch (err) {
       /* istanbul ignore next */
-      showError(err.data?.message || err.message)
+      showError(getRBACErrorMessage(err))
     }
   }
   return (

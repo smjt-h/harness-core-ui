@@ -28,7 +28,7 @@ import { TokenDTO, useCreateToken, useUpdateToken } from 'services/cd-ng'
 import type { ProjectPathProps, ServiceAccountPathProps } from '@common/interfaces/RouteInterfaces'
 import { NameSchema, IdentifierSchema } from '@common/utils/Validation'
 import { NameIdDescriptionTags } from '@common/components/NameIdDescriptionTags/NameIdDescriptionTags'
-import { getRBACErrorMessage } from '@rbac/utils/utils'
+import useRBACError from '@rbac/utils/useRBACError/useRBACError'
 import { getReadableDateTime } from '@common/utils/dateUtils'
 import { TokenValueRenderer } from './TokenValueRenderer'
 import css from '@rbac/modals/TokenModal/useTokenModal.module.scss'
@@ -60,6 +60,7 @@ const TokenForm: React.FC<TokenModalData> = props => {
   const { accountId, orgIdentifier, projectIdentifier, serviceAccountIdentifier } = useParams<
     ProjectPathProps & ServiceAccountPathProps
   >()
+  const { getRBACErrorMessage } = useRBACError()
   const [expiry, setExpiry] = useState<boolean>(!!tokenData?.validTo)
   const { getString } = useStrings()
   const { showSuccess } = useToaster()
