@@ -73,6 +73,7 @@ exports[`TriggersWizardPage Triggers tests Payload/Values Comparison Existing Tr
           class="OverlaySpinner--overlaySpinner"
         >
           <form
+            action="#"
             class="FormikForm--main"
           >
             <div>
@@ -931,6 +932,7 @@ exports[`TriggersWizardPage Triggers tests Payload/Values Comparison Existing Tr
                                       </label>
                                       <div>
                                         <form
+                                          action="#"
                                           class="FormikForm--main removeBpPopoverWrapperTopMargin"
                                         >
                                           <div>
@@ -1292,6 +1294,7 @@ exports[`TriggersWizardPage Triggers tests Renders/snapshots OnEdit Render - Git
           class="OverlaySpinner--overlaySpinner"
         >
           <form
+            action="#"
             class="FormikForm--main"
           >
             <div>
@@ -2314,6 +2317,7 @@ exports[`TriggersWizardPage Triggers tests Renders/snapshots OnEdit Render - Git
           class="OverlaySpinner--overlaySpinner"
         >
           <form
+            action="#"
             class="FormikForm--main"
           >
             <div>
@@ -3295,6 +3299,7 @@ exports[`TriggersWizardPage Triggers tests Renders/snapshots OnEdit Render - Sch
           class="OverlaySpinner--overlaySpinner"
         >
           <form
+            action="#"
             class="FormikForm--main"
           >
             <div>
@@ -3793,6 +3798,7 @@ exports[`TriggersWizardPage Triggers tests Renders/snapshots OnEdit Render - Sch
           class="OverlaySpinner--overlaySpinner"
         >
           <form
+            action="#"
             class="FormikForm--main"
           >
             <div>

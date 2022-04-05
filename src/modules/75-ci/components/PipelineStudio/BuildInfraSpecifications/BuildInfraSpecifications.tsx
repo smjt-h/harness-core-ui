@@ -431,6 +431,7 @@ export default function BuildInfraSpecifications({ children }: React.PropsWithCh
 
   const handleValidate = (values: any): void => {
     if (stage) {
+      const buildInfraType = values.buildInfraType || buildInfraTypes[0].value
       const errors: { [key: string]: string } = {}
       const stageData = produce(stage, draft => {
         if (currentMode === Modes.Propagate && values.useFromStage) {
@@ -1066,7 +1067,7 @@ export default function BuildInfraSpecifications({ children }: React.PropsWithCh
           formName="ciBuildInfra"
           onSubmit={values => logger.info(JSON.stringify(values))}
         >
-          {formik => {
+          {(formik: any) => {
             const { setFieldValue } = formik
             window.dispatchEvent(new CustomEvent('UPDATE_ERRORS_STRIP', { detail: BuildTabs.INFRASTRUCTURE }))
             formikRef.current = formik

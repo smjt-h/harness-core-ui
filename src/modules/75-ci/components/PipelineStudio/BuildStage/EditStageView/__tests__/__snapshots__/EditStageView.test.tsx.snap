@@ -12,6 +12,7 @@ exports[`EditStageView snapshot test should render properly 1`] = `
         class="OverlaySpinner--overlaySpinner"
       >
         <form
+          action="#"
           class="FormikForm--main"
         >
           <div>
@@ -279,6 +280,7 @@ exports[`EditStageView snapshot test should render properly without data 1`] = `
         class="OverlaySpinner--overlaySpinner"
       >
         <form
+          action="#"
           class="FormikForm--main"
         >
           <div>

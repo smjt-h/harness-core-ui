@@ -131,10 +131,10 @@ export function StepCommands(
       if (activeTab === StepCommandTabs.StepConfiguration && stepRef.current) {
         return stepRef.current.submitForm()
       }
-
       if (activeTab === StepCommandTabs.Advanced && advancedConfRef.current) {
         return advancedConfRef.current.submitForm()
       }
+      return Promise.resolve()
     },
     getErrors() {
       return activeTab === StepCommandTabs.StepConfiguration && stepRef.current

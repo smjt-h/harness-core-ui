@@ -149,7 +149,7 @@ const ConnectivityModeStep: React.FC<StepProps<ConnectorConfigDTO> & Connectivit
           formName={`connectivityModeForm${props.type}`}
           enableReinitialize
         >
-          {formik => {
+          {(formik: any) => {
             return (
               <FormikForm>
                 <Layout.Vertical className={css.formCss} spacing={'medium'}>

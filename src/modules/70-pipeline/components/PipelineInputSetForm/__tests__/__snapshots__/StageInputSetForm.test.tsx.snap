@@ -5,7 +5,9 @@ exports[`stageinputset tests viewType DeploymentForm initial render 1`] = `
   <div
     class="OverlaySpinner--overlaySpinner"
   >
-    <form>
+    <form
+      action="#"
+    >
       <div
         class="accordionSummary"
         id="Stage.undefined.Service"
@@ -622,6 +624,7 @@ exports[`stageinputset tests viewType DeploymentForm initial render 1`] = `
             </label>
             <div>
               <form
+                action="#"
                 class="FormikForm--main removeBpPopoverWrapperTopMargin"
               >
                 <div>
@@ -688,7 +691,9 @@ exports[`stageinputset tests viewType DeploymentForm initial render2 1`] = `
   <div
     class="OverlaySpinner--overlaySpinner"
   >
-    <form>
+    <form
+      action="#"
+    >
       <div
         class="accordionSummary"
         id="Stage.undefined.Service"
@@ -1305,6 +1310,7 @@ exports[`stageinputset tests viewType DeploymentForm initial render2 1`] = `
             </label>
             <div>
               <form
+                action="#"
                 class="FormikForm--main removeBpPopoverWrapperTopMargin"
               >
                 <div>
@@ -1371,7 +1377,9 @@ exports[`stageinputset tests viewType InputSet initial render 1`] = `
   <div
     class="OverlaySpinner--overlaySpinner"
   >
-    <form>
+    <form
+      action="#"
+    >
       <div
         class="accordionSummary"
         id="Stage.undefined.Service"
@@ -1988,6 +1996,7 @@ exports[`stageinputset tests viewType InputSet initial render 1`] = `
             </label>
             <div>
               <form
+                action="#"
                 class="FormikForm--main removeBpPopoverWrapperTopMargin"
               >
                 <div>
@@ -2054,7 +2063,9 @@ exports[`stageinputset tests viewType InputSet initial render2 1`] = `
   <div
     class="OverlaySpinner--overlaySpinner"
   >
-    <form>
+    <form
+      action="#"
+    >
       <div
         class="accordionSummary"
         id="Stage.undefined.Service"
@@ -2671,6 +2682,7 @@ exports[`stageinputset tests viewType InputSet initial render2 1`] = `
             </label>
             <div>
               <form
+                action="#"
                 class="FormikForm--main removeBpPopoverWrapperTopMargin"
               >
                 <div>

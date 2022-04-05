@@ -70,6 +70,7 @@ exports[`Test DeployEnvironment Step should render edit Environment view (enviro
         class="OverlaySpinner--overlaySpinner"
       >
         <form
+          action="#"
           class="FormikForm--main"
         >
           <div>
@@ -484,6 +485,7 @@ exports[`Test DeployEnvironment Step should render environment view and save 1`]
         class="OverlaySpinner--overlaySpinner"
       >
         <form
+          action="#"
           class="FormikForm--main"
         >
           <div>

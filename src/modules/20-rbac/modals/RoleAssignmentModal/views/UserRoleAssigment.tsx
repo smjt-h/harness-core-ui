@@ -250,7 +250,7 @@ const UserRoleAssignment: React.FC<UserRoleAssignmentData> = props => {
         formValues.handleSubmit(values)
       }}
     >
-      {formik => {
+      {(formik: any) => {
         return (
           <Form>
             <ModalErrorHandler bind={setModalErrorHandler} />

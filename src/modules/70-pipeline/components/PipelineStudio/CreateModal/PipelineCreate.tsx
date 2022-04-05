@@ -87,7 +87,7 @@ export default function CreatePipelines({
         afterSave && afterSave(omit(values, 'repo', 'branch'), formGitDetails)
       }}
     >
-      {formikProps => (
+      {(formikProps: any) => (
         <FormikForm>
           <NameIdDescriptionTags
             formikProps={formikProps}

@@ -19,6 +19,7 @@ exports[`GCP DNS mapping screen Name field should be disabled and should contain
           class="OverlaySpinner--overlaySpinner"
         >
           <form
+            action="#"
             class="FormikForm--main"
           >
             <div>
@@ -220,6 +221,7 @@ exports[`GCP DNS mapping screen cancel ap creation 1`] = `
           class="OverlaySpinner--overlaySpinner"
         >
           <form
+            action="#"
             class="FormikForm--main"
           >
             <div>
@@ -449,6 +451,7 @@ exports[`GCP DNS mapping screen render configuration dialog and fill details 1`]
           class="OverlaySpinner--overlaySpinner"
         >
           <form
+            action="#"
             class="FormikForm--main"
           >
             <div>
@@ -637,6 +640,7 @@ exports[`GCP DNS mapping screen render configuration dialog and fill details 2`]
           class="OverlaySpinner--overlaySpinner"
         >
           <form
+            action="#"
             class="FormikForm--main"
           >
             <div>
@@ -851,6 +855,7 @@ exports[`GCP DNS mapping screen render second step 1`] = `
           class="OverlaySpinner--overlaySpinner"
         >
           <form
+            action="#"
             class="FormikForm--main"
           >
             <div>

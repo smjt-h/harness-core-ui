@@ -25,6 +25,6 @@ export class StageTemplate extends Template<NGTemplateInfoConfig> {
   }
 
   renderTemplateCanvas(props: TemplateProps<NGTemplateInfoConfig>): JSX.Element {
-    return <StageTemplateCanvasWrapperWithRef ref={props.formikRef} />
+    return <StageTemplateCanvasWrapperWithRef ref={props.formikRef as any} />
   }
 }

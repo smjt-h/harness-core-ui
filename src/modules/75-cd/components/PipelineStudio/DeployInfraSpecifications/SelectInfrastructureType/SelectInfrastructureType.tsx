@@ -86,7 +86,7 @@ export default function SelectDeploymentType(props: SelectDeploymentTypeProps): 
         deploymentType: getInfraDeploymentTypeSchema(getString)
       })}
     >
-      {formik => {
+      {(formik: any) => {
         window.dispatchEvent(new CustomEvent('UPDATE_ERRORS_STRIP', { detail: DeployTabs.INFRASTRUCTURE }))
         formikRef.current = formik
         return (

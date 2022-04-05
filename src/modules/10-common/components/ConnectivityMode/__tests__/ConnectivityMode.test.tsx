@@ -18,7 +18,7 @@ describe('Test ConnectivityMode', () => {
     const { container, getByText } = render(
       <TestWrapper>
         <Formik formName="test-form" initialValues={{ connectivityMode: undefined }} onSubmit={jest.fn()}>
-          {formik => (
+          {(formik: any) => (
             <Form>
               <ConnectivityMode onChange={jest.fn()} formik={formik} />
             </Form>
@@ -39,7 +39,7 @@ describe('Test ConnectivityMode', () => {
           initialValues={{ connectivityMode: ConnectivityModeType.Manager }}
           onSubmit={jest.fn()}
         >
-          {formik => (
+          {(formik: any) => (
             <Form>
               <ConnectivityMode onChange={jest.fn()} formik={formik} />
             </Form>
@@ -61,7 +61,7 @@ describe('Test ConnectivityMode', () => {
           initialValues={{ connectivityMode: ConnectivityModeType.Delegate }}
           onSubmit={jest.fn()}
         >
-          {formik => (
+          {(formik: any) => (
             <Form>
               <ConnectivityMode onChange={jest.fn()} formik={formik} />
             </Form>
