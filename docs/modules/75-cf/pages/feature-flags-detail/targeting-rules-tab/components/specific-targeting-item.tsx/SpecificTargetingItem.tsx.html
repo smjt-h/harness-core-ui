@@ -25,7 +25,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>22/22</span>
+                <span class='fraction'>23/23</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>22/22</span>
+                <span class='fraction'>23/23</span>
             </div>
         
             
@@ -185,7 +185,15 @@
 <a name='L126'></a><a href='#L126'>126</a>
 <a name='L127'></a><a href='#L127'>127</a>
 <a name='L128'></a><a href='#L128'>128</a>
-<a name='L129'></a><a href='#L129'>129</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L129'></a><a href='#L129'>129</a>
+<a name='L130'></a><a href='#L130'>130</a>
+<a name='L131'></a><a href='#L131'>131</a>
+<a name='L132'></a><a href='#L132'>132</a>
+<a name='L133'></a><a href='#L133'>133</a>
+<a name='L134'></a><a href='#L134'>134</a>
+<a name='L135'></a><a href='#L135'>135</a>
+<a name='L136'></a><a href='#L136'>136</a>
+<a name='L137'></a><a href='#L137'>137</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -197,6 +205,7 @@
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -232,6 +241,10 @@
 <span class="cline-any cline-yes">61x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">61x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -282,6 +295,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">240x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -312,6 +327,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">/*
  * Copyright 2022 Harness Inc. All rights reserved.
@@ -325,11 +341,12 @@ import React, { ReactElement } from 'react'
 import { useStrings } from 'framework/strings'
 import type { Segment, Target, TargetMap } from 'services/cf'
 import type { FormVariationMap, TargetGroup } from '../../Types.types'
+import DisabledFeatureTooltip from '../disabled-feature-tooltip/DisabledFeatureTooltip'
 import css from './SpecificTargetingItem.module.scss'
 &nbsp;
 export interface SpecificTargetingItemProps {
   index: number
-  isLoading: boolean
+  disabled: boolean
   targets: Target[]
   segments: Segment[]
   formVariationMapItem: FormVariationMap
@@ -349,7 +366,7 @@ const SpecificTargetingItem = (props: SpecificTargetingItemProps): ReactElement 
     segments,
     formVariationMapItem,
     index,
-    isLoading,
+    disabled,
     updateTargetGroups,
     updateTargets,
     removeVariation
@@ -366,73 +383,80 @@ const SpecificTargetingItem = (props: SpecificTargetingItemProps): ReactElement 
           {formVariationMapItem.variationName}
         &lt;/Text&gt;
 &nbsp;
-        &lt;Button
-          data-testid={`remove_variation_${formVariationMapItem.variationIdentifier}`}
-          icon="trash"
-          minimal
-          withoutCurrentColor
-          onClick={removeVariation}
-        /&gt;
+        &lt;DisabledFeatureTooltip&gt;
+          &lt;Button
+            disabled={disabled}
+            data-testid={`remove_variation_${formVariationMapItem.variationIdentifier}`}
+            icon="trash"
+            minimal
+            withoutCurrentColor
+            onClick={removeVariation}
+          /&gt;
+        &lt;/DisabledFeatureTooltip&gt;
       &lt;/Container&gt;
       &lt;div data-testid={`${formVariationMapItem.variationIdentifier}_target_groups`}&gt;
-        &lt;Label className={css.tagInputLabel}&gt;{getString('cf.featureFlags.rules.toTargetGroups')}&lt;/Label&gt;
-        &lt;SimpleTagInput
-          fill
-          readonly={isLoading}
-          inputProps={{ 'data-testid': `${formVariationMapItem.variationIdentifier}-target-groups-input` }}
-          items={segments.map&lt;TagInputItem&gt;(segment =&gt; ({
-            label: segment.name,
-            value: `${segment.identifier}${delimiter}${segment.name}`
-          }))}
-          selectedItems={
-            segments.length === 0
-              ? []
-              : formVariationMapItem.targetGroups.map&lt;string&gt;(
-                  (targetGroup: TargetGroup) =&gt; `${targetGroup.identifier}${delimiter}${targetGroup.name}`
-                )
-          }
-          onChange={selectedItems =&gt; {
-            const newTargetGroups: TargetGroup[] = selectedItems.map(item =&gt; {
-              const value = item.toString().split(delimiter)
-              return {
-                identifier: value[0],
-                ruleId: '',
-                name: value[1]
-              }
-            })
-            updateTargetGroups(index, newTargetGroups)
-          }}
-        /&gt;
+        &lt;DisabledFeatureTooltip fullWidth&gt;
+          &lt;Label className={css.tagInputLabel}&gt;{getString('cf.featureFlags.rules.toTargetGroups')}&lt;/Label&gt;
+          &lt;SimpleTagInput
+            fill
+            readonly={disabled}
+            inputProps={{ 'data-testid': `${formVariationMapItem.variationIdentifier}-target-groups-input` }}
+            items={segments.map&lt;TagInputItem&gt;(segment =&gt; ({
+              label: segment.name,
+              value: `${segment.identifier}${delimiter}${segment.name}`
+            }))}
+            selectedItems={
+              segments.length === 0
+                ? []
+                : formVariationMapItem.targetGroups.map&lt;string&gt;(
+                    (targetGroup: TargetGroup) =&gt; `${targetGroup.identifier}${delimiter}${targetGroup.name}`
+                  )
+            }
+            onChange={selectedItems =&gt; {
+              const newTargetGroups: TargetGroup[] = selectedItems.map(item =&gt; {
+                const value = item.toString().split(delimiter)
+                return {
+                  identifier: value[0],
+                  ruleId: '',
+                  name: value[1]
+                }
+              })
+              updateTargetGroups(index, newTargetGroups)
+            }}
+          /&gt;
+        &lt;/DisabledFeatureTooltip&gt;
       &lt;/div&gt;
       &lt;div data-testid={`${formVariationMapItem.variationIdentifier}_targets`}&gt;
-        &lt;Label className={css.tagInputLabel}&gt;{getString('cf.featureFlags.rules.toTargets')}&lt;/Label&gt;
-        &lt;SimpleTagInput
-          fill
-          readonly={isLoading}
-          inputProps={{ 'data-testid': `${formVariationMapItem.variationIdentifier}-target-input` }}
-          items={targets.map&lt;TagInputItem&gt;(target =&gt; ({
-            label: target.name,
-            value: `${target.identifier}${delimiter}${target.name}`
-          }))}
-          selectedItems={
-            targets.length === 0
-              ? []
-              : formVariationMapItem.targets.map&lt;string&gt;(
-                  (target: TargetMap) =&gt; `${target.identifier}${delimiter}${target.name}`
-                )
-          }
-          onChange={selectedItems =&gt; {
-            const newTargets: TargetMap[] = selectedItems.map(item =&gt; {
-              const value = item.toString().split(delimiter)
+        &lt;DisabledFeatureTooltip fullWidth&gt;
+          &lt;Label className={css.tagInputLabel}&gt;{getString('cf.featureFlags.rules.toTargets')}&lt;/Label&gt;
+          &lt;SimpleTagInput
+            fill
+            readonly={disabled}
+            inputProps={{ 'data-testid': `${formVariationMapItem.variationIdentifier}-target-input` }}
+            items={targets.map&lt;TagInputItem&gt;(target =&gt; ({
+              label: target.name,
+              value: `${target.identifier}${delimiter}${target.name}`
+            }))}
+            selectedItems={
+              targets.length === 0
+                ? []
+                : formVariationMapItem.targets.map&lt;string&gt;(
+                    (target: TargetMap) =&gt; `${target.identifier}${delimiter}${target.name}`
+                  )
+            }
+            onChange={selectedItems =&gt; {
+              const newTargets: TargetMap[] = selectedItems.map(item =&gt; {
+                const value = item.toString().split(delimiter)
 &nbsp;
-              return {
-                identifier: value[0],
-                name: value[1]
-              }
-            })
-            updateTargets(index, newTargets)
-          }}
-        /&gt;
+                return {
+                  identifier: value[0],
+                  name: value[1]
+                }
+              })
+              updateTargets(index, newTargets)
+            }}
+          /&gt;
+        &lt;/DisabledFeatureTooltip&gt;
       &lt;/div&gt;
 &nbsp;
       &lt;Container border={{ bottom: true }} /&gt;
@@ -448,7 +472,7 @@ export default SpecificTargetingItem
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Tue Apr 05 2022 09:58:07 GMT+0000 (Greenwich Mean Time)
+                at Tue Apr 05 2022 16:42:01 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../../../../prettify.js"></script>

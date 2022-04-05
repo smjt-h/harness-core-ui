@@ -25,14 +25,14 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>68/68</span>
+                <span class='fraction'>70/70</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">92.55% </span>
+                <span class="strong">92.63% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>87/94</span>
+                <span class='fraction'>88/95</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>67/67</span>
+                <span class='fraction'>69/69</span>
             </div>
         
             
@@ -342,7 +342,13 @@
 <a name='L283'></a><a href='#L283'>283</a>
 <a name='L284'></a><a href='#L284'>284</a>
 <a name='L285'></a><a href='#L285'>285</a>
-<a name='L286'></a><a href='#L286'>286</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L286'></a><a href='#L286'>286</a>
+<a name='L287'></a><a href='#L287'>287</a>
+<a name='L288'></a><a href='#L288'>288</a>
+<a name='L289'></a><a href='#L289'>289</a>
+<a name='L290'></a><a href='#L290'>290</a>
+<a name='L291'></a><a href='#L291'>291</a>
+<a name='L292'></a><a href='#L292'>292</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -372,6 +378,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -515,6 +522,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">22x</span>
+<span class="cline-any cline-yes">22x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">22x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -530,6 +538,10 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">52x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -657,6 +669,7 @@ import TargetingRulesTabFooter from './components/tab-targeting-footer/Targeting
 &nbsp;
 import FlagEnabledRulesCard from './components/flag-enabled-rules-card/FlagEnabledRulesCard'
 import type { FormVariationMap, VariationPercentageRollout, TargetGroup, TargetingRulesFormValues } from './Types.types'
+import useFeatureEnabled from './hooks/useFeatureEnabled'
 import css from './TargetingRulesTab.module.scss'
 export interface TargetingRulesTabProps {
   featureFlagData: Feature
@@ -799,7 +812,8 @@ const TargetingRulesTab = ({
     refetchFlag
   })
 &nbsp;
-  const isLoading = patchFeatureLoading || refetchFlagLoading || targetsLoading || segmentsLoading
+  const { featureEnabled } = useFeatureEnabled()
+  const disabled = patchFeatureLoading || refetchFlagLoading || targetsLoading || segmentsLoading || !featureEnabled
 &nbsp;
   return (
     &lt;Formik
@@ -815,12 +829,16 @@ const TargetingRulesTab = ({
     &gt;
       {formikProps =&gt; {
         return (
-          &lt;FormikForm data-testid="targeting-rules-tab-form"&gt;
+          &lt;FormikForm data-testid="targeting-rules-tab-form" disabled={disabled}&gt;
             &lt;Container className={css.tabContainer}&gt;
-              &lt;Layout.Vertical spacing="small" padding={{ left: 'xlarge', right: 'xlarge' }}&gt;
+              &lt;Layout.Vertical
+                spacing="small"
+                padding={{ left: 'xlarge', right: 'xlarge' }}
+                className={css.flagRulesSection}
+              &gt;
                 &lt;Card elevation={0}&gt;
                   &lt;FlagToggleSwitch
-                    disabled={isLoading}
+                    disabled={disabled}
                     currentState={formikProps.values.state}
                     currentEnvironmentState={featureFlagData.envProperties?.state}
                     handleToggle={() =&gt;
@@ -840,7 +858,7 @@ const TargetingRulesTab = ({
                   segments={segments}
                   featureFlagVariations={featureFlagData.variations}
                   variationPercentageRollouts={formikProps.values.variationPercentageRollouts}
-                  isLoading={isLoading}
+                  disabled={disabled}
                   updateTargetGroups={(index: number, newTargetGroups: TargetGroup[]) =&gt;
                     formikProps.setFieldValue(`formVariationMap[${index}].targetGroups`, newTargetGroups)
                   }
@@ -898,7 +916,7 @@ const TargetingRulesTab = ({
 &nbsp;
               {formikProps.dirty &amp;&amp; (
                 &lt;TargetingRulesTabFooter
-                  isLoading={isLoading}
+                  isLoading={disabled}
                   handleSubmit={formikProps.handleSubmit}
                   handleCancel={formikProps.handleReset}
                 /&gt;
@@ -919,7 +937,7 @@ export default TargetingRulesTab
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Tue Apr 05 2022 09:58:07 GMT+0000 (Greenwich Mean Time)
+                at Tue Apr 05 2022 16:42:01 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../../prettify.js"></script>
