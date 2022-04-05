@@ -813,6 +813,7 @@ function StageBuilder(): JSX.Element {
                 loaderComponent={DiagramLoader}
                 parentSelector={'.Pane1'}
                 collapsibleProps={{ percentageNodeVisible: 0.8, bottomMarginInPixels: 80 }}
+                createNodeTitle={getString('addStage')}
               />
               <DynamicPopover
                 darkMode={false}

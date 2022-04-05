@@ -12,6 +12,7 @@ import cx from 'classnames'
 import { useStrings } from 'framework/strings'
 import { DiagramDrag, DiagramType, Event } from '@pipeline/components/Diagram'
 import { PipelineGraphType, NodeType } from '../../types'
+import SVGMarker from '../SVGMarker'
 import cssDefault from '../DefaultNode/DefaultNode.module.scss'
 import css from './DiamondNode.module.scss'
 
@@ -66,12 +67,20 @@ export function DiamondNodeWidget(props: any): JSX.Element {
           className={css.horizontalBar}
           style={{ height: props.graphType === PipelineGraphType.STAGE_GRAPH ? 40 : 64 }}
         >
-          {/* <div className={cssDefault.markerStart}>
+          <div
+            className={cx(cssDefault.markerStart, cssDefault.diamondStageLeft, {
+              [cssDefault.diamondStep]: props.graphType === PipelineGraphType.STEP_GRAPH
+            })}
+          >
             <SVGMarker />
           </div>
-          <div className={cssDefault.markerEnd}>
+          <div
+            className={cx(cssDefault.markerEnd, cssDefault.diamondStageRight, {
+              [cssDefault.diamondStep]: props.graphType === PipelineGraphType.STEP_GRAPH
+            })}
+          >
             <SVGMarker />
-          </div> */}
+          </div>
         </div>
         <div className="execution-running-animation" />
         {props.icon && (

@@ -15,6 +15,7 @@ import { STATIC_SERVICE_GROUP_NAME } from '@pipeline/utils/executionUtils'
 import { useStrings } from 'framework/strings'
 import StepGroupGraph from '../StepGroupGraph/StepGroupGraph'
 import { NodeType } from '../../types'
+import SVGMarker from '../SVGMarker'
 import css from './StepGroupNode.module.scss'
 import defaultCss from '../DefaultNode/DefaultNode.module.scss'
 
@@ -43,6 +44,12 @@ export function StepGroupNode(props: any): JSX.Element {
         />
       ) : (
         <div style={{ position: 'relative' }}>
+          <div className={classnames(defaultCss.markerStart, defaultCss.stepMarker, defaultCss.stepGroupMarkerLeft)}>
+            <SVGMarker />
+          </div>
+          <div className={classnames(defaultCss.markerEnd, defaultCss.stepMarker, defaultCss.stepGroupMarkerRight)}>
+            <SVGMarker />
+          </div>
           <div
             onMouseOver={e => {
               e.stopPropagation()

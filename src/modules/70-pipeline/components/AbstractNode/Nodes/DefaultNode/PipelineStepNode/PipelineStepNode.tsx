@@ -110,7 +110,7 @@ function PipelineStepNode(props: PipelineStepNodeProps): JSX.Element {
         })
       }}
     >
-      <div className={cx(defaultCss.markerStart, defaultCss.stepMarker)}>
+      <div className={cx(defaultCss.markerStart, defaultCss.stepMarker, defaultCss.stepMarkerLeft)}>
         <SVGMarker />
       </div>
       <div
@@ -204,7 +204,7 @@ function PipelineStepNode(props: PipelineStepNodeProps): JSX.Element {
           withoutCurrentColor={true}
         />
       </div>
-      <div className={cx(defaultCss.markerEnd, defaultCss.stepMarker)}>
+      <div className={cx(defaultCss.markerEnd, defaultCss.stepMarker, defaultCss.stepMarkerRight)}>
         <SVGMarker />
       </div>
       {props.name && (

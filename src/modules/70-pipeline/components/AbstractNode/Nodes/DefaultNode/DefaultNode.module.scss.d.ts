@@ -14,6 +14,9 @@ declare const styles: {
   readonly conditional: string
   readonly defaultCard: string
   readonly defaultNode: string
+  readonly diamondStageLeft: string
+  readonly diamondStageRight: string
+  readonly diamondStep: string
   readonly draggable: string
   readonly fadeIn: string
   readonly failed: string
@@ -38,12 +41,17 @@ declare const styles: {
   readonly showIcon: string
   readonly stageAddIcon: string
   readonly stageAddNode: string
-  readonly stageMarker: string
+  readonly stageMarkerLeft: string
+  readonly stageMarkerRight: string
   readonly stepAddIcon: string
   readonly stepAddNode: string
   readonly stepGroupAddNode: string
   readonly stepGroupLeft: string
+  readonly stepGroupMarkerLeft: string
+  readonly stepGroupMarkerRight: string
   readonly stepMarker: string
+  readonly stepMarkerLeft: string
+  readonly stepMarkerRight: string
   readonly stepNameText: string
   readonly template: string
   readonly tertiaryIcon: string

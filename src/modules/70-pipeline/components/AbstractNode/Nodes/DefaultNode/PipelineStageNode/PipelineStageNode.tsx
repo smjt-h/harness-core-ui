@@ -106,7 +106,7 @@ function PipelineStageNode(props: PipelineStageNodeProps): JSX.Element {
         })
       }}
     >
-      <div className={cx(defaultCss.markerStart, defaultCss.stageMarker)}>
+      <div className={cx(defaultCss.markerStart, defaultCss.stageMarkerLeft)}>
         <SVGMarker />
       </div>
       <div
@@ -191,7 +191,7 @@ function PipelineStageNode(props: PipelineStageNodeProps): JSX.Element {
           withoutCurrentColor={true}
         />
       </div>
-      <div className={cx(defaultCss.markerEnd, defaultCss.stageMarker)}>
+      <div className={cx(defaultCss.markerEnd, defaultCss.stageMarkerRight)}>
         <SVGMarker />
       </div>
 
