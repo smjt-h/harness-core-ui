@@ -767,7 +767,7 @@ function PipelinesPage({ mockData }: CDPipelinesPageProps): React.ReactElement {
                 <Text className={css.aboutPipeline} margin={{ top: 'xsmall', bottom: 'xlarge' }}>
                   {getString('pipeline-list.aboutPipeline')}
                 </Text>
-                <NewPipelinePopover text={'common.createPipeline'} />
+                <NewPipelinePopover text={getString('common.createPipeline')} />
               </Layout.Vertical>
             )}
           </div>
