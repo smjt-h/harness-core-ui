@@ -71,7 +71,7 @@ export function AppWithAuthentication(props: AppProps): React.ReactElement {
   const location = useLocation()
 
   useEffect(() => {
-    window.Userpilot?.reload()
+    window.userpilot?.reload()
   }, [location])
 
   const getQueryParams = React.useCallback(() => {
