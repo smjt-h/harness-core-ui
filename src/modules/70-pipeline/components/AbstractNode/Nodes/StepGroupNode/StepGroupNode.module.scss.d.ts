@@ -9,12 +9,16 @@
 declare const styles: {
   readonly closeNode: string
   readonly collapseIcon: string
+  readonly conditional: string
   readonly createnodeci: string
   readonly createnodecimain: string
   readonly createnodecititle: string
+  readonly cursor: string
   readonly firstnode: string
   readonly horizontalBar: string
   readonly marginBottom: string
+  readonly markerStart: string
+  readonly nestedGroup: string
   readonly readonly: string
   readonly stepGroup: string
   readonly stepGroupBody: string

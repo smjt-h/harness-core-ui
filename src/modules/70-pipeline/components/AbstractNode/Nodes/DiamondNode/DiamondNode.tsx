@@ -163,7 +163,7 @@ export function DiamondNodeWidget(props: any): JSX.Element {
         )}
       </div>
       {props.name && (
-        <div className={cssDefault.stepNameText}>
+        <div className={cssDefault.nodeNameText}>
           <Text
             width={125}
             font={{ size: 'normal', align: 'center' }}

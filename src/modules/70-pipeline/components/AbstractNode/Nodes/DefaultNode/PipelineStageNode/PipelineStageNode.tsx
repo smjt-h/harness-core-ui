@@ -194,20 +194,20 @@ function PipelineStageNode(props: PipelineStageNodeProps): JSX.Element {
       <div className={cx(defaultCss.markerEnd, defaultCss.stageMarkerRight)}>
         <SVGMarker />
       </div>
-
       {props.name && (
-        <Text
-          width={90}
-          font={{ size: 'normal', align: 'center' }}
-          color={props.defaultSelected ? Color.GREY_900 : Color.GREY_600}
-          className={defaultCss.nameText}
-          padding={'small'}
-          lineClamp={2}
-          data-node-name={props.name}
-        >
-          {props.name}
-        </Text>
+        <div className={cx(defaultCss.nodeNameText, defaultCss.stageName)}>
+          <Text
+            width={125}
+            font={{ size: 'normal', align: 'center' }}
+            color={props.defaultSelected ? Color.GREY_900 : Color.GREY_600}
+            padding={'small'}
+            lineClamp={2}
+          >
+            {props.name}
+          </Text>
+        </div>
       )}
+
       {allowAdd && CreateNode && !props.readonly && showAddNode && (
         <CreateNode
           onMouseOver={() => setAddVisibility(true)}

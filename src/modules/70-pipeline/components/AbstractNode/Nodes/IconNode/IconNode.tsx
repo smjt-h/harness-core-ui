@@ -141,7 +141,7 @@ export function IconNode(props: IconNodeProps): React.ReactElement {
         </div>
       </div>
       {!isEmpty(props.name) && (
-        <div className={cssDefault.stepNameText}>
+        <div className={cssDefault.nodeNameText}>
           <Text
             width={125}
             font={{ size: 'normal', align: 'center' }}

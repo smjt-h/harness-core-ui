@@ -119,15 +119,18 @@ function GroupNode(props: any): React.ReactElement {
             {nodesInfo?.[1]?.icon && nodesInfo[1].icon && <Icon size={28} name={nodesInfo[1].icon} />}
           </div>
         </div>
-        <Text
-          font={{ size: 'normal', align: 'center' }}
-          color={props.defaultSelected ? Color.GREY_900 : Color.GREY_600}
-          style={{ cursor: 'pointer', lineHeight: '1.5', overflowWrap: 'normal', wordBreak: 'keep-all', height: 55 }}
-          padding={'small'}
-          lineClamp={2}
-        >
-          {getGroupNodeName()}
-        </Text>
+
+        <div className={css.nodeNameText}>
+          <Text
+            width={125}
+            font={{ size: 'normal', align: 'center' }}
+            color={props.defaultSelected ? Color.GREY_900 : Color.GREY_600}
+            padding={'small'}
+            lineClamp={2}
+          >
+            {getGroupNodeName()}
+          </Text>
+        </div>
       </div>
       {allowAdd && CreateNode && (
         <CreateNode

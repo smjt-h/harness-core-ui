@@ -29,6 +29,7 @@ declare const styles: {
   readonly markerEnd: string
   readonly markerStart: string
   readonly nameText: string
+  readonly nodeNameText: string
   readonly primaryIcon: string
   readonly readonly: string
   readonly right: string
@@ -43,6 +44,7 @@ declare const styles: {
   readonly stageAddNode: string
   readonly stageMarkerLeft: string
   readonly stageMarkerRight: string
+  readonly stageName: string
   readonly stepAddIcon: string
   readonly stepAddNode: string
   readonly stepGroupAddNode: string
@@ -54,7 +56,6 @@ declare const styles: {
   readonly stepMarker: string
   readonly stepMarkerLeft: string
   readonly stepMarkerRight: string
-  readonly stepNameText: string
   readonly template: string
   readonly tertiaryIcon: string
   readonly visible: string

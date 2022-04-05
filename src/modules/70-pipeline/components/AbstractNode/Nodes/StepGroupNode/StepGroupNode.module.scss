@@ -5,6 +5,7 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
+/* stylelint-disable color-no-hex */
 .stepGroupNode {
   height: 80px !important;
   width: 80px !important;
@@ -84,6 +85,21 @@
 
   &.firstnode {
     top: -47px;
+    &.nestedGroup {
+      top: -37px;
+      .horizontalBar {
+        top: 36px;
+      }
+      .markerStart {
+        top: 58px !important;
+      }
+      :global(#tree-container) {
+        top: -10px !important;
+      }
+      svg {
+        top: -10px !important;
+      }
+    }
   }
 
   .stepGroupHeader {
@@ -99,6 +115,25 @@
     padding: var(--spacing-large) var(--spacing-xxxlarge);
     padding-left: calc(var(--spacing-xxxlarge) + var(--spacing-small));
   }
+
+  .conditional {
+    position: absolute;
+    top: -10px;
+    left: 5px;
+    color: var(--white) !important;
+
+    svg {
+      path,
+      circle {
+        fill: currentColor !important;
+      }
+      rect {
+        // TODO: Replace color once it is available in UIKit
+
+        stroke: #f79400 !important;
+      }
+    }
+  }
 }
 
 .createnodeci {
@@ -111,4 +146,8 @@
 
 .createnodecimain {
   margin-bottom: var(--spacing-xlarge) !important;
+}
+
+.cursor {
+  cursor: pointer;
 }

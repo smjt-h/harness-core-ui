@@ -59,6 +59,7 @@
   cursor: default;
   position: relative;
   margin-bottom: 55px;
+
   &.marginBottom {
     margin-bottom: 20px;
   }
@@ -197,6 +198,7 @@
   &.stageAddNode {
     width: 90px;
     height: 40px;
+    margin-top: 48px;
   }
   &.stepGroupAddNode {
     width: 84px;
@@ -360,7 +362,7 @@
   }
 }
 
-.stepNameText {
+.nodeNameText {
   cursor: pointer;
   line-height: 1.5;
   overflow-wrap: normal;
@@ -369,6 +371,9 @@
   left: -50%;
   height: 48px;
   overflow: hidden;
+  .stageName {
+    left: -25%;
+  }
   p {
     word-break: break-word !important;
   }

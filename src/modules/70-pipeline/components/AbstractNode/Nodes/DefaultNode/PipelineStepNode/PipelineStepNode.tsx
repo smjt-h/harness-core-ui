@@ -15,6 +15,7 @@ import { ExecutionStatus, ExecutionStatusEnum } from '@pipeline/utils/statusHelp
 import stepsfactory from '@pipeline/components/PipelineSteps/PipelineStepFactory'
 import { getStatusProps } from '@pipeline/components/ExecutionStageDiagram/ExecutionStageDiagramUtils'
 import { ExecutionPipelineNodeType } from '@pipeline/components/ExecutionStageDiagram/ExecutionPipelineModel'
+import { useStrings } from 'framework/strings'
 import SVGMarker from '../../SVGMarker'
 import { BaseReactComponentProps, NodeType } from '../../../types'
 import AddLinkNode from '../AddLinkNode/AddLinkNode'
@@ -27,6 +28,7 @@ interface PipelineStepNodeProps extends BaseReactComponentProps {
 }
 
 function PipelineStepNode(props: PipelineStepNodeProps): JSX.Element {
+  const { getString } = useStrings()
   const allowAdd = defaultTo(props.allowAdd, false)
   const [showAddNode, setVisibilityOfAdd] = React.useState(false)
   const stepType = props.type || props?.data?.step?.stepType || ''
@@ -128,6 +130,11 @@ function PipelineStepNode(props: PipelineStepNodeProps): JSX.Element {
         }}
         onDragStart={event => {
           event.stopPropagation()
+          props?.fireEvent?.({
+            type: Event.DragStart,
+            target: event.target,
+            data: { ...props }
+          })
           event.dataTransfer.setData(DiagramDrag.NodeDrag, JSON.stringify(props))
           // NOTE: onDragOver we cannot access dataTransfer data
           // in order to detect if we can drop, we are setting and using "keys" and then
@@ -160,6 +167,9 @@ function PipelineStepNode(props: PipelineStepNodeProps): JSX.Element {
         }}
       >
         <div className="execution-running-animation" />
+        {props.data.isInComplete && (
+          <Icon className={defaultCss.inComplete} size={12} name={'warning-sign'} color="orange500" />
+        )}
         {stepIcon && (
           <Icon
             size={28}
@@ -177,6 +187,30 @@ function PipelineStepNode(props: PipelineStepNodeProps): JSX.Element {
             className={defaultCss.secondaryIcon}
             {...secondaryIconProps}
           />
+        )}
+        {props.data?.skipCondition && (
+          <div className={defaultCss.conditional}>
+            <Text
+              tooltip={`Skip condition:\n${props.data?.skipCondition}`}
+              tooltipProps={{
+                isDark: true
+              }}
+            >
+              <Icon size={26} name={'conditional-skip-new'} color="white" />
+            </Text>
+          </div>
+        )}
+        {props.data?.conditionalExecutionEnabled && (
+          <div className={defaultCss.conditional}>
+            <Text
+              tooltip={getString('pipeline.conditionalExecution.title')}
+              tooltipProps={{
+                isDark: true
+              }}
+            >
+              <Icon size={26} name={'conditional-skip-new'} color="white" />
+            </Text>
+          </div>
         )}
         {CODE_ICON && (
           <Icon
@@ -208,7 +242,7 @@ function PipelineStepNode(props: PipelineStepNodeProps): JSX.Element {
         <SVGMarker />
       </div>
       {props.name && (
-        <div className={defaultCss.stepNameText}>
+        <div className={defaultCss.nodeNameText}>
           <Text
             width={125}
             font={{ size: 'normal', align: 'center' }}

@@ -25,6 +25,7 @@ export const Event: { [key: string]: string } = {
   AddParallelNode: 'addParallelNode',
   SourcePortChanged: 'sourcePortChanged',
   TargetPortChanged: 'targetPortChanged',
+  DragStart: 'dragStart',
   DropLinkEvent: 'dropLinkEvent',
   DropNodeEvent: 'dropNodeEvent',
   MouseEnterNode: 'mouseEnterNode',

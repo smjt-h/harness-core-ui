@@ -9,7 +9,7 @@ import * as React from 'react'
 import classnames from 'classnames'
 import { Icon, Layout, Text, Button, ButtonVariation } from '@wings-software/uicore'
 import { Color } from '@harness/design-system'
-import { defaultTo } from 'lodash-es'
+import { defaultTo, get } from 'lodash-es'
 import { Event, DiagramDrag, DiagramType } from '@pipeline/components/Diagram'
 import { STATIC_SERVICE_GROUP_NAME } from '@pipeline/utils/executionUtils'
 import { useStrings } from 'framework/strings'
@@ -27,7 +27,10 @@ export function StepGroupNode(props: any): JSX.Element {
   const [isNodeCollapsed, setNodeCollapsed] = React.useState(false)
   const CreateNode: React.FC<any> | undefined = props?.getNode?.(NodeType.CreateNode)?.component
   const DefaultNode: React.FC<any> | undefined = props?.getDefaultNode()?.component
-  const stepsData = props?.data?.stepGroup?.steps || props?.data?.step?.data?.stepGroup?.steps
+  const stepGroupData = defaultTo(props?.data?.stepGroup, props?.data?.step?.data?.stepGroup)
+  const stepsData = stepGroupData?.steps || stepGroupData?.steps
+  const isNestedStepGroup = Boolean(get(props, 'data.step.data.isNestedGroup'))
+
   React.useEffect(() => {
     props?.updateGraphLinks?.()
   }, [isNodeCollapsed])
@@ -54,19 +57,59 @@ export function StepGroupNode(props: any): JSX.Element {
               allowAdd && setVisibilityOfAdd(false)
             }}
             onDragLeave={() => allowAdd && setVisibilityOfAdd(false)}
+            style={stepGroupData?.containerCss ? stepGroupData?.containerCss : undefined}
             className={classnames(
               css.stepGroup,
               { [css.firstnode]: !props?.isParallelNode },
-              { [css.marginBottom]: props?.isParallelNode }
+              { [css.marginBottom]: props?.isParallelNode },
+              { [css.nestedGroup]: isNestedStepGroup }
             )}
           >
-            <div className={classnames(defaultCss.markerStart, defaultCss.stepMarker, defaultCss.stepGroupMarkerLeft)}>
+            <div
+              className={classnames(
+                defaultCss.markerStart,
+                defaultCss.stepMarker,
+                defaultCss.stepGroupMarkerLeft,
+                css.markerStart
+              )}
+            >
               <SVGMarker />
             </div>
-            <div className={classnames(defaultCss.markerEnd, defaultCss.stepMarker, defaultCss.stepGroupMarkerRight)}>
+            <div
+              className={classnames(
+                defaultCss.markerEnd,
+                defaultCss.stepMarker,
+                defaultCss.stepGroupMarkerRight,
+                css.markerStart
+              )}
+            >
               <SVGMarker />
             </div>
             <div id={props?.id} className={css.horizontalBar}></div>
+            {props.data?.skipCondition && (
+              <div className={css.conditional}>
+                <Text
+                  tooltip={`Skip condition:\n${props.data?.skipCondition}`}
+                  tooltipProps={{
+                    isDark: true
+                  }}
+                >
+                  <Icon size={26} name={'conditional-skip-new'} color="white" />
+                </Text>
+              </div>
+            )}
+            {props.data?.conditionalExecutionEnabled && (
+              <div className={css.conditional}>
+                <Text
+                  tooltip={getString('pipeline.conditionalExecution.title')}
+                  tooltipProps={{
+                    isDark: true
+                  }}
+                >
+                  <Icon size={26} name={'conditional-skip-new'} color="white" />
+                </Text>
+              </div>
+            )}
             <div className={css.stepGroupHeader}>
               <Layout.Horizontal
                 spacing="xsmall"
@@ -85,7 +128,30 @@ export function StepGroupNode(props: any): JSX.Element {
                     setNodeCollapsed(true)
                   }}
                 />
-                <Text lineClamp={1}>{props.name}</Text>
+                <Text
+                  data-nodeid={props.id}
+                  className={css.cursor}
+                  onMouseEnter={event => {
+                    event.stopPropagation()
+                    props?.fireEvent?.({
+                      type: Event.MouseEnterNode,
+                      target: event.target,
+                      data: { ...props }
+                    })
+                  }}
+                  onMouseLeave={event => {
+                    event.stopPropagation()
+                    setVisibilityOfAdd(false)
+                    props?.fireEvent?.({
+                      type: Event.MouseLeaveNode,
+                      target: event.target,
+                      data: { ...props }
+                    })
+                  }}
+                  lineClamp={1}
+                >
+                  {props.name}
+                </Text>
               </Layout.Horizontal>
             </div>
             <div className={css.stepGroupBody}>

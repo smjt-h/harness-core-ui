@@ -6,7 +6,7 @@
  */
 
 import type { IconName } from '@harness/uicore'
-import { isEmpty } from 'lodash-es'
+import { get, isEmpty } from 'lodash-es'
 import type { PipelineGraphState } from '@pipeline/components/AbstractNode/types'
 import type { ExecutionGraph, ExecutionNode, NodeRunInfo } from 'services/pipeline-ng'
 import { getStatusProps } from '@pipeline/components/ExecutionStageDiagram/ExecutionStageDiagramUtils'
@@ -81,7 +81,7 @@ const addDependencies = (dependencies: ServiceDependency[], stepsPipelineNodes: 
           nodeType: NodeType.STEP_GROUP,
           type: NodeType.STEP_GROUP,
           data: {},
-          steps: [{ parallel: items.map(stepData => ({ step: stepData })) }] // processStepGroupSteps({ nodeAdjacencyListMap, id: parentNodeId, nodeMap, rootNodes })
+          steps: [{ parallel: items.map(stepData => ({ step: { ...stepData } })) }] // processStepGroupSteps({ nodeAdjacencyListMap, id: parentNodeId, nodeMap, rootNodes })
         }
       }
     }
@@ -195,9 +195,11 @@ const processStepGroupSteps = ({ nodeAdjacencyListMap, id, nodeMap, rootNodes }:
         rootNodes
       )
       if (nodeMap?.[childId].name === 'parallel') {
-        steps.push({ parallel: childrenNodes.map(node => ({ step: node })) })
+        steps.push({
+          parallel: childrenNodes.map(node => ({ step: { ...node, ...getNodeConditions(node as ExecutionNode) } }))
+        })
       } else {
-        steps.push(...childrenNodes.map(node => ({ step: node })))
+        steps.push(...childrenNodes.map(node => ({ step: { ...node, ...getNodeConditions(node as ExecutionNode) } })))
       }
     } else {
       steps.push({ step: nodeMap?.[childId] })
@@ -313,13 +315,15 @@ interface ProcessGroupItemArgs {
   items: Array<PipelineGraphState>
   id: string
   isRollbackNext?: boolean
+  isNestedGroup?: boolean
 }
 const processGroupItem = ({
   items,
   id,
   nodeMap,
   nodeAdjacencyListMap,
-  rootNodes
+  rootNodes,
+  isNestedGroup = false
 }: // isRollbackNext
 ProcessGroupItemArgs): void => {
   const nodeData = nodeMap?.[id]
@@ -339,7 +343,7 @@ ProcessGroupItemArgs): void => {
       const stepGroupChildrenNodes = nodeAdjacencyListMap?.[childStep?.uuid as string]?.children
       steps.push({
         parallel: stepGroupChildrenNodes?.map(childItemId => ({
-          step: nodeMap?.[childItemId]
+          step: { ...nodeMap?.[childItemId], ...getNodeConditions(nodeMap?.[childItemId] as ExecutionNode) }
         }))
       } as ParallelStepPipelineGraphState)
     } else {
@@ -368,7 +372,8 @@ ProcessGroupItemArgs): void => {
       nodeAdjacencyListMap,
       nodeMap,
       rootNodes,
-      nextIds: nodeAdjacencyListMap?.[childStep?.uuid as string]?.nextIds || []
+      nextIds: nodeAdjacencyListMap?.[childStep?.uuid as string]?.nextIds || [],
+      isNestedGroup: true
     })
     processedNodes = processedNodes.map(stepData => ({ step: stepData })) as StepPipelineGraphState[]
     steps.push(...processedNodes)
@@ -384,6 +389,8 @@ ProcessGroupItemArgs): void => {
     id: nodeData.uuid as string,
     data: nodeData
   }
+
+  const isRollbackNext = nodeData?.name?.endsWith(StepGroupRollbackIdentifier) ?? false
   const finalDataItem = {
     id: nodeData.uuid as string,
     identifier: nodeData?.identifier as string,
@@ -392,16 +399,22 @@ ProcessGroupItemArgs): void => {
     nodeType: 'STEP_GROUP',
     icon: StepTypeIconsMap.STEP_GROUP as IconName,
     status: nodeData?.status as ExecutionStatus,
+
+    ...getNodeConditions(nodeData),
     data: {
       ...(nodeData?.stepType === NodeType.STEP_GROUP || nodeData.stepType === NodeType.ROLLBACK_OPTIONAL_CHILD_CHAIN
         ? {
+            isNestedGroup,
             ...iconData,
             stepGroup: {
               ...item,
               type: 'STEP_GROUP',
               nodeType: 'STEP_GROUP',
               icon: StepTypeIconsMap.STEP_GROUP,
-              steps
+              steps,
+              containerCss: {
+                ...(isRollbackNext ? RollbackContainerCss : {})
+              }
             }
           }
         : item)
@@ -414,22 +427,23 @@ interface ProcessNextNodesParams {
   nodeMap: ExecutionGraph['nodeMap']
   nodeAdjacencyListMap: ExecutionGraph['nodeAdjacencyListMap']
   rootNodes: Array<PipelineGraphState>
+  isNestedGroup?: boolean
 }
 export const processNextNodes = ({
   nodeMap,
   nodeAdjacencyListMap,
   nextIds,
-  rootNodes
+  rootNodes,
+  isNestedGroup = false
 }: ProcessNextNodesParams): PipelineGraphState[] => {
-  const result: any[] = []
+  const result: PipelineGraphState[] = []
   nextIds.forEach(id => {
     const nodeDataNext = nodeMap?.[id]
-
     const isRollbackNext = nodeDataNext?.name?.endsWith(StepGroupRollbackIdentifier) ?? false
     if (nodeDataNext?.stepType === NodeType.FORK) {
       processParallelNodeData({ items: result, id, nodeAdjacencyListMap, nodeMap, rootNodes })
     } else if (nodeDataNext?.stepType === NodeType.STEP_GROUP || (isRollbackNext && nodeDataNext)) {
-      processGroupItem({ items: result, id, isRollbackNext, nodeMap, nodeAdjacencyListMap, rootNodes })
+      processGroupItem({ items: result, id, isRollbackNext, nodeMap, nodeAdjacencyListMap, rootNodes, isNestedGroup })
     } else {
       processSingleItem({ id, items: result, nodeMap, nodeAdjacencyListMap, rootNodes })
     }
@@ -560,7 +574,7 @@ export const getExecutionStageDiagramListeners = ({
       const stageData = allNodeMap[event?.data?.id]
       const target = document.querySelector(`[data-nodeid="${event?.data?.id}"]`)
       if (stageData) {
-        onMouseEnter({ data: stageData, event: { ...event, target } })
+        onMouseEnter({ data: { ...stageData, ...getNodeConditions(stageData) }, event: { ...event, target } })
       }
     },
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -569,4 +583,13 @@ export const getExecutionStageDiagramListeners = ({
     }
   }
   return nodeListeners
+}
+
+const getNodeConditions = (node: ExecutionNode): { skipCondition: any | undefined; when: any | undefined } => {
+  const skipInfo = get(node, 'skipInfo')
+  const when = get(node, 'nodeRunInfo')
+  return {
+    skipCondition: skipInfo?.evaluatedCondition ? skipInfo.skipCondition : undefined,
+    when
+  }
 }

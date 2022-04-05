@@ -6,7 +6,7 @@
  */
 
 import React, { useEffect } from 'react'
-import { cloneDeep, set, isEmpty, get } from 'lodash-es'
+import { cloneDeep, set, isEmpty, get, defaultTo } from 'lodash-es'
 import type { NodeModelListener, LinkModelListener } from '@projectstorm/react-diagrams-core'
 import type { BaseModelListener } from '@projectstorm/react-canvas-core'
 import { Button, ButtonVariation, Layout, Text } from '@wings-software/uicore'
@@ -504,23 +504,28 @@ function ExecutionGraphRef<T extends StageElementConfig>(
       // }
     }
   }
-
+  const dragStart = (event: any): void => {
+    const eventTemp = event as DefaultNodeEvent
+    eventTemp.stopPropagation?.()
+    dynamicPopoverHandler?.hide()
+  }
   const mouseEnterNodeListener = (event: any): void => {
     const eventTemp = event as DefaultNodeEvent
-    eventTemp.stopPropagation()
+    eventTemp.stopPropagation?.()
     dynamicPopoverHandler?.hide()
     const node = getStepFromNode(state.stepsData, eventTemp.entity).node as StepElementConfig
-    if (node?.when) {
-      const { stageStatus, condition } = node.when
+    const whenCondition = defaultTo(get(eventTemp, 'data.data.step.when'), node?.when)
+    if (whenCondition) {
+      const { stageStatus, condition } = whenCondition
       if (stageStatus === PipelineOrStageStatus.SUCCESS && isEmpty(condition)) {
         return
       }
       dynamicPopoverHandler?.show(
         eventTemp.target,
         {
-          event: eventTemp,
+          event: defaultTo(get(eventTemp, 'data.data'), eventTemp),
           isHoverView: true,
-          data: node
+          data: defaultTo(get(eventTemp, 'data.data.step'), node)
         },
         { useArrows: true, darkMode: false, fixedPosition: false, placement: 'top' }
       )
@@ -529,7 +534,8 @@ function ExecutionGraphRef<T extends StageElementConfig>(
 
   const mouseLeaveNodeListener = (event: any): void => {
     const eventTemp = event as DefaultNodeEvent
-    eventTemp.stopPropagation()
+    eventTemp.stopPropagation?.()
+    dynamicPopoverHandler?.hide()
   }
 
   const nodeListeners: NodeModelListener = {
@@ -963,7 +969,10 @@ function ExecutionGraphRef<T extends StageElementConfig>(
     [Event.RemoveNode]: nodeListenersNew[Event.RemoveNode],
     [Event.AddLinkClicked]: linkListenersNew[Event.AddLinkClicked],
     [Event.DropLinkEvent]: linkListenersNew[Event.DropLinkEvent],
-    [Event.CanvasClick]: canvasClick
+    [Event.CanvasClick]: canvasClick,
+    [Event.MouseEnterNode]: mouseEnterNodeListener,
+    [Event.MouseLeaveNode]: mouseLeaveNodeListener,
+    [Event.DragStart]: dragStart
   }
   diagram.registerListeners(listerners)
 

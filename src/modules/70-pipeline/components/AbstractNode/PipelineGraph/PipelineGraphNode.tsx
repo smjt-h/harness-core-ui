@@ -8,9 +8,17 @@
 import React, { useRef, useState, useLayoutEffect, ForwardedRef } from 'react'
 import { defaultTo, throttle } from 'lodash-es'
 import classNames from 'classnames'
-import { BaseReactComponentProps, FireEventMethod, NodeType } from '../types'
 import GroupNode from '../Nodes/GroupNode/GroupNode'
-import type { NodeCollapsibleProps, NodeDetails, NodeIds, PipelineGraphState, GetNodeMethod } from '../types'
+import type {
+  NodeCollapsibleProps,
+  NodeDetails,
+  NodeIds,
+  PipelineGraphState,
+  GetNodeMethod,
+  BaseReactComponentProps,
+  FireEventMethod
+} from '../types'
+import { NodeType } from '../types'
 import { useNodeResizeObserver } from '../hooks/useResizeObserver'
 import { isFirstNodeAGroupNode, isNodeParallel, shouldAttachRef, shouldRenderGroupNode, showChildNode } from './utils'
 import css from './PipelineGraph.module.scss'

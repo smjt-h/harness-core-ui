@@ -9,7 +9,10 @@ import { defaultTo, get, throttle } from 'lodash-es'
 import type { IconName } from '@harness/uicore'
 import { v4 as uuid } from 'uuid'
 import type { ExecutionWrapperConfig, StageElementWrapperConfig } from 'services/cd-ng'
-import { StepTypeToPipelineIconMap } from '@pipeline/components/PipelineStudio/ExecutionGraph/ExecutionGraphUtil'
+import {
+  isCustomGeneratedString,
+  StepTypeToPipelineIconMap
+} from '@pipeline/components/PipelineStudio/ExecutionGraph/ExecutionGraphUtil'
 import { stageTypeToIconMap } from '@pipeline/utils/constants'
 import type { DependencyElement } from 'services/ci'
 import { getDefaultBuildDependencies } from '@pipeline/utils/stageHelpers'
@@ -340,7 +343,13 @@ const trasformStepsData = (steps: ExecutionWrapperConfig[], graphType: PipelineG
         nodeType: nodeType as string,
         icon: iconName,
         graphType,
-        data: step
+        data: {
+          ...step,
+          isInComplete: isCustomGeneratedString(step.step.identifier),
+          conditionalExecutionEnabled: step.step?.when
+            ? step.step?.when?.stageStatus !== 'Success' || !!step.step?.when?.condition?.trim()
+            : false
+        }
       })
     } else if (step?.parallel?.length) {
       const [first, ...rest] = step.parallel
@@ -353,7 +362,10 @@ const trasformStepsData = (steps: ExecutionWrapperConfig[], graphType: PipelineG
           type: 'StepGroup',
           nodeType: 'StepGroup',
           icon: iconName,
-          data: first,
+          data: {
+            ...first,
+            isInComplete: isCustomGeneratedString(first.stepGroup?.identifier)
+          },
           children: trasformStepsData(rest as ExecutionWrapperConfig[], graphType),
           graphType
         })
@@ -366,7 +378,13 @@ const trasformStepsData = (steps: ExecutionWrapperConfig[], graphType: PipelineG
           type: first?.step?.type as string,
           nodeType: nodeType as string,
           icon: iconName,
-          data: first,
+          data: {
+            ...first,
+            isInComplete: isCustomGeneratedString(first?.step?.identifier as string),
+            conditionalExecutionEnabled: first.step?.when
+              ? first.step?.when?.stageStatus !== 'Success' || !!first.step?.when?.condition?.trim()
+              : false
+          },
           children: trasformStepsData(rest, graphType),
           graphType
         })
@@ -380,7 +398,10 @@ const trasformStepsData = (steps: ExecutionWrapperConfig[], graphType: PipelineG
         type: 'StepGroup',
         nodeType: 'StepGroup',
         icon: iconName,
-        data: step,
+        data: {
+          ...step,
+          isInComplete: isCustomGeneratedString(step.stepGroup?.identifier as string)
+        },
         graphType
       })
     }
