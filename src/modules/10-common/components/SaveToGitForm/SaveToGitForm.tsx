@@ -336,7 +336,7 @@ const SaveToGitForm: React.FC<ModalConfigureProps & SaveToGitFormProps> = props 
             props.onSuccess?.({
               ...pick(formData, ['repoIdentifier', 'rootFolder', 'filePath', 'commitMsg', 'createPr', 'targetBranch']),
               isNewBranch,
-              branch: isNewBranch ? formData.branch : defaultInitialFormData.branch
+              branch: isNewBranch ? formData.branch.trim() : defaultInitialFormData.branch
             })
           }}
         >
