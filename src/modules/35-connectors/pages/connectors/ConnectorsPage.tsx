@@ -66,7 +66,7 @@ import type { CrudOperation } from '@common/components/Filter/FilterCRUD/FilterC
 import { useDocumentTitle } from '@common/hooks/useDocumentTitle'
 import FilterSelector from '@common/components/Filter/FilterSelector/FilterSelector'
 import { FeatureFlag } from '@common/featureFlags'
-import { useFeatureFlag } from '@common/hooks/useFeatureFlag'
+import { useFeatureFlags } from '@common/hooks/useFeatureFlag'
 import type { ModulePathParams, ProjectPathProps } from '@common/interfaces/RouteInterfaces'
 import RbacButton from '@rbac/components/Button/Button'
 import { PermissionIdentifier } from '@rbac/interfaces/PermissionIdentifier'
@@ -110,7 +110,7 @@ interface ConnectorsListProps {
 }
 
 const ConnectorsPage: React.FC<ConnectorsListProps> = ({ catalogueMockData, statisticsMockData, filtersMockData }) => {
-  const isAzureBlobEnabled = useFeatureFlag(FeatureFlag.AZURE_BLOB_SM)
+  const { AZURE_BLOB_SM, CHI_CUSTOM_HEALTH, ERROR_TRACKING_ENABLED } = useFeatureFlags()
   const { getString } = useStrings()
   const { getRBACErrorMessage } = useRBACError()
   const { isGitSyncEnabled } = useAppStore()
@@ -144,8 +144,6 @@ const ConnectorsPage: React.FC<ConnectorsListProps> = ({ catalogueMockData, stat
   }
   const history = useHistory()
   useDocumentTitle(getString('connectorsLabel'))
-  const isCustomHealthEnabled = useFeatureFlag(FeatureFlag.CHI_CUSTOM_HEALTH)
-  const isErrorTrackingEnabled = useFeatureFlag(FeatureFlag.ERROR_TRACKING_ENABLED)
   const { trackEvent } = useTelemetry()
 
   const ConnectorCatalogueNames = new Map<ConnectorCatalogueItem['category'], string>()
@@ -308,7 +306,7 @@ const ConnectorsPage: React.FC<ConnectorsListProps> = ({ catalogueMockData, stat
     originalData.forEach(value => {
       if (value.category === 'SECRET_MANAGER') {
         value.connectors = ['Vault', 'AwsKms', 'AzureKeyVault', 'AwsSecretManager', 'GcpKms']
-        if (isAzureBlobEnabled) {
+        if (AZURE_BLOB_SM) {
           value.connectors.push('AzureBlob')
         }
       }
@@ -361,12 +359,12 @@ const ConnectorsPage: React.FC<ConnectorsListProps> = ({ catalogueMockData, stat
               },
               items:
                 item.connectors
-                  ?.filter(connector => (connector === 'ErrorTracking' ? isErrorTrackingEnabled : true))
+                  ?.filter(connector => (connector === 'ErrorTracking' ? ERROR_TRACKING_ENABLED : true))
                   .sort((a, b) => (getConnectorDisplayName(a) < getConnectorDisplayName(b) ? -1 : 1))
                   .filter(entry => {
                     const name = entry.valueOf() || ''
                     if (name !== 'CustomHealth') return true
-                    return isCustomHealthEnabled !== false
+                    return CHI_CUSTOM_HEALTH !== false
                   })
                   .map(entry => {
                     const name = entry.valueOf() || ''
