@@ -316,6 +316,8 @@ export default function BuildInfraSpecifications({ children }: React.PropsWithCh
   }
 
   const getKubernetesInfraPayload = useMemo((): BuildInfraFormValues => {
+    const autoServiceAccountToken = (stage?.stage?.spec?.infrastructure as K8sDirectInfraYaml)?.spec
+      ?.automountServiceAccountToken
     return {
       namespace: (stage?.stage?.spec?.infrastructure as K8sDirectInfraYaml)?.spec?.namespace,
       serviceAccountName: (stage?.stage?.spec?.infrastructure as K8sDirectInfraYaml)?.spec?.serviceAccountName,
@@ -331,8 +333,7 @@ export default function BuildInfraSpecifications({ children }: React.PropsWithCh
       buildInfraType: 'KubernetesDirect',
       priorityClass: (stage?.stage?.spec?.infrastructure as K8sDirectInfraYaml)?.spec
         ?.priorityClass as unknown as string,
-      automountServiceAccountToken:
-        (stage?.stage?.spec?.infrastructure as K8sDirectInfraYaml)?.spec?.automountServiceAccountToken || true,
+      automountServiceAccountToken: typeof autoServiceAccountToken === 'undefined' ? true : autoServiceAccountToken,
       privileged: (stage?.stage?.spec?.infrastructure as K8sDirectInfraYaml)?.spec?.containerSecurityContext
         ?.privileged,
       allowPrivilegeEscalation: (stage?.stage?.spec?.infrastructure as K8sDirectInfraYaml)?.spec
@@ -828,6 +829,7 @@ export default function BuildInfraSpecifications({ children }: React.PropsWithCh
             }}
           />
         </Container>
+        <Separator topSeparation={12} />
         <div className={css.tabSubHeading} id="containerSecurityContext">
           {getString('pipeline.buildInfra.containerSecurityContext')}
         </div>
@@ -941,6 +943,7 @@ export default function BuildInfraSpecifications({ children }: React.PropsWithCh
             }}
           />
         </Container>
+        <Separator topSeparation={0} />
       </>
     )
   }, [])
