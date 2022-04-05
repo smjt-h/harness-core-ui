@@ -120,7 +120,7 @@ export function AppStoreProvider(props: React.PropsWithChildren<unknown>): React
       telemetry.identify(userInfo?.data?.email)
     }
     if (userInfo?.data) {
-      window.Userpilot?.identify(userInfo.data.uuid, {
+      window.userpilot?.identify(userInfo.data.uuid, {
         name: userInfo.data.name || '',
         email: userInfo.data.email
       })
