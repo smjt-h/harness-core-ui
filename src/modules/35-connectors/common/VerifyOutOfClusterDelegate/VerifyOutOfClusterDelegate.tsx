@@ -31,7 +31,11 @@ import {
 import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
 import { ErrorHandler } from '@common/components/ErrorHandler/ErrorHandler'
 import { useTelemetry } from '@common/hooks/useTelemetry'
-import { CE_K8S_CONNECTOR_CREATION_EVENTS } from '@connectors/trackingConstants'
+import {
+  CE_AWS_CONNECTOR_CREATION_EVENTS,
+  CE_AZURE_CONNECTOR_CREATION_EVENTS,
+  CE_K8S_CONNECTOR_CREATION_EVENTS
+} from '@connectors/trackingConstants'
 import css from './VerifyOutOfClusterDelegate.module.scss'
 
 interface RenderUrlInfo {
@@ -50,6 +54,7 @@ interface VerifyOutOfClusterDelegateProps {
   connectorInfo: ConnectorInfoDTO | void
   gitDetails?: EntityGitDetails
   stepIndex?: number // will make this mandatory once all usages sends the value
+  isEditAndPermissionVisible?: boolean
 }
 export interface VerifyOutOfClusterStepProps extends ConnectorConfigDTO {
   isEditMode?: boolean
@@ -144,7 +149,7 @@ const RenderUrlInfo: React.FC<StepProps<VerifyOutOfClusterStepProps> & RenderUrl
 
 const VerifyOutOfClusterDelegate: React.FC<StepProps<VerifyOutOfClusterStepProps> & VerifyOutOfClusterDelegateProps> =
   props => {
-    const { prevStepData, nextStep, isLastStep = false, connectorInfo } = props
+    const { prevStepData, nextStep, isLastStep = false, connectorInfo, isEditAndPermissionVisible = true } = props
     const branch = props.isStep ? prevStepData?.branch : props.gitDetails?.branch
     const repoIdentifier = props.isStep ? prevStepData?.repo : props.gitDetails?.repoIdentifier
     const {
@@ -168,6 +173,10 @@ const VerifyOutOfClusterDelegate: React.FC<StepProps<VerifyOutOfClusterStepProps
     useEffect(() => {
       if (props.type === Connectors.CE_KUBERNETES) {
         trackEvent(CE_K8S_CONNECTOR_CREATION_EVENTS.LOAD_CONNECTION_TEST, {})
+      } else if (props.type === Connectors.CEAWS) {
+        trackEvent(CE_AWS_CONNECTOR_CREATION_EVENTS.LOAD_CONNECTION_TEST, {})
+      } else if (props.type === Connectors.CE_AZURE) {
+        trackEvent(CE_AZURE_CONNECTOR_CREATION_EVENTS.LOAD_CONNECTION_TEST, {})
       }
     }, [])
 
@@ -276,32 +285,34 @@ const VerifyOutOfClusterDelegate: React.FC<StepProps<VerifyOutOfClusterStepProps
             genericHandler
           )}
           {/* TODO: when install delegate behaviour is known {testConnectionResponse?.data?.delegateId ? ( */}
-          <Layout.Horizontal spacing="small">
-            {props.isStep ? (
-              <Button
-                text={getString('editCredentials')}
-                variation={ButtonVariation.SECONDARY}
-                onClick={() => {
-                  const isTransitionToCredentialsStepSuccessful = props.gotoStep?.({
-                    stepIdentifier: CONNECTOR_CREDENTIALS_STEP_IDENTIFIER,
-                    prevStepData
-                  })
-                  if (!isTransitionToCredentialsStepSuccessful) {
-                    props.previousStep?.({ ...prevStepData })
-                  }
-                  props.setIsEditMode?.(true) // Remove after all usages
-                }}
-                withoutBoxShadow
-              />
-            ) : null}
-            <Text
-              onClick={() => window.open(getPermissionsLink(), '_blank')}
-              className={cx(css.veiwPermission, { [css.marginAuto]: props.isStep })}
-              intent="primary"
-            >
-              {getString('connectors.testConnectionStep.viewPermissions')}
-            </Text>
-          </Layout.Horizontal>
+          {isEditAndPermissionVisible ? (
+            <Layout.Horizontal spacing="small">
+              {props.isStep ? (
+                <Button
+                  text={getString('editCredentials')}
+                  variation={ButtonVariation.SECONDARY}
+                  onClick={() => {
+                    const isTransitionToCredentialsStepSuccessful = props.gotoStep?.({
+                      stepIdentifier: CONNECTOR_CREDENTIALS_STEP_IDENTIFIER,
+                      prevStepData
+                    })
+                    if (!isTransitionToCredentialsStepSuccessful) {
+                      props.previousStep?.({ ...prevStepData })
+                    }
+                    props.setIsEditMode?.(true) // Remove after all usages
+                  }}
+                  withoutBoxShadow
+                />
+              ) : null}
+              <Text
+                onClick={() => window.open(getPermissionsLink(), '_blank')}
+                className={cx(css.veiwPermission, { [css.marginAuto]: props.isStep })}
+                intent="primary"
+              >
+                {getString('connectors.testConnectionStep.viewPermissions')}
+              </Text>
+            </Layout.Horizontal>
+          ) : null}
           {/* ) : (
           <Button text={getString('connectors.testConnectionStep.installNewDelegate')} disabled width="160px" />
         )} */}
