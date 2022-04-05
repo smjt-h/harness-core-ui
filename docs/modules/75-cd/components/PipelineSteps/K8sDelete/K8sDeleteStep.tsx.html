@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">92.13% </span>
+                <span class="strong">96.85% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>117/127</span>
+                <span class='fraction'>123/127</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">70.51% </span>
+                <span class="strong">70.83% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>440/624</span>
+                <span class='fraction'>442/624</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">92.13% </span>
+                <span class="strong">96.85% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>117/127</span>
+                <span class='fraction'>123/127</span>
             </div>
         
             
@@ -1126,7 +1126,7 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">14x</span>
+<span class="cline-any cline-yes">17x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1171,9 +1171,9 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">27x</span>
-<span class="cline-any cline-yes">27x</span>
-<span class="cline-any cline-yes">27x</span>
+<span class="cline-any cline-yes">32x</span>
+<span class="cline-any cline-yes">32x</span>
+<span class="cline-any cline-yes">32x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1570,10 +1570,10 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1608,16 +1608,16 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -2433,10 +2433,10 @@ export class K8sDeleteStep extends PipelineStep&lt;K8sDeleteFormData&gt; {
         manifestPathsSchema.validateSync(data)
       } catch (e) {
         /* istanbul ignore else */
-<span class="cstat-no" title="statement not covered" >        <span class="missing-if-branch" title="if path not taken" >I</span>if (e instanceof Yup.ValidationError) {</span>
-          const err = <span class="cstat-no" title="statement not covered" >yupToFormErrors(e)</span>
+        if (e instanceof Yup.ValidationError) {
+          const err = yupToFormErrors(e)
 &nbsp;
-<span class="cstat-no" title="statement not covered" >          Object.assign(errors, err)</span>
+          Object.assign(errors, err)
         }
       }
     }
@@ -2471,10 +2471,10 @@ export class K8sDeleteStep extends PipelineStep&lt;K8sDeleteFormData&gt; {
         resourceNamesSchema.validateSync(data)
       } catch (e) {
         /* istanbul ignore else */
-<span class="cstat-no" title="statement not covered" >        <span class="missing-if-branch" title="if path not taken" >I</span>if (e instanceof Yup.ValidationError) {</span>
-          const err = <span class="cstat-no" title="statement not covered" >yupToFormErrors(e)</span>
+        if (e instanceof Yup.ValidationError) {
+          const err = yupToFormErrors(e)
 &nbsp;
-<span class="cstat-no" title="statement not covered" >          Object.assign(errors, err)</span>
+          Object.assign(errors, err)
         }
       }
     }
@@ -2653,7 +2653,7 @@ export class K8sDeleteStep extends PipelineStep&lt;K8sDeleteFormData&gt; {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Tue Apr 05 2022 07:53:29 GMT+0000 (Greenwich Mean Time)
+                at Tue Apr 05 2022 08:34:27 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../../prettify.js"></script>
