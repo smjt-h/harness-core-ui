@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">81.82% </span>
+                <span class="strong">82.46% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>45/55</span>
+                <span class='fraction'>47/57</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">62.5% </span>
+                <span class="strong">58.82% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>25/40</span>
+                <span class='fraction'>20/34</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">81.82% </span>
+                <span class="strong">82.46% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>45/55</span>
+                <span class='fraction'>47/57</span>
             </div>
         
             
@@ -250,7 +250,9 @@
 <a name='L191'></a><a href='#L191'>191</a>
 <a name='L192'></a><a href='#L192'>192</a>
 <a name='L193'></a><a href='#L193'>193</a>
-<a name='L194'></a><a href='#L194'>194</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L194'></a><a href='#L194'>194</a>
+<a name='L195'></a><a href='#L195'>195</a>
+<a name='L196'></a><a href='#L196'>196</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -271,6 +273,7 @@
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -287,6 +290,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-yes">6x</span>
@@ -454,7 +458,7 @@ import React, { useState } from 'react'
 import cx from 'classnames'
 import { useParams } from 'react-router-dom'
 import { Radio } from '@blueprintjs/core'
-import { Button, Card, Container, getErrorInfoFromErrorObject, Layout, StepProps, Text } from '@wings-software/uicore'
+import { Button, Card, Container, Layout, StepProps, Text } from '@wings-software/uicore'
 import { defaultTo, pick } from 'lodash-es'
 import { Color } from '@harness/design-system'
 import { useStrings } from 'framework/strings'
@@ -463,6 +467,7 @@ import { useToaster } from '@common/exports'
 import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
 import DelegatesGit from '@gitsync/icons/DelegatesGit.svg'
 import PlatformGit from '@gitsync/icons/PlatformGit.svg'
+import useRBACError from '@rbac/utils/useRBACError/useRBACError'
 import css from './GitConnection.module.scss'
 &nbsp;
 interface GitConnectionStepProps {
@@ -481,6 +486,7 @@ enum Agent {
 &nbsp;
 const GitConnection: React.FC&lt;StepProps&lt;GitConnectionStepProps&gt; &amp; GitConnectionProps&gt; = props =&gt; {
   const { accountId, projectIdentifier, orgIdentifier } = useParams&lt;ProjectPathProps&gt;()
+  const { getRBACErrorMessage } = useRBACError()
   const { prevStepData, onSuccess, isLastStep } = props
   const [isSaaS, setIsSaaS] = useState&lt;boolean | undefined&gt;()
   const [loading, setLoading] = useState&lt;boolean&gt;(true)
@@ -518,7 +524,7 @@ const GitConnection: React.FC&lt;StepProps&lt;GitConnectionStepProps&gt; &amp; G
         }
       })
       .catch(<span class="fstat-no" title="function not covered" >e </span>=&gt; {
-<span class="cstat-no" title="statement not covered" >        showError(getErrorInfoFromErrorObject(e))</span>
+<span class="cstat-no" title="statement not covered" >        showError(getRBACErrorMessage(e))</span>
       })
   }, [prevStepData<span class="branch-0 cbranch-no" title="branch not covered" >?.r</span>epo])
 &nbsp;
@@ -554,7 +560,7 @@ const GitConnection: React.FC&lt;StepProps&lt;GitConnectionStepProps&gt; &amp; G
 <span class="cstat-no" title="statement not covered" >        props.nextStep?.(prevStepData)</span>
       }
     } catch (e) {
-      showError(e.data<span class="branch-1 cbranch-no" title="branch not covered" >?.message </span>|| e.message)
+      showError(getRBACErrorMessage(e))
     }
     setLoading(false)
   }
@@ -643,7 +649,7 @@ export default GitConnection
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Tue Apr 05 2022 08:34:27 GMT+0000 (Greenwich Mean Time)
+                at Tue Apr 05 2022 09:58:07 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../prettify.js"></script>

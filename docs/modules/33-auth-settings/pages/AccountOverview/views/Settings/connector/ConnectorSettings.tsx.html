@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">96.55% </span>
+                <span class="strong">96.77% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>28/29</span>
+                <span class='fraction'>30/31</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">96.55% </span>
+                <span class="strong">96.77% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>28/29</span>
+                <span class='fraction'>30/31</span>
             </div>
         
             
@@ -186,25 +186,7 @@
 <a name='L127'></a><a href='#L127'>127</a>
 <a name='L128'></a><a href='#L128'>128</a>
 <a name='L129'></a><a href='#L129'>129</a>
-<a name='L130'></a><a href='#L130'>130</a>
-<a name='L131'></a><a href='#L131'>131</a>
-<a name='L132'></a><a href='#L132'>132</a>
-<a name='L133'></a><a href='#L133'>133</a>
-<a name='L134'></a><a href='#L134'>134</a>
-<a name='L135'></a><a href='#L135'>135</a>
-<a name='L136'></a><a href='#L136'>136</a>
-<a name='L137'></a><a href='#L137'>137</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L130'></a><a href='#L130'>130</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -214,9 +196,12 @@
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
@@ -230,6 +215,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">9x</span>
+<span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-yes">7x</span>
@@ -337,16 +323,7 @@
  */
 &nbsp;
 import React, { useState } from 'react'
-import {
-  Text,
-  Checkbox,
-  Layout,
-  ButtonVariation,
-  shouldShowError,
-  useToaster,
-  getErrorInfoFromErrorObject,
-  Popover
-} from '@wings-software/uicore'
+import { Text, Checkbox, Layout, ButtonVariation, shouldShowError, useToaster, Popover } from '@wings-software/uicore'
 import { Color, FontVariation } from '@harness/design-system'
 import { PopoverInteractionKind } from '@blueprintjs/core'
 import { useParams } from 'react-router-dom'
@@ -357,6 +334,7 @@ import { useStrings } from 'framework/strings'
 import { PermissionIdentifier } from '@rbac/interfaces/PermissionIdentifier'
 import RbacButton from '@rbac/components/Button/Button'
 import { ResourceType } from '@rbac/interfaces/ResourceType'
+import useRBACError from '@rbac/utils/useRBACError/useRBACError'
 import css from '../AccountSettings.module.scss'
 &nbsp;
 interface ConnectorSettingProps {
@@ -365,6 +343,7 @@ interface ConnectorSettingProps {
 }
 &nbsp;
 const ConnectorSettings: React.FC&lt;ConnectorSettingProps&gt; = props =&gt; {
+  const { getRBACErrorMessage } = useRBACError()
   const { getString } = useStrings()
   const { showError, showSuccess } = useToaster()
   const { accountId, orgIdentifier, projectIdentifier } = useParams&lt;ProjectPathProps&gt;()
@@ -405,7 +384,7 @@ const ConnectorSettings: React.FC&lt;ConnectorSettingProps&gt; = props =&gt; {
 <span class="cstat-no" title="statement not covered" >      showSuccess(getString('common.accountSetting.connector.saveSettingSuccess'))</span>
     } catch (e) {
       <span class="missing-if-branch" title="else path not taken" >E</span>if (shouldShowError(e)) {
-        showError(getErrorInfoFromErrorObject(e))
+        showError(getRBACErrorMessage(e))
       }
     }
   }
@@ -472,7 +451,7 @@ export default ConnectorSettings
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Tue Apr 05 2022 08:34:27 GMT+0000 (Greenwich Mean Time)
+                at Tue Apr 05 2022 09:58:07 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../../../../prettify.js"></script>

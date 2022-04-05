@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">64.29% </span>
+                <span class="strong">66.67% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>18/28</span>
+                <span class='fraction'>20/30</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">64.29% </span>
+                <span class="strong">66.67% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>18/28</span>
+                <span class='fraction'>20/30</span>
             </div>
         
             
@@ -55,7 +55,7 @@
             Press <em>n</em> or <em>j</em> to go to the next uncovered block, <em>b</em>, <em>p</em> or <em>k</em> for the previous block.
         </p>
     </div>
-    <div class='status-line medium'></div>
+    <div class='status-line high'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -141,7 +141,9 @@
 <a name='L82'></a><a href='#L82'>82</a>
 <a name='L83'></a><a href='#L83'>83</a>
 <a name='L84'></a><a href='#L84'>84</a>
-<a name='L85'></a><a href='#L85'>85</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L85'></a><a href='#L85'>85</a>
+<a name='L86'></a><a href='#L86'>86</a>
+<a name='L87'></a><a href='#L87'>87</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -157,6 +159,7 @@
 <span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -166,6 +169,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-yes">53x</span>
 <span class="cline-any cline-yes">53x</span>
 <span class="cline-any cline-yes">53x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -233,13 +237,14 @@
  */
 &nbsp;
 import React, { useState, useEffect } from 'react'
-import { Container, getErrorInfoFromErrorObject, ModalErrorHandlerBinding, shouldShowError } from '@harness/uicore'
+import { Container, ModalErrorHandlerBinding, shouldShowError } from '@harness/uicore'
 import { useParams } from 'react-router-dom'
 import { noop } from 'lodash-es'
 import { TestConnectionWidget, TestStatus } from '@common/components/TestConnectionWidget/TestConnectionWidget'
 import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
 import { ResponseConnectorValidationResult, useGetTestGitRepoConnectionResult } from 'services/cd-ng'
 import type { ConnectorSelectedValue } from '@connectors/components/ConnectorReferenceField/ConnectorReferenceField'
+import useRBACError from '@rbac/utils/useRBACError/useRBACError'
 import css from './GitSyncRepoForm.module.scss'
 &nbsp;
 export interface RepoTestConnectionProps {
@@ -252,6 +257,7 @@ export interface RepoTestConnectionProps {
 const RepoTestConnection: React.FC&lt;RepoTestConnectionProps&gt; = props =&gt; {
   const { gitConnector, repoURL = <span class="branch-0 cbranch-no" title="branch not covered" >'',</span> onTestStatusChange = <span class="branch-0 cbranch-no" title="branch not covered" >noop,</span> modalErrorHandler } = props
   const { identifier = '', orgIdentifier, projectIdentifier } = gitConnector?.connector || {}
+  const { getRBACErrorMessage } = useRBACError()
 &nbsp;
   const { accountId } = useParams&lt;ProjectPathProps&gt;()
   const [testStatus, setTestStatus] = useState&lt;TestStatus&gt;(TestStatus.NOT_INITIATED)
@@ -295,7 +301,7 @@ const RepoTestConnection: React.FC&lt;RepoTestConnectionProps&gt; = props =&gt; 
         .catch(<span class="fstat-no" title="function not covered" >e </span>=&gt; {
 <span class="cstat-no" title="statement not covered" >          setTestStatus(TestStatus.FAILED)</span>
 <span class="cstat-no" title="statement not covered" >          if (shouldShowError(e)) {</span>
-<span class="cstat-no" title="statement not covered" >            modalErrorHandler?.showDanger(getErrorInfoFromErrorObject(e))</span>
+<span class="cstat-no" title="statement not covered" >            modalErrorHandler?.showDanger(getRBACErrorMessage(e))</span>
           }
         })
     }
@@ -316,7 +322,7 @@ export default RepoTestConnection
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Tue Apr 05 2022 08:34:27 GMT+0000 (Greenwich Mean Time)
+                at Tue Apr 05 2022 09:58:07 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../prettify.js"></script>

@@ -25,7 +25,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>53/53</span>
+                <span class='fraction'>55/55</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>53/53</span>
+                <span class='fraction'>55/55</span>
             </div>
         
             
@@ -291,7 +291,8 @@
 <a name='L232'></a><a href='#L232'>232</a>
 <a name='L233'></a><a href='#L233'>233</a>
 <a name='L234'></a><a href='#L234'>234</a>
-<a name='L235'></a><a href='#L235'>235</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L235'></a><a href='#L235'>235</a>
+<a name='L236'></a><a href='#L236'>236</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -316,26 +317,17 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -343,6 +335,16 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">20x</span>
 <span class="cline-any cline-yes">20x</span>
 <span class="cline-any cline-yes">20x</span>
 <span class="cline-any cline-yes">20x</span>
@@ -545,7 +547,6 @@ import {
   ExpandingSearchInput,
   Formik,
   FormikForm,
-  getErrorInfoFromErrorObject,
   Page,
   Pagination,
   TableV2,
@@ -556,6 +557,7 @@ import { Segment, usePatchSegment } from 'services/cf'
 import { CF_DEFAULT_PAGE_SIZE } from '@cf/utils/CFUtils'
 import { NoData } from '@cf/components/NoData/NoData'
 import imageUrl from '@cf/images/Feature_Flags_Teepee.svg'
+import useRBACError from '@rbac/utils/useRBACError/useRBACError'
 import type { FlagSettingsFormData, FlagSettingsFormRow, TargetGroupFlagsMap } from '../../TargetGroupDetailPage.types'
 import FlagDetailsCell from './FlagsListing/FlagDetailsCell'
 import VariationsCell from './FlagsListing/VariationsCell'
@@ -581,6 +583,7 @@ const FlagSettingsForm: FC&lt;FlagSettingsFormProps&gt; = ({
   const [pageIndex, setPageIndex] = useState&lt;number&gt;(0)
   const [searchTerm, setSearchTerm] = useState&lt;string&gt;('')
   const [submitting, setSubmitting] = useState&lt;boolean&gt;(false)
+  const { getRBACErrorMessage } = useRBACError()
   const { showError } = useToaster()
 &nbsp;
   const { accountId: accountIdentifier, orgIdentifier, projectIdentifier } = useParams&lt;Record&lt;string, string&gt;&gt;()
@@ -606,7 +609,7 @@ const FlagSettingsForm: FC&lt;FlagSettingsFormProps&gt; = ({
           await patchTargetGroup({ instructions })
           onChange()
         } catch (e) {
-          showError(getErrorInfoFromErrorObject(e))
+          showError(getRBACErrorMessage(e))
         }
 &nbsp;
         setSubmitting(false)
@@ -766,7 +769,7 @@ export default FlagSettingsForm
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Tue Apr 05 2022 08:34:27 GMT+0000 (Greenwich Mean Time)
+                at Tue Apr 05 2022 09:58:07 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../../../prettify.js"></script>
