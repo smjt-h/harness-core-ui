@@ -215,7 +215,8 @@ const GitSyncRepoForm: React.FC<ModalConfigureProps & GitSyncRepoFormProps> = pr
             })}
             onSubmit={formData => {
               const gitSyncRepoData = {
-                ...pick(formData, ['gitConnectorType', 'branch', 'name', 'identifier']),
+                ...pick(formData, ['gitConnectorType', 'name', 'identifier']),
+                branch: formData.branch?.trim(),
                 repo: getRepoUrlForConnectorType(formData),
                 gitConnectorRef: (formData.gitConnector as ConnectorSelectedValue)?.value,
                 gitSyncFolderConfigDTOs: [

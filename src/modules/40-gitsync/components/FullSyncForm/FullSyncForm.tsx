@@ -293,7 +293,11 @@ const FullSyncForm: React.FC<ModalConfigureProps & FullSyncFormProps> = props =>
                   orgIdentifier,
                   projectIdentifier
                 },
-                { ...formData, baseBranch: getBaseBranch(gitSyncRepos, formData.repoIdentifier) },
+                {
+                  ...formData,
+                  baseBranch: getBaseBranch(gitSyncRepos, formData.repoIdentifier),
+                  branch: formData.branch?.trim()
+                },
                 isNewBranch,
                 configResponse,
                 { showSuccess, onSuccess, getString },
