@@ -74,7 +74,7 @@ const managedResources = [
     providers: ['aws']
   },
   {
-    label: 'ce.co.autoStoppingRule.helpText.step2.description.resourceList.asg',
+    label: 'ce.co.autoStoppingRule.helpText.step2.description.resourceList.ig',
     value: RESOURCES.IG,
     providers: ['gcp']
   },
@@ -605,7 +605,7 @@ const DisplayResourceInfo: React.FC<DisplayResourceInfoProps> = props => {
     const textMap: Record<string, string> = {
       [RESOURCES.INSTANCES]: getString('ce.co.autoStoppingRule.configuration.step2.additionalResourceInfo.instance'),
       [RESOURCES.ASG]: getString('ce.co.autoStoppingRule.configuration.step2.additionalResourceInfo.asg'),
-      [RESOURCES.IG]: getString('ce.co.autoStoppingRule.configuration.step2.additionalResourceInfo.asg'),
+      [RESOURCES.IG]: getString('ce.co.autoStoppingRule.configuration.step2.additionalResourceInfo.ig'),
       [RESOURCES.KUBERNETES]: getString('ce.co.autoStoppingRule.configuration.step2.additionalResourceInfo.kubernetes'),
       [RESOURCES.ECS]: getString('ce.co.autoStoppingRule.configuration.step2.additionalResourceInfo.ecs'),
       [RESOURCES.RDS]: getString('ce.co.autoStoppingRule.configuration.step2.additionalResourceInfo.rds')
@@ -617,7 +617,7 @@ const DisplayResourceInfo: React.FC<DisplayResourceInfoProps> = props => {
     const textMap: Record<string, string> = {
       [RESOURCES.INSTANCES]: `+ ${getString('ce.co.autoStoppingRule.configuration.step2.addResourceCta.instance')}`,
       [RESOURCES.ASG]: `+ ${getString('ce.co.autoStoppingRule.configuration.step2.addResourceCta.asg')}`,
-      [RESOURCES.IG]: `+ ${getString('ce.co.autoStoppingRule.configuration.step2.addResourceCta.asg')}`,
+      [RESOURCES.IG]: `+ ${getString('ce.co.autoStoppingRule.configuration.step2.addResourceCta.ig')}`,
       [RESOURCES.KUBERNETES]: `+ ${getString('ce.co.autoStoppingRule.configuration.step2.addResourceCta.kubernetes')}`,
       [RESOURCES.ECS]: `+ ${getString('ce.co.autoStoppingRule.configuration.step2.addResourceCta.ecs')}`,
       [RESOURCES.RDS]: `+ ${getString('ce.co.autoStoppingRule.configuration.step2.addResourceCta.rds')}`

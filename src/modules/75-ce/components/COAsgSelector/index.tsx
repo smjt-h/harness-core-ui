@@ -65,6 +65,8 @@ const COAsgSelector: React.FC<COAsgSelectorprops> = props => {
   const isAsgSelected = !_isEmpty(selectedAsg)
   const { getString } = useStrings()
 
+  const isGcpProvider = Utils.isProviderGcp(props.gatewayDetails.provider)
+
   function TableCheck(tableProps: CellProps<ASGMinimal>): JSX.Element {
     return (
       <Radio
@@ -109,7 +111,16 @@ const COAsgSelector: React.FC<COAsgSelectorprops> = props => {
 
   const handleRefresh = () => {
     refreshPageParams()
-    props.refresh?.()
+    let filterText = ''
+    if (isGcpProvider) {
+      if (gcpFilters?.region) {
+        filterText += `regions=['${gcpFilters.region.label}']`
+      }
+      if (gcpFilters?.zone) {
+        filterText += `\n zones=['${gcpFilters.zone.label}']`
+      }
+    }
+    props.refresh?.(filterText)
   }
 
   const onGcpFiltersChange = (filters: GCPFiltersProps, loadingFilters: boolean) => {
@@ -121,7 +132,7 @@ const COAsgSelector: React.FC<COAsgSelectorprops> = props => {
     if (filters.zone) {
       filterText += `\n zones=['${filters.zone.label}']`
     }
-    !_isEmpty(filterText) && props.refresh?.(filterText)
+    !_isEmpty(filterText) && !loadingFilters && props.refresh?.(filterText)
     setIsLoading(loadingFilters)
   }
 
@@ -131,17 +142,14 @@ const COAsgSelector: React.FC<COAsgSelectorprops> = props => {
     <Container>
       <Layout.Vertical spacing="large">
         <Container style={{ paddingBottom: 20, borderBottom: '1px solid #CDD3DD' }}>
-          <Text font={'large'}>Select Auto scaling group</Text>
+          <Text font={'large'}>
+            {isGcpProvider
+              ? getString('ce.co.autoStoppingRule.configuration.igModal.title')
+              : getString('ce.co.autoStoppingRule.configuration.asgModal.title')}
+          </Text>
         </Container>
-        <Container>
-          <Layout.Horizontal
-            style={{
-              paddingBottom: 20,
-              paddingTop: 20,
-              borderBottom: '1px solid #CDD3DD',
-              justifyContent: 'space-between'
-            }}
-          >
+        <Layout.Vertical style={{ paddingBottom: 20, paddingTop: 20, borderBottom: '1px solid #CDD3DD' }}>
+          <Layout.Horizontal style={{ justifyContent: 'space-between' }}>
             <Layout.Horizontal flex={{ alignItems: 'center' }}>
               <Button
                 onClick={addAsg}
@@ -166,7 +174,7 @@ const COAsgSelector: React.FC<COAsgSelectorprops> = props => {
             isEditFlow={false}
             onGcpFiltersChangeCallback={onGcpFiltersChange}
           />
-        </Container>
+        </Layout.Vertical>
         <Container style={{ minHeight: 250 }}>
           {loadingEnabled && (
             <Layout.Horizontal flex={{ justifyContent: 'center' }}>
@@ -176,7 +184,7 @@ const COAsgSelector: React.FC<COAsgSelectorprops> = props => {
           {!loadingEnabled && _isEmpty(gcpFilters?.region) ? (
             <Layout.Horizontal flex={{ justifyContent: 'center' }}>
               <Text icon={'execution-warning'} font={{ size: 'medium' }} iconProps={{ size: 20 }}>
-                {getString('ce.co.autoStoppingRule.configuration.instanceModal.gcpFiltersNotSelectedDescription')}
+                {getString('ce.co.autoStoppingRule.configuration.igModal.gcpFiltersNotSelectedDescription')}
               </Text>
             </Layout.Horizontal>
           ) : null}
@@ -233,7 +241,7 @@ const COAsgSelector: React.FC<COAsgSelectorprops> = props => {
 
 interface GCPFiltersProps {
   region?: SelectOption
-  zone?: SelectOption
+  zone?: SelectOption | null
 }
 
 interface GroupsFilterProps {
@@ -254,7 +262,7 @@ const GroupsFilter: React.FC<GroupsFilterProps> = ({ gatewayDetails, onGcpFilter
   })
   const [selectedRegion, setSelectedRegion] = useState<SelectOption>()
   const [zonesData, setZonesData] = useState<SelectOption[]>([])
-  const [selectedZone, setSelectedZone] = useState<SelectOption>()
+  const [selectedZone, setSelectedZone] = useState<SelectOption | null | undefined>()
 
   const {
     data: zones,
@@ -281,6 +289,7 @@ const GroupsFilter: React.FC<GroupsFilterProps> = ({ gatewayDetails, onGcpFilter
       })
     }
     if (isGcpProvider) {
+      setSelectedZone(null)
       onGcpFiltersChangeCallback({ region: selectedRegion }, regionsLoading)
     }
   }, [selectedRegion, regionsLoading])
@@ -290,6 +299,12 @@ const GroupsFilter: React.FC<GroupsFilterProps> = ({ gatewayDetails, onGcpFilter
       setZonesData(zones.response.map(z => ({ label: z, value: z })))
     }
   }, [zones?.response])
+
+  useEffect(() => {
+    if (selectedRegion) {
+      onGcpFiltersChangeCallback({ region: selectedRegion, zone: selectedZone }, zonesLoading)
+    }
+  }, [selectedZone, zonesLoading])
 
   if (isGcpProvider) {
     return (
