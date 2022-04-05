@@ -10,15 +10,15 @@ import { get, isEmpty } from 'lodash-es'
 import { useParams } from 'react-router-dom'
 import cx from 'classnames'
 
-import { Icon, Text } from '@harness/uicore'
-import { Tooltip } from '@blueprintjs/core'
+import { Text } from '@harness/uicore'
+
 import { useStrings } from 'framework/strings'
 import artifactSourceBaseFactory from '@cd/factory/ArtifactSourceFactory/ArtifactSourceBaseFactory'
 import type { GitQueryParams, InputSetPathProps, PipelineType } from '@common/interfaces/RouteInterfaces'
 import { useQueryParams } from '@common/hooks'
 import type { SidecarArtifact } from 'services/cd-ng'
 import type { KubernetesArtifactsProps } from '../../K8sServiceSpecInterface'
-import { getNonRuntimeFields, isRuntimeMode } from '../../K8sServiceSpecHelper'
+import { isRuntimeMode } from '../../K8sServiceSpecHelper'
 import { fromPipelineInputTriggerTab, getSidecarInitialValues } from '../../ArtifactSource/artifactSourceUtils'
 import css from '../../K8sServiceSpec.module.scss'
 
@@ -57,25 +57,7 @@ const ArtifactInputField = (props: KubernetesArtifactsProps): React.ReactElement
   }
   return (
     <div key={(props.artifact as SidecarArtifact).identifier}>
-      <Text className={css.inputheader}>
-        {get(props.artifact, 'identifier', '')}
-        {!isEmpty(
-          JSON.parse(
-            getNonRuntimeFields(artifactDefaultValue?.spec, get(props.template, `artifacts.${props.artifactPath}.spec`))
-          )
-        ) && (
-          <Tooltip
-            position="top"
-            className={css.artifactInfoTooltip}
-            content={getNonRuntimeFields(
-              artifactDefaultValue?.spec,
-              get(props.template, `artifacts.${props.artifactPath}.spec`)
-            )}
-          >
-            <Icon name="info" />
-          </Tooltip>
-        )}
-      </Text>
+      <Text className={css.inputheader}>{get(props.artifact, 'identifier', '')}</Text>
       {artifactSource &&
         artifactSource.renderContent({
           ...props,

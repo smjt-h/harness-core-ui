@@ -50,6 +50,7 @@ import SCMCheck from '@common/components/SCMCheck/SCMCheck'
 import { GitSyncStoreProvider } from 'framework/GitRepoStore/GitSyncStoreContext'
 import { FeatureFlag } from '@common/featureFlags'
 import { useFeatureFlag } from '@common/hooks/useFeatureFlag'
+import type { StringsMap } from 'framework/strings/StringsContext'
 import RepoBranchSelect from './RepoBranchSelect'
 import RepoTestConnection from './RepoTestConnection'
 import css from './GitSyncRepoForm.module.scss'
@@ -98,8 +99,12 @@ const getSubmitButtonText = (isNewUser: boolean): StringKeys => {
   return isNewUser ? 'continue' : 'save'
 }
 
-const getSourceCodeTextColor = (isSelected: boolean) => {
+const getSourceCodeTextColor = (isSelected: boolean): Color => {
   return isSelected ? Color.BLUE_500 : Color.GREY_500
+}
+
+const getmodalTitleId = (isNewUser: boolean): keyof StringsMap => {
+  return isNewUser ? 'enableGitExperience' : 'gitsync.configureHarnessFolder'
 }
 
 export const gitSyncFormDefaultInitialData = {
@@ -122,7 +127,7 @@ const GitSyncRepoForm: React.FC<ModalConfigureProps & GitSyncRepoFormProps> = pr
   const { getString } = useStrings()
   const { showSuccess } = useToaster()
   const [testStatus, setTestStatus] = useState<TestStatus>(TestStatus.NOT_INITIATED)
-  const modalTitle = isNewUser ? getString('enableGitExperience') : getString('gitsync.configureHarnessFolder')
+  const modalTitle = getString(getmodalTitleId(isNewUser))
 
   const defaultInitialFormData: GitSyncFormInterface = defaultTo(props.initialData, gitSyncFormDefaultInitialData)
 
@@ -134,10 +139,19 @@ const GitSyncRepoForm: React.FC<ModalConfigureProps & GitSyncRepoFormProps> = pr
 
   const [connectorType, setConnectorType] = useState(defaultInitialFormData.gitConnectorType)
 
-  const handleGitRepoChange = (connector: ConnectorInfoDTO) => {
+  const handleGitRepoChange = (connector: ConnectorInfoDTO): void => {
     if (connector?.spec?.type === GitUrlType.REPO) {
       setConnectorIdentifierRef(getConnectorIdentifierWithScope(getScopeFromDTO(connector), connector.identifier))
       setRepositoryURL(connector?.spec?.url)
+    }
+  }
+
+  const handleGitRepoNameChange = (formValues: GitSyncFormInterface): void => {
+    const connectorId = formValues.gitConnector?.connector?.identifier
+
+    if (connectorId) {
+      const connectorScope = getScopeFromDTO(formValues?.gitConnector?.connector as ScopedObjectDTO)
+      setConnectorIdentifierRef(getConnectorIdentifierWithScope(connectorScope, defaultTo(connectorId, '')))
     }
   }
 
@@ -158,7 +172,7 @@ const GitSyncRepoForm: React.FC<ModalConfigureProps & GitSyncRepoFormProps> = pr
       showSuccess(getString('gitsync.successfullCreate', { name: data.name }))
       props.onSuccess?.(response, formData)
     } catch (e) {
-      modalErrorHandler?.showDanger(e.data?.message || e.message)
+      modalErrorHandler?.showDanger(defaultTo(e.data?.message, e.message))
     }
   }
 
@@ -332,13 +346,7 @@ const GitSyncRepoForm: React.FC<ModalConfigureProps & GitSyncRepoFormProps> = pr
                           name="repo"
                           inputGroup={{
                             onBlur: e => {
-                              const connectorId = formValues.gitConnector?.connector?.identifier
-                              const connectorScope = getScopeFromDTO(
-                                formValues?.gitConnector?.connector as ScopedObjectDTO
-                              )
-                              setConnectorIdentifierRef(
-                                getConnectorIdentifierWithScope(connectorScope, defaultTo(connectorId, ''))
-                              )
+                              handleGitRepoNameChange(formValues)
                               setRepositoryURL(
                                 getRepoUrlForConnectorType(formValues, (e.target as HTMLInputElement)?.value)
                               )

@@ -629,7 +629,51 @@ exports[`Barrier tests Edit view with runtime input values 1`] = `
 </div>
 `;
 
-exports[`Barrier tests Minimum time cannot be less than 10s 1`] = `Object {}`;
+exports[`Barrier tests Minimum time cannot be less than 10s and process form data 1`] = `
+Object {
+  "identifier": "Test A",
+  "name": "Test A",
+  "spec": Object {
+    "barrierRef": undefined,
+    "barrierReference": "step-barrier",
+  },
+  "timeout": "<+input>",
+  "type": "Barrier",
+}
+`;
+
+exports[`Barrier tests Minimum time cannot be less than 10s and process form data 2`] = `
+Object {
+  "timeout": "timeout is a required field",
+}
+`;
+
+exports[`Barrier tests Renders Input Set View 1`] = `
+<div>
+  <div
+    class="OverlaySpinner--overlaySpinner"
+  >
+    <p
+      class="StyledProps--font StyledProps--main"
+    >
+      Errors
+    </p>
+    <pre>
+      {}
+    </pre>
+    <button
+      class="bp3-button Button--button StyledProps--font StyledProps--main StyledProps--intent-primary Button--with-current-color"
+      type="button"
+    >
+      <span
+        class="bp3-button-text"
+      >
+        Submit
+      </span>
+    </button>
+  </div>
+</div>
+`;
 
 exports[`Barrier tests Variable view 1`] = `
 <div>

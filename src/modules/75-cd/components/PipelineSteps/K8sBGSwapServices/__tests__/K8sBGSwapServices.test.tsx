@@ -56,6 +56,7 @@ describe('Test K8sBlueGreenDeployStep', () => {
             skipDryRun: RUNTIME_INPUT_VALUE
           }
         }}
+        path={'/abc'}
         type={StepType.K8sBGSwapServices}
         stepViewType={StepViewType.InputSet}
       />

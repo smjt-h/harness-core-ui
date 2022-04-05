@@ -4,11 +4,14 @@ welcome: Welcome
 dashboards: Dashboards
 setup: Setup
 agent: Agent
+agents: Agents
 application: Application
 certificate: Certificate
+repositoryCertificates: Repository Certificates
 notEnabled: 'Not Enabled'
 apiStatus: 'API Status'
 gpgkey: 'GPG Key'
+gnupgKeys: GnuPG Keys
 skip: Skip
 sync: Sync
 accountSetup: Account Setup
@@ -119,6 +122,7 @@ configureOptions:
   advancedHelp: 'With the advanced option, <br> you can type in JEXL expressions to return a list of values. <br> <a target="_blank">More information</a> <br> E.g. ${env.type} == “prod” ? aws1, aws2 : aws3, aws4'
 namespace: Namespace
 cluster: Cluster
+clusters: Clusters
 releaseName: Release name
 stage: Stage
 seeDetails: See details

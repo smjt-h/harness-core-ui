@@ -64,6 +64,8 @@ import { PipelineVariablesContextProvider } from '@pipeline/components/PipelineV
 import { useTelemetry } from '@common/hooks/useTelemetry'
 import { PipelineActions } from '@common/constants/TrackingConstants'
 import { useFeatureFlags } from '@common/hooks/useFeatureFlag'
+import GenericErrorHandler from '@common/pages/GenericErrorHandler/GenericErrorHandler'
+import NoEntityFound from '@pipeline/pages/utils/NoEntityFound/NoEntityFound'
 import { getFeaturePropsForRunPipelineButton } from '@pipeline/utils/runPipelineUtils'
 import { RunPipelineForm } from '@pipeline/components/RunPipelineModal/RunPipelineForm'
 import { EvaluationModal } from '@governance/EvaluationModal'
@@ -178,7 +180,8 @@ export function PipelineCanvas({
     yamlHandler,
     isBEPipelineUpdated,
     gitDetails,
-    entityValidityDetails
+    entityValidityDetails,
+    templateError
   } = state
 
   const { getString } = useStrings()
@@ -868,6 +871,19 @@ export function PipelineCanvas({
       return 155
     }
     return 400
+  }
+
+  if (templateError?.data && !isGitSyncEnabled) {
+    return (
+      <GenericErrorHandler
+        errStatusCode={templateError?.status}
+        errorMessage={(templateError?.data as Error)?.message}
+      />
+    )
+  }
+
+  if (templateError?.data && isEmpty(pipeline) && isGitSyncEnabled) {
+    return <NoEntityFound identifier={pipelineIdentifier} entityType={'pipeline'} />
   }
 
   return (

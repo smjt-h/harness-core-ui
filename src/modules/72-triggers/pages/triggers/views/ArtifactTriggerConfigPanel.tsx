@@ -169,11 +169,12 @@ const showAddArtifactManifest = ({
           fontWeight: 'normal',
           marginBottom: 'var(--spacing-small)'
         }}
-        data-tooltip-id="selectArtifactManifestLabel"
+        data-tooltip-id={'selectArtifactManifestLabel'}
       >
-        {isManifest ? getString('manifestsText') : getString(artifactStr)}
+        {artifactOrManifestText}
+        <HarnessDocTooltip tooltipId="selectArtifactManifestLabel" useStandAlone={true} />
       </Label>
-      <HarnessDocTooltip tooltipId="selectArtifactManifestLabel" useStandAlone={true} />
+
       <Text
         data-name="plusAdd"
         style={{
@@ -280,6 +281,9 @@ const ArtifactTriggerConfigPanel: React.FC<ArtifactTriggerConfigPanelPropsInterf
   const allowSelectArtifact = !!data?.length
   const artifactOrManifestText = isManifest ? getString('manifestsText') : getString(artifactStr)
   const { errors } = formikProps
+  const getTooltipIds = (manifestTooltipIds: string, artifactTooltipIds: string): string => {
+    return isManifest ? manifestTooltipIds : artifactTooltipIds
+  }
   return (
     <Layout.Vertical className={css.artifactTriggerConfigContainer} padding="xxlarge">
       {loading && (
@@ -287,14 +291,17 @@ const ArtifactTriggerConfigPanel: React.FC<ArtifactTriggerConfigPanelPropsInterf
           <PageSpinner />
         </div>
       )}
-      <Text className={css.formContentTitle} inline={true} data-tooltip-id="artifactManifestLabel">
+      <Text
+        className={css.formContentTitle}
+        inline={true}
+        tooltipProps={{ dataTooltipId: getTooltipIds('artifactManifestLabel', 'artifactLabel') }}
+      >
         {getString('triggers.triggerConfigurationLabel')}
         {!isEdit
           ? `: ${getString('triggers.onNewArtifactTitle', {
               artifact: artifactOrManifestText
             })}`
           : ''}
-        <HarnessDocTooltip tooltipId="artifactManifestLabel" useStandAlone={true} />
       </Text>
       <div className={css.formContent}>
         <NameIdDescriptionTags
@@ -308,11 +315,14 @@ const ArtifactTriggerConfigPanel: React.FC<ArtifactTriggerConfigPanelPropsInterf
           }}
         />
       </div>
-      <Text className={css.formContentTitle} inline={true} data-tooltip-id="listenOnNewArtifactManifest">
+      <Text
+        className={css.formContentTitle}
+        inline={true}
+        tooltipProps={{ dataTooltipId: getTooltipIds('listenOnNewArtifactManifest', 'listenNewArtifact') }}
+      >
         {getString('pipeline.artifactTriggerConfigPanel.listenOnNewArtifact', {
           artifact: artifactOrManifestText
         })}
-        <HarnessDocTooltip tooltipId="listenOnNewArtifactManifest" useStandAlone={true} />
       </Text>
       <div className={css.formContent}>
         {appliedTableArtifact ? (

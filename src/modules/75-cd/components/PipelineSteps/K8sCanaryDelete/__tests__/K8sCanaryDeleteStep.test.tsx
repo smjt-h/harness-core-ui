@@ -44,12 +44,40 @@ describe('Test K8sCanaryDeleteStep', () => {
     const { container } = render(
       <TestStepWidget
         initialValues={{ type: 'K8sCanaryDelete', name: 'Test A', timeout: RUNTIME_INPUT_VALUE }}
-        template={{ type: 'K8sCanaryDelete', name: 'Test A', timeout: RUNTIME_INPUT_VALUE }}
+        template={{
+          type: 'K8sCanaryDelete',
+          name: 'Test A',
+          timeout: RUNTIME_INPUT_VALUE,
+          spec: { skipDryRun: RUNTIME_INPUT_VALUE }
+        }}
         allValues={{
           type: 'K8sCanaryDelete',
           name: 'Test A',
           timeout: RUNTIME_INPUT_VALUE
         }}
+        type={StepType.K8sCanaryDelete}
+        stepViewType={StepViewType.InputSet}
+      />
+    )
+    expect(container).toMatchSnapshot()
+  })
+  test('should render null for StepviewType.template', () => {
+    const { container } = render(
+      <TestStepWidget initialValues={{}} type={StepType.K8sCanaryDelete} stepViewType={StepViewType.Template} />
+    )
+    expect(container).toMatchSnapshot()
+  })
+  test('inputset with path', () => {
+    const { container } = render(
+      <TestStepWidget
+        initialValues={{}}
+        template={{
+          type: 'K8sCanaryDelete',
+          name: 'Test A',
+          timeout: RUNTIME_INPUT_VALUE,
+          spec: { skipDryRun: RUNTIME_INPUT_VALUE }
+        }}
+        path={'/abc'}
         type={StepType.K8sCanaryDelete}
         stepViewType={StepViewType.InputSet}
       />

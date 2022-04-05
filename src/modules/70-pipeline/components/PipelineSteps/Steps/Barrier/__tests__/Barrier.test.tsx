@@ -10,16 +10,22 @@ import { act, fireEvent, queryByAttribute, render, waitFor } from '@testing-libr
 import { RUNTIME_INPUT_VALUE } from '@harness/uicore'
 import { StepFormikRef, StepViewType } from '@pipeline/components/AbstractSteps/Step'
 import { StepType } from '@pipeline/components/PipelineSteps/PipelineStepInterface'
+import { PipelineContext } from '@pipeline/components/PipelineStudio/PipelineContext/PipelineContext'
 import { factory, TestStepWidget } from '../../__tests__/StepTestUtil'
 import { BarrierStep } from '../Barrier'
+import pipelineMock from './PipelineWithFlowControl.json'
+
 jest.mock('@common/components/YAMLBuilder/YamlBuilder')
 
+jest.mock('services/pipeline-ng', () => ({
+  useGetPipeline: jest.fn(() => pipelineMock)
+}))
 describe('Barrier tests', () => {
   beforeEach(() => {
     factory.registerStep(new BarrierStep())
   })
 
-  test('Edit stage view', async () => {
+  test('Edit stage view validations', async () => {
     const ref = React.createRef<StepFormikRef<unknown>>()
     const onUpdate = jest.fn()
     const { container, getByText, queryByText } = render(
@@ -83,17 +89,40 @@ describe('Barrier tests', () => {
 
   test('Edit stage- readonly', async () => {
     const { container } = render(
-      <TestStepWidget
-        initialValues={{
-          name: 'BarrierStep',
-          identifier: 'BarrierStep',
-          type: 'Barrier',
-          timeout: '10s'
-        }}
-        type={StepType.Barrier}
-        stepViewType={StepViewType.Edit}
-        readonly={true}
-      />
+      <PipelineContext.Provider
+        value={
+          {
+            state: {
+              pipeline: {
+                flowControl: {
+                  barriers: [
+                    {
+                      name: 'test',
+                      identifier: 'test'
+                    },
+                    {
+                      name: 'test2',
+                      identifier: 'test2'
+                    }
+                  ]
+                }
+              }
+            } as any
+          } as any
+        }
+      >
+        <TestStepWidget
+          initialValues={{
+            name: 'BarrierStep',
+            identifier: 'BarrierStep',
+            type: 'Barrier',
+            timeout: '10s'
+          }}
+          type={StepType.Barrier}
+          stepViewType={StepViewType.Edit}
+          readonly={true}
+        />
+      </PipelineContext.Provider>
     )
     expect(container).toMatchSnapshot('edit stage readonly')
   })
@@ -168,12 +197,12 @@ describe('Barrier tests', () => {
     expect(container).toMatchSnapshot()
   })
 
-  test('Minimum time cannot be less than 10s', () => {
-    const response = new BarrierStep().validateInputSet({
+  test('Minimum time cannot be less than 10s and process form data', () => {
+    const data = {
       data: {
         name: 'Test A',
         identifier: 'Test A',
-        timeout: '1s',
+        timeout: '',
         type: 'Barrier',
         spec: {
           barrierReference: ''
@@ -189,7 +218,35 @@ describe('Barrier tests', () => {
         }
       },
       viewType: StepViewType.TriggerForm
-    })
+    }
+    const response = new BarrierStep().validateInputSet(data)
+    const processFormResponse = new BarrierStep().processFormData(data.template)
+
+    expect(processFormResponse).toMatchSnapshot()
     expect(response).toMatchSnapshot()
+  })
+
+  test('Renders Input Set View', () => {
+    const onUpdate = jest.fn()
+    const { container } = render(
+      <TestStepWidget
+        initialValues={{
+          type: 'Barrier',
+          name: 'BarrierStep',
+          identifier: 'BarrierStep',
+          timeout: '10m',
+          spec: {
+            barrierRef: 'test'
+          }
+        }}
+        inputSetData={{
+          path: ''
+        }}
+        type={StepType.Barrier}
+        stepViewType={StepViewType.InputSet}
+        onUpdate={onUpdate}
+      />
+    )
+    expect(container).toMatchSnapshot()
   })
 })

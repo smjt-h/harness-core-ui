@@ -10,14 +10,13 @@ import { get, isEmpty } from 'lodash-es'
 import { useParams } from 'react-router-dom'
 import cx from 'classnames'
 
-import { Icon, Text } from '@harness/uicore'
-import { Tooltip } from '@blueprintjs/core'
+import { Text } from '@harness/uicore'
 import { useStrings } from 'framework/strings'
 import artifactSourceBaseFactory from '@cd/factory/ArtifactSourceFactory/ArtifactSourceBaseFactory'
 import type { GitQueryParams, InputSetPathProps, PipelineType } from '@common/interfaces/RouteInterfaces'
 import { useQueryParams } from '@common/hooks'
 import type { KubernetesArtifactsProps } from '../../K8sServiceSpecInterface'
-import { getNonRuntimeFields, isRuntimeMode } from '../../K8sServiceSpecHelper'
+import { isRuntimeMode } from '../../K8sServiceSpecHelper'
 import { fromPipelineInputTriggerTab, getPrimaryInitialValues } from '../../ArtifactSource/artifactSourceUtils'
 import css from '../../K8sServiceSpec.module.scss'
 
@@ -57,25 +56,7 @@ export const KubernetesPrimaryArtifacts = (props: KubernetesArtifactsProps): Rea
         {getString('pipelineSteps.deploy.serviceSpecifications.deploymentTypes.artifacts')}{' '}
       </div>
       <div className={cx(css.nestedAccordions, css.artifactsAccordion)}>
-        <Text className={css.inputheader}>
-          {getString('primaryArtifactText')}
-          {!isEmpty(
-            JSON.parse(
-              getNonRuntimeFields(get(props.artifacts, `primary.spec`), get(props.template, 'artifacts.primary.spec'))
-            )
-          ) && (
-            <Tooltip
-              position="top"
-              className={css.artifactInfoTooltip}
-              content={getNonRuntimeFields(
-                get(props.artifacts, `primary.spec`),
-                get(props.template, 'artifacts.primary.spec')
-              )}
-            >
-              <Icon name="info" />
-            </Tooltip>
-          )}
-        </Text>
+        <Text className={css.inputheader}>{getString('primaryArtifactText')}</Text>
         {artifactSource.renderContent({
           ...props,
           isArtifactsRuntime,

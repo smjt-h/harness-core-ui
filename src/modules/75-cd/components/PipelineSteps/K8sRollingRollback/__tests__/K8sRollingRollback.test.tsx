@@ -9,12 +9,17 @@ import React from 'react'
 import { render, fireEvent, act } from '@testing-library/react'
 import { RUNTIME_INPUT_VALUE } from '@wings-software/uicore'
 import { StepType } from '@pipeline/components/PipelineSteps/PipelineStepInterface'
-import { StepViewType } from '@pipeline/components/AbstractSteps/Step'
+import { StepFormikRef, StepViewType } from '@pipeline/components/AbstractSteps/Step'
+import { factory, TestStepWidget } from '@pipeline/components/PipelineSteps/Steps/__tests__/StepTestUtil'
 import { K8sRollingRollback } from '../K8sRollingRollback.stories'
+import { K8sRollingRollbackStep } from '../K8sRollingRollback'
 
 jest.mock('@common/components/YAMLBuilder/YamlBuilder')
 
 describe('Test K8sRollingRollback Step', () => {
+  beforeEach(() => {
+    factory.registerStep(new K8sRollingRollbackStep())
+  })
   test('should render edit view', () => {
     const { container } = render(
       <K8sRollingRollback
@@ -35,7 +40,8 @@ describe('Test K8sRollingRollback Step', () => {
         template={{
           identifier: 'Test_A',
           type: StepType.K8sRollingRollback,
-          spec: { timeout: RUNTIME_INPUT_VALUE }
+          timeout: RUNTIME_INPUT_VALUE,
+          spec: { skipDryRun: RUNTIME_INPUT_VALUE }
         }}
         allValues={{
           type: StepType.K8sRollingRollback,
@@ -121,6 +127,82 @@ describe('Test K8sRollingRollback Step', () => {
         stepViewType={StepViewType.InputVariable}
       />
     )
+    expect(container).toMatchSnapshot()
+  })
+  test('Validate timeout is min 10s with runtime', () => {
+    const response = new K8sRollingRollbackStep().validateInputSet({
+      data: {
+        name: 'Test A',
+        identifier: 'Test A',
+        timeout: '5s',
+        type: StepType.K8sRollingRollback,
+        spec: {
+          skipDryRun: false
+        }
+      },
+      template: {
+        name: 'Test A',
+        identifier: 'Test A',
+        timeout: '<+input>',
+        type: StepType.K8sRollingRollback,
+        spec: {
+          skipDryRun: false
+        }
+      },
+      viewType: StepViewType.TriggerForm
+    })
+    expect(response).toMatchSnapshot()
+  })
+  test('inputSet', async () => {
+    const ref = React.createRef<StepFormikRef<unknown>>()
+    const { container } = render(
+      <TestStepWidget
+        initialValues={{ identifier: 'Test_A', type: 'K8sRollingRollback', spec: { skipDryRun: false } }}
+        template={{
+          identifier: 'Test_A',
+          type: 'K8sRollingRollback',
+          timeout: RUNTIME_INPUT_VALUE,
+          spec: { skipDryRun: RUNTIME_INPUT_VALUE }
+        }}
+        allValues={{
+          type: 'K8sRollingRollback',
+          name: 'Test A',
+          identifier: 'Test_A',
+          spec: { skipDryRun: RUNTIME_INPUT_VALUE, timeout: '<+input>' }
+        }}
+        type={StepType.K8sRollingRollback}
+        stepViewType={StepViewType.InputSet}
+        formikRef={ref}
+        path={'/abc'}
+      />
+    )
+    expect(container).toMatchSnapshot()
+  })
+  test('on edit view update', async () => {
+    const onUpdate = jest.fn()
+    const onChange = jest.fn()
+    const ref = React.createRef<StepFormikRef<unknown>>()
+
+    const { container } = render(
+      <TestStepWidget
+        initialValues={{
+          name: 'Test A',
+          identifier: 'Test A',
+          timeout: '5s',
+          type: StepType.K8sRollingRollback,
+          spec: {
+            skipDryRun: false,
+            timeout: '10m'
+          }
+        }}
+        type={StepType.K8sRollingRollback}
+        stepViewType={StepViewType.Edit}
+        onUpdate={onUpdate}
+        onChange={onChange}
+        ref={ref}
+      />
+    )
+    await ref.current?.submitForm()
     expect(container).toMatchSnapshot()
   })
 })

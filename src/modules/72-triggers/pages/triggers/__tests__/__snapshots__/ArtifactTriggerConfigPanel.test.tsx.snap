@@ -12,13 +12,17 @@ exports[`Artifact Trigger Config Panel  tests Renders/snapshots edit render 1`] 
         <div
           class="Layout--vertical StyledProps--main artifactTriggerConfigContainer StyledProps--padding-xxlarge"
         >
-          <span
-            class="StyledProps--font StyledProps--main formContentTitle StyledProps--inline"
+          <div
+            class="Text--withDocsTooltip"
             data-tooltip-id="artifactManifestLabel"
           >
-            triggers.triggerConfigurationLabel
-            
-          </span>
+            <span
+              class="StyledProps--font StyledProps--main formContentTitle StyledProps--inline"
+            >
+              triggers.triggerConfigurationLabel
+              
+            </span>
+          </div>
           <div
             class="formContent"
           >
@@ -176,12 +180,16 @@ exports[`Artifact Trigger Config Panel  tests Renders/snapshots edit render 1`] 
               </div>
             </div>
           </div>
-          <span
-            class="StyledProps--font StyledProps--main formContentTitle StyledProps--inline"
+          <div
+            class="Text--withDocsTooltip"
             data-tooltip-id="listenOnNewArtifactManifest"
           >
-            pipeline.artifactTriggerConfigPanel.listenOnNewArtifact
-          </span>
+            <span
+              class="StyledProps--font StyledProps--main formContentTitle StyledProps--inline"
+            >
+              pipeline.artifactTriggerConfigPanel.listenOnNewArtifact
+            </span>
+          </div>
           <div
             class="formContent"
           >
@@ -205,7 +213,16 @@ exports[`Artifact Trigger Config Panel  tests Renders/snapshots edit render 1`] 
                     <p
                       class="StyledProps--font StyledProps--main StyledProps--font-variation-table-headers"
                     >
-                      MANIFESTSTEXT
+                      <div
+                        class="Text--withDocsTooltip"
+                        data-tooltip-id="manifestName"
+                      >
+                        <span
+                          class="StyledProps--font StyledProps--main textHeading StyledProps--inline"
+                        >
+                          MANIFESTSTEXT
+                        </span>
+                      </div>
                     </p>
                   </div>
                   <div
@@ -217,7 +234,16 @@ exports[`Artifact Trigger Config Panel  tests Renders/snapshots edit render 1`] 
                     <p
                       class="StyledProps--font StyledProps--main StyledProps--font-variation-table-headers"
                     >
-                      PIPELINE.ARTIFACTTRIGGERCONFIGPANEL.ARTIFACTREPOSITORY
+                      <div
+                        class="Text--withDocsTooltip"
+                        data-tooltip-id="manifestRepository"
+                      >
+                        <span
+                          class="StyledProps--font StyledProps--main textHeading StyledProps--inline"
+                        >
+                          PIPELINE.ARTIFACTTRIGGERCONFIGPANEL.ARTIFACTREPOSITORY
+                        </span>
+                      </div>
                     </p>
                   </div>
                   <div
@@ -229,7 +255,16 @@ exports[`Artifact Trigger Config Panel  tests Renders/snapshots edit render 1`] 
                     <p
                       class="StyledProps--font StyledProps--main StyledProps--font-variation-table-headers"
                     >
-                      COMMON.LOCATION
+                      <div
+                        class="Text--withDocsTooltip"
+                        data-tooltip-id="artifactManifestLocation"
+                      >
+                        <span
+                          class="StyledProps--font StyledProps--main textHeading StyledProps--inline"
+                        >
+                          COMMON.LOCATION
+                        </span>
+                      </div>
                     </p>
                   </div>
                   <div
@@ -393,13 +428,17 @@ exports[`Artifact Trigger Config Panel  tests Renders/snapshots inital Render 1`
         <div
           class="Layout--vertical StyledProps--main artifactTriggerConfigContainer StyledProps--padding-xxlarge"
         >
-          <span
-            class="StyledProps--font StyledProps--main formContentTitle StyledProps--inline"
+          <div
+            class="Text--withDocsTooltip"
             data-tooltip-id="artifactManifestLabel"
           >
-            triggers.triggerConfigurationLabel
-            : triggers.onNewArtifactTitle
-          </span>
+            <span
+              class="StyledProps--font StyledProps--main formContentTitle StyledProps--inline"
+            >
+              triggers.triggerConfigurationLabel
+              : triggers.onNewArtifactTitle
+            </span>
+          </div>
           <div
             class="formContent"
           >
@@ -584,12 +623,16 @@ exports[`Artifact Trigger Config Panel  tests Renders/snapshots inital Render 1`
               </div>
             </div>
           </div>
-          <span
-            class="StyledProps--font StyledProps--main formContentTitle StyledProps--inline"
+          <div
+            class="Text--withDocsTooltip"
             data-tooltip-id="listenOnNewArtifactManifest"
           >
-            pipeline.artifactTriggerConfigPanel.listenOnNewArtifact
-          </span>
+            <span
+              class="StyledProps--font StyledProps--main formContentTitle StyledProps--inline"
+            >
+              pipeline.artifactTriggerConfigPanel.listenOnNewArtifact
+            </span>
+          </div>
           <div
             class="formContent"
           >

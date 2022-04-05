@@ -412,4 +412,102 @@ describe('Test K8sCanaryDeployStep', () => {
     })
     expect(response).toMatchSnapshot()
   })
+  test('should render null for StepviewType.template', () => {
+    const { container } = render(
+      <TestStepWidget initialValues={{}} type={StepType.K8sCanaryDeploy} stepViewType={StepViewType.Template} />
+    )
+    expect(container).toMatchSnapshot()
+  })
+  test('should render input set with percentage and timeout runtime', () => {
+    const { container } = render(
+      <TestStepWidget
+        initialValues={{}}
+        path={'/abc'}
+        template={{
+          identifier: 'Test_A',
+          type: 'K8sCanaryDeploy',
+          timeout: RUNTIME_INPUT_VALUE,
+          spec: {
+            skipDryRun: RUNTIME_INPUT_VALUE,
+            instanceSelection: {
+              spec: {
+                percentage: RUNTIME_INPUT_VALUE
+              },
+              type: 'Percentage'
+            }
+          }
+        }}
+        type={StepType.K8sCanaryDeploy}
+        stepViewType={StepViewType.InputSet}
+      />
+    )
+    expect(container).toMatchSnapshot()
+  })
+  test('validate time to not be less than 10s', () => {
+    const response = new K8sCanaryDeployStep().validateInputSet({
+      data: {
+        name: 'Test A',
+        identifier: 'Test A',
+        timeout: '1s',
+        type: 'K8sCanaryDeploy',
+        spec: {
+          instanceSelection: {
+            spec: {
+              percentage: 10
+            },
+            type: 'Percentage'
+          },
+          skipDryRun: false
+        }
+      },
+      template: {
+        name: 'Test_A',
+        identifier: 'Test_A',
+        type: 'K8sCanaryDeploy',
+        timeout: RUNTIME_INPUT_VALUE,
+        spec: {
+          skipDryRun: false,
+          instanceSelection: {
+            spec: {
+              percentage: RUNTIME_INPUT_VALUE
+            },
+            type: 'Percentage'
+          }
+        }
+      },
+      viewType: StepViewType.TriggerForm
+    })
+    expect(response).toMatchSnapshot()
+  })
+  test('validate time to not be less than 10s with percentage as runtime', () => {
+    const data = {
+      data: {
+        name: 'Test A',
+        identifier: 'Test A',
+        timeout: '1s',
+        type: 'K8sCanaryDeploy',
+        spec: {}
+      },
+      template: {
+        name: 'Test_A',
+        identifier: 'Test_A',
+        type: 'K8sCanaryDeploy',
+        spec: {
+          skipDryRun: false,
+          timeout: '1s',
+          instanceSelection: {
+            spec: {
+              percentage: RUNTIME_INPUT_VALUE
+            },
+            type: 'Count'
+          }
+        }
+      },
+      viewType: StepViewType.TriggerForm
+    }
+    const response = new K8sCanaryDeployStep().validateInputSet(data)
+    const processForm = new K8sCanaryDeployStep().processFormData(data.template)
+    expect(processForm).toMatchSnapshot()
+    expect(response).toMatchSnapshot()
+  })
 })

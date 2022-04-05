@@ -40,6 +40,7 @@ export interface StringsMap {
   'common.addVariable': string
   'common.advanced': string
   'common.agent': string
+  'common.agents': string
   'common.allErrors': string
   'common.and': string
   'common.andCaps': string
@@ -117,6 +118,7 @@ export interface StringsMap {
   'common.clientId': string
   'common.clientSecret': string
   'common.cluster': string
+  'common.clusters': string
   'common.comingSoon': string
   'common.comingSoon2': string
   'common.commentModal.addCommentPlaceholder': string
@@ -314,6 +316,7 @@ export interface StringsMap {
   'common.gitSync.unSynced.message2': string
   'common.gitSync.unableToCreatePR': string
   'common.gitSync.updateResource': string
+  'common.gnupgKeys': string
   'common.goBack': string
   'common.governance': string
   'common.gpgkey': string
@@ -524,6 +527,7 @@ export interface StringsMap {
   'common.repo_provider.gitlabLabel': string
   'common.reportName': string
   'common.reportNameRequired': string
+  'common.repositoryCertificates': string
   'common.repositoryName': string
   'common.request': string
   'common.resolveConflict': string

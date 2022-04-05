@@ -40,11 +40,39 @@ describe('Test K8sBlueGreenDeployStep', () => {
     )
     expect(container).toMatchSnapshot()
   })
+  test('should render null for StepviewType.template', () => {
+    const { container } = render(
+      <TestStepWidget initialValues={{}} type={StepType.K8sBlueGreenDeploy} stepViewType={StepViewType.Template} />
+    )
+    expect(container).toMatchSnapshot()
+  })
+  test('should render input with no path', () => {
+    const { container } = render(
+      <TestStepWidget
+        initialValues={{}}
+        template={{
+          identifier: 'Test_A',
+          type: 'K8sBlueGreenDeploy',
+          timeout: RUNTIME_INPUT_VALUE,
+          spec: { skipDryRun: RUNTIME_INPUT_VALUE }
+        }}
+        type={StepType.K8sBlueGreenDeploy}
+        stepViewType={StepViewType.InputSet}
+      />
+    )
+    expect(container).toMatchSnapshot()
+  })
   test('should render edit view', () => {
     const { container } = render(
       <TestStepWidget
         initialValues={{ identifier: 'Test_A', type: 'K8sBlueGreenDeploy', spec: { skipDryRun: false } }}
-        template={{ identifier: 'Test_A', type: 'K8sBlueGreenDeploy', spec: { skipDryRun: RUNTIME_INPUT_VALUE } }}
+        template={{
+          identifier: 'Test_A',
+          type: 'K8sBlueGreenDeploy',
+          timeout: RUNTIME_INPUT_VALUE,
+          spec: { skipDryRun: RUNTIME_INPUT_VALUE }
+        }}
+        path={'/abc'}
         allValues={{
           type: 'K8sBlueGreenDeploy',
           name: 'Test A',

@@ -11,6 +11,7 @@ import { cloneDeep, defaultTo, isEmpty, isEqual, isNil, omit, pick, set } from '
 import { parse } from 'yaml'
 import { IconName, MultiTypeInputType, VisualYamlSelectedView as SelectedView } from '@wings-software/uicore'
 import merge from 'lodash-es/merge'
+import type { GetDataError } from 'restful-react'
 import type { PipelineInfoConfig, StageElementConfig, StageElementWrapperConfig } from 'services/cd-ng'
 import type { PermissionCheck } from 'services/rbac'
 import { loggerFor } from 'framework/logging/logging'
@@ -73,6 +74,7 @@ import {
 interface PipelineInfoConfigWithGitDetails extends PipelineInfoConfig {
   gitDetails?: EntityGitDetails
   entityValidityDetails?: EntityValidityDetails
+  templateError?: GetDataError<Failure | Error> | null
 }
 
 const logger = loggerFor(ModuleName.CD)
@@ -147,7 +149,7 @@ export const getPipelineByIdentifier = (
       }
     },
     signal
-  ).then(response => {
+  ).then((response: ResponsePMSPipelineResponseDTO & { message?: string }) => {
     let obj = {} as ResponsePMSPipelineResponseDTO
     if ((typeof response as unknown) === 'string') {
       obj = defaultTo(parse(response as string)?.data?.yamlPipeline, {})
@@ -159,10 +161,20 @@ export const getPipelineByIdentifier = (
       return {
         ...(yamlPipelineDetails !== null && { ...yamlPipelineDetails.pipeline }),
         gitDetails: obj.data.gitDetails ?? {},
-        entityValidityDetails: obj.data.entityValidityDetails ?? {}
+        entityValidityDetails: obj.data.entityValidityDetails ?? {},
+        templateError: null
+      }
+    } else {
+      return {
+        templateError: {
+          message: response?.message,
+          data: {
+            message: defaultTo(response?.message, '')
+          },
+          status: response?.status
+        }
       }
     }
-    return obj
   })
 }
 
@@ -358,6 +370,10 @@ const _fetchPipeline = async (props: FetchPipelineBoundProps, params: FetchPipel
       pipelineId,
       signal
     )
+    if (pipelineWithGitDetails?.templateError) {
+      dispatch(PipelineContextActions.error({ templateError: pipelineWithGitDetails?.templateError }))
+      return
+    }
 
     id = getId(
       queryParams.accountIdentifier,

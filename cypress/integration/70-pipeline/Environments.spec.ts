@@ -13,7 +13,7 @@ describe('Environment for Pipeline', () => {
     })
   })
 
-  it.skip('Environment Addition & YAML/visual parity', () => {
+  it('Environment Addition & YAML/visual parity', () => {
     cy.intercept('GET', environmentsCall, { fixture: 'ng/api/environments/environments.empty.json' }).as(
       'emptyEnvironments'
     )
@@ -23,6 +23,7 @@ describe('Environment for Pipeline', () => {
     cy.contains('h2', 'No Environments Available').should('be.visible')
     cy.contains('span', 'New Environment').should('be.visible')
     cy.contains('span', 'New Environment').click()
+    cy.wait(1000)
 
     cy.fillName('testEnv')
     cy.get('span[data-testid="description-edit"]').should('be.visible')
@@ -50,7 +51,7 @@ describe('Environment for Pipeline', () => {
     cy.contains('span', 'Environment created successfully').should('be.visible')
   })
 
-  it.skip('Environment Assertion and Deletion', () => {
+  it('Environment Assertion and Deletion', () => {
     cy.intercept('GET', environmentsCall, { fixture: 'ng/api/environments/environmentsList.json' }).as(
       'environmentsList'
     )

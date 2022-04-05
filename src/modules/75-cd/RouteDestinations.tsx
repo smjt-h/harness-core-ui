@@ -163,7 +163,7 @@ RbacFactory.registerResourceCategory(ResourceCategory.GITOPS, {
 
 RbacFactory.registerResourceTypeHandler(ResourceType.GITOPS_AGENT, {
   icon: 'gitops-agent',
-  label: 'common.agent',
+  label: 'common.agents',
   category: ResourceCategory.GITOPS,
   permissionLabels: {
     [PermissionIdentifier.VIEW_GITOPS_AGENT]: <LocaleString stringID="rbac.permissionLabels.view" />,
@@ -174,7 +174,7 @@ RbacFactory.registerResourceTypeHandler(ResourceType.GITOPS_AGENT, {
 
 RbacFactory.registerResourceTypeHandler(ResourceType.GITOPS_APP, {
   icon: 'gitops-agent',
-  label: 'common.application',
+  label: 'applications',
   category: ResourceCategory.GITOPS,
   permissionLabels: {
     [PermissionIdentifier.VIEW_GITOPS_APPLICATION]: <LocaleString stringID="rbac.permissionLabels.view" />,
@@ -187,7 +187,7 @@ RbacFactory.registerResourceTypeHandler(ResourceType.GITOPS_APP, {
 
 RbacFactory.registerResourceTypeHandler(ResourceType.GITOPS_CERT, {
   icon: 'gitops-agent',
-  label: 'common.certificate',
+  label: 'common.repositoryCertificates',
   category: ResourceCategory.GITOPS,
   permissionLabels: {
     [PermissionIdentifier.VIEW_GITOPS_CERT]: <LocaleString stringID="rbac.permissionLabels.view" />,
@@ -198,7 +198,7 @@ RbacFactory.registerResourceTypeHandler(ResourceType.GITOPS_CERT, {
 
 RbacFactory.registerResourceTypeHandler(ResourceType.GITOPS_CLUSTER, {
   icon: 'gitops-agent',
-  label: 'common.cluster',
+  label: 'common.clusters',
   category: ResourceCategory.GITOPS,
   permissionLabels: {
     [PermissionIdentifier.VIEW_GITOPS_CLUSTER]: <LocaleString stringID="rbac.permissionLabels.view" />,
@@ -209,7 +209,7 @@ RbacFactory.registerResourceTypeHandler(ResourceType.GITOPS_CLUSTER, {
 
 RbacFactory.registerResourceTypeHandler(ResourceType.GITOPS_GPGKEY, {
   icon: 'gitops-agent',
-  label: 'common.gpgkey',
+  label: 'common.gnupgKeys',
   category: ResourceCategory.GITOPS,
   permissionLabels: {
     [PermissionIdentifier.VIEW_GITOPS_GPGKEY]: <LocaleString stringID="rbac.permissionLabels.view" />,
@@ -220,7 +220,7 @@ RbacFactory.registerResourceTypeHandler(ResourceType.GITOPS_GPGKEY, {
 
 RbacFactory.registerResourceTypeHandler(ResourceType.GITOPS_REPOSITORY, {
   icon: 'gitops-agent',
-  label: 'repository',
+  label: 'repositories',
   category: ResourceCategory.GITOPS,
   permissionLabels: {
     [PermissionIdentifier.VIEW_GITOPS_REPOSITORY]: <LocaleString stringID="rbac.permissionLabels.view" />,

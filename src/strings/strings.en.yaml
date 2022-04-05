@@ -80,7 +80,7 @@ changeHistory: Change History
 entity: Entity
 entities: Entities
 enableGitExperience: Enable Git Experience
-gitExperienceNewUserText: Store your Pipelines and Harness Configurations in Git.
+gitExperienceNewUserText: Store your Pipelines and other Harness Configurations in Git.
 selectGitProvider: Select your Git Provider
 selectGitConnectorTypeLabel: 'Select the Connector to your {{type}}'
 lastTested: Last Tested
