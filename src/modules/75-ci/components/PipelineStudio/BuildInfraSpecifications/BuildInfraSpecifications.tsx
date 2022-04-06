@@ -332,7 +332,7 @@ export default function BuildInfraSpecifications({ children }: React.PropsWithCh
       labels: getInitialMapValues((stage?.stage?.spec?.infrastructure as K8sDirectInfraYaml)?.spec?.labels || {}),
       buildInfraType: 'KubernetesDirect',
       priorityClass: (stage?.stage?.spec?.infrastructure as K8sDirectInfraYaml)?.spec
-        ?.priorityClass as unknown as string,
+        ?.priorityClassName as unknown as string,
       automountServiceAccountToken: typeof autoServiceAccountToken === 'undefined' ? true : autoServiceAccountToken,
       privileged: (stage?.stage?.spec?.infrastructure as K8sDirectInfraYaml)?.spec?.containerSecurityContext
         ?.privileged,
@@ -1238,7 +1238,7 @@ export default function BuildInfraSpecifications({ children }: React.PropsWithCh
                                               </>
                                             )}
                                             {(propagatedStage?.stage?.spec?.infrastructure as K8sDirectInfraYaml)?.spec
-                                              ?.priorityClass && (
+                                              ?.priorityClassName && (
                                               <>
                                                 <Text
                                                   font={{ variation: FontVariation.FORM_LABEL }}
@@ -1250,7 +1250,7 @@ export default function BuildInfraSpecifications({ children }: React.PropsWithCh
                                                 <Text color="black" margin={{ bottom: 'medium' }}>
                                                   {
                                                     (propagatedStage?.stage?.spec?.infrastructure as K8sDirectInfraYaml)
-                                                      ?.spec?.priorityClass
+                                                      ?.spec?.priorityClassName
                                                   }
                                                 </Text>
                                               </>

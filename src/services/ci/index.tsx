@@ -260,11 +260,20 @@ export interface CIUsageResult {
   timestamp?: number
 }
 
+export interface CIVolume {
+  type?: 'EmptyDir' | 'PersistentVolumeClaim' | 'HostPath'
+}
+
 export interface CIWebhookInfoDTO {
   author?: CIBuildAuthor
   branch?: CIBuildBranchHook
   event?: string
   pullRequest?: CIBuildPRHook
+}
+
+export interface Capabilities {
+  add?: string[]
+  drop?: string[]
 }
 
 export interface Clause {
@@ -284,7 +293,6 @@ export interface ClauseYamlSpec {
 export type CleanupStepInfo = StepSpecType & {
   infrastructure: Infrastructure
   podName: string
-  runAsUser?: ParameterFieldInteger
 }
 
 export interface CodeBase {
@@ -375,7 +383,7 @@ export type CustomExecutionSource = ExecutionSource & {
 }
 
 export type CustomPolicyStepSpec = PolicySpec & {
-  payload?: string
+  payload: string
 }
 
 export interface DashboardBuildExecutionInfo {
@@ -461,6 +469,24 @@ export type ECRStepInfo = StepSpecType & {
   runAsUser?: number
   tags: string[]
   target?: string
+}
+
+export type EmptyDirVolume = PodVolume & {
+  medium?: string
+  mountPath: string
+  name: string
+  sizeMib?: number
+}
+
+export type EmptyDirYaml = CIVolume & {
+  mountPath: string
+  spec: EmptyDirYamlSpec
+  type: 'EmptyDir' | 'PersistentVolumeClaim' | 'HostPath'
+}
+
+export interface EmptyDirYamlSpec {
+  medium?: string
+  size?: string
 }
 
 export interface Error {
@@ -748,6 +774,7 @@ export interface Error {
     | 'SCM_UNPROCESSABLE_ENTITY'
     | 'PROCESS_EXECUTION_EXCEPTION'
     | 'SCM_UNAUTHORIZED'
+    | 'SCM_INTERNAL_SERVER_ERROR'
     | 'DATA'
     | 'CONTEXT'
     | 'PR_CREATION_ERROR'
@@ -767,6 +794,10 @@ export interface Error {
     | 'RESOURCE_ALREADY_EXISTS'
     | 'INVALID_JSON_PAYLOAD'
     | 'POLICY_EVALUATION_FAILURE'
+    | 'POLICY_SET_ERROR'
+    | 'INVALID_ARTIFACTORY_REGISTRY_REQUEST'
+    | 'INVALID_NEXUS_REGISTRY_REQUEST'
+    | 'ENTITY_NOT_FOUND'
   correlationId?: string
   detailedMessage?: string
   message?: string
@@ -1085,6 +1116,7 @@ export interface Failure {
     | 'SCM_UNPROCESSABLE_ENTITY'
     | 'PROCESS_EXECUTION_EXCEPTION'
     | 'SCM_UNAUTHORIZED'
+    | 'SCM_INTERNAL_SERVER_ERROR'
     | 'DATA'
     | 'CONTEXT'
     | 'PR_CREATION_ERROR'
@@ -1104,6 +1136,10 @@ export interface Failure {
     | 'RESOURCE_ALREADY_EXISTS'
     | 'INVALID_JSON_PAYLOAD'
     | 'POLICY_EVALUATION_FAILURE'
+    | 'POLICY_SET_ERROR'
+    | 'INVALID_ARTIFACTORY_REGISTRY_REQUEST'
+    | 'INVALID_NEXUS_REGISTRY_REQUEST'
+    | 'ENTITY_NOT_FOUND'
   correlationId?: string
   errors?: ValidationError[]
   message?: string
@@ -1168,6 +1204,24 @@ export interface HoldingScope {
   scope: string
 }
 
+export type HostPathVolume = PodVolume & {
+  hostPathType?: string
+  mountPath: string
+  name: string
+  path: string
+}
+
+export type HostPathYaml = CIVolume & {
+  mountPath: string
+  spec: HostPathYamlSpec
+  type: 'EmptyDir' | 'PersistentVolumeClaim' | 'HostPath'
+}
+
+export interface HostPathYamlSpec {
+  path: string
+  type?: string
+}
+
 export interface HttpHeaderConfig {
   key?: string
   value?: string
@@ -1199,7 +1253,7 @@ export interface ImageDetails {
 }
 
 export interface Infrastructure {
-  type?: 'KubernetesDirect' | 'UseFromStage' | 'VM'
+  type?: 'KubernetesDirect' | 'UseFromStage' | 'VM' | 'KubernetesHosted'
 }
 
 export type InitializeStepInfo = StepSpecType & {
@@ -1209,7 +1263,6 @@ export type InitializeStepInfo = StepSpecType & {
   executionElementConfig: ExecutionElementConfig
   infrastructure: Infrastructure
   skipGitClone: boolean
-  timeout?: number
 }
 
 export interface InputSet {
@@ -1266,27 +1319,7 @@ export type JiraUpdateStepInfo = StepSpecType & {
 }
 
 export interface JsonNode {
-  array?: boolean
-  bigDecimal?: boolean
-  bigInteger?: boolean
-  binary?: boolean
-  boolean?: boolean
-  containerNode?: boolean
-  double?: boolean
-  float?: boolean
-  floatingPointNumber?: boolean
-  int?: boolean
-  integralNumber?: boolean
-  long?: boolean
-  missingNode?: boolean
-  nodeType?: 'ARRAY' | 'BINARY' | 'BOOLEAN' | 'MISSING' | 'NULL' | 'NUMBER' | 'OBJECT' | 'POJO' | 'STRING'
-  null?: boolean
-  number?: boolean
-  object?: boolean
-  pojo?: boolean
-  short?: boolean
-  textual?: boolean
-  valueNode?: boolean
+  [key: string]: any
 }
 
 export type K8BuildJobEnvInfo = BuildJobEnvInfo & {
@@ -1299,31 +1332,38 @@ export type K8BuildJobEnvInfo = BuildJobEnvInfo & {
 
 export type K8sDirectInfraYaml = Infrastructure & {
   spec: K8sDirectInfraYamlSpec
-  type: 'KubernetesDirect' | 'UseFromStage' | 'VM'
+  type: 'KubernetesDirect' | 'UseFromStage' | 'VM' | 'KubernetesHosted'
 }
 
 export interface K8sDirectInfraYamlSpec {
   annotations?: {
     [key: string]: string
   }
+  automountServiceAccountToken?: boolean
   connectorRef: string
+  containerSecurityContext?: SecurityContext
   initTimeout?: string
   labels?: {
     [key: string]: string
   }
   namespace: string
+  nodeSelector?: {
+    [key: string]: string
+  }
+  priorityClassName?: string
   runAsUser?: number
   serviceAccountName?: string
-  automountServiceAccountToken?: boolean // hard coded for now
-  priorityClass?: string
-  containerSecurityContext?: {
-    privileged?: boolean
-    allowPrivilegeEscalation?: boolean
-    capabilities?: { add?: string[]; drop?: string[] }
-    runAsNonRoot?: boolean
-    readOnlyRootFilesystem?: boolean
-    runAsUser?: number
-  }
+  tolerations?: Toleration[]
+  volumes?: CIVolume[]
+}
+
+export type K8sHostedInfraYaml = Infrastructure & {
+  spec: K8sHostedInfraYamlSpec
+  type: 'KubernetesDirect' | 'UseFromStage' | 'VM' | 'KubernetesHosted'
+}
+
+export interface K8sHostedInfraYamlSpec {
+  identifier: string
 }
 
 export type KeyValuesCriteriaSpec = CriteriaSpec & {
@@ -1391,6 +1431,7 @@ export interface OnFailureConfig {
     | 'Authorization'
     | 'Verification'
     | 'DelegateProvisioning'
+    | 'PolicyEvaluationFailure'
   )[]
 }
 
@@ -1433,6 +1474,13 @@ export interface PVCParams {
   volumeName?: string
 }
 
+export type PVCVolume = PodVolume & {
+  claimName: string
+  mountPath: string
+  name: string
+  readOnly?: boolean
+}
+
 export type ParallelStepElementConfig = ExecutionWrapperConfig[]
 
 export interface ParameterField {
@@ -1443,16 +1491,6 @@ export interface ParameterField {
   responseField?: string
   typeString?: boolean
   value?: { [key: string]: any }
-}
-
-export interface ParameterFieldInteger {
-  expression?: boolean
-  expressionValue?: string
-  inputSetValidator?: InputSetValidator
-  jsonResponseField?: boolean
-  responseField?: string
-  typeString?: boolean
-  value?: number
 }
 
 export interface ParameterFieldMapStringJsonNode {
@@ -1490,6 +1528,17 @@ export interface PatchInstruction {
     | 'RemoveSegmentsToVariationTargetMap'
 }
 
+export type PersistentVolumeClaimYaml = CIVolume & {
+  mountPath: string
+  spec: PersistentVolumeClaimYamlSpec
+  type: 'EmptyDir' | 'PersistentVolumeClaim' | 'HostPath'
+}
+
+export interface PersistentVolumeClaimYamlSpec {
+  claimName: string
+  readOnly?: boolean
+}
+
 export type PluginStepInfo = StepSpecType & {
   connectorRef: string
   image: string
@@ -1512,11 +1561,16 @@ export interface PodSetupInfo {
   volumeToMountPath: {
     [key: string]: string
   }
+  volumes?: PodVolume[]
   workDirPath?: string
 }
 
 export interface PodSetupParams {
   containerDefinitionInfos?: ContainerDefinitionInfo[]
+}
+
+export interface PodVolume {
+  type?: 'EmptyDir' | 'PersistentVolumeClaim' | 'HostPath'
 }
 
 export interface PodsSetupInfo {
@@ -1529,7 +1583,7 @@ export interface PolicySpec {
 
 export type PolicyStepInfo = StepSpecType & {
   metadata?: string
-  policySets?: string[]
+  policySets: string[]
   policySpec?: PolicySpec
   type?: string
 }
@@ -1607,6 +1661,13 @@ export interface Response {
 export interface ResponseBoolean {
   correlationId?: string
   data?: boolean
+  metaData?: { [key: string]: any }
+  status?: 'SUCCESS' | 'FAILURE' | 'ERROR'
+}
+
+export interface ResponseCIExecutionImages {
+  correlationId?: string
+  data?: CIExecutionImages
   metaData?: { [key: string]: any }
   status?: 'SUCCESS' | 'FAILURE' | 'ERROR'
 }
@@ -1959,6 +2020,7 @@ export interface ResponseMessage {
     | 'SCM_UNPROCESSABLE_ENTITY'
     | 'PROCESS_EXECUTION_EXCEPTION'
     | 'SCM_UNAUTHORIZED'
+    | 'SCM_INTERNAL_SERVER_ERROR'
     | 'DATA'
     | 'CONTEXT'
     | 'PR_CREATION_ERROR'
@@ -1978,6 +2040,10 @@ export interface ResponseMessage {
     | 'RESOURCE_ALREADY_EXISTS'
     | 'INVALID_JSON_PAYLOAD'
     | 'POLICY_EVALUATION_FAILURE'
+    | 'POLICY_SET_ERROR'
+    | 'INVALID_ARTIFACTORY_REGISTRY_REQUEST'
+    | 'INVALID_NEXUS_REGISTRY_REQUEST'
+    | 'ENTITY_NOT_FOUND'
   exception?: Throwable
   failureTypes?: (
     | 'EXPIRED'
@@ -2135,11 +2201,26 @@ export type SaveCacheS3StepInfo = StepSpecType & {
   sourcePaths: string[]
 }
 
+export type ScmErrorMetadataDTO = ErrorMetadataDTO & {
+  conflictCommitId?: string
+}
+
 export type SecretNGVariable = NGVariable & {
   default?: string
   name?: string
   type?: 'Secret'
   value: string
+}
+
+export interface SecurityContext {
+  allowPrivilegeEscalation?: boolean
+  capabilities?: Capabilities
+  privileged?: boolean
+  procMount?: string
+  readOnlyRootFilesystem?: boolean
+  runAsGroup?: number
+  runAsNonRoot?: boolean
+  runAsUser?: number
 }
 
 export type SecurityStepInfo = StepSpecType & {
@@ -2169,6 +2250,30 @@ export type ServiceNowApprovalStepInfo = StepSpecType & {
   rejectionCriteria?: CriteriaSpecWrapper
   ticketNumber: string
   ticketType: string
+}
+
+export type ServiceNowCreateStepInfo = StepSpecType & {
+  connectorRef: string
+  delegateSelectors?: string[]
+  fields?: ServiceNowField[]
+  templateName?: string
+  ticketType: string
+  useServiceNowTemplate?: boolean
+}
+
+export interface ServiceNowField {
+  name?: string
+  value: string
+}
+
+export type ServiceNowUpdateStepInfo = StepSpecType & {
+  connectorRef: string
+  delegateSelectors?: string[]
+  fields?: ServiceNowField[]
+  templateName?: string
+  ticketNumber: string
+  ticketType: string
+  useServiceNowTemplate?: boolean
 }
 
 export type SetDefaultVariationsYaml = PatchInstruction & {
@@ -2342,6 +2447,14 @@ export interface Throwable {
   suppressed?: Throwable[]
 }
 
+export interface Toleration {
+  effect?: string
+  key?: string
+  operator?: string
+  tolerationSeconds?: number
+  value?: string
+}
+
 export interface TransitionTo {
   status: string
   transitionName?: string
@@ -2390,10 +2503,11 @@ export type UploadToS3StepInfo = StepSpecType & {
   bucket: string
   connectorRef: string
   endpoint?: string
-  region?: string
+  region: string
   resources?: ContainerResource
   runAsUser?: number
   sourcePath: string
+  stripPrefix?: string
   target?: string
 }
 
@@ -2434,7 +2548,7 @@ export interface VmInfraSpec {
 
 export type VmInfraYaml = Infrastructure & {
   spec: VmInfraSpec
-  type: 'KubernetesDirect' | 'UseFromStage' | 'VM'
+  type: 'KubernetesDirect' | 'UseFromStage' | 'VM' | 'KubernetesHosted'
 }
 
 export type VmPoolYaml = VmInfraSpec & {
@@ -2874,6 +2988,92 @@ export const updateExecutionConfigPromise = (
     signal
   )
 
+export interface GetCurrentConfigQueryParams {
+  accountIdentifier: string
+}
+
+export type GetCurrentConfigProps = Omit<
+  GetProps<ResponseCIExecutionImages, Failure | Error, GetCurrentConfigQueryParams, void>,
+  'path'
+>
+
+/**
+ * Get account's execution config
+ */
+export const GetCurrentConfig = (props: GetCurrentConfigProps) => (
+  <Get<ResponseCIExecutionImages, Failure | Error, GetCurrentConfigQueryParams, void>
+    path={`/execution-config/get-current-config`}
+    base={getConfig('ci')}
+    {...props}
+  />
+)
+
+export type UseGetCurrentConfigProps = Omit<
+  UseGetProps<ResponseCIExecutionImages, Failure | Error, GetCurrentConfigQueryParams, void>,
+  'path'
+>
+
+/**
+ * Get account's execution config
+ */
+export const useGetCurrentConfig = (props: UseGetCurrentConfigProps) =>
+  useGet<ResponseCIExecutionImages, Failure | Error, GetCurrentConfigQueryParams, void>(
+    `/execution-config/get-current-config`,
+    { base: getConfig('ci'), ...props }
+  )
+
+/**
+ * Get account's execution config
+ */
+export const getCurrentConfigPromise = (
+  props: GetUsingFetchProps<ResponseCIExecutionImages, Failure | Error, GetCurrentConfigQueryParams, void>,
+  signal?: RequestInit['signal']
+) =>
+  getUsingFetch<ResponseCIExecutionImages, Failure | Error, GetCurrentConfigQueryParams, void>(
+    getConfig('ci'),
+    `/execution-config/get-current-config`,
+    props,
+    signal
+  )
+
+export type GetDefaultConfigProps = Omit<GetProps<ResponseCIExecutionImages, Failure | Error, void, void>, 'path'>
+
+/**
+ * Get default execution config
+ */
+export const GetDefaultConfig = (props: GetDefaultConfigProps) => (
+  <Get<ResponseCIExecutionImages, Failure | Error, void, void>
+    path={`/execution-config/get-default-config`}
+    base={getConfig('ci')}
+    {...props}
+  />
+)
+
+export type UseGetDefaultConfigProps = Omit<UseGetProps<ResponseCIExecutionImages, Failure | Error, void, void>, 'path'>
+
+/**
+ * Get default execution config
+ */
+export const useGetDefaultConfig = (props: UseGetDefaultConfigProps) =>
+  useGet<ResponseCIExecutionImages, Failure | Error, void, void>(`/execution-config/get-default-config`, {
+    base: getConfig('ci'),
+    ...props
+  })
+
+/**
+ * Get default execution config
+ */
+export const getDefaultConfigPromise = (
+  props: GetUsingFetchProps<ResponseCIExecutionImages, Failure | Error, void, void>,
+  signal?: RequestInit['signal']
+) =>
+  getUsingFetch<ResponseCIExecutionImages, Failure | Error, void, void>(
+    getConfig('ci'),
+    `/execution-config/get-default-config`,
+    props,
+    signal
+  )
+
 export type GetCIHealthStatusProps = Omit<GetProps<RestResponseString, unknown, void, void>, 'path'>
 
 /**
@@ -2968,10 +3168,25 @@ export interface GetStepYamlSchemaQueryParams {
     | 'FlagConfiguration'
     | 'ShellScript'
     | 'K8sCanaryDeploy'
+    | 'K8sApply'
+    | 'K8sBlueGreenDeploy'
+    | 'K8sRollingDeploy'
+    | 'K8sRollingRollback'
+    | 'K8sScale'
+    | 'K8sDelete'
+    | 'K8sBGSwapServices'
+    | 'K8sCanaryDelete'
+    | 'TerraformApply'
+    | 'TerraformPlan'
+    | 'TerraformDestroy'
+    | 'TerraformRollback'
+    | 'HelmDeploy'
+    | 'HelmRollback'
     | 'Connectors'
     | 'Secrets'
     | 'Service'
     | 'Environment'
+    | 'EnvironmentGroup'
     | 'InputSets'
     | 'CvConfig'
     | 'Verify'
@@ -2991,8 +3206,10 @@ export interface GetStepYamlSchemaQueryParams {
     | 'GitRepositories'
     | 'FeatureFlags'
     | 'ServiceNowApproval'
+    | 'ServiceNowCreate'
+    | 'ServiceNowUpdate'
     | 'GovernancePolicies'
-    | 'POLICY_STEP'
+    | 'Policy'
     | 'Run'
     | 'RunTests'
     | 'Plugin'
