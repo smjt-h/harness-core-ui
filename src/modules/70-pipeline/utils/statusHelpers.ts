@@ -10,7 +10,7 @@ import type { ExecutionSummaryInfo } from 'services/pipeline-ng'
 
 export type ExecutionStatus = Exclude<
   Required<ExecutionSummaryInfo>['lastExecutionStatus'],
-  'NOT_STARTED' | 'INTERVENTION_WAITING' | 'APPROVAL_WAITING' | 'APPROVAL_REJECTED' | 'WAITING'
+  'NOT_STARTED' | 'INTERVENTION_WAITING' | 'APPROVAL_WAITING' | 'APPROVAL_REJECTED' | 'Waiting'
 >
 
 /**

@@ -501,7 +501,6 @@ export const GetInputSetsResponse: UseGetReturnData<ResponsePageInputSetSummaryR
           pipelineIdentifier: 'pipeline1',
           inputSetType: 'INPUT_SET',
           tags: {},
-          version: 0,
           gitDetails: {
             objectId: null as unknown as undefined,
             branch: null as unknown as undefined,
@@ -536,7 +535,6 @@ export const GetManifestInputSetsResponse: UseGetReturnData<ResponsePageInputSet
           pipelineIdentifier: ' TestPipeline-ABC',
           inputSetType: 'INPUT_SET',
           tags: {},
-          version: 0,
           gitDetails: {
             objectId: null as unknown as undefined,
             branch: null as unknown as undefined,
