@@ -9,17 +9,19 @@ import React, { useEffect, useState, useRef, DragEvent } from 'react'
 import { Icon, Text } from '@harness/uicore'
 import { useToaster } from '@common/exports'
 import { useStrings } from 'framework/strings'
+import type { uploadHostItem } from '../StepDetails/PdcDetails'
+
 import css from './UploadJSON.module.scss'
 
 interface UploadJSONInterface {
-  setJsonValue: (value: string) => void
+  setJsonValue: (value: uploadHostItem[]) => void
 }
 
 const UploadJSON = ({ setJsonValue }: UploadJSONInterface) => {
   const { getString } = useStrings()
   const { showError } = useToaster()
   const inputRef = useRef() as React.MutableRefObject<HTMLInputElement>
-  const [fileContent, setFileContent] = useState<string>('')
+  const [fileContent, setFileContent] = useState([] as uploadHostItem[])
   const [fileName, setFileName] = useState<string>('')
   const [dropHighlight, setDropHighlight] = useState(false)
 
@@ -28,13 +30,18 @@ const UploadJSON = ({ setJsonValue }: UploadJSONInterface) => {
   }, [fileContent])
 
   const handleFileUpload = async (file: File) => {
+    setFileName('')
     try {
       const fr = new FileReader()
-      fr.onload = function () {
-        setFileContent(JSON.parse(fr.result as string))
+      fr.onload = () => {
+        try {
+          setFileContent(JSON.parse(fr.result as string))
+          setFileName(file.name)
+        } catch (e) {
+          showError(e.message)
+        }
       }
       fr.readAsText(file)
-      setFileName(file.name)
     } catch (e) {
       showError(getString('connectors.pdc.errorUploading'))
     }

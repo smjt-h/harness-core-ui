@@ -1001,15 +1001,6 @@ export const buildPdcPayload = (formData: FormData) => {
     type: Connectors.PDC,
     spec: {
       ...(formData?.delegateSelectors ? { delegateSelectors: formData.delegateSelectors } : {}),
-      credential: {
-        type: formData?.delegateType,
-        spec:
-          formData?.delegateType === DelegateTypes.DELEGATE_OUT_CLUSTER
-            ? {
-                secretKeyRef: formData.password.referenceString
-              }
-            : null
-      },
       hosts: formData.hosts,
       sshKeyRef: formData.sshKeyRef
     }
@@ -1665,6 +1656,8 @@ export const getIconByType = (type: ConnectorInfoDTO['type'] | undefined): IconN
       return 'service-artifactory'
     case Connectors.GCP:
       return 'service-gcp'
+    case Connectors.PDC:
+      return 'pdc'
     case Connectors.Jira:
       return 'service-jira'
     case Connectors.AWS_KMS:

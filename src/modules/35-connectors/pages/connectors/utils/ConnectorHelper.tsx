@@ -191,7 +191,7 @@ export const getConnectorIconByType = (type: string): IconName => {
     case 'Gcr':
       return 'service-gcp'
     case Connectors.PDC:
-      return 'repository'
+      return 'pdc'
     case Connectors.AWS_KMS:
       return 'aws-kms'
     case Connectors.CE_AZURE:

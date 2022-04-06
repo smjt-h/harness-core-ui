@@ -1883,6 +1883,7 @@ export interface StringsMap {
   'connectors.name_labels.HttpHelmRepo': string
   'connectors.name_labels.Kubernetes': string
   'connectors.name_labels.Nexus': string
+  'connectors.name_labels.PDC': string
   'connectors.name_labels.SecretManager': string
   'connectors.name_labels.Splunk': string
   'connectors.name_labels.gcpKms': string
@@ -1905,10 +1906,8 @@ export interface StringsMap {
   'connectors.pdc.hostsRule': string
   'connectors.pdc.hostsUpload1': string
   'connectors.pdc.hostsUpload2': string
-  'connectors.pdc.or': string
   'connectors.pdc.testConnection.step1': string
   'connectors.pdc.testConnection.step2': string
-  'connectors.pdc.testConnection.step3': string
   'connectors.prometheus.urlValidation': string
   'connectors.prometheusConnectorDetails': string
   'connectors.prometheusLabel': string

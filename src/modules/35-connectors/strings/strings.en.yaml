@@ -117,6 +117,7 @@ name_labels:
   Bitbucket: 'Bitbucket Connector Name'
   Docker: 'Docker Connector Name'
   GCP: 'GCP Connector Name'
+  PDC: 'PDC Connector Name'
   gcpKms: 'GCP KMS Connector Name'
   AWS: 'AWS Connector Name'
   AwsCodeCommit: 'AWS CodeCommit Name'
@@ -790,11 +791,9 @@ pdc:
   hostsRule: 'Enter JSON or comma separated list here'
   hostsUpload1: 'Drop JSON file here'
   hostsUpload2: 'or click to upload'
-  or: 'OR'
   errorUploading: 'Uploading file error'
   testConnection:
-    step1: 'Checking for eligible delegates for connectivity with Kubernetes Connector'
-    step2: 'Validating the GitHub Connector authentication and permissions'
-    step3: 'Validating the API authentication and permissions'
+    step1: 'Checking for eligible delegates for connectivity with PDC Connector'
+    step2: 'Validating the hosts connection status'
 connectorReferenceText: "can't be deleted as it is being referenced by other entities. To see the list of entities referencing this connector,"
 cantDeleteConnector: "Can't Delete Connector"

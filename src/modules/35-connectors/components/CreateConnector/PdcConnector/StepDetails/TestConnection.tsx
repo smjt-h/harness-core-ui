@@ -13,17 +13,16 @@ import {
   Table,
   Button,
   Text,
-  FontVariation,
   ButtonVariation,
-  Color,
   StepProps,
   StepsProgress,
-  Intent,
   ModalErrorHandler,
   ModalErrorHandlerBinding
 } from '@wings-software/uicore'
+import { Color, Intent, FontVariation } from '@harness/design-system'
 import { useStrings } from 'framework/strings'
 import { useGetTestConnectionResult, useValidateSshHosts, HostValidationDTO } from 'services/cd-ng'
+import { useGetDelegatesStatus } from 'services/portal'
 import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
 import css from '../CreatePdcConnector.module.scss'
 
@@ -64,15 +63,20 @@ const TestConnection: React.FC<StepProps<TestConnectionProps> & WizardProps> = p
   const [modalErrorHandler, setModalErrorHandler] = useState<ModalErrorHandlerBinding | undefined>()
   const [validationHostData, setValidationHostData] = useState([] as HostValidationDTO[])
   const [hostErrors, setHostErrors] = useState([] as string[])
+  const [isTesting, setIsTesting] = useState(true)
 
   const steps: string[] = useMemo(
-    () => [
-      getString('connectors.pdc.testConnection.step1'),
-      getString('connectors.pdc.testConnection.step2'),
-      getString('connectors.pdc.testConnection.step3')
-    ],
-    []
+    () =>
+      prevStepData?.hosts
+        ? [getString('connectors.pdc.testConnection.step1'), getString('connectors.pdc.testConnection.step2')]
+        : [getString('connectors.pdc.testConnection.step1')],
+    [prevStepData?.hosts]
   )
+
+  const { data: delegateStatus } = useGetDelegatesStatus({
+    queryParams: { accountId },
+    lazy: false
+  })
 
   const { mutate: testConnection } = useGetTestConnectionResult({
     identifier: prevStepData?.identifier || '',
@@ -96,6 +100,18 @@ const TestConnection: React.FC<StepProps<TestConnectionProps> & WizardProps> = p
       identifier: prevStepData?.sshKeyRef || ''
     }
   })
+
+  useEffect(() => {
+    if ((delegateStatus?.resource?.delegates?.length || 0) > 0) {
+      setCurrentIntent(Intent.SUCCESS)
+      setCurrentStatus(Status.DONE)
+      setCurrentStep(2)
+      verifyTestConnection()
+    } else {
+      setCurrentStatus(Status.ERROR)
+      setCurrentIntent(Intent.DANGER)
+    }
+  }, [delegateStatus])
 
   const verifyTestConnection = async (): Promise<void> => {
     try {
@@ -123,6 +139,8 @@ const TestConnection: React.FC<StepProps<TestConnectionProps> & WizardProps> = p
       modalErrorHandler?.showDanger(e.data?.message)
       setCurrentStatus(Status.ERROR)
       setCurrentIntent(Intent.DANGER)
+    } finally {
+      setIsTesting(false)
     }
   }
 
@@ -137,10 +155,6 @@ const TestConnection: React.FC<StepProps<TestConnectionProps> & WizardProps> = p
     })
     setValidationHostData(newData)
   }
-
-  useEffect(() => {
-    verifyTestConnection()
-  }, [])
 
   const noColumnRenderer: Renderer<CellProps<HostValidationDTO>> = useMemo(
     () => data => <span>{data.row.index + 1}</span>,
@@ -184,38 +198,40 @@ const TestConnection: React.FC<StepProps<TestConnectionProps> & WizardProps> = p
             {error}
           </Text>
         ))}
-        <Table<HostValidationDTO>
-          className={css.hostTable}
-          data={validationHostData}
-          bpTableProps={{ bordered: true, condensed: true, striped: false }}
-          columns={[
-            {
-              Header: 'NO.',
-              width: '10%',
-              Cell: noColumnRenderer
-            },
-            {
-              accessor: 'host',
-              Header: 'HOST',
-              width: '30%',
-              Cell: hostColumnRenderer,
-              disableSortBy: true
-            },
-            {
-              accessor: 'status',
-              Header: 'STATUS',
-              width: '30%',
-              Cell: statusColumnRenderer,
-              disableSortBy: true
-            },
-            {
-              Header: '',
-              id: 'menu',
-              width: '30%',
-              Cell: menuColumnRenderer
-            }
-          ]}
-        />
+        {validationHostData.length > 0 && (
+          <Table<HostValidationDTO>
+            className={css.hostTable}
+            data={validationHostData}
+            bpTableProps={{ bordered: true, condensed: true, striped: false }}
+            columns={[
+              {
+                Header: 'NO.',
+                width: '10%',
+                Cell: noColumnRenderer
+              },
+              {
+                accessor: 'host',
+                Header: 'HOST',
+                width: '30%',
+                Cell: hostColumnRenderer,
+                disableSortBy: true
+              },
+              {
+                accessor: 'status',
+                Header: 'STATUS',
+                width: '30%',
+                Cell: statusColumnRenderer,
+                disableSortBy: true
+              },
+              {
+                Header: '',
+                id: 'menu',
+                width: '30%',
+                Cell: menuColumnRenderer
+              }
+            ]}
+          />
+        )}
       </Layout.Vertical>
       <Layout.Horizontal padding={{ top: 'small' }} spacing="medium">
         <Button
@@ -227,6 +243,7 @@ const TestConnection: React.FC<StepProps<TestConnectionProps> & WizardProps> = p
         />
         <Button
           type="submit"
+          disabled={isTesting}
           onClick={props.onClose}
           variation={ButtonVariation.PRIMARY}
           text={getString('finish')}

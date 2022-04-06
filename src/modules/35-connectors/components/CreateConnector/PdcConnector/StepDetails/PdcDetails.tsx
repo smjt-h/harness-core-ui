@@ -13,11 +13,11 @@ import {
   Text,
   StepProps,
   Container,
-  FontVariation,
   ButtonVariation,
   PageSpinner,
   HarnessDocTooltip
 } from '@wings-software/uicore'
+import { FontVariation } from '@harness/design-system'
 import * as Yup from 'yup'
 import type { ConnectorConfigDTO, ConnectorInfoDTO } from 'services/cd-ng'
 import type { SecretReferenceInterface } from '@secrets/utils/SecretField'
@@ -40,6 +40,9 @@ interface PdcDetailsProps {
   projectIdentifier: string
 }
 
+export interface uploadHostItem {
+  hostname: string
+}
 interface StepConfigureProps {
   closeModal?: () => void
   onSuccess?: () => void
@@ -60,8 +63,8 @@ const PdcDetails: React.FC<StepProps<StepConfigureProps> & PdcDetailsProps> = pr
   }
 
   const [initialValues, setInitialValues] = useState(defaultInitialFormData)
-  const [hostsJSON, setHostsJSON] = useState('')
-  const [loadingConnectorSecrets, setLoadingConnectorSecrets] = useState(true && props.isEditMode)
+  const [hostsJSON, setHostsJSON] = useState([] as uploadHostItem[])
+  const [loadingConnectorSecrets, setLoadingConnectorSecrets] = useState(props.isEditMode)
   const [manualTypedHosts, setManualTypedHosts] = useState('')
 
   useEffect(() => {
@@ -130,8 +133,13 @@ const PdcDetails: React.FC<StepProps<StepConfigureProps> & PdcDetailsProps> = pr
                     }}
                   />
                 </div>
-                <span>{getString('connectors.pdc.or')}</span>
-                <UploadJSON setJsonValue={json => setHostsJSON(json)} />
+                <span>{getString('common.orCaps')}</span>
+                <UploadJSON
+                  setJsonValue={json => {
+                    setHostsJSON(json)
+                    setManualTypedHosts(json.map(hostItem => hostItem.hostname).join('\n'))
+                  }}
+                />
               </Layout.Horizontal>
               <Layout.Vertical style={{ width: '54%' }} margin={{ top: 'large' }}>
                 <Text font={{ variation: FontVariation.H5 }}>{getString('authentication')}</Text>

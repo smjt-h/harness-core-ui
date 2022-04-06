@@ -77,6 +77,8 @@ const getLabelByType = (type: string): string => {
       return 'connectors.name_labels.Docker'
     case Connectors.GCP:
       return 'connectors.name_labels.GCP'
+    case Connectors.PDC:
+      return 'connectors.name_labels.PDC'
     case Connectors.AWS:
       return 'connectors.name_labels.AWS'
     case Connectors.AWS_CODECOMMIT:
@@ -541,6 +543,15 @@ const getGCPSchema = (connector: ConnectorInfoDTO): Array<ActivityDetailsRowInte
   ]
 }
 
+const getPDCSchema = (connector: ConnectorInfoDTO): Array<ActivityDetailsRowInterface> => {
+  return [
+    {
+      label: 'SSH_KEY',
+      value: connector?.spec?.sshKeyRef
+    }
+  ]
+}
+
 const getAWSSchema = (connector: ConnectorInfoDTO): Array<ActivityDetailsRowInterface> => {
   return [
     {
@@ -686,6 +697,8 @@ const getSchemaByType = (
       return getHelmHttpSchema(connector)
     case Connectors.GCP:
       return getGCPSchema(connector)
+    case Connectors.PDC:
+      return getPDCSchema(connector)
     case Connectors.AWS:
       return getAWSSchema(connector)
     case Connectors.NEXUS:
