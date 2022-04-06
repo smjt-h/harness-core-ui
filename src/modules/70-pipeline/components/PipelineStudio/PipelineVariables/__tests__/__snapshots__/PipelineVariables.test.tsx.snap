@@ -171,7 +171,7 @@ exports[`<PipelineVariables /> tests snapshot test 1`] = `
               <p
                 class="StyledProps--font StyledProps--main StyledProps--font-variation-h4"
               >
-                variablesText
+                common.variables
               </p>
             </div>
           </div>

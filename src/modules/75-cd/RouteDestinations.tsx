@@ -130,6 +130,7 @@ import TemplatesPage from '@templates-library/pages/TemplatesPage/TemplatesPage'
 import { GovernanceRouteDestinations } from '@governance/RouteDestinations'
 import GitSyncConfigTab from '@gitsync/pages/config/GitSyncConfigTab'
 import FullPageLogView from '@pipeline/pages/full-page-log-view/FullPageLogView'
+import VariablesPage from '@variables/pages/variables/VariablesPage'
 import { Environments } from './components/Environments/Environments'
 import CDTrialHomePage from './pages/home/CDTrialHomePage'
 
@@ -643,6 +644,14 @@ export default (
       path={routes.toSecrets({ ...accountPathProps, ...projectPathProps, ...pipelineModuleParams })}
     >
       <SecretsPage />
+    </RouteWithLayout>
+    <RouteWithLayout
+      exact
+      licenseRedirectData={licenseRedirectData}
+      sidebarProps={CDSideNavProps}
+      path={routes.toVariables({ ...accountPathProps, ...projectPathProps, ...pipelineModuleParams })}
+    >
+      <VariablesPage />
     </RouteWithLayout>
     <RouteWithLayout
       exact

@@ -563,7 +563,7 @@ describe('Right Drawer tests', () => {
           </TestWrapper>
         </PipelineContext.Provider>
       )
-      const variablesHeader = await findByText('variablesText')
+      const variablesHeader = await findByText('common.variables')
       expect(variablesHeader).toBeInTheDocument()
     })
 

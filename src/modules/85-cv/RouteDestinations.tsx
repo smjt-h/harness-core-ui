@@ -68,6 +68,7 @@ import { PipelineActions } from '@pipeline/factories/PubSubPipelineAction/types'
 import { inputSetTemplatePromise } from 'services/cv'
 import { yamlStringify } from '@common/utils/YamlHelperMethods'
 import { CVChanges } from '@cv/pages/changes/CVChanges'
+import VariablesPage from '@variables/pages/variables/VariablesPage'
 import CVTrialHomePage from './pages/home/CVTrialHomePage'
 import { editParams, isVerifyStepPresent } from './utils/routeUtils'
 import CVSLOsListingPage from './pages/slos/CVSLOsListingPage'
@@ -243,6 +244,14 @@ export default (
       path={routes.toSecrets({ ...accountPathProps, ...projectPathProps, ...cvModuleParams })}
     >
       <SecretsPage />
+    </RouteWithLayout>
+
+    <RouteWithLayout
+      exact
+      sidebarProps={CVSideNavProps}
+      path={routes.toVariables({ ...accountPathProps, ...projectPathProps, ...cvModuleParams })}
+    >
+      <VariablesPage />
     </RouteWithLayout>
 
     <RouteWithLayout

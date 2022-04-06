@@ -31,6 +31,7 @@ export enum PAGE_NAME {
   CITrialHomePage = 'CITrialHomePage',
   CIHomePage = 'CIHomePage',
   ConnectorsPage = 'ConnectorsPage',
+  VariablesPage = 'VariablesPage',
   CreateConnectorFromYamlPage = 'CreateConnectorFromYamlPage',
   GitSyncRepoTab = 'GitSyncRepoTab',
   GitSyncEntityTab = 'GitSyncEntityTab',

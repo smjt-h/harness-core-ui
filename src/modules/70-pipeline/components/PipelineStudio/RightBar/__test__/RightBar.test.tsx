@@ -173,7 +173,7 @@ describe('RightBar', () => {
         </PipelineContext.Provider>
       </TestWrapper>
     )
-    const variableBtn = getByText('variablesText')
+    const variableBtn = getByText('common.variables')
     act(() => {
       fireEvent.click(variableBtn)
     })

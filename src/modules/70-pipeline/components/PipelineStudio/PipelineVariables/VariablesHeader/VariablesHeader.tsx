@@ -33,7 +33,7 @@ export function VariablesHeader({ enableSearch = true }: VariablesHeaderProps): 
           <Layout.Horizontal>
             <Icon name="pipeline-variables" size={24} color={Color.PRIMARY_7} />
             <Text font={{ variation: FontVariation.H4 }} tooltipProps={{ dataTooltipId: 'pipelineVariables' }}>
-              {getString('variablesText')}
+              {getString('common.variables')}
             </Text>
           </Layout.Horizontal>
         </div>

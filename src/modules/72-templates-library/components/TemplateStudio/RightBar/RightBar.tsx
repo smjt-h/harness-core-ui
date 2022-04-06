@@ -65,7 +65,7 @@ export const RightBar = (): JSX.Element => {
         icon="pipeline-variables"
         withoutCurrentColor={true}
         iconProps={{ size: 28 }}
-        text={getString('variablesText')}
+        text={getString('common.variables')}
         data-testid="input-variable"
       />
       <RightDrawer />
