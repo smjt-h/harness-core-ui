@@ -11,14 +11,14 @@ import type { Variation } from 'services/cf'
 import { CFVariationColors } from '@cf/constants'
 import { useStrings } from 'framework/strings'
 import StringWithTooltip from '@common/components/StringWithTooltip/StringWithTooltip'
+import DisabledFeatureTooltip from '../disabled-feature-tooltip/DisabledFeatureTooltip'
 
 export interface DefaultRulesProps {
   featureFlagVariations: Variation[]
-  isLoading: boolean
 }
 
 const DefaultRules = (props: DefaultRulesProps): ReactElement => {
-  const { featureFlagVariations, isLoading } = props
+  const { featureFlagVariations } = props
 
   const { getString } = useStrings()
   const variationItems = featureFlagVariations.map<SelectOption>((variation, index) => ({
@@ -35,14 +35,15 @@ const DefaultRules = (props: DefaultRulesProps): ReactElement => {
       <Heading level={4} font={{ variation: FontVariation.BODY2 }} margin={{ bottom: 'small' }}>
         {getString('cf.featureFlags.rules.defaultRule')}
       </Heading>
-      <FormInput.Select
-        disabled={isLoading}
-        style={{ marginBottom: '0' }}
-        label={getString('cf.featureFlags.serve')}
-        inline
-        name="onVariation"
-        items={variationItems}
-      />
+      <DisabledFeatureTooltip>
+        <FormInput.Select
+          style={{ marginBottom: '0' }}
+          label={getString('cf.featureFlags.serve')}
+          inline
+          name="onVariation"
+          items={variationItems}
+        />
+      </DisabledFeatureTooltip>
     </>
   )
 }

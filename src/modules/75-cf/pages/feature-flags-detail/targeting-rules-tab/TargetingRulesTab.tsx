@@ -28,6 +28,7 @@ import TargetingRulesTabFooter from './components/tab-targeting-footer/Targeting
 
 import FlagEnabledRulesCard from './components/flag-enabled-rules-card/FlagEnabledRulesCard'
 import type { FormVariationMap, VariationPercentageRollout, TargetGroup, TargetingRulesFormValues } from './Types.types'
+import useFeatureEnabled from './hooks/useFeatureEnabled'
 import css from './TargetingRulesTab.module.scss'
 export interface TargetingRulesTabProps {
   featureFlagData: Feature
@@ -170,7 +171,8 @@ const TargetingRulesTab = ({
     refetchFlag
   })
 
-  const isLoading = patchFeatureLoading || refetchFlagLoading || targetsLoading || segmentsLoading
+  const { featureEnabled } = useFeatureEnabled()
+  const disabled = patchFeatureLoading || refetchFlagLoading || targetsLoading || segmentsLoading || !featureEnabled
 
   return (
     <Formik
@@ -186,12 +188,16 @@ const TargetingRulesTab = ({
     >
       {formikProps => {
         return (
-          <FormikForm data-testid="targeting-rules-tab-form">
+          <FormikForm data-testid="targeting-rules-tab-form" disabled={disabled}>
             <Container className={css.tabContainer}>
-              <Layout.Vertical spacing="small" padding={{ left: 'xlarge', right: 'xlarge' }}>
+              <Layout.Vertical
+                spacing="small"
+                padding={{ left: 'xlarge', right: 'xlarge' }}
+                className={css.flagRulesSection}
+              >
                 <Card elevation={0}>
                   <FlagToggleSwitch
-                    disabled={isLoading}
+                    disabled={disabled}
                     currentState={formikProps.values.state}
                     currentEnvironmentState={featureFlagData.envProperties?.state}
                     handleToggle={() =>
@@ -211,7 +217,7 @@ const TargetingRulesTab = ({
                   segments={segments}
                   featureFlagVariations={featureFlagData.variations}
                   variationPercentageRollouts={formikProps.values.variationPercentageRollouts}
-                  isLoading={isLoading}
+                  disabled={disabled}
                   updateTargetGroups={(index: number, newTargetGroups: TargetGroup[]) =>
                     formikProps.setFieldValue(`formVariationMap[${index}].targetGroups`, newTargetGroups)
                   }
@@ -269,7 +275,7 @@ const TargetingRulesTab = ({
 
               {formikProps.dirty && (
                 <TargetingRulesTabFooter
-                  isLoading={isLoading}
+                  isLoading={disabled}
                   handleSubmit={formikProps.handleSubmit}
                   handleCancel={formikProps.handleReset}
                 />

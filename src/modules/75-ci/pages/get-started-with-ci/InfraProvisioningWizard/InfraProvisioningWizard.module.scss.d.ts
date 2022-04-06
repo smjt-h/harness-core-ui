@@ -7,7 +7,9 @@
  **/
 // this is an auto-generated file, do not update this manually
 declare const styles: {
-  readonly flagRulesSection: string
-  readonly tabContainer: string
+  readonly card: string
+  readonly footer: string
+  readonly hostingToggle: string
+  readonly selectedCard: string
 }
 export default styles

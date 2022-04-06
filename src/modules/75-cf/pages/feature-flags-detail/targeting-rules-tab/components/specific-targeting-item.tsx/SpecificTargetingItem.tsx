@@ -10,11 +10,12 @@ import React, { ReactElement } from 'react'
 import { useStrings } from 'framework/strings'
 import type { Segment, Target, TargetMap } from 'services/cf'
 import type { FormVariationMap, TargetGroup } from '../../Types.types'
+import DisabledFeatureTooltip from '../disabled-feature-tooltip/DisabledFeatureTooltip'
 import css from './SpecificTargetingItem.module.scss'
 
 export interface SpecificTargetingItemProps {
   index: number
-  isLoading: boolean
+  disabled: boolean
   targets: Target[]
   segments: Segment[]
   formVariationMapItem: FormVariationMap
@@ -34,7 +35,7 @@ const SpecificTargetingItem = (props: SpecificTargetingItemProps): ReactElement 
     segments,
     formVariationMapItem,
     index,
-    isLoading,
+    disabled,
     updateTargetGroups,
     updateTargets,
     removeVariation
@@ -51,73 +52,80 @@ const SpecificTargetingItem = (props: SpecificTargetingItemProps): ReactElement 
           {formVariationMapItem.variationName}
         </Text>
 
-        <Button
-          data-testid={`remove_variation_${formVariationMapItem.variationIdentifier}`}
-          icon="trash"
-          minimal
-          withoutCurrentColor
-          onClick={removeVariation}
-        />
+        <DisabledFeatureTooltip>
+          <Button
+            disabled={disabled}
+            data-testid={`remove_variation_${formVariationMapItem.variationIdentifier}`}
+            icon="trash"
+            minimal
+            withoutCurrentColor
+            onClick={removeVariation}
+          />
+        </DisabledFeatureTooltip>
       </Container>
       <div data-testid={`${formVariationMapItem.variationIdentifier}_target_groups`}>
-        <Label className={css.tagInputLabel}>{getString('cf.featureFlags.rules.toTargetGroups')}</Label>
-        <SimpleTagInput
-          fill
-          readonly={isLoading}
-          inputProps={{ 'data-testid': `${formVariationMapItem.variationIdentifier}-target-groups-input` }}
-          items={segments.map<TagInputItem>(segment => ({
-            label: segment.name,
-            value: `${segment.identifier}${delimiter}${segment.name}`
-          }))}
-          selectedItems={
-            segments.length === 0
-              ? []
-              : formVariationMapItem.targetGroups.map<string>(
-                  (targetGroup: TargetGroup) => `${targetGroup.identifier}${delimiter}${targetGroup.name}`
-                )
-          }
-          onChange={selectedItems => {
-            const newTargetGroups: TargetGroup[] = selectedItems.map(item => {
-              const value = item.toString().split(delimiter)
-              return {
-                identifier: value[0],
-                ruleId: '',
-                name: value[1]
-              }
-            })
-            updateTargetGroups(index, newTargetGroups)
-          }}
-        />
+        <DisabledFeatureTooltip fullWidth>
+          <Label className={css.tagInputLabel}>{getString('cf.featureFlags.rules.toTargetGroups')}</Label>
+          <SimpleTagInput
+            fill
+            readonly={disabled}
+            inputProps={{ 'data-testid': `${formVariationMapItem.variationIdentifier}-target-groups-input` }}
+            items={segments.map<TagInputItem>(segment => ({
+              label: segment.name,
+              value: `${segment.identifier}${delimiter}${segment.name}`
+            }))}
+            selectedItems={
+              segments.length === 0
+                ? []
+                : formVariationMapItem.targetGroups.map<string>(
+                    (targetGroup: TargetGroup) => `${targetGroup.identifier}${delimiter}${targetGroup.name}`
+                  )
+            }
+            onChange={selectedItems => {
+              const newTargetGroups: TargetGroup[] = selectedItems.map(item => {
+                const value = item.toString().split(delimiter)
+                return {
+                  identifier: value[0],
+                  ruleId: '',
+                  name: value[1]
+                }
+              })
+              updateTargetGroups(index, newTargetGroups)
+            }}
+          />
+        </DisabledFeatureTooltip>
       </div>
       <div data-testid={`${formVariationMapItem.variationIdentifier}_targets`}>
-        <Label className={css.tagInputLabel}>{getString('cf.featureFlags.rules.toTargets')}</Label>
-        <SimpleTagInput
-          fill
-          readonly={isLoading}
-          inputProps={{ 'data-testid': `${formVariationMapItem.variationIdentifier}-target-input` }}
-          items={targets.map<TagInputItem>(target => ({
-            label: target.name,
-            value: `${target.identifier}${delimiter}${target.name}`
-          }))}
-          selectedItems={
-            targets.length === 0
-              ? []
-              : formVariationMapItem.targets.map<string>(
-                  (target: TargetMap) => `${target.identifier}${delimiter}${target.name}`
-                )
-          }
-          onChange={selectedItems => {
-            const newTargets: TargetMap[] = selectedItems.map(item => {
-              const value = item.toString().split(delimiter)
+        <DisabledFeatureTooltip fullWidth>
+          <Label className={css.tagInputLabel}>{getString('cf.featureFlags.rules.toTargets')}</Label>
+          <SimpleTagInput
+            fill
+            readonly={disabled}
+            inputProps={{ 'data-testid': `${formVariationMapItem.variationIdentifier}-target-input` }}
+            items={targets.map<TagInputItem>(target => ({
+              label: target.name,
+              value: `${target.identifier}${delimiter}${target.name}`
+            }))}
+            selectedItems={
+              targets.length === 0
+                ? []
+                : formVariationMapItem.targets.map<string>(
+                    (target: TargetMap) => `${target.identifier}${delimiter}${target.name}`
+                  )
+            }
+            onChange={selectedItems => {
+              const newTargets: TargetMap[] = selectedItems.map(item => {
+                const value = item.toString().split(delimiter)
 
-              return {
-                identifier: value[0],
-                name: value[1]
-              }
-            })
-            updateTargets(index, newTargets)
-          }}
-        />
+                return {
+                  identifier: value[0],
+                  name: value[1]
+                }
+              })
+              updateTargets(index, newTargets)
+            }}
+          />
+        </DisabledFeatureTooltip>
       </div>
 
       <Container border={{ bottom: true }} />

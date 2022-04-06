@@ -4782,6 +4782,8 @@ export interface StringsMap {
   'ci.description': string
   'ci.executionLabel': string
   'ci.fileStore': string
+  'ci.getStartedWithCI.awsBuildLocation': string
+  'ci.getStartedWithCI.buildLocation': string
   'ci.getStartedWithCI.buildPipeline': string
   'ci.getStartedWithCI.buildyourOwnPipeline': string
   'ci.getStartedWithCI.carousel.helptext.complexPipelines': string
@@ -4801,22 +4803,30 @@ export interface StringsMap {
   'ci.getStartedWithCI.carousel.labels.usePlugins': string
   'ci.getStartedWithCI.chooseAnOption': string
   'ci.getStartedWithCI.chooseDiffInfra': string
+  'ci.getStartedWithCI.codeRepo': string
   'ci.getStartedWithCI.codebaseRepoLabel': string
   'ci.getStartedWithCI.configInfra': string
   'ci.getStartedWithCI.connectSCM': string
   'ci.getStartedWithCI.devFriendly': string
   'ci.getStartedWithCI.devFriendlyHelpText': string
+  'ci.getStartedWithCI.dockerRunner': string
+  'ci.getStartedWithCI.dockerRunnerBuildLocation': string
   'ci.getStartedWithCI.duration': string
   'ci.getStartedWithCI.firstPipeline': string
   'ci.getStartedWithCI.flexibleInfra': string
   'ci.getStartedWithCI.flexibleInfraHelpText': string
   'ci.getStartedWithCI.hostedByHarness': string
+  'ci.getStartedWithCI.hostedByHarnessBuildLocation': string
+  'ci.getStartedWithCI.hosting': string
   'ci.getStartedWithCI.infraProvisioningFailed': string
   'ci.getStartedWithCI.integratedCICD': string
   'ci.getStartedWithCI.integratedCICDHelpText': string
   'ci.getStartedWithCI.javaLabel': string
+  'ci.getStartedWithCI.k8sBuildLocation': string
   'ci.getStartedWithCI.languageAgnostic': string
   'ci.getStartedWithCI.languageAgnosticHelpText': string
+  'ci.getStartedWithCI.onCloudLabel': string
+  'ci.getStartedWithCI.onPremLabel': string
   'ci.getStartedWithCI.parallelization': string
   'ci.getStartedWithCI.parallelizationHelpText': string
   'ci.getStartedWithCI.parameterization': string
@@ -4825,6 +4835,7 @@ export interface StringsMap {
   'ci.getStartedWithCI.quicklyCreate': string
   'ci.getStartedWithCI.security': string
   'ci.getStartedWithCI.securityHelpText': string
+  'ci.getStartedWithCI.selectInfra': string
   'ci.getStartedWithCI.selectRepo': string
   'ci.getStartedWithCI.startSamplePipeline': string
   'ci.getStartedWithCI.takeToTheNextLevel': string

@@ -43,6 +43,12 @@ export const pipelinesRoute = `#/account/${accountId}/cd/orgs/${orgIdentifier}/p
 export const executePipeline = `/pipeline/api/pipeline/execute/${pipelineIdentifier}?routingId=${accountId}&accountIdentifier=${accountId}&projectIdentifier=${projectId}&orgIdentifier=${orgIdentifier}&moduleType=cd`
 export const serviceStepAPI = `/pipeline/api/pipelines/execution/${executionId}?routingId=${accountId}&orgIdentifier=${orgIdentifier}&projectIdentifier=${projectId}&accountIdentifier=${accountId}`
 export const serviceStepStageID = `/pipeline/api/pipelines/execution/${executionId}?routingId=${accountId}&orgIdentifier=${orgIdentifier}&projectIdentifier=${projectId}&accountIdentifier=${accountId}&stageNodeId=${stageNodeId}`
+export const routingDataAPI = `ng/api/projects/${projectId}?routingId=${accountId}&accountIdentifier=${accountId}&orgIdentifier=${orgIdentifier}`
+export const pipelineSummaryCallAPI = `/pipeline/api/pipelines/summary/${pipelineIdentifier}?routingId=${accountId}&accountIdentifier=${accountId}&orgIdentifier=${orgIdentifier}&projectIdentifier=${projectId}`
+export const triggersRoute = `#/account/${accountId}/cd/orgs/${orgIdentifier}/projects/${projectId}/pipelines/${pipelineIdentifier}/triggers`
+export const triggersAPI = `pipeline/api/triggers?routingId=${accountId}&accountIdentifier=${accountId}&orgIdentifier=${orgIdentifier}&projectIdentifier=${projectId}&targetIdentifier=${pipelineIdentifier}&searchTerm=`
+export const triggerPiplelineDetails = `pipeline/api/pipelines/${pipelineIdentifier}?routingId=${accountId}&accountIdentifier=${accountId}&orgIdentifier=${orgIdentifier}&projectIdentifier=${projectId}&getTemplatesResolvedPipeline=true`
+export const inputSetListAPI = `pipeline/api/inputSets?routingId=${accountId}&accountIdentifier=${accountId}&orgIdentifier=${orgIdentifier}&projectIdentifier=${projectId}&pipelineIdentifier=${pipelineIdentifier}`
 export interface ValidObject {
   resourceName: StepResourceObject[]
   warningCheck?: boolean
@@ -295,4 +301,11 @@ export const stepsData = {
       { type: 'resource', name: 'spec.requestBody', value: 'resource' }
     ]
   }
+}
+
+export const triggersListData = {
+  Webhook: ['GitHub', 'GitLab', 'BitBucket', 'AWS Code Commit', 'Custom'],
+  Artifact: ['GCR', 'ECR', 'Docker Registry'],
+  Manifest: ['Helm Chart'],
+  Scheduled: ['Cron']
 }
