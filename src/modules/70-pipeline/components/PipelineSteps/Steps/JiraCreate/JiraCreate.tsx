@@ -99,7 +99,7 @@ export class JiraCreate extends PipelineStep<JiraCreateData> {
       }
     }
 
-    if (isSummaryRuntime && isEmpty(data?.spec?.summary) && isRequired) {
+    if (isSummaryRuntime && isEmpty(data?.spec?.fields?.find(field => field.name === 'Summary')?.value) && isRequired) {
       errors.spec = {
         ...errors.spec,
         summary: getString?.('pipeline.jiraCreateStep.validations.summary')

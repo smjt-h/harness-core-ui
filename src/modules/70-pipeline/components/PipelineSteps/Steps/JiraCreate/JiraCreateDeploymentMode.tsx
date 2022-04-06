@@ -8,7 +8,7 @@
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { isEmpty } from 'lodash-es'
-import { FormInput, getMultiTypeFromValue, MultiTypeInputType } from '@wings-software/uicore'
+import { FormInput, getMultiTypeFromValue, MultiTypeInputType, PageSpinner } from '@wings-software/uicore'
 import { useStrings } from 'framework/strings'
 import type {
   AccountPathProps,
@@ -25,7 +25,12 @@ import { JiraProjectBasicNG, JiraProjectNG, useGetJiraIssueCreateMetadata, useGe
 import { getGenuineValue, setIssueTypeOptions } from '../JiraApproval/helper'
 import type { JiraProjectSelectOption } from '../JiraApproval/types'
 import { isApprovalStepFieldDisabled } from '../Common/ApprovalCommons'
-import type { JiraCreateDeploymentModeProps, JiraCreateDeploymentModeFormContentInterface } from './types'
+import type {
+  JiraCreateDeploymentModeProps,
+  JiraCreateDeploymentModeFormContentInterface,
+  JiraFieldNGWithValue
+} from './types'
+import { JiraFieldsRenderer } from './JiraFieldsRenderer'
 import css from './JiraCreate.module.scss'
 
 function FormContent(formContentProps: JiraCreateDeploymentModeFormContentInterface) {
@@ -64,10 +69,12 @@ function FormContent(formContentProps: JiraCreateDeploymentModeFormContentInterf
   const [selectedProjectValue, setSelectedProjectValue] = useState<JiraProjectSelectOption>()
   const [selectedIssueTypeValue, setSelectedIssueTypeValue] = useState<JiraProjectSelectOption>()
 
+  const [selectedField, setSelectedField] = useState<JiraFieldNGWithValue[]>([])
   const connectorRefFixedValue = getGenuineValue(
     initialValues.spec?.connectorRef || (inputSetData?.allValues?.spec?.connectorRef as string)
   )
   const projectKeyFixedValue = initialValues.spec?.projectKey || inputSetData?.allValues?.spec?.projectKey
+  const issueKeyFixedValue = initialValues.spec?.issueType || inputSetData?.allValues?.spec?.issueType
 
   useEffect(() => {
     // If connector value changes in form, fetch projects
@@ -123,6 +130,31 @@ function FormContent(formContentProps: JiraCreateDeploymentModeFormContentInterf
       }
     }
   }, [projectMetaResponse?.data])
+
+  useEffect(() => {
+    if (issueKeyFixedValue && projectMetadata?.issuetypes) {
+      const issueTypeData = projectMetadata?.issuetypes[issueKeyFixedValue as string]
+      const fieldKeys = Object.keys(issueTypeData?.fields || {})
+      const jiraSelectedFields: JiraFieldNGWithValue[] = []
+      fieldKeys.forEach(keyy => {
+        const fieldObject = issueTypeData?.fields[keyy]
+        if (fieldObject && keyy !== 'Summary' && keyy !== 'Description') {
+          template?.spec?.fields?.filter(_field =>
+            _field.name === keyy
+              ? jiraSelectedFields.push({
+                  ...fieldObject,
+                  value: _field.value
+                })
+              : null
+          )
+          return jiraSelectedFields
+        }
+      })
+      // console.log(jiraSelectedFields)
+      setSelectedField(jiraSelectedFields)
+    }
+  }, [issueKeyFixedValue, projectMetadata])
+
   return (
     <React.Fragment>
       {getMultiTypeFromValue(template?.timeout) === MultiTypeInputType.RUNTIME ? (
@@ -224,6 +256,20 @@ function FormContent(formContentProps: JiraCreateDeploymentModeFormContentInterf
             allowableTypes,
             expressions
           }}
+          onChange={value => {
+            const toBeUpdatedFields = [...initialValues.spec.fields]
+            const summaryFieldIndex = toBeUpdatedFields.findIndex(field => field.name === 'Summary')
+            if (summaryFieldIndex > -1) {
+              toBeUpdatedFields[summaryFieldIndex].value = value as string
+            }
+            formContentProps.onUpdate?.({
+              ...initialValues,
+              spec: {
+                ...initialValues.spec,
+                fields: toBeUpdatedFields
+              }
+            })
+          }}
         />
       ) : null}
 
@@ -241,6 +287,17 @@ function FormContent(formContentProps: JiraCreateDeploymentModeFormContentInterf
           placeholder={getString('common.descriptionPlaceholder')}
         />
       ) : null}
+
+      {fetchingProjectMetadata ? (
+        <PageSpinner message={getString('pipeline.jiraCreateStep.fetchingFields')} className={css.fetching} />
+      ) : (
+        <JiraFieldsRenderer
+          fieldPrefix={prefix}
+          jiraContextType={'JiraCreateDeploymentMode'}
+          selectedFields={selectedField}
+          readonly={readonly}
+        />
+      )}
     </React.Fragment>
   )
 }
