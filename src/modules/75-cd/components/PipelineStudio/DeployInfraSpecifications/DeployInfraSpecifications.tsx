@@ -39,7 +39,8 @@ import {
   isServerlessDeploymentType,
   StageType,
   detailsHeaderName,
-  ServessInfraTypes
+  ServerlessInfraTypes,
+  getCustomStepProps
 } from '@pipeline/utils/stageHelpers'
 import { InfraDeploymentType } from '@cd/components/PipelineSteps/PipelineStepsUtil'
 import type { ServerlessAwsLambdaSpec } from '@cd/components/PipelineSteps/ServerlessAWSLambda/ServerlessAwsLambdaSpec'
@@ -65,7 +66,7 @@ export const deploymentTypeInfraTypeMap = {
   AzureFunctions: InfraDeploymentType.AzureFunctions
 }
 
-type InfraTypes = K8SDirectInfrastructure | K8sGcpInfrastructure | ServessInfraTypes
+type InfraTypes = K8SDirectInfrastructure | K8sGcpInfrastructure | ServerlessInfraTypes
 
 export default function DeployInfraSpecifications(props: React.PropsWithChildren<unknown>): JSX.Element {
   const [initialInfrastructureDefinitionValues, setInitialInfrastructureDefinitionValues] =
@@ -322,6 +323,7 @@ export default function DeployInfraSpecifications(props: React.PropsWithChildren
                 'ServerlessAwsLambda'
               )
             }
+            customStepProps={getCustomStepProps('ServerlessAwsLambda', getString)}
           />
         )
       }
@@ -344,6 +346,7 @@ export default function DeployInfraSpecifications(props: React.PropsWithChildren
                 'ServerlessGoogleFunctions'
               )
             }
+            customStepProps={getCustomStepProps('ServerlessGoogleFunctions', getString)}
           />
         )
       }
@@ -366,6 +369,7 @@ export default function DeployInfraSpecifications(props: React.PropsWithChildren
                 'ServerlessAzureFunctions'
               )
             }
+            customStepProps={getCustomStepProps('ServerlessAzureFunctions', getString)}
           />
         )
       }

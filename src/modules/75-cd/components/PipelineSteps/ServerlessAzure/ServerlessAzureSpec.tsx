@@ -6,271 +6,33 @@
  */
 
 import React from 'react'
-import {
-  IconName,
-  Text,
-  Layout,
-  Formik,
-  FormikForm,
-  FormInput,
-  getMultiTypeFromValue,
-  MultiTypeInputType,
-  Icon
-} from '@wings-software/uicore'
-import cx from 'classnames'
+import { IconName, getMultiTypeFromValue, MultiTypeInputType } from '@wings-software/uicore'
 import * as Yup from 'yup'
-import { useParams } from 'react-router-dom'
-import { debounce, noop, isEmpty, get, defaultTo } from 'lodash-es'
+import { isEmpty, get } from 'lodash-es'
 import { parse } from 'yaml'
 import { CompletionItemKind } from 'vscode-languageserver-types'
-import { FormikErrors, FormikProps, yupToFormErrors } from 'formik'
+import { FormikErrors, yupToFormErrors } from 'formik'
 import { StepViewType, StepProps, ValidateInputSetProps } from '@pipeline/components/AbstractSteps/Step'
-import { ConfigureOptions } from '@common/components/ConfigureOptions/ConfigureOptions'
-import { useVariablesExpression } from '@pipeline/components/PipelineStudio/PiplineHooks/useVariablesExpression'
 
 import { getConnectorListV2Promise } from 'services/cd-ng'
-import { FormMultiTypeConnectorField } from '@connectors/components/ConnectorReferenceField/FormMultiTypeConnectorField'
-
-import { getIconByType } from '@connectors/pages/connectors/utils/ConnectorUtils'
-import type { VariableMergeServiceResponse } from 'services/pipeline-ng'
 
 import type { CompletionItemInterface } from '@common/interfaces/YAMLBuilderProps'
-import { useStrings, UseStringsReturn } from 'framework/strings'
 import { loggerFor } from 'framework/logging/logging'
 import { ModuleName } from 'framework/types/ModuleName'
-import { VariablesListTable } from '@pipeline/components/VariablesListTable/VariablesListTable'
 import { StepType } from '@pipeline/components/PipelineSteps/PipelineStepInterface'
 import { PipelineStep } from '@pipeline/components/PipelineSteps/PipelineStep'
-
-import type { GitQueryParams } from '@common/interfaces/RouteInterfaces'
-import { useQueryParams } from '@common/hooks'
-import { StageErrorContext } from '@pipeline/context/StageErrorContext'
-import { DeployTabs } from '@cd/components/PipelineStudio/DeployStageSetupShell/DeployStageSetupShellUtils'
 import { getConnectorName, getConnectorValue } from '@pipeline/components/PipelineSteps/Steps/StepsHelper'
 import type { ServerlessAzureInfrastructure } from '@pipeline/utils/stageHelpers'
-import { getConnectorSchema } from '../PipelineStepsUtil'
-import stepCss from '@pipeline/components/PipelineSteps/Steps/Steps.module.scss'
-import css from '../ServerlessAWSLambda/ServerlessStep.module.scss'
+import { connectorTypes } from '@pipeline/utils/constants'
+import {
+  ServerlessInputForm,
+  ServerlessSpecEditable,
+  ServerlessSpecEditableProps,
+  ServerlessVariablesForm
+} from '../ServerlessInfraSpec/ServerlessInfraSpec'
 
 const logger = loggerFor(ModuleName.CD)
 type ServerlessAzureInfrastructureTemplate = { [key in keyof ServerlessAzureInfrastructure]: string }
-
-function getValidationSchema(getString: UseStringsReturn['getString']): Yup.ObjectSchema {
-  return Yup.object().shape({
-    connectorRef: getConnectorSchema(getString),
-    stage: Yup.lazy((): Yup.Schema<unknown> => {
-      return Yup.string().required(getString('validation.regionRequired'))
-    })
-  })
-}
-interface ServerlessAzureSpecEditableProps {
-  initialValues: ServerlessAzureInfrastructure
-  allValues?: ServerlessAzureInfrastructure
-  onUpdate?: (data: ServerlessAzureInfrastructure) => void
-  stepViewType?: StepViewType
-  readonly?: boolean
-  template?: ServerlessAzureInfrastructureTemplate
-  metadataMap: Required<VariableMergeServiceResponse>['metadataMap']
-  variablesData: ServerlessAzureInfrastructure
-  allowableTypes: MultiTypeInputType[]
-}
-
-const ServerlessAzureSpecEditable: React.FC<ServerlessAzureSpecEditableProps> = ({
-  initialValues,
-  onUpdate,
-  readonly,
-  allowableTypes
-}): JSX.Element => {
-  const { accountId, projectIdentifier, orgIdentifier } = useParams<{
-    projectIdentifier: string
-    orgIdentifier: string
-    accountId: string
-  }>()
-  const { repoIdentifier, branch } = useQueryParams<GitQueryParams>()
-  const delayedOnUpdate = React.useRef(debounce(onUpdate || noop, 300)).current
-  const { expressions } = useVariablesExpression()
-  const { getString } = useStrings()
-
-  const { subscribeForm, unSubscribeForm } = React.useContext(StageErrorContext)
-
-  const formikRef = React.useRef<FormikProps<unknown> | null>(null)
-
-  React.useEffect(() => {
-    subscribeForm({ tab: DeployTabs.INFRASTRUCTURE, form: formikRef })
-    return () => unSubscribeForm({ tab: DeployTabs.INFRASTRUCTURE, form: formikRef })
-  }, [])
-
-  return (
-    <Layout.Vertical spacing="medium">
-      <Formik<ServerlessAzureInfrastructure>
-        formName="serverlessAWSInfra"
-        initialValues={initialValues}
-        validate={value => {
-          const data: Partial<ServerlessAzureInfrastructure> = {
-            connectorRef: undefined,
-            stage: value.stage === '' ? undefined : value.stage
-          }
-          if (value.connectorRef) {
-            data.connectorRef = (value.connectorRef as any)?.value || value.connectorRef
-          }
-
-          delayedOnUpdate(data)
-        }}
-        validationSchema={getValidationSchema(getString)}
-        onSubmit={noop}
-      >
-        {formik => {
-          window.dispatchEvent(new CustomEvent('UPDATE_ERRORS_STRIP', { detail: DeployTabs.INFRASTRUCTURE }))
-          formikRef.current = formik
-          return (
-            <FormikForm>
-              <Layout.Horizontal className={css.formRow} spacing="medium">
-                <FormMultiTypeConnectorField
-                  name="connectorRef"
-                  label={getString('connector')}
-                  placeholder={getString('connectors.selectConnector')}
-                  disabled={readonly}
-                  accountIdentifier={accountId}
-                  tooltipProps={{
-                    dataTooltipId: 'serverlessAzureConnector'
-                  }}
-                  multiTypeProps={{ expressions, allowableTypes }}
-                  projectIdentifier={projectIdentifier}
-                  orgIdentifier={orgIdentifier}
-                  width={450}
-                  connectorLabelClass={css.connectorRef}
-                  enableConfigureOptions={false}
-                  style={{ marginBottom: 'var(--spacing-large)' }}
-                  type={'Gcp'}
-                  gitScope={{ repo: repoIdentifier || '', branch, getDefaultFromOtherRepo: true }}
-                />
-                {getMultiTypeFromValue(formik.values.connectorRef) === MultiTypeInputType.RUNTIME && !readonly && (
-                  <ConfigureOptions
-                    value={formik.values.connectorRef as string}
-                    type={
-                      <Layout.Horizontal spacing="medium" style={{ alignItems: 'center' }}>
-                        <Icon name={getIconByType('Gcp')}></Icon>
-                        <Text>{getString('pipelineSteps.gcpConnectorLabel')}</Text>
-                      </Layout.Horizontal>
-                    }
-                    variableName="connectorRef"
-                    showRequiredField={false}
-                    showDefaultField={false}
-                    showAdvanced={true}
-                    onChange={value => {
-                      formik.setFieldValue('connectorRef', value)
-                    }}
-                    isReadonly={readonly}
-                    className={css.marginTop}
-                  />
-                )}
-              </Layout.Horizontal>
-              <Layout.Horizontal className={css.formRow} spacing="medium">
-                <FormInput.MultiTextInput
-                  name="stage"
-                  tooltipProps={{
-                    dataTooltipId: 'awsStage'
-                  }}
-                  className={css.inputWidth}
-                  label={getString('common.stage')}
-                  placeholder={getString('cd.steps.serverless.stagePlaceholder')}
-                  multiTextInputProps={{ expressions, textProps: { disabled: readonly }, allowableTypes }}
-                  disabled={readonly}
-                />
-                {getMultiTypeFromValue(formik.values.stage) === MultiTypeInputType.RUNTIME && !readonly && (
-                  <ConfigureOptions
-                    value={formik.values.stage as string}
-                    type="String"
-                    variableName="stage"
-                    showRequiredField={false}
-                    showDefaultField={false}
-                    showAdvanced={true}
-                    onChange={value => {
-                      formik.setFieldValue('stage', value)
-                    }}
-                    isReadonly={readonly}
-                    className={css.marginTop}
-                  />
-                )}
-              </Layout.Horizontal>
-            </FormikForm>
-          )
-        }}
-      </Formik>
-    </Layout.Vertical>
-  )
-}
-
-const ServerlessAzureSpecInputForm: React.FC<ServerlessAzureSpecEditableProps & { path: string }> = ({
-  template,
-  readonly = false,
-  path,
-  allowableTypes
-}) => {
-  const { accountId, projectIdentifier, orgIdentifier } = useParams<{
-    projectIdentifier: string
-    orgIdentifier: string
-    accountId: string
-  }>()
-  const { repoIdentifier, branch } = useQueryParams<GitQueryParams>()
-  const { expressions } = useVariablesExpression()
-  const { getString } = useStrings()
-
-  return (
-    <Layout.Vertical spacing="small">
-      {getMultiTypeFromValue(template?.connectorRef) === MultiTypeInputType.RUNTIME && (
-        <div className={cx(stepCss.formGroup, stepCss.md)}>
-          <FormMultiTypeConnectorField
-            accountIdentifier={accountId}
-            projectIdentifier={projectIdentifier}
-            orgIdentifier={orgIdentifier}
-            tooltipProps={{
-              dataTooltipId: 'serverlessAzureConnector'
-            }}
-            name={`${path}.connectorRef`}
-            label={getString('connector')}
-            enableConfigureOptions={false}
-            placeholder={getString('connectors.selectConnector')}
-            disabled={readonly}
-            multiTypeProps={{ allowableTypes, expressions }}
-            type={'Gcp'}
-            setRefValue
-            gitScope={{ repo: defaultTo(repoIdentifier, ''), branch, getDefaultFromOtherRepo: true }}
-          />
-        </div>
-      )}
-      {getMultiTypeFromValue(template?.stage) === MultiTypeInputType.RUNTIME && (
-        <div className={cx(stepCss.formGroup, stepCss.md)}>
-          <FormInput.MultiTextInput
-            name={`${path}.stage`}
-            label={getString('common.stage')}
-            disabled={readonly}
-            multiTextInputProps={{
-              allowableTypes,
-              expressions
-            }}
-            placeholder={getString('cd.steps.serverless.stagePlaceholder')}
-          />
-        </div>
-      )}
-    </Layout.Vertical>
-  )
-}
-
-const ServerlessAzureInfrastructureSpecVariablesForm: React.FC<ServerlessAzureSpecEditableProps> = ({
-  metadataMap,
-  variablesData,
-  initialValues
-}) => {
-  const infraVariables = variablesData?.infrastructureDefinition?.spec
-  return infraVariables ? (
-    /* istanbul ignore next */ <VariablesListTable
-      data={infraVariables}
-      originalData={initialValues?.infrastructureDefinition?.spec || initialValues}
-      metadataMap={metadataMap}
-    />
-  ) : null
-}
 
 interface ServerlessAzureInfrastructureSpecStep extends ServerlessAzureInfrastructure {
   name?: string
@@ -324,7 +86,7 @@ export class ServerlessAzureSpec extends PipelineStep<ServerlessAzureInfrastruct
             projectIdentifier,
             includeAllConnectorsAvailableAtScope: true
           },
-          body: { types: ['Gcp'], filterType: 'Connector' }
+          body: { types: [connectorTypes.Gcp], filterType: 'Connector' }
         }).then(response => {
           return (
             response?.data?.content?.map(connector => ({
@@ -380,36 +142,34 @@ export class ServerlessAzureSpec extends PipelineStep<ServerlessAzureInfrastruct
     const { initialValues, onUpdate, stepViewType, inputSetData, customStepProps, readonly, allowableTypes } = props
     if (stepViewType === StepViewType.InputSet || stepViewType === StepViewType.DeploymentForm) {
       return (
-        <ServerlessAzureSpecInputForm
-          {...(customStepProps as ServerlessAzureSpecEditableProps)}
+        <ServerlessInputForm
+          {...(customStepProps as ServerlessSpecEditableProps)}
           initialValues={initialValues}
           onUpdate={onUpdate}
           stepViewType={stepViewType}
           readonly={inputSetData?.readonly}
           template={inputSetData?.template}
-          allValues={inputSetData?.allValues}
           path={inputSetData?.path || ''}
           allowableTypes={allowableTypes}
         />
       )
     } else if (stepViewType === StepViewType.InputVariable) {
       return (
-        <ServerlessAzureInfrastructureSpecVariablesForm
+        <ServerlessVariablesForm
           onUpdate={onUpdate}
           stepViewType={stepViewType}
           template={inputSetData?.template}
-          {...(customStepProps as ServerlessAzureSpecEditableProps)}
+          {...(customStepProps as ServerlessSpecEditableProps)}
           initialValues={initialValues}
         />
       )
     }
 
     return (
-      <ServerlessAzureSpecEditable
+      <ServerlessSpecEditable
         onUpdate={onUpdate}
         readonly={readonly}
-        stepViewType={stepViewType}
-        {...(customStepProps as ServerlessAzureSpecEditableProps)}
+        {...(customStepProps as ServerlessSpecEditableProps)}
         initialValues={initialValues}
         allowableTypes={allowableTypes}
       />

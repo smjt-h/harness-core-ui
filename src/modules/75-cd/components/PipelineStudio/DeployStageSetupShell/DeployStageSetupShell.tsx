@@ -31,7 +31,7 @@ import { useFeatureFlag } from '@common/hooks/useFeatureFlag'
 import { FeatureFlag } from '@common/featureFlags'
 import { SaveTemplateButton } from '@pipeline/components/PipelineStudio/SaveTemplateButton/SaveTemplateButton'
 import { useAddStepTemplate } from '@pipeline/hooks/useAddStepTemplate'
-import { StageType } from '@pipeline/utils/stageHelpers'
+import { getSelectedDeploymentType, StageType } from '@pipeline/utils/stageHelpers'
 import { getCDStageValidationSchema } from '@cd/components/PipelineSteps/PipelineStepsUtil'
 import type { DeploymentStageElementConfig } from '@pipeline/utils/pipelineTypes'
 import DeployInfraSpecifications from '../DeployInfraSpecifications/DeployInfraSpecifications'
@@ -117,11 +117,15 @@ export default function DeployStageSetupShell(): JSX.Element {
     }
   }, [selectedTabId])
 
-  const { stage: data } = getStageFromPipeline(selectedStageId || '')
-
+  const { stage: data } = getStageFromPipeline<DeploymentStageElementConfig>(selectedStageId || '')
+  const deploymentType = getSelectedDeploymentType(
+    data,
+    getStageFromPipeline,
+    !!data?.stage?.spec?.serviceConfig?.useFromStage?.stage
+  )
   const validate = React.useCallback(() => {
     try {
-      getCDStageValidationSchema(getString, contextType).validateSync(data?.stage, {
+      getCDStageValidationSchema(getString, deploymentType, contextType).validateSync(data?.stage, {
         abortEarly: false,
         context: data?.stage
       })

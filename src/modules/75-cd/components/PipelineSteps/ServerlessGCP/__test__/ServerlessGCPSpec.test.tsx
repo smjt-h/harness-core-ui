@@ -11,8 +11,15 @@ import { RUNTIME_INPUT_VALUE } from '@wings-software/uicore'
 import { StepFormikRef, StepViewType } from '@pipeline/components/AbstractSteps/Step'
 import { StepType } from '@pipeline/components/PipelineSteps/PipelineStepInterface'
 import { factory, TestStepWidget } from '@pipeline/components/PipelineSteps/Steps/__tests__/StepTestUtil'
+import type { CompletionItemInterface } from '@common/interfaces/YAMLBuilderProps'
 import { ServerlessGCPSpec } from '../ServerlessGCPSpec'
-import { ConnectorResponse, MultipleConnectorsResponse } from './mock/ConnectorResponse.mock'
+import {
+  getConnectorResponse,
+  getConnectorsResponseMultiple
+} from '../../ServerlessInfraSpec/mocks/ConnectorResponse.mock'
+
+const ConnectorResponse = getConnectorResponse('ServerlessGCP')
+const MultipleConnectorsResponse = getConnectorsResponseMultiple('GCP')
 
 jest.mock('@common/components/YAMLBuilder/YamlBuilder')
 
@@ -20,6 +27,8 @@ jest.mock('services/cd-ng', () => ({
   useGetConnector: jest.fn(() => ConnectorResponse),
   getConnectorListV2Promise: jest.fn(() => Promise.resolve(MultipleConnectorsResponse.data))
 }))
+
+const connectorRefPath = 'pipeline.stages.0.stage.spec.infrastructure.infrastructureDefinition.spec.connectorRef'
 
 const getRuntimeInputsValues = () => ({
   connectorRef: RUNTIME_INPUT_VALUE,
@@ -36,6 +45,43 @@ const getEmptyInitialValues = () => ({
   stage: ''
 })
 
+const customStepProps = {
+  formInfo: {
+    formName: 'serverlessGCPInfra',
+    type: 'Gcp',
+    header: '',
+    tooltipIds: {
+      connector: 'gcpInfraConnector',
+      region: 'gcpRegion',
+      stage: 'gcpStage'
+    }
+  }
+}
+
+const getInvalidYaml = () => `p ipe<>line:
+sta ges:
+   - st<>[]age:
+              s pe<> c: <> sad-~`
+
+const getYaml = () => `pipeline:
+    stages:
+        - stage:
+              spec:
+                  infrastructure:
+                      infrastructureDefinition:
+                          type: ServerlessGCP
+                          spec:
+                              connectorRef: account.connectorRef
+                              stage: stage`
+
+const getParams = () => ({
+  accountId: 'accountId',
+  module: 'cd',
+  orgIdentifier: 'default',
+  pipelineIdentifier: '-1',
+  projectIdentifier: 'projectIdentifier'
+})
+
 describe('Test ServerlessGCPSpec snapshot', () => {
   beforeEach(() => {
     factory.registerStep(new ServerlessGCPSpec())
@@ -43,7 +89,12 @@ describe('Test ServerlessGCPSpec snapshot', () => {
 
   test('should render edit view with empty initial values', () => {
     const { container } = render(
-      <TestStepWidget initialValues={{}} type={StepType.ServerlessGCP} stepViewType={StepViewType.Edit} />
+      <TestStepWidget
+        customStepProps={customStepProps}
+        initialValues={{}}
+        type={StepType.ServerlessGCP}
+        stepViewType={StepViewType.Edit}
+      />
     )
     expect(container).toMatchSnapshot()
   })
@@ -51,6 +102,7 @@ describe('Test ServerlessGCPSpec snapshot', () => {
   test('should render edit view with values ', () => {
     const { container } = render(
       <TestStepWidget
+        customStepProps={customStepProps}
         initialValues={getInitialValues()}
         type={StepType.ServerlessGCP}
         stepViewType={StepViewType.Edit}
@@ -62,6 +114,7 @@ describe('Test ServerlessGCPSpec snapshot', () => {
   test('should render edit view with runtime values ', () => {
     const { container } = render(
       <TestStepWidget
+        customStepProps={customStepProps}
         initialValues={getRuntimeInputsValues()}
         type={StepType.ServerlessGCP}
         stepViewType={StepViewType.Edit}
@@ -73,6 +126,7 @@ describe('Test ServerlessGCPSpec snapshot', () => {
   test('should render edit view for inputset view', () => {
     const { container } = render(
       <TestStepWidget
+        customStepProps={customStepProps}
         initialValues={getInitialValues()}
         template={getRuntimeInputsValues()}
         allValues={getInitialValues()}
@@ -86,6 +140,7 @@ describe('Test ServerlessGCPSpec snapshot', () => {
   test('should render variable view', () => {
     const { container } = render(
       <TestStepWidget
+        customStepProps={customStepProps}
         initialValues={getInitialValues()}
         template={getRuntimeInputsValues()}
         allValues={getInitialValues()}
@@ -107,6 +162,7 @@ describe('Test ServerlessGCPSpec behavior', () => {
     const onUpdateHandler = jest.fn()
     const { container } = render(
       <TestStepWidget
+        customStepProps={customStepProps}
         initialValues={getInitialValues()}
         template={getRuntimeInputsValues()}
         allValues={getInitialValues()}
@@ -126,6 +182,7 @@ describe('Test ServerlessGCPSpec behavior', () => {
     const onUpdateHandler = jest.fn()
     const { container } = render(
       <TestStepWidget
+        customStepProps={customStepProps}
         initialValues={getEmptyInitialValues()}
         template={getRuntimeInputsValues()}
         allValues={getEmptyInitialValues()}
@@ -147,6 +204,7 @@ describe('Test ServerlessGCPSpec behavior', () => {
     const ref = React.createRef<StepFormikRef<unknown>>()
     const { container } = render(
       <TestStepWidget
+        customStepProps={customStepProps}
         initialValues={getInitialValues()}
         template={getRuntimeInputsValues()}
         allValues={getInitialValues()}
@@ -156,18 +214,32 @@ describe('Test ServerlessGCPSpec behavior', () => {
         ref={ref}
       />
     )
-
     await act(async () => {
       const stageInput = container.querySelector('[placeholder="cd.steps.serverless.stagePlaceholder"]')
       fireEvent.change(stageInput!, { target: { value: 'stage changed' } })
-
-      // TODO: add other fields
-
-      await ref.current?.submitForm()
     })
 
     await waitFor(() =>
       expect(onUpdateHandler).toHaveBeenCalledWith({ ...getInitialValues(), ...{ stage: 'stage changed' } })
     )
+  })
+
+  describe('Test GcpInfrastructureSpec autocomplete', () => {
+    test('Test connector autocomplete', async () => {
+      const step = new ServerlessGCPSpec() as any
+      let list: CompletionItemInterface[]
+
+      list = await step.getConnectorsListForYaml(connectorRefPath, getYaml(), getParams())
+      expect(list).toHaveLength(2)
+      expect(list[0].insertText).toBe('GCP')
+
+      list = await step.getConnectorsListForYaml('invalid path', getYaml(), getParams())
+      expect(list).toHaveLength(0)
+
+      // TODO: create yaml that cause yaml.parse to throw an error
+      // its expected that yaml.parse throw an error but is not happening
+      list = await step.getConnectorsListForYaml(connectorRefPath, getInvalidYaml(), getParams())
+      expect(list).toHaveLength(0)
+    })
   })
 })

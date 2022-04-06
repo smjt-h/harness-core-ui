@@ -16,6 +16,7 @@ import type {
   StageElementConfig,
   ServerlessAwsLambdaInfrastructure
 } from 'services/cd-ng'
+import { connectorTypes } from '@pipeline/utils/constants'
 import { ManifestDataType } from '@pipeline/components/ManifestSelection/Manifesthelper'
 import type { ManifestTypes } from '@pipeline/components/ManifestSelection/ManifestInterface'
 import { getFlattenedStages } from '@pipeline/components/PipelineStudio/StageBuilder/StageBuilderUtil'
@@ -67,7 +68,7 @@ export type ServerlessAzureInfrastructure = Infrastructure & {
   metadata?: string
   stage: string
 }
-export type ServessInfraTypes =
+export type ServerlessInfraTypes =
   | ServerlessGCPInfrastructure
   | ServerlessAzureInfrastructure
   | ServerlessAwsLambdaInfrastructure
@@ -224,6 +225,55 @@ export const getSelectedDeploymentType = (
     return get(parentStage, 'stage.stage.spec.serviceConfig.serviceDefinition.type', null)
   }
   return get(stage, 'stage.spec.serviceConfig.serviceDefinition.type', null)
+}
+
+export const getCustomStepProps = (type: string, getString: (key: StringKeys) => string) => {
+  switch (type) {
+    case ServiceDeploymentType.ServerlessAwsLambda:
+      return {
+        hasRegion: true,
+        formInfo: {
+          formName: 'serverlessAWSInfra',
+          type: connectorTypes.Aws,
+          header: getString('pipelineSteps.awsConnectorLabel'),
+          tooltipIds: {
+            connector: 'awsInfraConnector',
+            region: 'awsRegion',
+            stage: 'awsStage'
+          }
+        }
+      }
+    case ServiceDeploymentType.ServerlessAzureFunctions:
+      return {
+        formInfo: {
+          formName: 'serverlessAzureInfra',
+          // @TODO - (change type to 'azure')
+          // this is not being used anywhere currently, once azure support is there we will change it.
+          type: connectorTypes.Gcp,
+          header: getString('pipelineSteps.awsConnectorLabel'),
+          tooltipIds: {
+            connector: 'azureInfraConnector',
+            region: 'azureRegion',
+            stage: 'azureStage'
+          }
+        }
+      }
+    case ServiceDeploymentType.ServerlessGoogleFunctions:
+      return {
+        formInfo: {
+          formName: 'serverlessGCPInfra',
+          type: connectorTypes.Gcp,
+          header: getString('pipelineSteps.gcpConnectorLabel'),
+          tooltipIds: {
+            connector: 'gcpInfraConnector',
+            region: 'gcpRegion',
+            stage: 'gcpStage'
+          }
+        }
+      }
+    default:
+      return { formInfo: {} }
+  }
 }
 
 const isArtifactFieldPresent = (stage: DeploymentStageElementConfigWrapper, fieldName: string): boolean => {
