@@ -37,7 +37,7 @@ jest.mock('services/cd-ng', () => ({
 
 const getRuntimeInputsValues = (): K8sAzureInfrastructure => ({
   connectorRef: RUNTIME_INPUT_VALUE,
-  subscription: RUNTIME_INPUT_VALUE,
+  subscriptionId: RUNTIME_INPUT_VALUE,
   resourceGroup: RUNTIME_INPUT_VALUE,
   cluster: RUNTIME_INPUT_VALUE,
   namespace: RUNTIME_INPUT_VALUE,
@@ -46,7 +46,7 @@ const getRuntimeInputsValues = (): K8sAzureInfrastructure => ({
 
 const getInitialValues = (): K8sAzureInfrastructure => ({
   connectorRef: 'connectorRef',
-  subscription: 'subscription',
+  subscriptionId: 'subscriptionId',
   resourceGroup: 'resourceGroup',
   cluster: 'cluster',
   namespace: 'namespace',
@@ -67,7 +67,7 @@ const getYaml = (): string => `pipeline:
                           type: KubernetesAzure
                           spec:
                               connectorRef: account.connectorRef
-                              subscription: subscription
+                              subscriptionId: subscriptionId
                               resourceGroup: resourceGroup
                               cluster: cluster
                               namespace: namespace
@@ -83,7 +83,7 @@ const getParams = () => ({
 })
 
 const connectorRefPath = 'pipeline.stages.0.stage.spec.infrastructure.infrastructureDefinition.spec.connectorRef'
-const subscriptionPath = 'pipeline.stages.0.stage.spec.infrastructure.infrastructureDefinition.spec.subscription'
+const subscriptionPath = 'pipeline.stages.0.stage.spec.infrastructure.infrastructureDefinition.spec.subscriptionId'
 const resourceGroupPath = 'pipeline.stages.0.stage.spec.infrastructure.infrastructureDefinition.spec.resourceGroup'
 const clusterPath = 'pipeline.stages.0.stage.spec.infrastructure.infrastructureDefinition.spec.cluster'
 

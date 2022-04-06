@@ -22,7 +22,7 @@ import type { Scope } from '@common/interfaces/SecretsInterface'
 import type { DeploymentStageElementConfig } from '@pipeline/utils/pipelineTypes'
 import { useDeepCompareEffect } from '@common/hooks'
 import type { ManifestSelectionProps } from './ManifestInterface'
-import ManifestListView from './ManifestListView'
+import ManifestListView from './ManifestListView/ManifestListView'
 import { getFlattenedStages, getStageIndexFromPipeline } from '../PipelineStudio/StageBuilder/StageBuilderUtil'
 
 export default function ManifestSelection({

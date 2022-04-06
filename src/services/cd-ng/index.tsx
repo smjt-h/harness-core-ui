@@ -335,7 +335,6 @@ export interface AccessControlCheckError {
     | 'AZURE_CONFIG_ERROR'
     | 'DATA_PROCESSING_ERROR'
     | 'INVALID_AZURE_AKS_REQUEST'
-    | 'SERVERLESS_EXECUTION_ERROR'
   correlationId?: string
   detailedMessage?: string
   failedPermissionChecks?: PermissionCheck[]
@@ -1133,6 +1132,7 @@ export type AzureRepoConnector = ConnectorConfigDTO & {
   delegateSelectors?: string[]
   type: 'Account' | 'Repo'
   url: string
+  validationProject?: string
   validationRepo?: string
 }
 
@@ -2870,7 +2870,6 @@ export interface Error {
     | 'AZURE_CONFIG_ERROR'
     | 'DATA_PROCESSING_ERROR'
     | 'INVALID_AZURE_AKS_REQUEST'
-    | 'SERVERLESS_EXECUTION_ERROR'
   correlationId?: string
   detailedMessage?: string
   message?: string
@@ -3259,7 +3258,6 @@ export interface Failure {
     | 'AZURE_CONFIG_ERROR'
     | 'DATA_PROCESSING_ERROR'
     | 'INVALID_AZURE_AKS_REQUEST'
-    | 'SERVERLESS_EXECUTION_ERROR'
   correlationId?: string
   errors?: ValidationError[]
   message?: string
@@ -3532,16 +3530,22 @@ export interface FileDTO {
   type: 'FILE' | 'FOLDER'
 }
 
-export interface FileDtoYamlWrapper {
-  file: FileDTO
+export type FileNodeDTO = FileStoreNodeDTO & {
+  description?: string
+  fileUsage: 'MANIFEST_FILE' | 'CONFIG' | 'SCRIPT'
+  tags?: NGTag[]
 }
-
-export type FileNodeDTO = FileStoreNodeDTO & {}
 
 export interface FileStoreNodeDTO {
   identifier: string
+  lastModifiedAt?: number
+  lastModifiedBy?: string
   name: string
   type: 'FILE' | 'FOLDER'
+}
+
+export interface FileStoreRequest {
+  file: FileDTO
 }
 
 export interface FilesFilterProperties {
@@ -3611,6 +3615,8 @@ export interface FlowControlConfig {
 export interface FolderNodeDTO {
   children?: FileStoreNodeDTO[]
   identifier: string
+  lastModifiedAt?: number
+  lastModifiedBy?: string
   name: string
   type: 'FILE' | 'FOLDER'
 }
@@ -4686,6 +4692,7 @@ export type HelmChartManifest = ManifestAttributes & {
   metadata?: string
   skipResourceVersioning?: boolean
   store?: StoreConfigWrapper
+  valuesPaths?: string[]
 }
 
 export type HelmDeployStepInfo = StepSpecType & {
@@ -4874,6 +4881,10 @@ export interface InfrastructureDef {
 
 export interface InfrastructureDetails {
   [key: string]: any
+}
+
+export type InheritFromManifestStoreConfig = StoreConfig & {
+  paths?: string[]
 }
 
 export type InlineTerraformBackendConfigSpec = TerraformBackendConfigSpec & {
@@ -5110,7 +5121,7 @@ export type K8sAzureInfrastructure = Infrastructure & {
   namespace: string
   releaseName: string
   resourceGroup: string
-  subscription: string
+  subscriptionId: string
 }
 
 export type K8sBGSwapServicesStepInfo = StepSpecType & {
@@ -5177,6 +5188,7 @@ export type K8sManifest = ManifestAttributes & {
   metadata?: string
   skipResourceVersioning?: ParameterFieldBoolean
   store?: StoreConfigWrapper
+  valuesPaths?: string[]
 }
 
 export type K8sRollingRollbackStepInfo = StepSpecType & {
@@ -5285,6 +5297,7 @@ export type KubernetesUserNamePasswordDTO = KubernetesAuthCredentialDTO & {
 
 export type KustomizeManifest = ManifestAttributes & {
   metadata?: string
+  patchesPaths?: string[]
   pluginPath?: string
   skipResourceVersioning?: ParameterFieldBoolean
   store?: StoreConfigWrapper
@@ -5500,6 +5513,10 @@ export interface ModuleLicenseDTO {
   startTime?: number
   status?: 'ACTIVE' | 'DELETED' | 'EXPIRED'
   trialExtended?: boolean
+}
+
+export interface ModuleSource {
+  useConnectorCredentials: ParameterFieldBoolean
 }
 
 export interface NGAuthSettings {
@@ -5745,6 +5762,7 @@ export interface OnTimeoutConfig {
 
 export type OpenshiftManifest = ManifestAttributes & {
   metadata?: string
+  paramsPaths?: string[]
   skipResourceVersioning?: ParameterFieldBoolean
   store?: StoreConfigWrapper
 }
@@ -6592,6 +6610,7 @@ export interface ResourceDTO {
     | 'DELEGATE_TOKEN'
     | 'GOVERNANCE_POLICY'
     | 'GOVERNANCE_POLICY_SET'
+    | 'VARIABLE'
 }
 
 export interface ResourceGroup {
@@ -7707,7 +7726,6 @@ export interface ResponseMessage {
     | 'AZURE_CONFIG_ERROR'
     | 'DATA_PROCESSING_ERROR'
     | 'INVALID_AZURE_AKS_REQUEST'
-    | 'SERVERLESS_EXECUTION_ERROR'
   exception?: Throwable
   failureTypes?: (
     | 'EXPIRED'
@@ -9611,7 +9629,7 @@ export interface StoreConfig {
 export interface StoreConfigWrapper {
   metadata?: string
   spec: StoreConfig
-  type: 'Git' | 'Github' | 'Bitbucket' | 'GitLab' | 'Http' | 'S3' | 'Gcs' | 'Artifactory'
+  type: 'Git' | 'Github' | 'Bitbucket' | 'GitLab' | 'Http' | 'S3' | 'Gcs' | 'Artifactory' | 'InheritFromManifest'
 }
 
 export type StringNGVariable = NGVariable & {
@@ -9700,6 +9718,7 @@ export interface TerraformBackendConfigSpec {
 }
 
 export interface TerraformConfigFilesWrapper {
+  moduleSource?: ModuleSource
   store: StoreConfigWrapper
 }
 
@@ -10344,7 +10363,7 @@ export type EcrRequestDTORequestBody = EcrRequestDTO
 
 export type EnvironmentRequestDTORequestBody = EnvironmentRequestDTO
 
-export type FileDtoYamlWrapperRequestBody = void
+export type FileStoreRequestRequestBody = void
 
 export type FilterDTORequestBody = FilterDTO
 
@@ -10376,9 +10395,9 @@ export type ScimUserRequestBody = ScimUser
 
 export type ScopingRuleDetailsNgArrayRequestBody = ScopingRuleDetailsNg[]
 
-export type SecretRequestWrapperRequestBody = void
+export type SecretRequestWrapperRequestBody = SecretRequestWrapper
 
-export type SecretRequestWrapper2RequestBody = SecretRequestWrapper
+export type SecretRequestWrapper2RequestBody = void
 
 export type ServiceAccountDTORequestBody = ServiceAccountDTO
 
@@ -10398,11 +10417,13 @@ export type UserFilterRequestBody = UserFilter
 
 export type UserGroupDTORequestBody = UserGroupDTO
 
+export type VariableRequestDTORequestBody = VariableRequestDTO
+
 export type YamlSchemaDetailsWrapperRequestBody = YamlSchemaDetailsWrapper
 
 export type GetBuildDetailsForAcrArtifactWithYamlBodyRequestBody = string
 
-export type SubscribeBodyRequestBody = string[]
+export type UnsubscribeBodyRequestBody = string[]
 
 export type UpdateEnvironmentGroupBodyRequestBody = string
 
@@ -21221,6 +21242,61 @@ export const saveFeedbackPromise = (
     signal
   )
 
+export interface ListFilesAndFoldersQueryParams {
+  accountIdentifier?: string
+  orgIdentifier?: string
+  projectIdentifier?: string
+  identifiers?: string[]
+  searchTerm?: string
+  pageIndex?: number
+  pageSize?: number
+  sortOrders?: string[]
+}
+
+export type ListFilesAndFoldersProps = Omit<
+  GetProps<ResponsePageFileDTO, Failure | Error, ListFilesAndFoldersQueryParams, void>,
+  'path'
+>
+
+/**
+ * List files and folders
+ */
+export const ListFilesAndFolders = (props: ListFilesAndFoldersProps) => (
+  <Get<ResponsePageFileDTO, Failure | Error, ListFilesAndFoldersQueryParams, void>
+    path={`/file-store`}
+    base={getConfig('ng/api')}
+    {...props}
+  />
+)
+
+export type UseListFilesAndFoldersProps = Omit<
+  UseGetProps<ResponsePageFileDTO, Failure | Error, ListFilesAndFoldersQueryParams, void>,
+  'path'
+>
+
+/**
+ * List files and folders
+ */
+export const useListFilesAndFolders = (props: UseListFilesAndFoldersProps) =>
+  useGet<ResponsePageFileDTO, Failure | Error, ListFilesAndFoldersQueryParams, void>(`/file-store`, {
+    base: getConfig('ng/api'),
+    ...props
+  })
+
+/**
+ * List files and folders
+ */
+export const listFilesAndFoldersPromise = (
+  props: GetUsingFetchProps<ResponsePageFileDTO, Failure | Error, ListFilesAndFoldersQueryParams, void>,
+  signal?: RequestInit['signal']
+) =>
+  getUsingFetch<ResponsePageFileDTO, Failure | Error, ListFilesAndFoldersQueryParams, void>(
+    getConfig('ng/api'),
+    `/file-store`,
+    props,
+    signal
+  )
+
 export interface CreateQueryParams {
   accountIdentifier?: string
   orgIdentifier?: string
@@ -21289,7 +21365,7 @@ export type GetCreatedByListProps = Omit<
  */
 export const GetCreatedByList = (props: GetCreatedByListProps) => (
   <Get<ResponseSetString, Failure | Error, GetCreatedByListQueryParams, void>
-    path={`/file-store/createdBy`}
+    path={`/file-store/files/createdBy`}
     base={getConfig('ng/api')}
     {...props}
   />
@@ -21304,7 +21380,7 @@ export type UseGetCreatedByListProps = Omit<
  * Get list of created by usernames
  */
 export const useGetCreatedByList = (props: UseGetCreatedByListProps) =>
-  useGet<ResponseSetString, Failure | Error, GetCreatedByListQueryParams, void>(`/file-store/createdBy`, {
+  useGet<ResponseSetString, Failure | Error, GetCreatedByListQueryParams, void>(`/file-store/files/createdBy`, {
     base: getConfig('ng/api'),
     ...props
   })
@@ -21318,68 +21394,7 @@ export const getCreatedByListPromise = (
 ) =>
   getUsingFetch<ResponseSetString, Failure | Error, GetCreatedByListQueryParams, void>(
     getConfig('ng/api'),
-    `/file-store/createdBy`,
-    props,
-    signal
-  )
-
-export interface DownloadFileQueryParams {
-  accountIdentifier?: string
-  orgIdentifier?: string
-  projectIdentifier?: string
-}
-
-export interface DownloadFilePathParams {
-  fileIdentifier: string
-}
-
-export type DownloadFileProps = Omit<
-  GetProps<void, Failure | Error, DownloadFileQueryParams, DownloadFilePathParams>,
-  'path'
-> &
-  DownloadFilePathParams
-
-/**
- * Download file
- */
-export const DownloadFile = ({ fileIdentifier, ...props }: DownloadFileProps) => (
-  <Get<void, Failure | Error, DownloadFileQueryParams, DownloadFilePathParams>
-    path={`/file-store/file/${fileIdentifier}/download`}
-    base={getConfig('ng/api')}
-    {...props}
-  />
-)
-
-export type UseDownloadFileProps = Omit<
-  UseGetProps<void, Failure | Error, DownloadFileQueryParams, DownloadFilePathParams>,
-  'path'
-> &
-  DownloadFilePathParams
-
-/**
- * Download file
- */
-export const useDownloadFile = ({ fileIdentifier, ...props }: UseDownloadFileProps) =>
-  useGet<void, Failure | Error, DownloadFileQueryParams, DownloadFilePathParams>(
-    (paramsInPath: DownloadFilePathParams) => `/file-store/file/${paramsInPath.fileIdentifier}/download`,
-    { base: getConfig('ng/api'), pathParams: { fileIdentifier }, ...props }
-  )
-
-/**
- * Download file
- */
-export const downloadFilePromise = (
-  {
-    fileIdentifier,
-    ...props
-  }: GetUsingFetchProps<void, Failure | Error, DownloadFileQueryParams, DownloadFilePathParams> & {
-    fileIdentifier: string
-  },
-  signal?: RequestInit['signal']
-) =>
-  getUsingFetch<void, Failure | Error, DownloadFileQueryParams, DownloadFilePathParams>(
-    getConfig('ng/api'),
-    `/file-store/file/${fileIdentifier}/download`,
+    `/file-store/files/createdBy`,
     props,
     signal
   )
@@ -21406,7 +21421,7 @@ export type ListFilesWithFilterProps = Omit<
 export const ListFilesWithFilter = (props: ListFilesWithFilterProps) => (
   <Mutate<ResponsePageFileDTO, Failure | Error, ListFilesWithFilterQueryParams, FilesFilterProperties, void>
     verb="POST"
-    path={`/file-store/filter`}
+    path={`/file-store/files/filter`}
     base={getConfig('ng/api')}
     {...props}
   />
@@ -21423,7 +21438,7 @@ export type UseListFilesWithFilterProps = Omit<
 export const useListFilesWithFilter = (props: UseListFilesWithFilterProps) =>
   useMutate<ResponsePageFileDTO, Failure | Error, ListFilesWithFilterQueryParams, FilesFilterProperties, void>(
     'POST',
-    `/file-store/filter`,
+    `/file-store/files/filter`,
     { base: getConfig('ng/api'), ...props }
   )
 
@@ -21443,7 +21458,68 @@ export const listFilesWithFilterPromise = (
   mutateUsingFetch<ResponsePageFileDTO, Failure | Error, ListFilesWithFilterQueryParams, FilesFilterProperties, void>(
     'POST',
     getConfig('ng/api'),
-    `/file-store/filter`,
+    `/file-store/files/filter`,
+    props,
+    signal
+  )
+
+export interface DownloadFileQueryParams {
+  accountIdentifier?: string
+  orgIdentifier?: string
+  projectIdentifier?: string
+}
+
+export interface DownloadFilePathParams {
+  identifier: string
+}
+
+export type DownloadFileProps = Omit<
+  GetProps<void, Failure | Error, DownloadFileQueryParams, DownloadFilePathParams>,
+  'path'
+> &
+  DownloadFilePathParams
+
+/**
+ * Download file
+ */
+export const DownloadFile = ({ identifier, ...props }: DownloadFileProps) => (
+  <Get<void, Failure | Error, DownloadFileQueryParams, DownloadFilePathParams>
+    path={`/file-store/files/${identifier}/download`}
+    base={getConfig('ng/api')}
+    {...props}
+  />
+)
+
+export type UseDownloadFileProps = Omit<
+  UseGetProps<void, Failure | Error, DownloadFileQueryParams, DownloadFilePathParams>,
+  'path'
+> &
+  DownloadFilePathParams
+
+/**
+ * Download file
+ */
+export const useDownloadFile = ({ identifier, ...props }: UseDownloadFileProps) =>
+  useGet<void, Failure | Error, DownloadFileQueryParams, DownloadFilePathParams>(
+    (paramsInPath: DownloadFilePathParams) => `/file-store/files/${paramsInPath.identifier}/download`,
+    { base: getConfig('ng/api'), pathParams: { identifier }, ...props }
+  )
+
+/**
+ * Download file
+ */
+export const downloadFilePromise = (
+  {
+    identifier,
+    ...props
+  }: GetUsingFetchProps<void, Failure | Error, DownloadFileQueryParams, DownloadFilePathParams> & {
+    identifier: string
+  },
+  signal?: RequestInit['signal']
+) =>
+  getUsingFetch<void, Failure | Error, DownloadFileQueryParams, DownloadFilePathParams>(
+    getConfig('ng/api'),
+    `/file-store/files/${identifier}/download`,
     props,
     signal
   )
@@ -21508,7 +21584,7 @@ export interface CreateViaYAMLQueryParams {
 }
 
 export type CreateViaYAMLProps = Omit<
-  MutateProps<ResponseFileDTO, Failure | Error, CreateViaYAMLQueryParams, FileDtoYamlWrapperRequestBody, void>,
+  MutateProps<ResponseFileDTO, Failure | Error, CreateViaYAMLQueryParams, FileStoreRequestRequestBody, void>,
   'path' | 'verb'
 >
 
@@ -21516,7 +21592,7 @@ export type CreateViaYAMLProps = Omit<
  * Create file or folder via YAML
  */
 export const CreateViaYAML = (props: CreateViaYAMLProps) => (
-  <Mutate<ResponseFileDTO, Failure | Error, CreateViaYAMLQueryParams, FileDtoYamlWrapperRequestBody, void>
+  <Mutate<ResponseFileDTO, Failure | Error, CreateViaYAMLQueryParams, FileStoreRequestRequestBody, void>
     verb="POST"
     path={`/file-store/yaml`}
     base={getConfig('ng/api')}
@@ -21525,7 +21601,7 @@ export const CreateViaYAML = (props: CreateViaYAMLProps) => (
 )
 
 export type UseCreateViaYAMLProps = Omit<
-  UseMutateProps<ResponseFileDTO, Failure | Error, CreateViaYAMLQueryParams, FileDtoYamlWrapperRequestBody, void>,
+  UseMutateProps<ResponseFileDTO, Failure | Error, CreateViaYAMLQueryParams, FileStoreRequestRequestBody, void>,
   'path' | 'verb'
 >
 
@@ -21533,7 +21609,7 @@ export type UseCreateViaYAMLProps = Omit<
  * Create file or folder via YAML
  */
 export const useCreateViaYAML = (props: UseCreateViaYAMLProps) =>
-  useMutate<ResponseFileDTO, Failure | Error, CreateViaYAMLQueryParams, FileDtoYamlWrapperRequestBody, void>(
+  useMutate<ResponseFileDTO, Failure | Error, CreateViaYAMLQueryParams, FileStoreRequestRequestBody, void>(
     'POST',
     `/file-store/yaml`,
     { base: getConfig('ng/api'), ...props }
@@ -21547,12 +21623,12 @@ export const createViaYAMLPromise = (
     ResponseFileDTO,
     Failure | Error,
     CreateViaYAMLQueryParams,
-    FileDtoYamlWrapperRequestBody,
+    FileStoreRequestRequestBody,
     void
   >,
   signal?: RequestInit['signal']
 ) =>
-  mutateUsingFetch<ResponseFileDTO, Failure | Error, CreateViaYAMLQueryParams, FileDtoYamlWrapperRequestBody, void>(
+  mutateUsingFetch<ResponseFileDTO, Failure | Error, CreateViaYAMLQueryParams, FileStoreRequestRequestBody, void>(
     'POST',
     getConfig('ng/api'),
     `/file-store/yaml`,
@@ -21575,7 +21651,7 @@ export type UpdateViaYAMLProps = Omit<
     ResponseFileDTO,
     Failure | Error,
     UpdateViaYAMLQueryParams,
-    FileDtoYamlWrapperRequestBody,
+    FileStoreRequestRequestBody,
     UpdateViaYAMLPathParams
   >,
   'path' | 'verb'
@@ -21590,7 +21666,7 @@ export const UpdateViaYAML = ({ identifier, ...props }: UpdateViaYAMLProps) => (
     ResponseFileDTO,
     Failure | Error,
     UpdateViaYAMLQueryParams,
-    FileDtoYamlWrapperRequestBody,
+    FileStoreRequestRequestBody,
     UpdateViaYAMLPathParams
   >
     verb="PUT"
@@ -21605,7 +21681,7 @@ export type UseUpdateViaYAMLProps = Omit<
     ResponseFileDTO,
     Failure | Error,
     UpdateViaYAMLQueryParams,
-    FileDtoYamlWrapperRequestBody,
+    FileStoreRequestRequestBody,
     UpdateViaYAMLPathParams
   >,
   'path' | 'verb'
@@ -21620,7 +21696,7 @@ export const useUpdateViaYAML = ({ identifier, ...props }: UseUpdateViaYAMLProps
     ResponseFileDTO,
     Failure | Error,
     UpdateViaYAMLQueryParams,
-    FileDtoYamlWrapperRequestBody,
+    FileStoreRequestRequestBody,
     UpdateViaYAMLPathParams
   >('PUT', (paramsInPath: UpdateViaYAMLPathParams) => `/file-store/yaml/${paramsInPath.identifier}`, {
     base: getConfig('ng/api'),
@@ -21639,7 +21715,7 @@ export const updateViaYAMLPromise = (
     ResponseFileDTO,
     Failure | Error,
     UpdateViaYAMLQueryParams,
-    FileDtoYamlWrapperRequestBody,
+    FileStoreRequestRequestBody,
     UpdateViaYAMLPathParams
   > & { identifier: string },
   signal?: RequestInit['signal']
@@ -21648,7 +21724,7 @@ export const updateViaYAMLPromise = (
     ResponseFileDTO,
     Failure | Error,
     UpdateViaYAMLQueryParams,
-    FileDtoYamlWrapperRequestBody,
+    FileStoreRequestRequestBody,
     UpdateViaYAMLPathParams
   >('PUT', getConfig('ng/api'), `/file-store/yaml/${identifier}`, props, signal)
 
@@ -27232,7 +27308,7 @@ export type ProcessPollingResultNgProps = Omit<
     void,
     Failure | Error,
     ProcessPollingResultNgQueryParams,
-    SubscribeBodyRequestBody,
+    UnsubscribeBodyRequestBody,
     ProcessPollingResultNgPathParams
   >,
   'path' | 'verb'
@@ -27244,7 +27320,7 @@ export const ProcessPollingResultNg = ({ perpetualTaskId, ...props }: ProcessPol
     void,
     Failure | Error,
     ProcessPollingResultNgQueryParams,
-    SubscribeBodyRequestBody,
+    UnsubscribeBodyRequestBody,
     ProcessPollingResultNgPathParams
   >
     verb="POST"
@@ -27259,7 +27335,7 @@ export type UseProcessPollingResultNgProps = Omit<
     void,
     Failure | Error,
     ProcessPollingResultNgQueryParams,
-    SubscribeBodyRequestBody,
+    UnsubscribeBodyRequestBody,
     ProcessPollingResultNgPathParams
   >,
   'path' | 'verb'
@@ -27271,7 +27347,7 @@ export const useProcessPollingResultNg = ({ perpetualTaskId, ...props }: UseProc
     void,
     Failure | Error,
     ProcessPollingResultNgQueryParams,
-    SubscribeBodyRequestBody,
+    UnsubscribeBodyRequestBody,
     ProcessPollingResultNgPathParams
   >(
     'POST',
@@ -27287,7 +27363,7 @@ export const processPollingResultNgPromise = (
     void,
     Failure | Error,
     ProcessPollingResultNgQueryParams,
-    SubscribeBodyRequestBody,
+    UnsubscribeBodyRequestBody,
     ProcessPollingResultNgPathParams
   > & { perpetualTaskId: string },
   signal?: RequestInit['signal']
@@ -27296,17 +27372,17 @@ export const processPollingResultNgPromise = (
     void,
     Failure | Error,
     ProcessPollingResultNgQueryParams,
-    SubscribeBodyRequestBody,
+    UnsubscribeBodyRequestBody,
     ProcessPollingResultNgPathParams
   >('POST', getConfig('ng/api'), `/polling/delegate-response/${perpetualTaskId}`, props, signal)
 
 export type SubscribeProps = Omit<
-  MutateProps<ResponsePollingResponseDTO, Failure | Error, void, SubscribeBodyRequestBody, void>,
+  MutateProps<ResponsePollingResponseDTO, Failure | Error, void, UnsubscribeBodyRequestBody, void>,
   'path' | 'verb'
 >
 
 export const Subscribe = (props: SubscribeProps) => (
-  <Mutate<ResponsePollingResponseDTO, Failure | Error, void, SubscribeBodyRequestBody, void>
+  <Mutate<ResponsePollingResponseDTO, Failure | Error, void, UnsubscribeBodyRequestBody, void>
     verb="POST"
     path={`/polling/subscribe`}
     base={getConfig('ng/api')}
@@ -27315,22 +27391,22 @@ export const Subscribe = (props: SubscribeProps) => (
 )
 
 export type UseSubscribeProps = Omit<
-  UseMutateProps<ResponsePollingResponseDTO, Failure | Error, void, SubscribeBodyRequestBody, void>,
+  UseMutateProps<ResponsePollingResponseDTO, Failure | Error, void, UnsubscribeBodyRequestBody, void>,
   'path' | 'verb'
 >
 
 export const useSubscribe = (props: UseSubscribeProps) =>
-  useMutate<ResponsePollingResponseDTO, Failure | Error, void, SubscribeBodyRequestBody, void>(
+  useMutate<ResponsePollingResponseDTO, Failure | Error, void, UnsubscribeBodyRequestBody, void>(
     'POST',
     `/polling/subscribe`,
     { base: getConfig('ng/api'), ...props }
   )
 
 export const subscribePromise = (
-  props: MutateUsingFetchProps<ResponsePollingResponseDTO, Failure | Error, void, SubscribeBodyRequestBody, void>,
+  props: MutateUsingFetchProps<ResponsePollingResponseDTO, Failure | Error, void, UnsubscribeBodyRequestBody, void>,
   signal?: RequestInit['signal']
 ) =>
-  mutateUsingFetch<ResponsePollingResponseDTO, Failure | Error, void, SubscribeBodyRequestBody, void>(
+  mutateUsingFetch<ResponsePollingResponseDTO, Failure | Error, void, UnsubscribeBodyRequestBody, void>(
     'POST',
     getConfig('ng/api'),
     `/polling/subscribe`,
@@ -27339,12 +27415,12 @@ export const subscribePromise = (
   )
 
 export type UnsubscribeProps = Omit<
-  MutateProps<boolean, Failure | Error, void, SubscribeBodyRequestBody, void>,
+  MutateProps<boolean, Failure | Error, void, UnsubscribeBodyRequestBody, void>,
   'path' | 'verb'
 >
 
 export const Unsubscribe = (props: UnsubscribeProps) => (
-  <Mutate<boolean, Failure | Error, void, SubscribeBodyRequestBody, void>
+  <Mutate<boolean, Failure | Error, void, UnsubscribeBodyRequestBody, void>
     verb="POST"
     path={`/polling/unsubscribe`}
     base={getConfig('ng/api')}
@@ -27353,21 +27429,21 @@ export const Unsubscribe = (props: UnsubscribeProps) => (
 )
 
 export type UseUnsubscribeProps = Omit<
-  UseMutateProps<boolean, Failure | Error, void, SubscribeBodyRequestBody, void>,
+  UseMutateProps<boolean, Failure | Error, void, UnsubscribeBodyRequestBody, void>,
   'path' | 'verb'
 >
 
 export const useUnsubscribe = (props: UseUnsubscribeProps) =>
-  useMutate<boolean, Failure | Error, void, SubscribeBodyRequestBody, void>('POST', `/polling/unsubscribe`, {
+  useMutate<boolean, Failure | Error, void, UnsubscribeBodyRequestBody, void>('POST', `/polling/unsubscribe`, {
     base: getConfig('ng/api'),
     ...props
   })
 
 export const unsubscribePromise = (
-  props: MutateUsingFetchProps<boolean, Failure | Error, void, SubscribeBodyRequestBody, void>,
+  props: MutateUsingFetchProps<boolean, Failure | Error, void, UnsubscribeBodyRequestBody, void>,
   signal?: RequestInit['signal']
 ) =>
-  mutateUsingFetch<boolean, Failure | Error, void, SubscribeBodyRequestBody, void>(
+  mutateUsingFetch<boolean, Failure | Error, void, UnsubscribeBodyRequestBody, void>(
     'POST',
     getConfig('ng/api'),
     `/polling/unsubscribe`,
@@ -35302,7 +35378,7 @@ export type PostSecretProps = Omit<
     ResponseSecretResponseWrapper,
     Failure | Error,
     PostSecretQueryParams,
-    SecretRequestWrapper2RequestBody,
+    SecretRequestWrapperRequestBody,
     void
   >,
   'path' | 'verb'
@@ -35312,7 +35388,7 @@ export type PostSecretProps = Omit<
  * Create a secret
  */
 export const PostSecret = (props: PostSecretProps) => (
-  <Mutate<ResponseSecretResponseWrapper, Failure | Error, PostSecretQueryParams, SecretRequestWrapper2RequestBody, void>
+  <Mutate<ResponseSecretResponseWrapper, Failure | Error, PostSecretQueryParams, SecretRequestWrapperRequestBody, void>
     verb="POST"
     path={`/v2/secrets`}
     base={getConfig('ng/api')}
@@ -35325,7 +35401,7 @@ export type UsePostSecretProps = Omit<
     ResponseSecretResponseWrapper,
     Failure | Error,
     PostSecretQueryParams,
-    SecretRequestWrapper2RequestBody,
+    SecretRequestWrapperRequestBody,
     void
   >,
   'path' | 'verb'
@@ -35339,7 +35415,7 @@ export const usePostSecret = (props: UsePostSecretProps) =>
     ResponseSecretResponseWrapper,
     Failure | Error,
     PostSecretQueryParams,
-    SecretRequestWrapper2RequestBody,
+    SecretRequestWrapperRequestBody,
     void
   >('POST', `/v2/secrets`, { base: getConfig('ng/api'), ...props })
 
@@ -35351,7 +35427,7 @@ export const postSecretPromise = (
     ResponseSecretResponseWrapper,
     Failure | Error,
     PostSecretQueryParams,
-    SecretRequestWrapper2RequestBody,
+    SecretRequestWrapperRequestBody,
     void
   >,
   signal?: RequestInit['signal']
@@ -35360,7 +35436,7 @@ export const postSecretPromise = (
     ResponseSecretResponseWrapper,
     Failure | Error,
     PostSecretQueryParams,
-    SecretRequestWrapper2RequestBody,
+    SecretRequestWrapperRequestBody,
     void
   >('POST', getConfig('ng/api'), `/v2/secrets`, props, signal)
 
@@ -35753,7 +35829,7 @@ export type PostSecretViaYamlProps = Omit<
     ResponseSecretResponseWrapper,
     Failure | Error,
     PostSecretViaYamlQueryParams,
-    SecretRequestWrapperRequestBody,
+    SecretRequestWrapper2RequestBody,
     void
   >,
   'path' | 'verb'
@@ -35767,7 +35843,7 @@ export const PostSecretViaYaml = (props: PostSecretViaYamlProps) => (
     ResponseSecretResponseWrapper,
     Failure | Error,
     PostSecretViaYamlQueryParams,
-    SecretRequestWrapperRequestBody,
+    SecretRequestWrapper2RequestBody,
     void
   >
     verb="POST"
@@ -35782,7 +35858,7 @@ export type UsePostSecretViaYamlProps = Omit<
     ResponseSecretResponseWrapper,
     Failure | Error,
     PostSecretViaYamlQueryParams,
-    SecretRequestWrapperRequestBody,
+    SecretRequestWrapper2RequestBody,
     void
   >,
   'path' | 'verb'
@@ -35796,7 +35872,7 @@ export const usePostSecretViaYaml = (props: UsePostSecretViaYamlProps) =>
     ResponseSecretResponseWrapper,
     Failure | Error,
     PostSecretViaYamlQueryParams,
-    SecretRequestWrapperRequestBody,
+    SecretRequestWrapper2RequestBody,
     void
   >('POST', `/v2/secrets/yaml`, { base: getConfig('ng/api'), ...props })
 
@@ -35808,7 +35884,7 @@ export const postSecretViaYamlPromise = (
     ResponseSecretResponseWrapper,
     Failure | Error,
     PostSecretViaYamlQueryParams,
-    SecretRequestWrapperRequestBody,
+    SecretRequestWrapper2RequestBody,
     void
   >,
   signal?: RequestInit['signal']
@@ -35817,7 +35893,7 @@ export const postSecretViaYamlPromise = (
     ResponseSecretResponseWrapper,
     Failure | Error,
     PostSecretViaYamlQueryParams,
-    SecretRequestWrapperRequestBody,
+    SecretRequestWrapper2RequestBody,
     void
   >('POST', getConfig('ng/api'), `/v2/secrets/yaml`, props, signal)
 
@@ -35952,7 +36028,7 @@ export type PutSecretProps = Omit<
     ResponseSecretResponseWrapper,
     Failure | Error,
     PutSecretQueryParams,
-    SecretRequestWrapper2RequestBody,
+    SecretRequestWrapperRequestBody,
     PutSecretPathParams
   >,
   'path' | 'verb'
@@ -35967,7 +36043,7 @@ export const PutSecret = ({ identifier, ...props }: PutSecretProps) => (
     ResponseSecretResponseWrapper,
     Failure | Error,
     PutSecretQueryParams,
-    SecretRequestWrapper2RequestBody,
+    SecretRequestWrapperRequestBody,
     PutSecretPathParams
   >
     verb="PUT"
@@ -35982,7 +36058,7 @@ export type UsePutSecretProps = Omit<
     ResponseSecretResponseWrapper,
     Failure | Error,
     PutSecretQueryParams,
-    SecretRequestWrapper2RequestBody,
+    SecretRequestWrapperRequestBody,
     PutSecretPathParams
   >,
   'path' | 'verb'
@@ -35997,7 +36073,7 @@ export const usePutSecret = ({ identifier, ...props }: UsePutSecretProps) =>
     ResponseSecretResponseWrapper,
     Failure | Error,
     PutSecretQueryParams,
-    SecretRequestWrapper2RequestBody,
+    SecretRequestWrapperRequestBody,
     PutSecretPathParams
   >('PUT', (paramsInPath: PutSecretPathParams) => `/v2/secrets/${paramsInPath.identifier}`, {
     base: getConfig('ng/api'),
@@ -36016,7 +36092,7 @@ export const putSecretPromise = (
     ResponseSecretResponseWrapper,
     Failure | Error,
     PutSecretQueryParams,
-    SecretRequestWrapper2RequestBody,
+    SecretRequestWrapperRequestBody,
     PutSecretPathParams
   > & { identifier: string },
   signal?: RequestInit['signal']
@@ -36025,7 +36101,7 @@ export const putSecretPromise = (
     ResponseSecretResponseWrapper,
     Failure | Error,
     PutSecretQueryParams,
-    SecretRequestWrapper2RequestBody,
+    SecretRequestWrapperRequestBody,
     PutSecretPathParams
   >('PUT', getConfig('ng/api'), `/v2/secrets/${identifier}`, props, signal)
 
@@ -36044,7 +36120,7 @@ export type PutSecretViaYamlProps = Omit<
     ResponseSecretResponseWrapper,
     Failure | Error,
     PutSecretViaYamlQueryParams,
-    SecretRequestWrapperRequestBody,
+    SecretRequestWrapper2RequestBody,
     PutSecretViaYamlPathParams
   >,
   'path' | 'verb'
@@ -36059,7 +36135,7 @@ export const PutSecretViaYaml = ({ identifier, ...props }: PutSecretViaYamlProps
     ResponseSecretResponseWrapper,
     Failure | Error,
     PutSecretViaYamlQueryParams,
-    SecretRequestWrapperRequestBody,
+    SecretRequestWrapper2RequestBody,
     PutSecretViaYamlPathParams
   >
     verb="PUT"
@@ -36074,7 +36150,7 @@ export type UsePutSecretViaYamlProps = Omit<
     ResponseSecretResponseWrapper,
     Failure | Error,
     PutSecretViaYamlQueryParams,
-    SecretRequestWrapperRequestBody,
+    SecretRequestWrapper2RequestBody,
     PutSecretViaYamlPathParams
   >,
   'path' | 'verb'
@@ -36089,7 +36165,7 @@ export const usePutSecretViaYaml = ({ identifier, ...props }: UsePutSecretViaYam
     ResponseSecretResponseWrapper,
     Failure | Error,
     PutSecretViaYamlQueryParams,
-    SecretRequestWrapperRequestBody,
+    SecretRequestWrapper2RequestBody,
     PutSecretViaYamlPathParams
   >('PUT', (paramsInPath: PutSecretViaYamlPathParams) => `/v2/secrets/${paramsInPath.identifier}/yaml`, {
     base: getConfig('ng/api'),
@@ -36108,7 +36184,7 @@ export const putSecretViaYamlPromise = (
     ResponseSecretResponseWrapper,
     Failure | Error,
     PutSecretViaYamlQueryParams,
-    SecretRequestWrapperRequestBody,
+    SecretRequestWrapper2RequestBody,
     PutSecretViaYamlPathParams
   > & { identifier: string },
   signal?: RequestInit['signal']
@@ -36117,7 +36193,7 @@ export const putSecretViaYamlPromise = (
     ResponseSecretResponseWrapper,
     Failure | Error,
     PutSecretViaYamlQueryParams,
-    SecretRequestWrapperRequestBody,
+    SecretRequestWrapper2RequestBody,
     PutSecretViaYamlPathParams
   >('PUT', getConfig('ng/api'), `/v2/secrets/${identifier}/yaml`, props, signal)
 
@@ -36272,7 +36348,7 @@ export interface CreateVariableQueryParams {
 }
 
 export type CreateVariableProps = Omit<
-  MutateProps<ResponseVariableResponseDTO, unknown, CreateVariableQueryParams, VariableRequestDTO, void>,
+  MutateProps<ResponseVariableResponseDTO, unknown, CreateVariableQueryParams, VariableRequestDTORequestBody, void>,
   'path' | 'verb'
 >
 
@@ -36280,7 +36356,7 @@ export type CreateVariableProps = Omit<
  * Create a Variable
  */
 export const CreateVariable = (props: CreateVariableProps) => (
-  <Mutate<ResponseVariableResponseDTO, unknown, CreateVariableQueryParams, VariableRequestDTO, void>
+  <Mutate<ResponseVariableResponseDTO, unknown, CreateVariableQueryParams, VariableRequestDTORequestBody, void>
     verb="POST"
     path={`/variables`}
     base={getConfig('ng/api')}
@@ -36289,7 +36365,7 @@ export const CreateVariable = (props: CreateVariableProps) => (
 )
 
 export type UseCreateVariableProps = Omit<
-  UseMutateProps<ResponseVariableResponseDTO, unknown, CreateVariableQueryParams, VariableRequestDTO, void>,
+  UseMutateProps<ResponseVariableResponseDTO, unknown, CreateVariableQueryParams, VariableRequestDTORequestBody, void>,
   'path' | 'verb'
 >
 
@@ -36297,7 +36373,7 @@ export type UseCreateVariableProps = Omit<
  * Create a Variable
  */
 export const useCreateVariable = (props: UseCreateVariableProps) =>
-  useMutate<ResponseVariableResponseDTO, unknown, CreateVariableQueryParams, VariableRequestDTO, void>(
+  useMutate<ResponseVariableResponseDTO, unknown, CreateVariableQueryParams, VariableRequestDTORequestBody, void>(
     'POST',
     `/variables`,
     { base: getConfig('ng/api'), ...props }
@@ -36311,15 +36387,185 @@ export const createVariablePromise = (
     ResponseVariableResponseDTO,
     unknown,
     CreateVariableQueryParams,
-    VariableRequestDTO,
+    VariableRequestDTORequestBody,
     void
   >,
   signal?: RequestInit['signal']
 ) =>
-  mutateUsingFetch<ResponseVariableResponseDTO, unknown, CreateVariableQueryParams, VariableRequestDTO, void>(
-    'POST',
+  mutateUsingFetch<
+    ResponseVariableResponseDTO,
+    unknown,
+    CreateVariableQueryParams,
+    VariableRequestDTORequestBody,
+    void
+  >('POST', getConfig('ng/api'), `/variables`, props, signal)
+
+export interface UpdateVariableQueryParams {
+  accountIdentifier: string
+}
+
+export type UpdateVariableProps = Omit<
+  MutateProps<ResponseVariableResponseDTO, unknown, UpdateVariableQueryParams, VariableRequestDTORequestBody, void>,
+  'path' | 'verb'
+>
+
+/**
+ * Update a Variable
+ */
+export const UpdateVariable = (props: UpdateVariableProps) => (
+  <Mutate<ResponseVariableResponseDTO, unknown, UpdateVariableQueryParams, VariableRequestDTORequestBody, void>
+    verb="PUT"
+    path={`/variables`}
+    base={getConfig('ng/api')}
+    {...props}
+  />
+)
+
+export type UseUpdateVariableProps = Omit<
+  UseMutateProps<ResponseVariableResponseDTO, unknown, UpdateVariableQueryParams, VariableRequestDTORequestBody, void>,
+  'path' | 'verb'
+>
+
+/**
+ * Update a Variable
+ */
+export const useUpdateVariable = (props: UseUpdateVariableProps) =>
+  useMutate<ResponseVariableResponseDTO, unknown, UpdateVariableQueryParams, VariableRequestDTORequestBody, void>(
+    'PUT',
+    `/variables`,
+    { base: getConfig('ng/api'), ...props }
+  )
+
+/**
+ * Update a Variable
+ */
+export const updateVariablePromise = (
+  props: MutateUsingFetchProps<
+    ResponseVariableResponseDTO,
+    unknown,
+    UpdateVariableQueryParams,
+    VariableRequestDTORequestBody,
+    void
+  >,
+  signal?: RequestInit['signal']
+) =>
+  mutateUsingFetch<
+    ResponseVariableResponseDTO,
+    unknown,
+    UpdateVariableQueryParams,
+    VariableRequestDTORequestBody,
+    void
+  >('PUT', getConfig('ng/api'), `/variables`, props, signal)
+
+export interface DeleteVariableQueryParams {
+  accountIdentifier: string
+  orgIdentifier?: string
+  projectIdentifier?: string
+}
+
+export type DeleteVariableProps = Omit<
+  MutateProps<ResponseBoolean, unknown, DeleteVariableQueryParams, string, void>,
+  'path' | 'verb'
+>
+
+/**
+ * Delete a Variable
+ */
+export const DeleteVariable = (props: DeleteVariableProps) => (
+  <Mutate<ResponseBoolean, unknown, DeleteVariableQueryParams, string, void>
+    verb="DELETE"
+    path={`/variables`}
+    base={getConfig('ng/api')}
+    {...props}
+  />
+)
+
+export type UseDeleteVariableProps = Omit<
+  UseMutateProps<ResponseBoolean, unknown, DeleteVariableQueryParams, string, void>,
+  'path' | 'verb'
+>
+
+/**
+ * Delete a Variable
+ */
+export const useDeleteVariable = (props: UseDeleteVariableProps) =>
+  useMutate<ResponseBoolean, unknown, DeleteVariableQueryParams, string, void>('DELETE', `/variables`, {
+    base: getConfig('ng/api'),
+    ...props
+  })
+
+/**
+ * Delete a Variable
+ */
+export const deleteVariablePromise = (
+  props: MutateUsingFetchProps<ResponseBoolean, unknown, DeleteVariableQueryParams, string, void>,
+  signal?: RequestInit['signal']
+) =>
+  mutateUsingFetch<ResponseBoolean, unknown, DeleteVariableQueryParams, string, void>(
+    'DELETE',
     getConfig('ng/api'),
     `/variables`,
+    props,
+    signal
+  )
+
+export interface GetVariableQueryParams {
+  accountIdentifier: string
+  orgIdentifier?: string
+  projectIdentifier?: string
+}
+
+export interface GetVariablePathParams {
+  identifier: string
+}
+
+export type GetVariableProps = Omit<
+  GetProps<ResponseVariableResponseDTO, unknown, GetVariableQueryParams, GetVariablePathParams>,
+  'path'
+> &
+  GetVariablePathParams
+
+/**
+ * Get a Variable
+ */
+export const GetVariable = ({ identifier, ...props }: GetVariableProps) => (
+  <Get<ResponseVariableResponseDTO, unknown, GetVariableQueryParams, GetVariablePathParams>
+    path={`/variables/${identifier}`}
+    base={getConfig('ng/api')}
+    {...props}
+  />
+)
+
+export type UseGetVariableProps = Omit<
+  UseGetProps<ResponseVariableResponseDTO, unknown, GetVariableQueryParams, GetVariablePathParams>,
+  'path'
+> &
+  GetVariablePathParams
+
+/**
+ * Get a Variable
+ */
+export const useGetVariable = ({ identifier, ...props }: UseGetVariableProps) =>
+  useGet<ResponseVariableResponseDTO, unknown, GetVariableQueryParams, GetVariablePathParams>(
+    (paramsInPath: GetVariablePathParams) => `/variables/${paramsInPath.identifier}`,
+    { base: getConfig('ng/api'), pathParams: { identifier }, ...props }
+  )
+
+/**
+ * Get a Variable
+ */
+export const getVariablePromise = (
+  {
+    identifier,
+    ...props
+  }: GetUsingFetchProps<ResponseVariableResponseDTO, unknown, GetVariableQueryParams, GetVariablePathParams> & {
+    identifier: string
+  },
+  signal?: RequestInit['signal']
+) =>
+  getUsingFetch<ResponseVariableResponseDTO, unknown, GetVariableQueryParams, GetVariablePathParams>(
+    getConfig('ng/api'),
+    `/variables/${identifier}`,
     props,
     signal
   )

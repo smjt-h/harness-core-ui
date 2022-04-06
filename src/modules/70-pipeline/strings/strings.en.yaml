@@ -230,9 +230,11 @@ serviceNowUpdateStep:
     applyFromTemplate: Apply standard change from template
     updateFields: Update Fields
 manifestType:
+  attachPath: + Attach {{manifestPath}}
   manifestTyperequired: Manifest Type is required
   gitConnectorLabel: 'Git'
   bitBucketLabel: 'Bitbucket'
+  InheritFromManifest: 'Inherit From Manifest'
   httpHelmRepoConnectorLabel: 'HTTP Helm'
   manifestIdentifier: Manifest Identifier
   manifestPlaceholder: Enter Manifest Identifier
@@ -279,6 +281,9 @@ manifestType:
   repoNamePlaceholder: Enter Repository Name
   serverlessConfigFilePath: Serverless Config File Path
   serverlessConfigFilePathPlaceholder: Enter Serverless Config File Path
+  valuesYamlPath: Values.yaml path
+  paramsYamlPath: Params.yaml path
+  patchesYamlPath: Patches.yaml path
   http:
     chartName: 'Chart Name'
     chartVersion: 'Chart Version'

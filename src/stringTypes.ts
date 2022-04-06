@@ -2844,6 +2844,8 @@ export interface StringsMap {
   'pipeline.logs.retry': string
   'pipeline.logs.sectionName': string
   'pipeline.manifestToConnectorLabelMap.AWSLabel': string
+  'pipeline.manifestType.InheritFromManifest': string
+  'pipeline.manifestType.attachPath': string
   'pipeline.manifestType.bitBucketLabel': string
   'pipeline.manifestType.branchPlaceholder': string
   'pipeline.manifestType.bucketName': string
@@ -2889,6 +2891,8 @@ export interface StringsMap {
   'pipeline.manifestType.osTemplatePath': string
   'pipeline.manifestType.osTemplatePathPlaceHolder': string
   'pipeline.manifestType.osTemplatePathRequired': string
+  'pipeline.manifestType.paramsYamlPath': string
+  'pipeline.manifestType.patchesYamlPath': string
   'pipeline.manifestType.path': string
   'pipeline.manifestType.pathPlaceholder': string
   'pipeline.manifestType.pathRequired': string
@@ -2899,6 +2903,7 @@ export interface StringsMap {
   'pipeline.manifestType.serverlessConfigFilePathPlaceholder': string
   'pipeline.manifestType.specifyManifestRepoType': string
   'pipeline.manifestType.specifyManifestStore': string
+  'pipeline.manifestType.valuesYamlPath': string
   'pipeline.manifestTypeLabels.AwsSAM': string
   'pipeline.manifestTypeLabels.AzureFunctions': string
   'pipeline.manifestTypeLabels.HelmChartLabel': string

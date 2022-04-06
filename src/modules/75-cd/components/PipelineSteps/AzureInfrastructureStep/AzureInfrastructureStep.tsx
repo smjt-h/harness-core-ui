@@ -77,8 +77,8 @@ const yamlErrorMessage = 'cd.parsingYamlError'
 
 const errorMessage = 'data.message'
 
-interface AzureInfrastructureUI extends Omit<K8sAzureInfrastructure, 'subscription' | 'cluster' | 'resourceGroup'> {
-  subscription?: any
+interface AzureInfrastructureUI extends Omit<K8sAzureInfrastructure, 'subscriptionId' | 'cluster' | 'resourceGroup'> {
+  subscriptionId?: any
   cluster?: any
   resourceGroup?: any
 }
@@ -104,8 +104,8 @@ const AzureInfrastructureSpecInputForm: React.FC<AzureInfrastructureSpecEditable
   const [connector, setConnector] = useState<string | undefined>(
     defaultTo(initialValues.connectorRef, allValues?.connectorRef)
   )
-  const [subscription, setSubscription] = useState<string | undefined>(
-    defaultTo(initialValues.subscription, allValues?.subscription)
+  const [subscriptionId, setSubscriptionId] = useState<string | undefined>(
+    defaultTo(initialValues.subscriptionId, allValues?.subscriptionId)
   )
   const { expressions } = useVariablesExpression()
 
@@ -168,7 +168,7 @@ const AzureInfrastructureSpecInputForm: React.FC<AzureInfrastructureSpecEditable
       orgIdentifier,
       projectIdentifier
     },
-    subscriptionId: subscription as string,
+    subscriptionId: subscriptionId as string,
     lazy: true,
     debounce: 300
   })
@@ -184,8 +184,8 @@ const AzureInfrastructureSpecInputForm: React.FC<AzureInfrastructureSpecEditable
     if (
       connector &&
       getMultiTypeFromValue(connector) === MultiTypeInputType.FIXED &&
-      subscription &&
-      getMultiTypeFromValue(subscription) === MultiTypeInputType.FIXED
+      subscriptionId &&
+      getMultiTypeFromValue(subscriptionId) === MultiTypeInputType.FIXED
     ) {
       refetchResourceGroups({
         queryParams: {
@@ -195,7 +195,7 @@ const AzureInfrastructureSpecInputForm: React.FC<AzureInfrastructureSpecEditable
           projectIdentifier
         },
         pathParams: {
-          subscriptionId: subscription
+          subscriptionId: subscriptionId
         }
       })
       /* istanbul ignore else */
@@ -208,7 +208,7 @@ const AzureInfrastructureSpecInputForm: React.FC<AzureInfrastructureSpecEditable
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [initialValues.connectorRef, initialValues.subscription, allValues?.connectorRef, allValues?.subscription])
+  }, [initialValues.connectorRef, initialValues.subscriptionId, allValues?.connectorRef, allValues?.subscriptionId])
 
   const {
     data: clustersData,
@@ -222,7 +222,7 @@ const AzureInfrastructureSpecInputForm: React.FC<AzureInfrastructureSpecEditable
       orgIdentifier,
       projectIdentifier
     },
-    subscriptionId: subscription as string,
+    subscriptionId: subscriptionId as string,
     resourceGroup: defaultTo(initialValues.resourceGroup, allValues?.resourceGroup) as string,
     lazy: true,
     debounce: 300
@@ -242,8 +242,8 @@ const AzureInfrastructureSpecInputForm: React.FC<AzureInfrastructureSpecEditable
     if (
       connector &&
       getMultiTypeFromValue(connector) === MultiTypeInputType.FIXED &&
-      subscription &&
-      getMultiTypeFromValue(subscription) === MultiTypeInputType.FIXED &&
+      subscriptionId &&
+      getMultiTypeFromValue(subscriptionId) === MultiTypeInputType.FIXED &&
       resourceGroup &&
       getMultiTypeFromValue(resourceGroup) === MultiTypeInputType.FIXED
     ) {
@@ -255,7 +255,7 @@ const AzureInfrastructureSpecInputForm: React.FC<AzureInfrastructureSpecEditable
           connectorRef: connector
         },
         pathParams: {
-          subscription,
+          subscriptionId,
           resourceGroup
         }
       })
@@ -272,9 +272,9 @@ const AzureInfrastructureSpecInputForm: React.FC<AzureInfrastructureSpecEditable
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     initialValues.connectorRef,
-    initialValues.subscription,
+    initialValues.subscriptionId,
     allValues?.connectorRef,
-    allValues?.subscription,
+    allValues?.subscriptionId,
     initialValues.resourceGroup,
     allValues?.resourceGroup
   ])
@@ -322,10 +322,10 @@ const AzureInfrastructureSpecInputForm: React.FC<AzureInfrastructureSpecEditable
           />
         </div>
       )}
-      {getMultiTypeFromValue(template?.subscription) === MultiTypeInputType.RUNTIME && (
+      {getMultiTypeFromValue(template?.subscriptionId) === MultiTypeInputType.RUNTIME && (
         <div className={cx(stepCss.formGroup, stepCss.md, css.inputWrapper)}>
           <FormInput.MultiTypeInput
-            name={`${path}.subscription`}
+            name={`${path}.subscriptionId`}
             tooltipProps={{
               dataTooltipId: 'azureInfraSubscription'
             }}
@@ -341,7 +341,7 @@ const AzureInfrastructureSpecInputForm: React.FC<AzureInfrastructureSpecEditable
             multiTypeInputProps={{
               onChange: /* istanbul ignore next */ (value, _typeValue, type) => {
                 if (value && type === MultiTypeInputType.FIXED) {
-                  setSubscription(getValue(value))
+                  setSubscriptionId(getValue(value))
                   refetchResourceGroups({
                     queryParams: {
                       accountIdentifier: accountId,
@@ -350,7 +350,7 @@ const AzureInfrastructureSpecInputForm: React.FC<AzureInfrastructureSpecEditable
                       connectorRef: connector as string
                     },
                     pathParams: {
-                      subscription: getValue(value)
+                      subscriptionId: getValue(value)
                     }
                   })
                 } else {
@@ -404,7 +404,7 @@ const AzureInfrastructureSpecInputForm: React.FC<AzureInfrastructureSpecEditable
                       connectorRef: connector as string
                     },
                     pathParams: {
-                      subscription: subscription,
+                      subscriptionId,
                       resourceGroup: getValue(value)
                     }
                   })
@@ -552,7 +552,7 @@ const AzureInfrastructureSpecEditable: React.FC<AzureInfrastructureSpecEditableP
       )
 
       setSubscriptions(subscriptionValues as SelectOption[])
-      formikRef?.current?.setFieldValue('subscription', getSubscription(initialValues))
+      formikRef?.current?.setFieldValue('subscriptionId', getSubscription(initialValues))
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [subscriptionsData, loadingSubscriptions])
@@ -583,7 +583,7 @@ const AzureInfrastructureSpecEditable: React.FC<AzureInfrastructureSpecEditableP
       orgIdentifier,
       projectIdentifier
     },
-    subscriptionId: initialValues?.subscription,
+    subscriptionId: initialValues?.subscriptionId,
     lazy: true,
     debounce: 300
   })
@@ -599,8 +599,8 @@ const AzureInfrastructureSpecEditable: React.FC<AzureInfrastructureSpecEditableP
     if (
       initialValues.connectorRef &&
       getMultiTypeFromValue(initialValues.connectorRef) === MultiTypeInputType.FIXED &&
-      initialValues.subscription &&
-      getMultiTypeFromValue(initialValues.subscription) === MultiTypeInputType.FIXED
+      initialValues.subscriptionId &&
+      getMultiTypeFromValue(initialValues.subscriptionId) === MultiTypeInputType.FIXED
     ) {
       refetchResourceGroups({
         queryParams: {
@@ -610,12 +610,12 @@ const AzureInfrastructureSpecEditable: React.FC<AzureInfrastructureSpecEditableP
           connectorRef: initialValues.connectorRef
         },
         pathParams: {
-          subscriptionId: initialValues.subscription
+          subscriptionId: initialValues.subscriptionId
         }
       })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [initialValues.connectorRef, initialValues.subscription])
+  }, [initialValues.connectorRef, initialValues.subscriptionId])
 
   const {
     data: clustersData,
@@ -629,7 +629,7 @@ const AzureInfrastructureSpecEditable: React.FC<AzureInfrastructureSpecEditableP
       orgIdentifier,
       projectIdentifier
     },
-    subscriptionId: initialValues?.subscription,
+    subscriptionId: initialValues?.subscriptionId,
     resourceGroup: initialValues?.resourceGroup,
     lazy: true,
     debounce: 300
@@ -646,8 +646,8 @@ const AzureInfrastructureSpecEditable: React.FC<AzureInfrastructureSpecEditableP
     if (
       initialValues.connectorRef &&
       getMultiTypeFromValue(initialValues.connectorRef) === MultiTypeInputType.FIXED &&
-      initialValues.subscription &&
-      getMultiTypeFromValue(initialValues.subscription) === MultiTypeInputType.FIXED &&
+      initialValues.subscriptionId &&
+      getMultiTypeFromValue(initialValues.subscriptionId) === MultiTypeInputType.FIXED &&
       initialValues.resourceGroup &&
       getMultiTypeFromValue(initialValues.resourceGroup) === MultiTypeInputType.FIXED
     ) {
@@ -659,16 +659,16 @@ const AzureInfrastructureSpecEditable: React.FC<AzureInfrastructureSpecEditableP
           projectIdentifier
         },
         pathParams: {
-          subscriptionId: initialValues?.subscription,
+          subscriptionId: initialValues?.subscriptionId,
           resourceGroup: initialValues?.resourceGroup
         }
       })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [initialValues.connectorRef, initialValues.subscription, initialValues.resourceGroup])
+  }, [initialValues.connectorRef, initialValues.subscriptionId, initialValues.resourceGroup])
 
   const getSubscription = (values: AzureInfrastructureUI): SelectOption | undefined => {
-    const value = values.subscription ? values.subscription : formikRef?.current?.values?.subscription?.value
+    const value = values.subscriptionId ? values.subscriptionId : formikRef?.current?.values?.subscriptionId?.value
 
     if (getMultiTypeFromValue(value) === MultiTypeInputType.FIXED) {
       return (
@@ -679,7 +679,7 @@ const AzureInfrastructureSpecEditable: React.FC<AzureInfrastructureSpecEditableP
       )
     }
 
-    return values?.subscription
+    return values?.subscriptionId
   }
 
   const getInitialValues = (): AzureInfrastructureUI => {
@@ -689,7 +689,7 @@ const AzureInfrastructureSpecEditable: React.FC<AzureInfrastructureSpecEditableP
 
     /* istanbul ignore else */
     if (initialValues) {
-      currentValues.subscription = getSubscription(initialValues)
+      currentValues.subscriptionId = getSubscription(initialValues)
 
       if (getMultiTypeFromValue(initialValues?.cluster) === MultiTypeInputType.FIXED) {
         currentValues.cluster = { label: initialValues.cluster, value: initialValues.cluster }
@@ -721,8 +721,10 @@ const AzureInfrastructureSpecEditable: React.FC<AzureInfrastructureSpecEditableP
             namespace: value.namespace === '' ? /* istanbul ignore next */ undefined : value.namespace,
             releaseName: value.releaseName === '' ? /* istanbul ignore next */ undefined : value.releaseName,
             connectorRef: undefined,
-            subscription:
-              getValue(value.subscription) === '' ? /* istanbul ignore next */ undefined : getValue(value.subscription),
+            subscriptionId:
+              getValue(value.subscriptionId) === ''
+                ? /* istanbul ignore next */ undefined
+                : getValue(value.subscriptionId),
             resourceGroup:
               getValue(value.resourceGroup) === ''
                 ? /* istanbul ignore next */ undefined
@@ -773,8 +775,8 @@ const AzureInfrastructureSpecEditable: React.FC<AzureInfrastructureSpecEditableP
                           }
                         })
 
-                        getMultiTypeFromValue(getValue(formik?.values?.subscription)) === MultiTypeInputType.FIXED &&
-                          formik.setFieldValue('subscription', '')
+                        getMultiTypeFromValue(getValue(formik?.values?.subscriptionId)) === MultiTypeInputType.FIXED &&
+                          formik.setFieldValue('subscriptionId', '')
                         getMultiTypeFromValue(getValue(formik?.values?.resourceGroup)) === MultiTypeInputType.FIXED &&
                           formik.setFieldValue('resourceGroup', '')
                         getMultiTypeFromValue(getValue(formik?.values?.cluster)) === MultiTypeInputType.FIXED &&
@@ -813,7 +815,7 @@ const AzureInfrastructureSpecEditable: React.FC<AzureInfrastructureSpecEditableP
               </Layout.Horizontal>
               <Layout.Horizontal className={css.formRow} spacing="medium">
                 <FormInput.MultiTypeInput
-                  name="subscription"
+                  name="subscriptionId"
                   className={css.inputWidth}
                   selectItems={subscriptions}
                   disabled={loadingSubscriptions || readonly}
@@ -862,18 +864,18 @@ const AzureInfrastructureSpecEditable: React.FC<AzureInfrastructureSpecEditableP
                   }}
                   label={getString(subscriptionLabel)}
                 />
-                {getMultiTypeFromValue(getValue(formik.values.subscription)) === MultiTypeInputType.RUNTIME &&
+                {getMultiTypeFromValue(getValue(formik.values.subscriptionId)) === MultiTypeInputType.RUNTIME &&
                   !readonly && (
                     <ConfigureOptions
-                      value={!loadingSubscriptions && formik.values.subscription}
+                      value={!loadingSubscriptions && formik.values.subscriptionId}
                       type="String"
-                      variableName="subscription"
+                      variableName="subscriptionId"
                       showRequiredField={false}
                       showDefaultField={false}
                       showAdvanced={true}
                       onChange={
                         /* istanbul ignore next */ value => {
-                          formik.setFieldValue('subscription', value)
+                          formik.setFieldValue('subscriptionId', value)
                         }
                       }
                       isReadonly={readonly}
@@ -903,7 +905,7 @@ const AzureInfrastructureSpecEditable: React.FC<AzureInfrastructureSpecEditableP
                             connectorRef: getValue(formik.values?.connectorRef)
                           },
                           pathParams: {
-                            subscriptionId: getValue(formik.values?.subscription),
+                            subscriptionId: getValue(formik.values?.subscriptionId),
                             resourceGroup: getValue(value)
                           }
                         })
@@ -1105,7 +1107,7 @@ interface AzureInfrastructureSpecStep extends K8sAzureInfrastructure {
 }
 
 const AzureConnectorRegex = /^.+infrastructure\.infrastructureDefinition\.spec\.connectorRef$/
-const AzureSubscriptionRegex = /^.+infrastructure\.infrastructureDefinition\.spec\.subscription$/
+const AzureSubscriptionRegex = /^.+infrastructure\.infrastructureDefinition\.spec\.subscriptionId$/
 const AzureResourceGroupRegex = /^.+infrastructure\.infrastructureDefinition\.spec\.resourceGroup$/
 const AzureClusterRegex = /^.+infrastructure\.infrastructureDefinition\.spec\.cluster$/
 const AzureType = 'KubernetesAzure'
@@ -1115,7 +1117,7 @@ export class AzureInfrastructureSpec extends PipelineStep<AzureInfrastructureSpe
   protected type = StepType.KubernetesAzure
   protected defaultValues: K8sAzureInfrastructure = {
     connectorRef: '',
-    subscription: '',
+    subscriptionId: '',
     cluster: '',
     resourceGroup: '',
     namespace: '',
@@ -1201,7 +1203,7 @@ export class AzureInfrastructureSpec extends PipelineStep<AzureInfrastructureSpe
     }
     /* istanbul ignore else */
     if (pipelineObj) {
-      const obj = get(pipelineObj, path.replace('.spec.subscription', ''))
+      const obj = get(pipelineObj, path.replace('.spec.subscriptionId', ''))
       if (
         obj?.type === AzureType &&
         obj?.spec?.connectorRef &&
@@ -1250,8 +1252,8 @@ export class AzureInfrastructureSpec extends PipelineStep<AzureInfrastructureSpe
         obj?.type === AzureType &&
         obj?.spec?.connectorRef &&
         getMultiTypeFromValue(obj.spec?.connectorRef) === MultiTypeInputType.FIXED &&
-        obj?.spec?.subscription &&
-        getMultiTypeFromValue(obj.spec?.subscription) === MultiTypeInputType.FIXED
+        obj?.spec?.subscriptionId &&
+        getMultiTypeFromValue(obj.spec?.subscriptionId) === MultiTypeInputType.FIXED
       ) {
         return getAzureResourceGroupsBySubscriptionPromise({
           queryParams: {
@@ -1260,7 +1262,7 @@ export class AzureInfrastructureSpec extends PipelineStep<AzureInfrastructureSpe
             projectIdentifier,
             connectorRef: obj.spec?.connectorRef
           },
-          subscriptionId: obj.spec?.subscription
+          subscriptionId: obj.spec?.subscriptionId
         }).then(
           response =>
             response?.data?.resourceGroups?.map(rg => ({
@@ -1298,8 +1300,8 @@ export class AzureInfrastructureSpec extends PipelineStep<AzureInfrastructureSpe
         obj?.type === AzureType &&
         obj?.spec?.connectorRef &&
         getMultiTypeFromValue(obj.spec?.connectorRef) === MultiTypeInputType.FIXED &&
-        obj?.spec?.subscription &&
-        getMultiTypeFromValue(obj.spec?.subscription) === MultiTypeInputType.FIXED &&
+        obj?.spec?.subscriptionId &&
+        getMultiTypeFromValue(obj.spec?.subscriptionId) === MultiTypeInputType.FIXED &&
         obj?.spec?.resourceGroup &&
         getMultiTypeFromValue(obj.spec?.resourceGroup) === MultiTypeInputType.FIXED
       ) {
@@ -1310,7 +1312,7 @@ export class AzureInfrastructureSpec extends PipelineStep<AzureInfrastructureSpe
             projectIdentifier,
             connectorRef: obj.spec?.connectorRef
           },
-          subscriptionId: obj.spec?.subscription,
+          subscriptionId: obj.spec?.subscriptionId,
           resourceGroup: obj.spec?.resourceGroup
         }).then(
           response =>
@@ -1342,11 +1344,11 @@ export class AzureInfrastructureSpec extends PipelineStep<AzureInfrastructureSpe
       errors.connectorRef = getString?.('common.validation.fieldIsRequired', { name: getString('connector') })
     }
     if (
-      isEmpty(data.subscription) &&
+      isEmpty(data.subscriptionId) &&
       isRequired &&
-      getMultiTypeFromValue(template?.subscription) === MultiTypeInputType.RUNTIME
+      getMultiTypeFromValue(template?.subscriptionId) === MultiTypeInputType.RUNTIME
     ) {
-      errors.subscription = getString?.('common.validation.fieldIsRequired', { name: getString(subscriptionLabel) })
+      errors.subscriptionId = getString?.('common.validation.fieldIsRequired', { name: getString(subscriptionLabel) })
     }
     if (
       isEmpty(data.resourceGroup) &&
