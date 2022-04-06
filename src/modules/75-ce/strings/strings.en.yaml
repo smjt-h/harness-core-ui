@@ -922,17 +922,18 @@ anomalyDetection:
   alertType: Alert Type
   alertReciepients: Reciepients
 businessMapping:
-  newButton: New Business Mapping
-  sideNavText: 'Business Mapping'
+  newButton: New Cost Category
+  sideNavText: 'Cost Categories'
   stepText: 'Step {{ current }} of {{ total }}'
-  deleted: 'Business Mapping {{ name }} deleted'
-  created: 'Business Mapping {{ name }} created'
-  emptySubtitles: You have not created any Business Mappings yet.
-  confirmDialogHeading: 'Delete Business Mapping'
-  confirmDialogBody: 'Are you sure you want to delete the Business Mapping {{ name }}?'
+  deleted: 'Cost Category {{ name }} deleted'
+  created: 'Cost Category {{ name }} created'
+  emptySubtitles: You have not created any Cost Categories yet.
+  confirmDialogHeading: 'Delete Cost Category'
+  confirmDialogBody: 'Are you sure you want to delete the Cost Category {{ name }}?'
+  shownAs: 'Shown as {{ value }}'
   form:
-    businessMappingPlaceholder: Enter Business Mapping Name
-    saveText: Save Business Mapping
+    businessMappingPlaceholder: Enter Cost Category Name
+    saveText: Save Cost Category
   errorMessages:
     viewConditions: Need at least one element
   manageUnallocatedCost:
@@ -959,3 +960,4 @@ businessMapping:
     sharedCosts: Shared Buckets
     createdBy: Created By
     lastEdit: Last Edit
+    unallocated: Unallocated

@@ -74,8 +74,7 @@ export const initialState: TemplateReducerState = {
   isInitialized: false,
   gitDetails: {},
   entityValidityDetails: {},
-  templateYaml: '',
-  templateError: null
+  templateYaml: ''
 }
 
 export const TemplateReducer = (state: TemplateReducerState, data: ActionReturnType): TemplateReducerState => {

@@ -6,12 +6,13 @@
  */
 
 import React, { useMemo } from 'react'
-import { Container, FontVariation, TableV2, Text, Color } from '@harness/uicore'
+import { Container, FontVariation, TableV2, Text, Layout } from '@harness/uicore'
 import type { CellProps, Column, Renderer } from 'react-table'
 import moment from 'moment'
 import type { BusinessMapping } from 'services/ce'
 import { useStrings } from 'framework/strings'
 import MenuCell from './MenuCell'
+import css from './BusinessMappingList.module.scss'
 
 interface BusinessMappingListProps {
   data: BusinessMapping[]
@@ -27,23 +28,34 @@ const BusinessMappingList: (props: BusinessMappingListProps) => React.ReactEleme
   const { getString } = useStrings()
 
   const CostBucketCell: Renderer<CellProps<BusinessMapping>> = cell => {
-    return <Text>{cell.value?.length || 0}</Text>
+    return <Text font={{ variation: FontVariation.BODY2 }}>{cell.value?.length || 0}</Text>
   }
 
   const NameCell: Renderer<CellProps<BusinessMapping>> = cell => {
     return (
-      <Text color={Color.BLACK} font={{ variation: FontVariation.BODY2 }}>
-        {cell.value}
-      </Text>
+      <Layout.Horizontal spacing="small" className={css.nameContainer}>
+        <Container className={css.iconBox} />
+        <Text font={{ variation: FontVariation.BODY2 }}>{cell.value}</Text>
+      </Layout.Horizontal>
     )
   }
 
-  const UserCell: Renderer<CellProps<BusinessMapping>> = cell => {
-    return <Text>{cell.value?.name || ''}</Text>
+  // const UserCell: Renderer<CellProps<BusinessMapping>> = cell => {
+  //   return <Text>{cell.value?.name || ''}</Text>
+  // }
+
+  const UnallocatedCost: Renderer<CellProps<BusinessMapping>> = cell => {
+    const label = cell.value?.label
+    if (!label) {
+      return null
+    }
+    return (
+      <Text font={{ variation: FontVariation.BODY }}>{getString('ce.businessMapping.shownAs', { value: label })}</Text>
+    )
   }
 
   const LastEditCell: Renderer<CellProps<BusinessMapping>> = cell => {
-    return <Text>{moment.utc(cell.value).format('D MMM, HH:mm')}</Text>
+    return <Text font={{ variation: FontVariation.BODY }}>{moment.utc(cell.value).format('D MMM, HH:mm')}</Text>
   }
 
   const MenuOptionsCell: Renderer<CellProps<BusinessMapping>> = ({ row }) => {
@@ -67,8 +79,8 @@ const BusinessMappingList: (props: BusinessMappingListProps) => React.ReactEleme
       {
         accessor: 'name',
         Header: getString('name'),
-        width: '25%',
-        cell: NameCell
+        Cell: NameCell,
+        width: '25%'
       },
       {
         accessor: 'costTargets',
@@ -83,11 +95,17 @@ const BusinessMappingList: (props: BusinessMappingListProps) => React.ReactEleme
         width: '15%'
       },
       {
-        accessor: 'createdBy',
-        Header: getString('ce.businessMapping.tableHeadings.createdBy'),
-        width: '25%',
-        Cell: UserCell
+        accessor: 'unallocatedCost',
+        Header: getString('ce.businessMapping.tableHeadings.unallocated'),
+        Cell: UnallocatedCost,
+        width: '25%'
       },
+      // {
+      //   accessor: 'createdBy',
+      //   Header: getString('ce.businessMapping.tableHeadings.createdBy'),
+      //   width: '25%',
+      //   Cell: UserCell
+      // },
       {
         accessor: 'lastUpdatedAt',
         Header: getString('ce.businessMapping.tableHeadings.lastEdit'),

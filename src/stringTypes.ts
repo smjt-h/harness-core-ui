@@ -3558,12 +3558,14 @@ export interface StringsMap {
   'ce.businessMapping.sharedCostBucket.sharingStrategy.proportional': string
   'ce.businessMapping.sharedCostBucket.sharingStrategyLabel': string
   'ce.businessMapping.sharedCostBucket.title': string
+  'ce.businessMapping.shownAs': string
   'ce.businessMapping.sideNavText': string
   'ce.businessMapping.stepText': string
   'ce.businessMapping.tableHeadings.costBuckets': string
   'ce.businessMapping.tableHeadings.createdBy': string
   'ce.businessMapping.tableHeadings.lastEdit': string
   'ce.businessMapping.tableHeadings.sharedCosts': string
+  'ce.businessMapping.tableHeadings.unallocated': string
   'ce.ceTrialHomePage.modal.description': string
   'ce.ceTrialHomePage.modal.title': string
   'ce.ceTrialHomePage.modal.welcome': string

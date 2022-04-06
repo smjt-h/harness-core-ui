@@ -7,9 +7,7 @@
  **/
 // this is an auto-generated file, do not update this manually
 declare const styles: {
-  readonly comingSoon: string
-  readonly container: string
-  readonly headerContainer: string
-  readonly pillRadius: string
+  readonly iconBox: string
+  readonly nameContainer: string
 }
 export default styles

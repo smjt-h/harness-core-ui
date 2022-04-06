@@ -27,11 +27,13 @@ import {
   BusinessMapping,
   CostTarget,
   SharedCost,
+  UnallocatedCost,
   useCreateBusinessMapping,
   useUpdateBusinessMapping
 } from 'services/ce'
 import type { AccountPathProps } from '@common/interfaces/RouteInterfaces'
 import { useStrings } from 'framework/strings'
+import { NameSchema } from '@common/utils/Validation'
 import CostBucketStep from './CostBucketStep/CostBucketStep'
 import Step from './Step/Step'
 import ManageUnallocatedCost from './ManageUnallocatedCost/ManageUnallocatedCost'
@@ -43,6 +45,7 @@ interface BusinessMappingForm {
   costTargetsKey?: number
   sharedCostsKey?: number
   accountId?: string
+  unallocatedCost: UnallocatedCost
   name: string
   uuid?: string
 }
@@ -55,7 +58,7 @@ interface BusinessMappingBuilderProps {
 const BusinessMappingBuilder: (props: BusinessMappingBuilderProps) => React.ReactElement = ({ selectedBM, onSave }) => {
   const { accountId } = useParams<AccountPathProps>()
   const { showSuccess, showError } = useToaster()
-  const [{ data }] = useFetchViewFieldsQuery({
+  const [{ data, fetching }] = useFetchViewFieldsQuery({
     variables: {
       filters: []
     }
@@ -63,13 +66,13 @@ const BusinessMappingBuilder: (props: BusinessMappingBuilderProps) => React.Reac
 
   const { getString } = useStrings()
 
-  const { mutate } = useCreateBusinessMapping({
+  const { mutate, loading: createLoading } = useCreateBusinessMapping({
     queryParams: {
       accountIdentifier: accountId
     }
   })
 
-  const { mutate: update } = useUpdateBusinessMapping({
+  const { mutate: update, loading: updateLoading } = useUpdateBusinessMapping({
     queryParams: {
       accountIdentifier: accountId
     }
@@ -78,7 +81,7 @@ const BusinessMappingBuilder: (props: BusinessMappingBuilderProps) => React.Reac
   const fieldValuesList = get(data, 'perspectiveFields.fieldIdentifierData') as QlceViewFieldIdentifierData[]
 
   const validationSchema = Yup.object().shape({
-    name: Yup.string().trim().required(),
+    name: NameSchema(),
     costTargets: Yup.array().of(
       Yup.object().shape({
         name: Yup.string().trim().required(),
@@ -120,7 +123,8 @@ const BusinessMappingBuilder: (props: BusinessMappingBuilderProps) => React.Reac
       accountId,
       name: values.name,
       costTargets: costTargetObj,
-      sharedCosts: sharedCostObj
+      sharedCosts: sharedCostObj,
+      unallocatedCost: values.unallocatedCost
     }
 
     if (selectedBM.uuid) {
@@ -135,7 +139,7 @@ const BusinessMappingBuilder: (props: BusinessMappingBuilderProps) => React.Reac
         }
       })
 
-      showSuccess(getString('ce.businessMapping.created', { name: name }))
+      showSuccess(getString('ce.businessMapping.created', { name: formValues.name }))
       onSave()
     } catch (e) {
       showError(getErrorInfoFromErrorObject(e))
@@ -151,8 +155,12 @@ const BusinessMappingBuilder: (props: BusinessMappingBuilderProps) => React.Reac
         sharedCosts: selectedBM.sharedCosts || [],
         name: selectedBM.name || '',
         costTargetsKey: 0,
-        sharedCostsKey: 0
+        sharedCostsKey: 0,
+        unallocatedCost: {
+          label: 'Others'
+        }
       }}
+      formLoading={fetching ? true : undefined}
       onSubmit={
         /* istanbul ignore next */ values => {
           handleSubmit(values)
@@ -170,10 +178,11 @@ const BusinessMappingBuilder: (props: BusinessMappingBuilderProps) => React.Reac
               <FormInput.Text
                 name="name"
                 placeholder={getString('ce.businessMapping.form.businessMappingPlaceholder')}
+                className={css.nameContainer}
               />
               <FlexExpander />
               <Button
-                loading={formikProps.isSubmitting}
+                loading={createLoading || updateLoading}
                 icon="upload-box"
                 intent="primary"
                 text={getString('ce.businessMapping.form.saveText')}
@@ -214,7 +223,8 @@ const BusinessMappingBuilder: (props: BusinessMappingBuilderProps) => React.Reac
                   background: Color.PURPLE_100,
                   total: 3,
                   current: 2,
-                  defaultOpen: false
+                  defaultOpen: false,
+                  isComingSoon: true
                 }}
               />
               <Step
@@ -227,7 +237,7 @@ const BusinessMappingBuilder: (props: BusinessMappingBuilderProps) => React.Reac
                 }}
                 title={getString('ce.businessMapping.manageUnallocatedCost.title')}
               >
-                <ManageUnallocatedCost />
+                <ManageUnallocatedCost data={formikProps.values.unallocatedCost} />
               </Step>
             </Container>
           </FormikForm>
