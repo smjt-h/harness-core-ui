@@ -19,6 +19,7 @@ import AuditTrailsFilters from '@audit-trail/components/AuditTrailsFilters'
 import ScopedTitle from '@common/components/Title/ScopedTitle'
 import { Scope } from '@common/interfaces/SecretsInterface'
 import { ShowEventFilterType, showEventTypeMap } from '@audit-trail/utils/RequestUtil'
+import { ContentRenderer, ContentRendererType } from 'framework/document-renderer/src'
 import AuditTrailsListView from './views/AuditTrailsListView'
 import AuditTrailsEmptyState from './audit_trails_empty_state.png'
 import css from './AuditTrailsPage.module.scss'
@@ -79,6 +80,7 @@ const AuditTrailsPage: React.FC = () => {
   const auditTrailTitle = getString('common.auditTrail')
   return (
     <>
+      <ContentRenderer contentId="avitestID" type={ContentRendererType.FIXED_CONTAINER} />
       <Page.Header
         title={
           <ScopedTitle

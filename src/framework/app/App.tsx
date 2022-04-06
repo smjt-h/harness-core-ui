@@ -35,6 +35,8 @@ import { returnUrlParams } from '@common/utils/routeUtils'
 import { PermissionsProvider } from 'framework/rbac/PermissionsContext'
 import { FeaturesProvider } from 'framework/featureStore/FeaturesContext'
 import { useGlobalEventListener } from '@common/hooks'
+import { ContentfulContextProvider } from 'framework/document-renderer/src/ContentfulContext'
+import { ContentRenderer, ContentRendererType } from 'framework/document-renderer/src'
 import { identifyFullStoryUser } from '../../3rd-party/FullStory'
 
 FocusStyleManager.onlyShowFocusOnTabs()
@@ -192,7 +194,10 @@ export function AppWithAuthentication(props: AppProps): React.ReactElement {
       queryParamStringifyOptions={{ skipNulls: true }}
       onResponse={globalResponseHandler}
     >
-      <StringsContextProvider initialStrings={props.strings}>
+      <ContentfulContextProvider space="ghsvvkpjf443" accessToken="R6XccOT3EI1ylS7epC1vzq6roBnt7yFYLChKuudUp3g">
+        <ContentRenderer contentId="avitestID" type={ContentRendererType.FIXED_CONTAINER} />
+      </ContentfulContextProvider>
+      {/* <StringsContextProvider initialStrings={props.strings}>
         <TooltipContextProvider initialTooltipDictionary={tooltipDictionaryContext}>
           <AppStoreProvider>
             <AppErrorBoundary>
@@ -211,7 +216,7 @@ export function AppWithAuthentication(props: AppProps): React.ReactElement {
             </AppErrorBoundary>
           </AppStoreProvider>
         </TooltipContextProvider>
-      </StringsContextProvider>
+      </StringsContextProvider> */}
     </RestfulProvider>
   )
 }
