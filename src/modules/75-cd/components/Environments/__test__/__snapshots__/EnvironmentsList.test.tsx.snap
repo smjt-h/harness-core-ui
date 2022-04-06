@@ -1165,8 +1165,7 @@ exports[`EnvironmentList Should open Add Environment Modal on click 1`] = `
       class="StyledProps--font StyledProps--main yamlToggleEnv"
     >
       <div
-        class="Layout--horizontal StyledProps--main StyledProps--flex StyledProps--flex-justifyContent-flex-start"
-        padding-top="8px"
+        class="Layout--horizontal StyledProps--main StyledProps--flex StyledProps--flex-justifyContent-flex-start StyledProps--padding-top-small"
       >
         <div
           class="PillToggle--optionBtns"

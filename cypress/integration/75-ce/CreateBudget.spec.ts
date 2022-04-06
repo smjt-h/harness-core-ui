@@ -59,6 +59,7 @@ describe('CCM Budget Creation flow', () => {
     cy.get(`[name="budgetAmount"]`).clear().type('10000')
     cy.clickSubmit()
 
+    cy.get(`.bp3-tag-input-values > input`).type('test@test.com').type('{enter}')
     cy.contains('span', 'Save').click()
     cy.contains('p', 'Configure Alerts').should('not.exist')
   })
@@ -132,6 +133,7 @@ describe('CCM Budget Creation flow', () => {
     cy.get(`[name="budgetAmount"]`).clear().type('10000')
     cy.clickSubmit()
 
+    cy.get(`.bp3-tag-input-values > input`).type('test@test.com').type('{enter}')
     cy.contains('span', 'Save').click()
     cy.wait('@budgetSave')
     cy.contains('p', 'Invalid request').should('exist')

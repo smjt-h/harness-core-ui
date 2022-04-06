@@ -29,22 +29,13 @@ export interface EnvironmentPageTemplateProps {
   retryOnError?: () => void
 }
 
-export const getErrorMessage = (error: any): string =>
-  get(error, 'data.error', get(error, 'data.message', error?.message))
+const getErrorMessage = (error: any): string => get(error, 'data.error', get(error, 'data.message', error?.message))
 
 const EnvironmentPageHeading: FC<EnvironmentPageHeadingProps> = ({ tooltipId, children }) => {
-  if (tooltipId) {
-    return (
-      <Heading level={3} font={{ variation: FontVariation.H4 }} data-tooltip-id={tooltipId}>
-        {children}
-        <HarnessDocTooltip tooltipId={tooltipId} useStandAlone />
-      </Heading>
-    )
-  }
-
   return (
-    <Heading level={3} font={{ variation: FontVariation.H4 }}>
+    <Heading level={3} font={{ variation: FontVariation.H4 }} data-tooltip-id={tooltipId}>
       {children}
+      <HarnessDocTooltip tooltipId={tooltipId} useStandAlone />
     </Heading>
   )
 }

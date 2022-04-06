@@ -249,8 +249,7 @@ exports[`ServiceMenu Should go to editModal by clicking edit 2`] = `
         class="StyledProps--font StyledProps--main yamlToggle"
       >
         <div
-          class="Layout--horizontal StyledProps--main StyledProps--flex StyledProps--flex-justifyContent-flex-start"
-          padding-top="8px"
+          class="Layout--horizontal StyledProps--main StyledProps--flex StyledProps--flex-justifyContent-flex-start StyledProps--padding-top-small"
         >
           <div
             class="PillToggle--optionBtns"

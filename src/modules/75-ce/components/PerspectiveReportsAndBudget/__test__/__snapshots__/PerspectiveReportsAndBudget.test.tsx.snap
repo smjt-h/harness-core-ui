@@ -598,17 +598,24 @@ exports[`test cases for Perspective Create Budgets should be able to open create
                             </div>
                           </div>
                           <div
-                            class="bp3-input bp3-tag-input tagInput"
+                            class="StyledProps--font StyledProps--main"
                           >
                             <div
-                              class="bp3-tag-input-values"
+                              class="bp3-input bp3-tag-input tagInput"
                             >
-                              <input
-                                class="bp3-input-ghost"
-                                placeholder="ce.perspectives.reports.emailPlaceholder"
-                                value=""
-                              />
+                              <div
+                                class="bp3-tag-input-values"
+                              >
+                                <input
+                                  class="bp3-input-ghost"
+                                  placeholder="ce.perspectives.reports.emailPlaceholder"
+                                  value=""
+                                />
+                              </div>
                             </div>
+                            <p
+                              class="StyledProps--font StyledProps--main StyledProps--font-variation-form-message-danger"
+                            />
                           </div>
                           <span
                             class="bp3-icon bp3-icon-ban-circle StyledProps--main pushdown7 StyledProps--color StyledProps--color-grey200"
