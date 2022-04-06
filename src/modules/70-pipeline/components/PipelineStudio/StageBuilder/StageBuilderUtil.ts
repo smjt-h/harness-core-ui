@@ -5,7 +5,7 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import { flatMap, findIndex, cloneDeep, set } from 'lodash-es'
+import { flatMap, findIndex, cloneDeep, set, noop, isEmpty } from 'lodash-es'
 import { Utils } from '@wings-software/uicore'
 import { Color } from '@harness/design-system'
 import { v4 as uuid } from 'uuid'
@@ -30,6 +30,7 @@ import type { TemplateSummaryResponse } from 'services/template-ng'
 import type { SelectorData } from '@pipeline/components/PipelineStudio/PipelineContext/PipelineActions'
 import type { DynamicPopoverHandlerBinding } from '@common/components/DynamicPopover/DynamicPopover'
 import { DefaultNodeModel, DiagramType, Event } from '@pipeline/components/Diagram'
+import { PipelineOrStageStatus } from '@pipeline/components/PipelineSteps/AdvancedSteps/ConditionalExecutionPanel/ConditionalExecutionPanelUtils'
 import { EmptyStageName } from '../PipelineConstants'
 import type { PipelineContextInterface, StagesMap } from '../PipelineContext/PipelineContext'
 import { getStageFromPipeline } from '../PipelineContext/helpers'
@@ -793,6 +794,41 @@ export const getNodeEventListerner = (
           }
         }
         updateStageOnAddLinkNew(event, dropNode, current)
+      }
+    },
+    [Event.MouseEnterNode]: (event: any) => {
+      const eventTemp = { ...event, ...event.data }
+
+      const current = getStageFromPipeline(eventTemp?.identifier, pipeline)
+      if (current.stage?.stage?.when) {
+        const { pipelineStatus, condition } = current.stage.stage.when
+        if (pipelineStatus === PipelineOrStageStatus.SUCCESS && isEmpty(condition)) {
+          return
+        }
+        dynamicPopoverHandler?.show(
+          `[data-nodeid="${eventTemp?.node?.id}"]`,
+          {
+            event: eventTemp,
+            data: current.stage,
+            isStageView: false,
+            isHoverView: true,
+            stagesMap,
+            renderPipelineStage,
+            contextType,
+            templateTypes,
+            setTemplateTypes,
+            openTemplateSelector,
+            closeTemplateSelector
+          },
+          { useArrows: true, darkMode: false, fixedPosition: false, placement: 'top' },
+          noop,
+          true
+        )
+      }
+    },
+    [Event.MouseLeaveNode]: (_event: any) => {
+      if (dynamicPopoverHandler?.isHoverView?.()) {
+        dynamicPopoverHandler?.hide()
       }
     }
   }

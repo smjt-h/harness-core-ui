@@ -18,6 +18,7 @@ import SVGMarker from '../../SVGMarker'
 import AddLinkNode from '../AddLinkNode/AddLinkNode'
 import { FireEventMethod, NodeType } from '../../../types'
 import defaultCss from '../DefaultNode.module.scss'
+import { useStrings } from 'framework/strings'
 
 const CODE_ICON: IconName = 'command-echo'
 interface PipelineStageNodeProps {
@@ -41,6 +42,7 @@ interface PipelineStageNodeProps {
   selectedNodeId?: string
 }
 function PipelineStageNode(props: PipelineStageNodeProps): JSX.Element {
+  const { getString } = useStrings()
   const allowAdd = defaultTo(props.allowAdd, false)
   const [showAddNode, setVisibilityOfAdd] = React.useState(false)
   const CreateNode: React.FC<any> | undefined = props?.getNode?.(NodeType.CreateNode)?.component
@@ -56,7 +58,7 @@ function PipelineStageNode(props: PipelineStageNodeProps): JSX.Element {
     }
     setVisibilityOfAdd(visibility)
   }
-  const isSelected = defaultTo(props.id === props?.selectedNodeId, props.isSelected)
+  const isSelectedNode = (): boolean => props.isSelected || props.id === props?.selectedNodeId
   return (
     <div
       className={cx(defaultCss.defaultNode, 'default-node', {
@@ -116,7 +118,7 @@ function PipelineStageNode(props: PipelineStageNodeProps): JSX.Element {
         data-nodeid={props.id}
         draggable={!props.readonly}
         className={cx(defaultCss.defaultCard, {
-          [defaultCss.selected]: isSelected,
+          [defaultCss.selected]: isSelectedNode(),
           [defaultCss.failed]: stageStatus === ExecutionStatusEnum.Failed,
           [defaultCss.runningNode]: stageStatus === ExecutionStatusEnum.Running
         })}
@@ -124,14 +126,19 @@ function PipelineStageNode(props: PipelineStageNodeProps): JSX.Element {
           width: 90,
           height: 40
         }}
-        onMouseOver={() => setAddVisibility(true)}
+        onMouseOver={(e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+          e.stopPropagation()
+          setAddVisibility(true)
+        }}
         onMouseEnter={(event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
           event.stopPropagation()
-
           props?.fireEvent?.({
             type: Event.MouseEnterNode,
             target: event.target,
-            data: { ...props }
+            data: {
+              identifier: props?.identifier as string,
+              node: props
+            }
           })
         }}
         onMouseLeave={(event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
@@ -152,6 +159,11 @@ function PipelineStageNode(props: PipelineStageNodeProps): JSX.Element {
           event.dataTransfer.setData(DiagramDrag.AllowDropOnLink, '1')
           event.dataTransfer.setData(DiagramDrag.AllowDropOnNode, '1')
           event.dataTransfer.dropEffect = 'move'
+          props?.fireEvent?.({
+            type: Event.DragStart,
+            target: event.target,
+            data: { ...props }
+          })
         }}
         onDragEnd={(event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
           event.preventDefault()
@@ -159,7 +171,7 @@ function PipelineStageNode(props: PipelineStageNodeProps): JSX.Element {
         }}
       >
         <div className="execution-running-animation" />
-        {props.icon && <Icon size={28} name={props.icon as IconName} inverse={isSelected} />}
+        {props.icon && <Icon size={28} name={props.icon as IconName} inverse={isSelectedNode()} />}
         {secondaryIcon && (
           <Icon
             name={secondaryIcon}
@@ -209,7 +221,18 @@ function PipelineStageNode(props: PipelineStageNodeProps): JSX.Element {
           </Text>
         </div>
       )}
-
+      {props.data?.conditionalExecutionEnabled && (
+        <div className={defaultCss.conditional}>
+          <Text
+            tooltip={getString('pipeline.conditionalExecution.title')}
+            tooltipProps={{
+              isDark: true
+            }}
+          >
+            <Icon size={26} name={'conditional-skip-new'} color="white" />
+          </Text>
+        </div>
+      )}
       {allowAdd && CreateNode && !props.readonly && showAddNode && (
         <CreateNode
           onMouseOver={() => setAddVisibility(true)}

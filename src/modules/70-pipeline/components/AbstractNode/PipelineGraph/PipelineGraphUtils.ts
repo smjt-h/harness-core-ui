@@ -305,7 +305,12 @@ const trasformStageData = (stages: StageElementWrapperConfig[], graphType: Pipel
         nodeType: nodeType as string,
         icon: iconName,
         graphType,
-        data: stage
+        data: {
+          ...stage,
+          conditionalExecutionEnabled: stage.stage.when
+            ? stage.stage.when?.pipelineStatus !== 'Success' || !!stage.stage.when?.condition?.trim()
+            : false
+        }
       })
     } else if (stage?.parallel?.length) {
       const [first, ...rest] = stage.parallel
@@ -318,7 +323,12 @@ const trasformStageData = (stages: StageElementWrapperConfig[], graphType: Pipel
         type: first?.stage?.type as string,
         icon: iconName,
         graphType,
-        data: stage,
+        data: {
+          ...stage,
+          conditionalExecutionEnabled: first?.stage?.when
+            ? first?.stage?.when?.pipelineStatus !== 'Success' || !!first?.stage.when?.condition?.trim()
+            : false
+        },
         children: trasformStageData(rest, graphType)
       })
     }

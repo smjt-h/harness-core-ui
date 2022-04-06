@@ -707,7 +707,10 @@ function StageBuilder(): JSX.Element {
     [Event.AddParallelNode]: nodeListenersNew[Event.AddParallelNode],
     [Event.RemoveNode]: nodeListenersNew[Event.RemoveNode],
     [Event.AddLinkClicked]: linkListenersNew[Event.AddLinkClicked],
-    [Event.CanvasClick]: canvasClick
+    [Event.CanvasClick]: canvasClick,
+    [Event.MouseEnterNode]: nodeListenersNew[Event.MouseEnterNode],
+    [Event.MouseLeaveNode]: nodeListenersNew[Event.MouseLeaveNode],
+    [Event.DragStart]: nodeListenersNew[Event.MouseLeaveNode]
   }
 
   if (diagram) diagram.registerListeners(events)

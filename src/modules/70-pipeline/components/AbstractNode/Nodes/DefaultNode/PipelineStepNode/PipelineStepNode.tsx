@@ -44,7 +44,7 @@ function PipelineStepNode(props: PipelineStepNodeProps): JSX.Element {
     stepStatus as ExecutionStatus,
     ExecutionPipelineNodeType.NORMAL
   )
-  const isNodeSelected = defaultTo(props.id === props?.selectedNodeId, props.isSelected)
+  const isSelectedNode = (): boolean => props.isSelected || props.id === props?.selectedNodeId
   const isServiceStep = stepType === 'Service'
   const setAddVisibility = (visibility: boolean): void => {
     if (!allowAdd) {
@@ -120,7 +120,7 @@ function PipelineStepNode(props: PipelineStepNodeProps): JSX.Element {
         data-nodeid={props.id}
         draggable={!props.readonly}
         className={cx(defaultCss.defaultCard, {
-          [defaultCss.selected]: isNodeSelected,
+          [defaultCss.selected]: isSelectedNode(),
           [defaultCss.failed]: stepStatus === ExecutionStatusEnum.Failed,
           [defaultCss.runningNode]: stepStatus === ExecutionStatusEnum.Running
         })}
@@ -173,9 +173,9 @@ function PipelineStepNode(props: PipelineStepNodeProps): JSX.Element {
         {stepIcon && (
           <Icon
             size={28}
-            color={isNodeSelected ? Color.WHITE : stepIconColor}
+            color={isSelectedNode() ? Color.WHITE : stepIconColor}
             name={defaultTo(stepIcon, 'cross') as IconName}
-            inverse={isNodeSelected || (stepStatus as string) === ExecutionStatusEnum.Failed}
+            inverse={isSelectedNode() || (stepStatus as string) === ExecutionStatusEnum.Failed}
             className={defaultCss.primaryIcon}
           />
         )}
@@ -215,7 +215,7 @@ function PipelineStepNode(props: PipelineStepNodeProps): JSX.Element {
         {CODE_ICON && (
           <Icon
             className={defaultCss.codeIcon}
-            color={isNodeSelected ? Color.WHITE : undefined}
+            color={isSelectedNode() ? Color.WHITE : undefined}
             size={8}
             name={CODE_ICON}
           />
