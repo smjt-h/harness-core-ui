@@ -138,6 +138,7 @@ export const pipelineContext: PipelineContextInterface = {
   updateEntityValidityDetails: jest.fn(),
   updatePipelineView: jest.fn(),
   updateTemplateView: jest.fn(),
+  refreshTemplateTypes: jest.fn(),
   fetchPipeline: jest.fn(),
   deletePipelineCache: jest.fn(),
   getStageFromPipeline: jest.fn(),

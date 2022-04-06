@@ -83,6 +83,7 @@ const getPipelineContext = (): PipelineContextInterface => ({
   updatePipeline: jest.fn(),
   updatePipelineView: jest.fn(),
   updateTemplateView: jest.fn(),
+  refreshTemplateTypes: jest.fn(),
   updateStage: jest.fn(),
   getStageFromPipeline: jest.fn(() => ({ stage: undefined, parent: undefined })),
   deletePipelineCache: jest.fn(),

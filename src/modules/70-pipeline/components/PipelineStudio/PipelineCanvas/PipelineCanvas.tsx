@@ -144,6 +144,7 @@ export function PipelineCanvas({
     isReadonly,
     updateStage,
     updatePipelineView,
+    refreshTemplateTypes,
     updateTemplateView,
     setSelectedStageId,
     setSelectedSectionId,
@@ -514,7 +515,7 @@ export function PipelineCanvas({
   ])
 
   const onSubmit = React.useCallback(
-    (
+    async (
       values: PipelineInfoConfig,
       updatedGitDetails?: EntityGitDetails,
       using?: TemplateSummaryResponse,
@@ -534,7 +535,8 @@ export function PipelineCanvas({
       }
       delete (pipeline as PipelineWithGitContextFormProps).repo
       delete (pipeline as PipelineWithGitContextFormProps).branch
-      updatePipeline(pipeline)
+      await updatePipeline(pipeline)
+      refreshTemplateTypes()
       if (updatedGitDetails) {
         if (gitDetails?.objectId) {
           updatedGitDetails = { ...gitDetails, ...updatedGitDetails }

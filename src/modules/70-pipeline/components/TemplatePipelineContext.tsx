@@ -170,6 +170,28 @@ export function TemplatePipelineProvider({
     dispatch(PipelineContextActions.initialized())
   }
 
+  const refreshTemplateTypes = React.useCallback(async () => {
+    const templateRefs = findAllByKey('templateRef', state.pipeline)
+    if (templateRefs.length > 0) {
+      dispatch(
+        PipelineContextActions.setTemplateTypes({
+          templateTypes: await getTemplateTypesByRef(
+            {
+              accountIdentifier: queryParams.accountIdentifier,
+              orgIdentifier: queryParams.orgIdentifier,
+              projectIdentifier: queryParams.projectIdentifier,
+              templateListType: 'Stable',
+              repoIdentifier: queryParams.repoIdentifier,
+              branch: queryParams.branch,
+              getDefaultFromOtherRepo: true
+            },
+            templateRefs
+          )
+        })
+      )
+    }
+  }, [state.pipeline, queryParams])
+
   const setSelection = (selectedState: PipelineSelectionState) => {
     dispatch(
       PipelineContextActions.updateSelectionState({
@@ -219,6 +241,7 @@ export function TemplatePipelineProvider({
         updatePipelineView,
         updateTemplateView,
         pipelineSaved: noop,
+        refreshTemplateTypes,
         deletePipelineCache: Promise.resolve,
         isReadonly: isReadOnly,
         setYamlHandler: noop,

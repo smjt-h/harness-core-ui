@@ -24,9 +24,9 @@ interface TemplateActionsReturnType {
 
 export function usePipelineTemplateActions(): TemplateActionsReturnType {
   const {
-    state: { pipeline, templateTypes },
-    setTemplateTypes,
-    updatePipeline
+    state: { pipeline },
+    updatePipeline,
+    refreshTemplateTypes
   } = usePipelineContext()
   const { openTemplateSelector, closeTemplateSelector } = useTemplateSelector()
 
@@ -47,10 +47,7 @@ export function usePipelineTemplateActions(): TemplateActionsReturnType {
           })
         : createTemplate(pipeline, template)
       await updatePipeline(processNode)
-      if (!isCopied && template?.identifier && template?.childType) {
-        templateTypes[template.identifier] = template.childType
-        setTemplateTypes(templateTypes)
-      }
+      refreshTemplateTypes()
     },
     [closeTemplateSelector, pipeline, updatePipeline]
   )

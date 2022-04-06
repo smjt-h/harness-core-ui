@@ -123,8 +123,8 @@ export const getTemplateTypesByRef = (
       })
       return templateTypes
     })
-    .catch(_error => {
-      return {}
+    .catch(error => {
+      return error
     })
 }
 
@@ -265,6 +265,7 @@ export interface PipelineContextInterface {
   updateEntityValidityDetails: (entityValidityDetails: EntityValidityDetails) => Promise<void>
   updatePipelineView: (data: PipelineViewData) => void
   updateTemplateView: (data: TemplateViewData) => void
+  refreshTemplateTypes: () => Promise<void>
   deletePipelineCache: (gitDetails?: EntityGitDetails) => Promise<void>
   getStageFromPipeline<T extends StageElementConfig = StageElementConfig>(
     stageId: string,
@@ -346,6 +347,28 @@ const getTemplateType = (pipeline: PipelineInfoConfig, queryParams: GetPipelineQ
     },
     templateRefs
   )
+}
+
+interface RefreshTemplateTypesBoundProps {
+  dispatch: React.Dispatch<ActionReturnType>
+  queryParams: GetPipelineQueryParams
+  pipeline: PipelineInfoConfig
+  gitDetails: EntityGitDetails
+}
+
+const _refreshTemplateTypes = async (props: RefreshTemplateTypesBoundProps) => {
+  const { dispatch, queryParams, pipeline, gitDetails } = props
+  const templateQueryParams = {
+    ...queryParams,
+    repoIdentifier: gitDetails.repoIdentifier,
+    branch: gitDetails.branch
+  }
+  try {
+    const templateTypes = await getTemplateType(pipeline, templateQueryParams)
+    dispatch(PipelineContextActions.setTemplateTypes({ templateTypes }))
+  } catch (_error) {
+    // show the error to user.
+  }
 }
 
 const _fetchPipeline = async (props: FetchPipelineBoundProps, params: FetchPipelineUnboundProps): Promise<void> => {
@@ -782,6 +805,7 @@ export const PipelineContext = React.createContext<PipelineContextInterface>({
   fetchPipeline: () => new Promise<void>(() => undefined),
   updatePipelineView: () => undefined,
   updateTemplateView: () => undefined,
+  refreshTemplateTypes: () => new Promise<void>(() => undefined),
   updateStage: () => new Promise<void>(() => undefined),
   getStageFromPipeline: () => ({ stage: undefined, parent: undefined }),
   setYamlHandler: () => undefined,
@@ -869,6 +893,13 @@ export function PipelineProvider({
     queryParams,
     identifier: pipelineIdentifier,
     originalPipeline: state.originalPipeline,
+    pipeline: state.pipeline,
+    gitDetails: state.gitDetails
+  })
+
+  const refreshTemplateTypes = _refreshTemplateTypes.bind(null, {
+    dispatch,
+    queryParams,
     pipeline: state.pipeline,
     gitDetails: state.gitDetails
   })
@@ -1058,6 +1089,7 @@ export function PipelineProvider({
         updateStage,
         updatePipelineView,
         updateTemplateView,
+        refreshTemplateTypes,
         pipelineSaved,
         deletePipelineCache,
         isReadonly,

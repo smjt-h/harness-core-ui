@@ -223,6 +223,7 @@ const pipelineContextMock: PipelineContextInterface = {
   fetchPipeline: () => new Promise<void>(() => undefined),
   updatePipelineView: jest.fn(),
   updateTemplateView: () => undefined,
+  refreshTemplateTypes: () => new Promise<void>(() => undefined),
   updateStage: jest.fn().mockResolvedValue({}),
   getStageFromPipeline: () => ({ stage: stateMock.pipeline.stages[0] as any, parent: undefined }),
   setYamlHandler: () => undefined,
