@@ -44,7 +44,7 @@ function PipelineStepNode(props: PipelineStepNodeProps): JSX.Element {
     stepStatus as ExecutionStatus,
     ExecutionPipelineNodeType.NORMAL
   )
-  const isNodeSelected = props.isSelected || props?.selectedNodeId === props?.id
+  const isNodeSelected = defaultTo(props.id === props?.selectedNodeId, props.isSelected)
   const isServiceStep = stepType === 'Service'
   const setAddVisibility = (visibility: boolean): void => {
     if (!allowAdd) {

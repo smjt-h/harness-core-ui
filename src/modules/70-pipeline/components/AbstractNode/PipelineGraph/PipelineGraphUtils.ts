@@ -34,12 +34,12 @@ interface DrawSVGPathOptions {
  * 'ltl' ---> Left of Element1 to Left of Element2
  * 'rtr' ---> Left of Element1 to Right of Element2
  **/
-const getFinalSVGArrowPath = (id1 = '', id2 = '', options?: DrawSVGPathOptions): { [key: string]: string } => {
+const getFinalSVGArrowPath = (id1 = '', id2 = '', options?: DrawSVGPathOptions): SVGPathRecord => {
   const node1 = getComputedPosition(id1, options?.parentElement)
   const node2 = getComputedPosition(id2, options?.parentElement)
 
   if (!node1 || !node2) {
-    return { [id1]: '' }
+    return { [id1]: { pathData: '' } }
   }
   let finalSVGPath = ''
   const node1VerticalMid = node1.top + node1.height / 2
@@ -95,7 +95,7 @@ const getFinalSVGArrowPath = (id1 = '', id2 = '', options?: DrawSVGPathOptions):
         const nextNode = getComputedPosition(options.nextNode, options?.parentElement)
         const parentNode = getComputedPosition(options.parentNode, options?.parentElement)
         if (!nextNode || !parentNode) {
-          return { [id1]: '' }
+          return { [id1]: { pathData: '' } }
         }
         const childEl = document.getElementById(options.parentNode)
         // let maxRight = node2.right
@@ -128,7 +128,7 @@ const getFinalSVGArrowPath = (id1 = '', id2 = '', options?: DrawSVGPathOptions):
     L${horizontalMid},${node2VerticalMid - 20} ${curveTopToRight} L${endPoint}`
     }
   }
-  return { [id1]: finalSVGPath }
+  return { [id1]: { pathData: finalSVGPath } }
 }
 
 const getComputedPosition = (childId: string | HTMLElement, parentElement?: HTMLDivElement): DOMRect | null => {
@@ -199,7 +199,7 @@ const setupDragEventListeners = (draggableParent: HTMLElement, overlay: HTMLElem
 
     const onMouseMove = throttle((e: MouseEvent): void => {
       moveAt(e.pageX, e.pageY)
-    }, 200)
+    }, 100)
 
     draggableParent.addEventListener('mousemove', onMouseMove)
     draggableParent.onmouseup = function () {
@@ -215,9 +215,9 @@ const setupDragEventListeners = (draggableParent: HTMLElement, overlay: HTMLElem
 const getSVGLinksFromPipeline = (
   states?: PipelineGraphState[],
   parentElement?: HTMLDivElement,
-  resultArr: { [key: string]: string }[] = [],
+  resultArr: SVGPathRecord[] = [],
   endNodeId?: string
-): { [key: string]: string }[] => {
+): SVGPathRecord[] => {
   let prevElement: PipelineGraphState
   states?.forEach((state, index) => {
     if (state?.children?.length) {
@@ -235,7 +235,7 @@ const getSVGLinksFromPipeline = (
 const getParallelNodeLinks = (
   stages: PipelineGraphState[],
   firstStage: PipelineGraphState | undefined,
-  resultArr: { [key: string]: string }[] = [],
+  resultArr: SVGPathRecord[] = [],
   parentElement?: HTMLDivElement,
   nextNode?: string,
   parentNode?: string
@@ -465,6 +465,24 @@ const getTerminalNodeLinks = ({
   }
   return finalNodeLinks
 }
+export interface RelativeBounds {
+  top: number
+  right: number
+  bottom: number
+  left: number
+}
+
+const getRelativeBounds = (parentElement: HTMLElement, targetElement: HTMLElement): RelativeBounds => {
+  const parentPos = parentElement.getBoundingClientRect()
+  const childPos = targetElement.getBoundingClientRect()
+  const relativePos: RelativeBounds = { top: 0, right: 0, bottom: 0, left: 0 }
+
+  relativePos.top = childPos.top - parentPos.top
+  relativePos.right = childPos.right - parentPos.right
+  relativePos.bottom = childPos.bottom - parentPos.bottom
+  relativePos.left = childPos.left - parentPos.left
+  return relativePos
+}
 
 export {
   ZOOM_INC_DEC_LEVEL,
@@ -476,5 +494,6 @@ export {
   getPipelineGraphData,
   setupDragEventListeners,
   getSVGLinksFromPipeline,
-  getTerminalNodeLinks
+  getTerminalNodeLinks,
+  getRelativeBounds
 }

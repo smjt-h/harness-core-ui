@@ -20,9 +20,11 @@ import type {
 } from '../types'
 import { NodeType } from '../types'
 import { useNodeResizeObserver } from '../hooks/useResizeObserver'
+import { getRelativeBounds } from './PipelineGraphUtils'
 import { isFirstNodeAGroupNode, isNodeParallel, shouldAttachRef, shouldRenderGroupNode, showChildNode } from './utils'
 import css from './PipelineGraph.module.scss'
-const IS_RENDER_OPTIMIZATION_ENABLED = false
+
+const IS_RENDER_OPTIMIZATION_ENABLED = true
 export interface PipelineGraphRecursiveProps {
   nodes?: PipelineGraphState[]
   getNode: GetNodeMethod
@@ -365,15 +367,16 @@ function PipelineGraphNodeObserved(
       observer = new IntersectionObserver(
         (entries, _observer) => {
           entries.forEach((entry: IntersectionObserverEntry) => {
-            if (
-              (entry.rootBounds as DOMRect)?.left >= entry.intersectionRect.left ||
-              (entry.rootBounds as DOMRect)?.right <= entry.intersectionRect.right
-            ) {
+            const computedEntryEl = getRelativeBounds(rootElement as HTMLDivElement, document.body)
+            const computedEntryRoot = getRelativeBounds(entry.target as HTMLElement, document.body)
+            if (computedEntryEl.right > computedEntryRoot.right || computedEntryEl.left < computedEntryRoot.left) {
               if (entry.isIntersecting) {
                 updateVisibleState(true)
               } else {
                 !props.isDragging && updateVisibleState(false)
               }
+            } else {
+              updateVisibleState(true)
             }
           })
         },

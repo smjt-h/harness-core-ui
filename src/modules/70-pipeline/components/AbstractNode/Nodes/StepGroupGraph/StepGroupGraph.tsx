@@ -6,6 +6,7 @@
  */
 
 import React, { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import cx from 'classnames'
 import { defaultTo, get } from 'lodash-es'
 import { DiagramType, Event } from '@pipeline/components/Diagram'
 import { SVGComponent } from '../../PipelineGraph/PipelineGraph'
@@ -133,7 +134,7 @@ function StepGroupGraph(props: StepGroupGraphProps): React.ReactElement {
   }, [])
   return (
     <div className={css.main} style={layoutStyles} ref={graphRef}>
-      <SVGComponent svgPath={svgPath} className={css.stepGroupSvg} />
+      <SVGComponent svgPath={svgPath} className={cx(css.stepGroupSvg)} />
       {props?.data?.length ? (
         <>
           <PipelineGraphRecursive

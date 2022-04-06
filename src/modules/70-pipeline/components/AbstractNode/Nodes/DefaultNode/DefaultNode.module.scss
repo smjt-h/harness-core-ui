@@ -195,15 +195,14 @@
     height: 64px;
     margin-top: 48px;
   }
+  &.stepGroupAddIcon {
+    width: 84px !important;
+    height: 84px !important;
+  }
   &.stageAddNode {
     width: 90px;
     height: 40px;
     margin-top: 48px;
-  }
-  &.stepGroupAddNode {
-    width: 84px;
-    height: 84px;
-    border: 1px dashed var(--grey-400);
   }
 }
 
@@ -371,7 +370,7 @@
   left: -50%;
   height: 48px;
   overflow: hidden;
-  .stageName {
+  &.stageName {
     left: -25%;
   }
   p {

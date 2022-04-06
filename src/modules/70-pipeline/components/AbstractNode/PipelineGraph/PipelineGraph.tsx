@@ -8,7 +8,7 @@
 /* eslint-disable no-console */
 import React, { useEffect, useLayoutEffect, useState, useRef, useMemo } from 'react'
 import classNames from 'classnames'
-import Draggable from 'react-draggable'
+import Draggable, { DraggableData, DraggableEvent } from 'react-draggable'
 import { v4 as uuid } from 'uuid'
 import { Event } from '@pipeline/components/Diagram'
 import {
@@ -64,9 +64,10 @@ function PipelineGraph({
   const [treeRectangle, setTreeRectangle] = useState<DOMRect | void>()
   const [state, setState] = useState<PipelineGraphState[]>(data)
   const [graphScale, setGraphScale] = useState(INITIAL_ZOOM_LEVEL)
+  const [position, setPosition] = useState<ControlPosition>(DEFAULT_POSITION)
   const [isDragging, setDragging] = useState(false)
-  const canvasRef = useRef<HTMLDivElement>(null)
   const draggableRef = useRef<HTMLDivElement>(null)
+  const canvasRef = useRef<HTMLDivElement>(null)
   const overlayRef = useRef<HTMLDivElement>(null)
   const uniqueNodeIds = useMemo(
     (): NodeIds => ({
@@ -152,6 +153,14 @@ function PipelineGraph({
   const handleScaleToFit = (): void => {
     setGraphScale(getScaleToFitValue(canvasRef.current as unknown as HTMLElement))
   }
+  const onDrag = (_e: DraggableEvent, dragData: DraggableData): void => {
+    setPosition({ x: dragData.x, y: dragData.y })
+    setDragging(false)
+  }
+  const resetGraphState = (): void => {
+    setGraphScale(INITIAL_ZOOM_LEVEL)
+    setPosition(DEFAULT_POSITION)
+  }
   const Loader = loaderComponent
   return (
     <>
@@ -159,9 +168,9 @@ function PipelineGraph({
       <div id="draggable-parent" className={css.draggableParent} ref={draggableRef}>
         <Draggable
           scale={graphScale}
-          defaultPosition={DEFAULT_POSITION}
+          position={position}
           onStart={() => setDragging(true)}
-          onStop={() => setDragging(false)}
+          onStop={onDrag}
           offsetParent={document.body}
         >
           <div
@@ -192,7 +201,12 @@ function PipelineGraph({
             </div>
           </div>
         </Draggable>
-        <GraphActions setGraphScale={setGraphScale} graphScale={graphScale} handleScaleToFit={handleScaleToFit} />
+        <GraphActions
+          resetGraphState={resetGraphState}
+          setGraphScale={setGraphScale}
+          graphScale={graphScale}
+          handleScaleToFit={handleScaleToFit}
+        />
       </div>
     </>
   )
@@ -207,7 +221,7 @@ export function SVGComponent({ svgPath, className }: SVGComponentProps): React.R
   return (
     <svg className={css.common}>
       {svgPath.map((path, idx) => {
-        const [[nodeId, pathValue]] = Object.entries(path)
+        const [[nodeId, pathDetails]] = Object.entries(path)
         return (
           <path
             markerStart="url(#link-port)"
@@ -215,7 +229,7 @@ export function SVGComponent({ svgPath, className }: SVGComponentProps): React.R
             className={classNames(css.svgArrow, className)}
             id={`${nodeId}-link`}
             key={idx}
-            d={pathValue}
+            d={pathDetails.pathData}
           />
         )
       })}

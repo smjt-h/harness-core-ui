@@ -226,9 +226,15 @@ export function StepGroupNode(props: any): JSX.Element {
                   }
                 })
               }}
-              className={classnames(defaultCss.addNodeIcon, defaultCss.stepGroupLeft, defaultCss.stepAddIcon, {
-                [defaultCss.show]: showAddLink
-              })}
+              className={classnames(
+                defaultCss.addNodeIcon,
+                defaultCss.stepGroupLeft,
+                defaultCss.stepAddIcon,
+                defaultCss.stepGroupAddIcon,
+                {
+                  [defaultCss.show]: showAddLink
+                }
+              )}
             >
               <Icon name="plus" color={Color.WHITE} />
             </div>
@@ -237,7 +243,6 @@ export function StepGroupNode(props: any): JSX.Element {
             <CreateNode
               className={classnames(
                 defaultCss.addNode,
-                defaultCss.stepGroupAddNode,
                 { [defaultCss.visible]: showAdd },
                 { [defaultCss.marginBottom]: props?.isParallelNode }
               )}
@@ -266,7 +271,7 @@ export function StepGroupNode(props: any): JSX.Element {
                   }
                 })
               }}
-              name={getString('addStep')}
+              name={''}
               hidden={!showAdd}
             />
           )}

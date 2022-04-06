@@ -86,12 +86,12 @@ function CreateNodeStep(props: CreateNodeStepProps): React.ReactElement {
         titleClassName={props.titleClassName}
         name={props.name}
         className={cx(
-          props?.className,
           cssDefault.defaultCard,
           css.createNode,
           css.stepAddIcon,
           { [css.disabled]: props.disabled || false },
-          { [css.selected]: props?.node?.isSelected }
+          { [css.selected]: props?.node?.isSelected },
+          props?.className
         )}
         hidden={props.hidden}
       />

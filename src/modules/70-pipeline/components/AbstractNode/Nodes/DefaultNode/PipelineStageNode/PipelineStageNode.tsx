@@ -38,6 +38,7 @@ interface PipelineStageNodeProps {
   prevNodeIdentifier?: string
   nextNode: any
   allowAdd?: boolean
+  selectedNodeId?: string
 }
 function PipelineStageNode(props: PipelineStageNodeProps): JSX.Element {
   const allowAdd = defaultTo(props.allowAdd, false)
@@ -55,6 +56,7 @@ function PipelineStageNode(props: PipelineStageNodeProps): JSX.Element {
     }
     setVisibilityOfAdd(visibility)
   }
+  const isSelected = defaultTo(props.id === props?.selectedNodeId, props.isSelected)
   return (
     <div
       className={cx(defaultCss.defaultNode, 'default-node', {
@@ -114,7 +116,7 @@ function PipelineStageNode(props: PipelineStageNodeProps): JSX.Element {
         data-nodeid={props.id}
         draggable={!props.readonly}
         className={cx(defaultCss.defaultCard, {
-          [defaultCss.selected]: props?.isSelected,
+          [defaultCss.selected]: isSelected,
           [defaultCss.failed]: stageStatus === ExecutionStatusEnum.Failed,
           [defaultCss.runningNode]: stageStatus === ExecutionStatusEnum.Running
         })}
@@ -157,7 +159,7 @@ function PipelineStageNode(props: PipelineStageNodeProps): JSX.Element {
         }}
       >
         <div className="execution-running-animation" />
-        {props.icon && <Icon size={28} name={props.icon as IconName} inverse={props?.isSelected} />}
+        {props.icon && <Icon size={28} name={props.icon as IconName} inverse={isSelected} />}
         {secondaryIcon && (
           <Icon
             name={secondaryIcon}

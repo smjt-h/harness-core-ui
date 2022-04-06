@@ -412,6 +412,7 @@ ProcessGroupItemArgs): void => {
               nodeType: 'STEP_GROUP',
               icon: StepTypeIconsMap.STEP_GROUP,
               steps,
+              status: nodeData?.status as ExecutionStatus,
               containerCss: {
                 ...(isRollbackNext ? RollbackContainerCss : {})
               }

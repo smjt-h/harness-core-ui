@@ -50,7 +50,11 @@ export interface NodeIds {
 }
 
 export interface SVGPathRecord {
-  [key: string]: string
+  [key: string]: {
+    pathData: string
+    className?: string
+    getLinkStyles?: () => void
+  }
 }
 
 export type NodeBank = Map<string, NodeDetails>

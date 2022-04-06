@@ -47,7 +47,7 @@ declare const styles: {
   readonly stageName: string
   readonly stepAddIcon: string
   readonly stepAddNode: string
-  readonly stepGroupAddNode: string
+  readonly stepGroupAddIcon: string
   readonly stepGroupLeft: string
   readonly stepGroupLeftAddLink: string
   readonly stepGroupMarkerLeft: string
