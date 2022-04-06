@@ -10,6 +10,9 @@
  * Use the command `yarn strings` to regenerate this file.
  */
 export interface StringsMap {
+  'common.180days': string
+  'common.30days': string
+  'common.90days': string
   'common.ID': string
   'common.My': string
   'common.OFF': string
@@ -40,6 +43,7 @@ export interface StringsMap {
   'common.addVariable': string
   'common.advanced': string
   'common.agent': string
+  'common.agents': string
   'common.allErrors': string
   'common.and': string
   'common.andCaps': string
@@ -117,6 +121,7 @@ export interface StringsMap {
   'common.clientId': string
   'common.clientSecret': string
   'common.cluster': string
+  'common.clusters': string
   'common.comingSoon': string
   'common.comingSoon2': string
   'common.commentModal.addCommentPlaceholder': string
@@ -198,6 +203,7 @@ export interface StringsMap {
   'common.errorHandler.issueCouldBe': string
   'common.errorHandler.tryTheseSuggestions': string
   'common.execute': string
+  'common.expiration': string
   'common.expiryDate': string
   'common.exploreAllPlans': string
   'common.explorePlans': string
@@ -313,6 +319,7 @@ export interface StringsMap {
   'common.gitSync.unSynced.message2': string
   'common.gitSync.unableToCreatePR': string
   'common.gitSync.updateResource': string
+  'common.gnupgKeys': string
   'common.goBack': string
   'common.governance': string
   'common.gpgkey': string
@@ -387,6 +394,7 @@ export interface StringsMap {
   'common.noDeployments': string
   'common.noInfo': string
   'common.noRefData': string
+  'common.noexpiration': string
   'common.notEnabled': string
   'common.note': string
   'common.noteAccountSwitch': string
@@ -523,6 +531,7 @@ export interface StringsMap {
   'common.repo_provider.gitlabLabel': string
   'common.reportName': string
   'common.reportNameRequired': string
+  'common.repositoryCertificates': string
   'common.repositoryName': string
   'common.request': string
   'common.resolveConflict': string
@@ -922,12 +931,14 @@ export interface StringsMap {
   'rbac.token.editLabel': string
   'rbac.token.forToken': string
   'rbac.token.form.createSuccess': string
+  'rbac.token.form.dateRequired': string
   'rbac.token.form.editSuccess': string
   'rbac.token.form.expiry': string
   'rbac.token.form.expiryDate': string
   'rbac.token.form.rotateSuccess': string
   'rbac.token.form.rotateTokenExpiryMessage': string
   'rbac.token.form.setexpiryTo': string
+  'rbac.token.form.tokenExpiryDisplay': string
   'rbac.token.form.tokenMessage': string
   'rbac.token.rotateLabel': string
   'rbac.token.scheduledToExpire': string
@@ -3421,11 +3432,38 @@ export interface StringsMap {
   'cd.workloadRequired': string
   'ce.allClusters': string
   'ce.allRegions': string
+  'ce.anomalyDetection.addAnoamlyAlertDesc': string
+  'ce.anomalyDetection.addNewAnomalyAlert': string
+  'ce.anomalyDetection.alertReciepients': string
+  'ce.anomalyDetection.alertType': string
+  'ce.anomalyDetection.createNewAnomalyAlert': string
   'ce.anomalyDetection.filters.groupByCloudProvidersPlaceholder': string
   'ce.anomalyDetection.filters.groupByNoneLabel': string
   'ce.anomalyDetection.filters.groupByNonePlaceholder': string
   'ce.anomalyDetection.filters.groupByNoneValue': string
   'ce.anomalyDetection.filters.groupByPerspectivePlaceholder': string
+  'ce.anomalyDetection.notificationAlerts.addAlertSuccessMsg': string
+  'ce.anomalyDetection.notificationAlerts.addChannelBtn': string
+  'ce.anomalyDetection.notificationAlerts.alertChannelHeading': string
+  'ce.anomalyDetection.notificationAlerts.deleteAlertSuccessMsg': string
+  'ce.anomalyDetection.notificationAlerts.emailChannelLabel': string
+  'ce.anomalyDetection.notificationAlerts.heading': string
+  'ce.anomalyDetection.notificationAlerts.microsoftTeamChannelLabel': string
+  'ce.anomalyDetection.notificationAlerts.notificationStep': string
+  'ce.anomalyDetection.notificationAlerts.notificationStepSubtext': string
+  'ce.anomalyDetection.notificationAlerts.overviewStep': string
+  'ce.anomalyDetection.notificationAlerts.selectChannelPlaceholder': string
+  'ce.anomalyDetection.notificationAlerts.selectMethod': string
+  'ce.anomalyDetection.notificationAlerts.selectPerspective': string
+  'ce.anomalyDetection.notificationAlerts.slackChannelLabel': string
+  'ce.anomalyDetection.notificationAlerts.updateAlertSuccessMsg': string
+  'ce.anomalyDetection.notificationAlerts.urlInputPlaceholder': string
+  'ce.anomalyDetection.perspectiveCreateAnomalyAlertTitle': string
+  'ce.anomalyDetection.settings.heading': string
+  'ce.anomalyDetection.settings.newAlertBtn': string
+  'ce.anomalyDetection.settings.options.header': string
+  'ce.anomalyDetection.settings.perspectiveNameColumn': string
+  'ce.anomalyDetection.settings.subtext': string
   'ce.anomalyDetection.settingsBtn': string
   'ce.anomalyDetection.sideNavText': string
   'ce.anomalyDetection.summary.cloudProvidersWise': string
@@ -3502,12 +3540,14 @@ export interface StringsMap {
   'ce.businessMapping.sharedCostBucket.sharingStrategy.proportional': string
   'ce.businessMapping.sharedCostBucket.sharingStrategyLabel': string
   'ce.businessMapping.sharedCostBucket.title': string
+  'ce.businessMapping.shownAs': string
   'ce.businessMapping.sideNavText': string
   'ce.businessMapping.stepText': string
   'ce.businessMapping.tableHeadings.costBuckets': string
   'ce.businessMapping.tableHeadings.createdBy': string
   'ce.businessMapping.tableHeadings.lastEdit': string
   'ce.businessMapping.tableHeadings.sharedCosts': string
+  'ce.businessMapping.tableHeadings.unallocated': string
   'ce.ceTrialHomePage.modal.description': string
   'ce.ceTrialHomePage.modal.title': string
   'ce.ceTrialHomePage.modal.welcome': string
@@ -4734,6 +4774,8 @@ export interface StringsMap {
   'ci.description': string
   'ci.executionLabel': string
   'ci.fileStore': string
+  'ci.getStartedWithCI.awsBuildLocation': string
+  'ci.getStartedWithCI.buildLocation': string
   'ci.getStartedWithCI.buildPipeline': string
   'ci.getStartedWithCI.buildyourOwnPipeline': string
   'ci.getStartedWithCI.carousel.helptext.complexPipelines': string
@@ -4753,22 +4795,30 @@ export interface StringsMap {
   'ci.getStartedWithCI.carousel.labels.usePlugins': string
   'ci.getStartedWithCI.chooseAnOption': string
   'ci.getStartedWithCI.chooseDiffInfra': string
+  'ci.getStartedWithCI.codeRepo': string
   'ci.getStartedWithCI.codebaseRepoLabel': string
   'ci.getStartedWithCI.configInfra': string
   'ci.getStartedWithCI.connectSCM': string
   'ci.getStartedWithCI.devFriendly': string
   'ci.getStartedWithCI.devFriendlyHelpText': string
+  'ci.getStartedWithCI.dockerRunner': string
+  'ci.getStartedWithCI.dockerRunnerBuildLocation': string
   'ci.getStartedWithCI.duration': string
   'ci.getStartedWithCI.firstPipeline': string
   'ci.getStartedWithCI.flexibleInfra': string
   'ci.getStartedWithCI.flexibleInfraHelpText': string
   'ci.getStartedWithCI.hostedByHarness': string
+  'ci.getStartedWithCI.hostedByHarnessBuildLocation': string
+  'ci.getStartedWithCI.hosting': string
   'ci.getStartedWithCI.infraProvisioningFailed': string
   'ci.getStartedWithCI.integratedCICD': string
   'ci.getStartedWithCI.integratedCICDHelpText': string
   'ci.getStartedWithCI.javaLabel': string
+  'ci.getStartedWithCI.k8sBuildLocation': string
   'ci.getStartedWithCI.languageAgnostic': string
   'ci.getStartedWithCI.languageAgnosticHelpText': string
+  'ci.getStartedWithCI.onCloudLabel': string
+  'ci.getStartedWithCI.onPremLabel': string
   'ci.getStartedWithCI.parallelization': string
   'ci.getStartedWithCI.parallelizationHelpText': string
   'ci.getStartedWithCI.parameterization': string
@@ -4777,6 +4827,7 @@ export interface StringsMap {
   'ci.getStartedWithCI.quicklyCreate': string
   'ci.getStartedWithCI.security': string
   'ci.getStartedWithCI.securityHelpText': string
+  'ci.getStartedWithCI.selectInfra': string
   'ci.getStartedWithCI.selectRepo': string
   'ci.getStartedWithCI.startSamplePipeline': string
   'ci.getStartedWithCI.takeToTheNextLevel': string

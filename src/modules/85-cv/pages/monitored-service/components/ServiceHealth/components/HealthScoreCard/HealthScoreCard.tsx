@@ -89,7 +89,7 @@ const HealthScoreCard: React.FC<HealthScoreCardProps> = ({ monitoredServiceIdent
   const NoHealthScoreData = (): JSX.Element | null => {
     let label: StringKeys | undefined
     const noServiceHealthData = !currentHealthScore || currentHealthScore.riskStatus === RiskValues.NO_DATA
-    const noDependencyHealthData = dependentHealthScore?.riskStatus === RiskValues.NO_DATA
+    const noDependencyHealthData = !dependentHealthScore || dependentHealthScore?.riskStatus === RiskValues.NO_DATA
 
     if (noServiceHealthData && noDependencyHealthData) {
       label = 'cv.monitoredServices.healthScoreDataNotAvailable'
@@ -117,9 +117,7 @@ const HealthScoreCard: React.FC<HealthScoreCardProps> = ({ monitoredServiceIdent
         riskData={currentHealthScore}
         label={getString('cv.monitoredServices.monitoredServiceTabs.serviceHealth')}
       />
-      {dependentHealthScore && (
-        <RiskTagWithLabel riskData={dependentHealthScore} label={getString('cv.monitoredServices.dependencyHealth')} />
-      )}
+      <RiskTagWithLabel riskData={dependentHealthScore} label={getString('cv.monitoredServices.dependencyHealth')} />
     </Layout.Horizontal>
   )
 }

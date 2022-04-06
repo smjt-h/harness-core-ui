@@ -1,0 +1,14 @@
+{
+  "status": "SUCCESS",
+  "data": {
+    "totalPages": 0,
+    "totalItems": 0,
+    "pageItemCount": 0,
+    "pageSize": 25,
+    "content": [],
+    "pageIndex": 0,
+    "empty": true
+  },
+  "metaData": null,
+  "correlationId": "a2d97b3e-db95-4486-a687-28ca2f7147b7"
+}

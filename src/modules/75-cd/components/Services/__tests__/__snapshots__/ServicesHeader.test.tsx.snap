@@ -165,8 +165,7 @@ exports[`ServiceHeader should open and close the Services modal 1`] = `
     class="StyledProps--font StyledProps--main yamlToggle"
   >
     <div
-      class="Layout--horizontal StyledProps--main StyledProps--flex StyledProps--flex-justifyContent-flex-start"
-      padding-top="8px"
+      class="Layout--horizontal StyledProps--main StyledProps--flex StyledProps--flex-justifyContent-flex-start StyledProps--padding-top-small"
     >
       <div
         class="PillToggle--optionBtns"

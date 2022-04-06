@@ -18,7 +18,6 @@ import {
   FormInput,
   Container,
   ButtonVariation,
-  getErrorInfoFromErrorObject,
   shouldShowError
 } from '@wings-software/uicore'
 
@@ -37,6 +36,7 @@ import { String, useStrings } from 'framework/strings'
 import { NameIdDescriptionTags, PageSpinner, useToaster } from '@common/components'
 import { saveCurrentStepData } from '@connectors/pages/connectors/utils/ConnectorUtils'
 import { IdentifierSchema, NameSchema } from '@common/utils/Validation'
+import useRBACError from '@rbac/utils/useRBACError/useRBACError'
 import type { BaseProviderStepProps } from '../../types'
 import aboutHarnessAdapterIllustration from '../../images/aboutHarnessAdapterIllustration.svg'
 const aboutHarnessAdapterURL = `https://ngdocs.harness.io/article/ptlvh7c6z2-harness-argo-cd-git-ops-quickstart`
@@ -52,6 +52,7 @@ type Params = {
 
 const ProviderOverviewStep: React.FC<ProviderOverviewStepProps> = props => {
   const { prevStepData, nextStep, provider } = props
+  const { getRBACErrorMessage } = useRBACError()
   const { showSuccess, showError } = useToaster()
   const {
     accountId,
@@ -121,7 +122,7 @@ const ProviderOverviewStep: React.FC<ProviderOverviewStepProps> = props => {
       })
       .catch(e => {
         if (shouldShowError(e)) {
-          showError(getErrorInfoFromErrorObject(e))
+          showError(getRBACErrorMessage(e))
         }
       })
   }

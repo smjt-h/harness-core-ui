@@ -10,7 +10,7 @@ import type { MutateMethod } from 'restful-react'
 import { defaultTo, isEmpty, omit } from 'lodash-es'
 import { useHistory, useParams } from 'react-router-dom'
 
-import { getErrorInfoFromErrorObject, useToaster } from '@harness/uicore'
+import { useToaster } from '@harness/uicore'
 import type { CreateUpdateInputSetsReturnType, InputSetDTO, SaveInputSetDTO } from '@pipeline/utils/types'
 import { AppStoreContext } from 'framework/AppStore/AppStoreContext'
 import type {
@@ -28,6 +28,7 @@ import { useQueryParams } from '@common/hooks'
 import { useStrings } from 'framework/strings'
 import { yamlStringify } from '@common/utils/YamlHelperMethods'
 import { clearNullUndefined } from '@pipeline/utils/inputSetUtils'
+import useRBACError from '@rbac/utils/useRBACError/useRBACError'
 
 interface GetUpdatedGitDetailsReturnType extends EntityGitDetails {
   lastObjectId?: string
@@ -74,6 +75,7 @@ export function useSaveInputSet(inputSetInfo: InputSetInfo): UseSaveInputSetRetu
   const { createInputSet, updateInputSet, inputSetResponse, isEdit, setFormErrors } = inputSetInfo
   const { getString } = useStrings()
   const { showSuccess, showError } = useToaster()
+  const { getRBACErrorMessage } = useRBACError()
   const history = useHistory()
 
   const { projectIdentifier, orgIdentifier, accountId, pipelineIdentifier } = useParams<
@@ -138,7 +140,7 @@ export function useSaveInputSet(inputSetInfo: InputSetInfo): UseSaveInputSetRetu
         }
         // This is done because when git sync is enabled, errors are displayed in a modal
         if (!isGitSyncEnabled) {
-          showError(getErrorInfoFromErrorObject(e), undefined, 'pipeline.update.create.inputset')
+          showError(getRBACErrorMessage(e), undefined, 'pipeline.update.create.inputset')
         } else {
           throw e
         }

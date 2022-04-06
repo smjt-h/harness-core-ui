@@ -191,7 +191,7 @@ export const mockServiceNowApprovalData: UseGetMockDataWithMutateAndRefetch<Resp
       status: 'WAITING',
       details: {
         someDetail: 'someDetail',
-        issue: {
+        ticket: {
           key: 'ServiceNowIssueKey'
         }
       }

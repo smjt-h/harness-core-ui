@@ -218,7 +218,7 @@ export const NewEditServiceModal: React.FC<NewEditServiceModalProps> = ({
   return (
     <>
       <Container className={css.yamlToggle}>
-        <Layout.Horizontal flex={{ justifyContent: flexStart }} padding-top="8px">
+        <Layout.Horizontal flex={{ justifyContent: flexStart }} padding={{ top: 'small' }}>
           <VisualYamlToggle
             selectedView={selectedView}
             onChange={nextMode => {
@@ -230,7 +230,6 @@ export const NewEditServiceModal: React.FC<NewEditServiceModalProps> = ({
       <Formik<Required<ServiceResponseDTO>>
         initialValues={data as Required<ServiceResponseDTO>}
         formName="deployService"
-        enableReinitialize={false}
         onSubmit={values => {
           onSubmit(values)
         }}
@@ -282,7 +281,7 @@ export const NewEditServiceModal: React.FC<NewEditServiceModalProps> = ({
                     schema={serviceSchema?.data}
                     showSnippetSection={false}
                   />
-                  <Layout.Horizontal spacing={'xsmall'} padding={{ top: 'large' }}>
+                  <Layout.Horizontal spacing={'small'} padding={{ top: 'large' }}>
                     <Button
                       variation={ButtonVariation.PRIMARY}
                       type="submit"

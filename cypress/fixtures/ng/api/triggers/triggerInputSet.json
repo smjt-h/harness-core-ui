@@ -1,0 +1,10 @@
+{
+  "status": "SUCCESS",
+  "data": {
+    "inputSetTemplateYaml": "pipeline:\n  identifier: \"testPipeline_Cypress\"\n  stages:\n  - stage:\n      identifier: \"testStage_Cypress\"\n      type: \"Deployment\"\n      spec:\n        serviceConfig:\n          serviceRef: \"<+input>\"\n",
+    "modules": ["cd"],
+    "hasInputSets": false
+  },
+  "metaData": null,
+  "correlationId": "195d31f4-b9fe-4b4a-b142-b02d55fd2100"
+}

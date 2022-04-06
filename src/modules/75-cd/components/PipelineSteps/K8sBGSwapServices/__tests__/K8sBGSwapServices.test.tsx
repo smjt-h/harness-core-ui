@@ -6,9 +6,9 @@
  */
 
 import React from 'react'
-import { render } from '@testing-library/react'
+import { act, fireEvent, render } from '@testing-library/react'
 import { RUNTIME_INPUT_VALUE } from '@wings-software/uicore'
-import { StepViewType } from '@pipeline/components/AbstractSteps/Step'
+import { StepFormikRef, StepViewType } from '@pipeline/components/AbstractSteps/Step'
 import { StepType } from '@pipeline/components/PipelineSteps/PipelineStepInterface'
 import { factory, TestStepWidget } from '@pipeline/components/PipelineSteps/Steps/__tests__/StepTestUtil'
 import { K8sBGSwapServices } from '../K8sBGSwapServices'
@@ -124,5 +124,56 @@ describe('Test K8sBlueGreenDeployStep', () => {
       viewType: StepViewType.TriggerForm
     })
     expect(response).toMatchSnapshot()
+  })
+  test('on edit view update/change', async () => {
+    const onUpdate = jest.fn()
+    const onChange = jest.fn()
+    const ref = React.createRef<StepFormikRef<unknown>>()
+
+    const { container, queryByText } = render(
+      <TestStepWidget
+        initialValues={{
+          name: 'Test A',
+          identifier: 'Test A',
+          timeout: '1s',
+          type: 'K8sBGSwapService',
+          spec: {
+            skipDryRun: false
+          }
+        }}
+        type={StepType.K8sBGSwapServices}
+        stepViewType={StepViewType.Edit}
+        onUpdate={onUpdate}
+        onChange={onChange}
+        ref={ref}
+      />
+    )
+
+    //change
+    fireEvent.change(container.querySelector('input[value="Test A"]') as HTMLElement, { target: { value: 'newName' } })
+    fireEvent.change(container.querySelector('input[value="1s"]') as HTMLElement, { target: { value: '5s' } })
+
+    await ref.current?.submitForm()
+    expect(onChange).toHaveBeenCalledWith({
+      name: 'newName',
+      identifier: 'newName',
+      timeout: '5s',
+      type: 'K8sBGSwapService',
+      spec: {
+        skipDryRun: false
+      }
+    })
+
+    //timeout validation on submit
+    fireEvent.change(container.querySelector('input[value="5s"]') as HTMLElement, { target: { value: '' } })
+
+    await act(() => ref.current?.submitForm())
+    expect(queryByText('validation.timeout10SecMinimum')).toBeTruthy()
+  })
+  test('should render null for StepviewType.template', () => {
+    const { container } = render(
+      <TestStepWidget initialValues={{}} type={StepType.K8sBGSwapServices} stepViewType={StepViewType.Template} />
+    )
+    expect(container).toMatchSnapshot()
   })
 })

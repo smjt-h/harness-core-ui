@@ -10,9 +10,10 @@ import { useModalHook } from '@harness/use-modal'
 import { Dialog } from '@harness/uicore'
 import type { TokenDTO } from 'services/cd-ng'
 import { StringKeys, String } from 'framework/strings'
-import TokenForm from './views/TokenForm'
-import RotateTokenForm from './views/RotateTokenForm'
-
+import RotateTokenForm from '@rbac/modals/TokenModal/views/RotateTokenForm'
+import EditTokenForm from '@rbac/modals/TokenModal/views/EditToken'
+import CreateTokenForm from '@rbac/modals/TokenModal/views/CreateToken'
+import css from './useTokenModal.module.scss'
 export interface useTokenModalProps {
   onSuccess: () => void
   onCloseModal?: () => void
@@ -41,7 +42,13 @@ export const useTokenModal = ({ onSuccess, apiKeyType, parentIdentifier }: useTo
   }
   const [showModal, hideModal] = useModalHook(
     () => (
-      <Dialog isOpen={true} enforceFocus={false} onClose={hideModal} title={<String stringID={getLabelKey()} />}>
+      <Dialog
+        isOpen={true}
+        enforceFocus={false}
+        onClose={hideModal}
+        className={css.modal}
+        title={<String stringID={getLabelKey()} />}
+      >
         {isRotate ? (
           <RotateTokenForm
             data={tokenData}
@@ -49,11 +56,21 @@ export const useTokenModal = ({ onSuccess, apiKeyType, parentIdentifier }: useTo
             onSubmit={onSuccess}
             onClose={hideModal}
           />
-        ) : (
-          <TokenForm
+        ) : tokenData ? (
+          <EditTokenForm
             data={tokenData}
             apiKeyIdentifier={apiKeyIdentifier}
-            isEdit={!!tokenData}
+            isEdit={true}
+            apiKeyType={apiKeyType}
+            parentIdentifier={parentIdentifier}
+            onSubmit={onSuccess}
+            onClose={hideModal}
+          />
+        ) : (
+          <CreateTokenForm
+            data={tokenData}
+            apiKeyIdentifier={apiKeyIdentifier}
+            isEdit={false}
             apiKeyType={apiKeyType}
             parentIdentifier={parentIdentifier}
             onSubmit={onSuccess}

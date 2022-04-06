@@ -13,7 +13,7 @@ import type { Project } from 'services/cd-ng'
 import { useStrings } from 'framework/strings'
 import { PageSpinner } from '@common/components'
 import type { AccountPathProps } from '@common/interfaces/RouteInterfaces'
-import { getRBACErrorMessage } from '@rbac/utils/utils'
+import useRBACError from '@rbac/utils/useRBACError/useRBACError'
 import ProjectForm from './ProjectForm'
 
 interface EditModalData {
@@ -27,6 +27,7 @@ const EditProject: React.FC<StepProps<Project> & EditModalData> = props => {
   const { prevStepData, nextStep, identifier, orgIdentifier, closeModal, isStep } = props
   const [version, setVersion] = useState<string>()
   const { accountId } = useParams<AccountPathProps>()
+  const { getRBACErrorMessage } = useRBACError()
   const { showSuccess } = useToaster()
   const { getString } = useStrings()
   const projectIdentifier = isStep ? prevStepData?.identifier : identifier

@@ -10,6 +10,7 @@ import cx from 'classnames'
 import { Text, FontVariation, Icon, Layout, Button, ButtonVariation, IconName, Container } from '@harness/uicore'
 import { useStrings } from 'framework/strings'
 import type { StringsMap } from 'stringTypes'
+import { InfraProvisioningWizard } from './InfraProvisioningWizard/InfraProvisioningWizard'
 import { InfraProvisioningCarousel } from './InfraProvisioningCarousel/InfraProvisioningCarousel'
 
 import samplePipelineImg from '../../assets/images/sample-pipeline.svg'
@@ -20,6 +21,7 @@ const dummy_repo = 'github.com/harnesssampleapp'
 
 export default function GetStartedWithCI(): React.ReactElement {
   const { getString } = useStrings()
+  const [showWizard, setShowWizard] = useState<boolean>(false)
   const [showDialog, setShowDialog] = useState<boolean>(false)
 
   const renderBuildPipelineStep = React.useCallback(
@@ -105,7 +107,9 @@ export default function GetStartedWithCI(): React.ReactElement {
 
   const Divider = <div className={css.divider}></div>
 
-  return (
+  return showWizard ? (
+    <InfraProvisioningWizard />
+  ) : (
     <Layout.Vertical flex>
       <Icon name="ci-main" size={50} className={css.ciIcon} />
       <Text font={{ variation: FontVariation.H1_SEMI }} margin={{ bottom: 'medium' }}>
@@ -140,7 +144,11 @@ export default function GetStartedWithCI(): React.ReactElement {
               </Layout.Horizontal>
             </Layout.Vertical>
           </Layout.Horizontal>
-          <Button variation={ButtonVariation.PRIMARY} text={getString('common.createPipeline')} />
+          <Button
+            variation={ButtonVariation.PRIMARY}
+            text={getString('common.createPipeline')}
+            onClick={() => setShowWizard(true)}
+          />
         </Layout.Horizontal>
         <Layout.Vertical className={cx(css.tryASamplePipeline)}>
           <Layout.Horizontal flex={{ alignItems: 'flex-start' }}>

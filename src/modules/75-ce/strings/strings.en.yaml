@@ -863,7 +863,7 @@ budgets:
     alertsAt: Alerts at
 anomalyDetection:
   sideNavText: Anomalies
-  settingsBtn: settings
+  settingsBtn: '{{ $.settingsLabel }}'
   filters:
     groupByNoneLabel: 'GroupBy: None (Show all anomalies)'
     groupByNonePlaceholder: 'GroupBy: None'
@@ -873,7 +873,7 @@ anomalyDetection:
   summary:
     totalCountText: Anomalies Detected
     costImpacted: Total Cost Impact
-    perspectiveWise: Top 3 perspectives by anomalies
+    perspectiveWise: Top 3 Anomalies
     cloudProvidersWise: Anomalies by Cloud Providers
     statusWise: Anomalies by Status
   tableHeaders:
@@ -891,18 +891,49 @@ anomalyDetection:
     countText: '{{ count }} Anomalies'
     anomaliesRedirectionText: View anomalies
     filterText: Apply anomaly filters
+  settings:
+    heading: Alerts and notifications
+    subtext: You can set up alerts for anomalies in Perspectives.
+    newAlertBtn: Create New Alert
+    perspectiveNameColumn: Alert name / Perspective
+    options:
+      header: '{{ $.settingsLabel }}'
+  notificationAlerts:
+    heading: Anomaly Alerts
+    overviewStep: '{{ $.overview }}'
+    selectPerspective: '{{$.ce.perspectives.budgets.defineTarget.selectPerspective}}'
+    notificationStep: '{{$.notificationMethod}}'
+    notificationStepSubtext: You can set up channels to recieve alerts whenever an anomaly is observed on a Persepctive via Slack, Email or Microsoft Teams
+    alertChannelHeading: Anomaly alert channels
+    addChannelBtn: add Channel
+    selectChannelPlaceholder: Select Channel
+    selectMethod: '{{ $.UrlLabel }}'
+    urlInputPlaceholder: Enter webhook url or user groups
+    addAlertSuccessMsg: Notification alert added successfully!
+    deleteAlertSuccessMsg: Alert notification deleted successfully!
+    updateAlertSuccessMsg: Alert notification updated successfully!
+    slackChannelLabel: Slack webhook url
+    emailChannelLabel: '{{ $.email }}'
+    microsoftTeamChannelLabel: '{{ $.notifications.labelMS }}'
+  perspectiveCreateAnomalyAlertTitle: '{{ $.ce.anomalyDetection.notificationAlerts.heading}}({{ count }})'
+  addNewAnomalyAlert: add Anomaly Alert
+  addAnoamlyAlertDesc: You can recieve alerts whenever an anomaly occurs in the persepective. This can help you rectify any unfavourable cost spikes at the earliest.
+  createNewAnomalyAlert: + create new Anomaly Alert
+  alertType: Alert Type
+  alertReciepients: Reciepients
 businessMapping:
-  newButton: New Business Mapping
-  sideNavText: 'Business Mapping'
+  newButton: New Cost Category
+  sideNavText: 'Cost Categories'
   stepText: 'Step {{ current }} of {{ total }}'
-  deleted: 'Business Mapping {{ name }} deleted'
-  created: 'Business Mapping {{ name }} created'
-  emptySubtitles: You have not created any Business Mappings yet.
-  confirmDialogHeading: 'Delete Business Mapping'
-  confirmDialogBody: 'Are you sure you want to delete the Business Mapping {{ name }}?'
+  deleted: 'Cost Category {{ name }} deleted'
+  created: 'Cost Category {{ name }} created'
+  emptySubtitles: You have not created any Cost Categories yet.
+  confirmDialogHeading: 'Delete Cost Category'
+  confirmDialogBody: 'Are you sure you want to delete the Cost Category {{ name }}?'
+  shownAs: 'Shown as {{ value }}'
   form:
-    businessMappingPlaceholder: Enter Business Mapping Name
-    saveText: Save Business Mapping
+    businessMappingPlaceholder: Enter Cost Category Name
+    saveText: Save Cost Category
   errorMessages:
     viewConditions: Need at least one element
   manageUnallocatedCost:
@@ -929,3 +960,4 @@ businessMapping:
     sharedCosts: Shared Buckets
     createdBy: Created By
     lastEdit: Last Edit
+    unallocated: Unallocated

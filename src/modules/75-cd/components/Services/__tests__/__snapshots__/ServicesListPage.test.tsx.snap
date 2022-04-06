@@ -432,8 +432,7 @@ exports[`ServicesListPage Should open Add-ServiceModal, grid and list view on cl
         class="StyledProps--font StyledProps--main yamlToggle"
       >
         <div
-          class="Layout--horizontal StyledProps--main StyledProps--flex StyledProps--flex-justifyContent-flex-start"
-          padding-top="8px"
+          class="Layout--horizontal StyledProps--main StyledProps--flex StyledProps--flex-justifyContent-flex-start StyledProps--padding-top-small"
         >
           <div
             class="PillToggle--optionBtns"

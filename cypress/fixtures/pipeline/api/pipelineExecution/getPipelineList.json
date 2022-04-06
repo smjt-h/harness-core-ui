@@ -26,7 +26,7 @@
             "infrastructureTypes": ["KubernetesDirect"]
           }
         },
-        "stageNames": ["j"],
+        "stageNames": ["testStage_Cypress"],
         "gitDetails": {
           "objectId": null,
           "branch": null,

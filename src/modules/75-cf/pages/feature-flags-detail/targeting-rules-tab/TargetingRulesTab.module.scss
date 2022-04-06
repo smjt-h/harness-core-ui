@@ -6,12 +6,14 @@
  */
 
 .tab-container {
-  height: calc(100vh - 145px);
+  height: calc(100vh - 125px);
   display: grid;
-  grid-template-rows: 1fr 65px;
+  grid-template-rows: 1fr;
   padding-left: var(--spacing-xlarge);
   padding-right: var(--spacing-xlarge);
-  &:first-child {
-    overflow-y: auto;
-  }
+}
+
+.flag-rules-section {
+  overflow-y: auto;
+  margin-top: var(--spacing-xlarge) !important;
 }

@@ -1,0 +1,59 @@
+{
+  "status": "SUCCESS",
+  "data": {
+    "totalPages": 1,
+    "totalItems": 1,
+    "pageItemCount": 1,
+    "pageSize": 10,
+    "content": [
+      {
+        "connector": {
+          "name": "Jira cloudJira cloudJira cloudJira cloudJira cloudJira cloud",
+          "identifier": "Jira_cloud",
+          "description": "",
+          "orgIdentifier": "harness",
+          "projectIdentifier": "Chirag",
+          "tags": {},
+          "type": "Jira",
+          "spec": {
+            "jiraUrl": "https://harness.atlassian.net/",
+            "username": "chirag.parihar@harness.io",
+            "usernameRef": null,
+            "passwordRef": "Jira_QA_dev",
+            "delegateSelectors": []
+          }
+        },
+        "createdAt": 1621490452452,
+        "lastModifiedAt": 1626936099365,
+        "status": {
+          "status": "SUCCESS",
+          "errorSummary": null,
+          "errors": null,
+          "testedAt": 1626936101544,
+          "lastTestedAt": 0,
+          "lastConnectedAt": 1626936101544
+        },
+        "activityDetails": {
+          "lastActivityTime": 1626936099405
+        },
+        "harnessManaged": false,
+        "gitDetails": {
+          "objectId": null,
+          "branch": null,
+          "repoIdentifier": null,
+          "rootFolder": null,
+          "filePath": null,
+          "repoName": null
+        },
+        "entityValidityDetails": {
+          "valid": true,
+          "invalidYaml": null
+        }
+      }
+    ],
+    "pageIndex": 0,
+    "empty": false
+  },
+  "metaData": null,
+  "correlationId": "34c6da46-19ab-4ace-96f6-cdda34094e4d"
+}

@@ -25,6 +25,7 @@ import { usePutLoginSettings } from 'services/cd-ng'
 import type { AccountPathProps } from '@common/interfaces/RouteInterfaces'
 import { useStrings } from 'framework/strings'
 import { useToaster } from '@common/components'
+import useRBACError from '@rbac/utils/useRBACError/useRBACError'
 import cssConfiguration from '@auth-settings/pages/Configuration/Configuration.module.scss'
 import cssHarnessAccount from '@auth-settings/pages/Configuration/AccountAndOAuth/HarnessAccount/HarnessAccount.module.scss'
 
@@ -36,6 +37,7 @@ interface Props {
 }
 
 const PasswordExpire: React.FC<Props> = ({ loginSettings, refetchAuthSettings, canEdit, setUpdating }) => {
+  const { getRBACErrorMessage } = useRBACError()
   const { getString } = useStrings()
   const { accountId } = useParams<AccountPathProps>()
   const { showSuccess, showError } = useToaster()
@@ -83,7 +85,7 @@ const PasswordExpire: React.FC<Props> = ({ loginSettings, refetchAuthSettings, c
             showSuccess(getString('authSettings.passwordExpirationDisabled'), 5000)
           }
         } catch (e) {
-          /* istanbul ignore next */ showError(e.data?.message || e.message, 5000)
+          /* istanbul ignore next */ showError(getRBACErrorMessage(e), 5000)
         }
       }
     }

@@ -228,7 +228,13 @@ const NodeRecommendationDetails: React.FC<NodeRecommendationDetailsProps> = ({
 
   const [showModal, hideModal] = useModalHook(() => {
     return (
-      <Dialog isOpen={true} enforceFocus={false} onClose={hideModal} style={{ width: 1175 }}>
+      <Dialog
+        isOpen={true}
+        enforceFocus={false}
+        onClose={hideModal}
+        style={{ width: 1175 }}
+        className={css.modalContainer}
+      >
         <Layout.Vertical spacing="medium" padding="xxlarge" height="100%">
           <Text font={{ variation: FontVariation.H4 }} icon="gcp">
             {`${recommendationName}: Preferred Instance Families`}

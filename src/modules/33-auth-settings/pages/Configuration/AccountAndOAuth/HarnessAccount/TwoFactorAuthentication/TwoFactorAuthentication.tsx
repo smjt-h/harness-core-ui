@@ -17,6 +17,7 @@ import { useSetTwoFactorAuthAtAccountLevel } from 'services/cd-ng'
 import routes from '@common/RouteDefinitions'
 import FeatureSwitch from '@rbac/components/Switch/Switch'
 import { FeatureIdentifier } from 'framework/featureStore/FeatureIdentifier'
+import useRBACError from '@rbac/utils/useRBACError/useRBACError'
 import css from './TwoFactorAuthentication.module.scss'
 
 interface Props {
@@ -27,6 +28,7 @@ interface Props {
 }
 
 const TwoFactorAuthentication: React.FC<Props> = ({ twoFactorEnabled, onSuccess, canEdit, setUpdating }) => {
+  const { getRBACErrorMessage } = useRBACError()
   const { getString } = useStrings()
   const { accountId } = useParams<AccountPathProps>()
   const history = useHistory()
@@ -58,7 +60,7 @@ const TwoFactorAuthentication: React.FC<Props> = ({ twoFactorEnabled, onSuccess,
         showSuccess(message, 5000)
       }
     } catch (e) {
-      /* istanbul ignore next */ showError(e.data?.message || e.message, 5000)
+      /* istanbul ignore next */ showError(getRBACErrorMessage(e), 5000)
     }
   }
 

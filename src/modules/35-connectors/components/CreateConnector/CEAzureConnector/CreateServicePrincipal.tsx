@@ -47,7 +47,7 @@ const CreateServicePrincipal: React.FC<StepProps<StepSecretManagerProps> & Creat
     props.nextStep?.({ ...props.prevStepData } as ConnectorInfoDTO)
     // } catch (e) {
     //   setIsSaving(false)
-    // modalErrorHandler?.showDanger(e.data?.message || e.message)
+    // modalErrorHandler?.showDanger(getRBACErrorMessage(e))
     // }
   }
   return (

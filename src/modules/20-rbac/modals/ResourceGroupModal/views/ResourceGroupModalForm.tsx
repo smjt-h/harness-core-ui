@@ -27,6 +27,7 @@ import {
   useUpdateResourceGroup
 } from 'services/resourcegroups'
 import { useStrings } from 'framework/strings'
+import useRBACError from '@rbac/utils/useRBACError/useRBACError'
 import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
 import { DEFAULT_COLOR } from '@common/constants/Utils'
 import { IdentifierSchema, NameSchema } from '@common/utils/Validation'
@@ -41,6 +42,7 @@ interface ResourceGroupModalData {
 const ResourceGroupForm: React.FC<ResourceGroupModalData> = props => {
   const { onSubmit, data, editMode, onCancel } = props
   const { accountId, orgIdentifier, projectIdentifier } = useParams<ProjectPathProps>()
+  const { getRBACErrorMessage } = useRBACError()
   const { getString } = useStrings()
   const { showSuccess } = useToaster()
   const [modalErrorHandler, setModalErrorHandler] = useState<ModalErrorHandlerBinding>()
@@ -79,7 +81,7 @@ const ResourceGroupForm: React.FC<ResourceGroupModalData> = props => {
       }
     } catch (e) {
       /* istanbul ignore next */
-      modalErrorHandler?.showDanger(e.data?.message || e.message)
+      modalErrorHandler?.showDanger(getRBACErrorMessage(e))
     }
   }
   return (

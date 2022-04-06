@@ -20,7 +20,8 @@ import {
   useToaster,
   ButtonSize,
   ButtonVariation,
-  Link
+  Link,
+  getErrorInfoFromErrorObject
 } from '@wings-software/uicore'
 import { FontVariation, Color } from '@harness/design-system'
 import { Popover, Position, Classes, PopoverInteractionKind } from '@blueprintjs/core'
@@ -34,7 +35,10 @@ import {
   useListBudgetsForPerspective,
   useDeleteBudget,
   useDeleteReportSetting,
-  Budget
+  Budget,
+  useGetNotificationSettings,
+  CCMNotificationChannel,
+  useDeleteNotificationSettings
 } from 'services/ce'
 import { useStrings } from 'framework/strings'
 import formatCost from '@ce/utils/formatCost'
@@ -45,6 +49,7 @@ import Table from './Table'
 import PerspectiveBuilderPreview from '../PerspectiveBuilderPreview/PerspectiveBuilderPreview'
 import useCreateReportModal from './PerspectiveCreateReport'
 import useBudgetModal from './PerspectiveCreateBudget'
+import useAnomaliesAlertDialog from '../AnomaliesAlert/AnomaliesAlertDialog'
 import css from './PerspectiveReportsAndBudgets.module.scss'
 
 interface ListProps {
@@ -60,11 +65,17 @@ interface ListProps {
 interface TableActionsProps {
   onClickEdit: () => void
   onClickDelete: () => void
+  className?: string
 }
 
 interface ReportsAndBudgetsProps {
   values?: CEView
   onPrevButtonClick: () => void
+}
+
+interface SelectedAlertType {
+  perspectiveId: string
+  channels: CCMNotificationChannel[]
 }
 
 export interface UrlParams {
@@ -116,6 +127,7 @@ const ReportsAndBudgets: React.FC<ReportsAndBudgetsProps> = ({ values, onPrevBut
         >
           <ScheduledReports />
           <Budgets perspectiveName={values?.name || ''} />
+          <AnomalyAlerts />
           <FlexExpander />
           <Layout.Horizontal padding={{ top: 'medium' }} spacing="large">
             <Button icon="chevron-left" text={getString('previous')} onClick={onPrevButtonClick} />
@@ -253,7 +265,7 @@ const ScheduledReports: React.FC = () => {
           </Link>
         ) : null}
       </Layout.Horizontal>
-      <Text padding={{ top: 'large', bottom: 'large' }} color={Color.GREY_800} font="small">
+      <Text padding={{ top: 'large', bottom: 'large' }} color={Color.GREY_800} className={css.subtext}>
         {`${getString('ce.perspectives.reports.desc')} ${
           !reports.length ? getString('ce.perspectives.reports.msg') : ''
         }`}
@@ -428,7 +440,7 @@ const Budgets = ({ perspectiveName }: { perspectiveName: string }): JSX.Element 
           </Link>
         ) : null}
       </Layout.Horizontal>
-      <Text padding={{ top: 'large', bottom: 'large' }} color={Color.GREY_800} font="small">
+      <Text padding={{ top: 'large', bottom: 'large' }} color={Color.GREY_800} className={css.subtext}>
         {getString('ce.perspectives.budgets.desc')}
       </Text>
       {budgets.map((budget, idx) => {
@@ -439,9 +451,6 @@ const Budgets = ({ perspectiveName }: { perspectiveName: string }): JSX.Element 
             onButtonClick={openCreateNewBudgetModal}
             hasData={!isEmpty(budget)}
             loading={loading}
-            // Show create budget button only when there's no exisiting budget.
-            // A user can create only 1 budget at a time. To create a new, they
-            // have to delete the existing one, or just edit it.
             showCreateButton={isEmpty(budget)}
             meta={renderMeta(budget, idx)}
             grid={renderGrid(budget)}
@@ -458,6 +467,143 @@ const Budgets = ({ perspectiveName }: { perspectiveName: string }): JSX.Element 
           showCreateButton={true}
         />
       ) : null}
+    </Container>
+  )
+}
+
+export const AnomalyAlerts = () => {
+  const { getString } = useStrings()
+  const { showError, showSuccess } = useToaster()
+  const { perspectiveId, accountId } = useParams<UrlParams>()
+  const [isRefetching, setRefetchingState] = useState(false)
+  const selectedAlertInitState: SelectedAlertType = {
+    perspectiveId: perspectiveId,
+    channels: []
+  }
+  const [selectedAlert, setSelectedAlert] = useState(selectedAlertInitState)
+  const { openAnomaliesAlertModal } = useAnomaliesAlertDialog({
+    setRefetchingState: setRefetchingState,
+    selectedAlert: selectedAlert
+  })
+
+  const {
+    data: notificationsList,
+    loading,
+    refetch: fetchNotificationList
+  } = useGetNotificationSettings({
+    perspectiveId,
+    queryParams: {
+      accountIdentifier: accountId
+    }
+  })
+
+  const { mutate: deleteNotificationAlert } = useDeleteNotificationSettings({
+    queryParams: {
+      accountIdentifier: accountId,
+      perspectiveId: perspectiveId
+    }
+  })
+
+  useEffect(() => {
+    if (isRefetching) {
+      fetchNotificationList()
+      setRefetchingState(false)
+    }
+  }, [fetchNotificationList, isRefetching])
+
+  useEffect(() => {
+    if (selectedAlert && selectedAlert.channels.length) {
+      openAnomaliesAlertModal()
+    }
+  }, [openAnomaliesAlertModal, selectedAlert])
+
+  const alertList = notificationsList?.data
+  const channelsList = alertList?.channels || []
+
+  const deleteNotification = async () => {
+    try {
+      const response = await deleteNotificationAlert(void 0, {
+        headers: {
+          'content-type': 'application/json'
+        }
+      })
+      setRefetchingState(true)
+      response && showSuccess(getString('ce.anomalyDetection.notificationAlerts.deleteAlertSuccessMsg'))
+    } catch (error) {
+      showError(getErrorInfoFromErrorObject(error))
+    }
+  }
+
+  const onEdit = () => {
+    setSelectedAlert({
+      perspectiveId: perspectiveId,
+      channels: channelsList || []
+    })
+  }
+
+  const columns: Column<CCMNotificationChannel>[] = useMemo(
+    () => [
+      {
+        Header: getString('ce.anomalyDetection.alertType'),
+        accessor: 'notificationChannelType'
+      },
+      {
+        Header: getString('ce.anomalyDetection.alertReciepients'),
+        Cell: ({ row }: CellProps<CCMNotificationChannel>) => {
+          const recipients = [...(row.original.channelUrls || [])]
+          return <RenderEmailAddresses emailAddresses={recipients} />
+        }
+      }
+    ],
+    []
+  )
+
+  return (
+    <Container>
+      <Layout.Horizontal>
+        <Text color={Color.GREY_800} font={{ variation: FontVariation.H4 }}>
+          {getString('ce.anomalyDetection.perspectiveCreateAnomalyAlertTitle', {
+            count: channelsList.length || 0
+          })}
+        </Text>
+        <FlexExpander />
+        {channelsList.length ? (
+          <Link
+            size={ButtonSize.SMALL}
+            padding="none"
+            margin="none"
+            font={FontVariation.SMALL}
+            variation={ButtonVariation.LINK}
+            icon="plus"
+            iconProps={{
+              size: 10
+            }}
+            onClick={() => onEdit()}
+          >
+            {getString('ce.anomalyDetection.addNewAnomalyAlert')}
+          </Link>
+        ) : null}
+      </Layout.Horizontal>
+      <Text padding={{ top: 'large', bottom: 'large' }} color={Color.GREY_800} className={css.subtext}>
+        {getString('ce.anomalyDetection.addAnoamlyAlertDesc')}
+      </Text>
+      <Container className={css.anomalyAlertsWrapper}>
+        {channelsList.length ? (
+          <RenderEditDeleteActions
+            onClickEdit={() => onEdit()}
+            onClickDelete={() => deleteNotification()}
+            className={css.anomalyAlertsActionBtn}
+          />
+        ) : null}
+        <List
+          buttonText={getString('ce.anomalyDetection.createNewAnomalyAlert')}
+          onButtonClick={openAnomaliesAlertModal}
+          showCreateButton={!channelsList.length}
+          hasData={!!channelsList.length}
+          loading={loading}
+          grid={<Table<CCMNotificationChannel> data={channelsList} columns={columns} />}
+        />
+      </Container>
     </Container>
   )
 }
@@ -564,7 +710,7 @@ const RenderEmailAddresses = ({ emailAddresses = [] }: { emailAddresses: string[
 }
 
 const RenderEditDeleteActions = (props: TableActionsProps): JSX.Element => {
-  const { onClickEdit, onClickDelete } = props
+  const { onClickEdit, onClickDelete, className } = props
   return (
     <Layout.Horizontal
       spacing="medium"
@@ -572,9 +718,24 @@ const RenderEditDeleteActions = (props: TableActionsProps): JSX.Element => {
         justifyContent: 'center',
         alignItems: 'center'
       }}
+      className={className}
     >
-      <Icon size={14} name={'Edit'} color="primary7" onClick={onClickEdit} className={css.icon} />
-      <Icon size={14} name={'trash'} color="primary7" onClick={onClickDelete} className={css.icon} />
+      <Icon
+        size={14}
+        name={'Edit'}
+        color={Color.PRIMARY_7}
+        onClick={onClickEdit}
+        className={css.icon}
+        data-testid="editIcon"
+      />
+      <Icon
+        size={14}
+        name={'trash'}
+        color={Color.PRIMARY_7}
+        onClick={onClickDelete}
+        className={css.icon}
+        data-testid="deleteIcon"
+      />
     </Layout.Horizontal>
   )
 }

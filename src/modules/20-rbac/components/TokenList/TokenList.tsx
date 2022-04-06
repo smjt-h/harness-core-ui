@@ -20,6 +20,7 @@ import { PageSpinner, TagsPopover, useToaster } from '@common/components'
 import { PermissionIdentifier } from '@rbac/interfaces/PermissionIdentifier'
 import { ResourceType } from '@rbac/interfaces/ResourceType'
 import RbacMenuItem from '@rbac/components/MenuItem/MenuItem'
+import { hasNoExpiryDate } from '@rbac/modals/TokenModal/views/utils'
 import css from './TokenList.module.scss'
 
 interface TokenListProps {
@@ -61,8 +62,14 @@ const RenderColumnLastUpdated: Renderer<CellProps<TokenAggregateDTO>> = ({ row }
 }
 
 const RenderColumnExpiryDate: Renderer<CellProps<TokenAggregateDTO>> = ({ row }) => {
-  const data = row.original
-  return <Text> {moment(data.token.scheduledExpireTime || data.expiryAt).format('MM/DD/YYYY hh:mm:ss a')}</Text>
+  const data = row.original.token.scheduledExpireTime || row.original.expiryAt
+  const { getString } = useStrings()
+
+  return (
+    <Text>
+      {hasNoExpiryDate(data) ? getString('common.noexpiration') : moment(data).format('MM/DD/YYYY hh:mm:ss a')}
+    </Text>
+  )
 }
 
 const RenderColumnStatus: Renderer<CellProps<TokenAggregateDTO>> = ({ row }) => {

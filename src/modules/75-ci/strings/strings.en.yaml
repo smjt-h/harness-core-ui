@@ -144,6 +144,17 @@ getStartedWithCI:
   infraProvisioningFailed: Infrastructure Provisioning failed
   troubleShootFailedProvisioning: We were unable to set up the hosted infrastructure. Click <b>Choose a different infrastructure</b> to use your own infrastructure or click <b>Contact Support</b> and we will resolve the issue.
   chooseDiffInfra: Choose a different Infrastructure
+  buildLocation: Where would you like to run your Builds?
+  hostedByHarnessBuildLocation: Run builds for free during trial on Linux based infrastructure provided by Harness.
+  k8sBuildLocation: Run your builds in an existing Kubernetes cluster. Each Pipeline Stage runs on an ephemeral pod.
+  awsBuildLocation: Run your builds on Linux or Windows VMs.
+  dockerRunnerBuildLocation: Execute your Pipelines inside Docker containers.
+  dockerRunner: Docker Runner
+  selectInfra: Select your Infrastructure
+  hosting: 'My Repo is {{hosting}}'
+  onCloudLabel: on Cloud
+  onPremLabel: On-prem
+  codeRepo: Which Code repository do you use?
   carousel:
     labels:
       harnessCIFeatures: Harness CI

@@ -40,6 +40,7 @@ import { useStrings } from 'framework/strings'
 import { useGitSyncStore } from 'framework/GitRepoStore/GitSyncStoreContext'
 import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
 import SCMCheck from '@common/components/SCMCheck/SCMCheck'
+import useRBACError from '@rbac/utils/useRBACError/useRBACError'
 import {
   branchFetchHandler,
   defaultInitialFormData,
@@ -74,6 +75,7 @@ const FullSyncForm: React.FC<ModalConfigureProps & FullSyncFormProps> = props =>
   const { accountId, orgIdentifier, projectIdentifier } = useParams<ProjectPathProps>()
   const { showSuccess, showError } = useToaster()
   const { getString } = useStrings()
+  const { getRBACErrorMessage } = useRBACError()
 
   const [modalErrorHandler, setModalErrorHandler] = React.useState<ModalErrorHandlerBinding>()
   const formikRef = useRef<FormikContext<GitFullSyncConfigRequestDTO>>()
@@ -198,7 +200,7 @@ const FullSyncForm: React.FC<ModalConfigureProps & FullSyncFormProps> = props =>
     try {
       fetchBranches(repoIdentifier, query)
     } catch (e) {
-      modalErrorHandler?.showDanger(e.data?.message || e.message)
+      modalErrorHandler?.showDanger(getRBACErrorMessage(e))
     }
   }, 1000)
 

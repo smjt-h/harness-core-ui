@@ -15,7 +15,7 @@ import { useStrings } from 'framework/strings'
 import type { OrgPathProps } from '@common/interfaces/RouteInterfaces'
 import { PageSpinner } from '@common/components'
 import { useQueryParams } from '@common/hooks'
-import { getRBACErrorMessage } from '@rbac/utils/utils'
+import useRBACError from '@rbac/utils/useRBACError/useRBACError'
 import { useTelemetry } from '@common/hooks/useTelemetry'
 import { Category, ProjectActions } from '@common/constants/TrackingConstants'
 import ProjectForm from './ProjectForm'
@@ -27,6 +27,7 @@ interface CreateModalData {
 const CreateProject: React.FC<StepProps<Project> & CreateModalData> = props => {
   const { accountId, orgIdentifier: orgIdPathParam } = useParams<OrgPathProps>()
   const { orgIdentifier: orgIdQueryParam } = useQueryParams<OrgPathProps>()
+  const { getRBACErrorMessage } = useRBACError()
   const orgIdentifier = orgIdPathParam || orgIdQueryParam
   const { nextStep, modules } = props
   const { getString } = useStrings()

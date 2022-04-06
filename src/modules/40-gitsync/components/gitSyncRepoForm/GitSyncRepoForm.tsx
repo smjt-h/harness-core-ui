@@ -51,6 +51,7 @@ import { GitSyncStoreProvider } from 'framework/GitRepoStore/GitSyncStoreContext
 import { FeatureFlag } from '@common/featureFlags'
 import { useFeatureFlag } from '@common/hooks/useFeatureFlag'
 import type { StringsMap } from 'framework/strings/StringsContext'
+import useRBACError from '@rbac/utils/useRBACError/useRBACError'
 import RepoBranchSelect from './RepoBranchSelect'
 import RepoTestConnection from './RepoTestConnection'
 import css from './GitSyncRepoForm.module.scss'
@@ -119,11 +120,13 @@ export const gitSyncFormDefaultInitialData = {
 
 const GitSyncRepoForm: React.FC<ModalConfigureProps & GitSyncRepoFormProps> = props => {
   const { accountId, projectIdentifier, orgIdentifier, isNewUser, onClose } = props
+
   const bitBucketSupported = useFeatureFlag(FeatureFlag.GIT_SYNC_WITH_BITBUCKET)
   const [needSCM, setNeedSCM] = React.useState<boolean>(isNewUser)
   const [modalErrorHandler, setModalErrorHandler] = useState<ModalErrorHandlerBinding | undefined>()
   const [connectorIdentifierRef, setConnectorIdentifierRef] = useState<string>('')
   const [repositoryURL, setRepositoryURL] = useState<string | undefined>()
+  const { getRBACErrorMessage } = useRBACError()
   const { getString } = useStrings()
   const { showSuccess } = useToaster()
   const [testStatus, setTestStatus] = useState<TestStatus>(TestStatus.NOT_INITIATED)
@@ -172,7 +175,7 @@ const GitSyncRepoForm: React.FC<ModalConfigureProps & GitSyncRepoFormProps> = pr
       showSuccess(getString('gitsync.successfullCreate', { name: data.name }))
       props.onSuccess?.(response, formData)
     } catch (e) {
-      modalErrorHandler?.showDanger(defaultTo(e.data?.message, e.message))
+      modalErrorHandler?.showDanger(getRBACErrorMessage(e))
     }
   }
 

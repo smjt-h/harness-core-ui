@@ -35,7 +35,6 @@ import { ResourceType } from '@rbac/interfaces/ResourceType'
 import { GitSyncStoreProvider } from 'framework/GitRepoStore/GitSyncStoreContext'
 import { yamlStringify } from '@common/utils/YamlHelperMethods'
 import type { InputSetDTO } from '@pipeline/utils/types'
-import type { Values } from '../PipelineStudio/StepCommands/StepCommandTypes'
 
 function clearNullUndefined<T>(data: T): T {
   return omitBy(omitBy(data, isUndefined), isNull) as T
@@ -136,7 +135,7 @@ interface SaveAsInputSetProps {
   pipeline?: PipelineInfoConfig
   currentPipeline?: { pipeline?: PipelineInfoConfig }
   template: string | undefined
-  values: Values
+  values: PipelineInfoConfig
   accountId: string
   projectIdentifier: string
   orgIdentifier: string
@@ -232,7 +231,7 @@ function SaveAsInputSet({
         disabled={!canEdit}
         lazy
         content={
-          <div>
+          <div data-testid="save-as-inputset-form">
             <Formik<InputSetDTO & GitContextProps>
               formName="runPipelineForm"
               onSubmit={input => {

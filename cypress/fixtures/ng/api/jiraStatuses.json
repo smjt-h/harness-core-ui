@@ -1,0 +1,16 @@
+{
+  "status": "SUCCESS",
+  "data": [
+    {
+      "id": "1",
+      "name": "New",
+      "statusCategory": {
+        "id": 4,
+        "key": "indeterminate",
+        "name": "In Progress"
+      }
+    }
+  ],
+  "metaData": null,
+  "correlationId": "8f3abf5d-b9e0-4899-9dc1-4259c75da5e4"
+}

@@ -80,7 +80,7 @@ const TabTargeting: React.FC<TabTargetingProps> = props => {
       accountIdentifier={accountIdentifier}
       environmentIdentifier={environmentIdentifier}
     >
-      <Layout.Vertical padding={{ left: 'xxlarge', right: 'large', bottom: 'large' }} spacing="medium">
+      <Layout.Vertical padding={{ left: 'xxlarge', right: 'large', bottom: 'large', top: 'xlarge' }} spacing="medium">
         <Layout.Horizontal flex={{ alignItems: 'center' }}>
           <FlagToggleSwitch
             currentState={formikProps.values.state}

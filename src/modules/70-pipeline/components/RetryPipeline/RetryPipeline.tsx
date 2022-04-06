@@ -78,7 +78,6 @@ import SaveAsInputSet from '../RunPipelineModal/SaveAsInputSet'
 import { InputSetSelector, InputSetSelectorProps } from '../InputSetSelector/InputSetSelector'
 import SelectExistingInputsOrProvideNew from '../RunPipelineModal/SelectExistingOrProvide'
 import { PreFlightCheckModal } from '../PreFlightCheckModal/PreFlightCheckModal'
-import type { Values } from '../PipelineStudio/StepCommands/StepCommandTypes'
 import type { InputSetValue } from '../InputSetSelector/utils'
 import css from './RetryPipeline.module.scss'
 
@@ -581,11 +580,13 @@ function RetryPipeline({
     return <PageSpinner />
   }
   return (
-    <Formik
-      initialValues={(currentPipeline?.pipeline ? clearRuntimeInput(currentPipeline.pipeline) : {}) as Values}
+    <Formik<PipelineInfoConfig>
+      initialValues={
+        currentPipeline?.pipeline ? clearRuntimeInput(currentPipeline.pipeline) : { name: '', identifier: '' }
+      }
       formName="retryPipeline"
       onSubmit={values => {
-        handleRetryPipeline(values as any)
+        handleRetryPipeline(values, false)
       }}
       enableReinitialize
       validate={async values => {

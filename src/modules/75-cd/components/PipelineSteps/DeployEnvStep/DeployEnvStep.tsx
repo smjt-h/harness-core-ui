@@ -231,7 +231,7 @@ export const NewEditEnvironmentModal: React.FC<NewEditEnvironmentModalProps> = (
   return (
     <>
       <Container className={css.yamlToggleEnv}>
-        <Layout.Horizontal flex={{ justifyContent: flexStart }} padding-top="8px">
+        <Layout.Horizontal flex={{ justifyContent: flexStart }} padding={{ top: 'small' }}>
           <VisualYamlToggle
             selectedView={selectedView}
             onChange={nextMode => {
@@ -243,7 +243,6 @@ export const NewEditEnvironmentModal: React.FC<NewEditEnvironmentModalProps> = (
       <Layout.Vertical>
         <Formik<Required<EnvironmentResponseDTO>>
           initialValues={data as Required<EnvironmentResponseDTO>}
-          enableReinitialize={false}
           formName="deployEnv"
           onSubmit={values => {
             onSubmit(values)
@@ -303,7 +302,7 @@ export const NewEditEnvironmentModal: React.FC<NewEditEnvironmentModalProps> = (
                       showSnippetSection={false}
                     />
 
-                    <Layout.Horizontal padding={{ top: 'large' }}>
+                    <Layout.Horizontal spacing="small" padding={{ top: 'large' }}>
                       <Button
                         variation={ButtonVariation.PRIMARY}
                         type="submit"
@@ -313,7 +312,6 @@ export const NewEditEnvironmentModal: React.FC<NewEditEnvironmentModalProps> = (
                           onSubmit(parse(latestYaml)?.environment)
                         }}
                       />
-                      &nbsp; &nbsp;
                       <Button variation={ButtonVariation.TERTIARY} onClick={closeModal} text={getString('cancel')} />
                     </Layout.Horizontal>
                   </Container>

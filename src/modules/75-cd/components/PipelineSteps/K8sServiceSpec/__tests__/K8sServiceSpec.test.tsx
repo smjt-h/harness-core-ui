@@ -16,6 +16,7 @@ import { StepViewType } from '@pipeline/components/AbstractSteps/Step'
 import { StepWidget } from '@pipeline/components/AbstractSteps/StepWidget'
 import { StepType } from '@pipeline/components/PipelineSteps/PipelineStepInterface'
 import type { ResponseConnectorResponse } from 'services/cd-ng'
+import type { CompletionItemInterface } from '@common/interfaces/YAMLBuilderProps'
 import { KubernetesServiceSpec } from '../K8sServiceSpec'
 import PipelineMock from './mock.json'
 import TemplateMock from './template.mock.json'
@@ -23,6 +24,7 @@ import connectorListJSON from './connectorList.json'
 import secretMockdata from './secretMockdata.json'
 import { PipelineResponse } from './pipelineMock'
 import type { K8SDirectServiceStep } from '../K8sServiceSpecInterface'
+import { getParams, getYaml, mockBuildList, mockManifestConnector } from './mocks'
 
 const fetchConnectors = (): Promise<unknown> => Promise.resolve({})
 jest.mock('@common/components/YAMLBuilder/YamlBuilder')
@@ -319,6 +321,10 @@ export const ConnectorResponse: UseGetReturnData<ResponseConnectorResponse> = {
 jest.mock('services/cd-ng', () => ({
   useGetConnectorListV2: jest.fn().mockImplementation(() => ({ mutate: fetchConnectors })),
   getConnectorListPromise: () => Promise.resolve(connectorListJSON),
+  getConnectorListV2Promise: () => Promise.resolve(mockManifestConnector),
+  getBuildDetailsForDockerPromise: () => Promise.resolve(mockBuildList),
+  getBuildDetailsForGcrPromise: () => Promise.resolve(mockBuildList),
+  getBuildDetailsForEcrPromise: () => Promise.resolve(mockBuildList),
   useGetConnector: jest.fn(() => ConnectorResponse),
   useCreateConnector: jest.fn(() =>
     Promise.resolve({
@@ -632,5 +638,73 @@ describe('StepWidget tests', () => {
       </TestWrapper>
     )
     expect(container).toMatchSnapshot()
+  })
+})
+
+const connectorRefPath =
+  'pipeline.stages.0.stage.spec.serviceConfig.serviceDefinition.spec.manifests.0.manifest.spec.store.spec.connectorRef'
+const connectorArtifactPrimaryRefPath =
+  'pipeline.stages.0.stage.spec.serviceConfig.serviceDefinition.spec.artifacts.primary.spec.connectorRef'
+const connectorArtifactSidecarRefPath =
+  'pipeline.stages.0.stage.spec.serviceConfig.serviceDefinition.spec.artifacts.sidecars.0.sidecar.spec.connectorRef'
+const artifactTagListGCRPath =
+  'pipeline.stages.0.stage.spec.serviceConfig.serviceDefinition.spec.artifacts.sidecars.0.sidecar.spec.tag'
+const artifactTagListECRPath =
+  'pipeline.stages.0.stage.spec.serviceConfig.serviceDefinition.spec.artifacts.sidecars.1.sidecar.spec.tag'
+const artifactTagListDockerPath =
+  'pipeline.stages.0.stage.spec.serviceConfig.serviceDefinition.spec.artifacts.sidecars.2.sidecar.spec.tag'
+
+describe('Autocomplete fields test', () => {
+  test('Test connectorRef Manifest', async () => {
+    const step = new KubernetesServiceSpec() as any
+    let list: CompletionItemInterface[]
+    list = await step.getManifestConnectorsListForYaml(connectorRefPath, getYaml(), getParams())
+    expect(list).toHaveLength(1)
+    expect(list[0].insertText).toBe('account.git9march')
+    list = await step.getManifestConnectorsListForYaml('invalid path', getYaml(), getParams())
+    expect(list).toHaveLength(0)
+  })
+  test('Test connectorRef ArtifactsPrimaryConnectors', async () => {
+    const step = new KubernetesServiceSpec() as any
+    let list: CompletionItemInterface[]
+    list = await step.getArtifactsPrimaryConnectorsListForYaml(connectorArtifactPrimaryRefPath, getYaml(), getParams())
+    expect(list).toHaveLength(1)
+    expect(list[0].insertText).toBe('account.git9march')
+    list = await step.getArtifactsPrimaryConnectorsListForYaml('invalid path', getYaml(), getParams())
+    expect(list).toHaveLength(0)
+  })
+  test('Test connectorRef ArtifactsSidecarConnectors', async () => {
+    const step = new KubernetesServiceSpec() as any
+    let list: CompletionItemInterface[]
+    list = await step.getArtifactsSidecarConnectorsListForYaml(connectorArtifactSidecarRefPath, getYaml(), getParams())
+    expect(list).toHaveLength(1)
+    expect(list[0].insertText).toBe('account.git9march')
+    list = await step.getArtifactsSidecarConnectorsListForYaml('invalid path', getYaml(), getParams())
+    expect(list).toHaveLength(0)
+  })
+  test('Test connectorRef ArtifactsTagsList', async () => {
+    const step = new KubernetesServiceSpec() as any
+    let list: CompletionItemInterface[]
+
+    //GCR
+    list = await step.getArtifactsTagsListForYaml(artifactTagListGCRPath, getYaml(), getParams())
+    expect(list).toHaveLength(2)
+    expect(list[0].insertText).toBe('latesttag')
+    list = await step.getArtifactsTagsListForYaml('invalid path', getYaml(), getParams())
+    expect(list).toHaveLength(0)
+
+    //ECR
+    list = await step.getArtifactsTagsListForYaml(artifactTagListECRPath, getYaml(), getParams())
+    expect(list).toHaveLength(2)
+    expect(list[0].insertText).toBe('latesttag')
+    list = await step.getArtifactsTagsListForYaml('invalid path', getYaml(), getParams())
+    expect(list).toHaveLength(0)
+
+    //Docker
+    list = await step.getArtifactsTagsListForYaml(artifactTagListDockerPath, getYaml(), getParams())
+    expect(list).toHaveLength(2)
+    expect(list[0].insertText).toBe('latesttag')
+    list = await step.getArtifactsTagsListForYaml('invalid path', getYaml(), getParams())
+    expect(list).toHaveLength(0)
   })
 })

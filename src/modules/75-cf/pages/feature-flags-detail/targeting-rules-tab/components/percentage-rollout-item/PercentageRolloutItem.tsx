@@ -12,10 +12,12 @@ import PercentageRollout from '@cf/components/PercentageRollout/PercentageRollou
 import type { Segment, Variation } from 'services/cf'
 import { useStrings } from 'framework/strings'
 import type { VariationPercentageRollout } from '../../Types.types'
+import { DisabledFeatureTooltip } from '../disabled-feature-tooltip/DisabledFeatureTooltip'
 
 interface VariationPercentageRolloutProps {
   variationPercentageRollout: VariationPercentageRollout
   index: number
+  disabled: boolean
   removePercentageRollout: (index: number) => void
   segments: Segment[]
   featureFlagVariations: Variation[]
@@ -24,6 +26,7 @@ interface VariationPercentageRolloutProps {
 const PercentageRolloutItem = ({
   variationPercentageRollout,
   index,
+  disabled,
   removePercentageRollout,
   segments,
   featureFlagVariations
@@ -33,16 +36,19 @@ const PercentageRolloutItem = ({
   return (
     <>
       <Container flex={{ justifyContent: 'space-between', alignItems: 'center' }}>
-        <Heading level={4} font={{ variation: FontVariation.BODY2 }} margin={{ top: 'medium' }}>
+        <Heading level={4} font={{ variation: FontVariation.BODY2 }}>
           {getString('cf.featureFlags.percentageRollout')}
         </Heading>
-        <Button
-          data-testid={`remove_percentage_rollout_${index}`}
-          icon="trash"
-          minimal
-          withoutCurrentColor
-          onClick={() => removePercentageRollout(index)}
-        />
+        <DisabledFeatureTooltip>
+          <Button
+            disabled={disabled}
+            data-testid={`remove_percentage_rollout_${index}`}
+            icon="trash"
+            minimal
+            withoutCurrentColor
+            onClick={() => removePercentageRollout(index)}
+          />
+        </DisabledFeatureTooltip>
       </Container>
 
       <Container

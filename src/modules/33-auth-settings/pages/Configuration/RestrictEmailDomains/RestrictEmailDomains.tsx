@@ -15,6 +15,7 @@ import type { AccountPathProps } from '@common/interfaces/RouteInterfaces'
 import { useToaster } from '@common/components'
 import { useUpdateWhitelistedDomains } from 'services/cd-ng'
 import { useRestrictEmailDomains } from '@auth-settings/modals/RestrictEmailDomains/useRestrictEmailDomains'
+import useRBACError from '@rbac/utils/useRBACError/useRBACError'
 import css from './RestrictEmailDomains.module.scss'
 
 interface Props {
@@ -25,6 +26,7 @@ interface Props {
 }
 
 const RestrictEmailDomains: React.FC<Props> = ({ whitelistedDomains, refetchAuthSettings, canEdit, setUpdating }) => {
+  const { getRBACErrorMessage } = useRBACError()
   const { getString } = useStrings()
   const { showSuccess, showError } = useToaster()
   const { accountId } = useParams<AccountPathProps>()
@@ -55,7 +57,7 @@ const RestrictEmailDomains: React.FC<Props> = ({ whitelistedDomains, refetchAuth
         showSuccess(getString('authSettings.whitelistedDomainsDisabled'), 5000)
       }
     } catch (e) {
-      /* istanbul ignore next */ showError(e.data?.message || e.message, 5000)
+      /* istanbul ignore next */ showError(getRBACErrorMessage(e), 5000)
     }
   }
 

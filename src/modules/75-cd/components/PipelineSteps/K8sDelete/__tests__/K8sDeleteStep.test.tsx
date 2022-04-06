@@ -160,7 +160,7 @@ describe('Test K8sDeleteStep', () => {
     const onUpdate = jest.fn()
     // (JSX attribute) RefAttributes<Pick<FormikProps<unknown>, "errors" | "submitForm">>.ref?: ((instance: Pick<FormikProps<unknown>, "errors" | "submitForm"> | null) => void) | React.RefObject<Pick<FormikProps<unknown>, "errors" | "submitForm">> | null | undefined
     const ref = React.createRef<StepFormikRef<unknown>>()
-    render(
+    const { container, queryByText } = render(
       <TestStepWidget
         initialValues={{
           type: 'K8sDelete',
@@ -194,6 +194,12 @@ describe('Test K8sDeleteStep', () => {
         }
       }
     })
+
+    //timeout validation on submit
+    fireEvent.change(container.querySelector('input[value="12m"]') as HTMLElement, { target: { value: '' } })
+
+    await act(() => ref.current?.submitForm())
+    expect(queryByText('validation.timeout10SecMinimum')).toBeTruthy()
   })
 
   test('should render variable view', () => {
@@ -334,7 +340,7 @@ describe('Test K8sDeleteStep', () => {
           deleteResources: {
             type: 'ManifestPath',
             spec: {
-              manifestPaths: '<+input>' as unknown as string[]
+              manifestPaths: null
             }
           }
         },
@@ -356,9 +362,9 @@ describe('Test K8sDeleteStep', () => {
         }
       },
       viewType: StepViewType.DeploymentForm
-    }
+    } as any
     const response = new K8sDeleteStep().validateInputSet(data)
-    const processFormResponse = new K8sDeleteStep().processFormData(data.data)
+    const processFormResponse = new K8sDeleteStep().processFormData(data.template)
     expect(processFormResponse).toMatchSnapshot()
     expect(response).toMatchSnapshot()
   })
@@ -371,7 +377,7 @@ describe('Test K8sDeleteStep', () => {
           deleteResources: {
             type: 'ResourceName',
             spec: {
-              resourceNames: '<+input>' as unknown as string[]
+              resourceNames: null
             }
           }
         },
@@ -394,9 +400,9 @@ describe('Test K8sDeleteStep', () => {
         }
       },
       viewType: StepViewType.TriggerForm
-    }
+    } as any
     const response = new K8sDeleteStep().validateInputSet(data)
-    const processFormResponse = new K8sDeleteStep().processFormData(data.data)
+    const processFormResponse = new K8sDeleteStep().processFormData(data.template)
     expect(processFormResponse).toMatchSnapshot()
     expect(response).toMatchSnapshot()
   })

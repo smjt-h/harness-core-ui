@@ -23,7 +23,6 @@ const renderComponent = (props: Partial<DefaultRulesProps> = {}): void => {
           { identifier: 'true', name: 'True', value: 'true' },
           { identifier: 'false', name: 'False', value: 'false' }
         ]}
-        isLoading={false}
         {...props}
       />
     </TestWrapper>

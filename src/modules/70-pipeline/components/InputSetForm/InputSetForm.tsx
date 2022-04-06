@@ -15,7 +15,6 @@ import {
   PageBody,
   VisualYamlSelectedView as SelectedView,
   VisualYamlToggle,
-  getErrorInfoFromErrorObject,
   useConfirmationDialog,
   ButtonVariation,
   Button
@@ -25,6 +24,7 @@ import { useHistory, useParams } from 'react-router-dom'
 import { parse } from 'yaml'
 import type { FormikProps } from 'formik'
 import type { PipelineInfoConfig } from 'services/cd-ng'
+import useRBACError from '@rbac/utils/useRBACError/useRBACError'
 import {
   useGetTemplateFromPipeline,
   useGetPipeline,
@@ -172,6 +172,7 @@ export function InputSetForm(props: InputSetFormProps): React.ReactElement {
   const [yamlHandler, setYamlHandler] = React.useState<YamlBuilderHandlerBinding | undefined>()
   const [formErrors, setFormErrors] = React.useState<Record<string, any>>({})
   const { showError } = useToaster()
+  const { getRBACErrorMessage } = useRBACError()
 
   const {
     data: inputSetResponse,
@@ -451,7 +452,7 @@ export function InputSetForm(props: InputSetFormProps): React.ReactElement {
         })
         .catch(e => {
           setMergeTemplate(undefined)
-          showError(getErrorInfoFromErrorObject(e), undefined, 'pipeline.get.template')
+          showError(getRBACErrorMessage(e), undefined, 'pipeline.get.template')
         })
     }
   }, [inputSetIdentifier, loadingInputSet])

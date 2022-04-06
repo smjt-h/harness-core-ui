@@ -29,6 +29,7 @@ import { useChangeUserPassword } from 'services/cd-ng'
 import type { PasswordStrengthPolicy } from 'services/cd-ng'
 import { useToaster } from '@common/components'
 
+import useRBACError from '@rbac/utils/useRBACError/useRBACError'
 import css from './ChangePasswordForm.module.scss'
 
 interface ChangePasswordFormProps {
@@ -71,6 +72,7 @@ const InputIcon = ({ isVisible, onClick }: InputIcon): React.ReactElement => (
 
 const ChangePasswordForm: React.FC<ChangePasswordFormProps> = ({ hideModal, passwordStrengthPolicy }) => {
   const { getString } = useStrings()
+  const { getRBACErrorMessage } = useRBACError()
   const { showSuccess } = useToaster()
   const [visiblePasswords, setVisiblePasswords] = React.useState<Array<PasswordTypes>>([])
   const [modalErrorHandler, setModalErrorHandler] = React.useState<ModalErrorHandlerBinding>()
@@ -106,7 +108,7 @@ const ChangePasswordForm: React.FC<ChangePasswordFormProps> = ({ hideModal, pass
       }
     } catch (e) {
       /* istanbul ignore next */ if (shouldShowError(e)) {
-        modalErrorHandler?.showDanger(e.data?.message || e.message)
+        modalErrorHandler?.showDanger(getRBACErrorMessage(e))
       }
     }
   }

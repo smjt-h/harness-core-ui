@@ -7,7 +7,7 @@
 
 import React, { Dispatch, SetStateAction, useState } from 'react'
 import type { CellProps, Column, Renderer } from 'react-table'
-import { Text, Icon, TableV2, Layout, Button, getErrorInfoFromErrorObject } from '@wings-software/uicore'
+import { Text, Icon, TableV2, Layout, Button } from '@wings-software/uicore'
 import { Color, FontVariation } from '@harness/design-system'
 import qs from 'qs'
 import { Link, useParams } from 'react-router-dom'
@@ -25,6 +25,7 @@ import { generateFilters, generateGroupBy } from '@ce/utils/anomaliesUtils'
 import type { CloudProvider, TimeRangeFilterType } from '@ce/types'
 import { useFeatureFlag } from '@common/hooks/useFeatureFlag'
 import { FeatureFlag } from '@common/featureFlags'
+import useRBACError from '@rbac/utils/useRBACError/useRBACError'
 import css from '../../pages/anomalies-overview/AnomaliesOverviewPage.module.scss'
 
 const getResourceIcon = (cloudProvider: string) => {
@@ -72,6 +73,7 @@ const AnomaliesMenu: React.FC<AnomaliesMenu> = ({ anomalyId }) => {
       anomalyId: anomalyId
     }
   })
+  const { getRBACErrorMessage } = useRBACError()
   const { showError, showSuccess } = useToaster()
   const isDevFeature = useFeatureFlag(FeatureFlag.CCM_DEV_TEST)
 
@@ -82,7 +84,7 @@ const AnomaliesMenu: React.FC<AnomaliesMenu> = ({ anomalyId }) => {
       })
       response && showSuccess(getString('ce.anomalyDetection.userFeedbackSuccessMsg'))
     } catch (error) {
-      showError(getErrorInfoFromErrorObject(error))
+      showError(getRBACErrorMessage(error))
     }
   }
 

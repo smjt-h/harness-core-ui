@@ -9,10 +9,9 @@ import React from 'react'
 import { act, fireEvent, render } from '@testing-library/react'
 import type { GitQueryParams } from '@common/interfaces/RouteInterfaces'
 import { findDialogContainer, TestWrapper } from '@common/utils/testUtils'
-import { useMutateAsGet } from '@common/hooks'
 import { GetInputSetsResponse } from '@pipeline/pages/inputSet-list/__tests__/InputSetListMocks'
 import { RunPipelineModalParams, useRunPipelineModal } from '../../useRunPipelineModal'
-import { mockPipelineTemplateYaml } from '../mocks'
+import { getMockFor_Generic_useMutate, getMockFor_useGetTemplateFromPipeline } from '../mocks'
 
 const props: RunPipelineModalParams & GitQueryParams = {
   pipelineIdentifier: 'pipelineIdentifier',
@@ -25,30 +24,42 @@ window.IntersectionObserver = jest.fn().mockImplementation(() => ({
   unobserve: () => null
 }))
 
-jest.mock('@common/hooks', () => ({
-  ...(jest.requireActual('@common/hooks') as any),
-  useQueryParams: jest.fn().mockImplementation(() => ({ executionId: '' })),
-  useMutateAsGet: jest.fn().mockImplementation(() => {
-    return { data: { data: {} }, refetch: jest.fn(), error: null, loading: false }
-  })
-}))
-
 jest.mock('@common/components/YAMLBuilder/YamlBuilder')
 jest.mock('@common/utils/YamlUtils', () => ({}))
+jest.mock('services/cd-ng', () => ({
+  useGetYamlSchema: jest.fn(() => ({ data: null })),
+  useGetSourceCodeManagers: () => ({
+    data: []
+  }),
+  useCreatePR: () => ({
+    data: [],
+    mutate: jest.fn()
+  }),
+  useGetFileContent: () => ({
+    data: [],
+    mutate: jest.fn(),
+    refetch: jest.fn()
+  }),
+  useListGitSync: () => ({
+    data: [],
+    mutate: jest.fn(),
+    refetch: jest.fn()
+  })
+}))
 jest.mock('services/pipeline-ng', () => ({
   useGetInputsetYaml: jest.fn(() => ({ data: null })),
-  useGetTemplateFromPipeline: jest.fn(() => ({ data: null })),
+  useGetTemplateFromPipeline: jest.fn(() => getMockFor_useGetTemplateFromPipeline()),
   useGetStagesExecutionList: jest.fn(() => ({})),
   useGetPipeline: jest.fn(() => ({ data: null })),
-  usePostPipelineExecuteWithInputSetYaml: jest.fn(() => ({ data: null })),
-  useRePostPipelineExecuteWithInputSetYaml: jest.fn(() => ({ data: null })),
-  useRerunStagesWithRuntimeInputYaml: jest.fn(() => ({ data: null })),
-  useGetMergeInputSetFromPipelineTemplateWithListInput: jest.fn(() => ({ data: null })),
+  usePostPipelineExecuteWithInputSetYaml: jest.fn(() => getMockFor_Generic_useMutate()),
+  useRePostPipelineExecuteWithInputSetYaml: jest.fn(() => getMockFor_Generic_useMutate()),
+  useRerunStagesWithRuntimeInputYaml: jest.fn(() => getMockFor_Generic_useMutate()),
+  useGetMergeInputSetFromPipelineTemplateWithListInput: jest.fn(() => getMockFor_Generic_useMutate()),
   useGetInputSetsListForPipeline: jest.fn(() => ({ data: null, refetch: jest.fn() })),
-  useGetYamlSchema: jest.fn(() => ({ data: null })),
-  useCreateInputSetForPipeline: jest.fn(() => ({ data: null })),
+  useCreateVariables: jest.fn(() => ({})),
+  useCreateInputSetForPipeline: jest.fn(() => getMockFor_Generic_useMutate()),
   useGetInputsetYamlV2: jest.fn(() => ({ data: null })),
-  useRunStagesWithRuntimeInputYaml: jest.fn(() => ({ data: null })),
+  useRunStagesWithRuntimeInputYaml: jest.fn(() => getMockFor_Generic_useMutate()),
   getInputSetForPipelinePromise: jest.fn().mockImplementation(() => Promise.resolve(GetInputSetsResponse.data))
 }))
 
@@ -102,13 +113,6 @@ function WrappedWithInputSetsWithoutGitDetails(): React.ReactElement {
 }
 
 describe('useRunPipelineModal tests', () => {
-  beforeAll(() => {
-    // eslint-disable-next-line
-    // @ts-ignore
-    useMutateAsGet.mockImplementation(() => {
-      return mockPipelineTemplateYaml
-    })
-  })
   test('without input sets', () => {
     const { container, getAllByText } = render(
       <TestWrapper>
