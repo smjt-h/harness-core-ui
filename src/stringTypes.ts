@@ -10,6 +10,9 @@
  * Use the command `yarn strings` to regenerate this file.
  */
 export interface StringsMap {
+  'common.180days': string
+  'common.30days': string
+  'common.90days': string
   'common.ID': string
   'common.My': string
   'common.OFF': string
@@ -200,6 +203,7 @@ export interface StringsMap {
   'common.errorHandler.issueCouldBe': string
   'common.errorHandler.tryTheseSuggestions': string
   'common.execute': string
+  'common.expiration': string
   'common.expiryDate': string
   'common.exploreAllPlans': string
   'common.explorePlans': string
@@ -391,6 +395,7 @@ export interface StringsMap {
   'common.noDeployments': string
   'common.noInfo': string
   'common.noRefData': string
+  'common.noexpiration': string
   'common.notEnabled': string
   'common.note': string
   'common.noteAccountSwitch': string
@@ -928,12 +933,14 @@ export interface StringsMap {
   'rbac.token.editLabel': string
   'rbac.token.forToken': string
   'rbac.token.form.createSuccess': string
+  'rbac.token.form.dateRequired': string
   'rbac.token.form.editSuccess': string
   'rbac.token.form.expiry': string
   'rbac.token.form.expiryDate': string
   'rbac.token.form.rotateSuccess': string
   'rbac.token.form.rotateTokenExpiryMessage': string
   'rbac.token.form.setexpiryTo': string
+  'rbac.token.form.tokenExpiryDisplay': string
   'rbac.token.form.tokenMessage': string
   'rbac.token.rotateLabel': string
   'rbac.token.scheduledToExpire': string

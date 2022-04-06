@@ -550,6 +550,7 @@ noDeployments: No Deployments
 tokens: Tokens
 lastModifiedTime: Last modified
 modified: Modified
+expiration: Expiration
 expiryDate: Expiration Date
 extendTrial:
   heading: Congrats, your trial is extended
@@ -814,3 +815,7 @@ andCaps: AND
 orCaps: OR
 deleteEnvironment:
   title: 'Delete Environment'
+30days: 30 Days
+90days: 90 Days
+180days: 180 Days
+noexpiration: No Expiration

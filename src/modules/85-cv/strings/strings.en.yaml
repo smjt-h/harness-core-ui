@@ -67,7 +67,7 @@ serviceDashboardPage:
   twelveHours: 12 Hours
   oneDay: 1 Day
   sevenDays: 7 Days
-  thirtyDays: 30 Days
+  thirtyDays: '{{$.common.30days}}'
   noServicesConfigured: No services have been configured
   goToMonitoringSources: Go to Monitoring Source Page
 abbreviatedCategories:
