@@ -165,7 +165,7 @@ const Content = (props: ArtifactoryRenderContent): JSX.Element => {
   const isPropagatedStage = path?.includes('serviceConfig.stageOverrides')
 
   const selectedDeploymentType: ServiceDeploymentType = useMemo(() => {
-    let selectedStageSpec: DeploymentStageConfig = props.formik.values.pipeline?.stages.find(
+    let selectedStageSpec: DeploymentStageConfig = props.formik.values.pipeline?.stages?.find(
       (currStage: StageElementWrapper) => currStage.stage?.identifier === props.stageIdentifier
     ).stage.spec as DeploymentStageConfig
     if (!selectedStageSpec) {

@@ -72,6 +72,7 @@ import { EvaluationModal } from '@governance/EvaluationModal'
 import { createTemplate } from '@pipeline/utils/templateUtils'
 import { getStepFromStage, validateCICodebaseConfiguration } from '@pipeline/components/PipelineStudio/StepUtil'
 import { updateStepWithinStage } from '@pipeline/components/PipelineStudio/RightDrawer/RightDrawer'
+import { validateServerlessArtifacts } from '@pipeline/utils/stageHelpers'
 import type { TemplateSummaryResponse } from 'services/template-ng'
 import { savePipeline, usePipelineContext } from '../PipelineContext/PipelineContext'
 import CreatePipelines from '../CreateModal/PipelineCreate'
@@ -235,7 +236,7 @@ export function PipelineCanvas({
   const [selectedBranch, setSelectedBranch] = React.useState(branch || '')
   const [savedTemplate, setSavedTemplate] = React.useState<TemplateSummaryResponse>()
   const [disableVisualView, setDisableVisualView] = React.useState(entityValidityDetails.valid === false)
-  const { OPA_PIPELINE_GOVERNANCE } = useFeatureFlags()
+  const { OPA_PIPELINE_GOVERNANCE, SERVERLESS_SUPPORT } = useFeatureFlags()
   const [governanceMetadata, setGovernanceMetadata] = useState<GovernanceMetadata>()
   const shouldShowGovernanceEvaluation =
     OPA_PIPELINE_GOVERNANCE && (governanceMetadata?.status === 'error' || governanceMetadata?.status === 'warning')
@@ -495,6 +496,15 @@ export function PipelineCanvas({
       clear()
       showError(ciCodeBaseConfigurationError)
       return
+    }
+
+    if (SERVERLESS_SUPPORT) {
+      const serverlessArtifactValidationError = validateServerlessArtifacts({ pipeline: latestPipeline, getString })
+      if (serverlessArtifactValidationError) {
+        clear()
+        showError(serverlessArtifactValidationError)
+        return
+      }
     }
 
     // if Git sync enabled then display modal

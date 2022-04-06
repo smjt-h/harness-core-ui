@@ -8,7 +8,7 @@
 import { defaultTo, get, isEmpty } from 'lodash-es'
 import { getMultiTypeFromValue, MultiTypeInputType } from '@wings-software/uicore'
 import type { GraphLayoutNode, PipelineExecutionSummary } from 'services/pipeline-ng'
-import type { StringKeys } from 'framework/strings'
+import type { StringKeys, UseStringsReturn } from 'framework/strings'
 import type {
   Infrastructure,
   GetExecutionStrategyYamlQueryParams,
@@ -18,8 +18,15 @@ import type {
 } from 'services/cd-ng'
 import { ManifestDataType } from '@pipeline/components/ManifestSelection/Manifesthelper'
 import type { ManifestTypes } from '@pipeline/components/ManifestSelection/ManifestInterface'
+import { getFlattenedStages } from '@pipeline/components/PipelineStudio/StageBuilder/StageBuilderUtil'
+import type { StringsMap } from 'framework/strings/StringsContext'
 import type { InputSetDTO } from './types'
-import type { DeploymentStageElementConfig, PipelineStageWrapper, StageElementWrapper } from './pipelineTypes'
+import type {
+  DeploymentStageElementConfig,
+  DeploymentStageElementConfigWrapper,
+  PipelineStageWrapper,
+  StageElementWrapper
+} from './pipelineTypes'
 
 export enum StageType {
   DEPLOY = 'Deployment',
@@ -64,6 +71,11 @@ export type ServessInfraTypes =
   | ServerlessGCPInfrastructure
   | ServerlessAzureInfrastructure
   | ServerlessAwsLambdaInfrastructure
+
+interface ValidateServerlessArtifactsProps {
+  pipeline: PipelineInfoConfig
+  getString: UseStringsReturn['getString']
+}
 
 export const changeEmptyValuesToRunTimeInput = (inputset: any, propertyKey: string): InputSetDTO => {
   if (inputset) {
@@ -212,4 +224,109 @@ export const getSelectedDeploymentType = (
     return get(parentStage, 'stage.stage.spec.serviceConfig.serviceDefinition.type', null)
   }
   return get(stage, 'stage.spec.serviceConfig.serviceDefinition.type', null)
+}
+
+const isArtifactFieldPresent = (stage: DeploymentStageElementConfigWrapper, fieldName: string): boolean => {
+  const primaryArtifactSpecField =
+    stage.stage?.spec?.serviceConfig.serviceDefinition?.spec.artifacts?.primary?.spec[fieldName]
+  return primaryArtifactSpecField && primaryArtifactSpecField.toString().trim().length > 0
+}
+
+const isArtifactFieldPresentInPropagatedStage = (
+  stage: DeploymentStageElementConfigWrapper,
+  fieldName: string
+): boolean => {
+  const primaryArtifactSpecField = stage.stage?.spec?.serviceConfig.stageOverrides?.artifacts?.primary?.spec[fieldName]
+  return primaryArtifactSpecField && primaryArtifactSpecField.toString().trim().length > 0
+}
+
+const validateServerlessArtifactsForPropagatedStage = (
+  stages: DeploymentStageElementConfigWrapper[],
+  stage: DeploymentStageElementConfigWrapper
+): string => {
+  // Stage from which current stage is propagated
+  const propagateFromStage = stages.find(
+    currStage => currStage.stage?.identifier === stage.stage?.spec?.serviceConfig?.useFromStage?.stage
+  )
+  if (isServerlessDeploymentType(propagateFromStage?.stage?.spec?.serviceConfig?.serviceDefinition?.type as string)) {
+    // When artifacts / manifests are overriden over the propagate (previous) stage, else do not validate for fields
+    // as fields are already validated in propagate (previous) stage
+    if (
+      stage.stage.spec?.serviceConfig.stageOverrides &&
+      !isArtifactFieldPresentInPropagatedStage(stage, 'artifactDirectory')
+    ) {
+      return 'pipeline.artifactsSelection.validation.artifactDirectory'
+    }
+    if (
+      stage.stage.spec?.serviceConfig.stageOverrides &&
+      !isArtifactFieldPresentInPropagatedStage(stage, 'artifactPath')
+    ) {
+      if (!isArtifactFieldPresentInPropagatedStage(stage, 'artifactPathFilter')) {
+        return 'pipeline.artifactsSelection.validation.artifactPathAndArtifactPathFilter'
+      } else {
+        return ''
+      }
+    } else {
+      return ''
+    }
+  }
+  return ''
+}
+
+const validateServerlessArtifactsForStage = (
+  stages: DeploymentStageElementConfigWrapper[],
+  stage: DeploymentStageElementConfigWrapper
+): string => {
+  // When the stage is prapagated from other stage
+  if (stage.stage?.spec?.serviceConfig?.useFromStage) {
+    return validateServerlessArtifactsForPropagatedStage(stages, stage)
+  } else {
+    if (isServerlessDeploymentType(stage.stage?.spec?.serviceConfig?.serviceDefinition?.type as string)) {
+      if (!isArtifactFieldPresent(stage, 'artifactDirectory')) {
+        return 'pipeline.artifactsSelection.validation.artifactDirectory'
+      }
+      if (!isArtifactFieldPresent(stage, 'artifactPath')) {
+        if (!isArtifactFieldPresent(stage, 'artifactPathFilter')) {
+          return 'pipeline.artifactsSelection.validation.artifactPathAndArtifactPathFilter'
+        } else {
+          return ''
+        }
+      } else {
+        return ''
+      }
+    }
+  }
+
+  if (stage.parallel) {
+    for (const currStage of stage.parallel) {
+      const stageArtifactValidationError = validateServerlessArtifactsForStage(stages, currStage)
+      if (stageArtifactValidationError) {
+        return stageArtifactValidationError
+      }
+    }
+  }
+  return ''
+}
+
+export const validateServerlessArtifacts = ({ pipeline, getString }: ValidateServerlessArtifactsProps): string => {
+  const flattenedStages = getFlattenedStages(pipeline).stages
+  for (
+    let stageIndex = 0;
+    stageIndex < (pipeline.stages as DeploymentStageElementConfigWrapper[])?.length;
+    stageIndex++
+  ) {
+    const currStage: DeploymentStageElementConfigWrapper = pipeline.stages?.[
+      stageIndex
+    ] as DeploymentStageElementConfigWrapper
+
+    const stageArtifactValidationError = validateServerlessArtifactsForStage(
+      flattenedStages as DeploymentStageElementConfigWrapper[],
+      currStage
+    )
+
+    if (stageArtifactValidationError.trim().length > 0) {
+      return getString(stageArtifactValidationError as keyof StringsMap)
+    }
+  }
+  return ''
 }

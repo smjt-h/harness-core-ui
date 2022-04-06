@@ -150,21 +150,22 @@ export default function DeployInfraSpecifications(props: React.PropsWithChildren
     return scope === Scope.PROJECT ? '' : RUNTIME_INPUT_VALUE
   }, [scope])
 
-  const selectedDeploymentType = getSelectedDeploymentType(
-    stage,
-    getStageFromPipeline,
-    !!stage?.stage?.spec?.serviceConfig?.useFromStage?.stage
-  )
+  const selectedDeploymentType = React.useMemo(() => {
+    return getSelectedDeploymentType(
+      stage,
+      getStageFromPipeline,
+      !!stage?.stage?.spec?.serviceConfig?.useFromStage?.stage
+    )
+  }, [stage, getStageFromPipeline])
 
   React.useEffect(() => {
-    const selectedType = stage?.stage?.spec?.serviceConfig?.serviceDefinition?.type
-    const infrastructureType = selectedType
-      ? deploymentTypeInfraTypeMap[selectedType]
+    const infrastructureType = selectedDeploymentType
+      ? deploymentTypeInfraTypeMap[selectedDeploymentType]
       : InfraDeploymentType.KubernetesDirect
     setselectedInfrastructureType(infrastructureType)
     const initialInfraDefValues = getInfrastructureDefaultValue(stage, infrastructureType)
     setInitialInfrastructureDefinitionValues(initialInfraDefValues)
-  }, [stage?.stage?.spec?.serviceConfig?.serviceDefinition?.type])
+  }, [stage, selectedDeploymentType])
 
   const onUpdateInfrastructureDefinition = (extendedSpec: InfraTypes, type: string): void => {
     if (get(stageRef.current, 'stage.spec.infrastructure', null)) {
