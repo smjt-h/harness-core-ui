@@ -69,6 +69,9 @@ My: My
 ok: OK
 ID: Id
 org: Org
+variables: Variables
+copyVariableName: Copy variable name
+copyFqn: Copy fully qualified name
 accountSetting:
   connector:
     loading: 'Loading settings...'

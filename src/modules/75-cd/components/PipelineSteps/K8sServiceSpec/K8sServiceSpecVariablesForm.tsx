@@ -173,7 +173,7 @@ export function K8sServiceSpecVariablesForm(props: K8sServiceSpecVariablesFormPr
         summary={
           <VariableAccordionSummary>
             <Text font={{ variation: FontVariation.SMALL_SEMI }} color={Color.BLACK}>
-              {getString('variablesText')}
+              {getString('common.variables')}
             </Text>
           </VariableAccordionSummary>
         }

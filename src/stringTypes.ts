@@ -155,6 +155,8 @@ export interface StringsMap {
   'common.connectivityErrors': string
   'common.contactSupport': string
   'common.copy': string
+  'common.copyFqn': string
+  'common.copyVariableName': string
   'common.createPipeline': string
   'common.creating': string
   'common.current': string
@@ -756,6 +758,7 @@ export interface StringsMap {
   'common.validation.variableAlreadyExists': string
   'common.validation.yamlFilePath': string
   'common.valuePlaceholder': string
+  'common.variables': string
   'common.videoNotSupportedError': string
   'common.viewContent': string
   'common.viewLatest': string
@@ -1238,6 +1241,7 @@ export interface StringsMap {
   'secrets.titleCreate': string
   'secrets.titleSelect': string
   'secrets.typeSSH': string
+  'variables.newVariable': string
   'authSettings.SAMLProvider': string
   'authSettings.WhitelistedDomainsUpdated': string
   'authSettings.accountOrOAuthLogin': string
@@ -8008,10 +8012,6 @@ export interface StringsMap {
   /**
    * @deprecated migrate this string to module level file
    */
-  'pipelineSteps.build.stageSpecifications.variablesCell': string
-  /**
-   * @deprecated migrate this string to module level file
-   */
   'pipelineSteps.buildArgsLabel': string
   /**
    * @deprecated migrate this string to module level file
@@ -9713,18 +9713,6 @@ export interface StringsMap {
    * @deprecated migrate this string to module level file
    */
   variableNameLabel: string
-  /**
-   * @deprecated migrate this string to module level file
-   */
-  'variables.copyFqn': string
-  /**
-   * @deprecated migrate this string to module level file
-   */
-  'variables.copyVariableName': string
-  /**
-   * @deprecated migrate this string to module level file
-   */
-  variablesText: string
   /**
    * @deprecated migrate this string to module level file
    */

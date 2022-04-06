@@ -113,6 +113,10 @@ export interface VerificationPathProps {
 export interface SecretsPathProps {
   secretId: string
 }
+
+export interface VariablesPathProps {
+  variableId: string
+}
 export interface RolePathProps {
   roleIdentifier: string
 }

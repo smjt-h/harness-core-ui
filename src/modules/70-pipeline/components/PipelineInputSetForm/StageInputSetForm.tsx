@@ -1073,7 +1073,7 @@ export function StageInputSetFormInternal({
       )}
       {(deploymentStageTemplate as ServiceSpec).variables && (
         /* istanbul ignore next */ <div id={`Stage.${stageIdentifier}.Variables`} className={cx(css.accordionSummary)}>
-          <div className={css.inputheader}>{getString('variablesText')}</div>
+          <div className={css.inputheader}>{getString('common.variables')}</div>
 
           <div className={css.nestedAccordions}>WIP</div>
         </div>

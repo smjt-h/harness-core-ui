@@ -44,7 +44,8 @@ import type {
   GovernancePathProps,
   PipelineLogsPathProps,
   EnvironmentGroupPathProps,
-  EnvironmentGroupQueryParams
+  EnvironmentGroupQueryParams,
+  VariablesPathProps
 } from '@common/interfaces/RouteInterfaces'
 
 const CV_HOME = `/cv/home`
@@ -250,6 +251,39 @@ const routes = {
       })
     }
   ),
+  toVariables: withAccountId(
+    ({ orgIdentifier, projectIdentifier, module }: Partial<ProjectPathProps & ModulePathParams>) => {
+      const path = `resources/variables`
+      return getScopeBasedRoute({
+        scope: {
+          orgIdentifier,
+          projectIdentifier,
+          module
+        },
+        path
+      })
+    }
+  ),
+
+  toVariableDetails: withAccountId(
+    ({
+      orgIdentifier,
+      projectIdentifier,
+      module,
+      variableId
+    }: Partial<ProjectPathProps & ModulePathParams & VariablesPathProps>) => {
+      const path = `resources/variables/${variableId}`
+      return getScopeBasedRoute({
+        scope: {
+          orgIdentifier,
+          projectIdentifier,
+          module
+        },
+        path
+      })
+    }
+  ),
+
   toSecrets: withAccountId(
     ({ orgIdentifier, projectIdentifier, module }: Partial<ProjectPathProps & ModulePathParams>) => {
       const path = `resources/secrets`
