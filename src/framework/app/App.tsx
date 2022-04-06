@@ -194,29 +194,31 @@ export function AppWithAuthentication(props: AppProps): React.ReactElement {
       queryParamStringifyOptions={{ skipNulls: true }}
       onResponse={globalResponseHandler}
     >
-      <ContentfulContextProvider space="ghsvvkpjf443" accessToken="R6XccOT3EI1ylS7epC1vzq6roBnt7yFYLChKuudUp3g">
+      {/* <ContentfulContextProvider space="ghsvvkpjf443" accessToken="R6XccOT3EI1ylS7epC1vzq6roBnt7yFYLChKuudUp3g">
         <ContentRenderer contentId="avitestID" type={ContentRendererType.FIXED_CONTAINER} />
-      </ContentfulContextProvider>
-      {/* <StringsContextProvider initialStrings={props.strings}>
+      </ContentfulContextProvider> */}
+      <StringsContextProvider initialStrings={props.strings}>
         <TooltipContextProvider initialTooltipDictionary={tooltipDictionaryContext}>
           <AppStoreProvider>
             <AppErrorBoundary>
-              <FeaturesProvider>
-                <LicenseStoreProvider>
-                  <PermissionsProvider>
-                    <RouteDestinations />
-                    <NGTooltipEditorPortal
-                      showTooltipEditor={showTooltipEditor}
-                      onEditorClose={onEditorClose}
-                      setPreviewDatasetFromLocalStorage={onPreviewDatasetFromLocalStorage}
-                    />
-                  </PermissionsProvider>
-                </LicenseStoreProvider>
-              </FeaturesProvider>
+              <ContentfulContextProvider space="ghsvvkpjf443" accessToken="R6XccOT3EI1ylS7epC1vzq6roBnt7yFYLChKuudUp3g">
+                <FeaturesProvider>
+                  <LicenseStoreProvider>
+                    <PermissionsProvider>
+                      <RouteDestinations />
+                      <NGTooltipEditorPortal
+                        showTooltipEditor={showTooltipEditor}
+                        onEditorClose={onEditorClose}
+                        setPreviewDatasetFromLocalStorage={onPreviewDatasetFromLocalStorage}
+                      />
+                    </PermissionsProvider>
+                  </LicenseStoreProvider>
+                </FeaturesProvider>
+              </ContentfulContextProvider>
             </AppErrorBoundary>
           </AppStoreProvider>
         </TooltipContextProvider>
-      </StringsContextProvider> */}
+      </StringsContextProvider>
     </RestfulProvider>
   )
 }
