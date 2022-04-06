@@ -39,11 +39,7 @@ export type AuditFilterProperties = FilterProperties & {
   resources?: ResourceDTO[]
   scopes?: ResourceScopeDTO[]
   startTime?: number
-}
-
-export interface ByteString {
-  empty?: boolean
-  validUtf8?: boolean
+  staticFilter?: 'EXCLUDE_LOGIN_EVENTS' | 'EXCLUDE_SYSTEM_EVENTS'
 }
 
 export interface CcmConnectorFilter {
@@ -87,6 +83,7 @@ export type ConnectorFilterProperties = FilterProperties & {
     | 'AwsSecretManager'
     | 'Gcp'
     | 'Aws'
+    | 'Azure'
     | 'Artifactory'
     | 'Jira'
     | 'Nexus'
@@ -106,112 +103,12 @@ export type ConnectorFilterProperties = FilterProperties & {
     | 'CustomHealth'
     | 'ServiceNow'
     | 'ErrorTracking'
+    | 'Pdc'
   )[]
 }
 
-export interface Descriptor {
-  containingType?: Descriptor
-  enumTypes?: EnumDescriptor[]
-  extendable?: boolean
-  extensions?: FieldDescriptor[]
-  fields?: FieldDescriptor[]
-  file?: FileDescriptor
-  fullName?: string
-  index?: number
-  name?: string
-  nestedTypes?: Descriptor[]
-  oneofs?: OneofDescriptor[]
-  options?: MessageOptions
-}
-
 export interface EntityDetailProtoDTO {
-  allFields?: {
-    [key: string]: { [key: string]: any }
-  }
-  defaultInstanceForType?: EntityDetailProtoDTO
-  descriptorForType?: Descriptor
-  entityRefCase?: 'IDENTIFIERREF' | 'INPUTSETREF' | 'TEMPLATEREF' | 'ENTITYREF_NOT_SET'
-  identifierRef?: IdentifierRefProtoDTO
-  identifierRefOrBuilder?: IdentifierRefProtoDTOOrBuilder
-  initializationErrorString?: string
-  initialized?: boolean
-  inputSetRef?: InputSetReferenceProtoDTO
-  inputSetRefOrBuilder?: InputSetReferenceProtoDTOOrBuilder
-  name?: string
-  nameBytes?: ByteString
-  parserForType?: ParserEntityDetailProtoDTO
-  serializedSize?: number
-  templateRef?: TemplateReferenceProtoDTO
-  templateRefOrBuilder?: TemplateReferenceProtoDTOOrBuilder
-  type?:
-    | 'PROJECTS'
-    | 'PIPELINES'
-    | 'CONNECTORS'
-    | 'SECRETS'
-    | 'SERVICE'
-    | 'ENVIRONMENT'
-    | 'INPUT_SETS'
-    | 'CV_CONFIG'
-    | 'DELEGATES'
-    | 'DELEGATE_CONFIGURATIONS'
-    | 'CV_VERIFICATION_JOB'
-    | 'CV_KUBERNETES_ACTIVITY_SOURCE'
-    | 'INTEGRATION_STEPS'
-    | 'INTEGRATION_STAGE'
-    | 'DEPLOYMENT_STAGE'
-    | 'DEPLOYMENT_STEPS'
-    | 'PIPELINE_STEPS'
-    | 'APPROVAL_STAGE'
-    | 'TRIGGERS'
-    | 'FEATURE_FLAG_STAGE'
-    | 'MONITORED_SERVICE'
-    | 'TEMPLATE'
-    | 'GIT_REPOSITORIES'
-    | 'FEATURE_FLAGS'
-    | 'HTTP_STEP'
-    | 'SHELL_SCRIPT_STEP'
-    | 'K8S_CANARY_DEPLOY_STEP'
-    | 'JIRA_CREATE_STEP'
-    | 'SERVICENOW_APPROVAL_STEP'
-    | 'JIRA_UPDATE_STEP'
-    | 'JIRA_APPROVAL_STEP'
-    | 'HARNESS_APPROVAL_STEP'
-    | 'BARRIER_STEP'
-    | 'VERIFY_STEP'
-    | 'OPAPOLICIES'
-    | 'POLICY_STEP'
-    | 'ARTIFACTORY_UPLOAD'
-    | 'GCS_UPLOAD'
-    | 'S3_UPLOAD'
-    | 'BUILD_AND_PUSH_GCR'
-    | 'BUILD_AND_PUSH_ECR'
-    | 'BUILD_AND_PUSH_DOCKER_REGISTRY'
-    | 'RUN_STEP'
-    | 'RUN_TEST'
-    | 'PLUGIN'
-    | 'RESTORE_CACHE_GCS'
-    | 'RESTORE_CACHE_S3'
-    | 'SAVE_CACHE_GCS'
-    | 'SAVE_CACHE_S3'
-    | 'FLAG_CONFIGURATION'
-    | 'SECURITY'
-    | 'K8S_APPLY_STEP'
-    | 'K8S_BLUE_GREEN_DEPLOY_STEP'
-    | 'K8S_ROLLING_DEPLOY_STEP'
-    | 'K8S_ROLLING_ROLLBACK_STEP'
-    | 'K8S_SCALE_STEP'
-    | 'K8S_DELETE_STEP'
-    | 'K8S_BG_SWAP_SERVICES_STEP'
-    | 'K8S_CANARY_DELETE_STEP'
-    | 'TERRAFORM_APPLY_STEP'
-    | 'TERRAFORM_PLAN_STEP'
-    | 'TERRAFORM_DESTROY_STEP'
-    | 'TERRAFORM_ROLLBACK_STEP'
-    | 'HELM_DEPLOY_STEP'
-    | 'HELM_ROLLBACK_STEP'
-    | 'UNRECOGNIZED'
-  typeValue?: number
-  unknownFields?: UnknownFieldSet
+  [key: string]: any
 }
 
 export interface EntityGitDetails {
@@ -226,67 +123,6 @@ export interface EntityGitDetails {
 export interface EntityValidityDetails {
   invalidYaml?: string
   valid?: boolean
-}
-
-export interface EnumDescriptor {
-  containingType?: Descriptor
-  file?: FileDescriptor
-  fullName?: string
-  index?: number
-  name?: string
-  options?: EnumOptions
-  values?: EnumValueDescriptor[]
-}
-
-export interface EnumOptions {
-  allFields?: {
-    [key: string]: { [key: string]: any }
-  }
-  allFieldsRaw?: {
-    [key: string]: { [key: string]: any }
-  }
-  allowAlias?: boolean
-  defaultInstanceForType?: EnumOptions
-  deprecated?: boolean
-  descriptorForType?: Descriptor
-  initializationErrorString?: string
-  initialized?: boolean
-  parserForType?: ParserEnumOptions
-  serializedSize?: number
-  uninterpretedOptionCount?: number
-  uninterpretedOptionList?: UninterpretedOption[]
-  uninterpretedOptionOrBuilderList?: UninterpretedOptionOrBuilder[]
-  unknownFields?: UnknownFieldSet
-}
-
-export interface EnumValueDescriptor {
-  file?: FileDescriptor
-  fullName?: string
-  index?: number
-  name?: string
-  number?: number
-  options?: EnumValueOptions
-  type?: EnumDescriptor
-}
-
-export interface EnumValueOptions {
-  allFields?: {
-    [key: string]: { [key: string]: any }
-  }
-  allFieldsRaw?: {
-    [key: string]: { [key: string]: any }
-  }
-  defaultInstanceForType?: EnumValueOptions
-  deprecated?: boolean
-  descriptorForType?: Descriptor
-  initializationErrorString?: string
-  initialized?: boolean
-  parserForType?: ParserEnumValueOptions
-  serializedSize?: number
-  uninterpretedOptionCount?: number
-  uninterpretedOptionList?: UninterpretedOption[]
-  uninterpretedOptionOrBuilderList?: UninterpretedOptionOrBuilder[]
-  unknownFields?: UnknownFieldSet
 }
 
 export interface Environment {
@@ -600,6 +436,9 @@ export interface Error {
     | 'INVALID_JSON_PAYLOAD'
     | 'POLICY_EVALUATION_FAILURE'
     | 'POLICY_SET_ERROR'
+    | 'INVALID_ARTIFACTORY_REGISTRY_REQUEST'
+    | 'INVALID_NEXUS_REGISTRY_REQUEST'
+    | 'ENTITY_NOT_FOUND'
   correlationId?: string
   detailedMessage?: string
   message?: string
@@ -918,162 +757,13 @@ export interface Failure {
     | 'INVALID_JSON_PAYLOAD'
     | 'POLICY_EVALUATION_FAILURE'
     | 'POLICY_SET_ERROR'
+    | 'INVALID_ARTIFACTORY_REGISTRY_REQUEST'
+    | 'INVALID_NEXUS_REGISTRY_REQUEST'
+    | 'ENTITY_NOT_FOUND'
   correlationId?: string
   errors?: ValidationError[]
   message?: string
   status?: 'SUCCESS' | 'FAILURE' | 'ERROR'
-}
-
-export interface FieldDescriptor {
-  containingOneof?: OneofDescriptor
-  containingType?: Descriptor
-  defaultValue?: { [key: string]: any }
-  enumType?: EnumDescriptor
-  extension?: boolean
-  extensionScope?: Descriptor
-  file?: FileDescriptor
-  fullName?: string
-  index?: number
-  javaType?: 'INT' | 'LONG' | 'FLOAT' | 'DOUBLE' | 'BOOLEAN' | 'STRING' | 'BYTE_STRING' | 'ENUM' | 'MESSAGE'
-  jsonName?: string
-  liteJavaType?: 'INT' | 'LONG' | 'FLOAT' | 'DOUBLE' | 'BOOLEAN' | 'STRING' | 'BYTE_STRING' | 'ENUM' | 'MESSAGE'
-  liteType?:
-    | 'DOUBLE'
-    | 'FLOAT'
-    | 'INT64'
-    | 'UINT64'
-    | 'INT32'
-    | 'FIXED64'
-    | 'FIXED32'
-    | 'BOOL'
-    | 'STRING'
-    | 'GROUP'
-    | 'MESSAGE'
-    | 'BYTES'
-    | 'UINT32'
-    | 'ENUM'
-    | 'SFIXED32'
-    | 'SFIXED64'
-    | 'SINT32'
-    | 'SINT64'
-  mapField?: boolean
-  messageType?: Descriptor
-  name?: string
-  number?: number
-  optional?: boolean
-  options?: FieldOptions
-  packable?: boolean
-  packed?: boolean
-  repeated?: boolean
-  required?: boolean
-  type?:
-    | 'DOUBLE'
-    | 'FLOAT'
-    | 'INT64'
-    | 'UINT64'
-    | 'INT32'
-    | 'FIXED64'
-    | 'FIXED32'
-    | 'BOOL'
-    | 'STRING'
-    | 'GROUP'
-    | 'MESSAGE'
-    | 'BYTES'
-    | 'UINT32'
-    | 'ENUM'
-    | 'SFIXED32'
-    | 'SFIXED64'
-    | 'SINT32'
-    | 'SINT64'
-}
-
-export interface FieldOptions {
-  allFields?: {
-    [key: string]: { [key: string]: any }
-  }
-  allFieldsRaw?: {
-    [key: string]: { [key: string]: any }
-  }
-  ctype?: 'STRING' | 'CORD' | 'STRING_PIECE'
-  defaultInstanceForType?: FieldOptions
-  deprecated?: boolean
-  descriptorForType?: Descriptor
-  initializationErrorString?: string
-  initialized?: boolean
-  jstype?: 'JS_NORMAL' | 'JS_STRING' | 'JS_NUMBER'
-  lazy?: boolean
-  packed?: boolean
-  parserForType?: ParserFieldOptions
-  serializedSize?: number
-  uninterpretedOptionCount?: number
-  uninterpretedOptionList?: UninterpretedOption[]
-  uninterpretedOptionOrBuilderList?: UninterpretedOptionOrBuilder[]
-  unknownFields?: UnknownFieldSet
-  weak?: boolean
-}
-
-export interface FileDescriptor {
-  dependencies?: FileDescriptor[]
-  enumTypes?: EnumDescriptor[]
-  extensions?: FieldDescriptor[]
-  file?: FileDescriptor
-  fullName?: string
-  messageTypes?: Descriptor[]
-  name?: string
-  options?: FileOptions
-  package?: string
-  publicDependencies?: FileDescriptor[]
-  services?: ServiceDescriptor[]
-  syntax?: 'UNKNOWN' | 'PROTO2' | 'PROTO3'
-}
-
-export interface FileOptions {
-  allFields?: {
-    [key: string]: { [key: string]: any }
-  }
-  allFieldsRaw?: {
-    [key: string]: { [key: string]: any }
-  }
-  ccEnableArenas?: boolean
-  ccGenericServices?: boolean
-  csharpNamespace?: string
-  csharpNamespaceBytes?: ByteString
-  defaultInstanceForType?: FileOptions
-  deprecated?: boolean
-  descriptorForType?: Descriptor
-  goPackage?: string
-  goPackageBytes?: ByteString
-  initializationErrorString?: string
-  initialized?: boolean
-  javaGenerateEqualsAndHash?: boolean
-  javaGenericServices?: boolean
-  javaMultipleFiles?: boolean
-  javaOuterClassname?: string
-  javaOuterClassnameBytes?: ByteString
-  javaPackage?: string
-  javaPackageBytes?: ByteString
-  javaStringCheckUtf8?: boolean
-  objcClassPrefix?: string
-  objcClassPrefixBytes?: ByteString
-  optimizeFor?: 'SPEED' | 'CODE_SIZE' | 'LITE_RUNTIME'
-  parserForType?: ParserFileOptions
-  phpClassPrefix?: string
-  phpClassPrefixBytes?: ByteString
-  phpGenericServices?: boolean
-  phpMetadataNamespace?: string
-  phpMetadataNamespaceBytes?: ByteString
-  phpNamespace?: string
-  phpNamespaceBytes?: ByteString
-  pyGenericServices?: boolean
-  rubyPackage?: string
-  rubyPackageBytes?: ByteString
-  serializedSize?: number
-  swiftPrefix?: string
-  swiftPrefixBytes?: ByteString
-  uninterpretedOptionCount?: number
-  uninterpretedOptionList?: UninterpretedOption[]
-  uninterpretedOptionOrBuilderList?: UninterpretedOptionOrBuilder[]
-  unknownFields?: UnknownFieldSet
 }
 
 export interface FilterDTO {
@@ -1100,207 +790,8 @@ export interface FilterProperties {
   }
 }
 
-export interface IdentifierRefProtoDTO {
-  accountIdentifier?: StringValue
-  accountIdentifierOrBuilder?: StringValueOrBuilder
-  allFields?: {
-    [key: string]: { [key: string]: any }
-  }
-  defaultInstanceForType?: IdentifierRefProtoDTO
-  descriptorForType?: Descriptor
-  identifier?: StringValue
-  identifierOrBuilder?: StringValueOrBuilder
-  initializationErrorString?: string
-  initialized?: boolean
-  metadata?: {
-    [key: string]: string
-  }
-  metadataCount?: number
-  metadataMap?: {
-    [key: string]: string
-  }
-  orgIdentifier?: StringValue
-  orgIdentifierOrBuilder?: StringValueOrBuilder
-  parserForType?: ParserIdentifierRefProtoDTO
-  projectIdentifier?: StringValue
-  projectIdentifierOrBuilder?: StringValueOrBuilder
-  scope?: 'ACCOUNT' | 'ORG' | 'PROJECT' | 'UNKNOWN' | 'UNRECOGNIZED'
-  scopeValue?: number
-  serializedSize?: number
-  unknownFields?: UnknownFieldSet
-}
-
-export interface IdentifierRefProtoDTOOrBuilder {
-  accountIdentifier?: StringValue
-  accountIdentifierOrBuilder?: StringValueOrBuilder
-  allFields?: {
-    [key: string]: { [key: string]: any }
-  }
-  defaultInstanceForType?: Message
-  descriptorForType?: Descriptor
-  identifier?: StringValue
-  identifierOrBuilder?: StringValueOrBuilder
-  initializationErrorString?: string
-  initialized?: boolean
-  metadata?: {
-    [key: string]: string
-  }
-  metadataCount?: number
-  metadataMap?: {
-    [key: string]: string
-  }
-  orgIdentifier?: StringValue
-  orgIdentifierOrBuilder?: StringValueOrBuilder
-  projectIdentifier?: StringValue
-  projectIdentifierOrBuilder?: StringValueOrBuilder
-  scope?: 'ACCOUNT' | 'ORG' | 'PROJECT' | 'UNKNOWN' | 'UNRECOGNIZED'
-  scopeValue?: number
-  unknownFields?: UnknownFieldSet
-}
-
-export interface InputSetReferenceProtoDTO {
-  accountIdentifier?: StringValue
-  accountIdentifierOrBuilder?: StringValueOrBuilder
-  allFields?: {
-    [key: string]: { [key: string]: any }
-  }
-  defaultInstanceForType?: InputSetReferenceProtoDTO
-  descriptorForType?: Descriptor
-  identifier?: StringValue
-  identifierOrBuilder?: StringValueOrBuilder
-  initializationErrorString?: string
-  initialized?: boolean
-  orgIdentifier?: StringValue
-  orgIdentifierOrBuilder?: StringValueOrBuilder
-  parserForType?: ParserInputSetReferenceProtoDTO
-  pipelineIdentifier?: StringValue
-  pipelineIdentifierOrBuilder?: StringValueOrBuilder
-  projectIdentifier?: StringValue
-  projectIdentifierOrBuilder?: StringValueOrBuilder
-  serializedSize?: number
-  unknownFields?: UnknownFieldSet
-}
-
-export interface InputSetReferenceProtoDTOOrBuilder {
-  accountIdentifier?: StringValue
-  accountIdentifierOrBuilder?: StringValueOrBuilder
-  allFields?: {
-    [key: string]: { [key: string]: any }
-  }
-  defaultInstanceForType?: Message
-  descriptorForType?: Descriptor
-  identifier?: StringValue
-  identifierOrBuilder?: StringValueOrBuilder
-  initializationErrorString?: string
-  initialized?: boolean
-  orgIdentifier?: StringValue
-  orgIdentifierOrBuilder?: StringValueOrBuilder
-  pipelineIdentifier?: StringValue
-  pipelineIdentifierOrBuilder?: StringValueOrBuilder
-  projectIdentifier?: StringValue
-  projectIdentifierOrBuilder?: StringValueOrBuilder
-  unknownFields?: UnknownFieldSet
-}
-
 export interface JsonNode {
-  array?: boolean
-  bigDecimal?: boolean
-  bigInteger?: boolean
-  binary?: boolean
-  boolean?: boolean
-  containerNode?: boolean
-  double?: boolean
-  float?: boolean
-  floatingPointNumber?: boolean
-  int?: boolean
-  integralNumber?: boolean
-  long?: boolean
-  missingNode?: boolean
-  nodeType?: 'ARRAY' | 'BINARY' | 'BOOLEAN' | 'MISSING' | 'NULL' | 'NUMBER' | 'OBJECT' | 'POJO' | 'STRING'
-  null?: boolean
-  number?: boolean
-  object?: boolean
-  pojo?: boolean
-  short?: boolean
-  textual?: boolean
-  valueNode?: boolean
-}
-
-export interface Message {
-  allFields?: {
-    [key: string]: { [key: string]: any }
-  }
-  defaultInstanceForType?: MessageLite
-  descriptorForType?: Descriptor
-  initializationErrorString?: string
-  initialized?: boolean
-  parserForType?: ParserMessage
-  serializedSize?: number
-  unknownFields?: UnknownFieldSet
-}
-
-export interface MessageLite {
-  defaultInstanceForType?: MessageLite
-  initialized?: boolean
-  parserForType?: ParserMessageLite
-  serializedSize?: number
-}
-
-export interface MessageOptions {
-  allFields?: {
-    [key: string]: { [key: string]: any }
-  }
-  allFieldsRaw?: {
-    [key: string]: { [key: string]: any }
-  }
-  defaultInstanceForType?: MessageOptions
-  deprecated?: boolean
-  descriptorForType?: Descriptor
-  initializationErrorString?: string
-  initialized?: boolean
-  mapEntry?: boolean
-  messageSetWireFormat?: boolean
-  noStandardDescriptorAccessor?: boolean
-  parserForType?: ParserMessageOptions
-  serializedSize?: number
-  uninterpretedOptionCount?: number
-  uninterpretedOptionList?: UninterpretedOption[]
-  uninterpretedOptionOrBuilderList?: UninterpretedOptionOrBuilder[]
-  unknownFields?: UnknownFieldSet
-}
-
-export interface MethodDescriptor {
-  clientStreaming?: boolean
-  file?: FileDescriptor
-  fullName?: string
-  index?: number
-  inputType?: Descriptor
-  name?: string
-  options?: MethodOptions
-  outputType?: Descriptor
-  serverStreaming?: boolean
-  service?: ServiceDescriptor
-}
-
-export interface MethodOptions {
-  allFields?: {
-    [key: string]: { [key: string]: any }
-  }
-  allFieldsRaw?: {
-    [key: string]: { [key: string]: any }
-  }
-  defaultInstanceForType?: MethodOptions
-  deprecated?: boolean
-  descriptorForType?: Descriptor
-  idempotencyLevel?: 'IDEMPOTENCY_UNKNOWN' | 'NO_SIDE_EFFECTS' | 'IDEMPOTENT'
-  initializationErrorString?: string
-  initialized?: boolean
-  parserForType?: ParserMethodOptions
-  serializedSize?: number
-  uninterpretedOptionCount?: number
-  uninterpretedOptionList?: UninterpretedOption[]
-  uninterpretedOptionOrBuilderList?: UninterpretedOptionOrBuilder[]
-  unknownFields?: UnknownFieldSet
+  [key: string]: any
 }
 
 export interface NGTag {
@@ -1322,68 +813,8 @@ export interface NGTemplateInfoConfig {
   tags?: {
     [key: string]: string
   }
-  type: 'Step' | 'Stage'
+  type: 'Step' | 'Stage' | 'Pipeline'
   versionLabel: string
-}
-
-export interface NamePart {
-  allFields?: {
-    [key: string]: { [key: string]: any }
-  }
-  defaultInstanceForType?: NamePart
-  descriptorForType?: Descriptor
-  initializationErrorString?: string
-  initialized?: boolean
-  isExtension?: boolean
-  namePart?: string
-  namePartBytes?: ByteString
-  parserForType?: ParserNamePart
-  serializedSize?: number
-  unknownFields?: UnknownFieldSet
-}
-
-export interface NamePartOrBuilder {
-  allFields?: {
-    [key: string]: { [key: string]: any }
-  }
-  defaultInstanceForType?: Message
-  descriptorForType?: Descriptor
-  initializationErrorString?: string
-  initialized?: boolean
-  isExtension?: boolean
-  namePart?: string
-  namePartBytes?: ByteString
-  unknownFields?: UnknownFieldSet
-}
-
-export interface OneofDescriptor {
-  containingType?: Descriptor
-  fieldCount?: number
-  fields?: FieldDescriptor[]
-  file?: FileDescriptor
-  fullName?: string
-  index?: number
-  name?: string
-  options?: OneofOptions
-}
-
-export interface OneofOptions {
-  allFields?: {
-    [key: string]: { [key: string]: any }
-  }
-  allFieldsRaw?: {
-    [key: string]: { [key: string]: any }
-  }
-  defaultInstanceForType?: OneofOptions
-  descriptorForType?: Descriptor
-  initializationErrorString?: string
-  initialized?: boolean
-  parserForType?: ParserOneofOptions
-  serializedSize?: number
-  uninterpretedOptionCount?: number
-  uninterpretedOptionList?: UninterpretedOption[]
-  uninterpretedOptionOrBuilderList?: UninterpretedOptionOrBuilder[]
-  unknownFields?: UnknownFieldSet
 }
 
 export interface Page {
@@ -1433,86 +864,6 @@ export interface Pageable {
   unpaged?: boolean
 }
 
-export interface Parser {
-  [key: string]: any
-}
-
-export interface ParserEntityDetailProtoDTO {
-  [key: string]: any
-}
-
-export interface ParserEnumOptions {
-  [key: string]: any
-}
-
-export interface ParserEnumValueOptions {
-  [key: string]: any
-}
-
-export interface ParserFieldOptions {
-  [key: string]: any
-}
-
-export interface ParserFileOptions {
-  [key: string]: any
-}
-
-export interface ParserIdentifierRefProtoDTO {
-  [key: string]: any
-}
-
-export interface ParserInputSetReferenceProtoDTO {
-  [key: string]: any
-}
-
-export interface ParserMessage {
-  [key: string]: any
-}
-
-export interface ParserMessageLite {
-  [key: string]: any
-}
-
-export interface ParserMessageOptions {
-  [key: string]: any
-}
-
-export interface ParserMethodOptions {
-  [key: string]: any
-}
-
-export interface ParserNamePart {
-  [key: string]: any
-}
-
-export interface ParserOneofOptions {
-  [key: string]: any
-}
-
-export interface ParserServiceOptions {
-  [key: string]: any
-}
-
-export interface ParserStringValue {
-  [key: string]: any
-}
-
-export interface ParserTemplateReferenceProtoDTO {
-  [key: string]: any
-}
-
-export interface ParserUninterpretedOption {
-  [key: string]: any
-}
-
-export interface ParserYamlOutputProperties {
-  [key: string]: any
-}
-
-export interface ParserYamlProperties {
-  [key: string]: any
-}
-
 export type PipelineFilterProperties = FilterProperties & {
   description?: string
   moduleProperties?: {
@@ -1547,6 +898,7 @@ export interface ResourceDTO {
     | 'TEMPLATE'
     | 'INPUT_SET'
     | 'DELEGATE_CONFIGURATION'
+    | 'DELEGATE_GROUPS'
     | 'SERVICE'
     | 'ENVIRONMENT'
     | 'DELEGATE'
@@ -1900,6 +1252,9 @@ export interface ResponseMessage {
     | 'INVALID_JSON_PAYLOAD'
     | 'POLICY_EVALUATION_FAILURE'
     | 'POLICY_SET_ERROR'
+    | 'INVALID_ARTIFACTORY_REGISTRY_REQUEST'
+    | 'INVALID_NEXUS_REGISTRY_REQUEST'
+    | 'ENTITY_NOT_FOUND'
   exception?: Throwable
   failureTypes?: (
     | 'EXPIRED'
@@ -1982,38 +1337,9 @@ export type ScmErrorMetadataDTO = ErrorMetadataDTO & {
   conflictCommitId?: string
 }
 
-export interface ServiceDescriptor {
-  file?: FileDescriptor
-  fullName?: string
-  index?: number
-  methods?: MethodDescriptor[]
-  name?: string
-  options?: ServiceOptions
-}
-
 export interface ServiceExpressionProperties {
   expression?: string
   serviceName?: string
-}
-
-export interface ServiceOptions {
-  allFields?: {
-    [key: string]: { [key: string]: any }
-  }
-  allFieldsRaw?: {
-    [key: string]: { [key: string]: any }
-  }
-  defaultInstanceForType?: ServiceOptions
-  deprecated?: boolean
-  descriptorForType?: Descriptor
-  initializationErrorString?: string
-  initialized?: boolean
-  parserForType?: ParserServiceOptions
-  serializedSize?: number
-  uninterpretedOptionCount?: number
-  uninterpretedOptionList?: UninterpretedOption[]
-  uninterpretedOptionOrBuilderList?: UninterpretedOptionOrBuilder[]
-  unknownFields?: UnknownFieldSet
 }
 
 export interface Sort {
@@ -2028,34 +1354,6 @@ export interface StackTraceElement {
   lineNumber?: number
   methodName?: string
   nativeMethod?: boolean
-}
-
-export interface StringValue {
-  allFields?: {
-    [key: string]: { [key: string]: any }
-  }
-  defaultInstanceForType?: StringValue
-  descriptorForType?: Descriptor
-  initializationErrorString?: string
-  initialized?: boolean
-  parserForType?: ParserStringValue
-  serializedSize?: number
-  unknownFields?: UnknownFieldSet
-  value?: string
-  valueBytes?: ByteString
-}
-
-export interface StringValueOrBuilder {
-  allFields?: {
-    [key: string]: { [key: string]: any }
-  }
-  defaultInstanceForType?: Message
-  descriptorForType?: Descriptor
-  initializationErrorString?: string
-  initialized?: boolean
-  unknownFields?: UnknownFieldSet
-  value?: string
-  valueBytes?: ByteString
 }
 
 export interface TemplateApplyRequest {
@@ -2082,7 +1380,7 @@ export interface TemplateFilterProperties {
   tags?: {
     [key: string]: string
   }
-  templateEntityTypes?: ('Step' | 'Stage')[]
+  templateEntityTypes?: ('Step' | 'Stage' | 'Pipeline')[]
   templateIdentifiers?: string[]
   templateNames?: string[]
 }
@@ -2103,54 +1401,6 @@ export type TemplateInputsErrorMetadataDTO = ErrorMetadataDTO & {
 export interface TemplateMergeResponse {
   mergedPipelineYaml?: string
   templateReferenceSummaries?: TemplateReferenceSummary[]
-}
-
-export interface TemplateReferenceProtoDTO {
-  accountIdentifier?: StringValue
-  accountIdentifierOrBuilder?: StringValueOrBuilder
-  allFields?: {
-    [key: string]: { [key: string]: any }
-  }
-  defaultInstanceForType?: TemplateReferenceProtoDTO
-  descriptorForType?: Descriptor
-  identifier?: StringValue
-  identifierOrBuilder?: StringValueOrBuilder
-  initializationErrorString?: string
-  initialized?: boolean
-  orgIdentifier?: StringValue
-  orgIdentifierOrBuilder?: StringValueOrBuilder
-  parserForType?: ParserTemplateReferenceProtoDTO
-  projectIdentifier?: StringValue
-  projectIdentifierOrBuilder?: StringValueOrBuilder
-  scope?: 'ACCOUNT' | 'ORG' | 'PROJECT' | 'UNKNOWN' | 'UNRECOGNIZED'
-  scopeValue?: number
-  serializedSize?: number
-  unknownFields?: UnknownFieldSet
-  versionLabel?: StringValue
-  versionLabelOrBuilder?: StringValueOrBuilder
-}
-
-export interface TemplateReferenceProtoDTOOrBuilder {
-  accountIdentifier?: StringValue
-  accountIdentifierOrBuilder?: StringValueOrBuilder
-  allFields?: {
-    [key: string]: { [key: string]: any }
-  }
-  defaultInstanceForType?: Message
-  descriptorForType?: Descriptor
-  identifier?: StringValue
-  identifierOrBuilder?: StringValueOrBuilder
-  initializationErrorString?: string
-  initialized?: boolean
-  orgIdentifier?: StringValue
-  orgIdentifierOrBuilder?: StringValueOrBuilder
-  projectIdentifier?: StringValue
-  projectIdentifierOrBuilder?: StringValueOrBuilder
-  scope?: 'ACCOUNT' | 'ORG' | 'PROJECT' | 'UNKNOWN' | 'UNRECOGNIZED'
-  scopeValue?: number
-  unknownFields?: UnknownFieldSet
-  versionLabel?: StringValue
-  versionLabelOrBuilder?: StringValueOrBuilder
 }
 
 export interface TemplateReferenceSummary {
@@ -2176,7 +1426,7 @@ export interface TemplateResponse {
   tags?: {
     [key: string]: string
   }
-  templateEntityType?: 'Step' | 'Stage'
+  templateEntityType?: 'Step' | 'Stage' | 'Pipeline'
   templateScope?: 'account' | 'org' | 'project' | 'unknown'
   version?: number
   versionLabel?: string
@@ -2199,7 +1449,7 @@ export interface TemplateSummaryResponse {
   tags?: {
     [key: string]: string
   }
-  templateEntityType?: 'Step' | 'Stage'
+  templateEntityType?: 'Step' | 'Stage' | 'Pipeline'
   templateScope?: 'account' | 'org' | 'project' | 'unknown'
   version?: number
   versionLabel?: string
@@ -2217,60 +1467,6 @@ export interface Throwable {
   message?: string
   stackTrace?: StackTraceElement[]
   suppressed?: Throwable[]
-}
-
-export interface UninterpretedOption {
-  aggregateValue?: string
-  aggregateValueBytes?: ByteString
-  allFields?: {
-    [key: string]: { [key: string]: any }
-  }
-  defaultInstanceForType?: UninterpretedOption
-  descriptorForType?: Descriptor
-  doubleValue?: number
-  identifierValue?: string
-  identifierValueBytes?: ByteString
-  initializationErrorString?: string
-  initialized?: boolean
-  nameCount?: number
-  nameList?: NamePart[]
-  nameOrBuilderList?: NamePartOrBuilder[]
-  negativeIntValue?: number
-  parserForType?: ParserUninterpretedOption
-  positiveIntValue?: number
-  serializedSize?: number
-  stringValue?: ByteString
-  unknownFields?: UnknownFieldSet
-}
-
-export interface UninterpretedOptionOrBuilder {
-  aggregateValue?: string
-  aggregateValueBytes?: ByteString
-  allFields?: {
-    [key: string]: { [key: string]: any }
-  }
-  defaultInstanceForType?: Message
-  descriptorForType?: Descriptor
-  doubleValue?: number
-  identifierValue?: string
-  identifierValueBytes?: ByteString
-  initializationErrorString?: string
-  initialized?: boolean
-  nameCount?: number
-  nameList?: NamePart[]
-  nameOrBuilderList?: NamePartOrBuilder[]
-  negativeIntValue?: number
-  positiveIntValue?: number
-  stringValue?: ByteString
-  unknownFields?: UnknownFieldSet
-}
-
-export interface UnknownFieldSet {
-  defaultInstanceForType?: UnknownFieldSet
-  initialized?: boolean
-  parserForType?: Parser
-  serializedSize?: number
-  serializedSizeAsMessageSet?: number
 }
 
 export interface ValidationError {
@@ -2293,37 +1489,11 @@ export interface VariableResponseMapValue {
 }
 
 export interface YamlOutputProperties {
-  allFields?: {
-    [key: string]: { [key: string]: any }
-  }
-  defaultInstanceForType?: YamlOutputProperties
-  descriptorForType?: Descriptor
-  fqn?: string
-  fqnBytes?: ByteString
-  initializationErrorString?: string
-  initialized?: boolean
-  localName?: string
-  localNameBytes?: ByteString
-  parserForType?: ParserYamlOutputProperties
-  serializedSize?: number
-  unknownFields?: UnknownFieldSet
+  [key: string]: any
 }
 
 export interface YamlProperties {
-  allFields?: {
-    [key: string]: { [key: string]: any }
-  }
-  defaultInstanceForType?: YamlProperties
-  descriptorForType?: Descriptor
-  fqn?: string
-  fqnBytes?: ByteString
-  initializationErrorString?: string
-  initialized?: boolean
-  localName?: string
-  localNameBytes?: ByteString
-  parserForType?: ParserYamlProperties
-  serializedSize?: number
-  unknownFields?: UnknownFieldSet
+  [key: string]: any
 }
 
 export type FilterDTORequestBody = FilterDTO
