@@ -1852,7 +1852,7 @@ export type FilterDTORequestBody = FilterDTO
 
 export type ResourceGroupRequestRequestBody = ResourceGroupRequest
 
-export type PutTemplateRequestBody = void
+export type InsertOrUpdateTemplateRequestBody = void
 
 export interface GetAuditFilterListQueryParams {
   pageIndex?: number
@@ -3208,7 +3208,13 @@ export interface InsertOrUpdateTemplateQueryParams {
 }
 
 export type InsertOrUpdateTemplateProps = Omit<
-  MutateProps<ResponseTemplateDTO, Failure | Error, InsertOrUpdateTemplateQueryParams, PutTemplateRequestBody, void>,
+  MutateProps<
+    ResponseTemplateDTO,
+    Failure | Error,
+    InsertOrUpdateTemplateQueryParams,
+    InsertOrUpdateTemplateRequestBody,
+    void
+  >,
   'path' | 'verb'
 >
 
@@ -3216,7 +3222,13 @@ export type InsertOrUpdateTemplateProps = Omit<
  * Update a template if exists else create
  */
 export const InsertOrUpdateTemplate = (props: InsertOrUpdateTemplateProps) => (
-  <Mutate<ResponseTemplateDTO, Failure | Error, InsertOrUpdateTemplateQueryParams, PutTemplateRequestBody, void>
+  <Mutate<
+    ResponseTemplateDTO,
+    Failure | Error,
+    InsertOrUpdateTemplateQueryParams,
+    InsertOrUpdateTemplateRequestBody,
+    void
+  >
     verb="PUT"
     path={`/templates/insertOrUpdate`}
     base={getConfig('audit/api')}
@@ -3225,7 +3237,13 @@ export const InsertOrUpdateTemplate = (props: InsertOrUpdateTemplateProps) => (
 )
 
 export type UseInsertOrUpdateTemplateProps = Omit<
-  UseMutateProps<ResponseTemplateDTO, Failure | Error, InsertOrUpdateTemplateQueryParams, PutTemplateRequestBody, void>,
+  UseMutateProps<
+    ResponseTemplateDTO,
+    Failure | Error,
+    InsertOrUpdateTemplateQueryParams,
+    InsertOrUpdateTemplateRequestBody,
+    void
+  >,
   'path' | 'verb'
 >
 
@@ -3233,11 +3251,13 @@ export type UseInsertOrUpdateTemplateProps = Omit<
  * Update a template if exists else create
  */
 export const useInsertOrUpdateTemplate = (props: UseInsertOrUpdateTemplateProps) =>
-  useMutate<ResponseTemplateDTO, Failure | Error, InsertOrUpdateTemplateQueryParams, PutTemplateRequestBody, void>(
-    'PUT',
-    `/templates/insertOrUpdate`,
-    { base: getConfig('audit/api'), ...props }
-  )
+  useMutate<
+    ResponseTemplateDTO,
+    Failure | Error,
+    InsertOrUpdateTemplateQueryParams,
+    InsertOrUpdateTemplateRequestBody,
+    void
+  >('PUT', `/templates/insertOrUpdate`, { base: getConfig('audit/api'), ...props })
 
 /**
  * Update a template if exists else create
@@ -3247,7 +3267,7 @@ export const insertOrUpdateTemplatePromise = (
     ResponseTemplateDTO,
     Failure | Error,
     InsertOrUpdateTemplateQueryParams,
-    PutTemplateRequestBody,
+    InsertOrUpdateTemplateRequestBody,
     void
   >,
   signal?: RequestInit['signal']
@@ -3256,7 +3276,7 @@ export const insertOrUpdateTemplatePromise = (
     ResponseTemplateDTO,
     Failure | Error,
     InsertOrUpdateTemplateQueryParams,
-    PutTemplateRequestBody,
+    InsertOrUpdateTemplateRequestBody,
     void
   >('PUT', getConfig('audit/api'), `/templates/insertOrUpdate`, props, signal)
 
@@ -3382,7 +3402,7 @@ export type PutTemplateProps = Omit<
     ResponseTemplateDTO,
     Failure | Error,
     PutTemplateQueryParams,
-    PutTemplateRequestBody,
+    InsertOrUpdateTemplateRequestBody,
     PutTemplatePathParams
   >,
   'path' | 'verb'
@@ -3393,7 +3413,13 @@ export type PutTemplateProps = Omit<
  * Update a template
  */
 export const PutTemplate = ({ identifier, ...props }: PutTemplateProps) => (
-  <Mutate<ResponseTemplateDTO, Failure | Error, PutTemplateQueryParams, PutTemplateRequestBody, PutTemplatePathParams>
+  <Mutate<
+    ResponseTemplateDTO,
+    Failure | Error,
+    PutTemplateQueryParams,
+    InsertOrUpdateTemplateRequestBody,
+    PutTemplatePathParams
+  >
     verb="PUT"
     path={`/templates/${identifier}`}
     base={getConfig('audit/api')}
@@ -3406,7 +3432,7 @@ export type UsePutTemplateProps = Omit<
     ResponseTemplateDTO,
     Failure | Error,
     PutTemplateQueryParams,
-    PutTemplateRequestBody,
+    InsertOrUpdateTemplateRequestBody,
     PutTemplatePathParams
   >,
   'path' | 'verb'
@@ -3421,7 +3447,7 @@ export const usePutTemplate = ({ identifier, ...props }: UsePutTemplateProps) =>
     ResponseTemplateDTO,
     Failure | Error,
     PutTemplateQueryParams,
-    PutTemplateRequestBody,
+    InsertOrUpdateTemplateRequestBody,
     PutTemplatePathParams
   >('PUT', (paramsInPath: PutTemplatePathParams) => `/templates/${paramsInPath.identifier}`, {
     base: getConfig('audit/api'),
@@ -3440,7 +3466,7 @@ export const putTemplatePromise = (
     ResponseTemplateDTO,
     Failure | Error,
     PutTemplateQueryParams,
-    PutTemplateRequestBody,
+    InsertOrUpdateTemplateRequestBody,
     PutTemplatePathParams
   > & { identifier: string },
   signal?: RequestInit['signal']
@@ -3449,6 +3475,6 @@ export const putTemplatePromise = (
     ResponseTemplateDTO,
     Failure | Error,
     PutTemplateQueryParams,
-    PutTemplateRequestBody,
+    InsertOrUpdateTemplateRequestBody,
     PutTemplatePathParams
   >('PUT', getConfig('audit/api'), `/templates/${identifier}`, props, signal)
