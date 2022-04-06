@@ -156,7 +156,11 @@ export function ACRArtifact({
     }
   }, [lastQueryData, prevStepData, refetchAcrBuildData])
 
-  const { data } = useGetAzureSubscriptions({
+  const {
+    data: subscriptionsData,
+    loading: loadingSubscriptions,
+    error: subscriptionsError
+  } = useGetAzureSubscriptions({
     queryParams: {
       connectorRef: getConnectorRefQueryData(),
       accountIdentifier: accountId,
@@ -167,12 +171,12 @@ export function ACRArtifact({
 
   useEffect(() => {
     const subscriptionValues = [] as SelectOption[]
-    forIn(defaultTo(data?.data, {}), (value: string, key: string) => {
+    forIn(defaultTo(subscriptionsData?.data, {}), (value: string, key: string) => {
       subscriptionValues.push({ label: value, value: key })
     })
 
     setSubscriptions(subscriptionValues as SelectOption[])
-  }, [data])
+  }, [subscriptionsData])
 
   const {
     data: registiresData,
@@ -411,19 +415,28 @@ export function ACRArtifact({
                             subscription: getValue(value)
                           }
                         })
-                        formik.setFieldValue('registry', '')
-                        formik.setFieldValue('repository', '')
                         resetTagList(formik)
                       },
                       selectProps: {
                         defaultSelectedItem: formik.values.subscription,
                         items: subscriptions,
                         allowCreatingNewItems: true,
-                        addClearBtn: !isReadonly
+                        addClearBtn: !(loadingSubscriptions || isReadonly),
+                        noResults: (
+                          <Text padding={'small'}>
+                            {get(subscriptionsError, 'data.message', null) ||
+                              getString('pipeline.ACR.subscriptionError')}
+                          </Text>
+                        )
                       }
                     }}
                     label={getString('pipeline.ACR.subscription')}
-                    placeholder={getString('pipeline.ACR.subscriptionPlaceholder')}
+                    disabled={loadingSubscriptions || isReadonly}
+                    placeholder={
+                      loadingSubscriptions
+                        ? /* istanbul ignore next */ getString('loading')
+                        : getString('pipeline.ACR.subscriptionPlaceholder')
+                    }
                   />
 
                   {getMultiTypeFromValue(getValue(formik.values.subscription)) === MultiTypeInputType.RUNTIME && (
@@ -469,7 +482,6 @@ export function ACRArtifact({
                             registry: getValue(value)
                           }
                         })
-                        formik.setFieldValue('repository', '')
                         resetTagList(formik)
                       },
                       selectProps: {

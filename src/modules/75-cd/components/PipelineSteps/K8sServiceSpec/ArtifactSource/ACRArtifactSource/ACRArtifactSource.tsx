@@ -128,8 +128,24 @@ const Content = (props: ACRRenderContent): JSX.Element => {
       accountIdentifier: accountId,
       orgIdentifier,
       projectIdentifier
-    }
+    },
+    lazy: true,
+    debounce: 300
   })
+
+  useEffect(() => {
+    if (getMultiTypeFromValue(artifact?.spec?.connectorRef) === MultiTypeInputType.FIXED) {
+      refetchSubscriptions({
+        queryParams: {
+          connectorRef: artifact?.spec?.connectorRef,
+          accountIdentifier: accountId,
+          orgIdentifier,
+          projectIdentifier
+        }
+      })
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [artifact?.spec?.connectorRef, artifact?.spec?.subscription])
 
   useEffect(() => {
     const subscriptionValues = [] as SelectOption[]
@@ -159,8 +175,8 @@ const Content = (props: ACRRenderContent): JSX.Element => {
 
   useEffect(() => {
     if (
-      getMultiTypeFromValue(artifact?.spec?.subscription) === MultiTypeInputType.FIXED &&
-      getMultiTypeFromValue(artifact?.spec?.registry) === MultiTypeInputType.FIXED
+      getMultiTypeFromValue(artifact?.spec?.connectorRef) === MultiTypeInputType.FIXED &&
+      getMultiTypeFromValue(artifact?.spec?.subscription) === MultiTypeInputType.FIXED
     ) {
       refetchRegistries({
         queryParams: {
@@ -170,12 +186,12 @@ const Content = (props: ACRRenderContent): JSX.Element => {
           projectIdentifier
         },
         pathParams: {
-          subscriptions: artifact?.spec?.subscription
+          subscription: artifact?.spec?.subscription
         }
       })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [artifact?.spec?.subscription, artifact?.spec?.registry])
+  }, [artifact?.spec?.connectorRef, artifact?.spec?.subscription])
 
   useEffect(() => {
     const options =
@@ -204,9 +220,9 @@ const Content = (props: ACRRenderContent): JSX.Element => {
 
   useEffect(() => {
     if (
+      getMultiTypeFromValue(artifact?.spec?.connectorRef) === MultiTypeInputType.FIXED &&
       getMultiTypeFromValue(artifact?.spec?.subscription) === MultiTypeInputType.FIXED &&
-      getMultiTypeFromValue(artifact?.spec?.registry) === MultiTypeInputType.FIXED &&
-      getMultiTypeFromValue(artifact?.spec?.repository) === MultiTypeInputType.FIXED
+      getMultiTypeFromValue(artifact?.spec?.registry) === MultiTypeInputType.FIXED
     ) {
       refetchRepositories({
         queryParams: {
@@ -222,7 +238,7 @@ const Content = (props: ACRRenderContent): JSX.Element => {
       })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [artifact?.spec?.subscription, artifact?.spec?.registry, artifact?.spec?.repository])
+  }, [artifact?.spec?.connectorRef, artifact?.spec?.subscription, artifact?.spec?.registry])
 
   useEffect(() => {
     const options =
@@ -279,6 +295,7 @@ const Content = (props: ACRRenderContent): JSX.Element => {
               onChange={value => {
                 resetTags(formik, `${path}.artifacts.${artifactPath}.spec.tag`)
                 const { record } = value as unknown as { record: ConnectorReferenceDTO }
+
                 refetchSubscriptions({
                   queryParams: {
                     connectorRef: record?.identifier,
@@ -287,10 +304,6 @@ const Content = (props: ACRRenderContent): JSX.Element => {
                     projectIdentifier
                   }
                 })
-
-                formik.setFieldValue(`${path}.artifacts.${artifactPath}.spec.subscription`, '')
-                formik.setFieldValue(`${path}.artifacts.${artifactPath}.spec.registry`, '')
-                formik.setFieldValue(`${path}.artifacts.${artifactPath}.spec.repository`, '')
               }}
               className={css.connectorMargin}
               type={ArtifactToConnectorMap[defaultTo(artifact?.type, '')]}
@@ -304,26 +317,24 @@ const Content = (props: ACRRenderContent): JSX.Element => {
           {isFieldRuntime(`artifacts.${artifactPath}.spec.subscription`, template) && (
             <ExperimentalInput
               formik={formik}
+              disabled={loadingSubscriptions || isFieldDisabled(`artifacts.${artifactPath}.spec.subscription`)}
               multiTypeInputProps={{
                 onChange: (value: SelectOption) => {
                   resetTags(formik, `${path}.artifacts.${artifactPath}.spec.tag`)
+
                   refetchRegistries({
                     queryParams: {
-                      connectorRef: artifact?.spec?.connectorRef,
+                      connectorRef: get(formik?.values, `${path}.artifacts.${artifactPath}.spec.connectorRef`),
                       accountIdentifier: accountId,
                       orgIdentifier,
                       projectIdentifier
                     },
                     pathParams: {
-                      subscriptions: getValue(value)
+                      subscription: getValue(value)
                     }
                   })
-
-                  formik.setFieldValue(`${path}.artifacts.${artifactPath}.spec.registry`, '')
-                  formik.setFieldValue(`${path}.artifacts.${artifactPath}.spec.repository`, '')
                 },
                 selectProps: {
-                  usePortal: true,
                   allowCreatingNewItems: true,
                   addClearBtn: !(loadingSubscriptions || readonly),
                   noResults: (
@@ -337,9 +348,13 @@ const Content = (props: ACRRenderContent): JSX.Element => {
                 allowableTypes
               }}
               useValue
-              disabled={isFieldDisabled(`artifacts.${artifactPath}.spec.subscription`)}
               selectItems={subscriptions}
-              label={getString('pipeline.ACR.subscription')}
+              label={getString('pipeline.ACR.subscriptionPlaceholder')}
+              placeholder={
+                loadingSubscriptions
+                  ? /* istanbul ignore next */ getString('loading')
+                  : getString('pipeline.ACR.subscriptionPlaceholder')
+              }
               name={`${path}.artifacts.${artifactPath}.spec.subscription`}
             />
           )}
@@ -347,28 +362,27 @@ const Content = (props: ACRRenderContent): JSX.Element => {
           {isFieldRuntime(`artifacts.${artifactPath}.spec.registry`, template) && (
             <ExperimentalInput
               formik={formik}
+              disabled={loadingRegistries || isFieldDisabled(`artifacts.${artifactPath}.spec.registry`)}
               multiTypeInputProps={{
                 onChange: (value: SelectOption) => {
-                  debugger
-                  resetTags(formik, `${path}.artifacts.${artifactPath}.spec.tag`)
+                  resetTags(formik.values, `${path}.artifacts.${artifactPath}.spec.tag`)
+
                   refetchRepositories({
                     queryParams: {
-                      connectorRef: artifact?.spec?.connectorRef,
+                      connectorRef: get(formik.values, `${path}.artifacts.${artifactPath}.spec.connectorRef`),
                       accountIdentifier: accountId,
                       orgIdentifier,
                       projectIdentifier
                     },
                     pathParams: {
-                      subscription: artifact?.spec?.subscription,
+                      subscription: get(formik.values, `${path}.artifacts.${artifactPath}.spec.subscription`),
                       registry: getValue(value)
                     }
                   })
-
-                  formik.setFieldValue(`${path}.artifacts.${artifactPath}.spec.repository`, '')
                 },
                 selectProps: {
-                  usePortal: true,
                   allowCreatingNewItems: true,
+                  items: registries,
                   addClearBtn: !(loadingRegistries || readonly),
                   noResults: (
                     <Text padding={'small'}>
@@ -380,9 +394,13 @@ const Content = (props: ACRRenderContent): JSX.Element => {
                 allowableTypes
               }}
               useValue
-              disabled={isFieldDisabled(`artifacts.${artifactPath}.spec.registry`)}
               selectItems={registries}
               label={getString('pipeline.ACR.registry')}
+              placeholder={
+                loadingRegistries
+                  ? /* istanbul ignore next */ getString('loading')
+                  : getString('pipeline.ACR.registryPlaceholder')
+              }
               name={`${path}.artifacts.${artifactPath}.spec.registry`}
             />
           )}
@@ -390,10 +408,10 @@ const Content = (props: ACRRenderContent): JSX.Element => {
           {isFieldRuntime(`artifacts.${artifactPath}.spec.repository`, template) && (
             <ExperimentalInput
               formik={formik}
+              disabled={loadingRepositories || isFieldDisabled(`artifacts.${artifactPath}.spec.repository`)}
               multiTypeInputProps={{
                 onChange: () => resetTags(formik, `${path}.artifacts.${artifactPath}.spec.tag`),
                 selectProps: {
-                  usePortal: true,
                   allowCreatingNewItems: true,
                   addClearBtn: !(loadingRepositories || readonly),
                   items: repositories,
@@ -407,15 +425,24 @@ const Content = (props: ACRRenderContent): JSX.Element => {
                 allowableTypes
               }}
               useValue
-              disabled={isFieldDisabled(`artifacts.${artifactPath}.spec.repository`)}
               selectItems={repositories}
               label={getString('repository')}
+              placeholder={
+                loadingRepositories
+                  ? /* istanbul ignore next */ getString('loading')
+                  : getString('pipeline.ACR.repositoryPlaceholder')
+              }
               name={`${path}.artifacts.${artifactPath}.spec.repository`}
             />
           )}
           {!!fromTrigger && isFieldRuntime(`artifacts.${artifactPath}.spec.tag`, template) && (
             <FormInput.MultiTextInput
               label={getString('tagLabel')}
+              placeholder={
+                loadingRepositories
+                  ? /* istanbul ignore next */ getString('loading')
+                  : getString('pipeline.ACR.repositoryPlaceholder')
+              }
               multiTextInputProps={{
                 expressions,
                 value: TriggerDefaultFieldList.build,
