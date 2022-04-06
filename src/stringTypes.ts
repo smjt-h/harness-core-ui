@@ -2369,7 +2369,7 @@ export interface StringsMap {
   'pipeline.buildInfra.containerSecurityContext': string
   'pipeline.buildInfra.dropCapabilities': string
   'pipeline.buildInfra.poolId': string
-  'pipeline.buildInfra.priorityClass': string
+  'pipeline.buildInfra.priorityClassName': string
   'pipeline.buildInfra.privileged': string
   'pipeline.buildInfra.readOnlyRootFilesystem': string
   'pipeline.buildInfra.runAsNonRoot': string

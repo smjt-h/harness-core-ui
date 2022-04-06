@@ -888,7 +888,7 @@ runPipeline:
 buildInfra:
   poolId: Pool Id
   automountServiceAccountToken: Automount Service Account Token
-  priorityClass: Priority Class
+  priorityClassName: Priority Class
   containerSecurityContext: Container Security Context
   allowPrivilegeEscalation: Allow Privilege Escalation
   addCapabilities: ADD Capabilities
