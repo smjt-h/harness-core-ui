@@ -13,7 +13,13 @@ import { StepFormikRef, StepViewType } from '@pipeline/components/AbstractSteps/
 import { StepType } from '@pipeline/components/PipelineSteps/PipelineStepInterface'
 import { factory, TestStepWidget } from '@pipeline/components/PipelineSteps/Steps/__tests__/StepTestUtil'
 import { ServerlessAwsLambdaSpec } from '../ServerlessAwsLambdaSpec'
-import { ConnectorResponse, MultipleConnectorsResponse } from './mock/ConnectorResponse.mock'
+import {
+  getConnectorResponse,
+  getConnectorsResponseMultiple
+} from '../../ServerlessInfraSpec/mocks/ConnectorResponse.mock'
+
+const ConnectorResponse = getConnectorResponse('ServerlessAwsLambda')
+const MultipleConnectorsResponse = getConnectorsResponseMultiple('Aws')
 
 jest.mock('@common/components/YAMLBuilder/YamlBuilder')
 
@@ -65,6 +71,20 @@ const getParams = () => ({
   projectIdentifier: 'projectIdentifier'
 })
 
+const customStepProps = {
+  hasRegion: true,
+  formInfo: {
+    formName: 'serverlessAWSInfra',
+    type: 'Aws',
+    header: '',
+    tooltipIds: {
+      connector: 'awsInfraConnector',
+      region: 'awsRegion',
+      stage: 'awsStage'
+    }
+  }
+}
+
 const connectorRefPath = 'pipeline.stages.0.stage.spec.infrastructure.infrastructureDefinition.spec.connectorRef'
 
 describe('Test ServerlessAwsLambdaSpec snapshot', () => {
@@ -74,7 +94,12 @@ describe('Test ServerlessAwsLambdaSpec snapshot', () => {
 
   test('should render edit view with empty initial values', () => {
     const { container } = render(
-      <TestStepWidget initialValues={{}} type={StepType.ServerlessAwsLambda} stepViewType={StepViewType.Edit} />
+      <TestStepWidget
+        customStepProps={customStepProps}
+        initialValues={{}}
+        type={StepType.ServerlessAwsLambda}
+        stepViewType={StepViewType.Edit}
+      />
     )
     expect(container).toMatchSnapshot()
   })
@@ -82,6 +107,7 @@ describe('Test ServerlessAwsLambdaSpec snapshot', () => {
   test('should render edit view with values ', () => {
     const { container } = render(
       <TestStepWidget
+        customStepProps={customStepProps}
         initialValues={getInitialValues()}
         type={StepType.ServerlessAwsLambda}
         stepViewType={StepViewType.Edit}
@@ -93,6 +119,7 @@ describe('Test ServerlessAwsLambdaSpec snapshot', () => {
   test('should render edit view with runtime values ', () => {
     const { container } = render(
       <TestStepWidget
+        customStepProps={customStepProps}
         initialValues={getRuntimeInputsValues()}
         type={StepType.ServerlessAwsLambda}
         stepViewType={StepViewType.Edit}
@@ -104,6 +131,7 @@ describe('Test ServerlessAwsLambdaSpec snapshot', () => {
   test('should render edit view for inputset view', () => {
     const { container } = render(
       <TestStepWidget
+        customStepProps={customStepProps}
         initialValues={getInitialValues()}
         template={getRuntimeInputsValues()}
         allValues={getInitialValues()}
@@ -117,6 +145,7 @@ describe('Test ServerlessAwsLambdaSpec snapshot', () => {
   test('should render variable view', () => {
     const { container } = render(
       <TestStepWidget
+        customStepProps={customStepProps}
         initialValues={getInitialValues()}
         template={getRuntimeInputsValues()}
         allValues={getInitialValues()}
@@ -138,6 +167,7 @@ describe('Test ServerlessAwsLambdaSpec behavior', () => {
     const onUpdateHandler = jest.fn()
     const { container } = render(
       <TestStepWidget
+        customStepProps={customStepProps}
         initialValues={getInitialValues()}
         template={getRuntimeInputsValues()}
         allValues={getInitialValues()}
@@ -157,6 +187,7 @@ describe('Test ServerlessAwsLambdaSpec behavior', () => {
     const onUpdateHandler = jest.fn()
     const { container } = render(
       <TestStepWidget
+        customStepProps={customStepProps}
         initialValues={getEmptyInitialValues()}
         template={getRuntimeInputsValues()}
         allValues={getEmptyInitialValues()}
@@ -178,6 +209,7 @@ describe('Test ServerlessAwsLambdaSpec behavior', () => {
     const ref = React.createRef<StepFormikRef<unknown>>()
     const { container } = render(
       <TestStepWidget
+        customStepProps={customStepProps}
         initialValues={getInitialValues()}
         template={getRuntimeInputsValues()}
         allValues={getInitialValues()}
@@ -191,10 +223,6 @@ describe('Test ServerlessAwsLambdaSpec behavior', () => {
     await act(async () => {
       const stageInput = container.querySelector('[placeholder="cd.steps.serverless.stagePlaceholder"]')
       fireEvent.change(stageInput!, { target: { value: 'stage changed' } })
-
-      // TODO: add other fields
-
-      await ref.current?.submitForm()
     })
 
     await waitFor(() =>
@@ -214,9 +242,6 @@ describe('Test ServerlessAwsLambdaSpec autocomplete', () => {
 
     list = await step.getConnectorsListForYaml('invalid path', getYaml(), getParams())
     expect(list).toHaveLength(0)
-
-    // TODO: create yaml that cause yaml.parse to throw an error
-    // its expected that yaml.parse throw an error but is not happening
     list = await step.getConnectorsListForYaml(connectorRefPath, getInvalidYaml(), getParams())
     expect(list).toHaveLength(0)
   })

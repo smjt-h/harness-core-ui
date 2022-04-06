@@ -20,7 +20,7 @@ exports[`Test ServerlessGCPSpec snapshot should render edit view for inputset vi
           >
             <span
               class="Tooltip--acenter bp3-label"
-              data-tooltip-id="serverlessGCPInfraConnector"
+              data-tooltip-id="awsInfraConnector"
             >
               connector
             </span>
@@ -222,7 +222,7 @@ exports[`Test ServerlessGCPSpec snapshot should render edit view with empty init
               >
                 <span
                   class="Tooltip--acenter bp3-label"
-                  data-tooltip-id="serverlessGCPInfraConnector"
+                  data-tooltip-id="gcpInfraConnector"
                 >
                   connector
                 </span>
@@ -371,7 +371,7 @@ exports[`Test ServerlessGCPSpec snapshot should render edit view with empty init
               >
                 <span
                   class="Tooltip--acenter"
-                  data-tooltip-id="awsStage"
+                  data-tooltip-id="gcpStage"
                 >
                   common.stage
                 </span>
@@ -461,7 +461,7 @@ exports[`Test ServerlessGCPSpec snapshot should render edit view with runtime va
               >
                 <span
                   class="Tooltip--acenter bp3-label"
-                  data-tooltip-id="serverlessGCPInfraConnector"
+                  data-tooltip-id="gcpInfraConnector"
                 >
                   connector
                 </span>
@@ -574,7 +574,7 @@ exports[`Test ServerlessGCPSpec snapshot should render edit view with runtime va
               >
                 <span
                   class="Tooltip--acenter"
-                  data-tooltip-id="awsStage"
+                  data-tooltip-id="gcpStage"
                 >
                   common.stage
                 </span>
@@ -702,7 +702,7 @@ exports[`Test ServerlessGCPSpec snapshot should render edit view with values  1`
               >
                 <span
                   class="Tooltip--acenter bp3-label"
-                  data-tooltip-id="serverlessGCPInfraConnector"
+                  data-tooltip-id="gcpInfraConnector"
                 >
                   connector
                 </span>
@@ -851,7 +851,7 @@ exports[`Test ServerlessGCPSpec snapshot should render edit view with values  1`
               >
                 <span
                   class="Tooltip--acenter"
-                  data-tooltip-id="awsStage"
+                  data-tooltip-id="gcpStage"
                 >
                   common.stage
                 </span>

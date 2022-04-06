@@ -45,6 +45,7 @@ import { useGitScope } from '@pipeline/utils/CIUtils'
 import { ConnectorRefWidth } from '@pipeline/utils/constants'
 import { FormMultiTypeConnectorField } from '@connectors/components/ConnectorReferenceField/FormMultiTypeConnectorField'
 import type { StringsMap } from 'stringTypes'
+import { getCustomStepProps } from '@pipeline/utils/stageHelpers'
 import factory from '../PipelineSteps/PipelineStepFactory'
 import { StepType } from '../PipelineSteps/PipelineStepInterface'
 
@@ -816,6 +817,10 @@ export function StageInputSetFormInternal({
                   }
                 }}
                 stepViewType={viewType}
+                customStepProps={getCustomStepProps(
+                  deploymentStage?.infrastructure?.infrastructureDefinition?.type || '',
+                  getString
+                )}
               />
             )}
           </div>

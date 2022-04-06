@@ -12,7 +12,13 @@ import { StepFormikRef, StepViewType } from '@pipeline/components/AbstractSteps/
 import { StepType } from '@pipeline/components/PipelineSteps/PipelineStepInterface'
 import { factory, TestStepWidget } from '@pipeline/components/PipelineSteps/Steps/__tests__/StepTestUtil'
 import { ServerlessAzureSpec } from '../ServerlessAzureSpec'
-import { ConnectorResponse, MultipleConnectorsResponse } from './mock/ConnectorResponse.mock'
+import {
+  getConnectorResponse,
+  getConnectorsResponseMultiple
+} from '../../ServerlessInfraSpec/mocks/ConnectorResponse.mock'
+
+const ConnectorResponse = getConnectorResponse('ServerlessAzure')
+const MultipleConnectorsResponse = getConnectorsResponseMultiple('Azure')
 
 jest.mock('@common/components/YAMLBuilder/YamlBuilder')
 
@@ -36,6 +42,19 @@ const getEmptyInitialValues = () => ({
   stage: ''
 })
 
+const customStepProps = {
+  formInfo: {
+    formName: 'serverlessAzureInfra',
+    type: 'Gcp',
+    header: '',
+    tooltipIds: {
+      connector: 'azureInfraConnector',
+      region: 'azureRegion',
+      stage: 'azureStage'
+    }
+  }
+}
+
 describe('Test ServerlessAzureSpec snapshot', () => {
   beforeEach(() => {
     factory.registerStep(new ServerlessAzureSpec())
@@ -43,7 +62,12 @@ describe('Test ServerlessAzureSpec snapshot', () => {
 
   test('should render edit view with empty initial values', () => {
     const { container } = render(
-      <TestStepWidget initialValues={{}} type={StepType.ServerlessAzure} stepViewType={StepViewType.Edit} />
+      <TestStepWidget
+        customStepProps={customStepProps}
+        initialValues={{}}
+        type={StepType.ServerlessAzure}
+        stepViewType={StepViewType.Edit}
+      />
     )
     expect(container).toMatchSnapshot()
   })
@@ -51,6 +75,7 @@ describe('Test ServerlessAzureSpec snapshot', () => {
   test('should render edit view with values ', () => {
     const { container } = render(
       <TestStepWidget
+        customStepProps={customStepProps}
         initialValues={getInitialValues()}
         type={StepType.ServerlessAzure}
         stepViewType={StepViewType.Edit}
@@ -62,6 +87,7 @@ describe('Test ServerlessAzureSpec snapshot', () => {
   test('should render edit view with runtime values ', () => {
     const { container } = render(
       <TestStepWidget
+        customStepProps={customStepProps}
         initialValues={getRuntimeInputsValues()}
         type={StepType.ServerlessAzure}
         stepViewType={StepViewType.Edit}
@@ -73,6 +99,7 @@ describe('Test ServerlessAzureSpec snapshot', () => {
   test('should render edit view for inputset view', () => {
     const { container } = render(
       <TestStepWidget
+        customStepProps={customStepProps}
         initialValues={getInitialValues()}
         template={getRuntimeInputsValues()}
         allValues={getInitialValues()}
@@ -86,6 +113,7 @@ describe('Test ServerlessAzureSpec snapshot', () => {
   test('should render variable view', () => {
     const { container } = render(
       <TestStepWidget
+        customStepProps={customStepProps}
         initialValues={getInitialValues()}
         template={getRuntimeInputsValues()}
         allValues={getInitialValues()}
@@ -107,6 +135,7 @@ describe('Test ServerlessAzureSpec behavior', () => {
     const onUpdateHandler = jest.fn()
     const { container } = render(
       <TestStepWidget
+        customStepProps={customStepProps}
         initialValues={getInitialValues()}
         template={getRuntimeInputsValues()}
         allValues={getInitialValues()}
@@ -126,6 +155,7 @@ describe('Test ServerlessAzureSpec behavior', () => {
     const onUpdateHandler = jest.fn()
     const { container } = render(
       <TestStepWidget
+        customStepProps={customStepProps}
         initialValues={getEmptyInitialValues()}
         template={getRuntimeInputsValues()}
         allValues={getEmptyInitialValues()}
@@ -147,6 +177,7 @@ describe('Test ServerlessAzureSpec behavior', () => {
     const ref = React.createRef<StepFormikRef<unknown>>()
     const { container } = render(
       <TestStepWidget
+        customStepProps={customStepProps}
         initialValues={getInitialValues()}
         template={getRuntimeInputsValues()}
         allValues={getInitialValues()}
@@ -160,10 +191,6 @@ describe('Test ServerlessAzureSpec behavior', () => {
     await act(async () => {
       const stageInput = container.querySelector('[placeholder="cd.steps.serverless.stagePlaceholder"]')
       fireEvent.change(stageInput!, { target: { value: 'stage changed' } })
-
-      // TODO: add other fields
-
-      await ref.current?.submitForm()
     })
 
     await waitFor(() =>

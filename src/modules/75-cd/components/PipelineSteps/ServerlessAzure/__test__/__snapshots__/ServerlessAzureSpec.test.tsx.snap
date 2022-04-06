@@ -20,7 +20,7 @@ exports[`Test ServerlessAzureSpec snapshot should render edit view for inputset 
           >
             <span
               class="Tooltip--acenter bp3-label"
-              data-tooltip-id="serverlessAzureConnector"
+              data-tooltip-id="awsInfraConnector"
             >
               connector
             </span>
@@ -222,7 +222,7 @@ exports[`Test ServerlessAzureSpec snapshot should render edit view with empty in
               >
                 <span
                   class="Tooltip--acenter bp3-label"
-                  data-tooltip-id="serverlessAzureConnector"
+                  data-tooltip-id="azureInfraConnector"
                 >
                   connector
                 </span>
@@ -371,7 +371,7 @@ exports[`Test ServerlessAzureSpec snapshot should render edit view with empty in
               >
                 <span
                   class="Tooltip--acenter"
-                  data-tooltip-id="awsStage"
+                  data-tooltip-id="azureStage"
                 >
                   common.stage
                 </span>
@@ -461,7 +461,7 @@ exports[`Test ServerlessAzureSpec snapshot should render edit view with runtime 
               >
                 <span
                   class="Tooltip--acenter bp3-label"
-                  data-tooltip-id="serverlessAzureConnector"
+                  data-tooltip-id="azureInfraConnector"
                 >
                   connector
                 </span>
@@ -574,7 +574,7 @@ exports[`Test ServerlessAzureSpec snapshot should render edit view with runtime 
               >
                 <span
                   class="Tooltip--acenter"
-                  data-tooltip-id="awsStage"
+                  data-tooltip-id="azureStage"
                 >
                   common.stage
                 </span>
@@ -702,7 +702,7 @@ exports[`Test ServerlessAzureSpec snapshot should render edit view with values  
               >
                 <span
                   class="Tooltip--acenter bp3-label"
-                  data-tooltip-id="serverlessAzureConnector"
+                  data-tooltip-id="azureInfraConnector"
                 >
                   connector
                 </span>
@@ -851,7 +851,7 @@ exports[`Test ServerlessAzureSpec snapshot should render edit view with values  
               >
                 <span
                   class="Tooltip--acenter"
-                  data-tooltip-id="awsStage"
+                  data-tooltip-id="azureStage"
                 >
                   common.stage
                 </span>
