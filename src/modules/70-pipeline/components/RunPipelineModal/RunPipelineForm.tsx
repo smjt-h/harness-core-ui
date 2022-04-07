@@ -487,7 +487,7 @@ function RunPipelineFormBasic({
     if (view === SelectedView.VISUAL) {
       const presentPipeline = yamlParse<PipelineConfig>(defaultTo(yamlHandler?.getLatestYaml(), ''))
       setCurrentPipeline(presentPipeline)
-      handleValidation(presentPipeline)
+      handleValidation(presentPipeline.pipeline)
     }
     setSelectedView(view)
   }
