@@ -286,10 +286,12 @@ const ResourceFulfilment: React.FC<ResourceFulfilmentProps> = props => {
                 odInstance: Yup.number()
                   .required()
                   .positive()
-                  .min(0)
                   .when(['isGcpProvider'], {
                     is: _ => !isGcpProvider,
-                    then: Yup.number().max(props.gatewayDetails.routing?.instance?.scale_group?.max as number)
+                    then: Yup.number()
+                      .min(0)
+                      .max(props.gatewayDetails.routing?.instance?.scale_group?.max as number),
+                    otherwise: Yup.number().min(1)
                   }),
                 spotInstance: Yup.number()
                   .positive()

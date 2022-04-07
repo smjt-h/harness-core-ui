@@ -76,13 +76,25 @@ const COGatewayConfig: React.FC<COGatewayConfigProps> = props => {
   }, [])
 
   const groupsValidation = (): boolean => {
-    return props.gatewayDetails.routing.instance.scale_group
-      ? (props.gatewayDetails.routing.instance.scale_group?.on_demand as number) > 0 && isGcpProvider
-        ? true
-        : (props.gatewayDetails.routing.instance.scale_group?.on_demand as number) <=
-            (props.gatewayDetails.routing.instance.scale_group.max as number) &&
-          (props.gatewayDetails.routing.instance.scale_group?.spot as number) >= 0
-      : true
+    let validity = !_isEmpty(props.gatewayDetails.routing.instance.scale_group)
+    if (isGcpProvider) {
+      return validity && (props.gatewayDetails.routing.instance.scale_group?.on_demand as number) > 0
+    } else {
+      return (
+        validity &&
+        (props.gatewayDetails.routing.instance.scale_group?.on_demand as number) <=
+          (props.gatewayDetails.routing.instance.scale_group?.max as number) &&
+        (props.gatewayDetails.routing.instance.scale_group?.spot as number) >= 0
+      )
+    }
+    // ? (props.gatewayDetails.routing.instance.scale_group?.on_demand as number) > 0 && isGcpProvider
+    //   ? true
+    //   : (props.gatewayDetails.routing.instance.scale_group?.on_demand as number) <=
+    //       (props.gatewayDetails.routing.instance.scale_group?.max as number) &&
+    //     (props.gatewayDetails.routing.instance.scale_group?.spot as number) >= 0
+    // : true
+    // console.log((props.gatewayDetails.routing.instance.scale_group?.on_demand as number) > 0)
+    // return validity
   }
 
   function isValid(): boolean {
