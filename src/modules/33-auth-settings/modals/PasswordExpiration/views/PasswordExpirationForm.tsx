@@ -25,6 +25,7 @@ import type { LoginSettings, PasswordExpirationPolicy } from 'services/cd-ng'
 import { usePutLoginSettings } from 'services/cd-ng'
 import type { AccountPathProps } from '@common/interfaces/RouteInterfaces'
 import { useStrings } from 'framework/strings'
+import useRBACError from '@rbac/utils/useRBACError/useRBACError'
 
 interface Props {
   onSubmit?: () => void
@@ -39,6 +40,7 @@ interface FormValues {
 }
 
 const PasswordExpirationForm: React.FC<Props> = ({ onSubmit, onCancel, loginSettings, editing }) => {
+  const { getRBACErrorMessage } = useRBACError()
   const { getString } = useStrings()
   const { accountId } = useParams<AccountPathProps>()
   const { showSuccess } = useToaster()
@@ -71,7 +73,7 @@ const PasswordExpirationForm: React.FC<Props> = ({ onSubmit, onCancel, loginSett
         onSubmit?.()
       }
     } catch (e) {
-      /* istanbul ignore next */ modalErrorHandler?.showDanger(e.data?.message || e.message)
+      /* istanbul ignore next */ modalErrorHandler?.showDanger(getRBACErrorMessage(e))
     }
   }
 

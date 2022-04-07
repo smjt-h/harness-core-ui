@@ -18,8 +18,7 @@ import {
   VisualYamlSelectedView as SelectedView,
   VisualYamlToggle,
   useConfirmationDialog,
-  useToaster,
-  getErrorInfoFromErrorObject
+  useToaster
 } from '@wings-software/uicore'
 
 import {
@@ -45,6 +44,7 @@ import { ResourceType } from '@rbac/interfaces/ResourceType'
 import RbacButton from '@rbac/components/Button/Button'
 import { PermissionIdentifier } from '@rbac/interfaces/PermissionIdentifier'
 import { yamlStringify } from '@common/utils/YamlHelperMethods'
+import useRBACError from '@rbac/utils/useRBACError/useRBACError'
 import ViewSecretDetails from './views/ViewSecretDetails'
 import './SecretDetails.module.scss'
 
@@ -65,6 +65,7 @@ const yamlSanityConfig = {
 }
 
 const YAMLSecretDetails: React.FC<YAMLSecretDetailsProps> = ({ refetch, secretData, edit, setEdit }) => {
+  const { getRBACErrorMessage } = useRBACError()
   const { getString } = useStrings()
   const { showSuccess, showError } = useToaster()
   const { accountId, projectIdentifier, orgIdentifier, secretId } = useParams<
@@ -165,7 +166,7 @@ const YAMLSecretDetails: React.FC<YAMLSecretDetailsProps> = ({ refetch, secretDa
         setEdit(false)
         refetch?.()
       } catch (err) {
-        showError(getErrorInfoFromErrorObject(err, true))
+        showError(getRBACErrorMessage(err))
       }
     }
   }

@@ -8,6 +8,8 @@
 import React, { useEffect, useState } from 'react'
 import { Container, PageBody, PageHeader, Text } from '@wings-software/uicore'
 import { useParams } from 'react-router-dom'
+import { useModalHook } from '@harness/use-modal'
+import { Drawer, Position } from '@blueprintjs/core'
 import { useStrings } from 'framework/strings'
 import { NGBreadcrumbs } from '@common/components/NGBreadcrumbs/NGBreadcrumbs'
 import { CcmMetaData, QlceViewTimeFilterOperator, useFetchCcmMetaDataQuery } from 'services/ce/services'
@@ -21,6 +23,7 @@ import { DEFAULT_TIME_RANGE, getGMTEndDateTime, getGMTStartDateTime } from '@ce/
 import type { orderType, sortType } from '@common/components/Table/react-table-config'
 import { useQueryParamsState } from '@common/hooks/useQueryParamsState'
 import type { TimeRangeFilterType } from '@ce/types'
+import AnomaliesSettings from '@ce/components/AnomaliesSettings/AnomaliesSettings'
 
 const getFilters = (filters: Record<string, Record<string, string>>, searchText: string) => {
   const updatedFilters = Object.values(filters).map(item => {
@@ -74,6 +77,19 @@ const AnomaliesOverviewPage: React.FC = () => {
   const [timeRange, setTimeRange] = useQueryParamsState<TimeRangeFilterType>('timeRange', DEFAULT_TIME_RANGE)
 
   const [sortByObj, setSortByObj] = useState<SortByObjInterface>({})
+
+  const drawerProps = {
+    autoFocus: true,
+    canEscapeKeyClose: true,
+    canOutsideClickClose: true,
+    enforceFocus: true,
+    isOpen: true,
+    hasBackdrop: true,
+    position: Position.RIGHT,
+    usePortal: true,
+    size: '54%',
+    isCloseButtonShown: true
+  }
 
   const { mutate: getAnomaliesList, loading: isListFetching } = useListAnomalies({
     queryParams: {
@@ -179,6 +195,19 @@ const AnomaliesOverviewPage: React.FC = () => {
     })
   }
 
+  const [showModal, hideDrawer] = useModalHook(() => {
+    return (
+      <Drawer
+        onClose={() => {
+          hideDrawer()
+        }}
+        {...drawerProps}
+      >
+        <AnomaliesSettings hideDrawer={hideDrawer} />
+      </Drawer>
+    )
+  }, [])
+
   return (
     <>
       <PageHeader
@@ -209,7 +238,7 @@ const AnomaliesOverviewPage: React.FC = () => {
             top: 'medium'
           }}
         >
-          <AnomaliesSearch onChange={setSearchText} />
+          <AnomaliesSearch onChange={setSearchText} showModal={showModal} />
           <AnomaliesSummary
             costData={costData}
             perspectiveAnomaliesData={perspectiveAnomaliesData}

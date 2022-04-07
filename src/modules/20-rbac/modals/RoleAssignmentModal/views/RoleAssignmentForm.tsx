@@ -6,15 +6,7 @@
  */
 
 import React, { useMemo } from 'react'
-import {
-  Container,
-  Layout,
-  Text,
-  FieldArray,
-  Select,
-  SelectOption,
-  getErrorInfoFromErrorObject
-} from '@wings-software/uicore'
+import { Container, Layout, Text, FieldArray, Select, SelectOption } from '@wings-software/uicore'
 import { useParams } from 'react-router-dom'
 import type { FormikProps } from 'formik'
 import { defaultTo } from 'lodash-es'
@@ -27,6 +19,7 @@ import { useToaster } from '@common/components'
 import { getScopeBasedDefaultResourceGroup, isAssignmentFieldDisabled } from '@rbac/utils/utils'
 import { getScopeFromDTO } from '@common/components/EntityReference/EntityReference'
 import NewUserRoleDropdown from '@rbac/components/NewUserRoleDropdown/NewUserRoleDropdown'
+import useRBACError from '@rbac/utils/useRBACError/useRBACError'
 import type { Assignment, RoleOption, UserRoleAssignmentValues } from './UserRoleAssigment'
 import type { RoleAssignmentValues } from './RoleAssignment'
 import css from './RoleAssignmentForm.module.scss'
@@ -45,6 +38,7 @@ interface RoleAssignmentFormProps {
 const RoleAssignmentForm: React.FC<RoleAssignmentFormProps> = ({ noRoleAssignmentsText, formik, onSuccess }) => {
   const { accountId, orgIdentifier, projectIdentifier } = useParams<ProjectPathProps>()
   const { getString } = useStrings()
+  const { getRBACErrorMessage } = useRBACError()
   const scope = getScopeFromDTO({ accountIdentifier: accountId, orgIdentifier, projectIdentifier })
   const { showSuccess, showError } = useToaster()
   const defaultResourceGroup = getScopeBasedDefaultResourceGroup(scope, getString)
@@ -100,7 +94,7 @@ const RoleAssignmentForm: React.FC<RoleAssignmentFormProps> = ({ noRoleAssignmen
       }
     } catch (err) {
       /* istanbul ignore next */
-      showError(getErrorInfoFromErrorObject(err))
+      showError(getRBACErrorMessage(err))
     }
     return false
   }

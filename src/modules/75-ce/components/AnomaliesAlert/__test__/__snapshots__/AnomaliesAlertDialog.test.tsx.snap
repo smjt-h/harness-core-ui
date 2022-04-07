@@ -1,0 +1,287 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Test case for anomalies alert dialog should work as expected 1`] = `
+<div
+  class="bp3-dialog Dialog--dialog"
+  style="width: 1100px; position: relative; min-height: 600px; border-left: 0; padding-bottom: 0px; overflow: hidden;"
+>
+  <span
+    class="bp3-icon StyledProps--main Dialog--close"
+    data-icon="Stroke"
+  >
+    <svg
+      fill="none"
+      height="15"
+      width="15"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <path
+        d="M1 .8l6 6 6-6-12 12 6-6 6 6"
+        stroke="#8F90A6"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+    </svg>
+  </span>
+  <div
+    class="StyledProps--font StyledProps--main Dialog--children StyledProps--padding-none"
+  >
+    <div
+      class="OverlaySpinner--overlaySpinner"
+    >
+      <div
+        class="StepWizard--main StepWizard--navBar"
+      >
+        <div
+          class="StepWizard--navBarList"
+        >
+          <div
+            class="StepWizard--navStep StepWizard--completedStep"
+          >
+            <span
+              class="StepWizard--completedIcon"
+            >
+              <span
+                class="bp3-icon bp3-icon-small-tick StyledProps--main StyledProps--color StyledProps--color-primary7"
+                icon="small-tick"
+              >
+                <svg
+                  data-icon="small-tick"
+                  height="20"
+                  viewBox="0 0 20 20"
+                  width="20"
+                >
+                  <desc>
+                    small-tick
+                  </desc>
+                  <path
+                    d="M15 5c-.28 0-.53.11-.71.29L8 11.59l-2.29-2.3a1.003 1.003 0 00-1.42 1.42l3 3c.18.18.43.29.71.29s.53-.11.71-.29l7-7A1.003 1.003 0 0015 5z"
+                    fill-rule="evenodd"
+                  />
+                </svg>
+              </span>
+            </span>
+            <p
+              class="StyledProps--font Text--lineclamp StyledProps--main StepWizard--stepName"
+              style="--text-line-clamp: 2; width: 200px;"
+            >
+              Step 1
+            </p>
+            <p
+              class="StyledProps--font Text--lineclamp StyledProps--main StepWizard--stepName"
+              style="--text-line-clamp: 2; width: 200px;"
+            >
+              
+            </p>
+          </div>
+          <div
+            class="StepWizard--navStep StepWizard--activeStep"
+          >
+            <span
+              class="StepWizard--number"
+            >
+              2
+            </span>
+            <p
+              class="StyledProps--font Text--lineclamp StyledProps--main StepWizard--stepName"
+              style="--text-line-clamp: 2; width: 200px;"
+            >
+              Step 2
+            </p>
+          </div>
+        </div>
+        <div
+          class="StepWizard--stepDetails"
+        >
+           
+          <span
+            class="bp3-icon bp3-icon-cross StyledProps--main closeBtn"
+            data-testid="crossModal"
+            icon="cross"
+          >
+            <svg
+              data-icon="cross"
+              height="16"
+              viewBox="0 0 16 16"
+              width="16"
+            >
+              <desc>
+                cross
+              </desc>
+              <path
+                d="M9.41 8l3.29-3.29c.19-.18.3-.43.3-.71a1.003 1.003 0 00-1.71-.71L8 6.59l-3.29-3.3a1.003 1.003 0 00-1.42 1.42L6.59 8 3.3 11.29c-.19.18-.3.43-.3.71a1.003 1.003 0 001.71.71L8 9.41l3.29 3.29c.18.19.43.3.71.3a1.003 1.003 0 00.71-1.71L9.41 8z"
+                fill-rule="evenodd"
+              />
+            </svg>
+          </span>
+          <div
+            class="Layout--vertical Layout--layout-spacing-large StyledProps--main"
+          >
+            <p
+              class="StyledProps--font StyledProps--main StyledProps--color StyledProps--color-black StyledProps--font-variation-h5"
+            >
+              
+            </p>
+            <p
+              class="StyledProps--font StyledProps--main StyledProps--color StyledProps--color-grey500 StyledProps--font-variation-small"
+            >
+              ce.anomalyDetection.notificationAlerts.notificationStepSubtext
+            </p>
+          </div>
+          <div
+            class="Layout--vertical Layout--layout-spacing-medium StyledProps--main addChannelWrapper"
+          >
+            <p
+              class="StyledProps--font StyledProps--main StyledProps--color StyledProps--color-black StyledProps--font-variation-h6"
+            >
+              ce.anomalyDetection.notificationAlerts.alertChannelHeading
+            </p>
+            <div
+              class="alertChannelWrapper"
+            >
+              <button
+                class="bp3-button Button--button StyledProps--font StyledProps--main addChannelBtn Button--with-current-color Button--withLeftIcon Button--variation Button--variation-link"
+                type="button"
+              >
+                <span
+                  class="bp3-icon bp3-icon-plus StyledProps--main StyledProps--padding-right-xsmall"
+                  icon="plus"
+                >
+                  <svg
+                    data-icon="plus"
+                    height="16"
+                    viewBox="0 0 16 16"
+                    width="16"
+                  >
+                    <desc>
+                      plus
+                    </desc>
+                    <path
+                      d="M13 7H9V3c0-.55-.45-1-1-1s-1 .45-1 1v4H3c-.55 0-1 .45-1 1s.45 1 1 1h4v4c0 .55.45 1 1 1s1-.45 1-1V9h4c.55 0 1-.45 1-1s-.45-1-1-1z"
+                      fill-rule="evenodd"
+                    />
+                  </svg>
+                </span>
+                <span
+                  class="bp3-button-text"
+                >
+                  ce.anomalyDetection.notificationAlerts.addChannelBtn
+                </span>
+              </button>
+            </div>
+          </div>
+          <div
+            class="Layout--horizontal Layout--layout-spacing-medium StyledProps--main actionBtn"
+          >
+            <button
+              class="bp3-button Button--button StyledProps--font StyledProps--main Button--with-current-color Button--withLeftIcon Button--variation Button--variation-tertiary"
+              type="button"
+            >
+              <span
+                class="bp3-icon bp3-icon-chevron-left StyledProps--main StyledProps--padding-right-xsmall"
+                icon="chevron-left"
+              >
+                <svg
+                  data-icon="chevron-left"
+                  height="16"
+                  viewBox="0 0 16 16"
+                  width="16"
+                >
+                  <desc>
+                    chevron-left
+                  </desc>
+                  <path
+                    d="M7.41 8l3.29-3.29c.19-.18.3-.43.3-.71a1.003 1.003 0 00-1.71-.71l-4 4C5.11 7.47 5 7.72 5 8c0 .28.11.53.29.71l4 4a1.003 1.003 0 001.42-1.42L7.41 8z"
+                    fill-rule="evenodd"
+                  />
+                </svg>
+              </span>
+              <span
+                class="bp3-button-text"
+              >
+                back
+              </span>
+            </button>
+            <button
+              class="bp3-button bp3-disabled bp3-loading Button--button StyledProps--font StyledProps--main Button--with-current-color Button--withRightIcon Button--variation Button--variation-primary"
+              data-testid="submitForm"
+              disabled=""
+              tabindex="-1"
+              type="submit"
+            >
+              <div
+                class="bp3-spinner bp3-button-spinner"
+              >
+                <div
+                  class="bp3-spinner-animation"
+                >
+                  <svg
+                    height="20"
+                    stroke-width="16.00"
+                    viewBox="-3.00 -3.00 106.00 106.00"
+                    width="20"
+                  >
+                    <path
+                      class="bp3-spinner-track"
+                      d="M 50,50 m 0,-45 a 45,45 0 1 1 0,90 a 45,45 0 1 1 0,-90"
+                    />
+                    <path
+                      class="bp3-spinner-head"
+                      d="M 50,50 m 0,-45 a 45,45 0 1 1 0,90 a 45,45 0 1 1 0,-90"
+                      pathLength="280"
+                      stroke-dasharray="280 280"
+                      stroke-dashoffset="210"
+                    />
+                  </svg>
+                </div>
+              </div>
+              <span
+                class="bp3-button-text"
+              >
+                saveAndContinue
+              </span>
+              <span
+                class="bp3-icon bp3-icon-chevron-right StyledProps--main"
+                icon="chevron-right"
+              >
+                <svg
+                  data-icon="chevron-right"
+                  height="16"
+                  viewBox="0 0 16 16"
+                  width="16"
+                >
+                  <desc>
+                    chevron-right
+                  </desc>
+                  <path
+                    d="M10.71 7.29l-4-4a1.003 1.003 0 00-1.42 1.42L8.59 8 5.3 11.29c-.19.18-.3.43-.3.71a1.003 1.003 0 001.71.71l4-4c.18-.18.29-.43.29-.71 0-.28-.11-.53-.29-.71z"
+                    fill-rule="evenodd"
+                  />
+                </svg>
+              </span>
+            </button>
+          </div>
+        </div>
+        <span
+          class="bp3-icon StyledProps--main StepWizard--harnessWatermark StyledProps--color StyledProps--color-grey50"
+          data-icon="harness-with-color"
+        >
+          <svg
+            height="346"
+            viewBox="0 0 25 25"
+            width="346"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M22.974 8.186L16.708 1.88a7.023 7.023 0 00-2.59-1.572C11.98-.409 9.858.154 8.135 1.88L1.868 8.186a7.081 7.081 0 00-1.562 2.606c-.713 2.153-.153 4.289 1.562 6.023l6.266 6.306a7.113 7.113 0 002.589 1.58 5.663 5.663 0 001.808.308c1.503 0 2.946-.64 4.177-1.88l6.266-6.305a7.08 7.08 0 001.562-2.606c.713-2.162.153-4.298-1.562-6.032zm-10.07-4.477c.706.213 1.232.7 1.274.735l1.851 1.862-3.608 3.631-3.608-3.63 1.859-1.872c.5-.496 1.197-1.034 2.233-.726zm-9.219 8.305c.212-.71.696-1.24.73-1.282l1.85-1.863 3.609 3.632-3.608 3.63-1.86-1.87c-.492-.504-1.027-1.214-.721-2.247zm8.252 9.279c-.705-.214-1.231-.701-1.273-.735l-1.851-1.863 3.608-3.631 3.608 3.631-1.86 1.871c-.5.496-1.205 1.034-2.232.726zm9.22-8.305c-.212.709-.696 1.239-.73 1.281l-1.851 1.863-3.608-3.631 3.608-3.632 1.86 1.872c.492.504 1.027 1.204.72 2.247z"
+              fill="currentColor"
+              fill-rule="evenodd"
+            />
+          </svg>
+        </span>
+      </div>
+    </div>
+  </div>
+  <footer />
+</div>
+`;

@@ -86,6 +86,7 @@ import { getLinkForAccountResources } from '@common/utils/BreadcrumbUtils'
 import { Connectors } from '@connectors/constants'
 import { useTelemetry } from '@common/hooks/useTelemetry'
 import { CE_CONNECTOR_CLICK, CONNECTORS_PAGE } from '@connectors/trackingConstants'
+import useRBACError from '@rbac/utils/useRBACError/useRBACError'
 import ConnectorsListView from './views/ConnectorsListView'
 import { getIconByType, getConnectorDisplayName } from './utils/ConnectorUtils'
 import {
@@ -110,6 +111,7 @@ interface ConnectorsListProps {
 
 const ConnectorsPage: React.FC<ConnectorsListProps> = ({ catalogueMockData, statisticsMockData, filtersMockData }) => {
   const { getString } = useStrings()
+  const { getRBACErrorMessage } = useRBACError()
   const { isGitSyncEnabled } = useAppStore()
   const { accountId, projectIdentifier, orgIdentifier, module } = useParams<ProjectPathProps & ModulePathParams>()
   const [searchTerm, setSearchTerm] = useState('')
@@ -207,7 +209,7 @@ const ConnectorsPage: React.FC<ConnectorsListProps> = ({ catalogueMockData, stat
         }
       } /* istanbul ignore next */ catch (e) {
         if (shouldShowError(e)) {
-          showError(e.data?.message || e.message)
+          showError(getRBACErrorMessage(e))
         }
         setConnectorFetchError(e)
       }

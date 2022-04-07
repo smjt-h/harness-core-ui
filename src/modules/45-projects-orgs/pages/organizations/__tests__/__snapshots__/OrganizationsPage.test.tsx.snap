@@ -283,7 +283,7 @@ exports[`Org Page List Create New Org 1`] = `
                             >
                               <div
                                 class="Avatar--AvatarInner"
-                                style="border-radius: 100%; line-height: 26px; width: 32px; height: 32px; font-size: 10px;"
+                                style="border-radius: 100%; line-height: 25px; width: 32px; height: 32px; font-size: 20px; font-weight: 200;"
                                 tabindex="0"
                               >
                                 +
@@ -533,7 +533,7 @@ exports[`Org Page List Create New Org 1`] = `
                             >
                               <div
                                 class="Avatar--AvatarInner"
-                                style="border-radius: 100%; line-height: 26px; width: 32px; height: 32px; font-size: 10px;"
+                                style="border-radius: 100%; line-height: 25px; width: 32px; height: 32px; font-size: 20px; font-weight: 200;"
                                 tabindex="0"
                               >
                                 +
@@ -706,7 +706,7 @@ exports[`Org Page List Create New Org 1`] = `
                             >
                               <div
                                 class="Avatar--AvatarInner"
-                                style="border-radius: 100%; line-height: 26px; width: 32px; height: 32px; font-size: 10px;"
+                                style="border-radius: 100%; line-height: 25px; width: 32px; height: 32px; font-size: 20px; font-weight: 200;"
                                 tabindex="0"
                               >
                                 +

@@ -89,13 +89,14 @@ const ExternalAPICallContent: React.FC<ExecutionAndAPICallLogProps> = ({
           const responseBody = responses?.find(_response => _response.name === 'Response Body') ?? {}
 
           let stringifyResponse = ''
+          const TEXT_NO_DATA = getString('cv.changeSource.noDataAvaiableForCard')
 
           try {
             stringifyResponse = responseBody.value
               ? JSON.stringify(JSON.parse(responseBody.value), null, 4)
-              : getString('cv.changeSource.noDataAvaiableForCard')
+              : TEXT_NO_DATA
           } catch (e) {
-            stringifyResponse = getString('cv.somethingWentWrongWhileParsingTheData')
+            stringifyResponse = responseBody.value ?? TEXT_NO_DATA
           }
 
           return (

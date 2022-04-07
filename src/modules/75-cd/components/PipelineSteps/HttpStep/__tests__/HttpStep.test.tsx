@@ -162,6 +162,12 @@ describe('Http Step', () => {
         url: 'https://someapi.com/v3'
       }
     })
+
+    //timeout validation on submit
+    fireEvent.change(container.querySelector('input[value="10s"]') as HTMLElement, { target: { value: '' } })
+
+    await act(() => ref.current?.submitForm())
+    expect(getByText('validation.timeout10SecMinimum')).toBeTruthy()
   })
 
   test('renders input sets', () => {
@@ -169,6 +175,7 @@ describe('Http Step', () => {
     const initialValues = {
       identifier: 'My_Http_Step',
       name: 'My Http Step',
+      timeout: RUNTIME_INPUT_VALUE,
       spec: {
         method: RUNTIME_INPUT_VALUE,
         url: RUNTIME_INPUT_VALUE,
@@ -197,7 +204,7 @@ describe('Http Step', () => {
         type={StepType.HTTP}
         stepViewType={StepViewType.InputSet}
         onUpdate={onUpdate}
-        path=""
+        path="/abc"
       />
     )
 

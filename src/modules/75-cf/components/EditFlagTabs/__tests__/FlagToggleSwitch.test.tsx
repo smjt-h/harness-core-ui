@@ -7,11 +7,10 @@
 
 import { fireEvent, render, RenderResult, screen, waitFor } from '@testing-library/react'
 import React from 'react'
-import * as usePlanEnforcementMock from '@cf/hooks/usePlanEnforcement'
 import * as rbacHooksMock from '@rbac/hooks/usePermission'
 import { TestWrapper } from '@common/utils/testUtils'
 import * as useFeaturesMock from '@common/hooks/useFeatures'
-
+import * as useFeatureEnabled from '@cf/pages/feature-flags-detail/targeting-rules-tab/hooks/useFeatureEnabled'
 import FlagToggleSwitch, { FlagToggleSwitchProps } from '../FlagToggleSwitch'
 
 const renderComponent = (props: Partial<FlagToggleSwitchProps> = {}): RenderResult => {
@@ -28,7 +27,11 @@ const renderComponent = (props: Partial<FlagToggleSwitchProps> = {}): RenderResu
 describe('FlagToggleSwitch', () => {
   beforeEach(() => {
     jest.spyOn(rbacHooksMock, 'usePermission').mockReturnValue([true])
-    jest.spyOn(usePlanEnforcementMock, 'default').mockReturnValue({ isPlanEnforcementEnabled: false, isFreePlan: true })
+    jest.spyOn(useFeatureEnabled, 'default').mockReturnValue({
+      enabledByPlanEnforcement: true,
+      featureEnabled: true,
+      enabledByPermission: true
+    })
   })
 
   test('it should render toggle text correctly when ON', async () => {
@@ -78,11 +81,15 @@ describe('FlagToggleSwitch', () => {
     expect(screen.getByText('cf.featureFlags.flagWillTurnOn')).toBeInTheDocument()
   })
 
-  test('it should render tooltip and disable button when plan enforcement limits reached', async () => {
-    jest.spyOn(usePlanEnforcementMock, 'default').mockReturnValue({ isPlanEnforcementEnabled: true, isFreePlan: true })
-    jest.spyOn(useFeaturesMock, 'useFeature').mockReturnValue({ enabled: false })
+  test('it should render tooltip and disable button when plan enforcement limits reached for free plan', async () => {
+    jest.spyOn(useFeatureEnabled, 'default').mockReturnValue({
+      enabledByPermission: true,
+      enabledByPlanEnforcement: false,
+      featureEnabled: false
+    })
 
     renderComponent({
+      disabled: true,
       currentState: 'on',
       currentEnvironmentState: 'off'
     })
@@ -92,42 +99,6 @@ describe('FlagToggleSwitch', () => {
     await waitFor(() => {
       expect(screen.getByText('cf.planEnforcement.upgradeRequiredMau')).toBeInTheDocument()
       expect(screen.getByTestId('flag-status-switch')).toBeDisabled()
-    })
-  })
-
-  test('it should hide tooltip and render button when plan enforcement disabled and feature disabled', async () => {
-    jest.spyOn(usePlanEnforcementMock, 'default').mockReturnValue({ isPlanEnforcementEnabled: false, isFreePlan: true })
-    jest.spyOn(useFeaturesMock, 'useFeature').mockReturnValue({ enabled: false })
-
-    renderComponent({
-      currentState: 'on',
-      currentEnvironmentState: 'off'
-    })
-
-    fireEvent.mouseOver(screen.getByTestId('flag-status-switch') as HTMLButtonElement)
-
-    await waitFor(() => {
-      expect(screen.queryByText('cf.planEnforcement.upgradeRequiredMau')).not.toBeInTheDocument()
-      expect(screen.getByTestId('flag-status-switch')).not.toBeDisabled()
-    })
-  })
-
-  test('it should hide tooltip and render button when plan enforcement enabled and isFreePlan is FALSE', async () => {
-    jest
-      .spyOn(usePlanEnforcementMock, 'default')
-      .mockReturnValue({ isPlanEnforcementEnabled: false, isFreePlan: false })
-    jest.spyOn(useFeaturesMock, 'useFeature').mockReturnValue({ enabled: false })
-
-    renderComponent({
-      currentState: 'on',
-      currentEnvironmentState: 'off'
-    })
-
-    fireEvent.mouseOver(screen.getByTestId('flag-status-switch') as HTMLButtonElement)
-
-    await waitFor(() => {
-      expect(screen.queryByText('cf.planEnforcement.upgradeRequiredMau')).not.toBeInTheDocument()
-      expect(screen.getByTestId('flag-status-switch')).not.toBeDisabled()
     })
   })
 })

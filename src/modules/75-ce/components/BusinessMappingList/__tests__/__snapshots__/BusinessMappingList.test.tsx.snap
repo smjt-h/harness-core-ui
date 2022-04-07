@@ -57,7 +57,7 @@ exports[`Test Cases for Business Mapping List Page should be able to render the 
           <p
             class="StyledProps--font StyledProps--main StyledProps--font-variation-table-headers"
           >
-            ce.businessMapping.tableHeadings.createdBy
+            ce.businessMapping.tableHeadings.unallocated
           </p>
         </div>
         <div
@@ -97,7 +97,18 @@ exports[`Test Cases for Business Mapping List Page should be able to render the 
             role="cell"
             style="width: 25%;"
           >
-            Region
+            <div
+              class="Layout--horizontal Layout--layout-spacing-small StyledProps--main nameContainer"
+            >
+              <div
+                class="StyledProps--font StyledProps--main iconBox"
+              />
+              <p
+                class="StyledProps--font StyledProps--main StyledProps--font-variation-body2"
+              >
+                Region
+              </p>
+            </div>
           </div>
           <div
             class="TableV2--cell"
@@ -105,7 +116,7 @@ exports[`Test Cases for Business Mapping List Page should be able to render the 
             style="width: 15%;"
           >
             <p
-              class="StyledProps--font StyledProps--main"
+              class="StyledProps--font StyledProps--main StyledProps--font-variation-body2"
             >
               2
             </p>
@@ -116,7 +127,7 @@ exports[`Test Cases for Business Mapping List Page should be able to render the 
             style="width: 15%;"
           >
             <p
-              class="StyledProps--font StyledProps--main"
+              class="StyledProps--font StyledProps--main StyledProps--font-variation-body2"
             >
               0
             </p>
@@ -125,20 +136,14 @@ exports[`Test Cases for Business Mapping List Page should be able to render the 
             class="TableV2--cell"
             role="cell"
             style="width: 25%;"
-          >
-            <p
-              class="StyledProps--font StyledProps--main"
-            >
-              
-            </p>
-          </div>
+          />
           <div
             class="TableV2--cell"
             role="cell"
             style="width: 15%;"
           >
             <p
-              class="StyledProps--font StyledProps--main"
+              class="StyledProps--font StyledProps--main StyledProps--font-variation-body"
             >
               17 Mar, 05:48
             </p>

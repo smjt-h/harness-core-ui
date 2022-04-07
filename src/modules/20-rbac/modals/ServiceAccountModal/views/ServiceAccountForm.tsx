@@ -22,6 +22,7 @@ import {
 } from '@wings-software/uicore'
 import * as Yup from 'yup'
 import { useParams } from 'react-router-dom'
+import useRBACError from '@rbac/utils/useRBACError/useRBACError'
 import { useToaster } from '@common/components'
 import { DescriptionTags } from '@common/components/NameIdDescriptionTags/NameIdDescriptionTags'
 import { useStrings } from 'framework/strings'
@@ -40,6 +41,7 @@ interface ServiceAccountModalData {
 const ServiceAccountForm: React.FC<ServiceAccountModalData> = props => {
   const { data: serviceAccountData, onSubmit, isEdit, onClose } = props
   const { accountId, orgIdentifier, projectIdentifier } = useParams<ProjectPathProps>()
+  const { getRBACErrorMessage } = useRBACError()
   const { getString } = useStrings()
   const { showSuccess } = useToaster()
   const [modalErrorHandler, setModalErrorHandler] = useState<ModalErrorHandlerBinding>()
@@ -78,7 +80,7 @@ const ServiceAccountForm: React.FC<ServiceAccountModalData> = props => {
       }
     } catch (e) {
       /* istanbul ignore next */
-      modalErrorHandler?.showDanger(e.data?.message || e.message)
+      modalErrorHandler?.showDanger(getRBACErrorMessage(e))
     }
   }
   return (

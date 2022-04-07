@@ -8,13 +8,14 @@
 import React, { useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { defaultTo as _defaultTo } from 'lodash-es'
-import { getErrorInfoFromErrorObject, Heading, useToaster } from '@harness/uicore'
+import { Heading, useToaster } from '@harness/uicore'
 import { AccessPointFormStep, PROVIDER_TYPES } from '@ce/constants'
 import { Utils } from '@ce/common/Utils'
 import { AccessPoint, useCreateAccessPoint, useEditAccessPoint } from 'services/lw'
 import type { AccessPointScreenMode } from '@ce/types'
 import type { AccountPathProps } from '@common/interfaces/RouteInterfaces'
 import { useStrings } from 'framework/strings'
+import useRBACError from '@rbac/utils/useRBACError/useRBACError'
 import GCPDnsMapping, { GcpDnsFormVal } from './GCPDnsMapping'
 import GCPAccessPointForm, { GcpApFormValue } from './GCPAccessPointForm'
 import css from './GCPAccessPoint.module.scss'
@@ -37,6 +38,7 @@ const GCPAccessPointConfig: React.FC<GCPAccessPointConfigProps> = ({
   step
 }) => {
   const { getString } = useStrings()
+  const { getRBACErrorMessage } = useRBACError()
   const { showError, showSuccess } = useToaster()
   const { accountId } = useParams<AccountPathProps>()
 
@@ -86,7 +88,7 @@ const GCPAccessPointConfig: React.FC<GCPAccessPointConfigProps> = ({
       }
     } catch (e) {
       setLbCreationInProgress(false)
-      showError(getErrorInfoFromErrorObject(e))
+      showError(getRBACErrorMessage(e))
     }
   }
 

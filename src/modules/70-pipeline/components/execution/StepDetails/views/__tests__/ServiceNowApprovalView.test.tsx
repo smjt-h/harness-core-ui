@@ -6,7 +6,7 @@
  */
 
 import React from 'react'
-import { render, waitFor } from '@testing-library/react'
+import { act, fireEvent, render, waitFor } from '@testing-library/react'
 import { useGetApprovalInstance } from 'services/pipeline-ng'
 import { TestWrapper } from '@common/utils/testUtils'
 import { ServiceNowApprovalView } from '../ServiceNowApprovalView/ServiceNowApprovalView'
@@ -42,6 +42,27 @@ describe('SUCCESS', () => {
     // eslint-disable-next-line
     // @ts-ignore
     useGetApprovalInstance.mockImplementation(() => mockServiceNowApprovalData)
+  })
+  test('show tabs when data is present and authorized', async () => {
+    const { container, getByText } = render(
+      <TestWrapper>
+        <ServiceNowApprovalView
+          step={{
+            status: 'ResourceWaiting',
+            // eslint-disable-next-line
+            // @ts-ignore
+            executableResponses: [{ async: { callbackIds: ['approvalInstanceId'] } }]
+          }}
+        />
+      </TestWrapper>
+    )
+
+    expect(container).toMatchSnapshot('ServiceNow approval execution view')
+
+    act(() => {
+      fireEvent.click(getByText('common.refresh'))
+    })
+    await waitFor(() => expect(mockServiceNowApprovalData.refetch).toBeCalled())
   })
 
   test('show text when approvalInstanceId is absent', async () => {

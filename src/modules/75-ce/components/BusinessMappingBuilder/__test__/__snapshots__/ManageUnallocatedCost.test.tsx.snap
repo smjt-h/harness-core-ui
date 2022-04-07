@@ -12,6 +12,7 @@ exports[`test cases for ManageUnallocatedCost should be able to render component
         class="RadioButton--radio StyledProps--main"
       >
         <input
+          checked=""
           class="RadioButton--input"
           name=""
           type="radio"
@@ -23,19 +24,18 @@ exports[`test cases for ManageUnallocatedCost should be able to render component
         ce.businessMapping.manageUnallocatedCost.defaultUnallocatedCostLabel
       </label>
       <div
-        class="bp3-form-group bp3-disabled defaultValInputBox"
+        class="bp3-form-group defaultValInputBox"
       >
         <div
           class="bp3-form-content"
         >
           <div
-            class="bp3-input-group bp3-disabled"
+            class="bp3-input-group"
           >
             <input
               autocomplete="off"
               class="bp3-input"
-              disabled=""
-              name="defaultVal"
+              name="unallocatedCost.label"
               placeholder="ce.businessMapping.manageUnallocatedCost.otherPlaceholder"
               type="text"
               value=""

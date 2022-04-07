@@ -166,7 +166,7 @@ const CloudCostInsightChart = forwardRef((props: CloudCostInsightChartProps, ref
 
 CloudCostInsightChart.displayName = 'CloudCostInsightChart'
 
-const propsToMonitor = ['data', 'fetching', 'errors', 'columnSequence', 'chartType']
+const propsToMonitor = ['data', 'fetching', 'errors', 'columnSequence', 'chartType', 'anomaliesCountData']
 
 export default React.memo(CloudCostInsightChart, (prevProps, nextProps) => {
   return isEqual(pick(prevProps, propsToMonitor), pick(nextProps, propsToMonitor))

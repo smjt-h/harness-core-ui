@@ -12,6 +12,7 @@ import { useStrings } from 'framework/strings'
 import { Project, useDeleteProject } from 'services/cd-ng'
 import type { AccountPathProps } from '@common/interfaces/RouteInterfaces'
 import { useAppStore } from 'framework/AppStore/AppStoreContext'
+import useRBACError from '@rbac/utils/useRBACError/useRBACError'
 
 interface UseDeleteProjectDialogReturn {
   openDialog: () => void
@@ -20,6 +21,7 @@ interface UseDeleteProjectDialogReturn {
 const useDeleteProjectDialog = (data: Project, onSuccess: () => void): UseDeleteProjectDialogReturn => {
   const { accountId } = useParams<AccountPathProps>()
   const { updateAppStore } = useAppStore()
+  const { getRBACErrorMessage } = useRBACError()
   const { mutate: deleteProject } = useDeleteProject({
     queryParams: {
       accountIdentifier: accountId,
@@ -49,7 +51,7 @@ const useDeleteProjectDialog = (data: Project, onSuccess: () => void): UseDelete
           onSuccess()
         } catch (err) {
           /* istanbul ignore next */
-          showError(err.data?.message || err.message)
+          showError(getRBACErrorMessage(err))
         }
       }
     }

@@ -5,9 +5,10 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import React from 'react'
+import React, { useState } from 'react'
 import { Layout, Container, Icon } from '@wings-software/uicore'
 import { useParams } from 'react-router-dom'
+import { Drawer, Position } from '@blueprintjs/core'
 import { CCM_CHART_TYPES } from '@ce/constants'
 import {
   useFetchViewFieldsQuery,
@@ -17,6 +18,7 @@ import {
 } from 'services/ce/services'
 import type { setChartTypeFn, setGroupByFn } from '@ce/types'
 import GroupByView from './GroupByView'
+import BusinessMappingBuilder from '../BusinessMappingBuilder/BusinessMappingBuilder'
 import css from './PersepectiveExplorerGroupBy.module.scss'
 
 interface ChartTypeSwitcherProps {
@@ -69,8 +71,9 @@ const PerspectiveExplorerGroupBy: React.FC<PerspectiveExplorerGroupByProps> = ({
   timeFilter
 }) => {
   const { perspectiveId } = useParams<{ perspectiveId: string }>()
+  const [drawerOpen, setDrawerOpen] = useState<boolean>(false)
 
-  const [result] = useFetchViewFieldsQuery({
+  const [result, refetch] = useFetchViewFieldsQuery({
     variables: {
       filters: [{ viewMetadataFilter: { viewId: perspectiveId, isPreview: false } } as QlceViewFilterWrapperInput]
     }
@@ -111,8 +114,34 @@ const PerspectiveExplorerGroupBy: React.FC<PerspectiveExplorerGroupByProps> = ({
         setGroupBy={setGroupBy}
         labelData={labelData || []}
         fieldIdentifierData={fieldIdentifierData}
+        openBusinessMappingDrawer={() => {
+          setDrawerOpen(true)
+        }}
       />
       <ChartTypeSwitcher chartType={chartType} setChartType={setChartType} />
+      <Drawer
+        autoFocus
+        enforceFocus
+        hasBackdrop
+        usePortal
+        canOutsideClickClose
+        canEscapeKeyClose
+        position={Position.RIGHT}
+        isOpen={drawerOpen}
+        onClose={
+          /* istanbul ignore next */ () => {
+            setDrawerOpen(false)
+          }
+        }
+      >
+        <BusinessMappingBuilder
+          selectedBM={{}}
+          onSave={() => {
+            refetch({ requestPolicy: 'cache-and-network' })
+            setDrawerOpen(false)
+          }}
+        />
+      </Drawer>
     </Container>
   )
 }

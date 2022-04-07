@@ -160,7 +160,15 @@ const SLOCardHeader: React.FC<SLOCardHeaderProps> = ({
                 />
               )}
               <RbacMenuItem
-                icon={<Icon size={20} padding={{ right: 'xsmall' }} name="api-docs" color={Color.GREY_700} />}
+                icon={
+                  <Icon
+                    size={20}
+                    padding={{ right: 'xsmall' }}
+                    name="api-docs"
+                    color={Color.GREY_700}
+                    className={css.menuIcon}
+                  />
+                }
                 text={getString('cv.externalAPICalls')}
                 onClick={() => openLogContentHook(LogTypes.ApiCallLog)}
                 permission={{
@@ -172,7 +180,7 @@ const SLOCardHeader: React.FC<SLOCardHeaderProps> = ({
                 }}
               />
               <RbacMenuItem
-                icon={<Icon size={20} padding={{ right: 'xsmall' }} name="audit-trail" color={Color.GREY_700} />}
+                icon={<Icon size={20} padding={{ right: 'xsmall' }} name="audit-trail" className={css.menuIcon} />}
                 text={getString('cv.executionLogs')}
                 onClick={() => openLogContentHook(LogTypes.ExecutionLog)}
                 permission={{

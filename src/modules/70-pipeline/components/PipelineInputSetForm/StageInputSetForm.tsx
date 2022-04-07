@@ -33,7 +33,7 @@ import type {
   StepElementConfig
 } from 'services/cd-ng'
 import { useStrings } from 'framework/strings'
-import { FormMultiTypeCheckboxField } from '@common/components'
+import { FormMultiTypeCheckboxField, Separator } from '@common/components'
 import { MultiTypeTextField } from '@common/components/MultiTypeText/MultiTypeText'
 import MultiTypeListInputSet from '@common/components/MultiTypeListInputSet/MultiTypeListInputSet'
 import MultiTypeDelegateSelector from '@common/components/MultiTypeDelegateSelector/MultiTypeDelegateSelector'
@@ -421,17 +421,11 @@ export function StageInputSetFormInternal({
     accountId: string
   }>()
 
-  const containerSecurityContextFields = [
-    'privileged',
-    'allowPrivilegeEscalation',
-    'addCapabilities',
-    'dropCapabilities',
-    'runAsNonRoot',
-    'readOnlyRootFilesystem',
-    'runAsUser'
-  ]
+  const containerSecurityContextFields = ['containerSecurityContext', 'runAsUser']
   const deploymentStageTemplateInfraKeys = Object.keys((deploymentStageTemplate.infrastructure as any)?.spec || {})
-
+  const hasContainerSecurityContextFields = containerSecurityContextFields.some(field =>
+    deploymentStageTemplateInfraKeys.includes(field)
+  )
   const renderMultiTypeMapInputSet = React.useCallback(
     (fieldName: string, stringKey: keyof StringsMap): React.ReactElement => (
       <MultiTypeMapInputSet
@@ -712,10 +706,14 @@ export function StageInputSetFormInternal({
                 />
               </Container>
             )}
-            {containerSecurityContextFields.some(field => deploymentStageTemplateInfraKeys.includes(field)) && (
-              <div className={cx(css.tabSubHeading, stepCss.topMargin5)} id="containerSecurityContext">
-                {getString('pipeline.buildInfra.containerSecurityContext')}
-              </div>
+            {hasContainerSecurityContextFields && (
+              <>
+                <Separator topSeparation={16} bottomSeparation={8} />
+
+                <div className={cx(css.tabSubHeading, stepCss.topMargin5)} id="containerSecurityContext">
+                  {getString('pipeline.buildInfra.containerSecurityContext')}
+                </div>
+              </>
             )}
             {(deploymentStageTemplate.infrastructure as any).spec?.containerSecurityContext?.privileged &&
               renderMultiTypeCheckboxInputSet({
@@ -737,7 +735,7 @@ export function StageInputSetFormInternal({
                 labelKey: 'pipeline.buildInfra.addCapabilities',
                 tooltipId: 'addCapabilities'
               })}
-            {(deploymentStageTemplate.infrastructure as any).spec?.containerSecurityContext?.capabilities.drop &&
+            {(deploymentStageTemplate.infrastructure as any).spec?.containerSecurityContext?.capabilities?.drop &&
               renderMultiTypeListInputSet({
                 name: `${
                   isEmpty(path) ? '' : `${path}.`
@@ -780,6 +778,7 @@ export function StageInputSetFormInternal({
                 />
               </Container>
             )}
+            {hasContainerSecurityContextFields && <Separator topSeparation={16} bottomSeparation={16} />}
           </div>
           <div className={css.nestedAccordions}>
             {deploymentStageTemplate.infrastructure?.environmentRef && (

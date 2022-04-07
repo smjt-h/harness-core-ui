@@ -1,0 +1,63 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
+import React from 'react'
+import {
+  Layout,
+  StepProps,
+  Color,
+  FontVariation,
+  Text,
+  ButtonVariation,
+  Button,
+  Icon,
+  FormInput,
+  SelectOption
+} from '@harness/uicore'
+import { useStrings } from 'framework/strings'
+import css from './AnomaliesAlertDialog.module.scss'
+
+interface AlertsOverviewProps {
+  name: string
+  onClose: () => void
+  items: SelectOption[]
+}
+
+interface StepData {
+  name: string
+}
+
+const PerspectiveSelection: React.FC<StepProps<StepData> & AlertsOverviewProps> = props => {
+  const { getString } = useStrings()
+
+  return (
+    <React.Fragment>
+      <Icon name="cross" size={16} onClick={() => props.onClose()} className={css.closeBtn} />
+      <Layout.Vertical spacing="xxlarge">
+        <Text color={Color.BLACK} font={{ variation: FontVariation.H5 }}>
+          {props.name}
+        </Text>
+        <FormInput.Select
+          items={props.items}
+          className={css.perspectiveSelection}
+          name={'perspective'}
+          label={getString('ce.anomalyDetection.notificationAlerts.selectPerspective')}
+          placeholder={getString('ce.anomalyDetection.notificationAlerts.selectPerspective')}
+        />
+      </Layout.Vertical>
+      <Button
+        className={css.actionBtn}
+        rightIcon="chevron-right"
+        variation={ButtonVariation.PRIMARY}
+        onClick={() => props.nextStep?.({ name: props.name || '' })}
+        text={getString('saveAndContinue')}
+      />
+    </React.Fragment>
+  )
+}
+
+export default PerspectiveSelection

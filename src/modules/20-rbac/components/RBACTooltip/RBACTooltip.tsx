@@ -72,9 +72,7 @@ const RBACTooltip: React.FC<Props> = ({ permission, resourceType, resourceScope,
       <Text font={{ size: 'small', weight: 'semi-bold' }} color={Color.GREY_800}>
         {`${getString('rbac.youAreNotAuthorizedTo')} `}
         <span className={css.textToLowercase}>{resourceTypeHandler?.permissionLabels?.[permission] || permission}</span>
-        <span className={css.textToLowercase}>
-          {` ${resourceTypeHandler?.label && getString(resourceTypeHandler?.label)}.`}
-        </span>
+        <span>{` ${resourceTypeHandler?.label && getString(resourceTypeHandler?.label)}.`}</span>
       </Text>
       <Text font={{ size: 'small' }} color={Color.GREY_800}>
         {getString('rbac.youAreMissingTheFollowingPermission')}
@@ -82,9 +80,7 @@ const RBACTooltip: React.FC<Props> = ({ permission, resourceType, resourceScope,
       <Text font={{ size: 'small' }} color={Color.GREY_800}>
         {'"'}
         {resourceTypeHandler?.permissionLabels?.[permission] || permission}
-        <span className={css.textToLowercase}>
-          {` ${resourceTypeHandler?.label && getString(resourceTypeHandler?.label)}`}
-        </span>
+        <span>{` ${resourceTypeHandler?.label && getString(resourceTypeHandler?.label)}`}</span>
         {'"'}
         <span>{` ${getString('rbac.in')} ${getScopeSuffix()}`}</span>
       </Text>

@@ -108,6 +108,7 @@ describe('Service Account Details Page Test', () => {
     getAllByText = renderObj.getAllByText
     getByTestId = renderObj.getByTestId
     await waitFor(() => getAllByText('accessControl: rbac.serviceAccounts.label'))
+    jest.clearAllMocks()
   })
   test('render data', () => {
     expect(container).toMatchSnapshot()
@@ -183,6 +184,61 @@ describe('Service Account Details Page Test', () => {
     act(() => {
       fireEvent.click(close!)
     })
+    form = findDialogContainer()
+    expect(form).toBeFalsy()
+  })
+  test('Create New token with no expiration', async () => {
+    const tokens = getByTestId('tokens-api_key')
+    await act(async () => {
+      fireEvent.click(tokens!)
+    })
+    const newToken = getByTestId('new_token-api_key')
+    act(() => {
+      fireEvent.click(newToken!)
+    })
+    let form = findDialogContainer()
+    expect(form).toBeTruthy()
+    fillAtForm([{ container: form!, type: InputTypes.TEXTFIELD, value: 'New Api Key', fieldId: 'name' }])
+    const role = getByText(form!, 'common.30days')
+    act(() => {
+      fireEvent.click(role!)
+    })
+    const popover = findPopoverContainer()
+    const opt = getByText(popover as HTMLElement, 'common.noexpiration')
+    act(() => {
+      fireEvent.click(opt)
+    })
+    await act(async () => {
+      clickSubmit(form!)
+    })
+    const close = getByText(form!, 'close')
+    act(() => {
+      fireEvent.click(close!)
+    })
+    form = findDialogContainer()
+    expect(form).toBeFalsy()
+  })
+  test('Edit token', async () => {
+    const tokens = getByTestId('tokens-api_key')
+    await act(async () => {
+      fireEvent.click(tokens!)
+    })
+    const newToken = getByTestId('menu-new_token')
+    act(() => {
+      fireEvent.click(newToken!)
+    })
+    const popover = findPopoverContainer()
+    const edit = queryAllByText(popover as HTMLElement, 'edit')
+    act(() => {
+      fireEvent.click(edit[0]!)
+    })
+    let form = findDialogContainer()
+    expect(form).toBeTruthy()
+    fillAtForm([{ container: form!, type: InputTypes.TEXTFIELD, value: 'edit token', fieldId: 'name' }])
+    await act(async () => {
+      clickSubmit(form!)
+    })
+    expect(updateToken).toHaveBeenCalled()
     form = findDialogContainer()
     expect(form).toBeFalsy()
   })

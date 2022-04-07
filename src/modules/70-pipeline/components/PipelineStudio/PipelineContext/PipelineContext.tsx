@@ -161,8 +161,7 @@ export const getPipelineByIdentifier = (
       return {
         ...(yamlPipelineDetails !== null && { ...yamlPipelineDetails.pipeline }),
         gitDetails: obj.data.gitDetails ?? {},
-        entityValidityDetails: obj.data.entityValidityDetails ?? {},
-        templateError: null
+        entityValidityDetails: obj.data.entityValidityDetails ?? {}
       }
     } else {
       return {

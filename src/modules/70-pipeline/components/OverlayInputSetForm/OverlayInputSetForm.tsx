@@ -20,11 +20,11 @@ import {
   PageSpinner,
   VisualYamlSelectedView as SelectedView,
   VisualYamlToggle,
-  Heading,
-  getErrorInfoFromErrorObject
+  Heading
 } from '@wings-software/uicore'
 import { useParams } from 'react-router-dom'
 import { parse } from 'yaml'
+import useRBACError from '@rbac/utils/useRBACError/useRBACError'
 import type { PipelineInfoConfig } from 'services/cd-ng'
 
 import {
@@ -163,6 +163,7 @@ export function OverlayInputSetForm({
   const [selectedBranch, setSelectedBranch] = React.useState<string>(overlayInputSetBranch || branch || '')
   const [selectedInputSets, setSelectedInputSets] = React.useState<InputSetSelectorProps['value']>()
   const { showSuccess, showError, clear } = useToaster()
+  const { getRBACErrorMessage } = useRBACError()
   const [formErrors, setFormErrors] = React.useState<Record<string, any>>({})
   const commonQueryParams = useMemo(() => {
     return {
@@ -410,7 +411,7 @@ export function OverlayInputSetForm({
       }
       // This is done because when git sync is enabled, errors are displayed in a modal
       if (!isGitSyncEnabled) {
-        showError(getErrorInfoFromErrorObject(e), undefined, 'pipeline.common.error')
+        showError(getRBACErrorMessage(e), undefined, 'pipeline.common.error')
       } else {
         throw e
       }

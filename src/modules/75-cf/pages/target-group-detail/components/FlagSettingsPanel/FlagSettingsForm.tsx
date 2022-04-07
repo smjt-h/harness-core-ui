@@ -18,7 +18,6 @@ import {
   ExpandingSearchInput,
   Formik,
   FormikForm,
-  getErrorInfoFromErrorObject,
   Page,
   Pagination,
   TableV2,
@@ -29,6 +28,7 @@ import { Segment, usePatchSegment } from 'services/cf'
 import { CF_DEFAULT_PAGE_SIZE } from '@cf/utils/CFUtils'
 import { NoData } from '@cf/components/NoData/NoData'
 import imageUrl from '@cf/images/Feature_Flags_Teepee.svg'
+import useRBACError from '@rbac/utils/useRBACError/useRBACError'
 import type { FlagSettingsFormData, FlagSettingsFormRow, TargetGroupFlagsMap } from '../../TargetGroupDetailPage.types'
 import FlagDetailsCell from './FlagsListing/FlagDetailsCell'
 import VariationsCell from './FlagsListing/VariationsCell'
@@ -54,6 +54,7 @@ const FlagSettingsForm: FC<FlagSettingsFormProps> = ({
   const [pageIndex, setPageIndex] = useState<number>(0)
   const [searchTerm, setSearchTerm] = useState<string>('')
   const [submitting, setSubmitting] = useState<boolean>(false)
+  const { getRBACErrorMessage } = useRBACError()
   const { showError } = useToaster()
 
   const { accountId: accountIdentifier, orgIdentifier, projectIdentifier } = useParams<Record<string, string>>()
@@ -79,7 +80,7 @@ const FlagSettingsForm: FC<FlagSettingsFormProps> = ({
           await patchTargetGroup({ instructions })
           onChange()
         } catch (e) {
-          showError(getErrorInfoFromErrorObject(e))
+          showError(getRBACErrorMessage(e))
         }
 
         setSubmitting(false)

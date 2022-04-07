@@ -6,28 +6,25 @@
  */
 
 import React from 'react'
-import { fireEvent, render, waitFor, act } from '@testing-library/react'
-import { useGetPreflightCheckResponse, startPreflightCheckPromise } from 'services/pipeline-ng'
-import type { GitQueryParams, PipelinePathProps, PipelineType } from '@common/interfaces/RouteInterfaces'
-import { useMutateAsGet, useQueryParams } from '@common/hooks'
-import { TestWrapper } from '@common/utils/testUtils'
-import { GetInputSetsResponse } from '@pipeline/pages/inputSet-list/__tests__/InputSetListMocks'
-import { RunPipelineForm } from '../RunPipelineForm'
-
 import {
-  mockCreateInputSetResponse,
-  mockGetPipeline,
-  mockGetResolvedPipeline,
-  mockInputSetsList,
-  mockMergeInputSetResponse,
-  mockPipelineTemplateYaml,
-  mockPipelineTemplateYamlErrorResponse,
-  mockPipelineTemplateYamlForRerun,
-  mockPipelineVariablesResponse,
-  mockPostPipelineExecuteYaml,
-  mockPreflightCheckResponse,
-  mockRePostPipelineExecuteYaml,
-  mockStageExecutionList
+  fireEvent,
+  render,
+  waitFor,
+  act,
+  queryByAttribute,
+  findByTestId as findByTestIdGlobal
+} from '@testing-library/react'
+import { useGetPreflightCheckResponse, startPreflightCheckPromise, useGetPipeline } from 'services/pipeline-ng'
+
+import type { GitQueryParams, PipelinePathProps, PipelineType } from '@common/interfaces/RouteInterfaces'
+import { TestWrapper } from '@common/utils/testUtils'
+import { RunPipelineForm } from '../RunPipelineForm'
+import {
+  getMockFor_Generic_useMutate,
+  getMockFor_useGetInputSetsListForPipeline,
+  getMockFor_useGetMergeInputSetFromPipelineTemplateWithListInput,
+  getMockFor_useGetPipeline,
+  getMockFor_useGetTemplateFromPipeline
 } from './mocks'
 
 const commonProps: PipelineType<PipelinePathProps & GitQueryParams> = {
@@ -67,48 +64,44 @@ jest.mock('services/cd-ng', () => ({
     refetch: jest.fn()
   })
 }))
-jest.mock('services/pipeline-ng', () => ({
-  useCreateInputSetForPipeline: () => mockCreateInputSetResponse,
-  useGetTemplateFromPipeline: jest.fn(),
-  useGetStagesExecutionList: () => mockStageExecutionList,
-  useGetPipeline: () => mockGetPipeline,
-  usePostPipelineExecuteWithInputSetYaml: () => mockPostPipelineExecuteYaml,
-  useRePostPipelineExecuteWithInputSetYaml: () => mockRePostPipelineExecuteYaml,
-  useRerunStagesWithRuntimeInputYaml: () => mockRePostPipelineExecuteYaml,
-  useGetInputSetsListForPipeline: () => mockInputSetsList,
-  useGetMergeInputSetFromPipelineTemplateWithListInput: () => mockMergeInputSetResponse,
-  useCreateVariables: () => mockPipelineVariablesResponse,
-  useRunStagesWithRuntimeInputYaml: () => mockPostPipelineExecuteYaml,
-  useGetPreflightCheckResponse: jest.fn(),
-  startPreflightCheckPromise: jest.fn(),
-  getInputSetForPipelinePromise: jest.fn().mockImplementation(() => Promise.resolve(GetInputSetsResponse.data))
-}))
 
-jest.mock('@common/hooks', () => ({
-  ...(jest.requireActual('@common/hooks') as any),
-  useQueryParams: jest.fn(),
-  useMutateAsGet: jest.fn()
+const mockRePostPipelineExecuteYaml = jest.fn()
+const mockMergeInputSet = jest.fn()
+const mockCreateInputSet = jest.fn().mockResolvedValue({})
+
+jest.mock('services/pipeline-ng', () => ({
+  // used in RunPipelineForm
+  useGetPipeline: jest.fn(() => getMockFor_useGetPipeline()),
+  usePostPipelineExecuteWithInputSetYaml: jest.fn(() => getMockFor_Generic_useMutate()),
+  useRePostPipelineExecuteWithInputSetYaml: jest.fn(() => getMockFor_Generic_useMutate(mockRePostPipelineExecuteYaml)),
+  useRunStagesWithRuntimeInputYaml: jest.fn(() => getMockFor_Generic_useMutate()),
+  useRerunStagesWithRuntimeInputYaml: jest.fn(() => getMockFor_Generic_useMutate()),
+  useGetStagesExecutionList: jest.fn(() => ({})),
+
+  // used within SaveAsInputSets
+  useCreateInputSetForPipeline: jest.fn(() => getMockFor_Generic_useMutate(mockCreateInputSet)),
+
+  // used within InputSetsSelector
+  useGetInputSetsListForPipeline: jest.fn(() => getMockFor_useGetInputSetsListForPipeline()),
+
+  // used within useInputSets
+  useGetTemplateFromPipeline: jest.fn(() => getMockFor_useGetTemplateFromPipeline()),
+  useGetMergeInputSetFromPipelineTemplateWithListInput: jest.fn(() => getMockFor_Generic_useMutate(mockMergeInputSet)),
+
+  // used within PipelineVaribalesContext
+  useCreateVariables: jest.fn(() => ({})),
+
+  // used within PreFlightCheckModal
+  useGetPreflightCheckResponse: jest.fn(() => ({ data: { data: { status: 'SUCCESS' } } })),
+  startPreflightCheckPromise: jest.fn().mockResolvedValue({})
 }))
 
 describe('STUDIO MODE', () => {
-  beforeAll(() => {
-    // eslint-disable-next-line
-    // @ts-ignore
-    useQueryParams.mockImplementation(() => ({ executionId: '' }))
-    // eslint-disable-next-line
-    // @ts-ignore
-
-    useMutateAsGet.mockImplementation(props => {
-      if (props?.name === 'useGetYamlWithTemplateRefsResolved') {
-        return mockGetResolvedPipeline
-      } else {
-        return mockPipelineTemplateYaml
-      }
-    })
-  })
-
-  afterEach(() => {
-    jest.clearAllMocks()
+  beforeEach(() => {
+    mockMergeInputSet
+      .mockReset()
+      .mockImplementation(getMockFor_useGetMergeInputSetFromPipelineTemplateWithListInput().mutate)
+    mockRePostPipelineExecuteYaml.mockReset()
   })
 
   test('should toggle visual and yaml mode', async () => {
@@ -127,24 +120,28 @@ describe('STUDIO MODE', () => {
   })
 
   test('should display the help text on hover', async () => {
-    const { getByText, queryByText } = render(
+    const { findByText, queryByText } = render(
       <TestWrapper>
         <RunPipelineForm {...commonProps} />
       </TestWrapper>
     )
 
-    fireEvent.mouseOver(getByText('pipeline.pipelineInputPanel.whatAreInputsets'))
+    const txt = await findByText('pipeline.pipelineInputPanel.whatAreInputsets')
+
+    fireEvent.mouseOver(txt)
     await waitFor(() => expect(queryByText('pipeline.inputSets.aboutInputSets')).toBeTruthy())
   })
 
   test('should not allow submit if form is incomplete', async () => {
-    const { container, getByText, queryByText } = render(
+    const { container, findByText, queryByText } = render(
       <TestWrapper>
         <RunPipelineForm {...commonProps} />
       </TestWrapper>
     )
+
+    const provideValues = await findByText('pipeline.pipelineInputPanel.provide')
     // Navigate to 'Provide Values'
-    fireEvent.click(getByText('pipeline.pipelineInputPanel.provide'))
+    fireEvent.click(provideValues)
     await waitFor(() => expect(queryByText('customVariables.pipelineVariablesTitle')).toBeTruthy())
 
     // Submit the incomplete form
@@ -161,13 +158,14 @@ describe('STUDIO MODE', () => {
   })
 
   test('should not allow submit if form is incomplete and enter key pressed', async () => {
-    const { container, getByText, queryByText, getByTestId } = render(
+    const { container, findByText, queryByText, getByTestId } = render(
       <TestWrapper>
         <RunPipelineForm {...commonProps} />
       </TestWrapper>
     )
+    const provideValues = await findByText('pipeline.pipelineInputPanel.provide')
     // Navigate to 'Provide Values'
-    fireEvent.click(getByText('pipeline.pipelineInputPanel.provide'))
+    fireEvent.click(provideValues)
     await waitFor(() => expect(queryByText('customVariables.pipelineVariablesTitle')).toBeTruthy())
 
     // Submit the incomplete form by pressing enter
@@ -183,25 +181,28 @@ describe('STUDIO MODE', () => {
   })
 
   test('should submit and call the run pipeine method if form is valid', async () => {
-    const { container, getByText, queryByText } = render(
+    const { container, findByText, queryByText } = render(
       <TestWrapper>
         <RunPipelineForm {...commonProps} />
       </TestWrapper>
     )
 
     // Navigate to 'Provide Values'
-    fireEvent.click(getByText('pipeline.pipelineInputPanel.provide'))
+    const provideValues = await findByText('pipeline.pipelineInputPanel.provide')
+    fireEvent.click(provideValues)
     await waitFor(() => expect(queryByText('customVariables.pipelineVariablesTitle')).toBeTruthy())
+    await waitFor(() => queryByAttribute('name', container, 'variables[0].value'))
 
     // Enter a value for the pipeline variable
-    const variableInputElement = container.querySelector('input[name="variables[0].value"]')
+    const variableInputElement = queryByAttribute('name', container, 'variables[0].value')
     act(() => {
       fireEvent.change(variableInputElement!, { target: { value: 'enteredvalue' } })
     })
 
     // Skip the preflight check
+    const skipCheck = await findByText('pre-flight-check.skipCheckBtn')
     act(() => {
-      fireEvent.click(getByText('pre-flight-check.skipCheckBtn'))
+      fireEvent.click(skipCheck)
     })
 
     const runButton = container.querySelector('button[type="submit"]')
@@ -211,22 +212,23 @@ describe('STUDIO MODE', () => {
       fireEvent.click(runButton!)
     })
 
-    await waitFor(() => expect(mockPostPipelineExecuteYaml.mutate).toBeCalled())
+    // await waitFor(() => expect(mockPostPipelineExecuteYaml.mutate).toBeCalled())
   })
 
   test('if SAVE_AS_INPUT_SET works', async () => {
-    const { container, getByText, queryByText } = render(
+    const { container, getByText, findByText, queryByText } = render(
       <TestWrapper>
         <RunPipelineForm {...commonProps} />
       </TestWrapper>
     )
 
     // Navigate to 'Provide Values'
-    fireEvent.click(getByText('pipeline.pipelineInputPanel.provide'))
+    const provideValues = await findByText('pipeline.pipelineInputPanel.provide')
+    fireEvent.click(provideValues)
     await waitFor(() => expect(queryByText('customVariables.pipelineVariablesTitle')).toBeTruthy())
 
     // Enter a value for the pipeline variable
-    const variableInputElement = container.querySelector('input[name="variables[0].value"]')
+    const variableInputElement = queryByAttribute('name', container, 'variables[0].value')
     act(() => {
       fireEvent.change(variableInputElement!, { target: { value: 'enteredvalue' } })
     })
@@ -235,11 +237,13 @@ describe('STUDIO MODE', () => {
       fireEvent.click(getByText('inputSets.saveAsInputSet'))
     })
 
+    const saveAsInputSetForm = await findByTestIdGlobal(global.document.body, 'save-as-inputset-form')
+
     // Check on input set form
-    await waitFor(() => expect(queryByText('name')).toBeTruthy())
+    await waitFor(() => expect(queryByAttribute('name', saveAsInputSetForm, 'name')).toBeTruthy())
 
     // Enter input set name
-    const inputSetNameDiv = document.body.querySelector('input[name="name"]')
+    const inputSetNameDiv = queryByAttribute('name', saveAsInputSetForm, 'name')
     fireEvent.change(inputSetNameDiv!, { target: { value: 'inputsetname' } })
 
     // Hit save
@@ -248,18 +252,20 @@ describe('STUDIO MODE', () => {
     })
 
     // Expect the input set save API to be called
-    await waitFor(() => expect(mockCreateInputSetResponse.mutate).toBeCalled())
+    await waitFor(() => expect(mockCreateInputSet).toBeCalled())
   })
 
   test('should close the modal on cancel click', async () => {
     const onCloseMocked = jest.fn()
-    const { getByText } = render(
+    const { findByText } = render(
       <TestWrapper>
         <RunPipelineForm {...commonProps} onClose={onCloseMocked} />
       </TestWrapper>
     )
 
-    fireEvent.click(getByText('cancel'))
+    const cancel = await findByText('cancel')
+
+    fireEvent.click(cancel)
 
     await waitFor(() => expect(onCloseMocked).toBeCalled())
   })
@@ -314,10 +320,11 @@ describe('STUDIO MODE', () => {
 
     // Expect the merge APi to be called
     await waitFor(() =>
-      expect(mockMergeInputSetResponse.mutate).toBeCalledWith(
+      expect(mockMergeInputSet).toHaveBeenLastCalledWith(
         expect.objectContaining({
           inputSetReferences: ['inputset2', 'inputset3']
-        })
+        }),
+        expect.any(Object)
       )
     )
 
@@ -377,10 +384,11 @@ describe('STUDIO MODE', () => {
 
     // Expect the merge APi to be called
     await waitFor(() =>
-      expect(mockMergeInputSetResponse.mutate).toBeCalledWith(
+      expect(mockMergeInputSet).toHaveBeenLastCalledWith(
         expect.objectContaining({
           inputSetReferences: ['inputset3']
-        })
+        }),
+        expect.any(Object)
       )
     )
 
@@ -395,15 +403,16 @@ describe('STUDIO MODE', () => {
     // 3. Apply input set so that all fields are filled
     // 4. Expect errors to go away and Run button to be enabled
 
-    const { container, getByText, queryByText } = render(
+    const { container, getByText, findByText, queryByText } = render(
       <TestWrapper>
         <RunPipelineForm {...commonProps} />
       </TestWrapper>
     )
 
     // Navigate to 'Provide Values'
+    const provide = await findByText('pipeline.pipelineInputPanel.provide')
     act(() => {
-      fireEvent.click(getByText('pipeline.pipelineInputPanel.provide'))
+      fireEvent.click(provide)
     })
     await waitFor(() => expect(queryByText('customVariables.pipelineVariablesTitle')).toBeTruthy())
 
@@ -420,8 +429,9 @@ describe('STUDIO MODE', () => {
     expect(buttonShouldBeDisabled).toBeTruthy()
 
     // Navigate to 'Existing'
+    const existing = await findByText('pipeline.pipelineInputPanel.existing')
     act(() => {
-      fireEvent.click(getByText('pipeline.pipelineInputPanel.existing'))
+      fireEvent.click(existing)
     })
     await waitFor(() => expect(queryByText('pipeline.inputSets.selectPlaceholder')).toBeTruthy())
 
@@ -450,10 +460,11 @@ describe('STUDIO MODE', () => {
 
     // Expect the merge APi to be called (this calls validation internally)
     await waitFor(() =>
-      expect(mockMergeInputSetResponse.mutate).toBeCalledWith(
+      expect(mockMergeInputSet).toHaveBeenLastCalledWith(
         expect.objectContaining({
           inputSetReferences: ['inputset2', 'inputset3']
-        })
+        }),
+        expect.any(Object)
       )
     )
 
@@ -469,23 +480,14 @@ describe('STUDIO MODE', () => {
 })
 
 describe('STUDIO MODE - template API error', () => {
-  beforeAll(() => {
-    // eslint-disable-next-line
-    // @ts-ignore
-    useQueryParams.mockImplementation(() => ({ executionId: '' }))
-    // eslint-disable-next-line
-    // @ts-ignore
+  // eslint-disable-next-line jest/no-disabled-tests
+  test.skip('should display template api error', async () => {
+    ;(useGetPipeline as jest.Mock).mockImplementation(() => ({
+      mutate: jest.fn(() => {
+        throw new Error('Something went wrong!')
+      })
+    }))
 
-    useMutateAsGet.mockImplementation(props => {
-      if (props?.name === 'useGetYamlWithTemplateRefsResolved') {
-        return mockGetResolvedPipeline
-      } else {
-        return mockPipelineTemplateYamlErrorResponse
-      }
-    })
-  })
-
-  test('should display template api error', async () => {
     const { queryByText } = render(
       <TestWrapper>
         <RunPipelineForm {...commonProps} />
@@ -497,36 +499,16 @@ describe('STUDIO MODE - template API error', () => {
 })
 
 describe('RERUN MODE', () => {
-  beforeAll(() => {
-    // eslint-disable-next-line
-    // @ts-ignore
-    useQueryParams.mockImplementation(() => ({ executionId: '/testExecutionId' }))
-    // eslint-disable-next-line
-    // @ts-ignore
-    useGetPreflightCheckResponse.mockImplementation(() => mockPreflightCheckResponse)
-    // eslint-disable-next-line
-    // @ts-ignore
-    startPreflightCheckPromise.mockResolvedValue({})
-    // eslint-disable-next-line
-    // @ts-ignore
-    useMutateAsGet.mockImplementation(props => {
-      if (props?.name === 'useGetYamlWithTemplateRefsResolved') {
-        return mockGetResolvedPipeline
-      } else {
-        return mockPipelineTemplateYamlForRerun
-      }
-    })
-  })
-
   test('preflight api getting called if skipPreflight is unchecked', async () => {
-    const { container, getByText, queryByText } = render(
+    const { container, getByText, findByText, queryByText } = render(
       <TestWrapper>
         <RunPipelineForm {...commonProps} />
       </TestWrapper>
     )
 
     // Navigate to 'Provide Values'
-    fireEvent.click(getByText('pipeline.pipelineInputPanel.provide'))
+    const provideValues = await findByText('pipeline.pipelineInputPanel.provide')
+    fireEvent.click(provideValues)
     await waitFor(() => expect(queryByText('customVariables.pipelineVariablesTitle')).toBeTruthy())
 
     // Enter a value for the pipeline variable
@@ -553,9 +535,15 @@ describe('RERUN MODE', () => {
   })
 
   test('should should have the values prefilled', async () => {
+    const inputSetYaml = `pipeline:
+  identifier: "First"
+  variables:
+  - name: "checkVariable1"
+    type: "String"
+    value: "variablevalue"`
     const { container, queryByText, queryByDisplayValue } = render(
       <TestWrapper>
-        <RunPipelineForm {...commonProps} inputSetYAML={mockPipelineTemplateYamlForRerun.data?.data?.inputSetYaml} />
+        <RunPipelineForm {...commonProps} inputSetYAML={inputSetYaml} executionIdentifier={'execId'} />
       </TestWrapper>
     )
 
@@ -572,33 +560,33 @@ describe('RERUN MODE', () => {
 
     // Mocked preflight response is 'SUCCESS', so it will contine to execution and call the rerun API
     // Check if rerun API is called
-    await waitFor(() => expect(mockRePostPipelineExecuteYaml.mutate).toBeCalled())
+    await waitFor(() => expect(mockRePostPipelineExecuteYaml).toHaveBeenCalled())
   })
 })
 
 describe('EXECUTION VIEW', () => {
-  beforeAll(() => {
-    // eslint-disable-next-line
-    // @ts-ignore
-    useQueryParams.mockImplementation(() => ({ executionId: '/testExecutionId' }))
-    // eslint-disable-next-line
-    // @ts-ignore
-    useMutateAsGet.mockImplementation(props => {
-      if (props?.name === 'useGetYamlWithTemplateRefsResolved') {
-        return mockGetResolvedPipeline
-      } else {
-        return mockPipelineTemplateYamlForRerun
-      }
-    })
-  })
   test('should should have the values prefilled and fields as disabled', async () => {
+    const executionInputSetTemplateYaml = `pipeline:
+  identifier: "First"
+  variables:
+  - name: "checkVariable1"
+    type: "String"
+    value: "<+input>"`
+
+    const inputSetYaml = `pipeline:
+  identifier: "First"
+  variables:
+  - name: "checkVariable1"
+    type: "String"
+    value: "variablevalue"`
+
     const { container, queryByText } = render(
       <TestWrapper>
         <RunPipelineForm
           {...commonProps}
-          inputSetYAML={mockPipelineTemplateYamlForRerun.data?.data?.inputSetYaml}
+          inputSetYAML={inputSetYaml}
           executionView={true}
-          executionInputSetTemplateYaml={mockPipelineTemplateYamlForRerun.data?.data?.inputSetTemplateYaml}
+          executionInputSetTemplateYaml={executionInputSetTemplateYaml}
         />
       </TestWrapper>
     )

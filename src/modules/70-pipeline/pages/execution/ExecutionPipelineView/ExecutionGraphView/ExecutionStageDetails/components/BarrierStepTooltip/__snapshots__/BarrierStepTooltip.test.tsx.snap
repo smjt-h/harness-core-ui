@@ -1,0 +1,73 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`BarrierStepTooltip basic snapshot after loading 1`] = `
+<div>
+  <div
+    class="Layout--horizontal StyledProps--main StyledProps--border StyledProps--border-top StyledProps--border-color-grey200 StyledProps--padding-right-medium StyledProps--padding-top-small StyledProps--padding-bottom-small StyledProps--padding-left-small"
+  >
+    <div
+      class="StyledProps--font StyledProps--main StyledProps--flex StyledProps--flex-justifyContent-center StyledProps--flex-alignItems-start"
+      style="width: 32px;"
+    >
+      <span
+        class="bp3-icon StyledProps--main"
+        data-icon="timeout"
+      >
+        <svg
+          fill="none"
+          height="20"
+          viewBox="0 0 11 11"
+          width="20"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M11 5.5a5.5 5.5 0 11-11 0 5.5 5.5 0 0111 0z"
+            fill="#0092E4"
+          />
+          <path
+            clip-rule="evenodd"
+            d="M9.746 2.004L5.5 5.5V0c1.71 0 3.237.78 4.246 2.004z"
+            fill="#E0E0E0"
+            fill-rule="evenodd"
+          />
+        </svg>
+      </span>
+    </div>
+    <div
+      class="Layout--vertical Layout--layout-spacing-xsmall StyledProps--main StyledProps--margin-right-medium"
+      style="flex: 1;"
+    >
+      <p
+        class="StyledProps--font StyledProps--main StyledProps--font-weight-semi-bold StyledProps--color StyledProps--color-black"
+        style="font-size: 12px;"
+      />
+      <p
+        class="StyledProps--font StyledProps--main StyledProps--color StyledProps--color-grey900"
+        data-testid="hovercard-service"
+        style="font-size: 12px;"
+      >
+        pipeline.barriers.tooltips.barrierWaiting
+      </p>
+    </div>
+    <div
+      class="StyledProps--font StyledProps--main"
+    >
+      <div
+        class="Layout--vertical StyledProps--main StyledProps--background-yellow500 StyledProps--border StyledProps--flex StyledProps--flex-alignItems-center StyledProps--flex-justifyContent-flex-start StyledProps--padding-xsmall"
+      >
+        <p
+          class="StyledProps--font StyledProps--main StyledProps--font-weight-bold StyledProps--color StyledProps--color-grey800"
+          style="font-size: 10px;"
+        >
+          0
+        </p>
+        <p
+          class="StyledProps--font StyledProps--main StyledProps--font-size-xsmall StyledProps--color StyledProps--color-grey600"
+        >
+          min
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+`;

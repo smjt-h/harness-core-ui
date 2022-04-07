@@ -6,7 +6,7 @@
  */
 
 import React, { useState } from 'react'
-import { TextInput } from '@wings-software/uicore'
+import { TextInput, Button } from '@wings-software/uicore'
 import { Popover, Position, PopoverInteractionKind, Classes, MenuItem } from '@blueprintjs/core'
 import cx from 'classnames'
 import { useStrings } from 'framework/strings'
@@ -28,37 +28,59 @@ interface BaseGroupByProps {
 interface GroupByDropDownProps {
   data: QlceViewFieldIdentifierData
   setGroupBy: setGroupByFn
+  isBusinessMapping: boolean
+  openBusinessMappingDrawer: () => void
 }
 
-export const GroupByDropDown: React.FC<GroupByDropDownProps> = ({ data, setGroupBy }) => {
+export const GroupByDropDown: React.FC<GroupByDropDownProps> = ({
+  data,
+  setGroupBy,
+  isBusinessMapping,
+  openBusinessMappingDrawer
+}) => {
+  const { getString } = useStrings()
+
   const values = data.values.filter(val => val) as QlceViewField[]
 
   return (
-    <ul className={css.groupByList}>
-      {values.map((value, index) => {
-        const onClick: () => void = () => {
-          setGroupBy({
-            identifier: data.identifier,
-            identifierName: data.identifierName,
-            fieldId: value.fieldId,
-            fieldName: value.fieldName
-          })
-        }
-        return (
-          <li key={`fieldName-${index}`} className={cx(css.groupByListItems, Classes.POPOVER_DISMISS)}>
-            <MenuItem text={value.fieldName} onClick={onClick} />
-          </li>
-        )
-      })}
-    </ul>
+    <>
+      <ul className={css.groupByList}>
+        {values.map((value, index) => {
+          const onClick: () => void = () => {
+            setGroupBy({
+              identifier: data.identifier,
+              identifierName: data.identifierName,
+              fieldId: value.fieldId,
+              fieldName: value.fieldName
+            })
+          }
+          return (
+            <li key={`fieldName-${index}`} className={cx(css.groupByListItems, Classes.POPOVER_DISMISS)}>
+              <MenuItem text={value.fieldName} onClick={onClick} />
+            </li>
+          )
+        })}
+      </ul>
+      {isBusinessMapping ? (
+        <Button
+          icon="plus"
+          text={getString('ce.businessMapping.newButton')}
+          onClick={openBusinessMappingDrawer}
+          minimal
+          intent="primary"
+        />
+      ) : null}
+    </>
   )
 }
 
 interface GroupByViewProps extends BaseGroupByProps {
   field: QlceViewFieldIdentifierData
+  openBusinessMappingDrawer: () => void
 }
 
-export const GroupByView: React.FC<GroupByViewProps> = ({ field, setGroupBy, groupBy }) => {
+export const GroupByView: React.FC<GroupByViewProps> = ({ field, setGroupBy, groupBy, openBusinessMappingDrawer }) => {
+  const isBusinessMapping = field.identifier === ViewFieldIdentifier.BusinessMapping
   return (
     <Popover
       key={`identifierName-${field.identifierName}`}
@@ -71,7 +93,14 @@ export const GroupByView: React.FC<GroupByViewProps> = ({ field, setGroupBy, gro
         preventOverflow: { enabled: true }
       }}
       usePortal={false}
-      content={<GroupByDropDown setGroupBy={setGroupBy} data={field} />}
+      content={
+        <GroupByDropDown
+          openBusinessMappingDrawer={openBusinessMappingDrawer}
+          isBusinessMapping={isBusinessMapping}
+          setGroupBy={setGroupBy}
+          data={field}
+        />
+      }
     >
       {groupBy.identifier === field.identifier ? (
         <div className={cx(css.groupByItems, css.activeItem)}>{`${field.identifierName}: ${groupBy.fieldName}`}</div>
@@ -182,9 +211,16 @@ const CommonGroupByView: React.FC<CommonGroupByViewProps> = ({ groupBy, setGroup
 interface GroupByComponentProps extends BaseGroupByProps {
   labelData: Maybe<string>[]
   fieldIdentifierData: Maybe<QlceViewFieldIdentifierData>[]
+  openBusinessMappingDrawer: () => void
 }
 
-const GroupByComponent: React.FC<GroupByComponentProps> = ({ labelData, fieldIdentifierData, groupBy, setGroupBy }) => {
+const GroupByComponent: React.FC<GroupByComponentProps> = ({
+  labelData,
+  fieldIdentifierData,
+  groupBy,
+  setGroupBy,
+  openBusinessMappingDrawer
+}) => {
   const { getString } = useStrings()
   const commonFields = fieldIdentifierData?.filter(
     field => field && field.identifier === ViewFieldIdentifier.Common
@@ -198,7 +234,14 @@ const GroupByComponent: React.FC<GroupByComponentProps> = ({ labelData, fieldIde
       <label className={css.groupByLabel}> {getString('ce.perspectives.createPerspective.preview.groupBy')}</label>
       <div className={css.groupBys}>
         {otherFields.map(field => {
-          return field.values.length ? <GroupByView field={field} setGroupBy={setGroupBy} groupBy={groupBy} /> : null
+          return field.values.length ? (
+            <GroupByView
+              openBusinessMappingDrawer={openBusinessMappingDrawer}
+              field={field}
+              setGroupBy={setGroupBy}
+              groupBy={groupBy}
+            />
+          ) : null
         })}
         {commonFields.length
           ? commonFields[0].values.map(value => {
