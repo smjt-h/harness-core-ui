@@ -235,6 +235,7 @@ const ResourceFulfilment: React.FC<ResourceFulfilmentProps> = props => {
                 ),
                 spotInstance: _get(props.gatewayDetails.routing.instance.scale_group, 'spot', 0)
               }}
+              enableReinitialize
               formName="odInstance"
               onSubmit={_ => {
                 return

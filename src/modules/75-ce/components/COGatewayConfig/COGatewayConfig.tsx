@@ -87,14 +87,6 @@ const COGatewayConfig: React.FC<COGatewayConfigProps> = props => {
         (props.gatewayDetails.routing.instance.scale_group?.spot as number) >= 0
       )
     }
-    // ? (props.gatewayDetails.routing.instance.scale_group?.on_demand as number) > 0 && isGcpProvider
-    //   ? true
-    //   : (props.gatewayDetails.routing.instance.scale_group?.on_demand as number) <=
-    //       (props.gatewayDetails.routing.instance.scale_group?.max as number) &&
-    //     (props.gatewayDetails.routing.instance.scale_group?.spot as number) >= 0
-    // : true
-    // console.log((props.gatewayDetails.routing.instance.scale_group?.on_demand as number) > 0)
-    // return validity
   }
 
   function isValid(): boolean {
