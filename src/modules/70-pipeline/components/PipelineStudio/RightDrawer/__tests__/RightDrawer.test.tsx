@@ -222,7 +222,8 @@ const pipelineVariablesContextMock = {
   initLoading: false,
   loading: false,
   onSearchInputChange: jest.fn(),
-  setPipeline: jest.fn()
+  setPipeline: jest.fn(),
+  setResolvedPipeline: jest.fn()
 }
 jest.spyOn(PipelineVariablesContext, 'usePipelineVariables').mockImplementation((): any => {
   return pipelineVariablesContextMock

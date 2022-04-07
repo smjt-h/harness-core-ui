@@ -6,17 +6,16 @@
  */
 
 import React from 'react'
-import { parse } from 'yaml'
 import { useParams } from 'react-router-dom'
 
-import { debounce, defaultTo, get, isPlainObject } from 'lodash-es'
-import type { PipelineInfoConfig } from 'services/cd-ng'
+import { debounce, defaultTo, get, isEmpty, isPlainObject } from 'lodash-es'
+import type { PipelineConfig, PipelineInfoConfig } from 'services/cd-ng'
 import type { VariableMergeServiceResponse, Failure } from 'services/pipeline-ng'
 import { useMutateAsGet, useQueryParams, useDeepCompareEffect } from '@common/hooks'
 import type { UseMutateAsGetReturn } from '@common/hooks/useMutateAsGet'
 import { useCreateVariables } from 'services/pipeline-ng'
 import type { GitQueryParams, PipelinePathProps } from '@common/interfaces/RouteInterfaces'
-import { yamlStringify } from '@common/utils/YamlHelperMethods'
+import { yamlParse, yamlStringify } from '@common/utils/YamlHelperMethods'
 import { useGetYamlWithTemplateRefsResolved } from 'services/template-ng'
 import { getRegexForSearch } from '../LogsContent/LogsState/utils'
 
@@ -44,6 +43,7 @@ export interface PipelineVariablesData {
   searchIndex?: number | null
   searchResults?: SearchResult[]
   setPipeline: (pipeline: PipelineInfoConfig) => void
+  setResolvedPipeline: (pipeline: PipelineInfoConfig) => void
 }
 export interface SearchMeta {
   searchText?: string
@@ -69,13 +69,14 @@ export interface PipelineMeta {
   metaKeyId: string
 }
 export const PipelineVariablesContext = React.createContext<PipelineVariablesData>({
-  variablesPipeline: { name: '', identifier: '' },
-  originalPipeline: { name: '', identifier: '' },
+  variablesPipeline: {} as PipelineInfoConfig,
+  originalPipeline: {} as PipelineInfoConfig,
   metadataMap: {},
   error: null,
   initLoading: true,
   loading: false,
-  setPipeline: () => void 0
+  setPipeline: () => void 0,
+  setResolvedPipeline: () => void 0
 })
 
 export function usePipelineVariables(): PipelineVariablesData {
@@ -83,10 +84,12 @@ export function usePipelineVariables(): PipelineVariablesData {
 }
 
 export function PipelineVariablesContextProvider(
-  props: React.PropsWithChildren<{ pipeline?: PipelineInfoConfig }>
+  props: React.PropsWithChildren<{ pipeline?: PipelineInfoConfig; enablePipelineTemplatesResolution?: boolean }>
 ): React.ReactElement {
-  const { pipeline: pipelineFromProps } = props
-  const [originalPipeline, setOriginalPipeline] = React.useState<PipelineInfoConfig>({ name: '', identifier: '' })
+  const { pipeline: pipelineFromProps, enablePipelineTemplatesResolution } = props
+  const [originalPipeline, setOriginalPipeline] = React.useState<PipelineInfoConfig>(
+    defaultTo(pipelineFromProps, {} as PipelineInfoConfig)
+  )
   const [{ variablesPipeline, metadataMap }, setPipelineVariablesData] = React.useState<
     Pick<PipelineVariablesData, 'metadataMap' | 'variablesPipeline'>
   >({
@@ -113,13 +116,13 @@ export function PipelineVariablesContextProvider(
     }))
   }
   const { data, error, initLoading, loading } = useMutateAsGet(useCreateVariables, {
-    body: yamlStringify({ pipeline: resolvedPipeline }) as unknown as void,
+    body: yamlStringify({ pipeline: originalPipeline }) as unknown as void,
     requestOptions: {
       headers: {
         'content-type': 'application/yaml'
       }
     },
-    queryParams: { accountIdentifier: accountId, orgIdentifier, projectIdentifier },
+    queryParams: { accountIdentifier: accountId, orgIdentifier, projectIdentifier, repoIdentifier, branch },
     debounce: 1300
   })
 
@@ -138,13 +141,14 @@ export function PipelineVariablesContextProvider(
       getDefaultFromOtherRepo: true
     },
     body: {
-      originalEntityYaml: yamlStringify(originalPipeline)
-    }
+      originalEntityYaml: enablePipelineTemplatesResolution ? yamlStringify(originalPipeline) : ''
+    },
+    lazy: !(enablePipelineTemplatesResolution && !isEmpty(originalPipeline))
   })
 
   React.useEffect(() => {
     if (resolvedPipelineResponse?.data?.mergedPipelineYaml) {
-      setResolvedPipeline(parse(resolvedPipelineResponse.data.mergedPipelineYaml))
+      setResolvedPipeline(yamlParse(resolvedPipelineResponse.data.mergedPipelineYaml))
     }
   }, [resolvedPipelineResponse])
 
@@ -169,7 +173,10 @@ export function PipelineVariablesContextProvider(
   React.useEffect(() => {
     setPipelineVariablesData({
       metadataMap: defaultTo(data?.data?.metadataMap, {}),
-      variablesPipeline: defaultTo(parse(defaultTo(data?.data?.yaml, ''))?.pipeline, {})
+      variablesPipeline: defaultTo(
+        yamlParse<PipelineConfig>(defaultTo(data?.data?.yaml, ''))?.pipeline,
+        {} as PipelineInfoConfig
+      )
     })
   }, [data?.data?.metadataMap, data?.data?.yaml])
 
@@ -178,6 +185,17 @@ export function PipelineVariablesContextProvider(
       setOriginalPipeline(pipelineFromProps)
     }
   }, [pipelineFromProps])
+
+  useDeepCompareEffect(() => {
+    /**
+     * update resolved pipeline to same value as original pipeline
+     * when template resolution is not enabled,
+     * as it is used by variables screen
+     */
+    if (!enablePipelineTemplatesResolution) {
+      setResolvedPipeline(originalPipeline)
+    }
+  }, [originalPipeline, enablePipelineTemplatesResolution])
 
   const onSearchInputChange = debounce((searchKey: string) => {
     if (searchKey !== searchText) {
@@ -212,7 +230,8 @@ export function PipelineVariablesContextProvider(
         searchIndex,
         goToPrevSearchResult,
         goToNextSearchResult,
-        setPipeline: setOriginalPipeline
+        setPipeline: setOriginalPipeline,
+        setResolvedPipeline
       }}
     >
       {props.children}

@@ -1,7 +1,7 @@
 {
   "name": "nextgenui",
   "description": "Harness Inc",
-  "version": "0.295.61",
+  "version": "0.295.62",
   "author": "Harness Inc",
   "license": "Harness Inc",
   "homepage": "http://app.harness.io/",
@@ -81,6 +81,7 @@
     "highcharts-react-official": "3.0.0",
     "idb": "^5.0.4",
     "immer": "^9.0.6",
+    "js-yaml": "^4.1.0",
     "jsonc-parser": "^2.0.2",
     "lodash-es": "^4.17.15",
     "marked": "^4.0.12",
