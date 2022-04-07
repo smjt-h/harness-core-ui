@@ -106,8 +106,7 @@ export interface GetFailureStrategiesValidationSchemaOptions {
 }
 
 export function getFailureStrategiesValidationSchema(
-  getString: UseStringsReturn['getString'],
-  options: GetFailureStrategiesValidationSchemaOptions = {}
+  getString: UseStringsReturn['getString']
 ): Yup.MixedSchema<unknown> {
   const failureStrategySchema = Yup.object()
     .shape({
@@ -217,29 +216,13 @@ export function getFailureStrategiesValidationSchema(
     test(value: unknown): boolean | Yup.ValidationError {
       const isUndefined = typeof value === 'undefined'
 
-      if (options.required && isUndefined) {
-        return this.createError({
-          message: getString('validation.valueRequired')
-        })
-      }
-
-      if (!options.required && !isUndefined && !Array.isArray(value)) {
+      if (!isUndefined && !Array.isArray(value)) {
         return this.createError({
           message: getString('pipeline.failureStrategies.validation.arrayOrUndefined')
         })
       }
 
       if (Array.isArray(value)) {
-        if (typeof options.minLength === 'number' && value.length < options.minLength) {
-          return this.createError({
-            message: getString(
-              options.minLength === 1
-                ? 'pipeline.failureStrategies.validation.strategyRequired'
-                : 'pipeline.failureStrategies.validation.strategiesRequired'
-            )
-          })
-        }
-
         let validationError: boolean | Yup.ValidationError = true
 
         try {
