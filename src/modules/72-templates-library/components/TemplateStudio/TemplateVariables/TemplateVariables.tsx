@@ -29,22 +29,21 @@ const TemplateVariables: React.FC = (): JSX.Element => {
     updateTemplate
   } = React.useContext(TemplateContext)
   const { originalTemplate, variablesTemplate, metadataMap, error, initLoading } = useTemplateVariables()
+  const allowableTypes = [MultiTypeInputType.FIXED, MultiTypeInputType.RUNTIME, MultiTypeInputType.EXPRESSION]
 
   const onUpdate = useCallback(
     async (values: PipelineInfoConfig | StageElementConfig | StepElementConfig) => {
       const processNode = omit(values, 'name', 'identifier', 'description', 'tags')
       sanitize(processNode, { removeEmptyArray: false, removeEmptyObject: false, removeEmptyString: false })
-      set(originalTemplate, 'spec', processNode)
-      await updateTemplate(originalTemplate)
+      set(template, 'spec', processNode)
+      await updateTemplate(template)
     },
-    [originalTemplate, updateTemplate]
+    [template, updateTemplate]
   )
 
   if (initLoading) {
     return <PageSpinner />
   }
-
-  const allowableTypes = [MultiTypeInputType.FIXED, MultiTypeInputType.RUNTIME, MultiTypeInputType.EXPRESSION]
 
   return (
     <div className={css.pipelineVariables}>

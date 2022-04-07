@@ -83,7 +83,7 @@ export function TemplateVariablesContextProvider(
       getDefaultFromOtherRepo: true
     },
     body: {
-      originalEntityYaml: yamlStringify(resolvedTemplate)
+      originalEntityYaml: yamlStringify(originalTemplate)
     }
   })
 
