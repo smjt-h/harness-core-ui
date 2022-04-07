@@ -78,6 +78,7 @@ async function _fetchData<TData, TError, TQueryParams, TRequestBody, TPathParams
   } catch (e) {
     setData(null)
     setError(e)
+    setInitLoading(false)
   }
 }
 
@@ -117,12 +118,16 @@ export function useMutateAsGet<
     if (!props.lazy && !props.mock) {
       try {
         fetchData(mutate, props, setInitLoading, setData, setError)?.then(identity, e => {
-          if (shouldShowError(e)) setError(e)
+          if (shouldShowError(e)) {
+            setError(e)
+          }
+          setInitLoading(false)
         })
       } catch (e) {
         if (shouldShowError(e)) {
           setError(e)
         }
+        setInitLoading(false)
       }
     }
 

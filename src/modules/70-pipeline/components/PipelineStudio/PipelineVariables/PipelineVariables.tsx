@@ -11,8 +11,12 @@ import { get } from 'lodash-es'
 
 import { PageSpinner } from '@common/components'
 import { useStrings } from 'framework/strings'
+import type { PipelineInfoConfig } from 'services/cd-ng'
 import { GitSyncStoreProvider } from 'framework/GitRepoStore/GitSyncStoreContext'
-import { usePipelineVariables } from '@pipeline/components/PipelineVariablesContext/PipelineVariablesContext'
+import {
+  PipelineVariablesContextProvider,
+  usePipelineVariables
+} from '@pipeline/components/PipelineVariablesContext/PipelineVariablesContext'
 import { VariablesHeader } from '@pipeline/components/PipelineStudio/PipelineVariables/VariablesHeader/VariablesHeader'
 import PipelineCard from '@pipeline/components/PipelineStudio/PipelineVariables/Cards/PipelineCard'
 import StageCard from '@pipeline/components/PipelineStudio/PipelineVariables/Cards/StageCard'
@@ -143,10 +147,12 @@ export function PipelineVariables(): React.ReactElement {
   )
 }
 
-export default function PipelineVariablesWrapper(): React.ReactElement {
+export default function PipelineVariablesWrapper(props: { pipeline?: PipelineInfoConfig }): React.ReactElement {
   return (
     <NestedAccordionProvider>
-      <PipelineVariables />
+      <PipelineVariablesContextProvider pipeline={props.pipeline} enablePipelineTemplatesResolution>
+        <PipelineVariables />
+      </PipelineVariablesContextProvider>
     </NestedAccordionProvider>
   )
 }

@@ -22,10 +22,9 @@ import { Color } from '@harness/design-system'
 import { useModalHook } from '@harness/use-modal'
 import cx from 'classnames'
 import { useHistory } from 'react-router-dom'
-import { parse } from 'yaml'
-import { mergeWith, isEmpty, isEqual, defaultTo, keyBy } from 'lodash-es'
+import { mergeWith, isEmpty, defaultTo, keyBy } from 'lodash-es'
 import type { FormikErrors } from 'formik'
-import type { PipelineInfoConfig, ResponseJsonNode } from 'services/cd-ng'
+import type { PipelineConfig, PipelineInfoConfig, ResponseJsonNode } from 'services/cd-ng'
 import {
   useGetPipeline,
   usePostPipelineExecuteWithInputSetYaml,
@@ -58,12 +57,11 @@ import {
   getAllStageItem,
   getFeaturePropsForRunPipelineButton,
   mergeTemplateWithInputSetData,
-  POLL_INTERVAL,
   SelectedStageData,
   StageSelectionData
 } from '@pipeline/utils/runPipelineUtils'
 import { useMutateAsGet, useQueryParams } from '@common/hooks'
-import { yamlStringify } from '@common/utils/YamlHelperMethods'
+import { yamlStringify, yamlParse } from '@common/utils/YamlHelperMethods'
 import { PipelineActions } from '@common/constants/TrackingConstants'
 import { useTelemetry } from '@common/hooks/useTelemetry'
 import type { InputSetDTO } from '@pipeline/utils/types'
@@ -140,7 +138,7 @@ function RunPipelineFormBasic({
   const [selectedInputSets, setSelectedInputSets] = useState<InputSetSelectorProps['value']>(inputSetSelected)
   const [formErrors, setFormErrors] = useState<FormikErrors<InputSetDTO>>({})
   const [currentPipeline, setCurrentPipeline] = useState<{ pipeline?: PipelineInfoConfig } | undefined>(
-    inputSetYAML ? parse(inputSetYAML) : undefined
+    inputSetYAML ? yamlParse<PipelineConfig>(inputSetYAML) : undefined
   )
   const { trackEvent } = useTelemetry()
   const { showError, showSuccess, showWarning } = useToaster()
@@ -222,7 +220,7 @@ function RunPipelineFormBasic({
   })
 
   const pipeline: PipelineInfoConfig | undefined = React.useMemo(
-    () => parse(defaultTo(pipelineResponse?.data?.yamlPipeline, ''))?.pipeline,
+    () => yamlParse<PipelineConfig>(defaultTo(pipelineResponse?.data?.yamlPipeline, ''))?.pipeline,
     [pipelineResponse?.data?.yamlPipeline]
   )
 
@@ -374,11 +372,14 @@ function RunPipelineFormBasic({
   }, [stageExecutionData?.data])
 
   const yamlTemplate = useMemo(() => {
-    return parse(defaultTo(template?.data?.inputSetTemplateYaml, ''))?.pipeline
+    return (
+      yamlParse<PipelineConfig>(defaultTo(template?.data?.inputSetTemplateYaml, ''))?.pipeline ||
+      ({} as PipelineInfoConfig)
+    )
   }, [template?.data?.inputSetTemplateYaml])
 
   useEffect(() => {
-    const parsedPipelineYaml = parse(defaultTo(template?.data?.inputSetTemplateYaml, '')) || {}
+    const parsedPipelineYaml = yamlParse<PipelineConfig>(defaultTo(template?.data?.inputSetTemplateYaml, '')) || {}
     const toBeUpdated = mergeWith(parsedPipelineYaml, currentPipeline || {}, mergeWithPipelineCustomizer) as {
       pipeline: PipelineInfoConfig
     }
@@ -392,7 +393,7 @@ function RunPipelineFormBasic({
 
   useEffect(() => {
     if (inputSetYAML) {
-      const parsedYAML = parse(inputSetYAML)
+      const parsedYAML = yamlParse<PipelineConfig>(inputSetYAML)
       setExistingProvide('provide')
       setCurrentPipeline(parsedYAML)
     } else {
@@ -420,7 +421,7 @@ function RunPipelineFormBasic({
             : selectedStageData.selectedStageItems.map(stageData => stageData.value as string)
         })
         if (data?.data?.pipelineYaml) {
-          const inputSetPortion = parse(data.data.pipelineYaml) as {
+          const inputSetPortion = yamlParse<PipelineConfig>(data.data.pipelineYaml) as {
             pipeline: PipelineInfoConfig
           }
           const toBeUpdated = mergeTemplateWithInputSetData(parsedTemplate, inputSetPortion)
@@ -435,7 +436,9 @@ function RunPipelineFormBasic({
 
   useDeepCompareEffect(() => {
     if (template?.data?.inputSetTemplateYaml) {
-      const parsedTemplate = parse(template?.data?.inputSetTemplateYaml) as { pipeline: PipelineInfoConfig }
+      const parsedTemplate = yamlParse<PipelineConfig>(template?.data?.inputSetTemplateYaml) as {
+        pipeline: PipelineInfoConfig
+      }
       if (shouldMakeMergeInputSetCall()) {
         makeMergeInputSetCall(parsedTemplate)
       } else if (!selectedInputSets?.length && !inputSetYAML?.length) {
@@ -452,7 +455,7 @@ function RunPipelineFormBasic({
     pipelineIdentifier
   ])
 
-  const resolvedPipeline: PipelineInfoConfig | undefined = parse(
+  const resolvedPipeline: PipelineInfoConfig | undefined = yamlParse(
     defaultTo(templateRefsResolvedPipeline?.data?.mergedPipelineYaml, '')
   )
 
@@ -490,6 +493,15 @@ function RunPipelineFormBasic({
       </Dialog>
     )
   }, [])
+
+  const handleModeSwitch = (view: SelectedView): void => {
+    if (view === SelectedView.VISUAL) {
+      const presentPipeline = yamlParse<PipelineConfig>(defaultTo(yamlHandler?.getLatestYaml(), ''))
+      setCurrentPipeline(presentPipeline)
+      handleValidation(presentPipeline as Values)
+    }
+    setSelectedView(view)
+  }
 
   const handleRunPipeline = useCallback(
     async (valuesPipeline?: PipelineInfoConfig, forceSkipFlightCheck = false) => {
@@ -591,7 +603,6 @@ function RunPipelineFormBasic({
   )
 
   const [yamlHandler, setYamlHandler] = useState<YamlBuilderHandlerBinding | undefined>()
-  const [lastYaml, setLastYaml] = useState({})
 
   const blockedStagesSelected = useMemo(() => {
     let areDependentStagesSelected = false
@@ -618,26 +629,6 @@ function RunPipelineFormBasic({
 
     return areDependentStagesSelected
   }, [selectedStageData])
-
-  useEffect(() => {
-    try {
-      if (yamlHandler) {
-        const Interval = window.setInterval(() => {
-          const parsedYaml = parse(defaultTo(yamlHandler.getLatestYaml(), ''))
-          if (!isEqual(lastYaml, parsedYaml)) {
-            setCurrentPipeline(parsedYaml as { pipeline: PipelineInfoConfig })
-            setLastYaml(parsedYaml)
-            handleValidation(parsedYaml)
-          }
-        }, POLL_INTERVAL)
-        return () => {
-          window.clearInterval(Interval)
-        }
-      }
-    } catch (e) {
-      // Ignore Error
-    }
-  }, [yamlHandler, lastYaml])
 
   const updateExpressionValue = (e: React.ChangeEvent<HTMLInputElement>): void => {
     if (!e.target) {
@@ -768,10 +759,8 @@ function RunPipelineFormBasic({
                   selectedStageData={selectedStageData}
                   setSelectedStageData={setSelectedStageData}
                   setSkipPreFlightCheck={setSkipPreFlightCheck}
-                  setSelectedView={setSelectedView}
-                  setCurrentPipeline={setCurrentPipeline}
+                  handleModeSwitch={handleModeSwitch}
                   runClicked={runClicked}
-                  yamlHandler={yamlHandler}
                   selectedView={selectedView}
                   executionView={executionView}
                   pipelineResponse={pipelineResponse}
