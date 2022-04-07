@@ -555,8 +555,7 @@ export const GetEnvironmentList: UseGetReturnData<ResponseListEnvironmentRespons
           color: '#0063F7',
           type: 'Production',
           deleted: false,
-          tags: {},
-          version: 2
+          tags: {}
         }
       }
     ],
