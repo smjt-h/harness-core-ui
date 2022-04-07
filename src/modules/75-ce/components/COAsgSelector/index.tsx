@@ -6,6 +6,7 @@
  */
 
 import React, { useEffect, useState } from 'react'
+import { useParams } from 'react-router-dom'
 import type { CellProps } from 'react-table'
 import { isEmpty as _isEmpty } from 'lodash-es'
 import { Radio } from '@blueprintjs/core'
@@ -25,7 +26,6 @@ import type { GatewayDetails } from '@ce/components/COCreateGateway/models'
 import { useStrings } from 'framework/strings'
 import { ASGMinimal, PortConfig, TargetGroupMinimal, useAllZones } from 'services/lw'
 import { Utils } from '@ce/common/Utils'
-import { useParams } from 'react-router'
 import useRegionsForSelection from '@ce/common/hooks/useRegionsForSelection'
 import type { AccountPathProps } from '@common/interfaces/RouteInterfaces'
 
