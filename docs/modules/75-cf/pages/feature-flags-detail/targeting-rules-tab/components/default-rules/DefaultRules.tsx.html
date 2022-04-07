@@ -32,7 +32,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>2/2</span>
+                <span class='fraction'>5/5</span>
             </div>
         
             
@@ -108,7 +108,13 @@
 <a name='L49'></a><a href='#L49'>49</a>
 <a name='L50'></a><a href='#L50'>50</a>
 <a name='L51'></a><a href='#L51'>51</a>
-<a name='L52'></a><a href='#L52'>52</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L52'></a><a href='#L52'>52</a>
+<a name='L53'></a><a href='#L53'>53</a>
+<a name='L54'></a><a href='#L54'>54</a>
+<a name='L55'></a><a href='#L55'>55</a>
+<a name='L56'></a><a href='#L56'>56</a>
+<a name='L57'></a><a href='#L57'>57</a>
+<a name='L58'></a><a href='#L58'>58</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -121,23 +127,29 @@
 <span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">54x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">54x</span>
-<span class="cline-any cline-yes">108x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">54x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">106x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">106x</span>
+<span class="cline-any cline-yes">212x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">106x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -172,14 +184,18 @@ import type { Variation } from 'services/cf'
 import { CFVariationColors } from '@cf/constants'
 import { useStrings } from 'framework/strings'
 import StringWithTooltip from '@common/components/StringWithTooltip/StringWithTooltip'
+import type { StringsMap } from 'framework/strings/StringsContext'
 import DisabledFeatureTooltip from '../disabled-feature-tooltip/DisabledFeatureTooltip'
 &nbsp;
 export interface DefaultRulesProps {
   featureFlagVariations: Variation[]
+  hideSubheading?: boolean
+  titleStringId: keyof StringsMap
+  inputName: string
 }
 &nbsp;
 const DefaultRules = (props: DefaultRulesProps): ReactElement =&gt; {
-  const { featureFlagVariations } = props
+  const { featureFlagVariations, titleStringId, inputName, hideSubheading = false } = props
 &nbsp;
   const { getString } = useStrings()
   const variationItems = featureFlagVariations.map&lt;SelectOption&gt;((variation, index) =&gt; ({
@@ -191,17 +207,19 @@ const DefaultRules = (props: DefaultRulesProps): ReactElement =&gt; {
   return (
     &lt;&gt;
       &lt;Heading level={3} font={{ variation: FontVariation.H6 }} margin={{ bottom: 'medium' }}&gt;
-        &lt;StringWithTooltip stringId="cf.featureFlags.rules.whenFlagEnabled" tooltipId="ff_ffDefaultRules_heading" /&gt;
+        &lt;StringWithTooltip stringId={titleStringId} tooltipId="ff_ffDefaultRules_heading" /&gt;
       &lt;/Heading&gt;
-      &lt;Heading level={4} font={{ variation: FontVariation.BODY2 }} margin={{ bottom: 'small' }}&gt;
-        {getString('cf.featureFlags.rules.defaultRule')}
-      &lt;/Heading&gt;
+      {!hideSubheading &amp;&amp; (
+        &lt;Heading level={4} font={{ variation: FontVariation.BODY2 }} margin={{ bottom: 'small' }}&gt;
+          {getString('cf.featureFlags.rules.defaultRule')}
+        &lt;/Heading&gt;
+      )}
       &lt;DisabledFeatureTooltip&gt;
         &lt;FormInput.Select
           style={{ marginBottom: '0' }}
           label={getString('cf.featureFlags.serve')}
           inline
-          name="onVariation"
+          name={inputName}
           items={variationItems}
         /&gt;
       &lt;/DisabledFeatureTooltip&gt;
@@ -217,7 +235,7 @@ export default DefaultRules
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Thu Apr 07 2022 07:01:37 GMT+0000 (Greenwich Mean Time)
+                at Thu Apr 07 2022 12:57:13 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../../../../prettify.js"></script>

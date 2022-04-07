@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">97.06% </span>
+                <span class="strong">97.22% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>33/34</span>
+                <span class='fraction'>35/36</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">96.88% </span>
+                <span class="strong">97.06% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>31/32</span>
+                <span class='fraction'>33/34</span>
             </div>
         
             
@@ -262,13 +262,29 @@
 <a name='L203'></a><a href='#L203'>203</a>
 <a name='L204'></a><a href='#L204'>204</a>
 <a name='L205'></a><a href='#L205'>205</a>
-<a name='L206'></a><a href='#L206'>206</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L206'></a><a href='#L206'>206</a>
+<a name='L207'></a><a href='#L207'>207</a>
+<a name='L208'></a><a href='#L208'>208</a>
+<a name='L209'></a><a href='#L209'>209</a>
+<a name='L210'></a><a href='#L210'>210</a>
+<a name='L211'></a><a href='#L211'>211</a>
+<a name='L212'></a><a href='#L212'>212</a>
+<a name='L213'></a><a href='#L213'>213</a>
+<a name='L214'></a><a href='#L214'>214</a>
+<a name='L215'></a><a href='#L215'>215</a>
+<a name='L216'></a><a href='#L216'>216</a>
+<a name='L217'></a><a href='#L217'>217</a>
+<a name='L218'></a><a href='#L218'>218</a>
+<a name='L219'></a><a href='#L219'>219</a>
+<a name='L220'></a><a href='#L220'>220</a>
+<a name='L221'></a><a href='#L221'>221</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-yes">5x</span>
@@ -348,6 +364,18 @@
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -357,7 +385,9 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">12x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -479,6 +509,7 @@ import { Dialog, IDialogProps } from '@blueprintjs/core'
 import { StepWizard, Formik, FormikForm, useToaster, getErrorInfoFromErrorObject, Color } from '@harness/uicore'
 import { useModalHook } from '@harness/use-modal'
 import { useParams } from 'react-router-dom'
+import * as Yup from 'yup'
 import { useStrings } from 'framework/strings'
 import { QlceView, useFetchPerspectiveListQuery } from 'services/ce/services'
 import { channelNameUrlMapping, channels } from '@ce/constants'
@@ -550,6 +581,18 @@ export const AnomalyAlertDialog: React.FC&lt;AlertDialogProps&gt; = ({
       }
     }) || /* istanbul ignore next */ []
 &nbsp;
+  const validationSchema = Yup.object().shape({
+    perspective: Yup.string().required(),
+    alertList: Yup.array(
+      Yup.object({
+        channelName: Yup.string().required(
+          getString('ce.anomalyDetection.notificationAlerts.channelSelectionRequiredMsg')
+        ),
+        channelUrl: Yup.string().required(getString('ce.anomalyDetection.notificationAlerts.channelUrlRequiredMsg'))
+      })
+    )
+  })
+&nbsp;
   return (
     &lt;Dialog onClose={hideAnomaliesAlertModal} {...modalPropsLight} canOutsideClickClose={true}&gt;
       &lt;Formik
@@ -561,6 +604,7 @@ export const AnomalyAlertDialog: React.FC&lt;AlertDialogProps&gt; = ({
           channelUrl: '',
           alertList: channelsData || /* istanbul ignore next */ []
         }}
+        validationSchema={validationSchema}
         render={formikProps =&gt; {
           return (
             &lt;FormikForm&gt;
@@ -577,6 +621,7 @@ export const AnomalyAlertDialog: React.FC&lt;AlertDialogProps&gt; = ({
                   name={getString('ce.anomalyDetection.notificationAlerts.overviewStep')}
                   onClose={hideAnomaliesAlertModal}
                   items={items}
+                  formikProps={formikProps}
                 /&gt;
                 &lt;NotificationMethod
                   name={getString('ce.anomalyDetection.notificationAlerts.notificationStep')}
@@ -679,7 +724,7 @@ export default useAnomaliesAlertDialog
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Thu Apr 07 2022 07:01:37 GMT+0000 (Greenwich Mean Time)
+                at Thu Apr 07 2022 12:57:13 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../prettify.js"></script>
