@@ -358,6 +358,8 @@ link: link
 errorHandler:
   issueCouldBe: Issue could be
   tryTheseSuggestions: Try these suggestions
+  contactSupport: Harness Support
+  communityForum: Harness Community Forum
 noRefData: 'No references found'
 references: 'References'
 labelTestConnection: 'Connection Test'

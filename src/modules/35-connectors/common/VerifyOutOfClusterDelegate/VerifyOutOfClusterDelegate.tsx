@@ -168,6 +168,10 @@ const VerifyOutOfClusterDelegate: React.FC<StepProps<VerifyOutOfClusterStepProps
       status: 'PROCESS'
     })
 
+    const isCeConnector = Boolean(
+      Connectors.CE_KUBERNETES || Connectors.CEAWS || Connectors.CE_AZURE || Connectors.CE_GCP
+    )
+
     const { trackEvent } = useTelemetry()
 
     useEffect(() => {
@@ -280,7 +284,12 @@ const VerifyOutOfClusterDelegate: React.FC<StepProps<VerifyOutOfClusterStepProps
       return (
         <Layout.Vertical className={css.stepError}>
           {responseMessages ? (
-            <ErrorHandler responseMessages={responseMessages} className={css.errorHandler} />
+            <ErrorHandler
+              responseMessages={responseMessages}
+              className={css.errorHandler}
+              isCeConnector={isCeConnector}
+              connectorType={props.type}
+            />
           ) : (
             genericHandler
           )}

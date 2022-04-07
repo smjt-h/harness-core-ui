@@ -8,10 +8,11 @@
 import React, { useMemo } from 'react'
 import cx from 'classnames'
 import { Layout, Text, Icon, IconName, Container } from '@wings-software/uicore'
-import { Color } from '@harness/design-system'
+import { Color, FontVariation } from '@harness/design-system'
 import type { ResponseMessage } from 'services/cd-ng'
 import { useStrings } from 'framework/strings'
 import { LinkifyText } from '@common/components/LinkifyText/LinkifyText'
+import { Connectors } from '@connectors/constants'
 import css from '@common/components/ErrorHandler/ErrorHandler.module.scss'
 
 export interface ErrorHandlerProps {
@@ -20,6 +21,8 @@ export interface ErrorHandlerProps {
   height?: number | string
   skipUrlsInErrorHeader?: boolean
   className?: string
+  isCeConnector?: boolean
+  connectorType?: string
 }
 
 const extractInfo = (
@@ -79,8 +82,90 @@ const ErrorList: React.FC<{
   )
 }
 
+const Suggestions: React.FC<{
+  items: ResponseMessage[]
+  header: string
+  icon: IconName
+  connectorType: string
+}> = props => {
+  const { getString } = useStrings()
+  if (!props.items.length) {
+    return null
+  }
+  const getDocumentIndex = (msg: string) => {
+    const docIndex = msg.lastIndexOf('document')
+    let firstStr = msg
+    let secondStr = ''
+    if (docIndex >= 0) {
+      firstStr = msg.slice(0, docIndex)
+      secondStr = msg.slice(docIndex)
+    }
+
+    return { firstStr, secondStr }
+  }
+
+  const getDocLink = () => {
+    switch (props.connectorType) {
+      case Connectors.CE_KUBERNETES:
+        return 'https://ngdocs.harness.io/article/ltt65r6k39-set-up-cost-visibility-for-kubernetes'
+
+      case Connectors.CEAWS:
+        return 'https://ngdocs.harness.io/article/80vbt5jv0q-set-up-cost-visibility-for-aws'
+
+      case Connectors.CE_AZURE:
+        return 'https://ngdocs.harness.io/article/v682mz6qfd-set-up-cost-visibility-for-azure'
+
+      case Connectors.CE_GCP:
+        return 'https://ngdocs.harness.io/article/kxnsritjls-set-up-cost-visibility-for-gcp'
+    }
+  }
+
+  const docUrl = getDocLink()
+  return (
+    <Layout.Horizontal margin={{ bottom: 'xlarge' }}>
+      <Icon name={props.icon} margin={{ right: 'small' }} />
+      <Layout.Vertical className={cx(css.errorListTextContainer, css.shrink)}>
+        <Text font={{ weight: 'semi-bold', size: 'small' }} color={Color.BLACK} margin={{ bottom: 'xsmall' }}>
+          {props.header}
+        </Text>
+        {props.items.map((item, index) => {
+          const { firstStr, secondStr } = getDocumentIndex(item.message as string)
+          return (
+            <Container margin={{ bottom: 'xsmall' }} key={index}>
+              <Text color={Color.BLACK} font={{ variation: FontVariation.SMALL }} className={css.text}>
+                {firstStr}
+              </Text>
+              {secondStr ? (
+                <a href={docUrl} target="_blank" rel="noreferrer" className={cx(css.link, css.linkSmall)}>
+                  {secondStr}
+                </a>
+              ) : null}
+            </Container>
+          )
+        })}
+        <Text font={{ weight: 'semi-bold', size: 'small' }} color={Color.BLACK} margin={{ bottom: 'xsmall' }}>
+          {'Contact '}
+          <a href="mailto:support@harness.io">{getString('common.errorHandler.contactSupport')}</a>
+          {' or '}
+          <a href="https://community.harness.io/" target="_blank" rel="noreferrer">
+            {getString('common.errorHandler.communityForum')}
+          </a>
+        </Text>
+      </Layout.Vertical>
+    </Layout.Horizontal>
+  )
+}
+
 export const ErrorHandler: React.FC<ErrorHandlerProps> = props => {
-  const { responseMessages, width, height, skipUrlsInErrorHeader = false, className = '' } = props
+  const {
+    responseMessages,
+    width,
+    height,
+    skipUrlsInErrorHeader = false,
+    className = '',
+    isCeConnector = false,
+    connectorType = ''
+  } = props
   const errorObjects = useMemo(() => extractInfo(responseMessages), [responseMessages])
   const { getString } = useStrings()
   return (
@@ -110,13 +195,20 @@ export const ErrorHandler: React.FC<ErrorHandlerProps> = props => {
                 )}
               </Container>
               {<ErrorList items={explanations} header={getString('common.errorHandler.issueCouldBe')} icon={'info'} />}
-              {
+              {isCeConnector ? (
+                <Suggestions
+                  items={hints}
+                  header={getString('common.errorHandler.tryTheseSuggestions')}
+                  icon={'lightbulb'}
+                  connectorType={connectorType}
+                />
+              ) : (
                 <ErrorList
                   items={hints}
                   header={getString('common.errorHandler.tryTheseSuggestions')}
                   icon={'lightbulb'}
                 />
-              }
+              )}
             </Layout.Vertical>
           )
         })}
