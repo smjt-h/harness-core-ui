@@ -687,15 +687,15 @@ export function StageInputSetFormInternal({
                 tooltipId: 'automountServiceAccountToken',
                 defaultTrue: true
               })}
-            {(deploymentStageTemplate.infrastructure as any).spec?.priorityClass && (
+            {(deploymentStageTemplate.infrastructure as any).spec?.priorityClassName && (
               <Container className={stepCss.bottomMargin3}>
                 <MultiTypeTextField
                   label={
                     <Text font={{ variation: FontVariation.FORM_LABEL }} margin={{ bottom: 'xsmall' }}>
-                      {getString('pipeline.buildInfra.priorityClass')}
+                      {getString('pipeline.buildInfra.priorityClassName')}
                     </Text>
                   }
-                  name={`${isEmpty(path) ? '' : `${path}.`}infrastructure.spec.priorityClass`}
+                  name={`${isEmpty(path) ? '' : `${path}.`}infrastructure.spec.priorityClassName`}
                   multiTextInputProps={{
                     multiTextInputProps: {
                       expressions,

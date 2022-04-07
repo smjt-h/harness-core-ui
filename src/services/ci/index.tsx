@@ -1315,7 +1315,7 @@ export interface K8sDirectInfraYamlSpec {
   runAsUser?: number
   serviceAccountName?: string
   automountServiceAccountToken?: boolean // hard coded for now
-  priorityClass?: string
+  priorityClassName?: string
   containerSecurityContext?: {
     privileged?: boolean
     allowPrivilegeEscalation?: boolean
