@@ -66,4 +66,5 @@ export interface ExecutionAndAPICallLogProps {
   setErrorLogsOnly: (errorLogsOnly: boolean) => void
   pageNumber: number
   setPageNumber: (pageNumber: number | ((_pageNumber: number) => number)) => void
+  handleDownloadLogs: () => Promise<void>
 }

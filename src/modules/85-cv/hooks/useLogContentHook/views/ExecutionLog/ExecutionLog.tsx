@@ -39,7 +39,8 @@ const ExecutionLog: React.FC<ExecutionAndAPICallLogProps> = ({
   errorLogsOnly,
   setErrorLogsOnly,
   pageNumber,
-  setPageNumber
+  setPageNumber,
+  handleDownloadLogs
 }) => {
   const { getString } = useStrings()
   const [state, dispatch] = React.useReducer<Reducer<State, Action<ActionType>>>(reducer, defaultReducerState)
@@ -120,6 +121,7 @@ const ExecutionLog: React.FC<ExecutionAndAPICallLogProps> = ({
         setIsFullScreen={setIsFullScreen}
         isVerifyStep={Boolean(verifyStepExecutionId)}
         timeRange={timeRange}
+        handleDownloadLogs={handleDownloadLogs}
       />
       <div className={cx(css.main, { [css.fullScreen]: isFullScreen })}>
         <pre className={css.container}>

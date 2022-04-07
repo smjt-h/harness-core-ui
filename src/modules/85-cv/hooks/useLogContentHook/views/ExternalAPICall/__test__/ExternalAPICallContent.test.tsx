@@ -26,6 +26,7 @@ describe('ExternalAPICallContent', () => {
           errorLogsOnly={false}
           setErrorLogsOnly={jest.fn()}
           pageNumber={0}
+          handleDownloadLogs={jest.fn()}
         />
       </TestWrapper>
     )

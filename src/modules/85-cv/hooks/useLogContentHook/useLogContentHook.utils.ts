@@ -7,9 +7,10 @@
 
 import moment from 'moment'
 import type { SelectOption } from '@harness/uicore'
-import type { HealthSourceDTO } from 'services/cv'
+import type { ApiCallLogDTO, HealthSourceDTO } from 'services/cv'
 import type { UseStringsReturn } from 'framework/strings'
 import { TimeRangeTypes } from './useLogContentHook.types'
+import { RESPONSE_BODY } from './useLogContentHook.constants'
 
 export function isPositiveNumber(index: unknown): index is number {
   return typeof index === 'number' && index >= 0
@@ -94,4 +95,33 @@ export const getStatusColor = (statusCode = '500'): 'success' | 'error' => {
   }
 
   return 'error'
+}
+
+export function downloadJson(data: string, fileName: string): void {
+  const jsonString = `data:text/json;chatset=utf-8,${encodeURIComponent(data)}`
+  const link = document.createElement('a')
+
+  link.href = jsonString
+  link.download = `${fileName}-${moment().format('L-LT')}.json`
+  link.click()
+}
+
+export function parseResponseBody(data: ApiCallLogDTO[]): ApiCallLogDTO[] {
+  return data.map(log => ({
+    ...log,
+    responses: log.responses?.map(response => {
+      if (response.name === RESPONSE_BODY) {
+        let value
+
+        try {
+          value = response.value && JSON.parse(response.value)
+        } catch (e) {
+          value = response.value
+        }
+
+        return { ...response, value }
+      }
+      return response
+    })
+  }))
 }

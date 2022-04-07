@@ -14,7 +14,7 @@ import routes from '@common/RouteDefinitions'
 import { projectPathProps } from '@common/utils/routeUtils'
 import SLOLogContent from '../views/SLOLogContent'
 import { LogTypes } from '../useLogContentHook.types'
-import { executionLogsResponse, pathParams } from './ExecutionLog.mock'
+import { executionLogsResponse, externalAPICallLogsResponse, pathParams } from './ExecutionLog.mock'
 import { PAGE_SIZE } from '../useLogContentHook.constants'
 
 const { accountId, orgIdentifier, projectIdentifier } = pathParams
@@ -34,6 +34,7 @@ jest.mock('services/cv', () => ({
   useGetServiceLevelObjectiveLogs: jest
     .fn()
     .mockImplementation(() => ({ data: executionLogsResponse, loading: false, error: null, refetch: jest.fn() })),
+  getServiceLevelObjectiveLogsPromise: jest.fn().mockImplementation(() => executionLogsResponse),
   useGetVerifyStepHealthSources: jest
     .fn()
     .mockImplementation(() => ({ data: {}, loading: false, error: null, refetch: fetchHealthSources }))
@@ -188,6 +189,78 @@ describe('SLOLogContent', () => {
           errorLogsOnly: false,
           startTime: 1640995200000,
           endTime: 1640995200000
+        }
+      })
+    })
+  })
+
+  test('should download the logs of type ApiCallLog', async () => {
+    jest.spyOn(cvService, 'getServiceLevelObjectiveLogsPromise').mockReturnValue(externalAPICallLogsResponse as any)
+
+    render(
+      <TestWrapper {...testWrapperProps}>
+        <SLOLogContent
+          logType={LogTypes.ApiCallLog}
+          identifier="SLO_IDENTIFIER"
+          serviceName="SERVICE_NAME"
+          envName="ENV_NAME"
+          isFullScreen={false}
+          setIsFullScreen={jest.fn()}
+        />
+      </TestWrapper>
+    )
+
+    expect(screen.getByText('cv.download')).toBeInTheDocument()
+
+    userEvent.click(screen.getByText('cv.download'))
+
+    await waitFor(() => {
+      expect(cvService.getServiceLevelObjectiveLogsPromise).toHaveBeenCalledWith({
+        identifier: 'SLO_IDENTIFIER',
+        queryParams: {
+          accountId,
+          orgIdentifier,
+          projectIdentifier,
+          logType: LogTypes.ApiCallLog,
+          errorLogsOnly: false,
+          startTime: 1640995200000,
+          endTime: 1640995200000,
+          pageSize: 1
+        }
+      })
+    })
+  })
+
+  test('should download the logs of type ExecutionLog', async () => {
+    render(
+      <TestWrapper {...testWrapperProps}>
+        <SLOLogContent
+          logType={LogTypes.ExecutionLog}
+          identifier="SLO_IDENTIFIER"
+          serviceName="SERVICE_NAME"
+          envName="ENV_NAME"
+          isFullScreen={false}
+          setIsFullScreen={jest.fn()}
+        />
+      </TestWrapper>
+    )
+
+    expect(screen.getByText('cv.download')).toBeInTheDocument()
+
+    userEvent.click(screen.getByText('cv.download'))
+
+    await waitFor(() => {
+      expect(cvService.getServiceLevelObjectiveLogsPromise).toHaveBeenCalledWith({
+        identifier: 'SLO_IDENTIFIER',
+        queryParams: {
+          accountId,
+          orgIdentifier,
+          projectIdentifier,
+          logType: LogTypes.ExecutionLog,
+          errorLogsOnly: false,
+          startTime: 1640995200000,
+          endTime: 1640995200000,
+          pageSize: 1
         }
       })
     })

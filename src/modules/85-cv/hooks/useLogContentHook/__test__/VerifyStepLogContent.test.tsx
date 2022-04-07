@@ -15,6 +15,7 @@ import {
   deploymentActivitySummaryResponse,
   errorMessage,
   executionLogsResponse,
+  externalAPICallLogsResponse,
   healthSourceResponse,
   pathParams,
   testWrapperProps
@@ -31,6 +32,7 @@ jest.mock('services/cv', () => ({
   useGetVerifyStepLogs: jest
     .fn()
     .mockImplementation(() => ({ data: executionLogsResponse, loading: false, error: null, refetch: jest.fn() })),
+  getVerifyStepLogsPromise: jest.fn().mockImplementation(() => executionLogsResponse),
   useGetVerifyStepDeploymentActivitySummary: jest.fn().mockImplementation(() => ({
     data: deploymentActivitySummaryResponse,
     loading: false,
@@ -273,5 +275,68 @@ describe('VerifyStepLogContent', () => {
     )
 
     expect(screen.getByText('cv.changeSource.noDataAvaiableForCard')).toBeInTheDocument()
+  })
+
+  test('should download the logs of type ApiCallLog', async () => {
+    jest
+      .spyOn(cvService, 'useGetVerifyStepLogs')
+      .mockReturnValue({ data: executionLogsResponse, loading: false, error: null, refetch: jest.fn() } as any)
+    jest.spyOn(cvService, 'getVerifyStepLogsPromise').mockReturnValue(externalAPICallLogsResponse as any)
+
+    render(
+      <TestWrapper {...testWrapperProps}>
+        <VerifyStepLogContent
+          logType={LogTypes.ApiCallLog}
+          verifyStepExecutionId="verifyStepExecutionId"
+          isFullScreen={false}
+          setIsFullScreen={jest.fn()}
+        />
+      </TestWrapper>
+    )
+
+    expect(screen.getByText('cv.download')).toBeInTheDocument()
+
+    userEvent.click(screen.getByText('cv.download'))
+
+    await waitFor(() => {
+      expect(cvService.getVerifyStepLogsPromise).toHaveBeenCalledWith({
+        verifyStepExecutionId: 'verifyStepExecutionId',
+        queryParams: {
+          accountId: pathParams.accountId,
+          pageSize: 1,
+          logType: LogTypes.ApiCallLog,
+          errorLogsOnly: false
+        }
+      })
+    })
+  })
+
+  test('should download the logs of type ExecutionLog', async () => {
+    render(
+      <TestWrapper {...testWrapperProps}>
+        <VerifyStepLogContent
+          logType={LogTypes.ExecutionLog}
+          verifyStepExecutionId="verifyStepExecutionId"
+          isFullScreen={false}
+          setIsFullScreen={jest.fn()}
+        />
+      </TestWrapper>
+    )
+
+    expect(screen.getByText('cv.download')).toBeInTheDocument()
+
+    userEvent.click(screen.getByText('cv.download'))
+
+    await waitFor(() => {
+      expect(cvService.getVerifyStepLogsPromise).toHaveBeenCalledWith({
+        verifyStepExecutionId: 'verifyStepExecutionId',
+        queryParams: {
+          accountId: pathParams.accountId,
+          pageSize: 1,
+          logType: LogTypes.ExecutionLog,
+          errorLogsOnly: false
+        }
+      })
+    })
   })
 })

@@ -18,4 +18,5 @@ export interface LogContentToolbarProps {
   setIsFullScreen: (isFullScreen: boolean | ((isFullScreen: boolean) => boolean)) => void
   isVerifyStep: boolean
   timeRange?: SelectOption
+  handleDownloadLogs: () => Promise<void>
 }

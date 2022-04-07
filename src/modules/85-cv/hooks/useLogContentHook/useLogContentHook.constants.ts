@@ -6,3 +6,4 @@
  */
 
 export const PAGE_SIZE = 20
+export const RESPONSE_BODY = 'Response Body'
