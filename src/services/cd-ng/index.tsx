@@ -533,7 +533,6 @@ export interface ActivityDetail {
 export interface ActivitySummary {
   endTime?: number
   failedActivitiesCount?: number
-  get_id?: number
   heartBeatFailuresCount?: number
   startTime?: number
   successfulActivitiesCount?: number
@@ -1062,56 +1061,6 @@ export type AzureManualDetails = AzureCredentialSpec & {
   tenantId: string
 }
 
-export interface AzureRepoApiAccess {
-  spec?: AzureRepoApiAccessSpecDTO
-  type: 'Token'
-}
-
-export interface AzureRepoApiAccessSpecDTO {
-  [key: string]: any
-}
-
-export interface AzureRepoAuthentication {
-  spec: AzureRepoCredentialsDTO
-  type: 'Http' | 'Ssh'
-}
-
-export type AzureRepoConnector = ConnectorConfigDTO & {
-  apiAccess?: AzureRepoApiAccess
-  authentication: AzureRepoAuthentication
-  delegateSelectors?: string[]
-  type: 'Organization' | 'Repo'
-  url: string
-  validationRepo?: string
-}
-
-export interface AzureRepoCredentialsDTO {
-  [key: string]: any
-}
-
-export type AzureRepoHttpCredentials = AzureRepoCredentialsDTO & {
-  spec: AzureRepoHttpCredentialsSpecDTO
-  type: 'UsernameToken'
-}
-
-export interface AzureRepoHttpCredentialsSpecDTO {
-  [key: string]: any
-}
-
-export type AzureRepoSshCredentials = AzureRepoCredentialsDTO & {
-  sshKeyRef: string
-}
-
-export type AzureRepoTokenSpec = AzureRepoApiAccessSpecDTO & {
-  tokenRef: string
-}
-
-export type AzureRepoUsernameToken = AzureRepoHttpCredentialsSpecDTO & {
-  tokenRef: string
-  username?: string
-  usernameRef?: string
-}
-
 export interface BarrierInfoConfig {
   identifier: string
   name: string
@@ -1405,7 +1354,6 @@ export interface ConnectorCatalogueItem {
     | 'ServiceNow'
     | 'ErrorTracking'
     | 'Pdc'
-    | 'AzureRepo'
   )[]
 }
 
@@ -1479,7 +1427,6 @@ export type ConnectorFilterProperties = FilterProperties & {
     | 'ServiceNow'
     | 'ErrorTracking'
     | 'Pdc'
-    | 'AzureRepo'
   )[]
 }
 
@@ -1530,7 +1477,6 @@ export interface ConnectorInfoDTO {
     | 'ServiceNow'
     | 'ErrorTracking'
     | 'Pdc'
-    | 'AzureRepo'
 }
 
 export interface ConnectorResponse {
@@ -1597,7 +1543,6 @@ export interface ConnectorTypeStatistics {
     | 'ServiceNow'
     | 'ErrorTracking'
     | 'Pdc'
-    | 'AzureRepo'
 }
 
 export interface ConnectorValidationResult {
@@ -1788,15 +1733,6 @@ export interface DelegateGroup {
   tags?: string[]
   uuid: string
   validUntil?: string
-}
-
-export interface DelegateGroupDTO {
-  accountIdentifier?: string
-  identifier?: string
-  name?: string
-  orgIdentifier?: string
-  projectIdentifier?: string
-  tags?: string[]
 }
 
 export interface DelegateGroupDetails {
@@ -2272,7 +2208,7 @@ export interface EntityDetail {
     | 'ServiceNowCreate'
     | 'ServiceNowUpdate'
     | 'GovernancePolicies'
-    | 'POLICY_STEP'
+    | 'Policy'
     | 'Run'
     | 'RunTests'
     | 'Plugin'
@@ -2363,12 +2299,6 @@ export interface EnvironmentGroupDeleteResponse {
   projectIdentifier?: string
 }
 
-export type EnvironmentGroupFilterProperties = FilterProperties & {
-  description?: string
-  envGroupName?: string
-  envIdentifiers?: string[]
-}
-
 export interface EnvironmentGroupResponse {
   createdAt?: number
   envGroup?: EnvironmentGroupResponseDTO
@@ -2390,7 +2320,6 @@ export interface EnvironmentGroupResponseDTO {
   tags?: {
     [key: string]: string
   }
-  version?: number
 }
 
 export interface EnvironmentRequestDTO {
@@ -2425,7 +2354,6 @@ export interface EnvironmentResponseDTO {
     [key: string]: string
   }
   type?: 'PreProduction' | 'Production'
-  version?: number
   yaml?: string
 }
 
@@ -3607,7 +3535,7 @@ export interface GitEntityBranchFilterSummaryProperties {
     | 'ServiceNowCreate'
     | 'ServiceNowUpdate'
     | 'GovernancePolicies'
-    | 'POLICY_STEP'
+    | 'Policy'
     | 'Run'
     | 'RunTests'
     | 'Plugin'
@@ -3682,7 +3610,7 @@ export interface GitEntityFilterProperties {
     | 'ServiceNowCreate'
     | 'ServiceNowUpdate'
     | 'GovernancePolicies'
-    | 'POLICY_STEP'
+    | 'Policy'
     | 'Run'
     | 'RunTests'
     | 'Plugin'
@@ -3790,7 +3718,7 @@ export interface GitFullSyncEntityInfoDTO {
     | 'ServiceNowCreate'
     | 'ServiceNowUpdate'
     | 'GovernancePolicies'
-    | 'POLICY_STEP'
+    | 'Policy'
     | 'Run'
     | 'RunTests'
     | 'Plugin'
@@ -3873,7 +3801,7 @@ export interface GitFullSyncEntityInfoFilterKeys {
     | 'ServiceNowCreate'
     | 'ServiceNowUpdate'
     | 'GovernancePolicies'
-    | 'POLICY_STEP'
+    | 'Policy'
     | 'Run'
     | 'RunTests'
     | 'Plugin'
@@ -3973,7 +3901,6 @@ export interface GitSyncConfig {
 }
 
 export interface GitSyncEntityDTO {
-  accountId?: string
   branch?: string
   entityGitPath?: string
   entityIdentifier?: string
@@ -4033,7 +3960,7 @@ export interface GitSyncEntityDTO {
     | 'ServiceNowCreate'
     | 'ServiceNowUpdate'
     | 'GovernancePolicies'
-    | 'POLICY_STEP'
+    | 'Policy'
     | 'Run'
     | 'RunTests'
     | 'Plugin'
@@ -4051,8 +3978,6 @@ export interface GitSyncEntityDTO {
   entityUrl?: string
   folderPath?: string
   gitConnectorId?: string
-  lastCommitId?: string
-  repoProvider?: 'github' | 'gitlab' | 'bitbucket' | 'unknown'
   repoUrl?: string
 }
 
@@ -4112,7 +4037,7 @@ export interface GitSyncEntityListDTO {
     | 'ServiceNowCreate'
     | 'ServiceNowUpdate'
     | 'GovernancePolicies'
-    | 'POLICY_STEP'
+    | 'Policy'
     | 'Run'
     | 'RunTests'
     | 'Plugin'
@@ -4206,7 +4131,7 @@ export interface GitSyncErrorDTO {
     | 'ServiceNowCreate'
     | 'ServiceNowUpdate'
     | 'GovernancePolicies'
-    | 'POLICY_STEP'
+    | 'Policy'
     | 'Run'
     | 'RunTests'
     | 'Plugin'
@@ -4826,27 +4751,7 @@ export type JiraUpdateStepInfo = StepSpecType & {
 }
 
 export interface JsonNode {
-  array?: boolean
-  bigDecimal?: boolean
-  bigInteger?: boolean
-  binary?: boolean
-  boolean?: boolean
-  containerNode?: boolean
-  double?: boolean
-  float?: boolean
-  floatingPointNumber?: boolean
-  int?: boolean
-  integralNumber?: boolean
-  long?: boolean
-  missingNode?: boolean
-  nodeType?: 'ARRAY' | 'BINARY' | 'BOOLEAN' | 'MISSING' | 'NULL' | 'NUMBER' | 'OBJECT' | 'POJO' | 'STRING'
-  null?: boolean
-  number?: boolean
-  object?: boolean
-  pojo?: boolean
-  short?: boolean
-  textual?: boolean
-  valueNode?: boolean
+  [key: string]: any
 }
 
 export type K8SDirectInfrastructure = Infrastructure & {
@@ -6811,7 +6716,7 @@ export interface ResponseListExecutionStatus {
     | 'INTERVENTION_WAITING'
     | 'APPROVAL_WAITING'
     | 'APPROVAL_REJECTED'
-    | 'WAITING'
+    | 'Waiting'
   )[]
   metaData?: { [key: string]: any }
   status?: 'SUCCESS' | 'FAILURE' | 'ERROR'
@@ -7930,14 +7835,6 @@ export interface RestResponseDelegateGroup {
   responseMessages?: ResponseMessage[]
 }
 
-export interface RestResponseDelegateGroupDTO {
-  metaData?: {
-    [key: string]: { [key: string]: any }
-  }
-  resource?: DelegateGroupDTO
-  responseMessages?: ResponseMessage[]
-}
-
 export interface RestResponseDelegateGroupListing {
   metaData?: {
     [key: string]: { [key: string]: any }
@@ -8796,7 +8693,6 @@ export interface ServiceResponseDTO {
   tags?: {
     [key: string]: string
   }
-  version?: number
   yaml?: string
 }
 
@@ -9272,6 +9168,7 @@ export interface TerraformVarFileWrapper {
 
 export interface Throwable {
   cause?: Throwable
+  detailMessage?: string
   localizedMessage?: string
   message?: string
   stackTrace?: StackTraceElement[]
@@ -10409,7 +10306,7 @@ export interface ListActivitiesQueryParams {
     | 'ServiceNowCreate'
     | 'ServiceNowUpdate'
     | 'GovernancePolicies'
-    | 'POLICY_STEP'
+    | 'Policy'
     | 'Run'
     | 'RunTests'
     | 'Plugin'
@@ -10478,7 +10375,7 @@ export interface ListActivitiesQueryParams {
     | 'ServiceNowCreate'
     | 'ServiceNowUpdate'
     | 'GovernancePolicies'
-    | 'POLICY_STEP'
+    | 'Policy'
     | 'Run'
     | 'RunTests'
     | 'Plugin'
@@ -10651,7 +10548,7 @@ export interface GetActivitiesSummaryQueryParams {
     | 'ServiceNowCreate'
     | 'ServiceNowUpdate'
     | 'GovernancePolicies'
-    | 'POLICY_STEP'
+    | 'Policy'
     | 'Run'
     | 'RunTests'
     | 'Plugin'
@@ -10720,7 +10617,7 @@ export interface GetActivitiesSummaryQueryParams {
     | 'ServiceNowCreate'
     | 'ServiceNowUpdate'
     | 'GovernancePolicies'
-    | 'POLICY_STEP'
+    | 'Policy'
     | 'Run'
     | 'RunTests'
     | 'Plugin'
@@ -14555,7 +14452,6 @@ export interface GetConnectorListQueryParams {
     | 'ServiceNow'
     | 'ErrorTracking'
     | 'Pdc'
-    | 'AzureRepo'
   category?:
     | 'CLOUD_PROVIDER'
     | 'SECRET_MANAGER'
@@ -14842,7 +14738,6 @@ export interface GetAllAllowedFieldValuesQueryParams {
     | 'ServiceNow'
     | 'ErrorTracking'
     | 'Pdc'
-    | 'AzureRepo'
 }
 
 export type GetAllAllowedFieldValuesProps = Omit<
@@ -18126,7 +18021,7 @@ export interface ListReferredByEntitiesQueryParams {
     | 'ServiceNowCreate'
     | 'ServiceNowUpdate'
     | 'GovernancePolicies'
-    | 'POLICY_STEP'
+    | 'Policy'
     | 'Run'
     | 'RunTests'
     | 'Plugin'
@@ -20875,7 +20770,7 @@ export interface ListGitSyncEntitiesByTypePathParams {
     | 'ServiceNowCreate'
     | 'ServiceNowUpdate'
     | 'GovernancePolicies'
-    | 'POLICY_STEP'
+    | 'Policy'
     | 'Run'
     | 'RunTests'
     | 'Plugin'
@@ -21012,7 +20907,7 @@ export const listGitSyncEntitiesByTypePromise = (
       | 'ServiceNowCreate'
       | 'ServiceNowUpdate'
       | 'GovernancePolicies'
-      | 'POLICY_STEP'
+      | 'Policy'
       | 'Run'
       | 'RunTests'
       | 'Plugin'
@@ -24445,7 +24340,7 @@ export interface GetStepYamlSchemaQueryParams {
     | 'ServiceNowCreate'
     | 'ServiceNowUpdate'
     | 'GovernancePolicies'
-    | 'POLICY_STEP'
+    | 'Policy'
     | 'Run'
     | 'RunTests'
     | 'Plugin'
@@ -33746,7 +33641,7 @@ export interface GetYamlSchemaQueryParams {
     | 'ServiceNowCreate'
     | 'ServiceNowUpdate'
     | 'GovernancePolicies'
-    | 'POLICY_STEP'
+    | 'Policy'
     | 'Run'
     | 'RunTests'
     | 'Plugin'
@@ -33798,7 +33693,6 @@ export interface GetYamlSchemaQueryParams {
     | 'ServiceNow'
     | 'ErrorTracking'
     | 'Pdc'
-    | 'AzureRepo'
   projectIdentifier?: string
   orgIdentifier?: string
   scope?: 'account' | 'org' | 'project' | 'unknown'
@@ -33899,7 +33793,6 @@ export interface GetYamlSnippetMetadataQueryParams {
     | 'errortracking'
     | 'azure'
     | 'pdc'
-    | 'azurerepo'
   )[]
 }
 
