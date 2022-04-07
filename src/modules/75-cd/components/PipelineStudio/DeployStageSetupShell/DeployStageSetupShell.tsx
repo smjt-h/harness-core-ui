@@ -124,10 +124,13 @@ export default function DeployStageSetupShell(): JSX.Element {
 
   const { data: stageYamlSnippet, loading, refetch } = useGetFailureStrategiesYaml({ lazy: true })
   React.useEffect(() => {
-    if (!loading && isEmpty(data?.stage?.spec?.execution)) {
+    // do the following one if it is a new stage
+    if (!loading && data?.stage && isEmpty(data?.stage?.spec?.execution)) {
       if (!stageYamlSnippet?.data) {
+        // fetch data on first load of new stage
         refetch()
       } else {
+        // update the new stage with the fetched data
         updateStage(
           produce(data?.stage as StageElementConfig, draft => {
             const jsonFromYaml = YAML.parse(defaultTo(stageYamlSnippet?.data, '')) as StageElementConfig
