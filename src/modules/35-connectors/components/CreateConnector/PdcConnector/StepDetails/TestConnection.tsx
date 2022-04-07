@@ -57,7 +57,7 @@ const TestConnection: React.FC<StepProps<TestConnectionProps> & WizardProps> = p
 
   const { prevStepData } = props
   const { accountId, orgIdentifier, projectIdentifier } = useParams<ProjectPathProps>()
-  const [currentStatus, setCurrentStatus] = useState<Status>(Status.ERROR)
+  const [currentStatus, setCurrentStatus] = useState<Status>(Status.PROCESS)
   const [currentIntent, setCurrentIntent] = useState<Intent>(Intent.NONE)
   const [currentStep, setCurrentStep] = useState<number>(1)
   const [modalErrorHandler, setModalErrorHandler] = useState<ModalErrorHandlerBinding | undefined>()
@@ -106,6 +106,7 @@ const TestConnection: React.FC<StepProps<TestConnectionProps> & WizardProps> = p
       setCurrentIntent(Intent.SUCCESS)
       setCurrentStatus(Status.DONE)
       setCurrentStep(2)
+      setCurrentStatus(Status.PROCESS)
       verifyTestConnection()
     } else {
       setCurrentStatus(Status.ERROR)
@@ -131,7 +132,6 @@ const TestConnection: React.FC<StepProps<TestConnectionProps> & WizardProps> = p
       if (result.data?.status === 'SUCCESS') {
         setCurrentIntent(Intent.SUCCESS)
         setCurrentStatus(Status.DONE)
-        setCurrentStep(3)
       } else {
         throw new Error('connectors.ceAws.testConnection.error')
       }
