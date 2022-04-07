@@ -32,7 +32,7 @@ import { DeployTabs } from '@cd/components/PipelineStudio/DeployStageSetupShell/
 import { StageErrorContext } from '@pipeline/context/StageErrorContext'
 import { useValidationErrors } from '@pipeline/components/PipelineStudio/PiplineHooks/useValidationErrors'
 import type { DeploymentStageElementConfig, StageElementWrapper } from '@pipeline/utils/pipelineTypes'
-import SeelectInfrastructureType from '@cd/components/PipelineStudio/DeployInfraSpecifications/SelectInfrastructureType/SelectInfrastructureType'
+import SelectInfrastructureType from '@cd/components/PipelineStudio/DeployInfraSpecifications/SelectInfrastructureType/SelectInfrastructureType'
 import { Scope } from '@common/interfaces/SecretsInterface'
 import {
   getSelectedDeploymentType,
@@ -310,7 +310,7 @@ export default function DeployInfraSpecifications(props: React.PropsWithChildren
             key={stage?.stage?.identifier}
             readonly={isReadonly}
             initialValues={initialInfrastructureDefinitionValues as ServerlessAwsLambdaSpec}
-            type={StepType.ServerlessAwsLambda}
+            type={StepType.ServerlessAwsInfra}
             stepViewType={StepViewType.Edit}
             allowableTypes={allowableTypes}
             onUpdate={value =>
@@ -436,7 +436,7 @@ export default function DeployInfraSpecifications(props: React.PropsWithChildren
               />
             </Text>
           )}
-          <SeelectInfrastructureType
+          <SelectInfrastructureType
             deploymentType={selectedDeploymentType}
             isReadonly={isReadonly}
             selectedInfrastructureType={selectedInfrastructureType}

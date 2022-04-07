@@ -61,5 +61,6 @@ export enum StepType {
   Policy = 'Policy',
   ZeroNorth = 'Security',
   ServerlessAwsLambdaDeploy = 'ServerlessAwsLambdaDeploy',
-  ServerlessAwsLambdaRollback = 'ServerlessAwsLambdaRollback'
+  ServerlessAwsLambdaRollback = 'ServerlessAwsLambdaRollback',
+  ServerlessAwsInfra = 'ServerlessAwsInfra'
 }

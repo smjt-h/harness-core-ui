@@ -36,6 +36,7 @@ import { ServerlessAwsLambdaRollbackStep } from './ServerlessAwsLambdaRollback/S
 import { ServerlessAwsLambdaSpec } from './ServerlessAWSLambda/ServerlessAwsLambdaSpec'
 import { ServerlessAzureSpec } from './ServerlessAzure/ServerlessAzureSpec'
 import { ServerlessGCPSpec } from './ServerlessGCP/ServerlessGCPSpec'
+import { ServerlessAwsLambdaServiceSpec } from './ServerlessAwsLambdaServiceSpec/ServerlessAwsLambdaServiceSpec'
 
 factory.registerStep(new HttpStep())
 factory.registerStep(new K8RolloutDeployStep())
@@ -56,6 +57,7 @@ factory.registerStep(new ServerlessGCPSpec())
 factory.registerStep(new DeployEnvironmentStep())
 factory.registerStep(new DeployServiceStep())
 factory.registerStep(new KubernetesServiceSpec())
+factory.registerStep(new ServerlessAwsLambdaServiceSpec())
 factory.registerStep(new HelmDeploy())
 factory.registerStep(new HelmRollback())
 factory.registerStep(new TerraformRollback())

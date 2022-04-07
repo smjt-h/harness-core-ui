@@ -97,7 +97,7 @@ describe('Test ServerlessAwsLambdaSpec snapshot', () => {
       <TestStepWidget
         customStepProps={customStepProps}
         initialValues={{}}
-        type={StepType.ServerlessAwsLambda}
+        type={StepType.ServerlessAwsInfra}
         stepViewType={StepViewType.Edit}
       />
     )
@@ -109,7 +109,7 @@ describe('Test ServerlessAwsLambdaSpec snapshot', () => {
       <TestStepWidget
         customStepProps={customStepProps}
         initialValues={getInitialValues()}
-        type={StepType.ServerlessAwsLambda}
+        type={StepType.ServerlessAwsInfra}
         stepViewType={StepViewType.Edit}
       />
     )
@@ -121,7 +121,7 @@ describe('Test ServerlessAwsLambdaSpec snapshot', () => {
       <TestStepWidget
         customStepProps={customStepProps}
         initialValues={getRuntimeInputsValues()}
-        type={StepType.ServerlessAwsLambda}
+        type={StepType.ServerlessAwsInfra}
         stepViewType={StepViewType.Edit}
       />
     )
@@ -135,7 +135,7 @@ describe('Test ServerlessAwsLambdaSpec snapshot', () => {
         initialValues={getInitialValues()}
         template={getRuntimeInputsValues()}
         allValues={getInitialValues()}
-        type={StepType.ServerlessAwsLambda}
+        type={StepType.ServerlessAwsInfra}
         stepViewType={StepViewType.InputSet}
       />
     )
@@ -149,7 +149,7 @@ describe('Test ServerlessAwsLambdaSpec snapshot', () => {
         initialValues={getInitialValues()}
         template={getRuntimeInputsValues()}
         allValues={getInitialValues()}
-        type={StepType.ServerlessAwsLambda}
+        type={StepType.ServerlessAwsInfra}
         stepViewType={StepViewType.InputVariable}
       />
     )
@@ -171,7 +171,7 @@ describe('Test ServerlessAwsLambdaSpec behavior', () => {
         initialValues={getInitialValues()}
         template={getRuntimeInputsValues()}
         allValues={getInitialValues()}
-        type={StepType.ServerlessAwsLambda}
+        type={StepType.ServerlessAwsInfra}
         stepViewType={StepViewType.InputSet}
         onUpdate={onUpdateHandler}
       />
@@ -191,7 +191,7 @@ describe('Test ServerlessAwsLambdaSpec behavior', () => {
         initialValues={getEmptyInitialValues()}
         template={getRuntimeInputsValues()}
         allValues={getEmptyInitialValues()}
-        type={StepType.ServerlessAwsLambda}
+        type={StepType.ServerlessAwsInfra}
         stepViewType={StepViewType.InputSet}
         onUpdate={onUpdateHandler}
       />
@@ -213,7 +213,7 @@ describe('Test ServerlessAwsLambdaSpec behavior', () => {
         initialValues={getInitialValues()}
         template={getRuntimeInputsValues()}
         allValues={getInitialValues()}
-        type={StepType.ServerlessAwsLambda}
+        type={StepType.ServerlessAwsInfra}
         stepViewType={StepViewType.Edit}
         onUpdate={onUpdateHandler}
         ref={ref}

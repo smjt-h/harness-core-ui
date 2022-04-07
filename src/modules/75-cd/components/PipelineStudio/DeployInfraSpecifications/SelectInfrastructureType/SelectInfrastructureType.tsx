@@ -45,7 +45,7 @@ interface SeelectInfrastructureTypeProps {
   isReadonly: boolean
 }
 
-export default function SeelectInfrastructureType(props: SeelectInfrastructureTypeProps): JSX.Element {
+export default function SelectInfrastructureType(props: SeelectInfrastructureTypeProps): JSX.Element {
   const { selectedInfrastructureType, onChange, isReadonly, deploymentType } = props
   const { getString } = useStrings()
   const infraGroups: InfrastructureGroup[] = isServerlessDeploymentType(deploymentType)
