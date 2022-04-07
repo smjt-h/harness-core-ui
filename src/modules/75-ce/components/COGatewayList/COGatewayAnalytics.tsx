@@ -20,6 +20,7 @@ import {
   Service,
   ServiceSavings,
   useAllServiceResources,
+  useDescribeServiceInContainerServiceCluster,
   useHealthOfService,
   useSavingsOfService
 } from 'services/lw'
@@ -173,6 +174,18 @@ const COGatewayAnalytics: React.FC<COGatewayAnalyticsProps> = props => {
     lazy: isK8sRule || isEcsRule
   })
 
+  const { data: serviceDescribeData } = useDescribeServiceInContainerServiceCluster({
+    account_id: accountId,
+    cluster_name: _defaultTo(props.service?.data.routing?.container_svc?.cluster, ''),
+    service_name: _defaultTo(props.service?.data.routing?.container_svc?.service, ''),
+    lazy: !isEcsRule,
+    queryParams: {
+      accountIdentifier: accountId,
+      cloud_account_id: _defaultTo(props.service?.data.cloud_account_id, ''),
+      region: _defaultTo(props.service?.data.routing?.container_svc?.region, '')
+    }
+  })
+
   const { triggerToggle } = useToggleRuleState({
     accountId,
     serviceData: props.service?.data as Service,
@@ -263,9 +276,9 @@ const COGatewayAnalytics: React.FC<COGatewayAnalyticsProps> = props => {
                         target="_blank"
                         style={{ textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}
                       >
-                        {`${_defaultTo(props.service?.data?.routing?.container_svc?.task_count, 0)} tasks`}
+                        {`${_defaultTo(serviceDescribeData?.response?.task_count, 0)} tasks`}
                       </Link>
-                      {getStateTag(props.service?.data?.routing?.container_svc?.task_count ? 'active' : 'down')}
+                      {getStateTag(serviceDescribeData?.response?.task_count ? 'active' : 'down')}
                     </>
                   ) : (
                     <>
