@@ -40,6 +40,10 @@ const getAWSDisplaySummary = (connector: ConnectorInfoDTO): JSX.Element | string
   )
 }
 
+const getAzureBlobConnectorDisplaySummary = (connector: ConnectorInfoDTO): JSX.Element | string => {
+  return getConnectorDisplaySummaryLabel('common.containerName', textRenderer(connector?.spec?.containerName))
+}
+
 const linkRenderer = (value: string): JSX.Element => {
   if (!value) {
     return <></>
@@ -147,6 +151,8 @@ export const getConnectorDisplaySummary = (connector: ConnectorInfoDTO): JSX.Ele
       return getAWSSecretManagerSummary(connector)
     case Connectors.DYNATRACE:
       return getConnectorDisplaySummaryLabel('UrlLabel', linkRenderer(connector?.spec?.url))
+    case Connectors.AZURE_BLOB:
+      return getAzureBlobConnectorDisplaySummary(connector)
     default:
       return ''
   }

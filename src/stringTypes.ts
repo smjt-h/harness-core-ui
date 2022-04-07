@@ -154,6 +154,7 @@ export interface StringsMap {
   'common.connectThroughPlatformInfo': string
   'common.connectivityErrors': string
   'common.contactSupport': string
+  'common.containerName': string
   'common.copy': string
   'common.createPipeline': string
   'common.creating': string
