@@ -76,12 +76,10 @@ const COGatewayConfig: React.FC<COGatewayConfigProps> = props => {
   }, [])
 
   const groupsValidation = (): boolean => {
-    let validity = !_isEmpty(props.gatewayDetails.routing.instance.scale_group)
     if (isGcpProvider) {
-      return validity && (props.gatewayDetails.routing.instance.scale_group?.on_demand as number) > 0
+      return (props.gatewayDetails.routing.instance.scale_group?.on_demand as number) > 0
     } else {
       return (
-        validity &&
         (props.gatewayDetails.routing.instance.scale_group?.on_demand as number) <=
           (props.gatewayDetails.routing.instance.scale_group?.max as number) &&
         (props.gatewayDetails.routing.instance.scale_group?.spot as number) >= 0
@@ -90,12 +88,11 @@ const COGatewayConfig: React.FC<COGatewayConfigProps> = props => {
   }
 
   function isValid(): boolean {
-    return (
-      (props.gatewayDetails.selectedInstances.length > 0 ||
-        !_isEmpty(props.gatewayDetails.routing?.instance?.scale_group) ||
-        !_isEmpty(props.gatewayDetails.metadata.kubernetes_connector_id) ||
-        !_isEmpty(props.gatewayDetails.routing.container_svc) ||
-        !_isEmpty(props.gatewayDetails.routing.database)) &&
+    return (props.gatewayDetails.selectedInstances.length > 0 ||
+      !_isEmpty(props.gatewayDetails.routing?.instance?.scale_group) ||
+      !_isEmpty(props.gatewayDetails.metadata.kubernetes_connector_id) ||
+      !_isEmpty(props.gatewayDetails.routing.container_svc) ||
+      !_isEmpty(props.gatewayDetails.routing.database)) &&
       props.gatewayDetails.name !== '' &&
       props.gatewayDetails.idleTimeMins >= CONFIG_IDLE_TIME_CONSTRAINTS.MIN &&
       props.gatewayDetails.idleTimeMins <= CONFIG_IDLE_TIME_CONSTRAINTS.MAX &&
@@ -103,11 +100,12 @@ const COGatewayConfig: React.FC<COGatewayConfigProps> = props => {
       (!_isEmpty(props.gatewayDetails.deps)
         ? props.gatewayDetails.deps.every(_dep => !isNaN(_dep.dep_id as number) && !isNaN(_dep.delay_secs as number))
         : true) &&
-      groupsValidation() &&
-      (selectedResource === RESOURCES.ECS
-        ? _defaultTo(props.gatewayDetails.routing.container_svc?.task_count, 0) > -1
-        : true)
-    )
+      !_isEmpty(props.gatewayDetails.routing.instance.scale_group)
+      ? groupsValidation()
+      : true &&
+          (selectedResource === RESOURCES.ECS
+            ? _defaultTo(props.gatewayDetails.routing.container_svc?.task_count, 0) > -1
+            : true)
   }
 
   useEffect(() => {

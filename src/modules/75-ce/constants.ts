@@ -76,7 +76,8 @@ export enum GatewayKindType {
   INSTANCE = 'instance',
   KUBERNETES = 'k8s',
   DATABASE = 'database',
-  CONTAINERS = 'containers'
+  CONTAINERS = 'containers',
+  CLUSTERS = 'clusters'
 }
 
 export enum CCM_CHART_TYPES {

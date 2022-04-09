@@ -8,7 +8,7 @@
 import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import type { CellProps } from 'react-table'
-import { isEmpty as _isEmpty } from 'lodash-es'
+import { isEmpty as _isEmpty, defaultTo } from 'lodash-es'
 import { Radio } from '@blueprintjs/core'
 import {
   Text,
@@ -132,7 +132,9 @@ const COAsgSelector: React.FC<COAsgSelectorprops> = props => {
     if (filters.zone) {
       filterText += `\n zones=['${filters.zone.label}']`
     }
-    !_isEmpty(filterText) && !loadingFilters && props.refresh?.(filterText)
+    if (!_isEmpty(filterText) && !loadingFilters) {
+      props.refresh?.(filterText)
+    }
     setIsLoading(loadingFilters)
   }
 
@@ -143,9 +145,11 @@ const COAsgSelector: React.FC<COAsgSelectorprops> = props => {
       <Layout.Vertical spacing="large">
         <Container style={{ paddingBottom: 20, borderBottom: '1px solid #CDD3DD' }}>
           <Text font={'large'}>
-            {isGcpProvider
-              ? getString('ce.co.autoStoppingRule.configuration.igModal.title')
-              : getString('ce.co.autoStoppingRule.configuration.asgModal.title')}
+            {Utils.getConditionalResult(
+              isGcpProvider,
+              getString('ce.co.autoStoppingRule.configuration.igModal.title'),
+              getString('ce.co.autoStoppingRule.configuration.asgModal.title')
+            )}
           </Text>
         </Container>
         <Layout.Vertical style={{ paddingBottom: 20, paddingTop: 20, borderBottom: '1px solid #CDD3DD' }}>
@@ -190,15 +194,15 @@ const COAsgSelector: React.FC<COAsgSelectorprops> = props => {
           ) : null}
           {!loadingEnabled && !_isEmpty(props.scalingGroups) && (
             <TableV2<ASGMinimal>
-              data={(props.scalingGroups || []).slice(
+              data={defaultTo(props.scalingGroups, []).slice(
                 pageIndex * TOTAL_ITEMS_PER_PAGE,
                 pageIndex * TOTAL_ITEMS_PER_PAGE + TOTAL_ITEMS_PER_PAGE
               )}
               pagination={{
                 pageSize: TOTAL_ITEMS_PER_PAGE,
                 pageIndex: pageIndex,
-                pageCount: Math.ceil((props.scalingGroups || []).length / TOTAL_ITEMS_PER_PAGE),
-                itemCount: (props.scalingGroups || []).length,
+                pageCount: Math.ceil(defaultTo(props.scalingGroups, []).length / TOTAL_ITEMS_PER_PAGE),
+                itemCount: defaultTo(props.scalingGroups, []).length,
                 gotoPage: newPageIndex => setPageIndex(newPageIndex)
               }}
               columns={[
