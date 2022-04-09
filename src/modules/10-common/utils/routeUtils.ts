@@ -32,7 +32,8 @@ import type {
   UserPathProps,
   ServiceAccountPathProps,
   ServicePathProps,
-  TemplateStudioPathProps
+  TemplateStudioPathProps,
+  EnvironmentGroupPathProps
 } from '@common/interfaces/RouteInterfaces'
 
 export const accountPathProps: AccountPathProps = {
@@ -137,6 +138,10 @@ export const buildPathProps: BuildPathProps = {
 
 export const environmentPathProps: EnvironmentPathProps = {
   environmentIdentifier: ':environmentIdentifier'
+}
+
+export const environmentGroupPathProps: EnvironmentGroupPathProps = {
+  environmentGroupIdentifier: ':environmentGroupIdentifier'
 }
 
 export const segmentPathProps: SegmentPathProps = {

@@ -77,6 +77,16 @@ RbacFactory.registerResourceTypeHandler(ResourceType.ENVIRONMENT, {
   addResourceModalBody: props => <EnvironmentResourceModal {...props} />
 })
 
+RbacFactory.registerResourceTypeHandler(ResourceType.ENVIRONMENT_GROUP, {
+  icon: 'environment',
+  label: 'common.environmentGroups.label',
+  permissionLabels: {
+    [PermissionIdentifier.VIEW_ENVIRONMENT_GROUP]: <String stringID="rbac.permissionLabels.view" />,
+    [PermissionIdentifier.EDIT_ENVIRONMENT_GROUP]: <String stringID="rbac.permissionLabels.createEdit" />,
+    [PermissionIdentifier.DELETE_ENVIRONMENT_GROUP]: <String stringID="rbac.permissionLabels.delete" />
+  }
+})
+
 /**
  * Register execution step detail views
  */

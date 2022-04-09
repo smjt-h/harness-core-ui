@@ -42,7 +42,9 @@ import type {
   TemplateStudioPathProps,
   TemplateStudioQueryParams,
   GovernancePathProps,
-  PipelineLogsPathProps
+  PipelineLogsPathProps,
+  EnvironmentGroupPathProps,
+  EnvironmentGroupQueryParams
 } from '@common/interfaces/RouteInterfaces'
 
 const CV_HOME = `/cv/home`
@@ -690,6 +692,27 @@ const routes = {
   toEnvironment: withAccountId(
     ({ orgIdentifier, projectIdentifier, module }: PipelineType<ProjectPathProps>) =>
       `/${module}/orgs/${orgIdentifier}/projects/${projectIdentifier}/environment`
+  ),
+  toEnvironmentGroups: withAccountId(
+    ({ orgIdentifier, projectIdentifier, module }: PipelineType<ProjectPathProps>) =>
+      `/${module}/orgs/${orgIdentifier}/projects/${projectIdentifier}/environment-group`
+  ),
+  toEnvironmentGroupDetails: withAccountId(
+    ({
+      accountId,
+      orgIdentifier,
+      projectIdentifier,
+      environmentGroupIdentifier,
+      module,
+      ...rest
+    }: PipelineType<ProjectPathProps & EnvironmentGroupPathProps & EnvironmentGroupQueryParams>) => {
+      const queryString = qs.stringify(rest, { skipNulls: true })
+      if (queryString.length > 0) {
+        return `/${module}/orgs/${orgIdentifier}/projects/${projectIdentifier}/environment-group/${environmentGroupIdentifier}/details?${queryString}`
+      } else {
+        return `/${module}/orgs/${orgIdentifier}/projects/${projectIdentifier}/environment-group/${environmentGroupIdentifier}/details`
+      }
+    }
   ),
   toPipelineDetail: withAccountId(
     ({ orgIdentifier, projectIdentifier, pipelineIdentifier, module }: PipelineType<PipelinePathProps>) =>
