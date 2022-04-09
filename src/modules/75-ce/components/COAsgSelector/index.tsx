@@ -84,11 +84,11 @@ const COAsgSelector: React.FC<COAsgSelectorprops> = props => {
      * equal to max capacity
      *  */
     const desiredCapacityValue =
-      selectedAsg?.desired || (selectedAsg?.on_demand || 0) + (selectedAsg?.spot || 0) || selectedAsg?.max
+      selectedAsg?.desired || defaultTo(selectedAsg?.on_demand, 0) + defaultTo(selectedAsg?.spot, 0) || selectedAsg?.max
     const newAsg = {
       ...selectedAsg,
       desired: desiredCapacityValue,
-      on_demand: selectedAsg?.on_demand || desiredCapacityValue
+      on_demand: defaultTo(selectedAsg?.on_demand, desiredCapacityValue)
     }
     const ports = (newAsg as ASGMinimal).target_groups?.map((tg: TargetGroupMinimal) =>
       Utils.getTargetGroupObject(tg.port as number, tg.protocol as string)
