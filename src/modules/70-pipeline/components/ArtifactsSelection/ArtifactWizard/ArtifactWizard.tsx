@@ -34,6 +34,7 @@ interface ArtifactWizardProps {
   iconsProps: IconProps | undefined
   isReadonly: boolean
   allowableTypes: MultiTypeInputType[]
+  showConnectorStep: boolean
 }
 
 function ArtifactWizard({
@@ -49,6 +50,7 @@ function ArtifactWizard({
   newConnectorSteps,
   lastSteps,
   iconsProps,
+  showConnectorStep,
   isReadonly
 }: ArtifactWizardProps): React.ReactElement {
   const { getString } = useStrings()
@@ -84,16 +86,18 @@ function ArtifactWizard({
         artifactInitialValue={artifactInitialValue}
         changeArtifactType={changeArtifactType}
       />
-      <ArtifactConnector
-        name={getString('connectors.artifactRepository')}
-        stepName={labels.secondStepName}
-        expressions={expressions}
-        isReadonly={isReadonly}
-        handleViewChange={() => handleViewChange(true)}
-        initialValues={artifactInitialValue}
-        selectedArtifact={selectedArtifact}
-        allowableTypes={allowableTypes}
-      />
+      {showConnectorStep && (
+        <ArtifactConnector
+          name={getString('connectors.artifactRepository')}
+          stepName={labels.secondStepName}
+          expressions={expressions}
+          isReadonly={isReadonly}
+          handleViewChange={() => handleViewChange(true)}
+          initialValues={artifactInitialValue}
+          selectedArtifact={selectedArtifact}
+          allowableTypes={allowableTypes}
+        />
+      )}
 
       {newConnectorView ? newConnectorSteps : null}
       {lastSteps}

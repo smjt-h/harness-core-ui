@@ -620,6 +620,7 @@ artifactsSelection:
   artifactTyperequired: Artifact Type is required
   loadingTags: Loading Tags...
   artifactNamePlaceholder: Enter Artifact Path
+  versionPlaceholder: Enter Version
   existingDocker:
     sidecarId: Sidecar Identifier
     sidecarIdPlaceholder: Enter Artifact Identifier

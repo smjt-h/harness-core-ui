@@ -175,24 +175,8 @@ export const getArtifactFormData = (
   return values
 }
 
-export const defaultArtifactInitialValues = (selectedArtifact: ArtifactType): ImagePathTypes => {
+export const defaultArtifactInitialValues = (selectedArtifact: ArtifactType): any => {
   switch (selectedArtifact) {
-    case ENABLED_ARTIFACT_TYPES.Gcr:
-      return {
-        identifier: '',
-        imagePath: '',
-        tag: RUNTIME_INPUT_VALUE,
-        tagType: TagTypes.Value,
-        tagRegex: RUNTIME_INPUT_VALUE,
-        registryHostname: ''
-      }
-    case ENABLED_ARTIFACT_TYPES.ArtifactoryRegistry:
-      return {
-        identifier: '',
-        tagType: TagTypes.Value,
-        tag: RUNTIME_INPUT_VALUE,
-        tagRegex: RUNTIME_INPUT_VALUE
-      }
     case ENABLED_ARTIFACT_TYPES.Nexus3Registry:
       return {
         identifier: '',
@@ -201,15 +185,24 @@ export const defaultArtifactInitialValues = (selectedArtifact: ArtifactType): Im
         tagRegex: RUNTIME_INPUT_VALUE,
         repositoryPortorRepositoryURL: RepositoryPortOrServer.RepositoryUrl
       }
+    case ENABLED_ARTIFACT_TYPES.CustomArtifact:
+      return {
+        identifier: ''
+      }
     case ENABLED_ARTIFACT_TYPES.DockerRegistry:
+    case ENABLED_ARTIFACT_TYPES.Gcr:
     case ENABLED_ARTIFACT_TYPES.Ecr:
+    case ENABLED_ARTIFACT_TYPES.ArtifactoryRegistry:
     default:
       return {
         identifier: '',
-        imagePath: '',
         tag: RUNTIME_INPUT_VALUE,
         tagType: TagTypes.Value,
         tagRegex: RUNTIME_INPUT_VALUE
       }
   }
+}
+
+export const showConnectorStep = (selectedArtifact: ArtifactType): boolean => {
+  return selectedArtifact !== ENABLED_ARTIFACT_TYPES.CustomArtifact
 }

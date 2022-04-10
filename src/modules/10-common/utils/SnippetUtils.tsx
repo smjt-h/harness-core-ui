@@ -64,7 +64,8 @@ const entitySubTypeToTagMap: {
   CustomHealth: 'customhealth',
   ErrorTracking: 'errortracking',
   Pdc: 'pdc',
-  Azure: 'azure'
+  Azure: 'azure',
+  AzureRepo: 'azure'
 }
 
 export const getSnippetTags = (

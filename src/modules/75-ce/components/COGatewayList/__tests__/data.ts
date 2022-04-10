@@ -306,3 +306,15 @@ export const mockedRdsServiceData = {
   updated_at: '2021-07-28T07:40:38.420773Z',
   account_identifier: 'kmpySmUISimoRrJL6NL73w'
 }
+
+export const mockedEcsClusterServiceData = {
+  name: 'ToDoApp',
+  id: 'ToDoAppId',
+  region: 'us-east-1',
+  cluster: 'ToDoCluster',
+  task_count: 2,
+  loadbalanced: true,
+  account_id: 'kmpySmUISimoRrJL6NL73w',
+  cloud_account_id: 'Lightwing_Non_prod_old',
+  capacity_provider: 'EC2'
+}

@@ -1062,6 +1062,56 @@ export type AzureManualDetails = AzureCredentialSpec & {
   tenantId: string
 }
 
+export interface AzureRepoApiAccess {
+  spec?: AzureRepoApiAccessSpecDTO
+  type: 'Token'
+}
+
+export interface AzureRepoApiAccessSpecDTO {
+  [key: string]: any
+}
+
+export interface AzureRepoAuthentication {
+  spec: AzureRepoCredentialsDTO
+  type: 'Http' | 'Ssh'
+}
+
+export type AzureRepoConnector = ConnectorConfigDTO & {
+  apiAccess?: AzureRepoApiAccess
+  authentication: AzureRepoAuthentication
+  delegateSelectors?: string[]
+  type: 'Organization' | 'Repo'
+  url: string
+  validationRepo?: string
+}
+
+export interface AzureRepoCredentialsDTO {
+  [key: string]: any
+}
+
+export type AzureRepoHttpCredentials = AzureRepoCredentialsDTO & {
+  spec: AzureRepoHttpCredentialsSpecDTO
+  type: 'UsernameToken'
+}
+
+export interface AzureRepoHttpCredentialsSpecDTO {
+  [key: string]: any
+}
+
+export type AzureRepoSshCredentials = AzureRepoCredentialsDTO & {
+  sshKeyRef: string
+}
+
+export type AzureRepoTokenSpec = AzureRepoApiAccessSpecDTO & {
+  tokenRef: string
+}
+
+export type AzureRepoUsernameToken = AzureRepoHttpCredentialsSpecDTO & {
+  tokenRef: string
+  username?: string
+  usernameRef?: string
+}
+
 export interface BarrierInfoConfig {
   identifier: string
   name: string
@@ -1287,7 +1337,7 @@ export interface CodeBase {
 export interface Condition {
   key: string
   operator: 'equals' | 'not equals' | 'in' | 'not in'
-  value: string
+  value?: string
 }
 
 export type ConnectedArgoGitOpsInfoDTO = GitOpsInfoDTO & {
@@ -1355,6 +1405,7 @@ export interface ConnectorCatalogueItem {
     | 'ServiceNow'
     | 'ErrorTracking'
     | 'Pdc'
+    | 'AzureRepo'
   )[]
 }
 
@@ -1428,6 +1479,7 @@ export type ConnectorFilterProperties = FilterProperties & {
     | 'ServiceNow'
     | 'ErrorTracking'
     | 'Pdc'
+    | 'AzureRepo'
   )[]
 }
 
@@ -1478,6 +1530,7 @@ export interface ConnectorInfoDTO {
     | 'ServiceNow'
     | 'ErrorTracking'
     | 'Pdc'
+    | 'AzureRepo'
 }
 
 export interface ConnectorResponse {
@@ -1544,6 +1597,7 @@ export interface ConnectorTypeStatistics {
     | 'ServiceNow'
     | 'ErrorTracking'
     | 'Pdc'
+    | 'AzureRepo'
 }
 
 export interface ConnectorValidationResult {
@@ -1632,6 +1686,10 @@ export interface CriteriaSpecWrapper {
 export interface CrossAccountAccess {
   crossAccountRoleArn: string
   externalId?: string
+}
+
+export type CustomArtifactConfig = ArtifactConfig & {
+  version: ParameterFieldString
 }
 
 export type CustomHealthConnectorDTO = ConnectorConfigDTO & {
@@ -6063,7 +6121,7 @@ export interface PollingResponseDTO {
 
 export interface PrimaryArtifact {
   spec: ArtifactConfig
-  type: 'DockerRegistry' | 'Gcr' | 'Ecr' | 'Nexus3Registry' | 'ArtifactoryRegistry'
+  type: 'DockerRegistry' | 'Gcr' | 'Ecr' | 'Nexus3Registry' | 'ArtifactoryRegistry' | 'CustomArtifact'
 }
 
 export interface Principal {
@@ -8800,7 +8858,7 @@ export type ShellScriptStepInfo = StepSpecType & {
 export interface SidecarArtifact {
   identifier: string
   spec: ArtifactConfig
-  type: 'DockerRegistry' | 'Gcr' | 'Ecr' | 'Nexus3Registry' | 'ArtifactoryRegistry'
+  type: 'DockerRegistry' | 'Gcr' | 'Ecr' | 'Nexus3Registry' | 'ArtifactoryRegistry' | 'CustomArtifact'
 }
 
 export interface SidecarArtifactWrapper {
@@ -14416,6 +14474,7 @@ export interface GetConnectorListQueryParams {
     | 'ServiceNow'
     | 'ErrorTracking'
     | 'Pdc'
+    | 'AzureRepo'
   category?:
     | 'CLOUD_PROVIDER'
     | 'SECRET_MANAGER'
@@ -14702,6 +14761,7 @@ export interface GetAllAllowedFieldValuesQueryParams {
     | 'ServiceNow'
     | 'ErrorTracking'
     | 'Pdc'
+    | 'AzureRepo'
 }
 
 export type GetAllAllowedFieldValuesProps = Omit<
@@ -33526,6 +33586,7 @@ export interface GetYamlSchemaQueryParams {
     | 'ServiceNow'
     | 'ErrorTracking'
     | 'Pdc'
+    | 'AzureRepo'
   projectIdentifier?: string
   orgIdentifier?: string
   scope?: 'account' | 'org' | 'project' | 'unknown'
