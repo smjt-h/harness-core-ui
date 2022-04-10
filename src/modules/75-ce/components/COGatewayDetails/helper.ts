@@ -84,6 +84,9 @@ export const getServiceObjectFromgatewayDetails = (
     let filterText = ''
     if (isGcpProvider) {
       filterText = `id = ['${gatewayDetails.routing.instance.scale_group?.id}'] \n regions = ['${gatewayDetails.routing.instance.scale_group?.region}']`
+      if (!_isEmpty(gatewayDetails.routing.instance.scale_group?.availability_zones)) {
+        filterText += `\n zones = ['${gatewayDetails.routing.instance.scale_group?.availability_zones?.[0]}']`
+      }
       kind = GatewayKindType.CLUSTERS
     }
     // ASG rule check
