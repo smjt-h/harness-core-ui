@@ -27,8 +27,8 @@ factory.registerStep(new CustomVariables())
 
 const getPipelineContext = (): PipelineContextInterface => ({
   state: {
-    pipeline: { name: '', identifier: '' },
-    originalPipeline: { name: '', identifier: '' },
+    pipeline: { name: '', identifier: '', stages: [] },
+    originalPipeline: { name: '', identifier: '', stages: [] },
     pipelineView: {
       isSplitViewOpen: true,
       isDrawerOpened: false,

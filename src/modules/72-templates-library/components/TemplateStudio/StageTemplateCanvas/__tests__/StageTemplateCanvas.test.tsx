@@ -37,7 +37,6 @@ jest.mock('@templates-library/components/TemplateDrawer/TemplateDrawer', () => (
 describe('<StageTemplateCanvasWithRef /> tests', () => {
   test('should match snapshot in empty state', async () => {
     const context = produce(pipelineContextMock, draft => {
-      delete draft.state.pipeline.stages
       set(draft, 'state.pipeline.stages[0].stage', {
         ...stageTemplateMock.spec,
         name: DefaultNewStageName,

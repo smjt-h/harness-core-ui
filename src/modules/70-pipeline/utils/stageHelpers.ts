@@ -360,11 +360,7 @@ const validateServerlessArtifactsForStage = (
 
 export const validateServerlessArtifacts = ({ pipeline, getString }: ValidateServerlessArtifactsProps): string => {
   const flattenedStages = getFlattenedStages(pipeline).stages
-  for (
-    let stageIndex = 0;
-    stageIndex < (pipeline.stages as DeploymentStageElementConfigWrapper[])?.length;
-    stageIndex++
-  ) {
+  for (let stageIndex = 0; stageIndex < pipeline.stages?.length; stageIndex++) {
     const currStage: DeploymentStageElementConfigWrapper = pipeline.stages?.[
       stageIndex
     ] as DeploymentStageElementConfigWrapper

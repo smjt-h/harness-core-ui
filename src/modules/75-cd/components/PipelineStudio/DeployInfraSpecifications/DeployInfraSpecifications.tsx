@@ -55,7 +55,7 @@ export const deploymentTypeInfraTypeMap = {
   amazonEcs: InfraDeploymentType.KubernetesDirect,
   amazonAmi: InfraDeploymentType.KubernetesDirect,
   awsCodeDeploy: InfraDeploymentType.KubernetesDirect,
-  winrm: InfraDeploymentType.KubernetesDirect,
+  WinRm: InfraDeploymentType.KubernetesDirect,
   awsLambda: InfraDeploymentType.KubernetesDirect,
   pcf: InfraDeploymentType.KubernetesDirect,
   Ssh: InfraDeploymentType.KubernetesDirect,

@@ -89,7 +89,7 @@ describe('PipelineActions test', () => {
   })
 
   test('PipelineActions PipelineSaved', () => {
-    const resp = { pipeline: { identifier: 'abc', name: 'ABC' } }
+    const resp = { pipeline: { identifier: 'abc', name: 'ABC', stages: [] } }
     const newState = PipelineReducer(initialState, { ...PipelineContextActions.pipelineSavedAction(resp) })
     expect(newState).toEqual({ ...initialState, ...resp, isLoading: false, isUpdated: false })
   })
@@ -103,20 +103,20 @@ describe('PipelineActions test', () => {
   })
 
   test('PipelineActions Success', () => {
-    const resp = { pipeline: { identifier: 'abc', name: 'ABC' } }
+    const resp = { pipeline: { identifier: 'abc', name: 'ABC', stages: [] } }
     const newState = PipelineReducer(initialState, { ...PipelineContextActions.success(resp) })
     expect(newState).toEqual({ ...initialState, isLoading: false, ...resp })
   })
 
   test('PipelineActions Error', () => {
-    const resp = { pipeline: { identifier: 'abc', name: 'ABC' } }
+    const resp = { pipeline: { identifier: 'abc', name: 'ABC', stages: [] } }
     const newState = PipelineReducer(initialState, { ...PipelineContextActions.error(resp) })
     expect(newState).toEqual({ ...initialState, isLoading: false, ...resp })
   })
 
   test('PipelineActions UpdateSelection', () => {
     const resp: ActionResponse = {
-      pipeline: { identifier: 'abc', name: 'ABC' },
+      pipeline: { identifier: 'abc', name: 'ABC', stages: [] },
       selectionState: { selectedStageId: 'stage_1', selectedStepId: 'Shell_Script', selectedSectionId: 'section_1' }
     }
     const newState = PipelineReducer(initialState, { ...PipelineContextActions.updateSelectionState(resp) })
