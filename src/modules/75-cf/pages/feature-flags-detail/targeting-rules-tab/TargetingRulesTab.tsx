@@ -29,6 +29,7 @@ import TargetingRulesTabFooter from './components/tab-targeting-footer/Targeting
 import FlagEnabledRulesCard from './components/flag-enabled-rules-card/FlagEnabledRulesCard'
 import type { FormVariationMap, VariationPercentageRollout, TargetGroup, TargetingRulesFormValues } from './Types.types'
 import useFeatureEnabled from './hooks/useFeatureEnabled'
+import DefaultRules from './components/default-rules/DefaultRules'
 import css from './TargetingRulesTab.module.scss'
 export interface TargetingRulesTabProps {
   featureFlagData: Feature
@@ -100,6 +101,7 @@ const TargetingRulesTab = ({
     onVariation: featureFlagData.envProperties?.defaultServe.variation
       ? featureFlagData.envProperties?.defaultServe.variation
       : featureFlagData.defaultOnVariation,
+    offVariation: featureFlagData.envProperties?.offVariation as string,
     formVariationMap,
     variationPercentageRollouts: variationPercentageRollouts
       ? variationPercentageRollouts.map(percentageRollout => ({
@@ -192,7 +194,7 @@ const TargetingRulesTab = ({
             <Container className={css.tabContainer}>
               <Layout.Vertical
                 spacing="small"
-                padding={{ left: 'xlarge', right: 'xlarge' }}
+                padding={{ left: 'xlarge', right: 'xlarge', bottom: 'xlarge' }}
                 className={css.flagRulesSection}
               >
                 <Card elevation={0}>
@@ -270,7 +272,14 @@ const TargetingRulesTab = ({
                   }}
                 />
 
-                <Card>OFF rules section</Card>
+                <Card>
+                  <DefaultRules
+                    hideSubheading
+                    featureFlagVariations={featureFlagData.variations}
+                    titleStringId="cf.featureFlags.rules.whenFlagDisabled"
+                    inputName="offVariation"
+                  />
+                </Card>
               </Layout.Vertical>
 
               {formikProps.dirty && (

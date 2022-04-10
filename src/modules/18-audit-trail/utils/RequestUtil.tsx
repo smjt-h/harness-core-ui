@@ -8,10 +8,11 @@
 import type { MultiSelectOption } from '@wings-software/uicore'
 import uniqBy from 'lodash/uniqBy'
 import type { AuditTrailFormType, ProjectSelectOption } from '@audit-trail/components/FilterDrawer/FilterDrawer'
-import type { AuditEventDTO, AuditFilterProperties, ResourceDTO, ResourceScopeDTO } from 'services/audit'
+import type { AuditEventDTO, AuditFilterProperties, ResourceScopeDTO } from 'services/audit'
 import type { StringKeys } from 'framework/strings'
 import type { OrganizationAggregateDTO, ProjectResponse } from 'services/cd-ng'
 import type { Module } from '@common/interfaces/RouteInterfaces'
+import AuditTrailFactory from '@audit-trail/factories/AuditTrailFactory'
 
 export const actionToLabelMap: Record<AuditEventDTO['action'], StringKeys> = {
   CREATE: 'created',
@@ -42,31 +43,6 @@ export const moduleToLabelMap: Record<AuditEventDTO['module'], StringKeys> = {
   CORE: 'common.module.core',
   PMS: 'common.module.pms',
   TEMPLATESERVICE: 'common.module.templateService'
-}
-
-export const resourceTypeToLabelMapping: Record<ResourceDTO['type'], StringKeys> = {
-  ORGANIZATION: 'orgLabel',
-  PROJECT: 'projectLabel',
-  USER_GROUP: 'common.userGroup',
-  SECRET: 'secretType',
-  RESOURCE_GROUP: 'common.resourceGroupLabel',
-  USER: 'common.userLabel',
-  ROLE: 'common.role',
-  ROLE_ASSIGNMENT: 'common.roleAssignmentLabel',
-  PIPELINE: 'common.pipeline',
-  TRIGGER: 'common.triggerLabel',
-  TEMPLATE: 'common.template.label',
-  INPUT_SET: 'inputSets.inputSetLabel',
-  DELEGATE_CONFIGURATION: 'delegate.delegateConfiguration',
-  SERVICE: 'service',
-  ENVIRONMENT: 'environment',
-  DELEGATE: 'delegate.DelegateName',
-  SERVICE_ACCOUNT: 'serviceAccount',
-  CONNECTOR: 'connector',
-  API_KEY: 'common.apikey',
-  TOKEN: 'token',
-  DELEGATE_TOKEN: 'common.delegateTokenLabel',
-  DELEGATE_GROUPS: 'auditTrail.delegateGroups'
 }
 
 export const getModuleNameFromAuditModule = (auditModule: AuditEventDTO['module']): Module | undefined => {
@@ -189,10 +165,13 @@ export const getFormValuesFromFilterProperties = (
   }
 
   if (resources) {
-    formData['resourceType'] = resources?.map(resource => ({
-      label: getString(resourceTypeToLabelMapping[resource.type]),
-      value: resource.type
-    }))
+    formData['resourceType'] = resources?.map(resource => {
+      const label = AuditTrailFactory.getResourceHandler(resource.type)?.resourceLabel
+      return {
+        label: label ? getString(label) : resource.type,
+        value: resource.type
+      }
+    })
   }
 
   return {

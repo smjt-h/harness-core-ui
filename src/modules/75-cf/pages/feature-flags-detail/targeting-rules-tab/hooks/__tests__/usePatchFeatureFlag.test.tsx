@@ -26,6 +26,14 @@ import {
 
 jest.mock('uuid')
 
+const defaultInitialValues = {
+  state: 'off',
+  onVariation: 'False',
+  offVariation: 'True',
+  formVariationMap: [],
+  variationPercentageRollouts: mockPercentageVariationRollout
+}
+
 const renderHookUnderTest = (props: Partial<UsePatchFeatureFlagProps> = {}) => {
   const wrapper: FC = ({ children }) => {
     return (
@@ -42,12 +50,7 @@ const renderHookUnderTest = (props: Partial<UsePatchFeatureFlagProps> = {}) => {
     () =>
       usePatchFeatureFlag({
         featureFlagIdentifier: '',
-        initialValues: {
-          state: 'off',
-          onVariation: 'False',
-          formVariationMap: [],
-          variationPercentageRollouts: mockPercentageVariationRollout
-        },
+        initialValues: defaultInitialValues,
         refetchFlag: jest.fn(),
         ...props
       }),
@@ -71,7 +74,7 @@ describe('usePatchFeatureFlag', () => {
     jest.clearAllMocks()
   })
 
-  describe('Flag State/Default Serve', () => {
+  describe('Flag State / Default On Serve / Default Off Serve', () => {
     test('it should send correct values when values different', async () => {
       const refetchFlagMock = jest.fn()
 
@@ -80,6 +83,7 @@ describe('usePatchFeatureFlag', () => {
       const newValues = {
         state: 'on',
         onVariation: 'True',
+        offVariation: 'False',
         formVariationMap: [],
         variationPercentageRollouts: mockPercentageVariationRollout
       }
@@ -98,6 +102,12 @@ describe('usePatchFeatureFlag', () => {
             parameters: {
               variation: 'True'
             }
+          },
+          {
+            kind: 'updateOffVariation',
+            parameters: {
+              variation: 'False'
+            }
           }
         ]
       })
@@ -114,6 +124,7 @@ describe('usePatchFeatureFlag', () => {
       const newValues = {
         state: 'off',
         onVariation: 'False',
+        offVariation: 'True',
         variationPercentageRollouts: mockPercentageVariationRollout,
         formVariationMap: []
       }
@@ -131,16 +142,14 @@ describe('usePatchFeatureFlag', () => {
       const { result } = renderHookUnderTest({
         refetchFlag: refetchFlagMock.mockResolvedValueOnce({}),
         initialValues: {
-          onVariation: 'true',
-          state: 'on',
+          ...defaultInitialValues,
           variationPercentageRollouts: mockPercentageVariationRollout,
           formVariationMap: targetGroupsAddedFixture.initialFormVariationMap
         }
       })
 
       const newValues = {
-        state: 'on',
-        onVariation: 'true',
+        ...defaultInitialValues,
         variationPercentageRollouts: mockPercentageVariationRollout,
         formVariationMap: targetGroupsAddedFixture.newFormVariationMap
       }
@@ -156,16 +165,14 @@ describe('usePatchFeatureFlag', () => {
       const { result } = renderHookUnderTest({
         refetchFlag: refetchFlagMock.mockResolvedValueOnce({}),
         initialValues: {
-          onVariation: 'true',
-          state: 'on',
+          ...defaultInitialValues,
           variationPercentageRollouts: mockPercentageVariationRollout,
           formVariationMap: targetGroupsRemovedFixture.initialFormVariationMap
         }
       })
 
       const newValues = {
-        state: 'on',
-        onVariation: 'true',
+        ...defaultInitialValues,
         variationPercentageRollouts: mockPercentageVariationRollout,
         formVariationMap: targetGroupsRemovedFixture.newFormVariationMap
       }
@@ -181,16 +188,14 @@ describe('usePatchFeatureFlag', () => {
       const { result } = renderHookUnderTest({
         refetchFlag: refetchFlagMock.mockResolvedValueOnce({}),
         initialValues: {
-          onVariation: 'true',
-          state: 'on',
+          ...defaultInitialValues,
           variationPercentageRollouts: mockPercentageVariationRollout,
           formVariationMap: targetAddedFixture.initialFormVariationMap
         }
       })
 
       const newValues = {
-        state: 'on',
-        onVariation: 'true',
+        ...defaultInitialValues,
         variationPercentageRollouts: mockPercentageVariationRollout,
         formVariationMap: targetAddedFixture.newFormVariationMap
       }
@@ -206,16 +211,14 @@ describe('usePatchFeatureFlag', () => {
       const { result } = renderHookUnderTest({
         refetchFlag: refetchFlagMock.mockResolvedValueOnce({}),
         initialValues: {
-          onVariation: 'true',
-          state: 'on',
+          ...defaultInitialValues,
           variationPercentageRollouts: mockPercentageVariationRollout,
           formVariationMap: targetRemovedFixture.initialFormVariationMap
         }
       })
 
       const newValues = {
-        state: 'on',
-        onVariation: 'true',
+        ...defaultInitialValues,
         variationPercentageRollouts: mockPercentageVariationRollout,
         formVariationMap: targetRemovedFixture.newFormVariationMap
       }
@@ -233,16 +236,14 @@ describe('usePatchFeatureFlag', () => {
       const { result } = renderHookUnderTest({
         refetchFlag: refetchFlagMock.mockResolvedValueOnce({}),
         initialValues: {
-          onVariation: 'true',
-          state: 'on',
+          ...defaultInitialValues,
           variationPercentageRollouts: [],
           formVariationMap: []
         }
       })
 
       const newValues = {
-        state: 'on',
-        onVariation: 'true',
+        ...defaultInitialValues,
         variationPercentageRollouts: [percentageRolloutAdded.newPercentageRolloutAdded],
         formVariationMap: []
       }
@@ -257,16 +258,14 @@ describe('usePatchFeatureFlag', () => {
       const { result } = renderHookUnderTest({
         refetchFlag: refetchFlagMock.mockResolvedValueOnce({}),
         initialValues: {
-          onVariation: 'true',
-          state: 'on',
+          ...defaultInitialValues,
           variationPercentageRollouts: [percentageRolloutUpdated.initialVariationPercentageRollout],
           formVariationMap: []
         }
       })
 
       const newValues = {
-        state: 'on',
-        onVariation: 'true',
+        ...defaultInitialValues,
         variationPercentageRollouts: [percentageRolloutUpdated.newPercentageRolloutAdded],
         formVariationMap: []
       }
@@ -281,16 +280,14 @@ describe('usePatchFeatureFlag', () => {
       const { result } = renderHookUnderTest({
         refetchFlag: refetchFlagMock.mockResolvedValueOnce({}),
         initialValues: {
-          onVariation: 'true',
-          state: 'on',
+          ...defaultInitialValues,
           variationPercentageRollouts: [percentageRolloutRemoved.initialVariationPercentageRollout],
           formVariationMap: []
         }
       })
 
       const newValues = {
-        state: 'on',
-        onVariation: 'true',
+        ...defaultInitialValues,
         variationPercentageRollouts: [],
         formVariationMap: []
       }
@@ -316,6 +313,7 @@ describe('usePatchFeatureFlag', () => {
       const newValues = {
         state: 'on',
         onVariation: 'True',
+        offVariation: 'False',
         variationPercentageRollouts: mockPercentageVariationRollout,
         formVariationMap: []
       }

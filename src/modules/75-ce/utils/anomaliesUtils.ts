@@ -10,7 +10,7 @@ import type { QlceViewFilterInput } from 'services/ce/services'
 import { DEFAULT_GROUP_BY } from './perspectiveUtils'
 
 const gcpEntities = ['gcpProduct', 'gcpProjectId', 'gcpSKUDescription']
-const awsEntities = ['awsAccount', 'awsService', 'awsInstancetype', 'awsUsageType']
+const awsEntities = ['awsUsageAccountId', 'awsServiceCode', 'awsInstancetype', 'awsUsageType']
 const azureEntities: string[] = []
 const clusterEntities = ['clusterName', 'clusterId', 'namespace', 'workloadName', 'workloadType']
 
@@ -29,9 +29,9 @@ const fieldToFieldNameMapping: Record<string, string> = {
   namespace: 'Namespace',
   workloadName: 'Workload',
   awsUsageAccountId: 'Account',
-  awsServicecode: 'Service',
+  awsServiceCode: 'Service',
   awsInstancetype: 'Instance Type',
-  awsUsagetype: 'Usage Type',
+  awsUsageType: 'Usage Type',
   workloadType: 'Workload Type',
   gcpSkuDescription: 'SKUs'
 }

@@ -129,7 +129,8 @@ const AlertsSection = () => {
         {channelsList.map((channel, index) => {
           const channelType = channel?.notificationChannelType || 'DEFAULT'
           const channelCount = channel.channelUrls?.length || 0
-          const url = channel?.channelUrls?.shift()
+          const url = channel?.channelUrls?.[0]
+          const hoverEmails = channel?.channelUrls?.slice(1)
 
           return (
             <Layout.Horizontal spacing="small" key={index}>
@@ -151,7 +152,7 @@ const AlertsSection = () => {
                   content={
                     <div className={css.popoverContent}>
                       <ul>
-                        {channel?.channelUrls?.map((email, idx) => (
+                        {hoverEmails?.map((email, idx) => (
                           <li key={idx}>{email}</li>
                         ))}
                       </ul>

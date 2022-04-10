@@ -54,7 +54,11 @@ const FlagEnabledRulesCard = (props: FlagEnabledRulesCardProps): ReactElement =>
   return (
     <Card data-testid="flag-enabled-rules-card">
       <Container border={{ bottom: true }} padding={{ bottom: 'medium' }}>
-        <DefaultRules featureFlagVariations={featureFlagVariations} />
+        <DefaultRules
+          featureFlagVariations={featureFlagVariations}
+          inputName="onVariation"
+          titleStringId="cf.featureFlags.rules.whenFlagEnabled"
+        />
       </Container>
       <Container padding={{ bottom: 'medium' }}>
         <Layout.Vertical spacing="medium">

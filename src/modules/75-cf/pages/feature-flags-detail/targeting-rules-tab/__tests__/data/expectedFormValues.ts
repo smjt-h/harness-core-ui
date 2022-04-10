@@ -52,6 +52,7 @@ const expectedFormValues: TargetingRulesFormValues = {
     }
   ],
   onVariation: 'true',
+  offVariation: 'false',
   state: 'off',
   variationPercentageRollouts: [
     {

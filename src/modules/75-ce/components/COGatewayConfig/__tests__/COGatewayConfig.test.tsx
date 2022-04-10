@@ -9,7 +9,9 @@ import React from 'react'
 import { act } from 'react-dom/test-utils'
 import { fireEvent, render, waitFor } from '@testing-library/react'
 import { TestWrapper } from '@common/utils/testUtils'
+import { AdvancedConfigTabs, RESOURCES } from '@ce/constants'
 import COGatewayConfig from '../COGatewayConfig'
+import AdvancedConfiguration from '../steps/AdvancedConfiguration/AdvancedConfiguration'
 
 const initialGatewayDetails = {
   name: '',
@@ -407,5 +409,63 @@ describe('Auto stopping Rule creation Tests', () => {
     )
 
     expect(container).toMatchSnapshot()
+  })
+
+  describe('Advanced configuration section', () => {
+    test('should open the dependencies tab based on active step details', () => {
+      const { container } = render(
+        <TestWrapper>
+          <AdvancedConfiguration
+            allServices={mockedData.response}
+            gatewayDetails={initialGatewayDetails}
+            selectedResource={RESOURCES.ECS}
+            setGatewayDetails={jest.fn}
+            totalStepsCount={4}
+            activeStepDetails={{ count: 4, tabId: AdvancedConfigTabs.deps }}
+          />
+        </TestWrapper>
+      )
+
+      expect(container).toMatchSnapshot()
+    })
+
+    test('should open the schedules tab based on active step details', () => {
+      const { container } = render(
+        <TestWrapper>
+          <AdvancedConfiguration
+            allServices={mockedData.response}
+            gatewayDetails={initialGatewayDetails}
+            selectedResource={RESOURCES.ECS}
+            setGatewayDetails={jest.fn}
+            totalStepsCount={4}
+            activeStepDetails={{ count: 4, tabId: AdvancedConfigTabs.schedules }}
+          />
+        </TestWrapper>
+      )
+
+      expect(container).toMatchSnapshot()
+    })
+
+    test('change tab to schedules', () => {
+      const { container } = render(
+        <TestWrapper>
+          <AdvancedConfiguration
+            allServices={mockedData.response}
+            gatewayDetails={initialGatewayDetails}
+            selectedResource={RESOURCES.ECS}
+            setGatewayDetails={jest.fn}
+            totalStepsCount={4}
+          />
+        </TestWrapper>
+      )
+
+      const schedTab = container.querySelectorAll('div[role="tab"]')[1]
+      expect(schedTab).toBeDefined()
+      act(() => {
+        fireEvent.click(schedTab)
+      })
+
+      expect(container).toMatchSnapshot()
+    })
   })
 })

@@ -19,7 +19,8 @@
     { "uuid": null, "name": "CDNG_ENABLED", "enabled": true, "lastUpdatedAt": 0 },
     { "uuid": null, "name": "CHI_CUSTOM_HEALTH", "enabled": true, "lastUpdatedAt": 0 },
     { "uuid": null, "name": "CHI_CUSTOM_HEALTH_LOGS", "enabled": true, "lastUpdatedAt": 0 },
-    { "uuid": null, "name": "DYNATRACE_APM_ENABLED", "enabled": true, "lastUpdatedAt": 0 }
+    { "uuid": null, "name": "DYNATRACE_APM_ENABLED", "enabled": true, "lastUpdatedAt": 0 },
+    { "uuid": null, "name": "SECURITY_STAGE", "enabled": true, "lastUpdatedAt": 0 }
   ],
   "responseMessages": []
 }

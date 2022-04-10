@@ -45,7 +45,13 @@ export interface ArtifactsSelectionProps {
   overrideSetIdentifier?: string
 }
 
-export type ArtifactType = 'DockerRegistry' | 'Gcr' | 'Ecr' | 'Nexus3Registry' | 'ArtifactoryRegistry'
+export type ArtifactType =
+  | 'DockerRegistry'
+  | 'Gcr'
+  | 'Ecr'
+  | 'Nexus3Registry'
+  | 'ArtifactoryRegistry'
+  | 'CustomArtifact'
 export interface OrganizationCreationType {
   type: ArtifactType
 }
@@ -75,6 +81,10 @@ export interface ImagePathTypes {
   repositoryUrl?: string
   repositoryPortorRepositoryURL?: string
   artifactDirectory?: string
+}
+
+export interface CustomArtifactSource extends ImagePathTypes {
+  version: string
 }
 
 export interface ImagePathProps {

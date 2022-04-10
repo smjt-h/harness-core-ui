@@ -2375,6 +2375,7 @@ export interface StringsMap {
   'pipeline.artifactsSelection.validation.sidecarId': string
   'pipeline.artifactsSelection.validation.tag': string
   'pipeline.artifactsSelection.validation.tagRegex': string
+  'pipeline.artifactsSelection.versionPlaceholder': string
   'pipeline.barrierStep.barrierReference': string
   'pipeline.barrierStep.barrierReferencePlaceholder': string
   'pipeline.barrierStep.barrierReferenceRequired': string
@@ -2390,7 +2391,7 @@ export interface StringsMap {
   'pipeline.buildInfra.containerSecurityContext': string
   'pipeline.buildInfra.dropCapabilities': string
   'pipeline.buildInfra.poolId': string
-  'pipeline.buildInfra.priorityClass': string
+  'pipeline.buildInfra.priorityClassName': string
   'pipeline.buildInfra.privileged': string
   'pipeline.buildInfra.readOnlyRootFilesystem': string
   'pipeline.buildInfra.runAsNonRoot': string
@@ -2461,6 +2462,22 @@ export interface StringsMap {
   'pipeline.discard': string
   'pipeline.duration': string
   'pipeline.enableVerificationOptions': string
+  'pipeline.errorFramework.fixErrors': string
+  'pipeline.errorFramework.fixStage': string
+  'pipeline.errorFramework.fixStep': string
+  'pipeline.errorFramework.header1': string
+  'pipeline.errorFramework.header10': string
+  'pipeline.errorFramework.header11': string
+  'pipeline.errorFramework.header12': string
+  'pipeline.errorFramework.header2': string
+  'pipeline.errorFramework.header3': string
+  'pipeline.errorFramework.header4': string
+  'pipeline.errorFramework.header5': string
+  'pipeline.errorFramework.header6': string
+  'pipeline.errorFramework.header7': string
+  'pipeline.errorFramework.header8': string
+  'pipeline.errorFramework.header9': string
+  'pipeline.errorFramework.pipelineErrorsTitle': string
   'pipeline.estimatedTimeRemaining': string
   'pipeline.execution.actions.abortPipeline': string
   'pipeline.execution.actions.abortStage': string
@@ -3347,6 +3364,8 @@ export interface StringsMap {
   'cd.learnMore': string
   'cd.learnMoreAboutHarnessAdapter': string
   'cd.manifestPathsCannotBeEmpty': string
+  'cd.moreIssue': string
+  'cd.moreIssues': string
   'cd.nameEmptyError': string
   'cd.namespaceValidation': string
   'cd.newAdapter': string
@@ -3463,6 +3482,8 @@ export interface StringsMap {
   'ce.anomalyDetection.notificationAlerts.addAlertSuccessMsg': string
   'ce.anomalyDetection.notificationAlerts.addChannelBtn': string
   'ce.anomalyDetection.notificationAlerts.alertChannelHeading': string
+  'ce.anomalyDetection.notificationAlerts.channelSelectionRequiredMsg': string
+  'ce.anomalyDetection.notificationAlerts.channelUrlRequiredMsg': string
   'ce.anomalyDetection.notificationAlerts.deleteAlertSuccessMsg': string
   'ce.anomalyDetection.notificationAlerts.emailChannelLabel': string
   'ce.anomalyDetection.notificationAlerts.heading': string
@@ -4439,6 +4460,7 @@ export interface StringsMap {
   'cf.featureFlags.rules.validation.selectTargetGroup': string
   'cf.featureFlags.rules.validation.valueMustAddTo100': string
   'cf.featureFlags.rules.validation.valueRequired': string
+  'cf.featureFlags.rules.whenFlagDisabled': string
   'cf.featureFlags.rules.whenFlagEnabled': string
   'cf.featureFlags.serve': string
   'cf.featureFlags.servePercentageRollout': string
@@ -4676,6 +4698,7 @@ export interface StringsMap {
   'cf.shared.archived': string
   'cf.shared.environment': string
   'cf.shared.evaluations': string
+  'cf.shared.false': string
   'cf.shared.flags': string
   'cf.shared.getStarted': string
   'cf.shared.individual': string
@@ -4691,6 +4714,7 @@ export interface StringsMap {
   'cf.shared.target': string
   'cf.shared.targetManagement': string
   'cf.shared.targets': string
+  'cf.shared.true': string
   'cf.shared.variation': string
   'cf.shared.variations': string
   'cf.targetDetail.addTargetToSegment': string

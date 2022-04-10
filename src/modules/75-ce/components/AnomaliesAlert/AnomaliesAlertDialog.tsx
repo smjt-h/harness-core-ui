@@ -10,6 +10,7 @@ import { Dialog, IDialogProps } from '@blueprintjs/core'
 import { StepWizard, Formik, FormikForm, useToaster, getErrorInfoFromErrorObject, Color } from '@harness/uicore'
 import { useModalHook } from '@harness/use-modal'
 import { useParams } from 'react-router-dom'
+import * as Yup from 'yup'
 import { useStrings } from 'framework/strings'
 import { QlceView, useFetchPerspectiveListQuery } from 'services/ce/services'
 import { channelNameUrlMapping, channels } from '@ce/constants'
@@ -81,6 +82,18 @@ export const AnomalyAlertDialog: React.FC<AlertDialogProps> = ({
       }
     }) || /* istanbul ignore next */ []
 
+  const validationSchema = Yup.object().shape({
+    perspective: Yup.string().required(),
+    alertList: Yup.array(
+      Yup.object({
+        channelName: Yup.string().required(
+          getString('ce.anomalyDetection.notificationAlerts.channelSelectionRequiredMsg')
+        ),
+        channelUrl: Yup.string().required(getString('ce.anomalyDetection.notificationAlerts.channelUrlRequiredMsg'))
+      })
+    )
+  })
+
   return (
     <Dialog onClose={hideAnomaliesAlertModal} {...modalPropsLight} canOutsideClickClose={true}>
       <Formik
@@ -92,6 +105,7 @@ export const AnomalyAlertDialog: React.FC<AlertDialogProps> = ({
           channelUrl: '',
           alertList: channelsData || /* istanbul ignore next */ []
         }}
+        validationSchema={validationSchema}
         render={formikProps => {
           return (
             <FormikForm>
@@ -108,6 +122,7 @@ export const AnomalyAlertDialog: React.FC<AlertDialogProps> = ({
                   name={getString('ce.anomalyDetection.notificationAlerts.overviewStep')}
                   onClose={hideAnomaliesAlertModal}
                   items={items}
+                  formikProps={formikProps}
                 />
                 <NotificationMethod
                   name={getString('ce.anomalyDetection.notificationAlerts.notificationStep')}

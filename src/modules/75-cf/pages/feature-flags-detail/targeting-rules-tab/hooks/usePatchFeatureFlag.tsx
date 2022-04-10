@@ -50,12 +50,19 @@ const usePatchFeatureFlag = ({
   const saveChanges = (submittedValues: TargetingRulesFormValues): void => {
     const patchFeatureUtils = PatchFeatureFlagUtils(submittedValues, initialValues)
 
+    // flag state
     if (patchFeatureUtils.hasFlagStateChanged()) {
-      patchFeatureUtils.updateFlagState()
+      patchFeatureUtils.createUpdateFlagStateInstruction()
     }
 
-    if (submittedValues.onVariation !== initialValues.onVariation) {
-      patchFeatureUtils.updateDefaultServe()
+    // default ON serves
+    if (patchFeatureUtils.hasDefaultOnVariationChanged()) {
+      patchFeatureUtils.createDefaultServeOnInstruction()
+    }
+
+    // default OFF serves
+    if (patchFeatureUtils.hasDefaultOffVariationChanged()) {
+      patchFeatureUtils.createDefaultServeOffInstruction()
     }
 
     // for each variation, iterate and compare initial Targets/Target groups against the submitted Targets/Target groups and create instructions

@@ -908,13 +908,15 @@ anomalyDetection:
     addChannelBtn: add Channel
     selectChannelPlaceholder: Select Channel
     selectMethod: '{{ $.UrlLabel }}'
-    urlInputPlaceholder: Enter webhook url or user groups
+    urlInputPlaceholder: Enter webhook url or email address
     addAlertSuccessMsg: Notification alert added successfully!
     deleteAlertSuccessMsg: Alert notification deleted successfully!
     updateAlertSuccessMsg: Alert notification updated successfully!
     slackChannelLabel: Slack webhook url
     emailChannelLabel: '{{ $.email }}'
     microsoftTeamChannelLabel: '{{ $.notifications.labelMS }}'
+    channelSelectionRequiredMsg: Please select a channel
+    channelUrlRequiredMsg: Please enter a valid webhook url or email address
   perspectiveCreateAnomalyAlertTitle: '{{ $.ce.anomalyDetection.notificationAlerts.heading}}({{ count }})'
   addNewAnomalyAlert: add Anomaly Alert
   addAnoamlyAlertDesc: You can recieve alerts whenever an anomaly occurs in the persepective. This can help you rectify any unfavourable cost spikes at the earliest.

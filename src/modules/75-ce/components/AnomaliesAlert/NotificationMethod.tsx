@@ -124,6 +124,7 @@ const NotificationMethod: React.FC<StepProps<StepData> & NotificationChannelProp
           onClick={() => props.nextStep?.({ name: props.name || '' })}
           text={getString('saveAndContinue')}
           data-testid="submitForm"
+          disabled={!notificationList.length}
         />
       </Layout.Horizontal>
     </React.Fragment>

@@ -629,14 +629,15 @@ artifactsSelection:
   artifactNamePlaceholder: Enter Artifact Path
   artifactDirectory: Artifact Directory
   artifactDirectoryPlaceholder: Enter Artifact Directory
+  versionPlaceholder: Enter Version
   existingDocker:
     sidecarId: Sidecar Identifier
     sidecarIdPlaceholder: Enter Artifact Identifier
     imageNamePlaceholder: Enter Image Path
     enterTagRegex: Enter Tag Regex
   validation:
-    imagePath: Image Path is a required
-    artifactPath: Artifact Path is a required
+    imagePath: Image Path is required
+    artifactPath: Artifact Path is required
     region: '{{$.validation.regionRequired}}'
     tag: Tag is required
     tagRegex: Tag Regex is required
@@ -905,7 +906,7 @@ runPipeline:
 buildInfra:
   poolId: Pool Id
   automountServiceAccountToken: Automount Service Account Token
-  priorityClass: Priority Class
+  priorityClassName: Priority Class
   containerSecurityContext: Container Security Context
   allowPrivilegeEscalation: Allow Privilege Escalation
   addCapabilities: ADD Capabilities
@@ -936,3 +937,20 @@ serviceDeploymentTypes:
   awsSAM: AWS SAM
   azureFunctions: Azure Functions
 noArtifactPaths: No artifact paths found with given Artifact Directory
+errorFramework:
+  pipelineErrorsTitle: 'Pipeline cannot be saved because {{fields}} further configuration.'
+  fixErrors: Fix Errors
+  fixStep: Fix Step
+  fixStage: Fix Stage
+  header1: ', stage and steps'
+  header2: ', some stages and steps'
+  header3: ' and stage'
+  header4: ' and some stages'
+  header5: ' and steps'
+  header6: 'pipeline{{stringToAppend}} need'
+  header7: 'stage and steps need'
+  header8: 'some stages and steps need'
+  header9: 'stage needs'
+  header10: 'some stages need'
+  header11: 'some steps need'
+  header12: 'it needs'

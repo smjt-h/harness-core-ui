@@ -26,6 +26,10 @@ const certificateExists = fs.existsSync(path.join(CONTEXT, 'certificates/localho
 // By default NG Auth UI is enabled in the dev environment.
 // Set env variable HARNESS_ENABLE_NG_AUTH_UI=false to disable it.
 const HARNESS_ENABLE_NG_AUTH_UI = process.env.HARNESS_ENABLE_NG_AUTH_UI !== 'false'
+const DISABLE_TYPECHECK = process.env.DISABLE_TYPECHECK === 'true'
+
+console.log('\nDev server env vars')
+console.table({ HARNESS_ENABLE_NG_AUTH_UI, DISABLE_TYPECHECK })
 
 if (!certificateExists) {
   throw new Error('The certificate is missing, please run `yarn generate-certificate`')
@@ -169,7 +173,7 @@ if (isCypress && isCypressCoverage) {
       ]
     }
   })
-} else {
+} else if (!DISABLE_TYPECHECK) {
   mergedConfig.plugins.push(new ForkTsCheckerWebpackPlugin())
 }
 

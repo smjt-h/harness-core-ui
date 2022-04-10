@@ -76,7 +76,8 @@ import { validateServerlessArtifacts } from '@pipeline/utils/stageHelpers'
 import type { TemplateSummaryResponse } from 'services/template-ng'
 import { savePipeline, usePipelineContext } from '../PipelineContext/PipelineContext'
 import CreatePipelines from '../CreateModal/PipelineCreate'
-import { DefaultNewPipelineId, DrawerTypes } from '../PipelineContext/PipelineActions'
+import PipelineErrors from './PipelineErrors/PipelineErrors'
+import { DefaultNewPipelineId, DrawerTypes, SplitViewTypes } from '../PipelineContext/PipelineActions'
 import PipelineYamlView from '../PipelineYamlView/PipelineYamlView'
 import { RightBar } from '../RightBar/RightBar'
 import StageBuilder from '../StageBuilder/StageBuilder'
@@ -153,7 +154,8 @@ export function PipelineCanvas({
     setSelectedStageId,
     setSelectedSectionId,
     getStageFromPipeline,
-    setTemplateTypes
+    setTemplateTypes,
+    setSelection
   } = usePipelineContext()
   const {
     repoIdentifier,
@@ -169,7 +171,7 @@ export function PipelineCanvas({
   } = useQueryParams<GitQueryParams & RunPipelineQueryParams>()
   const { updateQueryParams, replaceQueryParams } = useUpdateQueryParams<PipelineStudioQueryParams>()
   const { trackEvent } = useTelemetry()
-
+  const [updatePipelineAPIResponse, setUpdatePipelineAPIResponse] = React.useState<any>()
   const {
     pipeline,
     isUpdated,
@@ -212,7 +214,6 @@ export function PipelineCanvas({
   const { showSuccess, showError, clear } = useToaster()
 
   useDocumentTitle([parse(pipeline?.name || getString('pipelines'))])
-
   const [discardBEUpdateDialog, setDiscardBEUpdate] = React.useState(false)
   const { openDialog: openConfirmBEUpdateError } = useConfirmationDialog({
     cancelButtonText: getString('cancel'),
@@ -376,6 +377,34 @@ export function PipelineCanvas({
     }
   }
 
+  const gotoViewWithDetails = React.useCallback(
+    ({ stageId, stepId }: { stageId?: string; stepId?: string } = {}): void => {
+      hideErrorModal()
+      // If Yaml mode, or if pipeline error - stay on yaml mode
+      if (isYaml || (!stageId && !stepId)) {
+        return
+      }
+      setSelection({ stageId, stepId })
+      updatePipelineView({
+        ...pipelineView,
+        isSplitViewOpen: true,
+        splitViewData: { type: SplitViewTypes.StageView }
+      })
+    },
+    [isYaml, pipelineView]
+  )
+
+  const [showErrorModal, hideErrorModal] = useModalHook(
+    () => (
+      <PipelineErrors
+        errors={updatePipelineAPIResponse?.metadata?.schemaErrors}
+        gotoViewWithDetails={gotoViewWithDetails}
+        onClose={hideErrorModal}
+      />
+    ),
+    [updatePipelineAPIResponse]
+  )
+
   const saveAndPublishPipeline = async (
     latestPipeline: PipelineInfoConfig,
     updatedGitDetails?: SaveToGitFormInterface,
@@ -431,9 +460,18 @@ export function PipelineCanvas({
       setSchemaErrorView(true)
       // This is done because when git sync is enabled, errors are displayed in a modal
       if (!isGitSyncEnabled) {
-        showError(response?.message || getString('errorWhileSaving'), undefined, 'pipeline.save.pipeline.error')
+        // eslint-disable-next-line
+        // @ts-ignore
+        if (response?.metadata?.schemaErrors?.length) {
+          setUpdatePipelineAPIResponse(response)
+          showErrorModal()
+        } else {
+          showError(response?.message || getString('errorWhileSaving'), undefined, 'pipeline.save.pipeline.error')
+        }
+      } else {
+        // isGitSyncEnabled true
+        throw response
       }
-      throw response
     }
     return { status: response?.status }
   }

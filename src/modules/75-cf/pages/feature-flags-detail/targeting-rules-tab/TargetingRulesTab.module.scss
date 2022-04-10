@@ -6,7 +6,7 @@
  */
 
 .tab-container {
-  height: calc(100vh - 125px);
+  height: calc(100vh - 140px);
   display: grid;
   grid-template-rows: 1fr;
   padding-left: var(--spacing-xlarge);
@@ -15,5 +15,4 @@
 
 .flag-rules-section {
   overflow-y: auto;
-  margin-top: var(--spacing-xlarge) !important;
 }

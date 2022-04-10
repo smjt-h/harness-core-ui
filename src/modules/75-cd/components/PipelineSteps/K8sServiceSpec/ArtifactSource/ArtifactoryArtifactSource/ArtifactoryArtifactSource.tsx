@@ -307,19 +307,17 @@ const Content = (props: ArtifactoryRenderContent): JSX.Element => {
             />
           )}
 
-          {isFieldRuntime(`artifacts.${artifactPath}.spec.artifactPath`, template) &&
-            !isServerlessDeploymentTypeSelected && (
-              <FormInput.MultiTextInput
-                label={getString('pipeline.artifactPathLabel')}
-                disabled={isFieldDisabled(`artifacts.${artifactPath}.spec.artifactPath`)}
-                multiTextInputProps={{
-                  expressions,
-                  allowableTypes
-                }}
-                name={`${path}.artifacts.${artifactPath}.spec.artifactPath`}
-                onChange={() => resetTags(formik, `${path}.artifacts.${artifactPath}.spec.tag`)}
-              />
-            )}
+          {isFieldRuntime(`artifacts.${artifactPath}.spec.repositoryUrl`, template) && (
+            <FormInput.MultiTextInput
+              label={getString('repositoryUrlLabel')}
+              disabled={isFieldDisabled(`artifacts.${artifactPath}.spec.repositoryUrl`)}
+              multiTextInputProps={{
+                expressions,
+                allowableTypes
+              }}
+              name={`${path}.artifacts.${artifactPath}.spec.repositoryUrl`}
+            />
+          )}
 
           {isFieldRuntime(`artifacts.${artifactPath}.spec.repository`, template) &&
           !isServerlessDeploymentTypeSelected ? (
@@ -357,17 +355,19 @@ const Content = (props: ArtifactoryRenderContent): JSX.Element => {
               />
             )}
 
-          {isFieldRuntime(`artifacts.${artifactPath}.spec.artifactRepositoryUrl`, template) && (
-            <FormInput.MultiTextInput
-              label={getString('repositoryUrlLabel')}
-              disabled={isFieldDisabled(`artifacts.${artifactPath}.spec.artifactRepositoryUrl`)}
-              multiTextInputProps={{
-                expressions,
-                allowableTypes
-              }}
-              name={`${path}.artifacts.${artifactPath}.spec.artifactRepositoryUrl`}
-            />
-          )}
+          {isFieldRuntime(`artifacts.${artifactPath}.spec.artifactPath`, template) &&
+            !isServerlessDeploymentTypeSelected && (
+              <FormInput.MultiTextInput
+                label={getString('pipeline.artifactPathLabel')}
+                disabled={isFieldDisabled(`artifacts.${artifactPath}.spec.artifactPath`)}
+                multiTextInputProps={{
+                  expressions,
+                  allowableTypes
+                }}
+                name={`${path}.artifacts.${artifactPath}.spec.artifactPath`}
+                onChange={() => resetTags(formik, `${path}.artifacts.${artifactPath}.spec.tag`)}
+              />
+            )}
 
           <TagFields
             {...props}

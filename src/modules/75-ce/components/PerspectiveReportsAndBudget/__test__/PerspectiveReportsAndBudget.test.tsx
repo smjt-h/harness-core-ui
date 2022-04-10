@@ -11,10 +11,10 @@ import { Container } from '@wings-software/uicore'
 import { Provider } from 'urql'
 import { fromValue } from 'wonka'
 import type { DocumentNode } from 'graphql'
-import { setFieldValue, InputTypes, clickSubmit } from '@common/utils/JestFormHelper'
+import { setFieldValue, InputTypes, clickSubmit, fillAtForm } from '@common/utils/JestFormHelper'
 import { findDialogContainer, TestWrapper } from '@common/utils/testUtils'
 import { FetchPerspectiveListDocument } from 'services/ce/services'
-import PerspectiveReportsAndBudgets, { AnomalyAlerts } from '../PerspectiveReportsAndBudgets'
+import PerspectiveReportsAndBudgets, { AnomalyAlerts, Budgets, ScheduledReports } from '../PerspectiveReportsAndBudgets'
 import PerspectiveScheduledReportsResponse from './PerspectiveScheduledReportsResponse.json'
 import PerspectiveBudgetsResponse from './PerspectiveBudgetsResponse.json'
 import PerspectiveResponse from './PerspectiveResponse.json'
@@ -175,13 +175,72 @@ const CreateReportWrapper = () => {
   const { openModal } = useCreateReportModal({ onSuccess: jest.fn() })
   return (
     <Container>
-      <button onClick={() => openModal()} className="openModal" />
+      <button onClick={() => openModal({ isEdit: true })} className="openModal" />
     </Container>
   )
 }
-
 describe('test cases for Perspective Create Report', () => {
   test('should be able to open create report modal', async () => {
+    const { getByText } = render(
+      <TestWrapper pathParams={params}>
+        <ScheduledReports />
+      </TestWrapper>
+    )
+
+    const openButton = getByText('ce.perspectives.reports.addReportSchedule')
+    expect(openButton).toBeDefined()
+
+    fireEvent.click(openButton!)
+
+    const modal = findDialogContainer()
+    expect(modal).toBeDefined()
+
+    await waitFor(() => {
+      expect(getByText('ce.perspectives.reports.cronLabel')).toBeDefined()
+      expect(getByText('ce.perspectives.reports.recipientLabel')).toBeDefined()
+    })
+
+    fillAtForm([
+      {
+        container: modal!,
+        type: InputTypes.TEXTFIELD,
+        fieldId: 'name',
+        value: 'name'
+      },
+      {
+        container: modal!,
+        type: InputTypes.TEXTAREA,
+        fieldId: 'recipients',
+        value: 'test@test.com'
+      }
+    ])
+
+    await act(async () => {
+      clickSubmit(modal!)
+    })
+
+    expect(modal).toMatchSnapshot()
+  })
+
+  test('should be able to delete report', async () => {
+    const { getByText, getAllByTestId } = render(
+      <TestWrapper pathParams={params}>
+        <ScheduledReports />
+      </TestWrapper>
+    )
+
+    const deleteIcon = getAllByTestId('deleteIcon')[0]
+
+    act(() => {
+      fireEvent.click(deleteIcon!)
+    })
+
+    await waitFor(() => {
+      expect(getByText('ce.perspectives.reports.reportDeletedTxt')).toBeDefined()
+    })
+  })
+
+  test('should be able to open create report modal in edit mode', async () => {
     const { container, getByText } = render(
       <TestWrapper pathParams={params}>
         <CreateReportWrapper />
@@ -199,6 +258,25 @@ describe('test cases for Perspective Create Report', () => {
     await waitFor(() => {
       expect(getByText('ce.perspectives.reports.cronLabel')).toBeDefined()
       expect(getByText('ce.perspectives.reports.recipientLabel')).toBeDefined()
+    })
+
+    fillAtForm([
+      {
+        container: modal!,
+        type: InputTypes.TEXTFIELD,
+        fieldId: 'name',
+        value: 'name'
+      },
+      {
+        container: modal!,
+        type: InputTypes.TEXTAREA,
+        fieldId: 'recipients',
+        value: 'test@test.com'
+      }
+    ])
+
+    await act(async () => {
+      clickSubmit(modal!)
     })
 
     expect(modal).toMatchSnapshot()
@@ -266,6 +344,24 @@ describe('test cases for Perspective Create Budgets', () => {
     expect(getByText('ce.perspectives.budgets.configureAlerts.subTitle')).toBeDefined()
     expect(getByText('ce.perspectives.budgets.configureAlerts.budgetAmount')).toBeDefined()
     expect(findDialogContainer()).toMatchSnapshot()
+  })
+
+  test('should be able to delete budget', async () => {
+    const { getAllByTestId, getByText } = render(
+      <TestWrapper pathParams={params}>
+        <Budgets perspectiveName="perspectiveName" />
+      </TestWrapper>
+    )
+
+    const deleteIcon = getAllByTestId('deleteIcon')[0]
+
+    act(() => {
+      fireEvent.click(deleteIcon!)
+    })
+
+    await waitFor(() => {
+      expect(getByText('ce.budgets.budgetDeletedTxt')).toBeDefined()
+    })
   })
 })
 

@@ -10,6 +10,7 @@ declare const styles: {
   readonly bucketBy: string
   readonly distribution: string
   readonly targetGroup: string
+  readonly targetGroupContainer: string
   readonly variationRow: string
 }
 export default styles

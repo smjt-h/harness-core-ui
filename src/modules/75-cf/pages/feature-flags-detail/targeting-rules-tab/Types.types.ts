@@ -10,6 +10,7 @@ import type { Clause, TargetMap, WeightedVariation } from 'services/cf'
 export interface TargetingRulesFormValues {
   state: string
   onVariation: string
+  offVariation: string
   formVariationMap: FormVariationMap[]
   variationPercentageRollouts: VariationPercentageRollout[]
 }

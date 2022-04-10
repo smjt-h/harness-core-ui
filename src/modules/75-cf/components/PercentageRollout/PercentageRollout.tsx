@@ -18,25 +18,29 @@ import css from './PercentageRollout.module.scss'
 
 export interface PercentageRolloutProps {
   prefix: (fieldName: string) => string
-  targetGroups: Segment[]
   variations: Variation[]
   fieldValues?: {
     variations: { variation: string; weight: string | number }[]
   }
-  bucketByAttributes: string[]
+  targetGroups?: Segment[]
+  bucketByAttributes?: string[]
+  hideOverError?: boolean
+  [propName: string]: unknown
 }
 
 const PercentageRollout: FC<PercentageRolloutProps> = ({
   prefix,
-  targetGroups,
   variations,
   fieldValues,
-  bucketByAttributes
+  targetGroups,
+  bucketByAttributes,
+  hideOverError = false,
+  ...restProps
 }) => {
   const { getString } = useStrings()
 
   const targetGroupItems = useMemo<SelectOption[]>(
-    () => targetGroups.map(({ name, identifier }) => ({ label: name, value: identifier })),
+    () => (targetGroups || []).map(({ name, identifier }) => ({ label: name, value: identifier })),
     [targetGroups]
   )
 
@@ -50,7 +54,7 @@ const PercentageRollout: FC<PercentageRolloutProps> = ({
         label: getString('identifier'),
         value: FeatureFlagBucketBy.IDENTIFIER
       },
-      ...bucketByAttributes
+      ...(bucketByAttributes || [])
         .filter(attribute => attribute !== FeatureFlagBucketBy.NAME && attribute !== FeatureFlagBucketBy.IDENTIFIER)
         .sort((a, b) => a.localeCompare(b))
         .map(attribute => ({ label: attribute, value: attribute }))
@@ -77,22 +81,28 @@ const PercentageRollout: FC<PercentageRolloutProps> = ({
   )
 
   return (
-    <Layout.Vertical spacing="large">
-      <FormInput.Select
-        className={css.targetGroup}
-        name={prefix('clauses[0].values[0]')}
-        items={targetGroupItems}
-        label={getString('cf.percentageRollout.toTargetGroup')}
-      />
+    <Layout.Vertical spacing="large" {...restProps}>
+      {!!targetGroups && (
+        <div className={css.targetGroupContainer}>
+          <FormInput.Select
+            className={css.targetGroup}
+            name={prefix('clauses[0].values[0]')}
+            items={targetGroupItems}
+            label={getString('cf.percentageRollout.toTargetGroup')}
+          />
+        </div>
+      )}
 
       <div className={css.distribution}>
-        <FormInput.Select
-          className={css.bucketBy}
-          inline
-          name={prefix('bucketBy')}
-          items={bucketByItems}
-          label={getString('cf.percentageRollout.bucketBy')}
-        />
+        {!!bucketByAttributes && (
+          <FormInput.Select
+            className={css.bucketBy}
+            inline
+            name={prefix('bucketBy')}
+            items={bucketByItems}
+            label={getString('cf.percentageRollout.bucketBy')}
+          />
+        )}
 
         <DistributionBar distributionSegments={distributionSegments} />
 
@@ -114,7 +124,7 @@ const PercentageRollout: FC<PercentageRolloutProps> = ({
         })}
       </div>
 
-      {total > 100 && (
+      {!hideOverError && total > 100 && (
         <Text font={{ variation: FontVariation.FORM_MESSAGE_DANGER }}>
           {getString('cf.percentageRollout.invalidTotalError')}
         </Text>

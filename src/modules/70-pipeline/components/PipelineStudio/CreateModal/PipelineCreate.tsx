@@ -41,7 +41,7 @@ export interface PipelineCreateProps {
 
 export default function CreatePipelines({
   afterSave,
-  initialValues = { identifier: '', name: '', description: '', tags: {}, repo: '', branch: '' },
+  initialValues = { identifier: '', name: '', description: '', tags: {}, repo: '', branch: '', stages: [] },
   closeModal,
   gitDetails
 }: PipelineCreateProps): JSX.Element {

@@ -20,6 +20,11 @@ import { branchStatusMock, gitConfigs, sourceCodeManagers } from '@connectors/mo
 import { Scope } from '@common/interfaces/SecretsInterface'
 import * as PipelineCard from '@pipeline/components/PipelineStudio/PipelineVariables/Cards/PipelineCard'
 import * as StageCard from '@pipeline/components/PipelineStudio/PipelineVariables/Cards/StageCard'
+import type { PipelineInfoConfig } from 'services/cd-ng'
+import { useCreateVariables } from 'services/pipeline-ng'
+import { useGetYamlWithTemplateRefsResolved } from 'services/template-ng'
+
+import { yamlStringify } from '@common/utils/YamlHelperMethods'
 import PipelineVariables from '../PipelineVariables'
 import { PipelineContext } from '../../PipelineContext/PipelineContext'
 import variablesPipeline from './variables.json'
@@ -53,7 +58,7 @@ const pipelineContext: any = {
   updateTemplateView: jest.fn(),
   fetchPipeline: jest.fn(),
   deletePipelineCache: jest.fn(),
-  getStageFromPipeline: jest.fn((_stageId, pipeline) => ({ stage: pipeline.stages[0], parent: undefined })),
+  getStageFromPipeline: jest.fn((_stageId, pipeline) => ({ stage: pipeline?.stages?.[0], parent: undefined })),
   setYamlHandler: jest.fn(),
   runPipeline: jest.fn(),
   updateStage: jest.fn(),
@@ -72,6 +77,8 @@ const stageTemplateContextMock = produce(pipelineContext, (draft: any) => {
 
 jest.mock('@common/components/YAMLBuilder/YamlBuilder')
 
+// console.error = jest.fn()
+
 const getListOfBranchesWithStatus = jest.fn(() => Promise.resolve(branchStatusMock))
 const getListGitSync = jest.fn(() => Promise.resolve(gitConfigs))
 
@@ -84,6 +91,18 @@ jest.spyOn(cdng, 'useListGitSync').mockImplementation((): any => {
 jest.spyOn(cdng, 'useGetSourceCodeManagers').mockImplementation((): any => {
   return { data: sourceCodeManagers, refetch: jest.fn(), loading: false }
 })
+
+jest.mock('services/pipeline-ng', () => ({
+  useCreateVariables: jest.fn().mockReturnValue({
+    mutate: jest.fn()
+  })
+}))
+
+jest.mock('services/template-ng', () => ({
+  useGetYamlWithTemplateRefsResolved: jest.fn().mockReturnValue({
+    mutate: jest.fn()
+  })
+}))
 
 jest.mock('lodash-es', () => ({
   ...(jest.requireActual('lodash-es') as Record<string, any>),
@@ -98,56 +117,77 @@ describe('<PipelineVariables /> tests', () => {
     factory.registerStep(new CustomVariables())
   })
 
-  test('snapshot test', () => {
-    const { container } = render(
+  test('snapshot test', async () => {
+    ;(useCreateVariables as jest.Mock).mockReturnValue({
+      mutate: jest.fn(() =>
+        Promise.resolve({
+          data: {
+            yaml: yamlStringify({ pipeline: variablesPipeline }),
+            metadataMap
+          }
+        })
+      ),
+      loading: false
+    })
+    ;(useGetYamlWithTemplateRefsResolved as jest.Mock).mockReturnValue({
+      mutate: jest.fn(() =>
+        Promise.resolve({
+          data: {
+            mergedPipelineYaml: yamlStringify(pipelineJson)
+          }
+        })
+      ),
+      loading: false
+    })
+
+    const { container, findByText } = render(
       <TestWrapper>
         <PipelineContext.Provider value={pipelineContext}>
-          <PipelineVariablesContext.Provider
-            value={
-              {
-                originalPipeline: pipelineJson,
-                variablesPipeline,
-                loading: false,
-                initLoading: false,
-                error: null,
-                metadataMap
-              } as any
-            }
-          >
-            <PipelineVariables />
-          </PipelineVariablesContext.Provider>
+          <PipelineVariables pipeline={pipelineJson as PipelineInfoConfig} />
         </PipelineContext.Provider>
       </TestWrapper>
     )
+
+    await findByText('variablesText')
 
     expect(container).toMatchSnapshot()
   })
 
-  test('should call PipelineCard with unresolved pipeline ', () => {
+  test('should call PipelineCard with unresolved pipeline ', async () => {
     const PipelineCardMock = jest.spyOn(PipelineCard, 'default')
+    ;(useCreateVariables as jest.Mock).mockReturnValue({
+      mutate: jest.fn(() =>
+        Promise.resolve({
+          data: {
+            yaml: yamlStringify({ pipeline: variablesWithStageTemplate }),
+            metadataMap: metadataMapWithStageTemplate
+          }
+        })
+      ),
+      loading: false
+    })
+    ;(useGetYamlWithTemplateRefsResolved as jest.Mock).mockReturnValue({
+      mutate: jest.fn(() =>
+        Promise.resolve({
+          data: {
+            mergedPipelineYaml: yamlStringify(resolvedPipeline)
+          }
+        })
+      ),
+      loading: false
+    })
 
-    render(
+    const { findByText } = render(
       <TestWrapper>
         <PipelineContext.Provider value={stageTemplateContextMock}>
-          <PipelineVariablesContext.Provider
-            value={
-              {
-                originalPipeline: resolvedPipeline,
-                variablesPipeline: variablesWithStageTemplate,
-                loading: false,
-                initLoading: false,
-                error: null,
-                metadataMap: metadataMapWithStageTemplate
-              } as any
-            }
-          >
-            <PipelineVariables />
-          </PipelineVariablesContext.Provider>
+          <PipelineVariables pipeline={resolvedPipeline as PipelineInfoConfig} />
         </PipelineContext.Provider>
       </TestWrapper>
     )
 
-    expect(PipelineCardMock).toBeCalledWith(
+    await findByText('variablesText')
+
+    expect(PipelineCardMock).toHaveBeenLastCalledWith(
       expect.objectContaining({
         pipeline: pipelineWithStageTemplate,
         variablePipeline: variablesWithStageTemplate,
@@ -157,31 +197,40 @@ describe('<PipelineVariables /> tests', () => {
     )
   })
 
-  test('should render StageCard in readonly mode and with resolved stage for stage template', () => {
+  test('should render StageCard in readonly mode and with resolved stage for stage template', async () => {
     const StageCardMock = jest.spyOn(StageCard, 'default')
 
-    render(
+    ;(useCreateVariables as jest.Mock).mockReturnValue({
+      mutate: jest.fn(() =>
+        Promise.resolve({
+          data: {
+            yaml: yamlStringify({ pipeline: variablesWithStageTemplate }),
+            metadataMap: metadataMapWithStageTemplate
+          }
+        })
+      )
+    })
+    ;(useGetYamlWithTemplateRefsResolved as jest.Mock).mockReturnValue({
+      mutate: jest.fn(() =>
+        Promise.resolve({
+          data: {
+            mergedPipelineYaml: yamlStringify(resolvedPipeline)
+          }
+        })
+      )
+    })
+
+    const { findByText } = render(
       <TestWrapper>
         <PipelineContext.Provider value={stageTemplateContextMock}>
-          <PipelineVariablesContext.Provider
-            value={
-              {
-                originalPipeline: resolvedPipeline,
-                variablesPipeline: variablesWithStageTemplate,
-                loading: false,
-                initLoading: false,
-                error: null,
-                metadataMap: metadataMapWithStageTemplate
-              } as any
-            }
-          >
-            <PipelineVariables />
-          </PipelineVariablesContext.Provider>
+          <PipelineVariables pipeline={resolvedPipeline as PipelineInfoConfig} />
         </PipelineContext.Provider>
       </TestWrapper>
     )
 
-    expect(StageCardMock).toBeCalledWith(
+    await findByText('variablesText')
+
+    expect(StageCardMock).toHaveBeenCalledWith(
       expect.objectContaining({
         originalStage: resolvedPipeline.stages[0].stage,
         stage: variablesWithStageTemplate.stages[0].stage,
@@ -193,26 +242,35 @@ describe('<PipelineVariables /> tests', () => {
   })
 
   test('should call update stage with unresolved stage', async () => {
-    const { getByTestId } = render(
+    ;(useCreateVariables as jest.Mock).mockReturnValue({
+      mutate: jest.fn(() =>
+        Promise.resolve({
+          data: {
+            yaml: yamlStringify({ pipeline: variablesWithStageTemplate }),
+            metadataMap: metadataMapWithStageTemplate
+          }
+        })
+      )
+    })
+    ;(useGetYamlWithTemplateRefsResolved as jest.Mock).mockReturnValue({
+      mutate: jest.fn(() =>
+        Promise.resolve({
+          data: {
+            mergedPipelineYaml: yamlStringify(resolvedPipeline)
+          }
+        })
+      )
+    })
+
+    const { getByTestId, findByText } = render(
       <TestWrapper>
         <PipelineContext.Provider value={stageTemplateContextMock}>
-          <PipelineVariablesContext.Provider
-            value={
-              {
-                originalPipeline: resolvedPipeline,
-                variablesPipeline: variablesWithStageTemplate,
-                loading: false,
-                initLoading: false,
-                error: null,
-                metadataMap: metadataMapWithStageTemplate
-              } as any
-            }
-          >
-            <PipelineVariables />
-          </PipelineVariablesContext.Provider>
+          <PipelineVariables pipeline={resolvedPipeline as PipelineInfoConfig} />
         </PipelineContext.Provider>
       </TestWrapper>
     )
+
+    await findByText('variablesText')
 
     act(() => {
       fireEvent.change(
@@ -227,7 +285,24 @@ describe('<PipelineVariables /> tests', () => {
     expect(stageTemplateContextMock.updateStage).toBeCalledWith(updatedSecondStage)
   })
 
-  test('renders loader', () => {
+  test('renders loader', async () => {
+    ;(useCreateVariables as jest.Mock).mockReturnValue({
+      mutate: jest.fn(() =>
+        Promise.resolve({
+          data: {}
+        })
+      ),
+      loading: true
+    })
+    ;(useGetYamlWithTemplateRefsResolved as jest.Mock).mockReturnValue({
+      mutate: jest.fn(() =>
+        Promise.resolve({
+          data: {}
+        })
+      ),
+      loading: true
+    })
+
     const { container } = render(
       <TestWrapper>
         <PipelineContext.Provider value={pipelineContext}>
@@ -252,27 +327,26 @@ describe('<PipelineVariables /> tests', () => {
     expect(container).toMatchSnapshot()
   })
 
-  test('renders error', () => {
-    const { container } = render(
+  test('renders error', async () => {
+    ;(useCreateVariables as jest.Mock).mockReturnValue({
+      mutate: jest.fn().mockRejectedValue({
+        message: 'This is an error message'
+      })
+    })
+    ;(useGetYamlWithTemplateRefsResolved as jest.Mock).mockReturnValue({
+      mutate: jest.fn().mockRejectedValue({
+        message: 'This is an error message'
+      })
+    })
+    const { container, findByText } = render(
       <TestWrapper>
         <PipelineContext.Provider value={pipelineContext}>
-          <PipelineVariablesContext.Provider
-            value={
-              {
-                originalPipeline: pipelineJson,
-                variablesPipeline,
-                loading: false,
-                initLoading: false,
-                error: { message: 'This is an error message' },
-                metadataMap
-              } as any
-            }
-          >
-            <PipelineVariables />
-          </PipelineVariablesContext.Provider>
+          <PipelineVariables pipeline={{} as PipelineInfoConfig} />
         </PipelineContext.Provider>
       </TestWrapper>
     )
+
+    await findByText('This is an error message')
 
     expect(container).toMatchSnapshot()
   })

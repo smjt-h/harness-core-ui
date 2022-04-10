@@ -13,14 +13,10 @@ import { useMutateAsGet } from '@common/hooks'
 import { StringKeys, useStrings } from 'framework/strings'
 import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
 import { useGetUsers, useGetOrganizationAggregateDTOList, useGetProjectListWithMultiOrgFilter } from 'services/cd-ng'
-import {
-  actionToLabelMap,
-  getOrgDropdownList,
-  getProjectDropdownList,
-  resourceTypeToLabelMapping
-} from '@audit-trail/utils/RequestUtil'
+import { actionToLabelMap, getOrgDropdownList, getProjectDropdownList } from '@audit-trail/utils/RequestUtil'
 import UserItemRenderer from '@audit-trail/components/UserItemRenderer/UserItemRenderer'
 import UserTagRenderer from '@audit-trail/components/UserTagRenderer/UserTagRenderer'
+import AuditTrailFactory from '@audit-trail/factories/AuditTrailFactory'
 import type { AuditTrailFormType } from './FilterDrawer'
 
 interface AuditTrailFormProps {
@@ -136,7 +132,7 @@ const AuditTrailFilterForm: React.FC<AuditTrailFormProps> = props => {
         key="modules"
       /> */}
       <FormInput.MultiSelect
-        items={getOptionsForMultiSelect(resourceTypeToLabelMapping)}
+        items={getOptionsForMultiSelect(AuditTrailFactory.getResourceTypeTolabelMap())}
         name="resourceType"
         label={getString('common.resourceTypeLabel')}
         key="resourceType"

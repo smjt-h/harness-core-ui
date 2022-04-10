@@ -287,7 +287,9 @@ exports[`Autostopping rule analytics drawer render analytics drawer 1`] = `
               <img
                 alt=""
                 aria-hidden="true"
+                height="18"
                 src="test-file-stub"
+                width="18"
               />
               <p
                 class="StyledProps--font Text--lineclamp StyledProps--main StyledProps--color StyledProps--color-grey500"

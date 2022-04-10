@@ -20,8 +20,7 @@ import type {
 interface PatchFeatureFlagUtilsReturn {
   hasFlagStateChanged: () => boolean
   hasDefaultOnVariationChanged: () => boolean
-  updateFlagState: () => void
-  updateDefaultServe: () => void
+  hasDefaultOffVariationChanged: () => boolean
   addedTargetGroups: (formVariation: FormVariationMap) => TargetGroup[]
   removedTargetGroups: (formVariation: FormVariationMap) => TargetGroup[]
   addedTargets: (formVariation: FormVariationMap) => string[]
@@ -29,6 +28,9 @@ interface PatchFeatureFlagUtilsReturn {
   addedPercentageRollouts: () => VariationPercentageRollout[]
   updatedPercentageRollouts: () => VariationPercentageRollout[]
   removedPercentageRollouts: () => VariationPercentageRollout[]
+  createUpdateFlagStateInstruction: () => void
+  createDefaultServeOnInstruction: () => void
+  createDefaultServeOffInstruction: () => void
   createAddTargetGroupInstructions: (formVariation: FormVariationMap, targetGroups: TargetGroup[]) => void
   createRemoveTargetGroupsInstructions: (targetGroups: TargetGroup[]) => void
   createAddTargetsInstructions: (formVariation: FormVariationMap, targetIds: string[]) => void
@@ -46,11 +48,7 @@ export const PatchFeatureFlagUtils = (
 
   const hasDefaultOnVariationChanged = (): boolean => submittedValues.onVariation !== initialValues.onVariation
 
-  const createUpdateFlagStateInstruction = (): void =>
-    patch.feature.addInstruction(patch.creators.setFeatureFlagState(submittedValues.state as FeatureState))
-
-  const createDefaultServeInstruction = (): void =>
-    patch.feature.addInstruction(patch.creators.updateDefaultServeByVariation(submittedValues.onVariation))
+  const hasDefaultOffVariationChanged = (): boolean => submittedValues.offVariation !== initialValues.offVariation
 
   const addedTargetGroups = (formVariation: FormVariationMap): TargetGroup[] => {
     const intialTargetGroups: TargetGroup[] = formVariation.targetGroups
@@ -117,6 +115,16 @@ export const PatchFeatureFlagUtils = (
         )
       : []
   }
+
+  // INSTRUCTIONS SECTION
+  const createUpdateFlagStateInstruction = (): void =>
+    patch.feature.addInstruction(patch.creators.setFeatureFlagState(submittedValues.state as FeatureState))
+
+  const createDefaultServeOnInstruction = (): void =>
+    patch.feature.addInstruction(patch.creators.updateDefaultServeByVariation(submittedValues.onVariation))
+
+  const createDefaultServeOffInstruction = (): void =>
+    patch.feature.addInstruction(patch.creators.updateOffVariation(submittedValues.offVariation))
 
   const createAddTargetGroupInstructions = (formVariation: FormVariationMap, targetGroups: TargetGroup[]): void => {
     patch.feature.addAllInstructions(
@@ -205,8 +213,8 @@ export const PatchFeatureFlagUtils = (
   return {
     hasFlagStateChanged,
     hasDefaultOnVariationChanged,
-    updateFlagState: createUpdateFlagStateInstruction,
-    updateDefaultServe: createDefaultServeInstruction,
+    hasDefaultOffVariationChanged,
+    createUpdateFlagStateInstruction,
     addedTargetGroups,
     removedTargetGroups,
     addedTargets,
@@ -214,6 +222,8 @@ export const PatchFeatureFlagUtils = (
     addedPercentageRollouts,
     updatedPercentageRollouts,
     removedPercentageRollouts,
+    createDefaultServeOnInstruction,
+    createDefaultServeOffInstruction,
     createAddTargetGroupInstructions,
     createRemoveTargetGroupsInstructions,
     createAddTargetsInstructions,

@@ -12,6 +12,7 @@ describe('PatchFeatureFlagUtils', async () => {
   const submittedValues: TargetingRulesFormValues = {
     state: '',
     onVariation: '',
+    offVariation: '',
     formVariationMap: [
       {
         variationIdentifier: 'TEST2',
@@ -27,6 +28,7 @@ describe('PatchFeatureFlagUtils', async () => {
   const initialValues: TargetingRulesFormValues = {
     state: '',
     onVariation: '',
+    offVariation: '',
     formVariationMap: [
       {
         variationIdentifier: 'TEST2',

@@ -5,24 +5,30 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import React from 'react'
-import { Container, Tab, Tabs, Text } from '@wings-software/uicore'
+import React, { FC } from 'react'
+import { Container, Tab, Tabs, Text } from '@harness/uicore'
+import { Color } from '@harness/design-system'
 import { useStrings } from 'framework/strings'
 import StringWithTooltip from '@common/components/StringWithTooltip/StringWithTooltip'
 import type { Target } from 'services/cf'
 import { DetailHeading } from '../DetailHeading'
-import { TabAttributes } from '../attributes/TabAtrributes'
+import TabAttributes from '../attributes/TabAttributes'
 import { TabSegments } from '../segments/TabSegments'
 import css from '../TargetDetailPage.module.scss'
 
-export const TargetSettings: React.FC<{ target?: Target | undefined | null }> = ({ target }) => {
+export interface TargetSettingsProps {
+  target: Target
+}
+
+export const TargetSettings: FC<TargetSettingsProps> = ({ target }) => {
   const { getString } = useStrings()
 
   return (
     <Container
       width={480}
       height="100%"
-      style={{ background: '#F8FAFB', overflow: 'auto', minWidth: '480px' }}
+      background={Color.PRIMARY_BG}
+      style={{ overflow: 'auto', minWidth: '480px' }}
       className={css.targetSettings}
     >
       <DetailHeading style={{ paddingBottom: 0 }}>

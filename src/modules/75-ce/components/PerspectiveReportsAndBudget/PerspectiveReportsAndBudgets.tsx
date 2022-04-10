@@ -165,7 +165,7 @@ const useFetchReports = (accountId: string, perspectiveId: string) => {
   return { reports: data?.data || [], loading, refetch }
 }
 
-const ScheduledReports: React.FC = () => {
+export const ScheduledReports: React.FC = () => {
   const { getString } = useStrings()
   const { accountId, perspectiveId } = useParams<UrlParams>()
   const { trackEvent } = useTelemetry()
@@ -289,7 +289,7 @@ const useFetchBudget = (accountId: string, perspectiveId: string) => {
   return { budgets: data?.data || [], loading, refetch }
 }
 
-const Budgets = ({ perspectiveName }: { perspectiveName: string }): JSX.Element => {
+export const Budgets = ({ perspectiveName }: { perspectiveName: string }): JSX.Element => {
   const { getString } = useStrings()
   const { accountId, perspectiveId } = useParams<UrlParams>()
   const { mutate: deleteBudget } = useDeleteBudget({ queryParams: { accountIdentifier: accountId } })

@@ -153,17 +153,27 @@ const Content = (props: NexusRenderContent): JSX.Element => {
               }}
             />
           )}
-
-          {isFieldRuntime(`artifacts.${artifactPath}.spec.artifactPath`, template) && (
+          {isFieldRuntime(`artifacts.${artifactPath}.spec.repositoryPort`, template) && (
             <FormInput.MultiTextInput
-              label={getString('pipeline.artifactPathLabel')}
-              disabled={isFieldDisabled(`artifacts.${artifactPath}.spec.artifactPath`)}
+              label={getString('pipeline.artifactsSelection.repositoryPort')}
+              disabled={isFieldDisabled(`artifacts.${artifactPath}.spec.repositoryPort`)}
               multiTextInputProps={{
                 expressions,
                 allowableTypes
               }}
-              name={`${path}.artifacts.${artifactPath}.spec.artifactPath`}
-              onChange={() => resetTags(formik, `${path}.artifacts.${artifactPath}.spec.tag`)}
+              name={`${path}.artifacts.${artifactPath}.spec.repositoryPort`}
+            />
+          )}
+
+          {isFieldRuntime(`artifacts.${artifactPath}.spec.repositoryUrl`, template) && (
+            <FormInput.MultiTextInput
+              label={getString('repositoryUrlLabel')}
+              disabled={isFieldDisabled(`artifacts.${artifactPath}.spec.repositoryUrl`)}
+              multiTextInputProps={{
+                expressions,
+                allowableTypes
+              }}
+              name={`${path}.artifacts.${artifactPath}.spec.repositoryUrl`}
             />
           )}
 
@@ -180,27 +190,16 @@ const Content = (props: NexusRenderContent): JSX.Element => {
             />
           )}
 
-          {isFieldRuntime(`artifacts.${artifactPath}.spec.repositoryPort`, template) && (
+          {isFieldRuntime(`artifacts.${artifactPath}.spec.artifactPath`, template) && (
             <FormInput.MultiTextInput
-              label={getString('pipeline.artifactsSelection.repositoryPort')}
-              disabled={isFieldDisabled(`artifacts.${artifactPath}.spec.repositoryPort`)}
+              label={getString('pipeline.artifactPathLabel')}
+              disabled={isFieldDisabled(`artifacts.${artifactPath}.spec.artifactPath`)}
               multiTextInputProps={{
                 expressions,
                 allowableTypes
               }}
-              name={`${path}.artifacts.${artifactPath}.spec.repositoryPort`}
-            />
-          )}
-
-          {isFieldRuntime(`artifacts.${artifactPath}.spec.artifactRepositoryUrl`, template) && (
-            <FormInput.MultiTextInput
-              label={getString('repositoryUrlLabel')}
-              disabled={isFieldDisabled(`artifacts.${artifactPath}.spec.artifactRepositoryUrl`)}
-              multiTextInputProps={{
-                expressions,
-                allowableTypes
-              }}
-              name={`${path}.artifacts.${artifactPath}.spec.artifactRepositoryUrl`}
+              name={`${path}.artifacts.${artifactPath}.spec.artifactPath`}
+              onChange={() => resetTags(formik, `${path}.artifacts.${artifactPath}.spec.tag`)}
             />
           )}
 

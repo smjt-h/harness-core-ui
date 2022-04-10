@@ -8,9 +8,9 @@
 /* eslint-disable react/display-name */
 import React, { FC, useCallback, useMemo, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import type { Cell } from 'react-table'
 import type { ObjectSchema } from 'yup'
 import * as yup from 'yup'
+import { memoize } from 'lodash-es'
 import {
   Button,
   ButtonVariation,
@@ -20,20 +20,20 @@ import {
   FormikForm,
   Page,
   Pagination,
-  TableV2,
   useToaster
 } from '@harness/uicore'
 import { useStrings } from 'framework/strings'
-import { Segment, usePatchSegment } from 'services/cf'
+import { Feature, Segment, ServingRule, usePatchSegment, WeightedVariation } from 'services/cf'
 import { CF_DEFAULT_PAGE_SIZE } from '@cf/utils/CFUtils'
 import { NoData } from '@cf/components/NoData/NoData'
 import imageUrl from '@cf/images/Feature_Flags_Teepee.svg'
 import useRBACError from '@rbac/utils/useRBACError/useRBACError'
+import { FormValuesProvider } from '@cf/hooks/useFormValues'
 import type { FlagSettingsFormData, FlagSettingsFormRow, TargetGroupFlagsMap } from '../../TargetGroupDetailPage.types'
-import FlagDetailsCell from './FlagsListing/FlagDetailsCell'
-import VariationsCell from './FlagsListing/VariationsCell'
+import usePercentageRolloutValidationSchema from '../../hooks/usePercentageRolloutValidationSchema'
 import FlagSettingsFormButtons from './FlagSettingsFormButtons'
 import { getFlagSettingsInstructions } from './flagSettingsInstructions'
+import FlagsListing from './FlagsListing/FlagsListing'
 
 import css from './FlagSettingsForm.module.scss'
 
@@ -43,6 +43,31 @@ export interface FlagSettingsFormProps {
   onChange: () => void
   openAddFlagDialog: () => void
 }
+
+function getPercentageRolloutValues(targetGroupIdentifier: string, flag: Feature): WeightedVariation[] {
+  return (
+    flag.envProperties?.rules?.find(
+      (rule: ServingRule) =>
+        rule?.serve?.distribution &&
+        rule.clauses.some(clause => clause.op === 'segmentMatch' && clause.values.includes(targetGroupIdentifier))
+    )?.serve?.distribution?.variations || []
+  )
+}
+
+const filterFlags = memoize(
+  (values: FlagSettingsFormData, targetGroupFlagsMap: TargetGroupFlagsMap, searchTerm: string) => {
+    const filteredFlags = !searchTerm
+      ? Object.values(values.flags)
+      : Object.values(values.flags).filter(flag =>
+          (targetGroupFlagsMap[flag.identifier].flag?.name ?? '')
+            .toLocaleLowerCase()
+            .includes(searchTerm.toLocaleLowerCase())
+        )
+
+    return filteredFlags.map(({ identifier }) => targetGroupFlagsMap[identifier].flag)
+  },
+  (...args) => JSON.stringify(args)
+)
 
 const FlagSettingsForm: FC<FlagSettingsFormProps> = ({
   targetGroup,
@@ -92,15 +117,27 @@ const FlagSettingsForm: FC<FlagSettingsFormProps> = ({
   const initialValues = useMemo<FlagSettingsFormData>(
     () => ({
       flags: Object.values(targetGroupFlagsMap).reduce<FlagSettingsFormData['flags']>(
-        (rows, { identifier, variation }) => ({
-          ...rows,
-          [identifier]: { identifier, variation }
-        }),
+        (rows, { identifier, variation, flag }) => {
+          const rowValues: FlagSettingsFormRow = {
+            identifier,
+            variation
+          }
+
+          const variations = getPercentageRolloutValues(targetGroup.identifier, flag)
+
+          if (variations.length) {
+            rowValues.percentageRollout = { variations }
+          }
+
+          return { ...rows, [identifier]: rowValues }
+        },
         {}
       )
     }),
-    [targetGroupFlagsMap]
+    [targetGroup.identifier, targetGroupFlagsMap]
   )
+
+  const percentageRolloutValidationSchema = usePercentageRolloutValidationSchema()
 
   const validationSchema = useMemo(
     () =>
@@ -113,7 +150,8 @@ const FlagSettingsForm: FC<FlagSettingsFormProps> = ({
                 (objShape, key) => ({
                   ...objShape,
                   [key]: yup.object({
-                    variation: yup.string().trim().required(getString('cf.segmentDetail.variationIsRequired'))
+                    variation: yup.string().trim().required(getString('cf.segmentDetail.variationIsRequired')),
+                    percentageRollout: percentageRolloutValidationSchema
                   })
                 }),
                 {}
@@ -134,21 +172,14 @@ const FlagSettingsForm: FC<FlagSettingsFormProps> = ({
       initialValues={initialValues}
       validationSchema={validationSchema}
     >
-      {({ values, dirty, resetForm, submitForm, setFieldValue }) => {
+      {({ values, dirty, resetForm, submitForm, setFieldValue, errors }) => {
+        const filteredFlags = filterFlags(values, targetGroupFlagsMap, searchTerm)
+
         const startIndex = CF_DEFAULT_PAGE_SIZE * pageIndex
-
-        const filteredFlags = !searchTerm
-          ? Object.values(values.flags)
-          : Object.values(values.flags).filter(flag =>
-              (targetGroupFlagsMap[flag.identifier].flag?.name ?? '')
-                .toLocaleLowerCase()
-                .includes(searchTerm.toLocaleLowerCase())
-            )
-
         const pagedFlags = filteredFlags.slice(startIndex, startIndex + CF_DEFAULT_PAGE_SIZE)
 
         return (
-          <>
+          <FormValuesProvider values={values} setField={setFieldValue} errors={errors}>
             <Page.SubHeader>
               <Button
                 variation={ButtonVariation.SECONDARY}
@@ -161,47 +192,9 @@ const FlagSettingsForm: FC<FlagSettingsFormProps> = ({
             <FormikForm className={css.formLayout} disabled={submitting}>
               {(!searchTerm || filteredFlags.length > 0) && (
                 <Container padding="xlarge">
-                  <TableV2<FlagSettingsFormRow>
-                    data={pagedFlags}
-                    columns={[
-                      {
-                        Header: getString('cf.segmentDetail.headingFeatureFlag'),
-                        id: 'flagDetails',
-                        width: '60%',
-                        Cell: ({ row }: Cell<FlagSettingsFormRow>) => (
-                          <FlagDetailsCell flag={targetGroupFlagsMap[row.original.identifier].flag} />
-                        )
-                      },
-                      {
-                        Header: getString('cf.segmentDetail.headingVariation'),
-                        id: 'variation',
-                        width: '35%',
-                        Cell: ({ row }: Cell<FlagSettingsFormRow>) => (
-                          <VariationsCell
-                            flag={targetGroupFlagsMap[row.original.identifier].flag}
-                            fieldPrefix={`flags.${row.original.identifier}`}
-                          />
-                        )
-                      },
-                      {
-                        Header: '',
-                        id: 'actions',
-                        width: '5%',
-                        Cell: ({ row }: Cell<FlagSettingsFormRow>) => (
-                          <div className={css.alignRight}>
-                            <Button
-                              icon="trash"
-                              variation={ButtonVariation.ICON}
-                              aria-label={getString('cf.segmentDetail.removeRule')}
-                              onClick={e => {
-                                e.preventDefault()
-                                setFieldValue(`flags.${row.original.identifier}`, undefined)
-                              }}
-                            />
-                          </div>
-                        )
-                      }
-                    ]}
+                  <FlagsListing
+                    flags={pagedFlags}
+                    onRowDelete={({ identifier }) => setFieldValue(`flags.${identifier}`, undefined)}
                   />
                 </Container>
               )}
@@ -225,7 +218,7 @@ const FlagSettingsForm: FC<FlagSettingsFormProps> = ({
 
               {dirty && <FlagSettingsFormButtons submitting={submitting} onCancel={resetForm} onSubmit={submitForm} />}
             </FormikForm>
-          </>
+          </FormValuesProvider>
         )
       }}
     </Formik>

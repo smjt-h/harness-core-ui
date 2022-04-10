@@ -23,7 +23,7 @@ import {
   stepsData,
   StepResourceObject,
   pipelineStudioRoute,
-  inputSetsRoute
+  inputSetsRoute, pipelinesRoute, featureFlagsCall
 } from '../../support/70-pipeline/constants'
 import { getIdentifierFromName } from '../../utils/stringHelpers'
 
@@ -328,3 +328,85 @@ describe('Input Sets', () => {
     cy.contains('p', 'testService').should('not.exist')
   })
 })
+
+describe('Add stage view with enabled licences', () => {
+  beforeEach(() => {
+    cy.on('uncaught:exception', () => {
+      // returning false here prevents Cypress from
+      // failing the test
+      return false
+    })
+    cy.intercept('GET', gitSyncEnabledCall, { connectivityMode: null, gitSyncEnabled: false })
+    cy.initializeRoute()
+    cy.visit(pipelinesRoute, {
+      timeout: 30000
+    })
+    cy.contains('span', 'Create a Pipeline').click()
+    cy.fillName('testPipeline_Cypress')
+    cy.clickSubmit()
+  })
+
+  it('should display the stage thumbnails when the all licenses are present', () => {
+    cy.get('[icon="plus"]').click()
+    cy.findByTestId('stage-Deployment').should('be.visible')
+    cy.get('[data-icon="template-library"]').should('be.visible')
+    cy.contains('span', 'Use template').should('be.visible')
+    cy.findByTestId('stage-CI').should('be.visible')
+    cy.findByTestId('stage-Approval').should('be.visible')
+    cy.findByTestId('stage-Security').should('be.visible')
+  })
+})
+
+describe('Add stage view with disabled licences', () => {
+  beforeEach(() => {
+    cy.on('uncaught:exception', () => {
+      // returning false here prevents Cypress from
+      // failing the test
+      return false
+    })
+    cy.intercept('GET', gitSyncEnabledCall, { connectivityMode: null, gitSyncEnabled: false })
+
+    cy.fixture('api/users/feature-flags/accountId').then((featureFlagsData) => {
+
+      const disabledLicenses = ['NG_TEMPLATES', 'SECURITY_STAGE', 'CING_ENABLED']
+
+      const updatedFeatureFlagsList = featureFlagsData.resource.reduce((acc, currentFlagData) => {
+        if(disabledLicenses.includes(currentFlagData.name)){
+          acc.push({
+            "uuid": null, "name": currentFlagData.name, "enabled": false, "lastUpdatedAt": 0
+          })
+          return acc
+        }
+
+        acc.push(currentFlagData)
+        return acc
+      }, [])
+
+
+      cy.intercept('GET', featureFlagsCall, {
+        ...featureFlagsData,
+        resource: updatedFeatureFlagsList
+      })
+    })
+
+    cy.initializeRoute()
+    cy.visit(pipelinesRoute, {
+      timeout: 30000
+    })
+    cy.contains('span', 'Create a Pipeline').click()
+    cy.fillName('testPipeline_Cypress')
+    cy.clickSubmit()
+  })
+
+  it('should not display the stage thumbnails for the disabled licenses', () => {
+    cy.get('[icon="plus"]').click()
+    cy.findByTestId('stage-Deployment').should('be.visible')
+    cy.findByTestId('stage-Approval').should('be.visible')
+
+    cy.get('[data-icon="template-library"]').should('not.exist')
+    cy.contains('span', 'Use template').should('not.exist')
+    cy.findByTestId('stage-CI').should('not.exist')
+    cy.findByTestId('stage-Security').should('not.exist')
+  })
+})
+

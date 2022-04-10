@@ -18,17 +18,30 @@ import {
   FormInput,
   SelectOption
 } from '@harness/uicore'
+import type { FormikProps } from 'formik'
 import { useStrings } from 'framework/strings'
+import type { channels } from '@ce/constants'
 import css from './AnomaliesAlertDialog.module.scss'
 
 interface AlertsOverviewProps {
   name: string
   onClose: () => void
   items: SelectOption[]
+  formikProps: FormikProps<NotificationValues>
 }
 
 interface StepData {
   name: string
+}
+
+interface Alerts {
+  channelName?: channels
+  channelUrl?: string | string[]
+}
+
+interface NotificationValues {
+  perspective: string
+  alertList: Alerts[]
 }
 
 const PerspectiveSelection: React.FC<StepProps<StepData> & AlertsOverviewProps> = props => {
@@ -55,6 +68,7 @@ const PerspectiveSelection: React.FC<StepProps<StepData> & AlertsOverviewProps> 
         variation={ButtonVariation.PRIMARY}
         onClick={() => props.nextStep?.({ name: props.name || '' })}
         text={getString('saveAndContinue')}
+        disabled={!props.formikProps.values.perspective}
       />
     </React.Fragment>
   )

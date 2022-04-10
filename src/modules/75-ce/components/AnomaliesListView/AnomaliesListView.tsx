@@ -186,8 +186,8 @@ const AnomaliesListGridView: React.FC<ListProps> = ({ listData, sortByObj, setSo
   }
 
   const CostCell: Renderer<CellProps<AnomalyData>> = ({ row }) => {
-    const actualAmount = row.original.actualAmount as number
-    const trend = row.original.trend
+    const actualAmount = row.original.anomalousSpend as number
+    const trend = row.original.anomalousSpendPercentage
 
     return (
       <Layout.Horizontal style={{ alignItems: 'baseline' }} spacing="small">

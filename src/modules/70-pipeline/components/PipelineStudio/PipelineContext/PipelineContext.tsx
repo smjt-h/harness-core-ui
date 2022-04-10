@@ -361,8 +361,16 @@ const _fetchPipeline = async (props: FetchPipelineBoundProps, params: FetchPipel
     defaultTo(gitDetails.branch, '')
   )
   dispatch(PipelineContextActions.fetching())
-  let data: PipelinePayload =
-    IdbPipeline?.objectStoreNames?.contains(IdbPipelineStoreName) && (await IdbPipeline?.get(IdbPipelineStoreName, id))
+
+  let data: PipelinePayload | undefined
+  try {
+    data =
+      IdbPipeline?.objectStoreNames?.contains(IdbPipelineStoreName) &&
+      (await IdbPipeline?.get(IdbPipelineStoreName, id))
+  } catch (_) {
+    logger.info(DBNotFoundErrorMessage)
+  }
+
   if ((!data || forceFetch) && pipelineId !== DefaultNewPipelineId) {
     const pipelineWithGitDetails: PipelineInfoConfigWithGitDetails = await getPipelineByIdentifier(
       { ...queryParams, ...(repoIdentifier && branch ? { repoIdentifier, branch } : {}) },
@@ -382,7 +390,12 @@ const _fetchPipeline = async (props: FetchPipelineBoundProps, params: FetchPipel
       defaultTo(gitDetails.repoIdentifier, defaultTo(pipelineWithGitDetails?.gitDetails?.repoIdentifier, '')),
       defaultTo(gitDetails.branch, defaultTo(pipelineWithGitDetails?.gitDetails?.branch, ''))
     )
-    data = await IdbPipeline?.get(IdbPipelineStoreName, id)
+
+    try {
+      data = await IdbPipeline?.get(IdbPipelineStoreName, id)
+    } catch (_) {
+      logger.info(DBNotFoundErrorMessage)
+    }
     const pipeline: PipelineInfoConfig = omit(
       pipelineWithGitDetails,
       'gitDetails',
@@ -430,8 +443,12 @@ const _fetchPipeline = async (props: FetchPipelineBoundProps, params: FetchPipel
           )
         })
       )
-    } else if (IdbPipeline) {
-      await IdbPipeline.put(IdbPipelineStoreName, payload)
+    } else {
+      try {
+        await IdbPipeline?.put(IdbPipelineStoreName, payload)
+      } catch (_) {
+        logger.info(DBNotFoundErrorMessage)
+      }
       const templateTypes = await getTemplateType(pipeline, templateQueryParams)
       dispatch(
         PipelineContextActions.success({
@@ -442,20 +459,6 @@ const _fetchPipeline = async (props: FetchPipelineBoundProps, params: FetchPipel
           isUpdated: false,
           gitDetails: payload.gitDetails,
           entityValidityDetails: payload.entityValidityDetails,
-          templateTypes
-        })
-      )
-    } else {
-      const templateTypes = await getTemplateType(pipeline, templateQueryParams)
-      dispatch(
-        PipelineContextActions.success({
-          error: '',
-          pipeline,
-          originalPipeline: cloneDeep(pipeline),
-          isBEPipelineUpdated: false,
-          isUpdated: false,
-          gitDetails: pipelineWithGitDetails?.gitDetails?.objectId ? pipelineWithGitDetails.gitDetails : {},
-          entityValidityDetails: defaultTo(pipelineWithGitDetails?.entityValidityDetails, {}),
           templateTypes
         })
       )
@@ -562,17 +565,22 @@ const _updateGitDetails = async (args: UpdateGitDetailsArgs, gitDetails: EntityG
     gitDetails.branch || ''
   )
   const isUpdated = !isEqual(originalPipeline, pipeline)
-  if (IdbPipeline) {
-    const payload: PipelinePayload = {
-      [KeyPath]: id,
-      pipeline,
-      originalPipeline,
-      isUpdated,
-      gitDetails
+  try {
+    if (IdbPipeline) {
+      const payload: PipelinePayload = {
+        [KeyPath]: id,
+        pipeline,
+        originalPipeline,
+        isUpdated,
+        gitDetails
+      }
+      await IdbPipeline.put(IdbPipelineStoreName, payload)
     }
-    await IdbPipeline.put(IdbPipelineStoreName, payload)
+    dispatch(PipelineContextActions.success({ error: '', pipeline, isUpdated, gitDetails }))
+  } catch (_) {
+    logger.info(DBNotFoundErrorMessage)
+    dispatch(PipelineContextActions.success({ error: '', pipeline, isUpdated, gitDetails }))
   }
-  dispatch(PipelineContextActions.success({ error: '', pipeline, isUpdated, gitDetails }))
 }
 
 interface UpdateEntityValidityDetailsArgs {
@@ -637,22 +645,16 @@ const _updatePipeline = async (
 
   let pipeline = pipelineArg
   if (typeof pipelineArg === 'function') {
-    if (IdbPipeline) {
-      try {
-        const dbPipeline = await IdbPipeline.get(IdbPipelineStoreName, id)
-        if (dbPipeline?.pipeline) {
-          pipeline = pipelineArg(dbPipeline.pipeline)
-        } else {
-          pipeline = {} as PipelineInfoConfig
-        }
-      } catch (_) {
-        pipeline = {} as PipelineInfoConfig
-        logger.info(DBNotFoundErrorMessage)
+    try {
+      const dbPipeline = await IdbPipeline?.get(IdbPipelineStoreName, id)
+      if (dbPipeline?.pipeline) {
+        pipeline = pipelineArg(dbPipeline.pipeline)
+      } else {
+        throw new Error(DBNotFoundErrorMessage) //'Pipeline does not exist in the db'
       }
-    } else if (latestPipeline) {
+    } catch (_) {
       pipeline = pipelineArg(latestPipeline)
-    } else {
-      pipeline = {} as PipelineInfoConfig
+      logger.info(DBNotFoundErrorMessage)
     }
   }
   const isUpdated = !isEqual(omit(originalPipeline, 'repo', 'branch'), pipeline)
@@ -663,8 +665,10 @@ const _updatePipeline = async (
     isUpdated,
     gitDetails
   }
-  if (IdbPipeline) {
-    await IdbPipeline.put(IdbPipelineStoreName, payload)
+  try {
+    await IdbPipeline?.put(IdbPipelineStoreName, payload)
+  } catch (_) {
+    logger.info(DBNotFoundErrorMessage)
   }
   dispatch(PipelineContextActions.success({ error: '', pipeline: pipeline as PipelineInfoConfig, isUpdated }))
 }

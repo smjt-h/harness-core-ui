@@ -104,7 +104,12 @@ const Wrapped = (): React.ReactElement => {
           render={formikProps => {
             return (
               <StepWizard>
-                <PerspectiveSelection name={''} onClose={hideAnomaliesAlertModal} items={[]} />
+                <PerspectiveSelection
+                  name={''}
+                  onClose={hideAnomaliesAlertModal}
+                  items={[]}
+                  formikProps={formikProps}
+                />
                 <NotificationMethod name={''} onClose={hideAnomaliesAlertModal} formikProps={formikProps} />
               </StepWizard>
             )

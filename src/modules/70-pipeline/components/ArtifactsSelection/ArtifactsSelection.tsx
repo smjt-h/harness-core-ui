@@ -82,6 +82,8 @@ import {
 import { useVariablesExpression } from '../PipelineStudio/PiplineHooks/useVariablesExpression'
 import NexusArtifact from './ArtifactRepository/ArtifactLastSteps/NexusArtifact/NexusArtifact'
 import Artifactory from './ArtifactRepository/ArtifactLastSteps/Artifactory/Artifactory'
+import { CustomArtifact } from './ArtifactRepository/ArtifactLastSteps/CustomArtifact/CustomArtifact'
+import { showConnectorStep } from './ArtifactUtils'
 import css from './ArtifactsSelection.module.scss'
 
 export default function ArtifactsSelection({
@@ -115,7 +117,7 @@ export default function ArtifactsSelection({
   const { expressions } = useVariablesExpression()
 
   const stepWizardTitle = getString('connectors.createNewConnector')
-  const { NG_NEXUS_ARTIFACTORY } = useFeatureFlags()
+  const { NG_NEXUS_ARTIFACTORY, CUSTOM_ARTIFACT_NG } = useFeatureFlags()
   const { stage } = getStageFromPipeline<DeploymentStageElementConfig>(selectedStageId || '')
   const deploymentType = getSelectedDeploymentType(stage, getStageFromPipeline, isPropagating)
 
@@ -125,6 +127,13 @@ export default function ArtifactsSelection({
       !allowedArtifactTypes[deploymentType]?.includes(ENABLED_ARTIFACT_TYPES.Nexus3Registry) &&
       !isServerlessDeploymentType(deploymentType)
     ) {
+      allowedArtifactTypes[deploymentType].push(
+        ENABLED_ARTIFACT_TYPES.Nexus3Registry,
+        ENABLED_ARTIFACT_TYPES.ArtifactoryRegistry
+      )
+    }
+
+    if (CUSTOM_ARTIFACT_NG && !allowedArtifactTypes[deploymentType]?.includes(ENABLED_ARTIFACT_TYPES.CustomArtifact)) {
       allowedArtifactTypes[deploymentType].push(
         ENABLED_ARTIFACT_TYPES.Nexus3Registry,
         ENABLED_ARTIFACT_TYPES.ArtifactoryRegistry
@@ -536,7 +545,10 @@ export default function ArtifactsSelection({
       const iconProps: IconProps = {
         name: ArtifactIconByType[selectedArtifact]
       }
-      if (selectedArtifact === ENABLED_ARTIFACT_TYPES.DockerRegistry) {
+      if (
+        selectedArtifact === ENABLED_ARTIFACT_TYPES.DockerRegistry ||
+        selectedArtifact === ENABLED_ARTIFACT_TYPES.CustomArtifact
+      ) {
         iconProps.color = Color.WHITE
       }
       return iconProps
@@ -681,6 +693,8 @@ export default function ArtifactsSelection({
         return <NexusArtifact {...artifactLastStepProps()} />
       case ENABLED_ARTIFACT_TYPES.ArtifactoryRegistry:
         return <Artifactory {...artifactLastStepProps()} />
+      case ENABLED_ARTIFACT_TYPES.CustomArtifact:
+        return <CustomArtifact {...artifactLastStepProps()} />
       case ENABLED_ARTIFACT_TYPES.DockerRegistry:
       default:
         return <DockerRegistryArtifact {...artifactLastStepProps()} />
@@ -713,6 +727,7 @@ export default function ArtifactsSelection({
           newConnectorView={connectorView}
           newConnectorSteps={getNewConnectorSteps()}
           handleViewChange={handleConnectorViewChange}
+          showConnectorStep={showConnectorStep(selectedArtifact as ArtifactType)}
         />
       </div>
     )

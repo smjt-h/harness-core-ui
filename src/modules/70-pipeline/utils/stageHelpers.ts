@@ -160,13 +160,13 @@ export const getHelpeTextForTags = (
   }
   if (
     !isServerlessDeploymentTypeSelected &&
-    (!imagePath || getMultiTypeFromValue(imagePath) === MultiTypeInputType.RUNTIME)
+    (imagePath === '' || getMultiTypeFromValue(imagePath) === MultiTypeInputType.RUNTIME)
   ) {
     invalidFields.push(getString('pipeline.imagePathLabel'))
   }
   if (
     !isServerlessDeploymentTypeSelected &&
-    (!imagePath || getMultiTypeFromValue(artifactPath) === MultiTypeInputType.RUNTIME)
+    (artifactPath === '' || getMultiTypeFromValue(artifactPath) === MultiTypeInputType.RUNTIME)
   ) {
     invalidFields.push(getString('pipeline.artifactPathLabel'))
   }

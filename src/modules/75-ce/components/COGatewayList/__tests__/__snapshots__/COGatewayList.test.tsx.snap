@@ -701,7 +701,9 @@ exports[`Test COGatewayList clicking on a row should open info drawer 1`] = `
                     <img
                       alt=""
                       aria-hidden="true"
+                      height="18"
                       src="test-file-stub"
+                      width="18"
                     />
                     <p
                       class="StyledProps--font Text--lineclamp StyledProps--main StyledProps--color StyledProps--color-grey500"
@@ -931,7 +933,9 @@ exports[`Test COGatewayList clicking on a row should open info drawer 1`] = `
                     <img
                       alt=""
                       aria-hidden="true"
+                      height="18"
                       src="test-file-stub"
+                      width="18"
                     />
                     <p
                       class="StyledProps--font Text--lineclamp StyledProps--main StyledProps--color StyledProps--color-grey500"
@@ -2424,7 +2428,9 @@ exports[`Test COGatewayList clicking on refresh button refetch all rules 1`] = `
                     <img
                       alt=""
                       aria-hidden="true"
+                      height="18"
                       src="test-file-stub"
+                      width="18"
                     />
                     <p
                       class="StyledProps--font Text--lineclamp StyledProps--main StyledProps--color StyledProps--color-grey500"
@@ -2654,7 +2660,9 @@ exports[`Test COGatewayList clicking on refresh button refetch all rules 1`] = `
                     <img
                       alt=""
                       aria-hidden="true"
+                      height="18"
                       src="test-file-stub"
+                      width="18"
                     />
                     <p
                       class="StyledProps--font Text--lineclamp StyledProps--main StyledProps--color StyledProps--color-grey500"
@@ -4690,7 +4698,9 @@ exports[`Test COGatewayList renders without crashing 1`] = `
                     <img
                       alt=""
                       aria-hidden="true"
+                      height="18"
                       src="test-file-stub"
+                      width="18"
                     />
                     <p
                       class="StyledProps--font Text--lineclamp StyledProps--main StyledProps--color StyledProps--color-grey500"
@@ -4920,7 +4930,9 @@ exports[`Test COGatewayList renders without crashing 1`] = `
                     <img
                       alt=""
                       aria-hidden="true"
+                      height="18"
                       src="test-file-stub"
+                      width="18"
                     />
                     <p
                       class="StyledProps--font Text--lineclamp StyledProps--main StyledProps--color StyledProps--color-grey500"

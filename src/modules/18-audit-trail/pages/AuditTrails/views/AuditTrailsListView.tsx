@@ -12,11 +12,8 @@ import type { Column, Renderer, CellProps } from 'react-table'
 import { Link, useParams } from 'react-router-dom'
 import { PopoverInteractionKind, Position, Classes } from '@blueprintjs/core'
 import type { IconProps } from '@harness/uicore/dist/icons/Icon'
-import {
-  actionToLabelMap,
-  getModuleNameFromAuditModule,
-  resourceTypeToLabelMapping
-} from '@audit-trail/utils/RequestUtil'
+import defaultTo from 'lodash-es/defaultTo'
+import { actionToLabelMap, getModuleNameFromAuditModule } from '@audit-trail/utils/RequestUtil'
 import type { AuditEventDTO, PageAuditEventDTO } from 'services/audit'
 import { useStrings } from 'framework/strings'
 import { getReadableDateTime } from '@common/utils/dateUtils'
@@ -79,8 +76,9 @@ const AuditTrailsListView: React.FC<AuditTrailsListViewProps> = ({ data, setPage
     const { resourceScope, resource, module } = row.original
     const { accountIdentifier } = resourceScope
 
+    const resourceHandler = AuditTrailFactory.getResourceHandler(resource.type)
     const url = accountIdentifier
-      ? AuditTrailFactory.getResourceHandler(resource.type)?.resourceUrl?.(
+      ? resourceHandler?.resourceUrl?.(
           row.original.resource,
           {
             ...resourceScope,
@@ -94,14 +92,16 @@ const AuditTrailsListView: React.FC<AuditTrailsListViewProps> = ({ data, setPage
       <Layout.Vertical padding={{ right: 'xlarge' }}>
         {url ? (
           <Link className={css.resourceLink} to={url}>
-            <Text lineClamp={1}>{resource.labels?.resourceName || resource.identifier}</Text>
+            <Text lineClamp={1}>{defaultTo(resource.labels?.resourceName, resource.identifier)}</Text>
           </Link>
         ) : (
-          <Text lineClamp={1}>{resource.labels?.resourceName || resource.identifier}</Text>
+          <Text lineClamp={1}>{defaultTo(resource.labels?.resourceName, resource.identifier)}</Text>
         )}
-        <Text padding={{ top: 'xsmall' }} lineClamp={1}>{`${getString('typeLabel')}: ${getString(
-          resourceTypeToLabelMapping[row.original.resource.type]
-        )}`}</Text>
+        {resourceHandler?.resourceLabel ? (
+          <Text padding={{ top: 'xsmall' }} lineClamp={1}>{`${getString('typeLabel')}: ${getString(
+            resourceHandler?.resourceLabel
+          )}`}</Text>
+        ) : undefined}
       </Layout.Vertical>
     )
   }

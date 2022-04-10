@@ -9,8 +9,8 @@ import React from 'react'
 import { useHistory, useParams } from 'react-router-dom'
 import { Container, Layout, PageError } from '@wings-software/uicore'
 import { Intent } from '@harness/design-system'
-import { useStrings, String } from 'framework/strings'
-import { DeleteTargetQueryParams, GetTargetQueryParams, useDeleteTarget, useGetTarget } from 'services/cf'
+import { String, useStrings } from 'framework/strings'
+import { DeleteTargetQueryParams, GetTargetQueryParams, Target, useDeleteTarget, useGetTarget } from 'services/cf'
 import routes from '@common/RouteDefinitions'
 import { ContainerSpinner } from '@common/components/ContainerSpinner/ContainerSpinner'
 import { PageSpinner, useToaster } from '@common/components'
@@ -191,7 +191,7 @@ export const TargetDetailPage: React.FC = () => {
       <Layout.Vertical height="100%" style={{ flexGrow: 1, background: 'var(--white)' }}>
         {gitSync.isGitSyncActionsEnabled && <TargetManagementToolbar gitSync={gitSync} />}
         <Layout.Horizontal height="100%">
-          <TargetSettings target={target} />
+          <TargetSettings target={target as Target} />
           <FlagSettings target={target} gitSync={gitSync} />
         </Layout.Horizontal>
       </Layout.Vertical>
