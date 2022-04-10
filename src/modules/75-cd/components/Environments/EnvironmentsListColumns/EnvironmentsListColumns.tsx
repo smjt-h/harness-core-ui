@@ -29,38 +29,28 @@ export enum DeploymentStatus {
 }
 
 const EnvironmentName = ({ row }: EnvironmentRow): React.ReactElement => {
-  const environment = row.original
+  const { getString } = useStrings()
+  const data = row.original
+
+  const { name, tags, identifier } = data as EnvironmentResponseDTO
 
   return (
-    <div className={css.name}>
-      <Layout.Vertical>
-        <Text color={Color.BLACK}>{environment?.name}</Text>
+    <Layout.Vertical>
+      <Layout.Horizontal flex={{ justifyContent: 'flex-start' }} spacing="small" margin={{ bottom: 'small' }}>
+        <Text color={Color.BLACK}>{name}</Text>
+        {!isEmpty(tags) && (
+          <TagsPopover
+            className={css.tagsPopover}
+            iconProps={{ size: 14, color: Color.GREY_600 }}
+            tags={defaultTo(tags, {})}
+          />
+        )}
+      </Layout.Horizontal>
 
-        <Layout.Horizontal flex>
-          <Text
-            margin={{ top: 'xsmall', right: 'medium' }}
-            color={Color.GREY_500}
-            style={{
-              fontSize: '12px',
-              lineHeight: '24px',
-              wordBreak: 'break-word'
-            }}
-          >
-            Id: {environment?.identifier}
-          </Text>
-
-          {!isEmpty(environment?.tags) && (
-            <div className={css.tags}>
-              <TagsPopover
-                className={css.tagsPopover}
-                iconProps={{ size: 14, color: Color.GREY_600 }}
-                tags={defaultTo(environment?.tags, {})}
-              />
-            </div>
-          )}
-        </Layout.Horizontal>
-      </Layout.Vertical>
-    </div>
+      <Text color={Color.GREY_500} font={{ size: 'small' }} lineClamp={1}>
+        {getString('common.ID')}: {identifier}
+      </Text>
+    </Layout.Vertical>
   )
 }
 
@@ -90,7 +80,9 @@ const withActions = withTableData<
 export const EnvironmentTypes = withEnvironment(({ environment }) => {
   const { getString } = useStrings()
   return (
-    <Text>{getString(environment.type === EnvironmentType.PRODUCTION ? 'production' : 'cd.preProductionType')}</Text>
+    <Text className={css.environmentType} font={{ size: 'small' }}>
+      {getString(environment.type === EnvironmentType.PRODUCTION ? 'cd.serviceDashboard.prod' : 'cd.preProductionType')}
+    </Text>
   )
 })
 

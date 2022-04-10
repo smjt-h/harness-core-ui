@@ -28,6 +28,7 @@ import {
   EnvironmentName,
   EnvironmentTypes
 } from '../EnvironmentsListColumns/EnvironmentsListColumns'
+import EnvironmentTabs from '../EnvironmentTabs'
 import EmptyContent from './EmptyContent.svg'
 import css from './EnvironmentsList.module.scss'
 
@@ -200,6 +201,7 @@ export const EnvironmentList: React.FC = () => {
             </Layout.Horizontal>
           </Layout.Horizontal>
         }
+        headerToolbar={<EnvironmentTabs />}
         pagination={
           <Pagination
             itemCount={envData?.data?.totalItems || 0}

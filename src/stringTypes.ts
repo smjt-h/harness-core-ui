@@ -197,6 +197,7 @@ export interface StringsMap {
   'common.entityReferenceSubTitle': string
   'common.entityReferenceTitle': string
   'common.entityType': string
+  'common.environment.fetchNext': string
   'common.environmentCreated': string
   'common.environmentGroup.createNew': string
   'common.environmentGroup.created': string
