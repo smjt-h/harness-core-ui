@@ -1,18 +1,9 @@
-/*
- * Copyright 2022 Harness Inc. All rights reserved.
- * Use of this source code is governed by the PolyForm Shield 1.0.0 license
- * that can be found in the licenses directory at the root of this repository, also available at
- * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
- */
-
 import React from 'react'
 import userEvent from '@testing-library/user-event'
 import { render, screen, waitFor } from '@testing-library/react'
 import * as cvService from 'services/cv'
 import { TestWrapper } from '@common/utils/testUtils'
-import VerifyStepLogContent from '../views/VerifyStepLogContent'
 import {
-  deploymentActivitySummaryResponse,
   errorMessage,
   executionLogsResponse,
   externalAPICallLogsResponse,
@@ -21,7 +12,7 @@ import {
   testWrapperProps
 } from './ExecutionLog.mock'
 import { LogTypes } from '../useLogContentHook.types'
-import { PAGE_SIZE } from '../useLogContentHook.constants'
+import MonitoredServiceLogContent from '../views/MonitoredServiceLogContent'
 
 const STRING_ID_LOAD_MORE = 'pipeline.verification.loadMore'
 
@@ -29,30 +20,86 @@ jest.mock('services/cv', () => ({
   useGetVerifyStepHealthSources: jest
     .fn()
     .mockImplementation(() => ({ data: healthSourceResponse, loading: false, error: null, refetch: jest.fn() })),
-  useGetVerifyStepLogs: jest
+  useGetMonitoredServiceLogs: jest
     .fn()
     .mockImplementation(() => ({ data: executionLogsResponse, loading: false, error: null, refetch: jest.fn() })),
   useGetAllHealthSourcesForServiceAndEnvironment: jest
     .fn()
     .mockImplementation(() => ({ data: {}, loading: false, error: null, refetch: jest.fn() })),
-  getVerifyStepLogsPromise: jest.fn().mockImplementation(() => executionLogsResponse),
-  useGetVerifyStepDeploymentActivitySummary: jest.fn().mockImplementation(() => ({
-    data: deploymentActivitySummaryResponse,
-    loading: false,
-    error: null,
-    refetch: jest.fn()
-  }))
+  getMonitoredServiceLogsPromise: jest.fn().mockImplementation(() => executionLogsResponse)
 }))
 
-describe('VerifyStepLogContent', () => {
-  test('should render VerifyStepLogContent component of type Execution Log', () => {
-    const { container } = render(
+describe('MonitoredServiceLogContent', () => {
+  test('should download the logs of type ApiCallLog', async () => {
+    jest.spyOn(cvService, 'getMonitoredServiceLogsPromise').mockReturnValue(externalAPICallLogsResponse as any)
+
+    render(
       <TestWrapper {...testWrapperProps}>
-        <VerifyStepLogContent
-          logType={LogTypes.ExecutionLog}
-          verifyStepExecutionId="verifyStepExecutionId"
+        <MonitoredServiceLogContent
+          logType={LogTypes.ApiCallLog}
+          monitoredServiceIdentifier="monitoredServiceIdentifier"
+          serviceName="SERVICE_NAME"
+          envName="ENV_NAME"
           isFullScreen={false}
           setIsFullScreen={jest.fn()}
+        />
+      </TestWrapper>
+    )
+
+    expect(screen.getByText('cv.download')).toBeInTheDocument()
+
+    userEvent.click(screen.getByText('cv.download'))
+
+    await waitFor(() => {
+      expect(cvService.getMonitoredServiceLogsPromise).toHaveBeenCalledWith({
+        monitoredServiceIdentifier: 'monitoredServiceIdentifier',
+        queryParams: {
+          accountId: 'TEST_ACCOUNT_ID',
+          endTime: 0,
+          errorLogsOnly: false,
+          logType: 'ApiCallLog',
+          orgIdentifier: 'TEST_ORG',
+          pageSize: 1,
+          projectIdentifier: 'TEST_PROJECT',
+          startTime: 0
+        }
+      })
+    })
+  })
+
+  test('should download the logs of type Execution log', async () => {
+    render(
+      <TestWrapper {...testWrapperProps}>
+        <MonitoredServiceLogContent
+          logType={LogTypes.ExecutionLog}
+          monitoredServiceIdentifier="monitoredServiceIdentifier1"
+          serviceName="SERVICE_NAME1"
+          envName="ENV_NAME1"
+          isFullScreen={false}
+          setIsFullScreen={jest.fn()}
+        />
+      </TestWrapper>
+    )
+
+    expect(screen.getByText('cv.download')).toBeInTheDocument()
+
+    userEvent.click(screen.getByText('cv.download'))
+
+    await waitFor(() => {
+      expect(cvService.getMonitoredServiceLogsPromise).toHaveBeenCalled()
+    })
+  })
+
+  test('should render MonitoredServiceLogContent component of type Execution Log', () => {
+    const { container } = render(
+      <TestWrapper {...testWrapperProps}>
+        <MonitoredServiceLogContent
+          logType={LogTypes.ExecutionLog}
+          monitoredServiceIdentifier="monitoredServiceIdentifier"
+          isFullScreen={false}
+          setIsFullScreen={jest.fn()}
+          serviceName="service 1"
+          envName="env 1"
         />
       </TestWrapper>
     )
@@ -61,14 +108,16 @@ describe('VerifyStepLogContent', () => {
     expect(container).toMatchSnapshot()
   })
 
-  test('should render VerifyStepLogContent component of type External API Call Log', () => {
+  test('should render MonitoredServiceLogContent component of type External API Call Log', () => {
     const { container } = render(
       <TestWrapper {...testWrapperProps}>
-        <VerifyStepLogContent
+        <MonitoredServiceLogContent
           logType={LogTypes.ApiCallLog}
-          verifyStepExecutionId="verifyStepExecutionId"
+          monitoredServiceIdentifier="monitoredServiceIdentifier"
           isFullScreen={false}
           setIsFullScreen={jest.fn()}
+          serviceName="service 1"
+          envName="env 1"
         />
       </TestWrapper>
     )
@@ -77,20 +126,22 @@ describe('VerifyStepLogContent', () => {
     expect(container).toMatchSnapshot()
   })
 
-  test('should call healthSource API only for verify step', () => {
+  test('should call healthSource API for MonitoredService step', () => {
     render(
       <TestWrapper {...testWrapperProps}>
-        <VerifyStepLogContent
+        <MonitoredServiceLogContent
           logType={LogTypes.ExecutionLog}
-          verifyStepExecutionId="verifyStepExecutionId"
+          monitoredServiceIdentifier="monitoredServiceIdentifier"
           isFullScreen={false}
           setIsFullScreen={jest.fn()}
+          serviceName="service 1"
+          envName="env 1"
         />
       </TestWrapper>
     )
 
     expect(cvService.useGetVerifyStepHealthSources).toHaveBeenLastCalledWith({
-      verifyStepExecutionId: 'verifyStepExecutionId',
+      verifyStepExecutionId: '',
       queryParams: {
         accountId: pathParams.accountId
       },
@@ -101,11 +152,13 @@ describe('VerifyStepLogContent', () => {
   test('should call the logs API by clicking the load more button', async () => {
     render(
       <TestWrapper {...testWrapperProps}>
-        <VerifyStepLogContent
+        <MonitoredServiceLogContent
           logType={LogTypes.ExecutionLog}
-          verifyStepExecutionId="verifyStepExecutionId"
+          monitoredServiceIdentifier="monitoredServiceIdentifier"
           isFullScreen={false}
           setIsFullScreen={jest.fn()}
+          serviceName="service 1"
+          envName="env 1"
         />
       </TestWrapper>
     )
@@ -115,17 +168,19 @@ describe('VerifyStepLogContent', () => {
     userEvent.click(screen.getByRole('button', { name: STRING_ID_LOAD_MORE }))
 
     await waitFor(() => {
-      expect(cvService.useGetVerifyStepLogs).toHaveBeenLastCalledWith({
-        verifyStepExecutionId: 'verifyStepExecutionId',
+      expect(cvService.useGetMonitoredServiceLogs).toHaveBeenLastCalledWith({
+        monitoredServiceIdentifier: 'monitoredServiceIdentifier',
+        queryParamStringifyOptions: { arrayFormat: 'repeat' },
         queryParams: {
-          accountId: pathParams.accountId,
-          pageSize: PAGE_SIZE,
-          logType: LogTypes.ExecutionLog,
+          accountId: 'TEST_ACCOUNT_ID',
+          endTime: 0,
+          errorLogsOnly: false,
+          logType: 'ExecutionLog',
+          orgIdentifier: 'TEST_ORG',
           pageNumber: 1,
-          errorLogsOnly: false
-        },
-        queryParamStringifyOptions: {
-          arrayFormat: 'repeat'
+          pageSize: 20,
+          projectIdentifier: 'TEST_PROJECT',
+          startTime: 0
         }
       })
       expect(screen.queryByRole('button', { name: STRING_ID_LOAD_MORE })).not.toBeInTheDocument()
@@ -135,11 +190,13 @@ describe('VerifyStepLogContent', () => {
   test('should handle the Top and Bottom navigation', () => {
     const { container } = render(
       <TestWrapper {...testWrapperProps}>
-        <VerifyStepLogContent
+        <MonitoredServiceLogContent
           logType={LogTypes.ExecutionLog}
-          verifyStepExecutionId="verifyStepExecutionId"
+          monitoredServiceIdentifier="monitoredServiceIdentifier"
           isFullScreen={false}
           setIsFullScreen={jest.fn()}
+          serviceName="service 1"
+          envName="env 1"
         />
       </TestWrapper>
     )
@@ -151,16 +208,18 @@ describe('VerifyStepLogContent', () => {
 
   test('should show the text Loading...', () => {
     jest
-      .spyOn(cvService, 'useGetVerifyStepLogs')
+      .spyOn(cvService, 'useGetMonitoredServiceLogs')
       .mockReturnValue({ data: {}, loading: true, error: null, refetch: jest.fn() } as any)
 
     render(
       <TestWrapper {...testWrapperProps}>
-        <VerifyStepLogContent
+        <MonitoredServiceLogContent
           logType={LogTypes.ExecutionLog}
-          verifyStepExecutionId="verifyStepExecutionId"
+          monitoredServiceIdentifier="monitoredServiceIdentifier"
           isFullScreen={false}
           setIsFullScreen={jest.fn()}
+          serviceName="service 1"
+          envName="env 1"
         />
       </TestWrapper>
     )
@@ -170,16 +229,18 @@ describe('VerifyStepLogContent', () => {
 
   test('should show the error message and fetch the logs by clicking on Retry', async () => {
     jest
-      .spyOn(cvService, 'useGetVerifyStepLogs')
+      .spyOn(cvService, 'useGetMonitoredServiceLogs')
       .mockReturnValue({ data: {}, loading: false, error: { message: errorMessage }, refetch: jest.fn() } as any)
 
     render(
       <TestWrapper {...testWrapperProps}>
-        <VerifyStepLogContent
+        <MonitoredServiceLogContent
           logType={LogTypes.ExecutionLog}
-          verifyStepExecutionId="verifyStepExecutionId"
+          monitoredServiceIdentifier="monitoredServiceIdentifier"
           isFullScreen={false}
           setIsFullScreen={jest.fn()}
+          serviceName="service 1"
+          envName="env 1"
         />
       </TestWrapper>
     )
@@ -189,17 +250,19 @@ describe('VerifyStepLogContent', () => {
     userEvent.click(screen.getByText('retry'))
 
     await waitFor(() => {
-      expect(cvService.useGetVerifyStepLogs).toHaveBeenLastCalledWith({
-        verifyStepExecutionId: 'verifyStepExecutionId',
+      expect(cvService.useGetMonitoredServiceLogs).toHaveBeenLastCalledWith({
+        monitoredServiceIdentifier: 'monitoredServiceIdentifier',
+        queryParamStringifyOptions: { arrayFormat: 'repeat' },
         queryParams: {
-          accountId: pathParams.accountId,
-          pageSize: PAGE_SIZE,
-          logType: LogTypes.ExecutionLog,
+          accountId: 'TEST_ACCOUNT_ID',
+          endTime: 0,
+          errorLogsOnly: false,
+          logType: 'ExecutionLog',
+          orgIdentifier: 'TEST_ORG',
           pageNumber: 0,
-          errorLogsOnly: false
-        },
-        queryParamStringifyOptions: {
-          arrayFormat: 'repeat'
+          pageSize: 20,
+          projectIdentifier: 'TEST_PROJECT',
+          startTime: 0
         }
       })
     })
@@ -207,16 +270,18 @@ describe('VerifyStepLogContent', () => {
 
   test('should show loader for External API Call Logs', () => {
     jest
-      .spyOn(cvService, 'useGetVerifyStepLogs')
+      .spyOn(cvService, 'useGetMonitoredServiceLogs')
       .mockReturnValue({ data: {}, loading: true, error: null, refetch: jest.fn() } as any)
 
     render(
       <TestWrapper {...testWrapperProps}>
-        <VerifyStepLogContent
+        <MonitoredServiceLogContent
           logType={LogTypes.ApiCallLog}
-          verifyStepExecutionId="verifyStepExecutionId"
+          monitoredServiceIdentifier="monitoredServiceIdentifier"
           isFullScreen={false}
           setIsFullScreen={jest.fn()}
+          serviceName="service 1"
+          envName="env 1"
         />
       </TestWrapper>
     )
@@ -226,16 +291,18 @@ describe('VerifyStepLogContent', () => {
 
   test('should handle error for External API Call Logs', async () => {
     jest
-      .spyOn(cvService, 'useGetVerifyStepLogs')
+      .spyOn(cvService, 'useGetMonitoredServiceLogs')
       .mockReturnValue({ data: {}, loading: false, error: { message: errorMessage }, refetch: jest.fn() } as any)
 
     render(
       <TestWrapper {...testWrapperProps}>
-        <VerifyStepLogContent
+        <MonitoredServiceLogContent
           logType={LogTypes.ApiCallLog}
-          verifyStepExecutionId="verifyStepExecutionId"
+          monitoredServiceIdentifier="monitoredServiceIdentifier"
           isFullScreen={false}
           setIsFullScreen={jest.fn()}
+          serviceName="service 1"
+          envName="env 1"
         />
       </TestWrapper>
     )
@@ -245,17 +312,19 @@ describe('VerifyStepLogContent', () => {
     userEvent.click(screen.getByText('Retry'))
 
     await waitFor(() => {
-      expect(cvService.useGetVerifyStepLogs).toHaveBeenLastCalledWith({
-        verifyStepExecutionId: 'verifyStepExecutionId',
+      expect(cvService.useGetMonitoredServiceLogs).toHaveBeenLastCalledWith({
+        monitoredServiceIdentifier: 'monitoredServiceIdentifier',
+        queryParamStringifyOptions: { arrayFormat: 'repeat' },
         queryParams: {
-          accountId: pathParams.accountId,
-          pageSize: PAGE_SIZE,
-          logType: LogTypes.ApiCallLog,
+          accountId: 'TEST_ACCOUNT_ID',
+          endTime: 0,
+          errorLogsOnly: false,
+          logType: 'ApiCallLog',
+          orgIdentifier: 'TEST_ORG',
           pageNumber: 0,
-          errorLogsOnly: false
-        },
-        queryParamStringifyOptions: {
-          arrayFormat: 'repeat'
+          pageSize: 20,
+          projectIdentifier: 'TEST_PROJECT',
+          startTime: 0
         }
       })
     })
@@ -263,83 +332,22 @@ describe('VerifyStepLogContent', () => {
 
   test('should handle no data for External API Call Logs', () => {
     jest
-      .spyOn(cvService, 'useGetVerifyStepLogs')
+      .spyOn(cvService, 'useGetMonitoredServiceLogs')
       .mockReturnValue({ data: {}, loading: false, error: null, refetch: jest.fn() } as any)
 
     render(
       <TestWrapper {...testWrapperProps}>
-        <VerifyStepLogContent
+        <MonitoredServiceLogContent
           logType={LogTypes.ApiCallLog}
-          verifyStepExecutionId="verifyStepExecutionId"
+          monitoredServiceIdentifier="monitoredServiceIdentifier"
           isFullScreen={false}
           setIsFullScreen={jest.fn()}
+          serviceName="service 1"
+          envName="env 1"
         />
       </TestWrapper>
     )
 
     expect(screen.getByText('cv.changeSource.noDataAvaiableForCard')).toBeInTheDocument()
-  })
-
-  test('should download the logs of type ApiCallLog', async () => {
-    jest
-      .spyOn(cvService, 'useGetVerifyStepLogs')
-      .mockReturnValue({ data: executionLogsResponse, loading: false, error: null, refetch: jest.fn() } as any)
-    jest.spyOn(cvService, 'getVerifyStepLogsPromise').mockReturnValue(externalAPICallLogsResponse as any)
-
-    render(
-      <TestWrapper {...testWrapperProps}>
-        <VerifyStepLogContent
-          logType={LogTypes.ApiCallLog}
-          verifyStepExecutionId="verifyStepExecutionId"
-          isFullScreen={false}
-          setIsFullScreen={jest.fn()}
-        />
-      </TestWrapper>
-    )
-
-    expect(screen.getByText('cv.download')).toBeInTheDocument()
-
-    userEvent.click(screen.getByText('cv.download'))
-
-    await waitFor(() => {
-      expect(cvService.getVerifyStepLogsPromise).toHaveBeenCalledWith({
-        verifyStepExecutionId: 'verifyStepExecutionId',
-        queryParams: {
-          accountId: pathParams.accountId,
-          pageSize: 1,
-          logType: LogTypes.ApiCallLog,
-          errorLogsOnly: false
-        }
-      })
-    })
-  })
-
-  test('should download the logs of type ExecutionLog', async () => {
-    render(
-      <TestWrapper {...testWrapperProps}>
-        <VerifyStepLogContent
-          logType={LogTypes.ExecutionLog}
-          verifyStepExecutionId="verifyStepExecutionId"
-          isFullScreen={false}
-          setIsFullScreen={jest.fn()}
-        />
-      </TestWrapper>
-    )
-
-    expect(screen.getByText('cv.download')).toBeInTheDocument()
-
-    userEvent.click(screen.getByText('cv.download'))
-
-    await waitFor(() => {
-      expect(cvService.getVerifyStepLogsPromise).toHaveBeenCalledWith({
-        verifyStepExecutionId: 'verifyStepExecutionId',
-        queryParams: {
-          accountId: pathParams.accountId,
-          pageSize: 1,
-          logType: LogTypes.ExecutionLog,
-          errorLogsOnly: false
-        }
-      })
-    })
   })
 })

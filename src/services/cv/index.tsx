@@ -8221,6 +8221,67 @@ export const getMonitoredServiceListEnvironmentsPromise = (
     signal
   )
 
+export interface GetAllHealthSourcesForServiceAndEnvironmentQueryParams {
+  accountId: string
+  orgIdentifier: string
+  projectIdentifier: string
+  serviceIdentifier: string
+  environmentIdentifier: string
+}
+
+export type GetAllHealthSourcesForServiceAndEnvironmentProps = Omit<
+  GetProps<RestResponseListHealthSourceDTO, unknown, GetAllHealthSourcesForServiceAndEnvironmentQueryParams, void>,
+  'path'
+>
+
+/**
+ * get all health sources for service and environment
+ */
+export const GetAllHealthSourcesForServiceAndEnvironment = (
+  props: GetAllHealthSourcesForServiceAndEnvironmentProps
+) => (
+  <Get<RestResponseListHealthSourceDTO, unknown, GetAllHealthSourcesForServiceAndEnvironmentQueryParams, void>
+    path={`/monitored-service/health-sources`}
+    base={getConfig('cv/api')}
+    {...props}
+  />
+)
+
+export type UseGetAllHealthSourcesForServiceAndEnvironmentProps = Omit<
+  UseGetProps<RestResponseListHealthSourceDTO, unknown, GetAllHealthSourcesForServiceAndEnvironmentQueryParams, void>,
+  'path'
+>
+
+/**
+ * get all health sources for service and environment
+ */
+export const useGetAllHealthSourcesForServiceAndEnvironment = (
+  props: UseGetAllHealthSourcesForServiceAndEnvironmentProps
+) =>
+  useGet<RestResponseListHealthSourceDTO, unknown, GetAllHealthSourcesForServiceAndEnvironmentQueryParams, void>(
+    `/monitored-service/health-sources`,
+    { base: getConfig('cv/api'), ...props }
+  )
+
+/**
+ * get all health sources for service and environment
+ */
+export const getAllHealthSourcesForServiceAndEnvironmentPromise = (
+  props: GetUsingFetchProps<
+    RestResponseListHealthSourceDTO,
+    unknown,
+    GetAllHealthSourcesForServiceAndEnvironmentQueryParams,
+    void
+  >,
+  signal?: RequestInit['signal']
+) =>
+  getUsingFetch<RestResponseListHealthSourceDTO, unknown, GetAllHealthSourcesForServiceAndEnvironmentQueryParams, void>(
+    getConfig('cv/api'),
+    `/monitored-service/health-sources`,
+    props,
+    signal
+  )
+
 export interface GetMonitoredServiceListQueryParams {
   accountId?: string
   orgIdentifier?: string
@@ -9076,6 +9137,83 @@ export const getAllHealthSourcesForMonitoredServiceIdentifierPromise = (
     GetAllHealthSourcesForMonitoredServiceIdentifierQueryParams,
     GetAllHealthSourcesForMonitoredServiceIdentifierPathParams
   >(getConfig('cv/api'), `/monitored-service/${monitoredServiceIdentifier}/health-sources`, props, signal)
+
+export interface GetMonitoredServiceLogsQueryParams {
+  accountId: string
+  orgIdentifier: string
+  projectIdentifier: string
+  logType: 'ApiCallLog' | 'ExecutionLog'
+  errorLogsOnly?: boolean
+  startTime: number
+  endTime: number
+  healthSources?: string[]
+  pageNumber?: number
+  pageSize?: number
+}
+
+export interface GetMonitoredServiceLogsPathParams {
+  monitoredServiceIdentifier: string
+}
+
+export type GetMonitoredServiceLogsProps = Omit<
+  GetProps<RestResponsePageCVNGLogDTO, unknown, GetMonitoredServiceLogsQueryParams, GetMonitoredServiceLogsPathParams>,
+  'path'
+> &
+  GetMonitoredServiceLogsPathParams
+
+/**
+ * get monitored service logs
+ */
+export const GetMonitoredServiceLogs = ({ monitoredServiceIdentifier, ...props }: GetMonitoredServiceLogsProps) => (
+  <Get<RestResponsePageCVNGLogDTO, unknown, GetMonitoredServiceLogsQueryParams, GetMonitoredServiceLogsPathParams>
+    path={`/monitored-service/${monitoredServiceIdentifier}/logs`}
+    base={getConfig('cv/api')}
+    {...props}
+  />
+)
+
+export type UseGetMonitoredServiceLogsProps = Omit<
+  UseGetProps<
+    RestResponsePageCVNGLogDTO,
+    unknown,
+    GetMonitoredServiceLogsQueryParams,
+    GetMonitoredServiceLogsPathParams
+  >,
+  'path'
+> &
+  GetMonitoredServiceLogsPathParams
+
+/**
+ * get monitored service logs
+ */
+export const useGetMonitoredServiceLogs = ({ monitoredServiceIdentifier, ...props }: UseGetMonitoredServiceLogsProps) =>
+  useGet<RestResponsePageCVNGLogDTO, unknown, GetMonitoredServiceLogsQueryParams, GetMonitoredServiceLogsPathParams>(
+    (paramsInPath: GetMonitoredServiceLogsPathParams) =>
+      `/monitored-service/${paramsInPath.monitoredServiceIdentifier}/logs`,
+    { base: getConfig('cv/api'), pathParams: { monitoredServiceIdentifier }, ...props }
+  )
+
+/**
+ * get monitored service logs
+ */
+export const getMonitoredServiceLogsPromise = (
+  {
+    monitoredServiceIdentifier,
+    ...props
+  }: GetUsingFetchProps<
+    RestResponsePageCVNGLogDTO,
+    unknown,
+    GetMonitoredServiceLogsQueryParams,
+    GetMonitoredServiceLogsPathParams
+  > & { monitoredServiceIdentifier: string },
+  signal?: RequestInit['signal']
+) =>
+  getUsingFetch<
+    RestResponsePageCVNGLogDTO,
+    unknown,
+    GetMonitoredServiceLogsQueryParams,
+    GetMonitoredServiceLogsPathParams
+  >(getConfig('cv/api'), `/monitored-service/${monitoredServiceIdentifier}/logs`, props, signal)
 
 export interface GetMonitoredServiceDetailsWithServiceIdQueryParams {
   accountId: string

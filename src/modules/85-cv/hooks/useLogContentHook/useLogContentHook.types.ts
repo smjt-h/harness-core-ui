@@ -13,6 +13,9 @@ export interface UseLogContentHookProps {
   sloIdentifier?: string
   serviceName?: string
   envName?: string
+  monitoredServiceIdentifier?: string
+  monitoredServiceStartTime?: number
+  monitoredServiceEndTime?: number
 }
 
 export interface UseLogContentHookReturn {
@@ -25,6 +28,17 @@ export interface VerifyStepLogContentProps {
   verifyStepExecutionId: string
   isFullScreen: boolean
   setIsFullScreen: (isFullScreen: boolean | ((isFullScreen: boolean) => boolean)) => void
+}
+
+export interface MonitoredServiceLogContentProps {
+  logType: LogTypes
+  monitoredServiceIdentifier: string
+  isFullScreen: boolean
+  setIsFullScreen: (isFullScreen: boolean | ((isFullScreen: boolean) => boolean)) => void
+  serviceName?: string
+  envName?: string
+  startTime?: number
+  endTime?: number
 }
 
 export interface SLOLogContentProps {
@@ -52,6 +66,7 @@ export interface ExecutionAndAPICallLogProps {
   isFullScreen: boolean
   setIsFullScreen: (isFullScreen: boolean | ((isFullScreen: boolean) => boolean)) => void
   verifyStepExecutionId?: string
+  monitoredServiceIdentifier?: string
   serviceName?: string
   envName?: string
   resource?: PageCVNGLogDTO

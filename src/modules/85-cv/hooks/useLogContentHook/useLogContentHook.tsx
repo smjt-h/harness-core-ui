@@ -12,6 +12,7 @@ import { Classes } from '@blueprintjs/core'
 import { Dialog } from '@harness/uicore'
 import VerifyStepLogContent from './views/VerifyStepLogContent'
 import SLOLogContent from './views/SLOLogContent'
+import MonitoredServiceLogContent from './views/MonitoredServiceLogContent'
 import { LogTypes, UseLogContentHookProps, UseLogContentHookReturn } from './useLogContentHook.types'
 import css from './useLogContentHook.module.scss'
 
@@ -19,7 +20,10 @@ export const useLogContentHook = ({
   verifyStepExecutionId,
   sloIdentifier,
   serviceName,
-  envName
+  envName,
+  monitoredServiceIdentifier,
+  monitoredServiceStartTime,
+  monitoredServiceEndTime
 }: UseLogContentHookProps): UseLogContentHookReturn => {
   const [isFullScreen, setIsFullScreen] = useState(false)
   const [logType, setLogType] = useState<LogTypes>(LogTypes.ExecutionLog)
@@ -54,10 +58,33 @@ export const useLogContentHook = ({
               setIsFullScreen={setIsFullScreen}
             />
           )}
+          {!verifyStepExecutionId && !sloIdentifier && monitoredServiceIdentifier && (
+            <MonitoredServiceLogContent
+              logType={logType}
+              monitoredServiceIdentifier={monitoredServiceIdentifier}
+              serviceName={serviceName}
+              envName={envName}
+              isFullScreen={isFullScreen}
+              setIsFullScreen={setIsFullScreen}
+              startTime={monitoredServiceStartTime}
+              endTime={monitoredServiceEndTime}
+            />
+          )}
         </div>
       </Dialog>
     ),
-    [verifyStepExecutionId, sloIdentifier, serviceName, envName, isFullScreen, setIsFullScreen, logType]
+    [
+      verifyStepExecutionId,
+      sloIdentifier,
+      serviceName,
+      envName,
+      isFullScreen,
+      setIsFullScreen,
+      logType,
+      monitoredServiceIdentifier,
+      monitoredServiceStartTime,
+      monitoredServiceEndTime
+    ]
   )
 
   const open = (_logType: LogTypes): void => {
