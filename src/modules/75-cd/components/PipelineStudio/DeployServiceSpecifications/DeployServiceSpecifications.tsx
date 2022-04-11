@@ -16,9 +16,10 @@ import {
   RUNTIME_INPUT_VALUE,
   SelectOption,
   Text,
+  useConfirmationDialog,
   useToaster
 } from '@wings-software/uicore'
-import { Color } from '@harness/design-system'
+import { Color, Intent } from '@harness/design-system'
 import produce from 'immer'
 import { debounce, get, isEmpty, set, unset } from 'lodash-es'
 import { StepViewType } from '@pipeline/components/AbstractSteps/Step'
@@ -45,7 +46,12 @@ import { DeployTabs } from '@cd/components/PipelineStudio/DeployStageSetupShell/
 import SelectDeploymentType from '@cd/components/PipelineStudio/DeployServiceSpecifications/SelectDeploymentType'
 import type { DeploymentStageElementConfig } from '@pipeline/utils/pipelineTypes'
 import { useDeepCompareEffect } from '@common/hooks'
-import { StageType } from '@pipeline/utils/stageHelpers'
+import {
+  deleteStageData,
+  doesStageContainOtherData,
+  ServiceDeploymentType,
+  StageType
+} from '@pipeline/utils/stageHelpers'
 import { useFeatureFlags } from '@common/hooks/useFeatureFlag'
 import { Scope } from '@common/interfaces/SecretsInterface'
 import stageCss from '../DeployStageSetupShell/DeployStage.module.scss'
@@ -78,7 +84,7 @@ export default function DeployServiceSpecifications(props: React.PropsWithChildr
     [updateStage]
   )
   const { stage } = getStageFromPipeline<DeploymentStageElementConfig>(selectedStageId || '')
-  const getDeploymentType = (): string => {
+  const getDeploymentType = (): ServiceDeploymentType => {
     return get(
       stage,
       'stage.spec.serviceConfig.serviceDefinition.type',
@@ -92,13 +98,31 @@ export default function DeployServiceSpecifications(props: React.PropsWithChildr
   })
   const [selectedPropagatedState, setSelectedPropagatedState] = useState<SelectOption>()
   const [serviceIdNameMap, setServiceIdNameMap] = useState<{ [key: string]: string }>()
-  const [selectedDeploymentType, setSelectedDeploymentType] = useState(getDeploymentType())
+  const [selectedDeploymentType, setSelectedDeploymentType] = useState<ServiceDeploymentType | undefined>(
+    getDeploymentType()
+  )
   const [previousStageList, setPreviousStageList] = useState<SelectOption[]>([])
+  const [currStageData, setCurrStageData] = useState<DeploymentStageElementConfig | undefined>()
 
   const { index: stageIndex } = getStageIndexFromPipeline(pipeline, selectedStageId || '')
   const { stages } = getFlattenedStages(pipeline)
   const { submitFormsForTab } = useContext(StageErrorContext)
   const { errorMap } = useValidationErrors()
+
+  const { openDialog: openStageDataDeleteWarningDialog } = useConfirmationDialog({
+    cancelButtonText: getString('cancel'),
+    contentText: getString('pipeline.stageDataDeleteWarningText'),
+    titleText: getString('pipeline.stageDataDeleteWarningTitle'),
+    confirmButtonText: getString('confirm'),
+    intent: Intent.WARNING,
+    onCloseDialog: async isConfirmed => {
+      if (isConfirmed) {
+        deleteStageData(currStageData)
+        await debounceUpdateStage(currStageData)
+        setSelectedDeploymentType(currStageData?.spec?.serviceConfig.serviceDefinition?.type as ServiceDeploymentType)
+      }
+    }
+  })
 
   useEffect(() => {
     if (
@@ -292,14 +316,19 @@ export default function DeployServiceSpecifications(props: React.PropsWithChildr
     [debounceUpdateStage, stage, stage?.stage?.spec?.serviceConfig?.serviceDefinition]
   )
 
-  const handleDeploymentTypeChange = async (deploymentType: string): Promise<void> => {
+  const handleDeploymentTypeChange = async (deploymentType: ServiceDeploymentType): Promise<void> => {
     try {
       const stageData = produce(stage, draft => {
         const serviceDefinition = get(draft, 'stage.spec.serviceConfig.serviceDefinition', {})
         serviceDefinition.type = deploymentType
       })
-      await debounceUpdateStage(stageData?.stage)
-      setSelectedDeploymentType(deploymentType)
+      if (doesStageContainOtherData(stageData?.stage)) {
+        setCurrStageData(stageData?.stage)
+        openStageDataDeleteWarningDialog()
+      } else {
+        await debounceUpdateStage(stageData?.stage)
+        setSelectedDeploymentType(deploymentType)
+      }
     } catch (err) {
       showError(err?.data?.message || err?.message)
     }

@@ -2926,6 +2926,8 @@ export interface StringsMap {
   'pipeline.serviceNowApprovalStep.validations.ticketType': string
   'pipeline.singleStageExecution': string
   'pipeline.sslVerify': string
+  'pipeline.stageDataDeleteWarningText': string
+  'pipeline.stageDataDeleteWarningTitle': string
   'pipeline.stageDependencyError': string
   'pipeline.stageExecutionSettings': string
   'pipeline.stageExecutionsHelperText': string

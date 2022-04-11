@@ -937,6 +937,8 @@ serviceDeploymentTypes:
   awsSAM: AWS SAM
   azureFunctions: Azure Functions
 noArtifactPaths: No artifact paths found with given Artifact Directory
+stageDataDeleteWarningTitle: Discard Stage Data
+stageDataDeleteWarningText: Changing deployment type will delete existing stage data like artifacts, manifests, infrastructure details, steps etc. Do you still want to proceed?
 errorFramework:
   pipelineErrorsTitle: 'Pipeline cannot be saved because {{fields}} further configuration.'
   fixErrors: Fix Errors

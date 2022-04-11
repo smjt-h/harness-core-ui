@@ -276,13 +276,19 @@ export const getCustomStepProps = (type: string, getString: (key: StringKeys) =>
   }
 }
 
-const isArtifactFieldPresent = (stage: DeploymentStageElementConfigWrapper, fieldName: string): boolean => {
+const isPrimaryArtifactFieldPresent = (stage: DeploymentStageElementConfigWrapper, fieldName: string): boolean => {
+  // return true because if artifact itself is not present then some field inside artifact would not be present
+  // And that is fine as artifact itself is optional field.
+  // Only when artifact is present and some of its required field is not present we need to show error and stop save precess
+  if (!stage.stage?.spec?.serviceConfig.serviceDefinition?.spec.artifacts?.primary) {
+    return true
+  }
   const primaryArtifactSpecField =
     stage.stage?.spec?.serviceConfig.serviceDefinition?.spec.artifacts?.primary?.spec[fieldName]
   return primaryArtifactSpecField && primaryArtifactSpecField.toString().trim().length > 0
 }
 
-const isArtifactFieldPresentInPropagatedStage = (
+const isPrimaryArtifactFieldPresentInPropagatedStage = (
   stage: DeploymentStageElementConfigWrapper,
   fieldName: string
 ): boolean => {
@@ -303,15 +309,15 @@ const validateServerlessArtifactsForPropagatedStage = (
     // as fields are already validated in propagate (previous) stage
     if (
       stage.stage.spec?.serviceConfig.stageOverrides &&
-      !isArtifactFieldPresentInPropagatedStage(stage, 'artifactDirectory')
+      !isPrimaryArtifactFieldPresentInPropagatedStage(stage, 'artifactDirectory')
     ) {
       return 'pipeline.artifactsSelection.validation.artifactDirectory'
     }
     if (
       stage.stage.spec?.serviceConfig.stageOverrides &&
-      !isArtifactFieldPresentInPropagatedStage(stage, 'artifactPath')
+      !isPrimaryArtifactFieldPresentInPropagatedStage(stage, 'artifactPath')
     ) {
-      if (!isArtifactFieldPresentInPropagatedStage(stage, 'artifactPathFilter')) {
+      if (!isPrimaryArtifactFieldPresentInPropagatedStage(stage, 'artifactPathFilter')) {
         return 'pipeline.artifactsSelection.validation.artifactPathAndArtifactPathFilter'
       } else {
         return ''
@@ -332,11 +338,11 @@ const validateServerlessArtifactsForStage = (
     return validateServerlessArtifactsForPropagatedStage(stages, stage)
   } else {
     if (isServerlessDeploymentType(stage.stage?.spec?.serviceConfig?.serviceDefinition?.type as string)) {
-      if (!isArtifactFieldPresent(stage, 'artifactDirectory')) {
+      if (!isPrimaryArtifactFieldPresent(stage, 'artifactDirectory')) {
         return 'pipeline.artifactsSelection.validation.artifactDirectory'
       }
-      if (!isArtifactFieldPresent(stage, 'artifactPath')) {
-        if (!isArtifactFieldPresent(stage, 'artifactPathFilter')) {
+      if (!isPrimaryArtifactFieldPresent(stage, 'artifactPath')) {
+        if (!isPrimaryArtifactFieldPresent(stage, 'artifactPathFilter')) {
           return 'pipeline.artifactsSelection.validation.artifactPathAndArtifactPathFilter'
         } else {
           return ''
@@ -373,4 +379,40 @@ export const validateServerlessArtifacts = ({ pipeline, getString }: ValidateSer
     }
   }
   return ''
+}
+
+export const isArtifactManifestPresent = (stage: DeploymentStageElementConfig): boolean => {
+  return (
+    !!stage.spec?.serviceConfig &&
+    (!!stage.spec?.serviceConfig.serviceDefinition?.spec.artifacts ||
+      !!stage.spec?.serviceConfig.serviceDefinition?.spec.manifests)
+  )
+}
+
+export const isInfraDefinitionPresent = (stage: DeploymentStageElementConfig): boolean => {
+  return !!stage.spec?.infrastructure?.infrastructureDefinition
+}
+
+export const isExecutionFieldPresent = (stage: DeploymentStageElementConfig): boolean => {
+  return !!(stage.spec?.execution && stage.spec?.execution.steps && stage.spec?.execution.steps?.length > 0)
+}
+
+export const doesStageContainOtherData = (stage?: DeploymentStageElementConfig): boolean => {
+  if (!stage) {
+    return false
+  }
+  return isArtifactManifestPresent(stage) || isInfraDefinitionPresent(stage) || isExecutionFieldPresent(stage)
+}
+
+export const deleteStageData = (stage?: DeploymentStageElementConfig): void => {
+  if (stage) {
+    delete stage?.spec?.serviceConfig?.serviceDefinition?.spec.artifacts
+    delete stage?.spec?.serviceConfig?.serviceDefinition?.spec.manifests
+    delete stage?.spec?.infrastructure?.allowSimultaneousDeployments
+    delete stage?.spec?.infrastructure?.infrastructureDefinition
+    if (stage?.spec?.execution?.steps) {
+      stage.spec.execution.steps.splice(0)
+    }
+    delete stage?.spec?.execution?.rollbackSteps
+  }
 }
