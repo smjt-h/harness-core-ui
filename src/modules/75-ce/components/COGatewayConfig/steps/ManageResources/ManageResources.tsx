@@ -76,8 +76,7 @@ const managedResources = [
   {
     label: 'ce.co.autoStoppingRule.helpText.step2.description.resourceList.ig',
     value: RESOURCES.IG,
-    providers: ['gcp'],
-    ffDependencies: [FeatureFlag.CE_AS_GCP_VM_SUPPORT]
+    providers: ['gcp']
   },
   {
     label: 'ce.co.autoStoppingRule.helpText.step2.description.resourceList.kubernetes',
