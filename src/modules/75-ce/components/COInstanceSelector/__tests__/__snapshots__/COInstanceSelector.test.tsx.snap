@@ -545,13 +545,14 @@ exports[`Instance Selector Modal search and select/unselect instances successful
                   data-icon="main-close"
                 >
                   <svg
+                    enable-background="new 0 0 14 14"
                     height="8"
                     viewBox="0 0 14 14"
                     width="8"
                     xmlns="http://www.w3.org/2000/svg"
                   >
                     <path
-                      d="M8.6 7l5-5c.3-.2.4-.5.4-.8 0-.7-.5-1.2-1.2-1.2-.3 0-.6.1-.8.3l-5 5-5-5C1.8.1 1.5 0 1.2 0 .5 0 0 .5 0 1.2c0 .3.1.6.3.8l5 5-5 5c-.2.2-.3.5-.3.8 0 .7.5 1.2 1.2 1.2.3 0 .6-.1.8-.3l5-5 5 5c.2.2.5.4.8.4.6 0 1.2-.5 1.2-1.2 0-.3-.1-.6-.3-.8z"
+                      d="m8.6 7 5-5c.3-.2.4-.5.4-.8 0-.7-.5-1.2-1.2-1.2-.3 0-.6.1-.8.3l-5 5-5-5c-.2-.2-.5-.3-.8-.3-.7 0-1.2.5-1.2 1.2 0 .3.1.6.3.8l5 5-5 5c-.2.2-.3.5-.3.8 0 .7.5 1.2 1.2 1.2.3 0 .6-.1.8-.3l5-5 5 5c.2.2.5.4.8.4.6 0 1.2-.5 1.2-1.2 0-.3-.1-.6-.3-.8z"
                       fill="#4d5969"
                     />
                   </svg>
@@ -1559,12 +1560,8 @@ exports[`Instance Selector Modal should show loader while loading data 1`] = `
               xmlns="http://www.w3.org/2000/svg"
             >
               <path
-                d="M18 2.084a15.915 15.915 0 010 31.831 15.915 15.915 0 010-31.83"
-                stroke="currentColor"
-                stroke-dasharray="75,100"
-                stroke-linecap="round"
-                stroke-width="2.8"
-                style="animation: 1s linear infinite spinner-rotation; transform-origin: 50% 50%; transform-box: fill-box;"
+                d="M18 2.0845       a 15.9155 15.9155 0 0 1 0 31.831       a 15.9155 15.9155 0 0 1 0 -31.831"
+                style="animation: 1s linear infinite spinner-rotation; transform-origin: 50% 50%; transform-box: fill-box; stroke: currentColor; stroke-dasharray: 75, 100; stroke-width: 2.8; stroke-linecap: round;"
               />
             </svg>
           </span>

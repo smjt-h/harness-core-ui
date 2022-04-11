@@ -165,7 +165,7 @@ exports[`Input Set List tests render Input Set List view 1`] = `
               >
                 <svg
                   height="30"
-                  id="step-group_svg__Layer_1"
+                  id="Layer_1"
                   viewBox="0 0 21 20"
                   width="30"
                   x="0"
@@ -174,21 +174,21 @@ exports[`Input Set List tests render Input Set List view 1`] = `
                   y="0"
                 >
                   <style>
-                    .step-group_svg__st0{fill:#fff!important}
+                    .st0{fill:#fff !important}
                   </style>
                   <path
-                    class="step-group_svg__st0"
+                    class="st0"
                     d="M1 .8h13v13.3H1z"
                   />
                   <path
                     d="M14 1H1v13h13V1zm1-1v15H0V0h15z"
                   />
                   <path
-                    class="step-group_svg__st0"
+                    class="st0"
                     d="M7 6h13v13H7z"
                   />
                   <path
-                    class="step-group_svg__st1"
+                    class="st1"
                     d="M20 6H7v13h13V6zm1-1v15H6V5h15z"
                   />
                 </svg>
@@ -239,12 +239,12 @@ exports[`Input Set List tests render Input Set List view 1`] = `
                           xmlns="http://www.w3.org/2000/svg"
                         >
                           <path
-                            d="M7.423 1.631a.667.667 0 011.154 0l6.543 11.333a.667.667 0 01-.577 1H1.457a.667.667 0 01-.577-1L7.423 1.631z"
+                            d="M7.423 1.631a.667.667 0 0 1 1.154 0l6.543 11.333a.667.667 0 0 1-.577 1H1.457a.667.667 0 0 1-.577-1L7.423 1.631z"
                             fill="#fff"
                           />
                           <path
                             clip-rule="evenodd"
-                            d="M7.57 2.253a.5.5 0 01.869 0l5.993 10.5a.5.5 0 01-.434.747H2.011a.5.5 0 01-.434-.748L7.57 2.253zm.407 8.242c.422 0 .763.333.763.744a.754.754 0 01-.763.745.754.754 0 01-.763-.745c0-.411.341-.745.763-.745zm.5-1.498a.5.5 0 11-1 0V5.498a.5.5 0 111 0v3.499z"
+                            d="M7.57 2.253a.5.5 0 0 1 .869 0l5.993 10.5a.5.5 0 0 1-.434.747H2.011a.5.5 0 0 1-.434-.748L7.57 2.253zm.407 8.242c.422 0 .763.333.763.744a.754.754 0 0 1-.763.745.754.754 0 0 1-.763-.745c0-.411.341-.745.763-.745zm.5-1.498a.5.5 0 1 1-1 0V5.498a.5.5 0 1 1 1 0v3.499z"
                             fill="currentColor"
                             fill-rule="evenodd"
                           />
@@ -291,19 +291,19 @@ exports[`Input Set List tests render Input Set List view 1`] = `
                   <defs>
                     <path
                       d="M7.2 10.6V5.4L10.6 8l-3.4 2.6zm4.4-3.3L7.4 4.1c-.3-.2-.6-.2-.9-.1-.3.2-.5.5-.5.8v6.4c0 .3.2.6.5.8.3.1.6.1.9-.1l4.2-3.2c.2-.2.3-.4.3-.7s-.1-.5-.3-.7zm1.1 5.4c-2.2 2.2-5.7 2.6-8.4.8s-3.6-5.1-2.4-8c1.2-2.9 4.3-4.6 7.4-4 3.1.6 5.3 3.3 5.3 6.5.1 1.8-.6 3.4-1.9 4.7zm2.7-7.8C13.8 1.1 9.6-.9 5.7.4 1.7 1.6-.7 5.6.2 9.6s4.5 6.8 8.6 6.4c4.1-.4 7.2-3.8 7.2-8 0-1.1-.2-2.1-.6-3.1z"
-                      id="run-pipeline_svg__a"
+                      id="a"
                     />
                   </defs>
                   <clippath
-                    id="run-pipeline_svg__b"
+                    id="b"
                   >
                     <use
                       overflow="visible"
-                      xlink:href="#run-pipeline_svg__a"
+                      xlink:href="#a"
                     />
                   </clippath>
                   <path
-                    clip-path="url(#run-pipeline_svg__b)"
+                    clip-path="url(#b)"
                     d="M-5-5h26v26H-5z"
                     fill="#54b610"
                   />
@@ -383,13 +383,16 @@ exports[`Input Set List tests render Input Set List view 1`] = `
                   xmlns="http://www.w3.org/2000/svg"
                 >
                   <g
-                    fill="#22272D"
+                    fill="none"
+                    fill-rule="nonzero"
                   >
                     <path
                       d="M12.946 5.347a.49.49 0 00-.492-.486H4.581a.49.49 0 00-.492.486c0 .269.22.486.492.486h7.873a.49.49 0 00.492-.486zM4.581 8.264c-.272 0-.492.218-.492.486s.22.486.492.486H9.01c.271 0 .492-.218.492-.486s-.22-.486-.492-.486H4.58zm7.92 5.833H3.644a.55.55 0 01-.538-.56V2.018a.55.55 0 01.538-.56h9.748a.55.55 0 01.54.56v5.325c0 .269.22.486.491.486a.49.49 0 00.492-.486V2.02c0-.844-.679-1.533-1.523-1.533H3.643c-.844 0-1.523.69-1.523 1.533v11.517c0 .844.68 1.533 1.523 1.533h8.859a.49.49 0 00.492-.486.49.49 0 00-.492-.486z"
+                      fill="#22272D"
                     />
                     <path
                       d="M15.676 10.418h-1.005V9.413a.524.524 0 10-1.048 0v1.004H12.28a.524.524 0 000 1.049h1.343v1.343a.524.524 0 101.048 0v-1.343h1.005a.524.524 0 000-1.048z"
+                      fill="#22272D"
                     />
                   </g>
                 </svg>
@@ -440,12 +443,12 @@ exports[`Input Set List tests render Input Set List view 1`] = `
                           xmlns="http://www.w3.org/2000/svg"
                         >
                           <path
-                            d="M7.423 1.631a.667.667 0 011.154 0l6.543 11.333a.667.667 0 01-.577 1H1.457a.667.667 0 01-.577-1L7.423 1.631z"
+                            d="M7.423 1.631a.667.667 0 0 1 1.154 0l6.543 11.333a.667.667 0 0 1-.577 1H1.457a.667.667 0 0 1-.577-1L7.423 1.631z"
                             fill="#fff"
                           />
                           <path
                             clip-rule="evenodd"
-                            d="M7.57 2.253a.5.5 0 01.869 0l5.993 10.5a.5.5 0 01-.434.747H2.011a.5.5 0 01-.434-.748L7.57 2.253zm.407 8.242c.422 0 .763.333.763.744a.754.754 0 01-.763.745.754.754 0 01-.763-.745c0-.411.341-.745.763-.745zm.5-1.498a.5.5 0 11-1 0V5.498a.5.5 0 111 0v3.499z"
+                            d="M7.57 2.253a.5.5 0 0 1 .869 0l5.993 10.5a.5.5 0 0 1-.434.747H2.011a.5.5 0 0 1-.434-.748L7.57 2.253zm.407 8.242c.422 0 .763.333.763.744a.754.754 0 0 1-.763.745.754.754 0 0 1-.763-.745c0-.411.341-.745.763-.745zm.5-1.498a.5.5 0 1 1-1 0V5.498a.5.5 0 1 1 1 0v3.499z"
                             fill="currentColor"
                             fill-rule="evenodd"
                           />
@@ -492,19 +495,19 @@ exports[`Input Set List tests render Input Set List view 1`] = `
                   <defs>
                     <path
                       d="M7.2 10.6V5.4L10.6 8l-3.4 2.6zm4.4-3.3L7.4 4.1c-.3-.2-.6-.2-.9-.1-.3.2-.5.5-.5.8v6.4c0 .3.2.6.5.8.3.1.6.1.9-.1l4.2-3.2c.2-.2.3-.4.3-.7s-.1-.5-.3-.7zm1.1 5.4c-2.2 2.2-5.7 2.6-8.4.8s-3.6-5.1-2.4-8c1.2-2.9 4.3-4.6 7.4-4 3.1.6 5.3 3.3 5.3 6.5.1 1.8-.6 3.4-1.9 4.7zm2.7-7.8C13.8 1.1 9.6-.9 5.7.4 1.7 1.6-.7 5.6.2 9.6s4.5 6.8 8.6 6.4c4.1-.4 7.2-3.8 7.2-8 0-1.1-.2-2.1-.6-3.1z"
-                      id="run-pipeline_svg__a"
+                      id="a"
                     />
                   </defs>
                   <clippath
-                    id="run-pipeline_svg__b"
+                    id="b"
                   >
                     <use
                       overflow="visible"
-                      xlink:href="#run-pipeline_svg__a"
+                      xlink:href="#a"
                     />
                   </clippath>
                   <path
-                    clip-path="url(#run-pipeline_svg__b)"
+                    clip-path="url(#b)"
                     d="M-5-5h26v26H-5z"
                     fill="#54b610"
                   />

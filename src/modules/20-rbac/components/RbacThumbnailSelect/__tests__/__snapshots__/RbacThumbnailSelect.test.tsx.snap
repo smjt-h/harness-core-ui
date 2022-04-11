@@ -32,52 +32,64 @@ exports[`RBAC ThumbnailSelect renders items with RBAC restrictions: rbac items s
                     viewBox="0 0 16 16"
                     width="26"
                     xmlns="http://www.w3.org/2000/svg"
+                    xmlns:xlink="http://www.w3.org/1999/xlink"
                   >
                     <filter
-                      id="nav-organization-hover_svg__a"
+                      id="a"
                     >
                       <fecolormatrix
                         in="SourceGraphic"
+                        type="matrix"
                         values="0 0 0 0 1.000000 0 0 0 0 1.000000 0 0 0 0 1.000000 0 0 0 1.000000 0"
                       />
                     </filter>
                     <filter
-                      id="nav-organization-hover_svg__b"
+                      id="b"
                     >
                       <fecolormatrix
                         in="SourceGraphic"
+                        type="matrix"
                         values="0 0 0 0 1.000000 0 0 0 0 1.000000 0 0 0 0 1.000000 0 0 0 1.000000 0"
                       />
                     </filter>
                     <filter
                       height="100%"
-                      id="nav-organization-hover_svg__c"
+                      id="c"
                       width="100%"
                       x="0%"
                       y="0%"
                     >
                       <fegaussianblur
                         in="SourceGraphic"
+                        stdDeviation="0"
                       />
                     </filter>
                     <g
                       fill="none"
                       fill-rule="evenodd"
-                      filter="url(#nav-organization-hover_svg__a)"
+                      filter="url(#a)"
                       opacity="0.6"
                       transform="translate(-418 -707)"
                     >
                       <g
-                        filter="url(#nav-organization-hover_svg__b)"
+                        filter="url(#b)"
                         opacity="0.6"
                         transform="translate(418 707)"
                       >
-                        <path
-                          d="M14.5 10.033h-2V8.5h1c.267 0 .5-.233.5-.5s-.233-.5-.5-.5h-5V5.967h2c.267 0 .5-.234.5-.5V1.5c0-.267-.233-.5-.5-.5h-5c-.267 0-.5.233-.5.5v3.967c0 .266.233.5.5.5h2V7.5h-5c-.267 0-.5.233-.5.5s.233.5.5.5h1v1.533h-2c-.267 0-.5.234-.5.5V14.5c0 .267.233.5.5.5h5c.267 0 .5-.233.5-.5v-3.967c0-.266-.233-.5-.5-.5h-2V8.5h7v1.533h-2c-.267 0-.5.234-.5.5V14.5c0 .267.233.5.5.5h5c.267 0 .5-.233.5-.5v-3.967c0-.266-.233-.5-.5-.5zM6 2h4v2.967H6zm0 12H2v-2.967h4zm8 0h-4v-2.967h4z"
-                          fill="#dbdbdb"
+                        <g
                           fill-rule="nonzero"
-                          filter="url(#nav-organization-hover_svg__c)"
-                        />
+                        >
+                          <path
+                            d="m0 0h16v16h-16z"
+                            fill="#000"
+                            opacity="0"
+                          />
+                          <path
+                            d="m14.5 10.0333333h-2v-1.5333333h1c.2666667 0 .5-.23333333.5-.5s-.2333333-.5-.5-.5h-5v-1.5-.03333333h2c.2666667 0 .5-.23333333.5-.5v-3.96666667c0-.26666667-.2333333-.5-.5-.5h-5c-.26666667 0-.5.23333333-.5.5v3.96666667c0 .26666667.23333333.5.5.5h2v1.53333333h-5c-.26666667 0-.5.23333333-.5.5s.23333333.5.5.5h1v1.5333333h-2c-.26666667 0-.5.2333334-.5.5v3.9666667c0 .2666667.23333333.5.5.5h5c.26666667 0 .5-.2333333.5-.5v-3.9666667c0-.2666666-.23333333-.5-.5-.5h-2v-1.5333333h7v1.5333333h-2c-.26666667 0-.5.2333334-.5.5v3.9666667c0 .2666667.23333333.5.5.5h5c.2666667 0 .5-.2333333.5-.5v-3.9666667c0-.2666666-.2333333-.5-.5-.5zm-8.5-8.0333333h4v2.96666667h-4zm0 12h-4v-2.9666667h4zm8 0h-4v-2.9666667h4z"
+                            fill="#dbdbdb"
+                            filter="url(#c)"
+                          />
+                        </g>
                       </g>
                     </g>
                   </svg>
@@ -130,52 +142,64 @@ exports[`RBAC ThumbnailSelect renders items without RBAC restrictions: non rbac 
                 viewBox="0 0 16 16"
                 width="26"
                 xmlns="http://www.w3.org/2000/svg"
+                xmlns:xlink="http://www.w3.org/1999/xlink"
               >
                 <filter
-                  id="nav-organization-hover_svg__a"
+                  id="a"
                 >
                   <fecolormatrix
                     in="SourceGraphic"
+                    type="matrix"
                     values="0 0 0 0 1.000000 0 0 0 0 1.000000 0 0 0 0 1.000000 0 0 0 1.000000 0"
                   />
                 </filter>
                 <filter
-                  id="nav-organization-hover_svg__b"
+                  id="b"
                 >
                   <fecolormatrix
                     in="SourceGraphic"
+                    type="matrix"
                     values="0 0 0 0 1.000000 0 0 0 0 1.000000 0 0 0 0 1.000000 0 0 0 1.000000 0"
                   />
                 </filter>
                 <filter
                   height="100%"
-                  id="nav-organization-hover_svg__c"
+                  id="c"
                   width="100%"
                   x="0%"
                   y="0%"
                 >
                   <fegaussianblur
                     in="SourceGraphic"
+                    stdDeviation="0"
                   />
                 </filter>
                 <g
                   fill="none"
                   fill-rule="evenodd"
-                  filter="url(#nav-organization-hover_svg__a)"
+                  filter="url(#a)"
                   opacity="0.6"
                   transform="translate(-418 -707)"
                 >
                   <g
-                    filter="url(#nav-organization-hover_svg__b)"
+                    filter="url(#b)"
                     opacity="0.6"
                     transform="translate(418 707)"
                   >
-                    <path
-                      d="M14.5 10.033h-2V8.5h1c.267 0 .5-.233.5-.5s-.233-.5-.5-.5h-5V5.967h2c.267 0 .5-.234.5-.5V1.5c0-.267-.233-.5-.5-.5h-5c-.267 0-.5.233-.5.5v3.967c0 .266.233.5.5.5h2V7.5h-5c-.267 0-.5.233-.5.5s.233.5.5.5h1v1.533h-2c-.267 0-.5.234-.5.5V14.5c0 .267.233.5.5.5h5c.267 0 .5-.233.5-.5v-3.967c0-.266-.233-.5-.5-.5h-2V8.5h7v1.533h-2c-.267 0-.5.234-.5.5V14.5c0 .267.233.5.5.5h5c.267 0 .5-.233.5-.5v-3.967c0-.266-.233-.5-.5-.5zM6 2h4v2.967H6zm0 12H2v-2.967h4zm8 0h-4v-2.967h4z"
-                      fill="#dbdbdb"
+                    <g
                       fill-rule="nonzero"
-                      filter="url(#nav-organization-hover_svg__c)"
-                    />
+                    >
+                      <path
+                        d="m0 0h16v16h-16z"
+                        fill="#000"
+                        opacity="0"
+                      />
+                      <path
+                        d="m14.5 10.0333333h-2v-1.5333333h1c.2666667 0 .5-.23333333.5-.5s-.2333333-.5-.5-.5h-5v-1.5-.03333333h2c.2666667 0 .5-.23333333.5-.5v-3.96666667c0-.26666667-.2333333-.5-.5-.5h-5c-.26666667 0-.5.23333333-.5.5v3.96666667c0 .26666667.23333333.5.5.5h2v1.53333333h-5c-.26666667 0-.5.23333333-.5.5s.23333333.5.5.5h1v1.5333333h-2c-.26666667 0-.5.2333334-.5.5v3.9666667c0 .2666667.23333333.5.5.5h5c.26666667 0 .5-.2333333.5-.5v-3.9666667c0-.2666666-.23333333-.5-.5-.5h-2v-1.5333333h7v1.5333333h-2c-.26666667 0-.5.2333334-.5.5v3.9666667c0 .2666667.23333333.5.5.5h5c.2666667 0 .5-.2333333.5-.5v-3.9666667c0-.2666666-.2333333-.5-.5-.5zm-8.5-8.0333333h4v2.96666667h-4zm0 12h-4v-2.9666667h4zm8 0h-4v-2.9666667h4z"
+                        fill="#dbdbdb"
+                        filter="url(#c)"
+                      />
+                    </g>
                   </g>
                 </g>
               </svg>

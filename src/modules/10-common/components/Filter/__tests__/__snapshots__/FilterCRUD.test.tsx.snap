@@ -26,7 +26,7 @@ exports[`Test FilterCRUD component Add a new filter with visibke to Everyone 1`]
             >
               <path
                 clip-rule="evenodd"
-                d="M16.5 8V7H19a.5.5 0 000-1h-2.5V5a.5.5 0 00-1 0v1H5a.5.5 0 000 1h10.5v1a.5.5 0 001 0zM5 11.5h3v-1a.5.5 0 011 0v1h10a.5.5 0 010 1H9v1a.5.5 0 01-1 0v-1H5a.5.5 0 010-1zM5 17a.5.5 0 000 1h7v1a.5.5 0 001 0v-1h6a.5.5 0 000-1h-6v-1a.5.5 0 00-1 0v1H5z"
+                d="M16.5 8V7H19a.5.5 0 0 0 0-1h-2.5V5a.5.5 0 0 0-1 0v1H5a.5.5 0 0 0 0 1h10.5v1a.5.5 0 0 0 1 0zM5 11.5h3v-1a.5.5 0 0 1 1 0v1h10a.5.5 0 0 1 0 1H9v1a.5.5 0 0 1-1 0v-1H5a.5.5 0 0 1 0-1zM5 17a.5.5 0 0 0 0 1h7v1a.5.5 0 0 0 1 0v-1h6a.5.5 0 0 0 0-1h-6v-1a.5.5 0 0 0-1 0v1H5z"
                 fill="currentColor"
                 fill-rule="evenodd"
               />
@@ -386,7 +386,7 @@ exports[`Test FilterCRUD component Add a new filter with visibke to Everyone 2`]
             >
               <path
                 clip-rule="evenodd"
-                d="M16.5 8V7H19a.5.5 0 000-1h-2.5V5a.5.5 0 00-1 0v1H5a.5.5 0 000 1h10.5v1a.5.5 0 001 0zM5 11.5h3v-1a.5.5 0 011 0v1h10a.5.5 0 010 1H9v1a.5.5 0 01-1 0v-1H5a.5.5 0 010-1zM5 17a.5.5 0 000 1h7v1a.5.5 0 001 0v-1h6a.5.5 0 000-1h-6v-1a.5.5 0 00-1 0v1H5z"
+                d="M16.5 8V7H19a.5.5 0 0 0 0-1h-2.5V5a.5.5 0 0 0-1 0v1H5a.5.5 0 0 0 0 1h10.5v1a.5.5 0 0 0 1 0zM5 11.5h3v-1a.5.5 0 0 1 1 0v1h10a.5.5 0 0 1 0 1H9v1a.5.5 0 0 1-1 0v-1H5a.5.5 0 0 1 0-1zM5 17a.5.5 0 0 0 0 1h7v1a.5.5 0 0 0 1 0v-1h6a.5.5 0 0 0 0-1h-6v-1a.5.5 0 0 0-1 0v1H5z"
                 fill="currentColor"
                 fill-rule="evenodd"
               />
@@ -622,7 +622,7 @@ exports[`Test FilterCRUD component Add a new filter with visible to OnlyMe 1`] =
             >
               <path
                 clip-rule="evenodd"
-                d="M16.5 8V7H19a.5.5 0 000-1h-2.5V5a.5.5 0 00-1 0v1H5a.5.5 0 000 1h10.5v1a.5.5 0 001 0zM5 11.5h3v-1a.5.5 0 011 0v1h10a.5.5 0 010 1H9v1a.5.5 0 01-1 0v-1H5a.5.5 0 010-1zM5 17a.5.5 0 000 1h7v1a.5.5 0 001 0v-1h6a.5.5 0 000-1h-6v-1a.5.5 0 00-1 0v1H5z"
+                d="M16.5 8V7H19a.5.5 0 0 0 0-1h-2.5V5a.5.5 0 0 0-1 0v1H5a.5.5 0 0 0 0 1h10.5v1a.5.5 0 0 0 1 0zM5 11.5h3v-1a.5.5 0 0 1 1 0v1h10a.5.5 0 0 1 0 1H9v1a.5.5 0 0 1-1 0v-1H5a.5.5 0 0 1 0-1zM5 17a.5.5 0 0 0 0 1h7v1a.5.5 0 0 0 1 0v-1h6a.5.5 0 0 0 0-1h-6v-1a.5.5 0 0 0-1 0v1H5z"
                 fill="currentColor"
                 fill-rule="evenodd"
               />
@@ -982,7 +982,7 @@ exports[`Test FilterCRUD component Add a new filter with visible to OnlyMe 2`] =
             >
               <path
                 clip-rule="evenodd"
-                d="M16.5 8V7H19a.5.5 0 000-1h-2.5V5a.5.5 0 00-1 0v1H5a.5.5 0 000 1h10.5v1a.5.5 0 001 0zM5 11.5h3v-1a.5.5 0 011 0v1h10a.5.5 0 010 1H9v1a.5.5 0 01-1 0v-1H5a.5.5 0 010-1zM5 17a.5.5 0 000 1h7v1a.5.5 0 001 0v-1h6a.5.5 0 000-1h-6v-1a.5.5 0 00-1 0v1H5z"
+                d="M16.5 8V7H19a.5.5 0 0 0 0-1h-2.5V5a.5.5 0 0 0-1 0v1H5a.5.5 0 0 0 0 1h10.5v1a.5.5 0 0 0 1 0zM5 11.5h3v-1a.5.5 0 0 1 1 0v1h10a.5.5 0 0 1 0 1H9v1a.5.5 0 0 1-1 0v-1H5a.5.5 0 0 1 0-1zM5 17a.5.5 0 0 0 0 1h7v1a.5.5 0 0 0 1 0v-1h6a.5.5 0 0 0 0-1h-6v-1a.5.5 0 0 0-1 0v1H5z"
                 fill="currentColor"
                 fill-rule="evenodd"
               />
@@ -1218,7 +1218,7 @@ exports[`Test FilterCRUD component Add a new filter with visible to OnlyMe 3`] =
             >
               <path
                 clip-rule="evenodd"
-                d="M16.5 8V7H19a.5.5 0 000-1h-2.5V5a.5.5 0 00-1 0v1H5a.5.5 0 000 1h10.5v1a.5.5 0 001 0zM5 11.5h3v-1a.5.5 0 011 0v1h10a.5.5 0 010 1H9v1a.5.5 0 01-1 0v-1H5a.5.5 0 010-1zM5 17a.5.5 0 000 1h7v1a.5.5 0 001 0v-1h6a.5.5 0 000-1h-6v-1a.5.5 0 00-1 0v1H5z"
+                d="M16.5 8V7H19a.5.5 0 0 0 0-1h-2.5V5a.5.5 0 0 0-1 0v1H5a.5.5 0 0 0 0 1h10.5v1a.5.5 0 0 0 1 0zM5 11.5h3v-1a.5.5 0 0 1 1 0v1h10a.5.5 0 0 1 0 1H9v1a.5.5 0 0 1-1 0v-1H5a.5.5 0 0 1 0-1zM5 17a.5.5 0 0 0 0 1h7v1a.5.5 0 0 0 1 0v-1h6a.5.5 0 0 0 0-1h-6v-1a.5.5 0 0 0-1 0v1H5z"
                 fill="currentColor"
                 fill-rule="evenodd"
               />
@@ -1578,7 +1578,7 @@ exports[`Test FilterCRUD component Add a new filter with visible to OnlyMe 4`] =
             >
               <path
                 clip-rule="evenodd"
-                d="M16.5 8V7H19a.5.5 0 000-1h-2.5V5a.5.5 0 00-1 0v1H5a.5.5 0 000 1h10.5v1a.5.5 0 001 0zM5 11.5h3v-1a.5.5 0 011 0v1h10a.5.5 0 010 1H9v1a.5.5 0 01-1 0v-1H5a.5.5 0 010-1zM5 17a.5.5 0 000 1h7v1a.5.5 0 001 0v-1h6a.5.5 0 000-1h-6v-1a.5.5 0 00-1 0v1H5z"
+                d="M16.5 8V7H19a.5.5 0 0 0 0-1h-2.5V5a.5.5 0 0 0-1 0v1H5a.5.5 0 0 0 0 1h10.5v1a.5.5 0 0 0 1 0zM5 11.5h3v-1a.5.5 0 0 1 1 0v1h10a.5.5 0 0 1 0 1H9v1a.5.5 0 0 1-1 0v-1H5a.5.5 0 0 1 0-1zM5 17a.5.5 0 0 0 0 1h7v1a.5.5 0 0 0 1 0v-1h6a.5.5 0 0 0 0-1h-6v-1a.5.5 0 0 0-1 0v1H5z"
                 fill="currentColor"
                 fill-rule="evenodd"
               />
@@ -1814,7 +1814,7 @@ exports[`Test FilterCRUD component Add a new filter with visible to OnlyMe 5`] =
             >
               <path
                 clip-rule="evenodd"
-                d="M16.5 8V7H19a.5.5 0 000-1h-2.5V5a.5.5 0 00-1 0v1H5a.5.5 0 000 1h10.5v1a.5.5 0 001 0zM5 11.5h3v-1a.5.5 0 011 0v1h10a.5.5 0 010 1H9v1a.5.5 0 01-1 0v-1H5a.5.5 0 010-1zM5 17a.5.5 0 000 1h7v1a.5.5 0 001 0v-1h6a.5.5 0 000-1h-6v-1a.5.5 0 00-1 0v1H5z"
+                d="M16.5 8V7H19a.5.5 0 0 0 0-1h-2.5V5a.5.5 0 0 0-1 0v1H5a.5.5 0 0 0 0 1h10.5v1a.5.5 0 0 0 1 0zM5 11.5h3v-1a.5.5 0 0 1 1 0v1h10a.5.5 0 0 1 0 1H9v1a.5.5 0 0 1-1 0v-1H5a.5.5 0 0 1 0-1zM5 17a.5.5 0 0 0 0 1h7v1a.5.5 0 0 0 1 0v-1h6a.5.5 0 0 0 0-1h-6v-1a.5.5 0 0 0-1 0v1H5z"
                 fill="currentColor"
                 fill-rule="evenodd"
               />
@@ -2050,7 +2050,7 @@ exports[`Test FilterCRUD component Enable edit mode 1`] = `
             >
               <path
                 clip-rule="evenodd"
-                d="M16.5 8V7H19a.5.5 0 000-1h-2.5V5a.5.5 0 00-1 0v1H5a.5.5 0 000 1h10.5v1a.5.5 0 001 0zM5 11.5h3v-1a.5.5 0 011 0v1h10a.5.5 0 010 1H9v1a.5.5 0 01-1 0v-1H5a.5.5 0 010-1zM5 17a.5.5 0 000 1h7v1a.5.5 0 001 0v-1h6a.5.5 0 000-1h-6v-1a.5.5 0 00-1 0v1H5z"
+                d="M16.5 8V7H19a.5.5 0 0 0 0-1h-2.5V5a.5.5 0 0 0-1 0v1H5a.5.5 0 0 0 0 1h10.5v1a.5.5 0 0 0 1 0zM5 11.5h3v-1a.5.5 0 0 1 1 0v1h10a.5.5 0 0 1 0 1H9v1a.5.5 0 0 1-1 0v-1H5a.5.5 0 0 1 0-1zM5 17a.5.5 0 0 0 0 1h7v1a.5.5 0 0 0 1 0v-1h6a.5.5 0 0 0 0-1h-6v-1a.5.5 0 0 0-1 0v1H5z"
                 fill="currentColor"
                 fill-rule="evenodd"
               />
@@ -2410,7 +2410,7 @@ exports[`Test FilterCRUD component Initial render should match snapshot 1`] = `
             >
               <path
                 clip-rule="evenodd"
-                d="M16.5 8V7H19a.5.5 0 000-1h-2.5V5a.5.5 0 00-1 0v1H5a.5.5 0 000 1h10.5v1a.5.5 0 001 0zM5 11.5h3v-1a.5.5 0 011 0v1h10a.5.5 0 010 1H9v1a.5.5 0 01-1 0v-1H5a.5.5 0 010-1zM5 17a.5.5 0 000 1h7v1a.5.5 0 001 0v-1h6a.5.5 0 000-1h-6v-1a.5.5 0 00-1 0v1H5z"
+                d="M16.5 8V7H19a.5.5 0 0 0 0-1h-2.5V5a.5.5 0 0 0-1 0v1H5a.5.5 0 0 0 0 1h10.5v1a.5.5 0 0 0 1 0zM5 11.5h3v-1a.5.5 0 0 1 1 0v1h10a.5.5 0 0 1 0 1H9v1a.5.5 0 0 1-1 0v-1H5a.5.5 0 0 1 0-1zM5 17a.5.5 0 0 0 0 1h7v1a.5.5 0 0 0 1 0v-1h6a.5.5 0 0 0 0-1h-6v-1a.5.5 0 0 0-1 0v1H5z"
                 fill="currentColor"
                 fill-rule="evenodd"
               />

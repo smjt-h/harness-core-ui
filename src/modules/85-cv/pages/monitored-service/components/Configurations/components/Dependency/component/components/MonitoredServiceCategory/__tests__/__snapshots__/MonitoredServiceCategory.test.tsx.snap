@@ -19,11 +19,20 @@ exports[`Unit tests for MonitoredServiceCategory Ensure application typee is ren
           width="13"
           xmlns="http://www.w3.org/2000/svg"
         >
-          <path
-            d="M8.656 2H14v4H8.656zm0 12V7.344H14V14zM2 14v-4h5.344v4zm0-5.344V2h5.344v6.656z"
-            fill="#fff"
-            opacity="0.691"
-          />
+          <g
+            fill="none"
+            opacity="0.690802"
+          >
+            <path
+              d="m0 0h16v16h-16z"
+              fill="#000"
+              opacity="0"
+            />
+            <path
+              d="m8.656 2h5.344v4h-5.344zm0 12v-6.656h5.344v6.656zm-6.656 0v-4h5.344v4zm0-5.344v-6.656h5.344v6.656z"
+              fill="#fff"
+            />
+          </g>
         </svg>
       </span>
       Application
@@ -53,13 +62,13 @@ exports[`Unit tests for MonitoredServiceCategory Ensure infra type is rendered c
         >
           <path
             clip-rule="evenodd"
-            d="M12.543 5.377L8 2.755 3.458 5.377v5.246L8 13.245l4.543-2.622V5.377zM8.5 1.89a1 1 0 00-1 0L2.958 4.51a1 1 0 00-.5.866v5.246a1 1 0 00.5.866L7.5 14.11a1 1 0 001 0l4.543-2.622a1 1 0 00.5-.866V5.377a1 1 0 00-.5-.866L8.5 1.89z"
+            d="M12.543 5.377 8 2.755 3.458 5.377v5.246L8 13.245l4.543-2.622V5.377ZM8.5 1.89a1 1 0 0 0-1 0L2.958 4.51a1 1 0 0 0-.5.866v5.246a1 1 0 0 0 .5.866L7.5 14.11a1 1 0 0 0 1 0l4.543-2.622a1 1 0 0 0 .5-.866V5.377a1 1 0 0 0-.5-.866L8.5 1.89Z"
             fill="currentColor"
             fill-rule="evenodd"
           />
           <path
             clip-rule="evenodd"
-            d="M10.233 6.71L8 5.422l-2.233 1.29V9.29L8 10.58l2.233-1.29V6.711zM8.5 4.556a1 1 0 00-1 0l-2.233 1.29a1 1 0 00-.5.866V9.29a1 1 0 00.5.866l2.233 1.29a1 1 0 001 0l2.233-1.29a1 1 0 00.5-.866V6.711a1 1 0 00-.5-.866L8.5 4.555z"
+            d="M10.233 6.71 8 5.422l-2.233 1.29v2.578L8 10.58l2.233-1.29V6.711ZM8.5 4.556a1 1 0 0 0-1 0l-2.233 1.29a1 1 0 0 0-.5.866v2.578a1 1 0 0 0 .5.866l2.233 1.29a1 1 0 0 0 1 0l2.233-1.29a1 1 0 0 0 .5-.866V6.711a1 1 0 0 0-.5-.866L8.5 4.555Z"
             fill="currentColor"
             fill-rule="evenodd"
           />

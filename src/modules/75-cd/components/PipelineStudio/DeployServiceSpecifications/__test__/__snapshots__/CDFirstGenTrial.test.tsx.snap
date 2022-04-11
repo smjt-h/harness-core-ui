@@ -52,7 +52,7 @@ exports[`CDFirstGenTrial Test cases it should render the dialog with no deployme
               >
                 <path
                   clip-rule="evenodd"
-                  d="M6.02 11a5 5 0 100-10 5 5 0 000 10zm0 1a6 6 0 100-12 6 6 0 000 12zM6 5.5a.5.5 0 01.5.5v2.5a.5.5 0 01-1 0V6a.5.5 0 01.5-.5zm0-1.029a.75.75 0 100-1.5.75.75 0 000 1.5z"
+                  d="M6.02 11a5 5 0 1 0 0-10 5 5 0 0 0 0 10Zm0 1a6 6 0 1 0 0-12 6 6 0 0 0 0 12ZM6 5.5a.5.5 0 0 1 .5.5v2.5a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm0-1.029a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Z"
                   fill="currentColor"
                   fill-rule="evenodd"
                 />
@@ -141,7 +141,7 @@ exports[`CDFirstGenTrial Test cases it should render the dialog with valid deplo
               >
                 <path
                   clip-rule="evenodd"
-                  d="M6.02 11a5 5 0 100-10 5 5 0 000 10zm0 1a6 6 0 100-12 6 6 0 000 12zM6 5.5a.5.5 0 01.5.5v2.5a.5.5 0 01-1 0V6a.5.5 0 01.5-.5zm0-1.029a.75.75 0 100-1.5.75.75 0 000 1.5z"
+                  d="M6.02 11a5 5 0 1 0 0-10 5 5 0 0 0 0 10Zm0 1a6 6 0 1 0 0-12 6 6 0 0 0 0 12ZM6 5.5a.5.5 0 0 1 .5.5v2.5a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm0-1.029a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Z"
                   fill="currentColor"
                   fill-rule="evenodd"
                 />
@@ -230,7 +230,7 @@ exports[`CDFirstGenTrial Test cases it should render the dialog with valid deplo
               >
                 <path
                   clip-rule="evenodd"
-                  d="M6.02 11a5 5 0 100-10 5 5 0 000 10zm0 1a6 6 0 100-12 6 6 0 000 12zM6 5.5a.5.5 0 01.5.5v2.5a.5.5 0 01-1 0V6a.5.5 0 01.5-.5zm0-1.029a.75.75 0 100-1.5.75.75 0 000 1.5z"
+                  d="M6.02 11a5 5 0 1 0 0-10 5 5 0 0 0 0 10Zm0 1a6 6 0 1 0 0-12 6 6 0 0 0 0 12ZM6 5.5a.5.5 0 0 1 .5.5v2.5a.5.5 0 0 1-1 0V6a.5.5 0 0 1 .5-.5Zm0-1.029a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Z"
                   fill="currentColor"
                   fill-rule="evenodd"
                 />

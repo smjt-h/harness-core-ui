@@ -50,31 +50,34 @@ exports[`CIGovernancePage snapshot test should render properly 1`] = `
             viewBox="0 0 27 27"
             width="48"
             xmlns="http://www.w3.org/2000/svg"
+            xmlns:xlink="http://www.w3.org/1999/xlink"
           >
             <filter
-              id="nav-dashboard_svg__a"
+              id="a"
             >
               <fecolormatrix
                 in="SourceGraphic"
+                type="matrix"
                 values="0 0 0 0 0.453512 0 0 0 0 0.490089 0 0 0 0 0.533316 0 0 0 1.000000 0"
               />
             </filter>
             <filter
-              id="nav-dashboard_svg__b"
+              id="b"
             >
               <fecolormatrix
                 in="SourceGraphic"
+                type="matrix"
                 values="0 0 0 0 0.453512 0 0 0 0 0.490089 0 0 0 0 0.533316 0 0 0 1.000000 0"
               />
             </filter>
             <g
               fill="none"
               fill-rule="evenodd"
-              filter="url(#nav-dashboard_svg__a)"
+              filter="url(#a)"
               transform="translate(-100 -231)"
             >
               <g
-                filter="url(#nav-dashboard_svg__b)"
+                filter="url(#b)"
                 transform="translate(100 231)"
               >
                 <rect
@@ -87,7 +90,7 @@ exports[`CIGovernancePage snapshot test should render properly 1`] = `
                   y="0.5"
                 />
                 <path
-                  d="M13.656 8H19v4h-5.344zm0 12v-6.656H19V20zM7 20v-4h5.344v4zm0-5.344V8h5.344v6.656z"
+                  d="m13.656 8h5.344v4h-5.344zm0 12v-6.656h5.344v6.656zm-6.656 0v-4h5.344v4zm0-5.344v-6.656h5.344v6.656z"
                   fill="#747d88"
                   fill-rule="nonzero"
                 />

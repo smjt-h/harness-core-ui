@@ -236,11 +236,12 @@ exports[`SLOCardHeader it should successfully reset the error budget 1`] = `
     <svg
       fill="none"
       height="15"
+      viewBox="0 0 14 14"
       width="15"
       xmlns="http://www.w3.org/2000/svg"
     >
       <path
-        d="M1 .8l6 6 6-6-12 12 6-6 6 6"
+        d="M1 0.800781L7 6.79974L13 0.800781L1 12.8008L7.0005 6.80078L13 12.8008"
         stroke="#8F90A6"
         stroke-linecap="round"
         stroke-linejoin="round"

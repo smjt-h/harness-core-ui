@@ -441,12 +441,12 @@ exports[`<ExecutionGraphView /> tests step details are shown when step is select
                         >
                           <svg
                             height="16"
-                            viewBox="0 0 4.233 4.233"
+                            viewBox="0 0 4.2333 4.2333"
                             width="16"
                             xmlns="http://www.w3.org/2000/svg"
                           >
                             <g
-                              transform="translate(0 .423) scale(.21167)"
+                              transform="matrix(.21167 0 0 .21167 -3.3333e-8 .42333)"
                             >
                               <rect
                                 fill="#f2f2f2"
@@ -458,7 +458,7 @@ exports[`<ExecutionGraphView /> tests step details are shown when step is select
                                 y="0.5"
                               />
                               <path
-                                d="M12 1h7v14h-7z"
+                                d="m12 1h7v14h-7z"
                                 fill="#9ea9b4"
                               />
                             </g>
@@ -480,27 +480,31 @@ exports[`<ExecutionGraphView /> tests step details are shown when step is select
                         >
                           <svg
                             height="16"
-                            viewBox="0 0 4.233 4.233"
+                            viewBox="0 0 4.2333 4.2333"
                             width="16"
                             xmlns="http://www.w3.org/2000/svg"
                           >
                             <g
                               fill="none"
-                              transform="matrix(.21166 0 0 .21166 0 .423)"
+                              transform="matrix(.26458 0 0 .26458 -.52917 3.5e-8)"
                             >
-                              <rect
-                                fill="#f2f2f2"
-                                height="15"
-                                rx="0.5"
-                                stroke="#9ea9b4"
-                                width="19"
-                                x="0.5"
-                                y="0.5"
-                              />
-                              <path
-                                d="M1 10h18v5H1z"
-                                fill="#9ea9b4"
-                              />
+                              <g
+                                transform="matrix(.8 0 0 .8 2 1.6)"
+                              >
+                                <rect
+                                  fill="#f2f2f2"
+                                  height="15"
+                                  rx="0.5"
+                                  stroke="#9ea9b4"
+                                  width="19"
+                                  x="0.5"
+                                  y="0.5"
+                                />
+                                <path
+                                  d="m1 10h18v5h-18z"
+                                  fill="#9ea9b4"
+                                />
+                              </g>
                             </g>
                           </svg>
                         </span>
@@ -520,13 +524,13 @@ exports[`<ExecutionGraphView /> tests step details are shown when step is select
                         >
                           <svg
                             height="16"
-                            viewBox="0 0 4.233 4.233"
+                            viewBox="0 0 4.2333 4.2333"
                             width="16"
                             xmlns="http://www.w3.org/2000/svg"
                           >
                             <g
                               fill="none"
-                              transform="translate(0 .403) scale(.20982)"
+                              transform="matrix(.20982 0 0 .20982 -4.5112e-8 .40318)"
                             >
                               <rect
                                 fill="#000"
@@ -545,7 +549,11 @@ exports[`<ExecutionGraphView /> tests step details are shown when step is select
                                 y="0.5"
                               />
                               <path
-                                d="M9.303 3a1 1 0 011-1h7a1 1 0 011 1v9a1 1 0 01-1 1h-7a1 1 0 01-1-1zM14.303 14.5a.5.5 0 01.5-.5h3a.5.5 0 110 1h-3a.5.5 0 01-.5-.5z"
+                                d="m9.3027 3c0-0.55229 0.44772-1 0.99997-1h7c0.5523 0 1 0.44772 1 1v9c0 0.5523-0.4477 1-1 1h-7c-0.55225 0-0.99997-0.4477-0.99997-1z"
+                                fill="#9ea9b4"
+                              />
+                              <path
+                                d="m14.303 14.5c0-0.2761 0.2239-0.5 0.5-0.5h3c0.2762 0 0.5 0.2239 0.5 0.5s-0.2238 0.5-0.5 0.5h-3c-0.2761 0-0.5-0.2239-0.5-0.5z"
                                 fill="#9ea9b4"
                               />
                             </g>

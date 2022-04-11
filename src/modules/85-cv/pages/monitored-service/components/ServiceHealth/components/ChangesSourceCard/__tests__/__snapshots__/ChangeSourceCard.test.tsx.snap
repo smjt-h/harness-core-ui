@@ -28,13 +28,14 @@ exports[`Test ChangeSourcecard should render with above 100 positive change 1`] 
               data-icon="main-caret-up"
             >
               <svg
+                enable-background="new 0 0 14 9"
                 height="6"
                 viewBox="0 0 14 9"
                 width="6"
                 xmlns="http://www.w3.org/2000/svg"
               >
                 <path
-                  d="M13.7 7.2L7.9.4C7.7.2 7.4 0 7 0s-.7.2-.9.4L.3 7.2c-.2.2-.3.4-.3.7C0 8.5.5 9 1.2 9h11.7c.6 0 1.1-.5 1.1-1.1 0-.3-.1-.5-.3-.7z"
+                  d="m13.7 7.2-5.8-6.8c-.2-.2-.5-.4-.9-.4s-.7.2-.9.4l-5.8 6.8c-.2.2-.3.4-.3.7 0 .6.5 1.1 1.2 1.1h11.7c.6 0 1.1-.5 1.1-1.1 0-.3-.1-.5-.3-.7z"
                   fill="#4d5969"
                 />
               </svg>
@@ -85,13 +86,14 @@ exports[`Test ChangeSourcecard should render with above 100 positive change 1`] 
               data-icon="main-caret-up"
             >
               <svg
+                enable-background="new 0 0 14 9"
                 height="6"
                 viewBox="0 0 14 9"
                 width="6"
                 xmlns="http://www.w3.org/2000/svg"
               >
                 <path
-                  d="M13.7 7.2L7.9.4C7.7.2 7.4 0 7 0s-.7.2-.9.4L.3 7.2c-.2.2-.3.4-.3.7C0 8.5.5 9 1.2 9h11.7c.6 0 1.1-.5 1.1-1.1 0-.3-.1-.5-.3-.7z"
+                  d="m13.7 7.2-5.8-6.8c-.2-.2-.5-.4-.9-.4s-.7.2-.9.4l-5.8 6.8c-.2.2-.3.4-.3.7 0 .6.5 1.1 1.2 1.1h11.7c.6 0 1.1-.5 1.1-1.1 0-.3-.1-.5-.3-.7z"
                   fill="#4d5969"
                 />
               </svg>
@@ -142,13 +144,14 @@ exports[`Test ChangeSourcecard should render with above 100 positive change 1`] 
               data-icon="main-caret-up"
             >
               <svg
+                enable-background="new 0 0 14 9"
                 height="6"
                 viewBox="0 0 14 9"
                 width="6"
                 xmlns="http://www.w3.org/2000/svg"
               >
                 <path
-                  d="M13.7 7.2L7.9.4C7.7.2 7.4 0 7 0s-.7.2-.9.4L.3 7.2c-.2.2-.3.4-.3.7C0 8.5.5 9 1.2 9h11.7c.6 0 1.1-.5 1.1-1.1 0-.3-.1-.5-.3-.7z"
+                  d="m13.7 7.2-5.8-6.8c-.2-.2-.5-.4-.9-.4s-.7.2-.9.4l-5.8 6.8c-.2.2-.3.4-.3.7 0 .6.5 1.1 1.2 1.1h11.7c.6 0 1.1-.5 1.1-1.1 0-.3-.1-.5-.3-.7z"
                   fill="#4d5969"
                 />
               </svg>
@@ -199,13 +202,14 @@ exports[`Test ChangeSourcecard should render with above 100 positive change 1`] 
               data-icon="main-caret-up"
             >
               <svg
+                enable-background="new 0 0 14 9"
                 height="6"
                 viewBox="0 0 14 9"
                 width="6"
                 xmlns="http://www.w3.org/2000/svg"
               >
                 <path
-                  d="M13.7 7.2L7.9.4C7.7.2 7.4 0 7 0s-.7.2-.9.4L.3 7.2c-.2.2-.3.4-.3.7C0 8.5.5 9 1.2 9h11.7c.6 0 1.1-.5 1.1-1.1 0-.3-.1-.5-.3-.7z"
+                  d="m13.7 7.2-5.8-6.8c-.2-.2-.5-.4-.9-.4s-.7.2-.9.4l-5.8 6.8c-.2.2-.3.4-.3.7 0 .6.5 1.1 1.2 1.1h11.7c.6 0 1.1-.5 1.1-1.1 0-.3-.1-.5-.3-.7z"
                   fill="#4d5969"
                 />
               </svg>
@@ -265,13 +269,14 @@ exports[`Test ChangeSourcecard should render with negative change 1`] = `
               data-icon="main-caret-down"
             >
               <svg
+                enable-background="new 0 0 14 9"
                 height="6"
                 viewBox="0 0 14 9"
                 width="6"
                 xmlns="http://www.w3.org/2000/svg"
               >
                 <path
-                  d="M14 1.1c0-.6-.5-1.1-1.2-1.1H1.2C.5 0 0 .5 0 1.1c0 .3.1.5.3.7l5.8 6.8c.2.2.5.4.9.4s.7-.2.9-.4l5.8-6.8c.2-.2.3-.4.3-.7z"
+                  d="m14 1.1c0-.6-.5-1.1-1.2-1.1h-11.6c-.7 0-1.2.5-1.2 1.1 0 .3.1.5.3.7l5.8 6.8c.2.2.5.4.9.4s.7-.2.9-.4l5.8-6.8c.2-.2.3-.4.3-.7z"
                   fill="#4d5969"
                 />
               </svg>
@@ -322,13 +327,14 @@ exports[`Test ChangeSourcecard should render with negative change 1`] = `
               data-icon="main-caret-down"
             >
               <svg
+                enable-background="new 0 0 14 9"
                 height="6"
                 viewBox="0 0 14 9"
                 width="6"
                 xmlns="http://www.w3.org/2000/svg"
               >
                 <path
-                  d="M14 1.1c0-.6-.5-1.1-1.2-1.1H1.2C.5 0 0 .5 0 1.1c0 .3.1.5.3.7l5.8 6.8c.2.2.5.4.9.4s.7-.2.9-.4l5.8-6.8c.2-.2.3-.4.3-.7z"
+                  d="m14 1.1c0-.6-.5-1.1-1.2-1.1h-11.6c-.7 0-1.2.5-1.2 1.1 0 .3.1.5.3.7l5.8 6.8c.2.2.5.4.9.4s.7-.2.9-.4l5.8-6.8c.2-.2.3-.4.3-.7z"
                   fill="#4d5969"
                 />
               </svg>
@@ -379,13 +385,14 @@ exports[`Test ChangeSourcecard should render with negative change 1`] = `
               data-icon="main-caret-down"
             >
               <svg
+                enable-background="new 0 0 14 9"
                 height="6"
                 viewBox="0 0 14 9"
                 width="6"
                 xmlns="http://www.w3.org/2000/svg"
               >
                 <path
-                  d="M14 1.1c0-.6-.5-1.1-1.2-1.1H1.2C.5 0 0 .5 0 1.1c0 .3.1.5.3.7l5.8 6.8c.2.2.5.4.9.4s.7-.2.9-.4l5.8-6.8c.2-.2.3-.4.3-.7z"
+                  d="m14 1.1c0-.6-.5-1.1-1.2-1.1h-11.6c-.7 0-1.2.5-1.2 1.1 0 .3.1.5.3.7l5.8 6.8c.2.2.5.4.9.4s.7-.2.9-.4l5.8-6.8c.2-.2.3-.4.3-.7z"
                   fill="#4d5969"
                 />
               </svg>
@@ -436,13 +443,14 @@ exports[`Test ChangeSourcecard should render with negative change 1`] = `
               data-icon="main-caret-down"
             >
               <svg
+                enable-background="new 0 0 14 9"
                 height="6"
                 viewBox="0 0 14 9"
                 width="6"
                 xmlns="http://www.w3.org/2000/svg"
               >
                 <path
-                  d="M14 1.1c0-.6-.5-1.1-1.2-1.1H1.2C.5 0 0 .5 0 1.1c0 .3.1.5.3.7l5.8 6.8c.2.2.5.4.9.4s.7-.2.9-.4l5.8-6.8c.2-.2.3-.4.3-.7z"
+                  d="m14 1.1c0-.6-.5-1.1-1.2-1.1h-11.6c-.7 0-1.2.5-1.2 1.1 0 .3.1.5.3.7l5.8 6.8c.2.2.5.4.9.4s.7-.2.9-.4l5.8-6.8c.2-.2.3-.4.3-.7z"
                   fill="#4d5969"
                 />
               </svg>
@@ -502,13 +510,14 @@ exports[`Test ChangeSourcecard should render with positive change 1`] = `
               data-icon="main-caret-up"
             >
               <svg
+                enable-background="new 0 0 14 9"
                 height="6"
                 viewBox="0 0 14 9"
                 width="6"
                 xmlns="http://www.w3.org/2000/svg"
               >
                 <path
-                  d="M13.7 7.2L7.9.4C7.7.2 7.4 0 7 0s-.7.2-.9.4L.3 7.2c-.2.2-.3.4-.3.7C0 8.5.5 9 1.2 9h11.7c.6 0 1.1-.5 1.1-1.1 0-.3-.1-.5-.3-.7z"
+                  d="m13.7 7.2-5.8-6.8c-.2-.2-.5-.4-.9-.4s-.7.2-.9.4l-5.8 6.8c-.2.2-.3.4-.3.7 0 .6.5 1.1 1.2 1.1h11.7c.6 0 1.1-.5 1.1-1.1 0-.3-.1-.5-.3-.7z"
                   fill="#4d5969"
                 />
               </svg>
@@ -559,13 +568,14 @@ exports[`Test ChangeSourcecard should render with positive change 1`] = `
               data-icon="main-caret-up"
             >
               <svg
+                enable-background="new 0 0 14 9"
                 height="6"
                 viewBox="0 0 14 9"
                 width="6"
                 xmlns="http://www.w3.org/2000/svg"
               >
                 <path
-                  d="M13.7 7.2L7.9.4C7.7.2 7.4 0 7 0s-.7.2-.9.4L.3 7.2c-.2.2-.3.4-.3.7C0 8.5.5 9 1.2 9h11.7c.6 0 1.1-.5 1.1-1.1 0-.3-.1-.5-.3-.7z"
+                  d="m13.7 7.2-5.8-6.8c-.2-.2-.5-.4-.9-.4s-.7.2-.9.4l-5.8 6.8c-.2.2-.3.4-.3.7 0 .6.5 1.1 1.2 1.1h11.7c.6 0 1.1-.5 1.1-1.1 0-.3-.1-.5-.3-.7z"
                   fill="#4d5969"
                 />
               </svg>
@@ -616,13 +626,14 @@ exports[`Test ChangeSourcecard should render with positive change 1`] = `
               data-icon="main-caret-up"
             >
               <svg
+                enable-background="new 0 0 14 9"
                 height="6"
                 viewBox="0 0 14 9"
                 width="6"
                 xmlns="http://www.w3.org/2000/svg"
               >
                 <path
-                  d="M13.7 7.2L7.9.4C7.7.2 7.4 0 7 0s-.7.2-.9.4L.3 7.2c-.2.2-.3.4-.3.7C0 8.5.5 9 1.2 9h11.7c.6 0 1.1-.5 1.1-1.1 0-.3-.1-.5-.3-.7z"
+                  d="m13.7 7.2-5.8-6.8c-.2-.2-.5-.4-.9-.4s-.7.2-.9.4l-5.8 6.8c-.2.2-.3.4-.3.7 0 .6.5 1.1 1.2 1.1h11.7c.6 0 1.1-.5 1.1-1.1 0-.3-.1-.5-.3-.7z"
                   fill="#4d5969"
                 />
               </svg>
@@ -673,13 +684,14 @@ exports[`Test ChangeSourcecard should render with positive change 1`] = `
               data-icon="main-caret-up"
             >
               <svg
+                enable-background="new 0 0 14 9"
                 height="6"
                 viewBox="0 0 14 9"
                 width="6"
                 xmlns="http://www.w3.org/2000/svg"
               >
                 <path
-                  d="M13.7 7.2L7.9.4C7.7.2 7.4 0 7 0s-.7.2-.9.4L.3 7.2c-.2.2-.3.4-.3.7C0 8.5.5 9 1.2 9h11.7c.6 0 1.1-.5 1.1-1.1 0-.3-.1-.5-.3-.7z"
+                  d="m13.7 7.2-5.8-6.8c-.2-.2-.5-.4-.9-.4s-.7.2-.9.4l-5.8 6.8c-.2.2-.3.4-.3.7 0 .6.5 1.1 1.2 1.1h11.7c.6 0 1.1-.5 1.1-1.1 0-.3-.1-.5-.3-.7z"
                   fill="#4d5969"
                 />
               </svg>
