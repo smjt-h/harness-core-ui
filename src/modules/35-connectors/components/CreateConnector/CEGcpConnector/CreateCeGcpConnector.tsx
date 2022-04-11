@@ -18,7 +18,6 @@ import { CCM_CONNECTOR_SAVE_EVENT } from '@connectors/trackingConstants'
 import OverviewStep, { CEGcpConnectorDTO } from './steps/OverviewStep'
 import BillingExport from './steps/BillingExport'
 import GrantPermission from './steps/GrantPermission'
-// import TestConnection from './steps/TestConnection'
 import ChooseRequirements from './steps/ChooseRequirements'
 import css from './CreateCeGcpConnector.module.scss'
 
@@ -56,7 +55,6 @@ const CreateCeGcpConnector: React.FC<CreateConnectorModalProps> = props => {
           }}
           isEditAndPermissionVisible={false}
         />
-        {/* <TestConnection name={getString('connectors.ceGcp.testConnection.heading')} onClose={props.onClose} /> */}
       </StepWizard>
     </DialogExtention>
   )

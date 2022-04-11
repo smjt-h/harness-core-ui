@@ -201,6 +201,7 @@ export interface StringsMap {
   'common.environmentUpdated': string
   'common.errorCount': string
   'common.errorHandler.communityForum': string
+  'common.errorHandler.contactLabel': string
   'common.errorHandler.contactSupport': string
   'common.errorHandler.issueCouldBe': string
   'common.errorHandler.tryTheseSuggestions': string

@@ -125,7 +125,7 @@ const Suggestions: React.FC<{
     <Layout.Horizontal margin={{ bottom: 'xlarge' }}>
       <Icon name={props.icon} margin={{ right: 'small' }} />
       <Layout.Vertical className={cx(css.errorListTextContainer, css.shrink)}>
-        <Text font={{ weight: 'semi-bold', size: 'small' }} color={Color.BLACK} margin={{ bottom: 'xsmall' }}>
+        <Text font={{ variation: FontVariation.SMALL_SEMI }} color={Color.BLACK} margin={{ bottom: 'xsmall' }}>
           {props.header}
         </Text>
         {props.items.map((item, index) => {
@@ -143,10 +143,10 @@ const Suggestions: React.FC<{
             </Container>
           )
         })}
-        <Text font={{ weight: 'semi-bold', size: 'small' }} color={Color.BLACK} margin={{ bottom: 'xsmall' }}>
-          {'Contact '}
+        <Text font={{ variation: FontVariation.SMALL_SEMI }} color={Color.BLACK} margin={{ bottom: 'xsmall' }}>
+          {`${getString('common.errorHandler.contactLabel')} `}
           <a href="mailto:support@harness.io">{getString('common.errorHandler.contactSupport')}</a>
-          {' or '}
+          {` ${getString('or')} `}
           <a href="https://community.harness.io/" target="_blank" rel="noreferrer">
             {getString('common.errorHandler.communityForum')}
           </a>

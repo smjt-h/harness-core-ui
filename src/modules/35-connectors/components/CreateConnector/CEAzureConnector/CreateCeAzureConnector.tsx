@@ -20,7 +20,6 @@ import ModalExtension from './ModalExtension'
 import AzureConnectorBillingExtension from './Steps/Billing/AzureConnectorBillingExtension'
 import ChooseRequirements from './Steps/CreateServicePrincipal/ChooseRequirements'
 import CreateServicePrincipal from './Steps/CreateServicePrincipal/CreateServicePrincipal'
-// import VerifyConnection from './Steps/VerifyConnection/VerifyConnection'
 import css from './CreateCeAzureConnector_new.module.scss'
 
 const CreateCeAzureConnector: React.FC<CreateConnectorModalProps> = props => {
@@ -56,7 +55,6 @@ const CreateCeAzureConnector: React.FC<CreateConnectorModalProps> = props => {
           }}
           isEditAndPermissionVisible={false}
         />
-        {/* <VerifyConnection name={getString('connectors.ceAzure.steps.testConnection')} onClose={props.onClose} /> */}
       </StepWizard>
     </ModalExtension>
   )

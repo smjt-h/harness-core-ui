@@ -161,7 +161,7 @@ describe('Create Secret Manager Wizard', () => {
     })
 
     //Test Connection Step
-    expect(getAllByText(container, 'connectors.ceGcp.testConnection.heading')[1]).toBeDefined()
+    expect(getAllByText(container, 'connectors.ceGcp.testConnection.heading')).toBeDefined()
     expect(container).toMatchSnapshot()
   })
 
