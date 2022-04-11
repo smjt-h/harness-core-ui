@@ -19,7 +19,7 @@ import css from './RecommendationDetails.module.scss'
 
 interface RecommendationTabsProps {
   selectedRecommendation: RecommendationType
-  setSelectedRecommendation: React.Dispatch<React.SetStateAction<RecommendationType>>
+  setSelectedRecommendation: (newState: RecommendationType) => void
   setCPUReqVal: React.Dispatch<React.SetStateAction<number>>
   setMemReqVal: React.Dispatch<React.SetStateAction<number>>
   setMemLimitVal: React.Dispatch<React.SetStateAction<number>>
