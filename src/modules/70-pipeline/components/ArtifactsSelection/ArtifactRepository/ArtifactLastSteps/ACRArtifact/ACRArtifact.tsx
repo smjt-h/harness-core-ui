@@ -311,28 +311,32 @@ export function ACRArtifact({
     ) as ACRArtifactType
 
     /* istanbul ignore else */
-    if (getMultiTypeFromValue(initialValues?.subscription) === MultiTypeInputType.FIXED) {
-      values.subscription = subscriptions.find(subscription => subscription.value === initialValues?.subscription) || {
-        label: values.subscription,
-        value: values.subscription
+    if (getMultiTypeFromValue(values?.subscription) === MultiTypeInputType.FIXED) {
+      const value = values?.subscription ? values?.subscription : formikRef?.current?.values?.subscription.value
+      values.subscription = subscriptions.find(subscription => subscription.value === value) || {
+        label: value,
+        value: value
       }
+
+      formikRef?.current?.setFieldValue('subscription', values.subscription)
     }
     /* istanbul ignore else */
-    if (getMultiTypeFromValue(initialValues?.registry) === MultiTypeInputType.FIXED) {
-      values.registry = registries.find(registry => registry.value === initialValues?.registry) || {
+    if (getMultiTypeFromValue(values?.registry) === MultiTypeInputType.FIXED) {
+      values.registry = {
         label: values.registry,
         value: values.registry
       }
     }
     /* istanbul ignore else */
-    if (getMultiTypeFromValue(initialValues?.repository) === MultiTypeInputType.FIXED) {
-      values.repository = repositories.find(repository => repository.value === initialValues?.repository) || {
+    if (getMultiTypeFromValue(values?.repository) === MultiTypeInputType.FIXED) {
+      values.repository = {
         label: values.repository,
         value: values.repository
       }
     }
 
     return { ...values, ...initialValues }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [context, initialValues, subscriptions, registries, repositories, selectedArtifact])
 
   const submitFormData = (formData: ACRArtifactType & { connectorId?: string }): void => {
