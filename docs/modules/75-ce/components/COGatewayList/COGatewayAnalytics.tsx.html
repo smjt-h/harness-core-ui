@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">88.57% </span>
+                <span class="strong">88.68% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>93/105</span>
+                <span class='fraction'>94/106</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">52.24% </span>
+                <span class="strong">58.33% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>163/312</span>
+                <span class='fraction'>196/336</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">88.24% </span>
+                <span class="strong">88.35% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>90/102</span>
+                <span class='fraction'>91/103</span>
             </div>
         
             
@@ -586,7 +586,20 @@
 <a name='L527'></a><a href='#L527'>527</a>
 <a name='L528'></a><a href='#L528'>528</a>
 <a name='L529'></a><a href='#L529'>529</a>
-<a name='L530'></a><a href='#L530'>530</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L530'></a><a href='#L530'>530</a>
+<a name='L531'></a><a href='#L531'>531</a>
+<a name='L532'></a><a href='#L532'>532</a>
+<a name='L533'></a><a href='#L533'>533</a>
+<a name='L534'></a><a href='#L534'>534</a>
+<a name='L535'></a><a href='#L535'>535</a>
+<a name='L536'></a><a href='#L536'>536</a>
+<a name='L537'></a><a href='#L537'>537</a>
+<a name='L538'></a><a href='#L538'>538</a>
+<a name='L539'></a><a href='#L539'>539</a>
+<a name='L540'></a><a href='#L540'>540</a>
+<a name='L541'></a><a href='#L541'>541</a>
+<a name='L542'></a><a href='#L542'>542</a>
+<a name='L543'></a><a href='#L543'>543</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -604,6 +617,7 @@
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -755,6 +769,18 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1137,6 +1163,7 @@ import {
   Service,
   ServiceSavings,
   useAllServiceResources,
+  useDescribeServiceInContainerServiceCluster,
   useHealthOfService,
   useSavingsOfService
 } from 'services/lw'
@@ -1290,6 +1317,18 @@ const COGatewayAnalytics: React.FC&lt;COGatewayAnalyticsProps&gt; = props =&gt; 
     lazy: isK8sRule || isEcsRule
   })
 &nbsp;
+  const { data: serviceDescribeData } = useDescribeServiceInContainerServiceCluster({
+    account_id: accountId,
+    cluster_name: _defaultTo(props.service<span class="branch-0 cbranch-no" title="branch not covered" >?.d</span>ata.routing?.container_svc<span class="branch-1 cbranch-no" title="branch not covered" >?.cluster,</span> ''),
+    service_name: _defaultTo(props.service<span class="branch-0 cbranch-no" title="branch not covered" >?.d</span>ata.routing?.container_svc<span class="branch-1 cbranch-no" title="branch not covered" >?.service,</span> ''),
+    lazy: !isEcsRule,
+    queryParams: {
+      accountIdentifier: accountId,
+      cloud_account_id: _defaultTo(props.service<span class="branch-0 cbranch-no" title="branch not covered" >?.d</span>ata.cloud_account_id, ''),
+      region: _defaultTo(props.service<span class="branch-0 cbranch-no" title="branch not covered" >?.d</span>ata.routing?.container_svc<span class="branch-1 cbranch-no" title="branch not covered" >?.region,</span> '')
+    }
+  })
+&nbsp;
   const { triggerToggle } = useToggleRuleState({
     accountId,
     serviceData: props.service<span class="branch-0 cbranch-no" title="branch not covered" >?.d</span>ata as Service,
@@ -1380,9 +1419,9 @@ const COGatewayAnalytics: React.FC&lt;COGatewayAnalyticsProps&gt; = props =&gt; 
                         target="_blank"
                         style={{ textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}
                       &gt;
-                        {`${_defaultTo(props.service?.data?.routing?.container_svc?.task_count, 0)} tasks`}
+                        {`${_defaultTo(serviceDescribeData?.response?.task_count, 0)} tasks`}
                       &lt;/Link&gt;
-                      {getStateTag(props.service?.data?.routing?.container_svc?.task_count ? 'active' : 'down')}
+                      {getStateTag(serviceDescribeData?.response?.task_count ? 'active' : 'down')}
                     &lt;/&gt;
                   ) : (
                     &lt;&gt;
@@ -1651,7 +1690,7 @@ export default COGatewayAnalytics
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Thu Apr 07 2022 17:29:14 GMT+0000 (Greenwich Mean Time)
+                at Mon Apr 11 2022 05:35:34 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../prettify.js"></script>

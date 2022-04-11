@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">84.08% </span>
+                <span class="strong">84.18% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>132/157</span>
+                <span class='fraction'>133/158</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">56.08% </span>
+                <span class="strong">58.78% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>143/255</span>
+                <span class='fraction'>164/279</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">84.62% </span>
+                <span class="strong">84.71% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>132/156</span>
+                <span class='fraction'>133/157</span>
             </div>
         
             
@@ -888,7 +888,17 @@
 <a name='L829'></a><a href='#L829'>829</a>
 <a name='L830'></a><a href='#L830'>830</a>
 <a name='L831'></a><a href='#L831'>831</a>
-<a name='L832'></a><a href='#L832'>832</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L832'></a><a href='#L832'>832</a>
+<a name='L833'></a><a href='#L833'>833</a>
+<a name='L834'></a><a href='#L834'>834</a>
+<a name='L835'></a><a href='#L835'>835</a>
+<a name='L836'></a><a href='#L836'>836</a>
+<a name='L837'></a><a href='#L837'>837</a>
+<a name='L838'></a><a href='#L838'>838</a>
+<a name='L839'></a><a href='#L839'>839</a>
+<a name='L840'></a><a href='#L840'>840</a>
+<a name='L841'></a><a href='#L841'>841</a>
+<a name='L842'></a><a href='#L842'>842</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -924,6 +934,7 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1080,6 +1091,18 @@
 <span class="cline-any cline-yes">45x</span>
 <span class="cline-any cline-yes">45x</span>
 <span class="cline-any cline-yes">45x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">45x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">45x</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -1139,9 +1162,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1765,7 +1785,8 @@ import {
   useSavingsOfService,
   useGetServiceDiagnostics,
   ServiceError,
-  useCumulativeServiceSavings
+  useCumulativeServiceSavings,
+  useDescribeServiceInContainerServiceCluster
 } from 'services/lw'
 import { String, useStrings } from 'framework/strings'
 import useDeleteServiceHook from '@ce/common/useDeleteService'
@@ -1912,6 +1933,18 @@ function ResourcesCell(tableProps: CellProps&lt;Service&gt;): JSX.Element {
   const isSubmittedRule = tableProps.row.original.status === 'submitted'
   const isEcsRule = !_isEmpty(tableProps.row.original.routing<span class="branch-0 cbranch-no" title="branch not covered" >?.c</span>ontainer_svc)
 &nbsp;
+  const { data: serviceDescribeData } = useDescribeServiceInContainerServiceCluster({
+    account_id: accountId,
+    cluster_name: _defaultTo(tableProps.row.original.routing<span class="branch-0 cbranch-no" title="branch not covered" >?.c</span>ontainer_svc?.cluster, ''),
+    service_name: _defaultTo(tableProps.row.original.routing<span class="branch-0 cbranch-no" title="branch not covered" >?.c</span>ontainer_svc?.service, ''),
+    lazy: !isEcsRule,
+    queryParams: {
+      accountIdentifier: accountId,
+      cloud_account_id: tableProps.row.original.cloud_account_id,
+      region: _defaultTo(tableProps.row.original.routing<span class="branch-0 cbranch-no" title="branch not covered" >?.c</span>ontainer_svc?.region, '')
+    }
+  })
+&nbsp;
   const getClickableLink = <span class="fstat-no" title="function not covered" >() =</span>&gt; {
 <span class="cstat-no" title="statement not covered" >    return isK8sRule</span>
       ? tableProps.row.original.routing?.k8s?.CustomDomain
@@ -1999,12 +2032,9 @@ function ResourcesCell(tableProps: CellProps&lt;Service&gt;): JSX.Element {
                   marginRight: 5
                 }}
               &gt;
-                {`${getString('ce.co.noOfTasks')} ${_defaultTo(
-                  tableProps.row.original.routing<span class="branch-0 cbranch-no" title="branch not covered" >?.c</span>ontainer_svc<span class="branch-0 cbranch-no" title="branch not covered" >?.t</span>ask_count,
-                  0
-                )}`}
+                {`${getString('ce.co.noOfTasks')} ${_defaultTo(serviceDescribeData<span class="branch-0 cbranch-no" title="branch not covered" >?.r</span>esponse<span class="branch-0 cbranch-no" title="branch not covered" >?.t</span>ask_count, 0)}`}
               &lt;/Text&gt;
-              {getStateTag(tableProps.row.original.routing<span class="branch-0 cbranch-no" title="branch not covered" >?.c</span>ontainer_svc<span class="branch-0 cbranch-no" title="branch not covered" >?.t</span>ask_count ? 'active' : <span class="branch-1 cbranch-no" title="branch not covered" >'down')</span>}
+              {getStateTag(serviceDescribeData<span class="branch-0 cbranch-no" title="branch not covered" >?.r</span>esponse<span class="branch-0 cbranch-no" title="branch not covered" >?.t</span>ask_count ? 'active' : <span class="branch-1 cbranch-no" title="branch not covered" >'down')</span>}
             &lt;/&gt;
           )}
         &lt;/Layout.Horizontal&gt;
@@ -2557,7 +2587,7 @@ export default COGatewayList
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Thu Apr 07 2022 17:29:14 GMT+0000 (Greenwich Mean Time)
+                at Mon Apr 11 2022 05:35:34 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../prettify.js"></script>

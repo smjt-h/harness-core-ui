@@ -25,14 +25,14 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>7/7</span>
+                <span class='fraction'>9/9</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">90.91% </span>
+                <span class="strong">76.47% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>20/22</span>
+                <span class='fraction'>26/34</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>7/7</span>
+                <span class='fraction'>9/9</span>
             </div>
         
             
@@ -112,13 +112,31 @@
 <a name='L53'></a><a href='#L53'>53</a>
 <a name='L54'></a><a href='#L54'>54</a>
 <a name='L55'></a><a href='#L55'>55</a>
-<a name='L56'></a><a href='#L56'>56</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L56'></a><a href='#L56'>56</a>
+<a name='L57'></a><a href='#L57'>57</a>
+<a name='L58'></a><a href='#L58'>58</a>
+<a name='L59'></a><a href='#L59'>59</a>
+<a name='L60'></a><a href='#L60'>60</a>
+<a name='L61'></a><a href='#L61'>61</a>
+<a name='L62'></a><a href='#L62'>62</a>
+<a name='L63'></a><a href='#L63'>63</a>
+<a name='L64'></a><a href='#L64'>64</a>
+<a name='L65'></a><a href='#L65'>65</a>
+<a name='L66'></a><a href='#L66'>66</a>
+<a name='L67'></a><a href='#L67'>67</a>
+<a name='L68'></a><a href='#L68'>68</a>
+<a name='L69'></a><a href='#L69'>69</a>
+<a name='L70'></a><a href='#L70'>70</a>
+<a name='L71'></a><a href='#L71'>71</a>
+<a name='L72'></a><a href='#L72'>72</a>
+<a name='L73'></a><a href='#L73'>73</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -130,8 +148,17 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -167,6 +194,13 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">/*
  * Copyright 2021 Harness Inc. All rights reserved.
  * Use of this source code is governed by the PolyForm Shield 1.0.0 license
@@ -175,7 +209,8 @@
  */
 &nbsp;
 import React from 'react'
-import { String } from 'framework/strings'
+import { Text } from '@harness/uicore'
+import { String, useStrings } from 'framework/strings'
 import type { ServiceExecutionSummary } from 'services/cd-ng'
 import css from '@cd/components/ServicePopoverCard/ServicePopoverCard.module.scss'
 &nbsp;
@@ -185,20 +220,29 @@ export interface ServicePopoveCardProps {
 &nbsp;
 export function ServicePopoverCard(props: ServicePopoveCardProps): React.ReactElement {
   const { service } = props
+  const { getString } = useStrings()
 &nbsp;
   return (
     &lt;div className={css.main}&gt;
       &lt;String tagName="div" className={css.title} stringID="primaryArtifactText" /&gt;
       {service<span class="branch-0 cbranch-no" title="branch not covered" >?.a</span>rtifacts?.primary ? (
-        &lt;String
-          tagName="div"
-          stringID="artifactDisplay"
-          useRichText
-          vars={{
-            image: (service.artifacts.primary as unknown as any).imagePath,
-            tag: (service.artifacts.primary as unknown as any).tag
-          }}
-        /&gt;
+        &lt;&gt;
+          {!!(service.artifacts.primary as unknown as any).image &amp;&amp; (
+<span class="branch-1 cbranch-no" title="branch not covered" >            &lt;Text color="grey800" font={'small'}&gt;</span>
+              {getString('imageLabel')}: {(service.artifacts.primary as unknown as any).image}
+            &lt;/Text&gt;
+          )}
+          {!!(service.artifacts.primary as unknown as any).tag &amp;&amp; (
+<span class="branch-1 cbranch-no" title="branch not covered" >            &lt;Text color="grey800" font={'small'}&gt;</span>
+              {getString('common.artifactTag')}: {(service.artifacts.primary as unknown as any).tag}
+            &lt;/Text&gt;
+          )}
+          {!!(service.artifacts.primary as unknown as any).version &amp;&amp; (
+<span class="branch-1 cbranch-no" title="branch not covered" >            &lt;Text color="grey800" font={'small'}&gt;</span>
+              {getString('version')}: {(service.artifacts.primary as unknown as any).version}
+            &lt;/Text&gt;
+          )}
+        &lt;/&gt;
       ) : (
         &lt;String tagName="div" stringID="noArtifact" /&gt;
       )}
@@ -206,16 +250,23 @@ export function ServicePopoverCard(props: ServicePopoveCardProps): React.ReactEl
         &lt;&gt;
           &lt;String tagName="div" className={css.title} stringID="sidecarsText" /&gt;
           {service.artifacts.sidecars.map((artifact, index) =&gt; (
-            &lt;String
-              tagName="div"
-              key={index}
-              stringID="artifactDisplay"
-              useRichText
-              vars={{
-                image: (artifact as unknown as any).imagePath,
-                tag: (artifact as unknown as any).tag
-              }}
-            /&gt;
+            &lt;div key={index}&gt;
+              {!!(artifact as unknown as any).image &amp;&amp; (
+<span class="branch-1 cbranch-no" title="branch not covered" >                &lt;Text color="grey800" font={'small'}&gt;</span>
+                  {getString('imageLabel')}: {(artifact as unknown as any).image}
+                &lt;/Text&gt;
+              )}
+              {!!(artifact as unknown as any).tag &amp;&amp; (
+<span class="branch-1 cbranch-no" title="branch not covered" >                &lt;Text color="grey800" font={'small'}&gt;</span>
+                  {getString('common.artifactTag')}: {(artifact as unknown as any).tag}
+                &lt;/Text&gt;
+              )}
+              {!!(artifact as unknown as any).version &amp;&amp; (
+<span class="branch-1 cbranch-no" title="branch not covered" >                &lt;Text color="grey800" font={'small'}&gt;</span>
+                  {getString('version')}: {(artifact as unknown as any).version}
+                &lt;/Text&gt;
+              )}
+            &lt;/div&gt;
           ))}
         &lt;/&gt;
       ) : null}
@@ -229,7 +280,7 @@ export function ServicePopoverCard(props: ServicePopoveCardProps): React.ReactEl
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Thu Apr 07 2022 17:29:14 GMT+0000 (Greenwich Mean Time)
+                at Mon Apr 11 2022 05:35:34 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../prettify.js"></script>

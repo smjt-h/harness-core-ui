@@ -3242,7 +3242,7 @@ interface KubernetesBuildInfraFormValues {
   useFromStage?: string
   annotations?: MultiTypeMapUIType
   labels?: MultiTypeMapUIType
-  priorityClass?: string
+  priorityClassName?: string
   automountServiceAccountToken?: boolean
   privileged?: boolean
   allowPrivilegeEscalation?: boolean
@@ -3488,8 +3488,8 @@ export default function BuildInfraSpecifications({ children }: React.PropsWithCh
       ),
       labels: getInitialMapValues((stage?.stage?.spec?.infrastructure as K8sDirectInfraYaml)?.spec?.labels || {}),
       buildInfraType: 'KubernetesDirect',
-      priorityClass: (stage?.stage?.spec?.infrastructure as K8sDirectInfraYaml)?.spec
-        ?.priorityClass as unknown as string,
+      priorityClassName: (stage?.stage?.spec?.infrastructure as K8sDirectInfraYaml)?.spec
+        ?.priorityClassName as unknown as string,
       automountServiceAccountToken: typeof autoServiceAccountToken === 'undefined' ? true : <span class="branch-1 cbranch-no" title="branch not covered" >autoServiceAccountToken,</span>
       privileged: (stage?.stage?.spec?.infrastructure as K8sDirectInfraYaml)?.spec?.containerSecurityContext<span class="branch-1 cbranch-no" title="branch not covered" ></span>
         ?.privileged,
@@ -3670,7 +3670,7 @@ export default function BuildInfraSpecifications({ children }: React.PropsWithCh
                     annotations: getMapValues(values.annotations),
                     labels: !isEmpty(filteredLabels) ? filteredLabels : undefined,
                     automountServiceAccountToken: values.automountServiceAccountToken,
-                    priorityClass: values.priorityClass,
+                    priorityClassName: values.priorityClassName,
                     ...additionalKubernetesFields
                   }
                 }
@@ -3973,12 +3973,12 @@ export default function BuildInfraSpecifications({ children }: React.PropsWithCh
               &lt;Text
                 font={{ variation: FontVariation.FORM_LABEL }}
                 margin={{ bottom: 'xsmall' }}
-                tooltipProps={{ dataTooltipId: 'priorityClass' }}
+                tooltipProps={{ dataTooltipId: 'priorityClassName' }}
               &gt;
-                {getString('pipeline.buildInfra.priorityClass')}
+                {getString('pipeline.buildInfra.priorityClassName')}
               &lt;/Text&gt;
             }
-            name="priorityClass"
+            name="priorityClassName"
             style={{ width: 300, marginBottom: 'var(--spacing-xsmall)' }}
             multiTextInputProps={{
               multiTextInputProps: { expressions, allowableTypes },
@@ -4395,19 +4395,19 @@ export default function BuildInfraSpecifications({ children }: React.PropsWithCh
                                               &lt;/&gt;
                                             )}
                                             {(propagatedStage<span class="branch-0 cbranch-no" title="branch not covered" >?.s</span>tage<span class="branch-0 cbranch-no" title="branch not covered" >?.s</span>pec<span class="branch-0 cbranch-no" title="branch not covered" >?.i</span>nfrastructure as K8sDirectInfraYaml)<span class="branch-0 cbranch-no" title="branch not covered" >?.s</span>pec<span class="branch-0 cbranch-no" title="branch not covered" ></span>
-                                              ?.priorityClass &amp;&amp; (
+                                              ?.priorityClassName &amp;&amp; (
 <span class="branch-1 cbranch-no" title="branch not covered" >                                              &lt;&gt;</span>
                                                 &lt;Text
                                                   font={{ variation: FontVariation.FORM_LABEL }}
                                                   margin={{ bottom: 'xsmall' }}
                                                   tooltipProps={{ dataTooltipId: 'timeout' }}
                                                 &gt;
-                                                  {getString('pipeline.buildInfra.priorityClass')}
+                                                  {getString('pipeline.buildInfra.priorityClassName')}
                                                 &lt;/Text&gt;
                                                 &lt;Text color="black" margin={{ bottom: 'medium' }}&gt;
                                                   {
                                                     (propagatedStage?.stage?.spec?.infrastructure as K8sDirectInfraYaml)
-                                                      ?.spec?.priorityClass
+                                                      ?.spec?.priorityClassName
                                                   }
                                                 &lt;/Text&gt;
                                               &lt;/&gt;
@@ -4711,7 +4711,7 @@ export default function BuildInfraSpecifications({ children }: React.PropsWithCh
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Thu Apr 07 2022 17:29:14 GMT+0000 (Greenwich Mean Time)
+                at Mon Apr 11 2022 05:35:34 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../../prettify.js"></script>

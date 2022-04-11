@@ -3,7 +3,7 @@
 <html lang="en">
 
 <head>
-    <title>Code coverage report for modules/75-cf/pages/target-details/attributes/TabAtrributes.tsx</title>
+    <title>Code coverage report for modules/75-cf/pages/target-details/attributes/TabAttributes.tsx</title>
     <meta charset="utf-8" />
     <link rel="stylesheet" href="../../../../../prettify.css" />
     <link rel="stylesheet" href="../../../../../base.css" />
@@ -19,34 +19,34 @@
 <body>
 <div class='wrapper'>
     <div class='pad1'>
-        <h1><a href="../../../../../index.html">All files</a> / <a href="index.html">modules/75-cf/pages/target-details/attributes</a> TabAtrributes.tsx</h1>
+        <h1><a href="../../../../../index.html">All files</a> / <a href="index.html">modules/75-cf/pages/target-details/attributes</a> TabAttributes.tsx</h1>
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>10/10</span>
+                <span class='fraction'>14/14</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">71.43% </span>
+                <span class="strong">87.5% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>10/14</span>
+                <span class='fraction'>7/8</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>2/2</span>
+                <span class='fraction'>3/3</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>9/9</span>
+                <span class='fraction'>14/14</span>
             </div>
         
             
@@ -115,39 +115,37 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">5x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">8x</span>
+<span class="cline-any cline-yes">8x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">24x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">22x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">8x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">10x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">24x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -159,6 +157,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">/*
  * Copyright 2021 Harness Inc. All rights reserved.
  * Use of this source code is governed by the PolyForm Shield 1.0.0 license
@@ -167,49 +167,49 @@
  */
 &nbsp;
 import React from 'react'
-import { Container, Layout, Text } from '@wings-software/uicore'
+import { Layout, Text } from '@harness/uicore'
+import { Color, FontVariation } from '@harness/design-system'
 import { useStrings } from 'framework/strings'
 import type { Target } from 'services/cf'
 import { ItemContainer } from '@cf/components/ItemContainer/ItemContainer'
 &nbsp;
-export const TabAttributes: React.FC&lt;{ target?: Target | undefined | null }&gt; = ({ target }) =&gt; {
+export interface TabAttributesProps {
+  target: Target
+}
+&nbsp;
+const TabAttributes: React.FC&lt;TabAttributesProps&gt; = ({ target }) =&gt; {
   const { getString } = useStrings()
   const attributes = {
-    [getString('identifier')]: target<span class="branch-0 cbranch-no" title="branch not covered" >?.i</span>dentifier,
-    [getString('name')]: target<span class="branch-0 cbranch-no" title="branch not covered" >?.n</span>ame,
+    [getString('identifier')]: target.identifier,
+    [getString('name')]: target.name,
     ...target<span class="branch-0 cbranch-no" title="branch not covered" >?.a</span>ttributes
   }
 &nbsp;
-  return (
-    &lt;Container padding={{ top: 'xsmall', right: 'xxlarge', left: 'xxlarge', bottom: 'xxlarge' }}&gt;
-      &lt;Text
-        style={{ color: '#6B6D85', fontSize: '12px', lineHeight: '150%' }}
-        padding={{ bottom: 'xxlarge', left: 'small', right: 'small' }}
-      &gt;
-        &lt;span dangerouslySetInnerHTML={{ __html: getString('cf.targetDetail.learnMore') }} /&gt;
-      &lt;/Text&gt;
-      &lt;&gt;
-        &lt;Layout.Vertical spacing="small"&gt;
-          &lt;Text style={{ color: '#4F5162', fontSize: '10px', fontWeight: 'bold' }} padding={{ left: 'medium' }}&gt;
-            {getString('cf.targetDetail.attribute')}
-          &lt;/Text&gt;
+  function formatAttributeValue(value: boolean | string): string {
+    if (typeof value === 'boolean') {
+      return value ? getString('cf.shared.true') : getString('cf.shared.false')
+    }
 &nbsp;
-          {Object.entries(attributes || <span class="branch-1 cbranch-no" title="branch not covered" >{})</span>.map(([key, value]) =&gt; (
-            &lt;ItemContainer key={key}&gt;
-              &lt;Text
-                margin={{ bottom: 'xsmall' }}
-                style={{ color: '#22222A', fontSize: '12px', fontWeight: 500, lineHeight: '16px' }}
-              &gt;
-                {key}
-              &lt;/Text&gt;
-              &lt;Text style={{ color: '##22222ACC', lineHeight: '24px' }}&gt;{value}&lt;/Text&gt;
-            &lt;/ItemContainer&gt;
-          ))}
-        &lt;/Layout.Vertical&gt;
-      &lt;/&gt;
-    &lt;/Container&gt;
+    return value
+  }
+&nbsp;
+  return (
+    &lt;Layout.Vertical spacing="small" padding={{ top: 'xsmall', right: 'xxlarge', left: 'xxlarge', bottom: 'xxlarge' }}&gt;
+      {Object.entries(attributes).map(([key, value]) =&gt; (
+        &lt;ItemContainer key={key}&gt;
+          &lt;Text lineClamp={1} margin={{ bottom: 'xsmall' }} font={{ variation: FontVariation.FORM_LABEL }}&gt;
+            {key}
+          &lt;/Text&gt;
+          &lt;Text lineClamp={2} color={Color.GREY_800}&gt;
+            {formatAttributeValue(value)}
+          &lt;/Text&gt;
+        &lt;/ItemContainer&gt;
+      ))}
+    &lt;/Layout.Vertical&gt;
   )
 }
+&nbsp;
+export default TabAttributes
 &nbsp;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
@@ -217,7 +217,7 @@ export const TabAttributes: React.FC&lt;{ target?: Target | undefined | null }&g
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Thu Apr 07 2022 17:29:14 GMT+0000 (Greenwich Mean Time)
+                at Mon Apr 11 2022 05:35:34 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../../prettify.js"></script>
