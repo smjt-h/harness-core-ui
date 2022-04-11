@@ -65,7 +65,7 @@ const entitySubTypeToTagMap: {
   ErrorTracking: 'errortracking',
   Pdc: 'pdc',
   Azure: 'azure',
-  AzureRepo: 'azure'
+  AzureRepo: 'azurerepo'
 }
 
 export const getSnippetTags = (

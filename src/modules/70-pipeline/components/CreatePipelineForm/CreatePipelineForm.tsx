@@ -43,7 +43,8 @@ export function CreatePipelineForm(props: CreatePipelineFormProps): React.ReactE
         description: '',
         tags: {},
         repo: '',
-        branch: ''
+        branch: '',
+        stages: []
       }}
       formName="createPipeline"
       validationSchema={Yup.object().shape({

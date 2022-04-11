@@ -5369,6 +5369,13 @@ export interface Node {
   textContent?: string
 }
 
+export interface NodeErrorInfo {
+  fqn?: string
+  identifier?: string
+  name?: string
+  type?: string
+}
+
 export interface NodeList {
   length?: number
 }
@@ -5409,10 +5416,9 @@ export type NumberNGVariable = NGVariable & {
   value: number
 }
 
-export interface OAuthSettings {
+export type OAuthSettings = NGAuthSettings & {
   allowedProviders?: ('AZURE' | 'BITBUCKET' | 'GITHUB' | 'GITLAB' | 'GOOGLE' | 'LINKEDIN')[]
   filter?: string
-  settingsType?: 'USER_PASSWORD' | 'SAML' | 'LDAP' | 'OAUTH'
 }
 
 export interface OAuthSignupDTO {
@@ -6056,7 +6062,7 @@ export interface PipelineInfoConfig {
   orgIdentifier?: string
   projectIdentifier?: string
   properties?: NGProperties
-  stages?: StageElementWrapperConfig[]
+  stages: StageElementWrapperConfig[]
   tags?: {
     [key: string]: string
   }
@@ -9690,6 +9696,18 @@ export interface YamlGroup {
 
 export interface YamlSchemaDetailsWrapper {
   yamlSchemaWithDetailsList?: YamlSchemaWithDetails[]
+}
+
+export interface YamlSchemaErrorDTO {
+  fqn?: string
+  hintMessage?: string
+  message?: string
+  stageInfo?: NodeErrorInfo
+  stepInfo?: NodeErrorInfo
+}
+
+export type YamlSchemaErrorWrapperDTO = ErrorMetadataDTO & {
+  schemaErrors?: YamlSchemaErrorDTO[]
 }
 
 export interface YamlSchemaMetadata {
@@ -33687,6 +33705,7 @@ export interface GetYamlSnippetMetadataQueryParams {
     | 'errortracking'
     | 'azure'
     | 'pdc'
+    | 'azurerepo'
   )[]
 }
 

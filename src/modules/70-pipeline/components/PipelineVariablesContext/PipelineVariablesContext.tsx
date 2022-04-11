@@ -93,7 +93,7 @@ export function PipelineVariablesContextProvider(
   const [{ variablesPipeline, metadataMap }, setPipelineVariablesData] = React.useState<
     Pick<PipelineVariablesData, 'metadataMap' | 'variablesPipeline'>
   >({
-    variablesPipeline: { name: '', identifier: '' },
+    variablesPipeline: { name: '', identifier: '', stages: [] },
     metadataMap: {}
   })
   const { accountId, orgIdentifier, projectIdentifier } = useParams<PipelinePathProps>()
