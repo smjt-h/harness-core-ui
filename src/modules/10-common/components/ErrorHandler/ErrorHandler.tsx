@@ -12,6 +12,7 @@ import { Color, FontVariation } from '@harness/design-system'
 import type { ResponseMessage } from 'services/cd-ng'
 import { useStrings } from 'framework/strings'
 import { LinkifyText } from '@common/components/LinkifyText/LinkifyText'
+// eslint-disable-next-line no-restricted-imports
 import { Connectors } from '@connectors/constants'
 import css from '@common/components/ErrorHandler/ErrorHandler.module.scss'
 
@@ -21,7 +22,6 @@ export interface ErrorHandlerProps {
   height?: number | string
   skipUrlsInErrorHeader?: boolean
   className?: string
-  isCeConnector?: boolean
   connectorType?: string
 }
 
@@ -117,6 +117,9 @@ const Suggestions: React.FC<{
 
       case Connectors.CE_GCP:
         return 'https://ngdocs.harness.io/article/kxnsritjls-set-up-cost-visibility-for-gcp'
+
+      default:
+        return 'https://ngdocs.harness.io/article/n8e7rddf8w-cloud-cost-management-overview'
     }
   }
 
@@ -157,17 +160,12 @@ const Suggestions: React.FC<{
 }
 
 export const ErrorHandler: React.FC<ErrorHandlerProps> = props => {
-  const {
-    responseMessages,
-    width,
-    height,
-    skipUrlsInErrorHeader = false,
-    className = '',
-    isCeConnector = false,
-    connectorType = ''
-  } = props
+  const { responseMessages, width, height, skipUrlsInErrorHeader = false, className = '', connectorType = '' } = props
   const errorObjects = useMemo(() => extractInfo(responseMessages), [responseMessages])
   const { getString } = useStrings()
+  const isCeConnector = Boolean(
+    Connectors.CE_KUBERNETES || Connectors.CEAWS || Connectors.CE_AZURE || Connectors.CE_GCP
+  )
   return (
     <Layout.Vertical
       background={Color.RED_100}

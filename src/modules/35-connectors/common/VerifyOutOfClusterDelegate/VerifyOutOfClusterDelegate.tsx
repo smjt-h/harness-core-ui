@@ -168,19 +168,24 @@ const VerifyOutOfClusterDelegate: React.FC<StepProps<VerifyOutOfClusterStepProps
       status: 'PROCESS'
     })
 
-    const isCeConnector = Boolean(
-      Connectors.CE_KUBERNETES || Connectors.CEAWS || Connectors.CE_AZURE || Connectors.CE_GCP
-    )
-
     const { trackEvent } = useTelemetry()
 
     useEffect(() => {
-      if (props.type === Connectors.CE_KUBERNETES) {
-        trackEvent(CE_K8S_CONNECTOR_CREATION_EVENTS.LOAD_CONNECTION_TEST, {})
-      } else if (props.type === Connectors.CEAWS) {
-        trackEvent(CE_AWS_CONNECTOR_CREATION_EVENTS.LOAD_CONNECTION_TEST, {})
-      } else if (props.type === Connectors.CE_AZURE) {
-        trackEvent(CE_AZURE_CONNECTOR_CREATION_EVENTS.LOAD_CONNECTION_TEST, {})
+      switch (props.type) {
+        case Connectors.CE_KUBERNETES:
+          trackEvent(CE_K8S_CONNECTOR_CREATION_EVENTS.LOAD_CONNECTION_TEST, {})
+          break
+
+        case Connectors.CEAWS:
+          trackEvent(CE_AWS_CONNECTOR_CREATION_EVENTS.LOAD_CONNECTION_TEST, {})
+          break
+
+        case Connectors.CE_AZURE:
+          trackEvent(CE_AZURE_CONNECTOR_CREATION_EVENTS.LOAD_CONNECTION_TEST, {})
+          break
+
+        default:
+          break
       }
     }, [])
 
@@ -284,12 +289,7 @@ const VerifyOutOfClusterDelegate: React.FC<StepProps<VerifyOutOfClusterStepProps
       return (
         <Layout.Vertical className={css.stepError}>
           {responseMessages ? (
-            <ErrorHandler
-              responseMessages={responseMessages}
-              className={css.errorHandler}
-              isCeConnector={isCeConnector}
-              connectorType={props.type}
-            />
+            <ErrorHandler responseMessages={responseMessages} className={css.errorHandler} connectorType={props.type} />
           ) : (
             genericHandler
           )}
