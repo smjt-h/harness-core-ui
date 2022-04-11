@@ -7,7 +7,7 @@
 
 import React from 'react'
 import { noop } from 'lodash-es'
-import { render, getAllByText } from '@testing-library/react'
+import { render, getAllByText, getByText, fireEvent } from '@testing-library/react'
 import { act } from 'react-dom/test-utils'
 
 import { TestWrapper } from '@common/utils/testUtils'
@@ -19,7 +19,7 @@ const commonProps = {
   orgIdentifier: '',
   projectIdentifier: '',
   setIsEditMode: noop,
-  onClose: noop,
+  onClose: jest.fn(),
   onSuccess: noop
 }
 
@@ -162,6 +162,14 @@ describe('Create Secret Manager Wizard', () => {
     })
 
     expect(getAllByText(container, 'connectors.ceAws.testConnection.heading')[0]).toBeDefined()
+
+    const finishBtn = getByText(container, 'finish')
+    expect(finishBtn).toBeDefined()
+    act(() => {
+      fireEvent.click(finishBtn!)
+    })
+    expect(commonProps.onClose).toBeCalled()
+
     expect(container).toMatchSnapshot()
   })
 })
