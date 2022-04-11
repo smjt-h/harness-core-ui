@@ -27,6 +27,7 @@ describe('Services for Pipeline', () => {
     cy.wait(500)
     cy.contains('span', 'New Service').should('be.visible')
     cy.contains('span', 'New Service').click()
+    cy.matchImageSnapshot('New Service Modal')
 
     cy.fillName('testService')
     cy.get('span[data-testid="description-edit"]').should('be.visible')

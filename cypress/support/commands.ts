@@ -31,6 +31,7 @@
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 import '@testing-library/cypress/add-commands'
+import { addMatchImageSnapshotCommand } from '../../node_modules/cypress-image-snapshot/command'
 import { getConnectorIconByType } from '../utils/connctors-utils'
 import {
   servicesCall,
@@ -78,9 +79,17 @@ declare global {
       verifyStepSelectConnector(): void
       verifyStepChooseRuntimeInput(): void
       verifyStepSelectStrategyAndVerifyStep(): void
+      matchImageSnapshot(name?: string): void
     }
   }
 }
+
+addMatchImageSnapshotCommand({
+  failureThreshold: 0.000001, // threshold for entire image
+  failureThresholdType: 'percent', // percent of image or number of pixels
+  customDiffConfig: { threshold: 0.1 }, // threshold for each pixel
+  capture: 'viewport' // capture viewport in screenshot
+})
 
 Cypress.Commands.add('clickSubmit', () => {
   cy.get('[type="submit"]').click()
