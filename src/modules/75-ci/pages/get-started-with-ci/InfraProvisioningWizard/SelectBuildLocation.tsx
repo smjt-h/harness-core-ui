@@ -6,7 +6,7 @@
  */
 
 import React, { useState, useEffect } from 'react'
-import { Icon, Container, Text, FontVariation, Layout, CardSelect, PillToggle } from '@harness/uicore'
+import { Icon, Container, Text, FontVariation, Layout, CardSelect, PillToggle, Color } from '@harness/uicore'
 import { useStrings } from 'framework/strings'
 import { Hosting, SelectBuildLocationProps, BuildLocationDetails, AllBuildLocations } from './Constants'
 
@@ -44,6 +44,7 @@ export const SelectBuildLocation: React.FC<SelectBuildLocationProps> = props => 
           selectedView={hosting}
           onChange={(item: Hosting) => setHosting(item)}
           className={css.hostingToggle}
+          disableToggle={true}
         />
       </Container>
       <Text font={{ variation: FontVariation.H5 }} padding={{ bottom: 'medium' }}>
@@ -54,7 +55,7 @@ export const SelectBuildLocation: React.FC<SelectBuildLocationProps> = props => 
         data={AllBuildLocations}
         cardClassName={css.card}
         renderItem={(item: BuildLocationDetails) => {
-          const { icon, label, details, approxETAInMins } = item
+          const { icon, label, details, approxETAInMins, disabled } = item
           return (
             <Layout.Vertical height="100%" flex={{ justifyContent: 'space-between' }}>
               <Layout.Vertical spacing="medium">
@@ -64,9 +65,18 @@ export const SelectBuildLocation: React.FC<SelectBuildLocationProps> = props => 
                 </Layout.Horizontal>
                 <Text font={{ variation: FontVariation.SMALL }}>{getString(details)}</Text>
               </Layout.Vertical>
-              <Text font={{ variation: FontVariation.TINY }} flex={{ justifyContent: 'end' }} width="100%">
-                ~ {approxETAInMins} {getString('timeMinutes')}
-              </Text>
+              <Layout.Horizontal flex={{ justifyContent: disabled ? 'space-between' : 'flex-end' }} width="100%">
+                {disabled ? (
+                  <Container className={css.comingSoonPill} flex={{ justifyContent: 'center' }}>
+                    <Text font={{ variation: FontVariation.TINY }} color={Color.WHITE}>
+                      {getString('common.comingSoon')}
+                    </Text>
+                  </Container>
+                ) : null}
+                <Text font={{ variation: FontVariation.TINY }}>
+                  ~ {approxETAInMins} {getString('timeMinutes')}
+                </Text>
+              </Layout.Horizontal>
             </Layout.Vertical>
           )
         }}
