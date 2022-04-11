@@ -6,74 +6,98 @@ exports[`test cases for ManageUnallocatedCost should be able to render component
     class="StyledProps--font StyledProps--main"
   >
     <div
-      class="Layout--horizontal Layout--layout-spacing-small StyledProps--main hContainer"
+      class="bp3-form-group radioContainer"
     >
-      <label
-        class="RadioButton--radio StyledProps--main"
-      >
-        <input
-          checked=""
-          class="RadioButton--input"
-          name=""
-          type="radio"
-          value="default"
-        />
-        <span
-          class="RadioButton--radioIcon"
-        />
-        ce.businessMapping.manageUnallocatedCost.defaultUnallocatedCostLabel
-      </label>
       <div
-        class="bp3-form-group defaultValInputBox"
+        class="bp3-form-content"
       >
         <div
-          class="bp3-form-content"
+          class="StyledProps--main"
         >
+          
           <div
-            class="bp3-input-group"
+            class=""
           >
-            <input
-              autocomplete="off"
-              class="bp3-input"
-              name="unallocatedCost.label"
-              placeholder="ce.businessMapping.manageUnallocatedCost.otherPlaceholder"
-              type="text"
-              value=""
-            />
+            <label
+              class="RadioButton--radio StyledProps--main"
+            >
+              <input
+                class="RadioButton--input"
+                name="unallocatedCost.strategy"
+                type="radio"
+                value="DISPLAY_NAME"
+              />
+              <span
+                class="RadioButton--radioIcon"
+              />
+              <div
+                class="Layout--horizontal Layout--layout-spacing-small StyledProps--main hContainer"
+              >
+                <p
+                  class="StyledProps--font StyledProps--main StyledProps--font-variation-form-label"
+                >
+                  ce.businessMapping.manageUnallocatedCost.defaultUnallocatedCostLabel
+                </p>
+                <div
+                  class="bp3-form-group bp3-disabled defaultValInputBox"
+                >
+                  <div
+                    class="bp3-form-content"
+                  >
+                    <div
+                      class="bp3-input-group bp3-disabled"
+                    >
+                      <input
+                        autocomplete="off"
+                        class="bp3-input"
+                        disabled=""
+                        name="unallocatedCost.label"
+                        placeholder="ce.businessMapping.manageUnallocatedCost.otherPlaceholder"
+                        type="text"
+                        value=""
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </label>
+            <label
+              class="RadioButton--radio StyledProps--main"
+            >
+              <input
+                class="RadioButton--input"
+                name="unallocatedCost.strategy"
+                type="radio"
+                value="HIDE"
+              />
+              <span
+                class="RadioButton--radioIcon"
+              />
+              <p
+                class="StyledProps--font StyledProps--main StyledProps--font-variation-form-label"
+              >
+                ce.businessMapping.manageUnallocatedCost.ignoreCostLabel
+              </p>
+            </label>
+            <label
+              class="RadioButton--radio StyledProps--main"
+            >
+              <input
+                class="RadioButton--input"
+                disabled=""
+                name="unallocatedCost.strategy"
+                type="radio"
+                value="SHARE"
+              />
+              <span
+                class="RadioButton--radioIcon"
+              />
+              ce.businessMapping.manageUnallocatedCost.shareCosts
+            </label>
           </div>
         </div>
       </div>
     </div>
-    <label
-      class="RadioButton--radio StyledProps--main"
-    >
-      <input
-        class="RadioButton--input"
-        disabled=""
-        name=""
-        type="radio"
-        value="-"
-      />
-      <span
-        class="RadioButton--radioIcon"
-      />
-      ce.businessMapping.manageUnallocatedCost.ignoreCostLabel
-    </label>
-    <label
-      class="RadioButton--radio StyledProps--main"
-    >
-      <input
-        class="RadioButton--input"
-        disabled=""
-        name=""
-        type="radio"
-        value="-"
-      />
-      <span
-        class="RadioButton--radioIcon"
-      />
-      ce.businessMapping.manageUnallocatedCost.shareCosts
-    </label>
   </div>
 </div>
 `;

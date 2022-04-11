@@ -46,8 +46,10 @@ const BusinessMappingList: (props: BusinessMappingListProps) => React.ReactEleme
 
   const UnallocatedCost: Renderer<CellProps<BusinessMapping>> = cell => {
     const label = cell.value?.label
-    if (!label) {
-      return null
+    const strategy = cell.value?.strategy
+
+    if (strategy === 'HIDE') {
+      return <Text font={{ variation: FontVariation.BODY }}>{getString('ce.businessMapping.shownAsHidden')}</Text>
     }
     return (
       <Text font={{ variation: FontVariation.BODY }}>{getString('ce.businessMapping.shownAs', { value: label })}</Text>

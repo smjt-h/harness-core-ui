@@ -3571,6 +3571,7 @@ export interface StringsMap {
   'ce.businessMapping.sharedCostBucket.sharingStrategyLabel': string
   'ce.businessMapping.sharedCostBucket.title': string
   'ce.businessMapping.shownAs': string
+  'ce.businessMapping.shownAsHidden': string
   'ce.businessMapping.sideNavText': string
   'ce.businessMapping.stepText': string
   'ce.businessMapping.tableHeadings.costBuckets': string

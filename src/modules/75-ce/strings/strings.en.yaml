@@ -933,6 +933,7 @@ businessMapping:
   confirmDialogHeading: 'Delete Cost Category'
   confirmDialogBody: 'Are you sure you want to delete the Cost Category {{ name }}?'
   shownAs: 'Shown as {{ value }}'
+  shownAsHidden: 'Hidden'
   form:
     businessMappingPlaceholder: Enter Cost Category Name
     saveText: Save Cost Category
@@ -941,7 +942,7 @@ businessMapping:
   manageUnallocatedCost:
     title: Manage Unallocated Costs
     defaultUnallocatedCostLabel: Show Unallocated Values as
-    ignoreCostLabel: Ignore Unallocated Values (Coming Soon)
+    ignoreCostLabel: Ignore Unallocated Values
     shareCosts: Share Default Costs among Cost Buckets (Coming Soon)
     otherPlaceholder: '{{ $.stepPalette.others }}'
   costBucket:
