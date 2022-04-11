@@ -35,7 +35,6 @@ import css from './WebhookPipelineInputPanel.module.scss'
 
 interface WebhookPipelineInputPanelPropsInterface {
   formikProps?: any
-  resolvedTemplatesPipelineYaml: string
 }
 
 const applyArtifactToPipeline = (newPipelineObject: any, formikProps: any) => {
@@ -120,11 +119,10 @@ const applySelectedArtifactToPipelineObject = (pipelineObj: any, formikProps: an
 }
 
 const WebhookPipelineInputPanelForm: React.FC<WebhookPipelineInputPanelPropsInterface> = ({
-  formikProps,
-  resolvedTemplatesPipelineYaml
+  formikProps
 }): JSX.Element => {
   const {
-    values: { inputSetSelected, pipeline, originalPipeline },
+    values: { inputSetSelected, pipeline, resolvedPipeline },
     values
   } = formikProps
 
@@ -150,23 +148,12 @@ const WebhookPipelineInputPanelForm: React.FC<WebhookPipelineInputPanelPropsInte
   const { getString } = useStrings()
   const ciCodebaseBuildValue = formikProps.values?.pipeline?.properties?.ci?.codebase?.build
   let hasEverRendered = typeof ciCodebaseBuildValue === 'object' && !isEmpty(ciCodebaseBuildValue)
-  const [pipelineWithoutRefs, setPipelineWithoutRefs] = useState<PipelineInfoConfig>(originalPipeline)
-
-  useEffect(() => {
-    try {
-      if (resolvedTemplatesPipelineYaml) {
-        setPipelineWithoutRefs(parse(resolvedTemplatesPipelineYaml)?.pipeline)
-      }
-    } catch (e) {
-      // ignore error
-    }
-  }, [resolvedTemplatesPipelineYaml])
 
   useEffect(() => {
     const shouldInjectCloneCodebase =
-      !isEmpty(pipelineWithoutRefs?.properties?.ci?.codebase) &&
-      (pipelineWithoutRefs?.stages?.some((stage: any) => stage?.stage?.spec?.cloneCodebase) ||
-        pipelineWithoutRefs?.stages?.[0]?.parallel?.some((stage: any) => stage?.stage?.spec?.cloneCodebase))
+      !isEmpty(resolvedPipeline?.properties?.ci?.codebase) &&
+      (resolvedPipeline?.stages?.some((stage: any) => stage?.stage?.spec?.cloneCodebase) ||
+        resolvedPipeline?.stages?.[0]?.parallel?.some((stage: any) => stage?.stage?.spec?.cloneCodebase))
 
     if (!hasEverRendered && shouldInjectCloneCodebase) {
       const formikValues = cloneDeep(formikProps.values)
@@ -302,7 +289,7 @@ const WebhookPipelineInputPanelForm: React.FC<WebhookPipelineInputPanelPropsInte
               <div className={css.divider} />
             </div>
             <PipelineInputSetForm
-              originalPipeline={pipelineWithoutRefs}
+              originalPipeline={resolvedPipeline}
               template={
                 (template?.data?.inputSetTemplateYaml && parse(template.data.inputSetTemplateYaml).pipeline) || {}
               }
