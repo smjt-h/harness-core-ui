@@ -754,7 +754,7 @@ stepDescription:
   TerraformPlan: Run a Terraform script as a Terraform plan.
   TerraformApply: Apply a Terraform plan or script.
   ResourceConstraint: Queue the number of resources Harness requests during a deployment by placing capacity limits on the requests.
-  FlagConfiguration: Create a Boolean or Multivariate Feature Flag.
+  FlagConfiguration: Add or update Feature Flag configuration.
   HelmDeploy: Performs native Helm deployments. Requires Helm and Tiller and supports basic deployments. Helm charts are also supported in Harness Kubernetes deployments without requiring Helm or Tiller and using all deployment strategies.
   HelmRollback: Rolls back all the deployed objects to the previous version.
   ServiceNowApproval: Use ServiceNow issues to approve steps and stages.
