@@ -380,6 +380,8 @@ const _fetchPipeline = async (props: FetchPipelineBoundProps, params: FetchPipel
     if (pipelineWithGitDetails?.templateError) {
       dispatch(PipelineContextActions.error({ templateError: pipelineWithGitDetails?.templateError }))
       return
+    } else {
+      delete pipelineWithGitDetails.templateError
     }
 
     id = getId(
