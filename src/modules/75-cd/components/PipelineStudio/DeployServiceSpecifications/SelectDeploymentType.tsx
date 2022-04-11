@@ -36,23 +36,28 @@ export function getServiceDeploymentTypeSchema(
 }
 
 interface SelectServiceDeploymentTypeProps {
-  selectedDeploymentType: string
+  selectedDeploymentType?: ServiceDeploymentType
   isReadonly: boolean
-  handleDeploymentTypeChange: (deploymentType: string) => void
+  handleDeploymentTypeChange: (deploymentType: ServiceDeploymentType) => void
 }
 
 interface CardListProps {
   items: DeploymentTypeItem[]
   isReadonly: boolean
-  selectedValue: string
-  onChange: (deploymentType: string) => void
+  selectedValue?: string
+  onChange: (deploymentType: ServiceDeploymentType) => void
   allowDisabledItemClick?: boolean
 }
 
-const CardList = ({ items, isReadonly, selectedValue, onChange, allowDisabledItemClick }: CardListProps) => {
+const CardList = ({
+  items,
+  isReadonly,
+  selectedValue,
+  onChange,
+  allowDisabledItemClick
+}: CardListProps): JSX.Element => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>): void => {
-    const { value } = e.target
-    onChange(value)
+    onChange(e.target.value as ServiceDeploymentType)
   }
   return (
     <Layout.Horizontal spacing={'medium'} className={stageCss.cardListContainer}>
@@ -70,7 +75,11 @@ const CardList = ({ items, isReadonly, selectedValue, onChange, allowDisabledIte
         )
         return (
           <Utils.WrapOptionalTooltip key={item.value} tooltipProps={item.tooltipProps} tooltip={item.tooltip}>
-            {allowDisabledItemClick ? <div onClick={() => onChange(item.value)}>{itemContent}</div> : itemContent}
+            {allowDisabledItemClick ? (
+              <div onClick={() => onChange(item.value as ServiceDeploymentType)}>{itemContent}</div>
+            ) : (
+              itemContent
+            )}
           </Utils.WrapOptionalTooltip>
         )
       })}
@@ -398,7 +407,7 @@ export default function SelectDeploymentType(props: SelectServiceDeploymentTypeP
     <Formik<{ deploymentType: string }>
       onSubmit={noop}
       enableReinitialize={true}
-      initialValues={{ deploymentType: selectedDeploymentType }}
+      initialValues={{ deploymentType: selectedDeploymentType as string }}
       validationSchema={Yup.object().shape({
         deploymentType: getServiceDeploymentTypeSchema(getString)
       })}
