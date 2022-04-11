@@ -25,6 +25,7 @@
 // eslint-disable-next-line no-unused-vars
 const fs = require('fs')
 const _ = require('lodash')
+const { addMatchImageSnapshotPlugin } = require('cypress-image-snapshot/plugin')
 
 const cypressTypeScriptPreprocessor = require('./cy-ts-preprocessor')
 module.exports = (on: Cypress.PluginEvents, config: Cypress.PluginConfigOptions) => {
@@ -55,5 +56,6 @@ module.exports = (on: Cypress.PluginEvents, config: Cypress.PluginConfigOptions)
     require('@cypress/code-coverage/task')(on, config)
   }
   on('file:preprocessor', cypressTypeScriptPreprocessor)
+  addMatchImageSnapshotPlugin(on, config);
   return config
 }
