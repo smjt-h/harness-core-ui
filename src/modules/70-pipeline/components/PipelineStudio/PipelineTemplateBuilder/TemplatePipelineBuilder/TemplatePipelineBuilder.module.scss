@@ -23,4 +23,20 @@
       cursor: row-resize;
     }
   }
+
+  :global {
+    .bp3-dialog-header {
+      padding: var(--spacing-6);
+    }
+    .bp3-dialog {
+      width: 55%;
+      max-height: 650px;
+      overflow-y: hidden;
+      padding-bottom: 0 !important;
+      margin-bottom: 0 !important;
+    }
+    .bp3-overlay-backdrop {
+      visibility: hidden !important;
+    }
+  }
 }
