@@ -60,30 +60,43 @@ module.exports = (on: Cypress.PluginEvents, config: Cypress.PluginConfigOptions)
   on('file:preprocessor', cypressTypeScriptPreprocessor)
   // force color profile
   // https://www.thisdot.co/blog/how-to-set-up-screenshot-comparison-testing-with-cypress-inside-an-nx
-  on('before:browser:launch', (browser: { name: string; family: string } = { name: '', family: '' }, launchOptions) => {
-    if (browser.family === 'chromium' && browser.name !== 'electron') {
-      launchOptions.args.push('--force-color-profile=srgb')
-    }
-
-    // if (browser.name === 'chrome') {
-    //   launchOptions.args.push('--window-size=1440,900')
-    // } else if (browser.name === 'electron') {
-    //   launchOptions.preferences['width'] = 1440
-    //   launchOptions.preferences['height'] = 900
-    // }
-    if (browser.name === 'chrome') {
-      // launchOptions.push('--window-size=1920,1080');
-      launchOptions.args.push('--window-size=1920,1080');
-      // return launchOptions;
-    }
-
-    if (browser.name === 'electron') {
-      // fullPage screenshot size is 768x1024
-      launchOptions.preferences.width = 768;
-      launchOptions.preferences.height = 1024;
-      launchOptions.preferences.frame = false;
-      launchOptions.preferences.useContentSize = true;
-    }
-  })
+  // on('before:browser:launch', (browser: { name: string; family: string } = { name: '', family: '' }, launchOptions) => {
+  //   if (browser.family === 'chromium' && browser.name !== 'electron') {
+  //     launchOptions.args.push('--force-color-profile=srgb')
+  //   }
+  //
+  //   // if (browser.name === 'chrome') {
+  //   //   launchOptions.args.push('--window-size=1440,900')
+  //   // } else if (browser.name === 'electron') {
+  //   //   launchOptions.preferences['width'] = 1440
+  //   //   launchOptions.preferences['height'] = 900
+  //   // }
+  //
+  //   if (browser.name === 'chrome') {
+  //     // launchOptions.push('--window-size=1920,1080');
+  //     // launchOptions.args.push('--window-size=1920,1080');
+  //     // return launchOptions;
+  //
+  //
+  //     launchOptions.preferences.width = 3000;
+  //     launchOptions.preferences.height = 1692;
+  //     // launchOptions.args.push('--window-size=1400,1200')
+  //
+  //     // force screen to be non-retina (1400x1200 size)
+  //     // launchOptions.args.push('--force-device-scale-factor=1')
+  //     // launchOptions.args.push('--force-device-scale-factor=2')
+  //
+  //     launchOptions.args.push('--start-fullscreen')
+  //   }
+  //
+  //   console.log('name is ', browser.name, browser.family)
+  //   if (browser.name === 'electron') {
+  //     // fullPage screenshot size is 768x1024
+  //     launchOptions.preferences.width = 3000;
+  //     launchOptions.preferences.height = 1692;
+  //     launchOptions.preferences.frame = false;
+  //     launchOptions.preferences.useContentSize = true;
+  //   }
+  // })
   return config
 }
