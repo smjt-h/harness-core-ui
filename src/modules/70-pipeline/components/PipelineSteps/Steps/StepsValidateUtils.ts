@@ -15,6 +15,7 @@ import { getDurationValidationSchema } from '@common/components/MultiTypeDuratio
 import type { ExecutionWrapperConfig, StepElementConfig } from 'services/cd-ng'
 import type { K8sDirectInfraYaml } from 'services/ci'
 import {
+  illegalIdentifiers,
   keyRegexIdentifier,
   portNumberRegex,
   regexIdentifier,
@@ -470,6 +471,10 @@ export function generateSchemaFields(
             serviceDependencyIdRegex,
             getString('pipeline.ci.validations.serviceDependencyIdentifier', { regex: serviceDependencyIdRegex.source })
           )
+        } else {
+          validationRule = validationRule
+            .matches(regexIdentifier, getString('validation.validIdRegex'))
+            .notOneOf(illegalIdentifiers)
         }
       } else if (stepViewType !== StepViewType.Template && type !== Types.Identifier && type !== Types.Name) {
         validationRule = yup.string().required(getString('fieldRequired', { field: getString(label as StringKeys) }))
