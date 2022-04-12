@@ -27,6 +27,7 @@ import type { RecommendationOverviewStats } from 'services/ce/services'
 import formatCost from '@ce/utils/formatCost'
 import { getTimePeriodString } from '@ce/utils/momentUtils'
 import { addBufferToValue, calculateSavingsPercentage } from '@ce/utils/recommendationUtils'
+import { useQueryParamsState } from '@common/hooks/useQueryParamsState'
 import { RecommendationType, ChartColors, PercentileValues } from './constants'
 import RecommendationTabs from './RecommendationTabs'
 import RecommendationDiffViewer from '../RecommendationDiffViewer/RecommendationDiffViewer'
@@ -40,7 +41,6 @@ import {
   RecommendationDetailsSpendCard
 } from '../RecommendationDetailsSummaryCards/RecommendationDetailsSummaryCards'
 import css from './RecommendationDetails.module.scss'
-import { useQueryParamsState } from '@common/hooks/useQueryParamsState'
 
 interface RecommendationDetailsProps {
   histogramData: RecommendationItem
