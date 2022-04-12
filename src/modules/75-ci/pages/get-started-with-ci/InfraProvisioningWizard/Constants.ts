@@ -6,6 +6,7 @@
  */
 
 import type { IconName } from '@harness/uicore'
+import type { ConnectorInfoDTO } from 'services/cd-ng'
 import type { StringsMap } from 'stringTypes'
 
 export interface InfraProvisioningWizardProps {
@@ -59,14 +60,16 @@ export const AllBuildLocations: BuildLocationDetails[] = [
     location: BuildLocation.Kubernetes,
     label: 'kubernetesText',
     details: 'ci.getStartedWithCI.k8sBuildLocation',
-    approxETAInMins: 12
+    approxETAInMins: 12,
+    disabled: true
   },
   {
     icon: 'service-aws',
     location: BuildLocation.AWS,
     label: 'common.aws',
     details: 'ci.getStartedWithCI.awsBuildLocation',
-    approxETAInMins: 15
+    approxETAInMins: 15,
+    disabled: true
   },
   {
     icon: 'docker-step',
@@ -80,8 +83,9 @@ export const AllBuildLocations: BuildLocationDetails[] = [
 
 export enum InfraProvisiongWizardStepId {
   SelectBuildLocation = 'SELECT_BUILD_LOCATION',
-  SelectVCSVendor = 'SELECT_VCS_VENDOR',
-  SelectCodeRepo = 'SELECT_CODE_REPO'
+  SelectGitProvider = 'SELECT_GIT_PROVIDER',
+  SelectGitProviderWithAuthenticationMethod = 'SELECT_GIT_PROVIDER_WITH_AUTHENTICATION_METHOD',
+  SelectRepository = 'SELECT_REPOSITORY'
 }
 
 // TODO Need to use exported StepStatus from uicore -> MultiStepProgressIndicator component
@@ -90,4 +94,22 @@ export enum StepStatus {
   InProgress = 'INPROGRESS',
   Failed = 'FAILED',
   Success = 'SUCCESS'
+}
+
+export interface GitProvider {
+  icon: IconName
+  label: keyof StringsMap
+  type: ConnectorInfoDTO['type']
+  disabled?: boolean
+}
+
+export const AllGitProviders: GitProvider[] = [
+  { icon: 'github', label: 'common.repo_provider.githubLabel', type: 'Github' },
+  { icon: 'gitlab', label: 'common.repo_provider.gitlabLabel', type: 'Gitlab', disabled: true },
+  { icon: 'bitbucket-blue', label: 'common.repo_provider.bitbucketLabel', type: 'Bitbucket', disabled: true }
+]
+
+export enum GitAuthenticationMethod {
+  OAuth = 'OAUTH',
+  AccessToken = 'ACCESS_TOKEN'
 }

@@ -26,3 +26,81 @@
     width: 167px !important;
   }
 }
+
+.gitProviderCard {
+  height: 100px;
+  width: 100px;
+  margin-right: var(--spacing-large);
+}
+
+.githubIcon {
+  padding: var(--spacing-xsmall) !important;
+}
+
+.gitlabIcon {
+  padding: var(--spacing-3) var(--spacing-xsmall) 0 var(--spacing-3) !important;
+}
+
+.bitbucketIcon {
+  padding: var(--spacing-small) var(--spacing-xsmall) 0 var(--spacing-3) !important;
+}
+
+.icons {
+  display: flex;
+}
+
+.borderBottom {
+  border-bottom: 1px solid var(--grey-200);
+}
+
+.testConnectionBtnWithError {
+  padding-top: var(--spacing-4) !important;
+  padding-bottom: var(--spacing-xxlarge) !important;
+}
+
+.comingSoonPill {
+  background: linear-gradient(152.65deg, var(--purple-200) 5.9%, var(--purple-400) 89.46%) !important;
+  border-radius: 4px;
+  height: 18px;
+  width: 77px;
+}
+
+.repositories {
+  height: 73%;
+}
+
+.repositoriesWithError {
+  height: 71% !important;
+}
+
+.repositoryTable {
+  width: 676px !important;
+  > div {
+    height: 100%;
+    overflow-y: scroll;
+    border-radius: 8px;
+    border: 1px solid var(--grey-200);
+    > div {
+      padding: 0 !important;
+    }
+  }
+}
+
+.repositoryRow {
+  height: 51px;
+  padding: var(--spacing-medium) var(--spacing-xlarge) !important;
+}
+
+.repositoryRow:hover {
+  background-color: var(--primary-1);
+  cursor: pointer;
+}
+
+.repositorySearch {
+  [class*='bp3-input'] {
+    height: 42px;
+    width: 675px;
+    border-radius: 6px;
+    padding-left: var(--spacing-xxxlarge) !important;
+  }
+}

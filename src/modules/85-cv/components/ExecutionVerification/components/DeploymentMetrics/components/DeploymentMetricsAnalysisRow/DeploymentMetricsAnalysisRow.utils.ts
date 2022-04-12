@@ -7,10 +7,11 @@
 
 import type { IconName } from '@wings-software/uicore'
 import { getRiskColorValue } from '@cv/utils/CommonUtils'
+import type { TransactionMetricInfo } from 'services/cv'
 import type { HostControlTestData, HostTestData } from './DeploymentMetricsAnalysisRow.constants'
 import type { DeploymentMetricsAnalysisRowChartSeries } from './DeploymentMetricsAnalysisRow.types'
 
-export function healthSourceTypeToLogo(healthSourceType: any): IconName {
+export function healthSourceTypeToLogo(healthSourceType: TransactionMetricInfo['dataSourceType']): IconName {
   switch (healthSourceType) {
     case 'APP_DYNAMICS':
       return 'service-appdynamics'
@@ -29,6 +30,8 @@ export function healthSourceTypeToLogo(healthSourceType: any): IconName {
     case 'CUSTOM_HEALTH_METRIC':
     case 'CUSTOM_HEALTH_LOG':
       return 'service-custom-connector'
+    case 'DYNATRACE':
+      return 'service-dynatrace'
     default:
       return 'circle'
   }

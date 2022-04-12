@@ -7,9 +7,22 @@
  **/
 // this is an auto-generated file, do not update this manually
 declare const styles: {
+  readonly bitbucketIcon: string
+  readonly borderBottom: string
   readonly card: string
+  readonly comingSoonPill: string
   readonly footer: string
+  readonly gitProviderCard: string
+  readonly githubIcon: string
+  readonly gitlabIcon: string
   readonly hostingToggle: string
+  readonly icons: string
+  readonly repositories: string
+  readonly repositoriesWithError: string
+  readonly repositoryRow: string
+  readonly repositorySearch: string
+  readonly repositoryTable: string
   readonly selectedCard: string
+  readonly testConnectionBtnWithError: string
 }
 export default styles

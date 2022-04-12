@@ -6,7 +6,7 @@
  */
 
 import React from 'react'
-import { render, waitFor } from '@testing-library/react'
+import { findByText, act, fireEvent, render, waitFor } from '@testing-library/react'
 import { TestWrapper } from '@common/utils/testUtils'
 import type { StringKeys } from 'framework/strings'
 import * as cvService from 'services/cv'
@@ -19,12 +19,6 @@ function getString(key: StringKeys): StringKeys {
   return key
 }
 
-jest.mock('services/cv', () => ({
-  useGetAllHealthSourcesForMonitoredServiceIdentifier: jest.fn().mockImplementation(() => {
-    return { data: mockedHealthSourcesData, error: null, loading: false }
-  })
-}))
-
 describe('Unit tests for HealthSourceDropDown', () => {
   const dropdownData = {
     loading: false,
@@ -32,6 +26,7 @@ describe('Unit tests for HealthSourceDropDown', () => {
     data: null,
     verificationType: VerificationType.TIME_SERIES
   }
+
   test('Should return loading option when loading is true', async () => {
     const newDropdownData = { ...dropdownData, loading: true }
     expect(getDropdownOptions(newDropdownData, getString)).toEqual([{ value: '', label: 'loading' }])
@@ -81,6 +76,9 @@ describe('Unit tests for HealthSourceDropDown', () => {
   })
 
   test('should ensure that useGetAllHealthSourcesForMonitoredServiceIdentifier is called with monitoredServiceIdentifier', async () => {
+    jest
+      .spyOn(cvService, 'useGetAllHealthSourcesForMonitoredServiceIdentifier')
+      .mockReturnValue({ data: mockedHealthSourcesData, error: null, loading: false } as any)
     render(
       <TestWrapper>
         <HealthSourceDropDown monitoredServiceIdentifier="monitored_service_identifier" onChange={jest.fn()} />
@@ -97,5 +95,61 @@ describe('Unit tests for HealthSourceDropDown', () => {
         }
       })
     )
+  })
+
+  test('should ensure that useGetAllHealthSourcesForMonitoredServiceIdentifier is called with healthsource filter', async () => {
+    const cloneMockedHealthSourcesData = { ...mockedHealthSourcesData }
+    cloneMockedHealthSourcesData.resource.push({
+      identifier: 'Appd_Monitored_service/Appd_Health_source_updated',
+      name: 'Appd Health source updated',
+      type: 'APP_DYNAMICS',
+      verificationType: 'TIME_SERIES'
+    })
+    jest
+      .spyOn(cvService, 'useGetAllHealthSourcesForMonitoredServiceIdentifier')
+      .mockReturnValue({ data: cloneMockedHealthSourcesData, error: null, loading: false } as any)
+
+    const onChange = jest.fn()
+    const { container } = render(
+      <TestWrapper>
+        <HealthSourceDropDown monitoredServiceIdentifier="monitored_service_identifier" onChange={onChange} />
+      </TestWrapper>
+    )
+
+    const healthSourceDropdown = container.querySelector('input[name="healthsources-select"]') as HTMLInputElement
+
+    const selectCaret = container
+      .querySelector(`[name="healthsources-select"] + [class*="bp3-input-action"]`)
+      ?.querySelector('[data-icon="chevron-down"]')
+    await waitFor(() => {
+      fireEvent.click(selectCaret!)
+    })
+
+    const options = container.querySelectorAll('.bp3-popover-content .Select--menuItem')
+    expect(options.length).toEqual(3)
+    expect(container).toMatchSnapshot()
+
+    const typeToSelect = await findByText(container, 'Appd Health source updated')
+    act(() => {
+      fireEvent.click(typeToSelect)
+    })
+
+    expect(healthSourceDropdown.value).toBe('Appd Health source updated')
+
+    await waitFor(() => expect(onChange).toHaveBeenCalledWith('Appd_Monitored_service/Appd_Health_source_updated'))
+
+    const selectCaretNewItem = container
+      .querySelector(`[name="healthsources-select"] + [class*="bp3-input-action"]`)
+      ?.querySelector('[data-icon="chevron-down"]')
+    await waitFor(() => {
+      fireEvent.click(selectCaretNewItem!)
+    })
+
+    const typeToSelectNewInput = await findByText(container, 'all')
+
+    act(() => {
+      fireEvent.click(typeToSelectNewInput)
+    })
+    await waitFor(() => expect(onChange).toHaveBeenLastCalledWith(''))
   })
 })

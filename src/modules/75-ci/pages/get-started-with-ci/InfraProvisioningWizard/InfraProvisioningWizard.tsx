@@ -6,7 +6,7 @@
  */
 
 import React, { useState } from 'react'
-import { Container, Text, Button, ButtonVariation, Layout, MultiStepProgressIndicator } from '@harness/uicore'
+import { Container, Button, ButtonVariation, Layout, MultiStepProgressIndicator } from '@harness/uicore'
 import { useStrings } from 'framework/strings'
 import { InfraProvisioningCarousel } from '../InfraProvisioningCarousel/InfraProvisioningCarousel'
 import {
@@ -14,9 +14,12 @@ import {
   WizardStep,
   HostedByHarnessBuildLocation,
   InfraProvisiongWizardStepId,
-  StepStatus
+  StepStatus,
+  GitAuthenticationMethod
 } from './Constants'
 import { SelectBuildLocation } from './SelectBuildLocation'
+import { SelectGitProvider, SelectGitProviderRef } from './SelectGitProvider'
+import { SelectRepository, SelectRepositoryRef } from './SelectRepository'
 
 import css from './InfraProvisioningWizard.module.scss'
 
@@ -24,15 +27,18 @@ export const InfraProvisioningWizard: React.FC<InfraProvisioningWizardProps> = p
   const { lastConfiguredWizardStepId = InfraProvisiongWizardStepId.SelectBuildLocation } = props
   const { getString } = useStrings()
   const [showDialog, setShowDialog] = useState<boolean>(false)
+  const [disable, setDisable] = useState<boolean>(false)
   const [currentWizardStepId, setCurrentWizardStepId] =
     useState<InfraProvisiongWizardStepId>(lastConfiguredWizardStepId)
+  const selectGitProviderRef = React.useRef<SelectGitProviderRef | null>(null)
+  const selectRepositoryRef = React.useRef<SelectRepositoryRef | null>(null)
+  const [showError, setShowError] = useState<boolean>(false)
 
   const [wizardStepStatus, setWizardStepStatus] = useState<Map<InfraProvisiongWizardStepId, StepStatus>>(
     new Map<InfraProvisiongWizardStepId, StepStatus>([
       [InfraProvisiongWizardStepId.SelectBuildLocation, StepStatus.ToDo],
-      [InfraProvisiongWizardStepId.SelectVCSVendor, StepStatus.ToDo]
-      // This is WIP
-      // [InfraProvisiongWizardStepId.SelectCodeRepo, StepStatus.ToDo]
+      [InfraProvisiongWizardStepId.SelectGitProvider, StepStatus.ToDo],
+      [InfraProvisiongWizardStepId.SelectRepository, StepStatus.ToDo]
     ])
   )
 
@@ -59,29 +65,121 @@ export const InfraProvisioningWizard: React.FC<InfraProvisioningWizardProps> = p
       }
     ],
     [
-      InfraProvisiongWizardStepId.SelectVCSVendor,
+      InfraProvisiongWizardStepId.SelectGitProvider,
       {
-        stepRender: (
-          <Container>
-            <Text>{getString('ci.getStartedWithCI.codeRepo')}</Text>
-          </Container>
-        ),
+        stepRender: <SelectGitProvider ref={selectGitProviderRef} />,
         onClickNext: () => {
-          setCurrentWizardStepId(InfraProvisiongWizardStepId.SelectCodeRepo)
-          updateStepStatus([InfraProvisiongWizardStepId.SelectVCSVendor], StepStatus.InProgress)
+          const { values, setFieldTouched } = selectGitProviderRef.current || {}
+          const { gitProvider } = values || {}
+          if (!gitProvider) {
+            setFieldTouched?.('gitProvider', true)
+          }
+          if (gitProvider) {
+            setFieldTouched?.('gitAuthenticationMethod', false)
+            setCurrentWizardStepId(InfraProvisiongWizardStepId.SelectGitProviderWithAuthenticationMethod)
+            updateStepStatus(
+              [InfraProvisiongWizardStepId.SelectGitProviderWithAuthenticationMethod],
+              StepStatus.InProgress
+            )
+          }
         },
         onClickBack: () => {
+          setDisable(false)
           setCurrentWizardStepId(InfraProvisiongWizardStepId.SelectBuildLocation)
           updateStepStatus(
-            [InfraProvisiongWizardStepId.SelectBuildLocation, InfraProvisiongWizardStepId.SelectVCSVendor],
+            [InfraProvisiongWizardStepId.SelectBuildLocation, InfraProvisiongWizardStepId.SelectGitProvider],
             StepStatus.ToDo
           )
-        }
+        },
+        stepFooterLabel: 'ci.getStartedWithCI.selectRepo'
+      }
+    ],
+    [
+      InfraProvisiongWizardStepId.SelectGitProviderWithAuthenticationMethod,
+      {
+        stepRender: (
+          <SelectGitProvider
+            ref={selectGitProviderRef}
+            selectedGitProvider={selectGitProviderRef.current?.values.gitProvider}
+          />
+        ),
+        onClickNext: () => {
+          const { values, setFieldTouched } = selectGitProviderRef.current || {}
+          const { accessToken, gitProvider, gitAuthenticationMethod } = values || {}
+          if (!gitAuthenticationMethod) {
+            setFieldTouched?.('gitAuthenticationMethod', true)
+            return
+          }
+          if (!accessToken) {
+            setFieldTouched?.('accessToken', true)
+          }
+          if (
+            (gitAuthenticationMethod === GitAuthenticationMethod.AccessToken && accessToken && gitProvider) ||
+            (gitAuthenticationMethod === GitAuthenticationMethod.OAuth && gitProvider)
+          ) {
+            setCurrentWizardStepId(InfraProvisiongWizardStepId.SelectRepository)
+            updateStepStatus(
+              [
+                InfraProvisiongWizardStepId.SelectGitProvider,
+                InfraProvisiongWizardStepId.SelectGitProviderWithAuthenticationMethod
+              ],
+              StepStatus.Success
+            )
+            updateStepStatus([InfraProvisiongWizardStepId.SelectRepository], StepStatus.InProgress)
+          }
+        },
+        onClickBack: () => {
+          setDisable(false)
+          setCurrentWizardStepId(InfraProvisiongWizardStepId.SelectGitProvider)
+          updateStepStatus(
+            [
+              InfraProvisiongWizardStepId.SelectGitProvider,
+              InfraProvisiongWizardStepId.SelectGitProviderWithAuthenticationMethod
+            ],
+            StepStatus.ToDo
+          )
+        },
+        stepFooterLabel: 'ci.getStartedWithCI.selectRepo'
+      }
+    ],
+    [
+      InfraProvisiongWizardStepId.SelectRepository,
+      {
+        stepRender: <SelectRepository ref={selectRepositoryRef} showError={showError} />,
+        onClickBack: () => {
+          setCurrentWizardStepId(InfraProvisiongWizardStepId.SelectGitProviderWithAuthenticationMethod)
+          updateStepStatus(
+            [
+              InfraProvisiongWizardStepId.SelectGitProviderWithAuthenticationMethod,
+              InfraProvisiongWizardStepId.SelectRepository
+            ],
+            StepStatus.ToDo
+          )
+        },
+        onClickNext: () => {
+          const shouldShowError = !selectRepositoryRef.current?.repository.name
+          setShowError(shouldShowError)
+          if (!shouldShowError) {
+            updateStepStatus([InfraProvisiongWizardStepId.SelectRepository], StepStatus.Success)
+          }
+        },
+        stepFooterLabel: 'ci.getStartedWithCI.createPipeline'
       }
     ]
   ])
 
   const { stepRender, onClickBack, onClickNext, stepFooterLabel } = WizardSteps.get(currentWizardStepId) ?? {}
+
+  let buttonLabel: string
+  if (stepFooterLabel) {
+    if (currentWizardStepId === InfraProvisiongWizardStepId.SelectRepository) {
+      buttonLabel = getString(stepFooterLabel)
+    } else {
+      buttonLabel = `${getString('next')}: ${getString(stepFooterLabel)}`
+    }
+  } else {
+    buttonLabel = getString('next')
+  }
 
   return stepRender ? (
     <Layout.Vertical
@@ -89,14 +187,14 @@ export const InfraProvisioningWizard: React.FC<InfraProvisioningWizardProps> = p
       flex={{ justifyContent: 'space-between', alignItems: 'flex-start' }}
       height="100%"
     >
-      <Layout.Vertical>
+      <Layout.Vertical width="100%" height="90%">
         <Container padding={{ top: 'large', bottom: 'large' }}>
           <MultiStepProgressIndicator
             progressMap={
               new Map([
                 [0, wizardStepStatus.get(InfraProvisiongWizardStepId.SelectBuildLocation) || 'TODO'],
-                [1, wizardStepStatus.get(InfraProvisiongWizardStepId.SelectVCSVendor) || 'TODO']
-                // [2, wizardStepStatus.get(InfraProvisiongWizardStepId.SelectCodeRepo) || 'TODO']
+                [1, wizardStepStatus.get(InfraProvisiongWizardStepId.SelectGitProvider) || 'TODO'],
+                [2, wizardStepStatus.get(InfraProvisiongWizardStepId.SelectRepository) || 'TODO']
               ])
             }
           />
@@ -110,8 +208,8 @@ export const InfraProvisioningWizard: React.FC<InfraProvisioningWizardProps> = p
           onClose={() => {
             setShowDialog(false)
             updateStepStatus([InfraProvisiongWizardStepId.SelectBuildLocation], StepStatus.Success)
-            updateStepStatus([InfraProvisiongWizardStepId.SelectVCSVendor], StepStatus.InProgress)
-            setCurrentWizardStepId(InfraProvisiongWizardStepId.SelectVCSVendor)
+            updateStepStatus([InfraProvisiongWizardStepId.SelectGitProvider], StepStatus.InProgress)
+            setCurrentWizardStepId(InfraProvisiongWizardStepId.SelectGitProvider)
           }}
         />
       ) : null}
@@ -121,7 +219,7 @@ export const InfraProvisioningWizard: React.FC<InfraProvisioningWizardProps> = p
         className={css.footer}
         width="100%"
       >
-        {currentWizardStepId !== 'SELECT_BUILD_LOCATION' ? (
+        {currentWizardStepId !== InfraProvisiongWizardStepId.SelectBuildLocation ? (
           <Button
             variation={ButtonVariation.SECONDARY}
             text={getString('back')}
@@ -131,10 +229,11 @@ export const InfraProvisioningWizard: React.FC<InfraProvisioningWizardProps> = p
           />
         ) : null}
         <Button
-          text={getString(stepFooterLabel ?? 'next')}
+          text={buttonLabel}
           variation={ButtonVariation.PRIMARY}
           rightIcon="chevron-right"
           onClick={() => onClickNext?.()}
+          disabled={disable}
         />
       </Layout.Horizontal>
     </Layout.Vertical>
