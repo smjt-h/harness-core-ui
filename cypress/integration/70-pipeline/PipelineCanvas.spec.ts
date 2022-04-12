@@ -23,7 +23,10 @@ import {
   stepsData,
   StepResourceObject,
   pipelineStudioRoute,
-  inputSetsRoute, pipelinesRoute, featureFlagsCall
+  inputSetsRoute,
+  pipelinesRoute,
+  featureFlagsCall,
+  cdFailureStrategiesYaml
 } from '../../support/70-pipeline/constants'
 import { getIdentifierFromName } from '../../utils/stringHelpers'
 
@@ -52,6 +55,9 @@ describe('GIT SYNC DISABLED', () => {
 
   it('should display the error returned by pipeline save API', () => {
     cy.intercept('POST', pipelineSaveCall, { fixture: 'pipeline/api/pipelines.post' }).as('pipelineSaveCall')
+    cy.intercept('GET', cdFailureStrategiesYaml, { fixture: 'pipeline/api/pipelines/failureStrategiesYaml' }).as(
+      'cdFailureStrategiesYaml'
+    )
     cy.contains('span', 'New Service').click()
 
     cy.fillName('testService')
@@ -89,6 +95,7 @@ describe('GIT SYNC DISABLED', () => {
     cy.contains('span', 'Save').click({ force: true })
 
     cy.wait('@pipelineSaveCall')
+    cy.wait('@cdFailureStrategiesYaml')
     cy.wait(500)
     cy.contains(
       'span',
@@ -366,14 +373,16 @@ describe('Add stage view with disabled licences', () => {
     })
     cy.intercept('GET', gitSyncEnabledCall, { connectivityMode: null, gitSyncEnabled: false })
 
-    cy.fixture('api/users/feature-flags/accountId').then((featureFlagsData) => {
-
+    cy.fixture('api/users/feature-flags/accountId').then(featureFlagsData => {
       const disabledLicenses = ['NG_TEMPLATES', 'SECURITY_STAGE', 'CING_ENABLED']
 
       const updatedFeatureFlagsList = featureFlagsData.resource.reduce((acc, currentFlagData) => {
-        if(disabledLicenses.includes(currentFlagData.name)){
+        if (disabledLicenses.includes(currentFlagData.name)) {
           acc.push({
-            "uuid": null, "name": currentFlagData.name, "enabled": false, "lastUpdatedAt": 0
+            uuid: null,
+            name: currentFlagData.name,
+            enabled: false,
+            lastUpdatedAt: 0
           })
           return acc
         }
@@ -381,7 +390,6 @@ describe('Add stage view with disabled licences', () => {
         acc.push(currentFlagData)
         return acc
       }, [])
-
 
       cy.intercept('GET', featureFlagsCall, {
         ...featureFlagsData,
@@ -409,4 +417,3 @@ describe('Add stage view with disabled licences', () => {
     cy.findByTestId('stage-Security').should('not.exist')
   })
 })
-

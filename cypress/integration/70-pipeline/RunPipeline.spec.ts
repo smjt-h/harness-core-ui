@@ -5,6 +5,8 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
+import { cdFailureStrategiesYaml } from '../../support/70-pipeline/constants'
+
 describe('RUN PIPELINE MODAL', () => {
   const gitSyncCall =
     '/ng/api/git-sync/git-sync-enabled?accountIdentifier=accountId&orgIdentifier=default&projectIdentifier=project1'
@@ -76,6 +78,9 @@ describe('RUN PIPELINE MODAL', () => {
     })
 
     it('should display the delete pipeline stage modal', () => {
+      cy.intercept('GET', cdFailureStrategiesYaml, { fixture: 'pipeline/api/pipelines/failureStrategiesYaml' }).as(
+        'cdFailureStrategiesYaml'
+      )
       cy.wait(2000)
       cy.get('[icon="play"]').click({ force: true })
       cy.wait(2000)
