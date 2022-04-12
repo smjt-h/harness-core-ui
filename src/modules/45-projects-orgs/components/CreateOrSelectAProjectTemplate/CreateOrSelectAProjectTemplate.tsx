@@ -5,10 +5,12 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Text, Layout, Button } from '@wings-software/uicore'
 import { Color } from '@harness/design-system'
 import { useStrings } from 'framework/strings'
+import { useTelemetry } from '@common/hooks/useTelemetry'
+import { Category, ProjectActions } from '@common/constants/TrackingConstants'
 import css from '@projects-orgs/components/ProjectSelector/ProjectSelector.module.scss'
 
 interface CreateOrSelectAProjectTemplateProps {
@@ -23,10 +25,15 @@ export const CreateOrSelectAProjectTemplate: React.FC<CreateOrSelectAProjectTemp
   closeModal
 }) => {
   const { getString } = useStrings()
+  const { trackEvent } = useTelemetry()
+
   function toggleSelectProject(): void {
     const selectProjectButton: HTMLElement = document.getElementsByClassName(css.selectButton)[0] as HTMLElement
 
     selectProjectButton?.click()
+    trackEvent(ProjectActions.ClickSelectProject, {
+      category: Category.PROJECT
+    })
     closeModal?.()
   }
 
@@ -34,6 +41,13 @@ export const CreateOrSelectAProjectTemplate: React.FC<CreateOrSelectAProjectTemp
     closeModal?.()
     onCreateProject()
   }
+
+  useEffect(() => {
+    trackEvent(ProjectActions.LoadSelectOrCreateProjectModal, {
+      category: Category.PROJECT
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   return (
     <Layout.Vertical spacing="small">

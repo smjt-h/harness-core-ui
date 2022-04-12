@@ -63,6 +63,7 @@ export const EnvironmentList: React.FC = () => {
       orgIdentifier
     }
   })
+
   const [showModal, hideModal] = useModalHook(
     () => (
       <Dialog

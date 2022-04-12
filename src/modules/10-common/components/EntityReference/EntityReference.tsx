@@ -359,7 +359,7 @@ export function EntityReference<T>(props: EntityReferenceProps<T>): JSX.Element 
           text={getString('entityReference.apply')}
           onClick={() => {
             props.onSelect(selectedRecord as T, selectedScope)
-            trackEvent(StageActions.LoadCreateOrSelectConnectorView, {
+            trackEvent(StageActions.ApplySelectedConnector, {
               category: Category.STAGE,
               selectedRecord,
               selectedScope
@@ -369,7 +369,18 @@ export function EntityReference<T>(props: EntityReferenceProps<T>): JSX.Element 
           className={cx(Classes.POPOVER_DISMISS)}
         />
         {props.onCancel && (
-          <Button variation={ButtonVariation.TERTIARY} text={getString('cancel')} onClick={props.onCancel} />
+          <Button
+            variation={ButtonVariation.TERTIARY}
+            text={getString('cancel')}
+            onClick={() => {
+              props.onCancel?.()
+              trackEvent(StageActions.CancelSelectConnector, {
+                category: Category.STAGE,
+                selectedRecord,
+                selectedScope
+              })
+            }}
+          />
         )}
       </Layout.Horizontal>
     </Container>
