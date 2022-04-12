@@ -3,7 +3,7 @@
 exports[`HealthSource table Verify HealthSource Table in CV 1`] = `
 <div>
   <div
-    class="Layout--vertical StyledProps--main StyledProps--margin-xxlarge"
+    class="Layout--vertical StyledProps--main tooltipStyle StyledProps--margin-xxlarge"
   >
     <div
       class="bp3-card bp3-elevation-0 Card--card sectionCard shadow"

@@ -322,7 +322,10 @@ export default function NewRelicHealthSource({
                 />
               </CustomMetric>
             ) : (
-              <CardWithOuterTitle title={getString('cv.healthSource.connectors.customMetrics')}>
+              <CardWithOuterTitle
+                title={getString('cv.healthSource.connectors.customMetrics')}
+                dataTooltipId={'customMetricsTitle'}
+              >
                 <Button
                   icon="plus"
                   minimal

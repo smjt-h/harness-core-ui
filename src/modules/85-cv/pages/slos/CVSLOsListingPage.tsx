@@ -18,7 +18,8 @@ import {
   Layout,
   FlexExpander,
   Container,
-  Heading
+  Heading,
+  HarnessDocTooltip
 } from '@wings-software/uicore'
 import { FontVariation } from '@harness/design-system'
 import noData from '@cv/assets/noData.svg'
@@ -215,8 +216,9 @@ const CVSLOsListingPage: React.FC<CVSLOsListingPageProps> = ({ monitoredService 
           <Page.Header
             breadcrumbs={<NGBreadcrumbs />}
             title={
-              <Heading level={3} font={{ variation: FontVariation.H4 }} data-tooltip-id={'createSLO'}>
+              <Heading level={3} font={{ variation: FontVariation.H4 }}>
                 {getString('cv.slos.title')}
+                <HarnessDocTooltip tooltipId={'sloDashboardTitle'} useStandAlone />
               </Heading>
             }
           />
