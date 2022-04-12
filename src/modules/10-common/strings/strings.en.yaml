@@ -135,6 +135,7 @@ datePickerShortcuts:
   LastMonth: Last Month
   Last2Months: Last 2 Months
 validation:
+  stepNamePatternIsNotValid: 'Step name should match regex {{regex}}'
   namePatternIsNotValid: 'Name can only contain alphanumerics, _ and -'
   provisionerIdentifierPatternIsNotValid: 'Provisioner Identifier should not contain special characters and spaces'
   provisionerIdentifierIsRequired: 'Provisioner Identifier is required'

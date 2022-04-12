@@ -24,7 +24,7 @@ import { useParams } from 'react-router-dom'
 import { parse } from 'yaml'
 import { defaultTo, get, isEmpty, merge, noop, set } from 'lodash-es'
 import produce from 'immer'
-import { IdentifierSchema, NameSchema } from '@common/utils/Validation'
+import { IdentifierSchema, StepNameSchema } from '@common/utils/Validation'
 import { setFormikRef, StepViewType, StepFormikFowardRef } from '@pipeline/components/AbstractSteps/Step'
 import { useStrings } from 'framework/strings'
 import type { AbstractStepFactory } from '@pipeline/components/AbstractSteps/AbstractStepFactory'
@@ -153,7 +153,7 @@ function TemplateStepWidget(
         initialValues={formValues}
         formName="templateStepWidget"
         validationSchema={Yup.object().shape({
-          name: NameSchema({ requiredErrorMsg: getString('pipelineSteps.stepNameRequired') }),
+          name: StepNameSchema({ requiredErrorMsg: getString('pipelineSteps.stepNameRequired') }),
           identifier: IdentifierSchema()
         })}
         validate={validateForm}

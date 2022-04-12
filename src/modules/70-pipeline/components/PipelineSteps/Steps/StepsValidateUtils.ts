@@ -26,7 +26,7 @@ import {
   IdentifierSchema,
   IdentifierSchemaWithoutHook,
   NameSchema,
-  NameSchemaWithoutHook
+  StepNameSchemaWithoutHook
 } from '@common/utils/Validation'
 import { StepViewType } from '@pipeline/components/AbstractSteps/Step'
 
@@ -109,7 +109,7 @@ function generateSchemaForIdentifier({
 }
 
 function generateSchemaForName({ getString }: GenerateSchemaDependencies): StringSchema {
-  return NameSchemaWithoutHook(getString) as StringSchema
+  return StepNameSchemaWithoutHook(getString) as StringSchema
 }
 
 function generateSchemaForList(
