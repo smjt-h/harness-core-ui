@@ -48,8 +48,7 @@ import routes from '@common/RouteDefinitions'
 
 import { useInfiniteScroll } from '@templates-library/components/TemplateActivityLog/InfiniteScroll'
 
-import { EnvironmentGroupDetailsTab } from './EnvironmentGroupDetails/EnvironmentGroupDetails'
-import { cleanData } from './utils'
+import { cleanData, EnvironmentGroupDetailsTab } from './utils'
 
 import EmptyEnvironmentGroup from './images/EmptyEnvironmentGroup.svg'
 

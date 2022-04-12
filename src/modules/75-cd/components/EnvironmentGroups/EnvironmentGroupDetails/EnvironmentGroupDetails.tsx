@@ -58,14 +58,9 @@ import { IdentifierSchema, NameSchema } from '@common/utils/Validation'
 import { EnvironmentList } from './EnvironmentList'
 import EditEnvironmentGroupModal from './EditEnvironmentGroupModal'
 import { PageHeaderTitle, PageHeaderToolbar } from './EnvironmentGroupDetailsPageHeader'
-import { cleanData } from '../utils'
+import { cleanData, EnvironmentGroupDetailsTab } from '../utils'
 
 import css from './EnvironmentGroupDetails.module.scss'
-
-export enum EnvironmentGroupDetailsTab {
-  CONFIGURATION = 'CONFIGURATION',
-  ENVIRONMENTS = 'ENVIRONMENTS'
-}
 
 const yamlBuilderReadOnlyModeProps: YamlBuilderProps = {
   fileName: `environmentGroup.yaml`,

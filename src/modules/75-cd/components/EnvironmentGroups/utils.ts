@@ -32,3 +32,20 @@ export function cleanData(values: EnvironmentGroupResponseDTO): EnvironmentGroup
     envIdentifiers
   } as any
 }
+
+export enum SortFields {
+  LastUpdatedAt = 'lastModifiedAt',
+  AZ09 = 'AZ09',
+  ZA90 = 'ZA90',
+  Name = 'envGroup.name'
+}
+
+export enum Sort {
+  DESC = 'DESC',
+  ASC = 'ASC'
+}
+
+export enum EnvironmentGroupDetailsTab {
+  CONFIGURATION = 'CONFIGURATION',
+  ENVIRONMENTS = 'ENVIRONMENTS'
+}

@@ -25,7 +25,7 @@ import {
   LastUpdatedBy,
   NoOfEnvironments
 } from './EnvironmentGroupsListColumns'
-import { EnvironmentGroupDetailsTab } from './EnvironmentGroupDetails/EnvironmentGroupDetails'
+import { EnvironmentGroupDetailsTab } from './utils'
 
 import css from './EnvironmentGroups.module.scss'
 

@@ -11,6 +11,10 @@ import { useParams } from 'react-router-dom'
 import { TabNavigation } from '@harness/uicore'
 import { useStrings } from 'framework/strings'
 
+import { PermissionsRequest, usePermission } from '@rbac/hooks/usePermission'
+import { PermissionIdentifier } from '@rbac/interfaces/PermissionIdentifier'
+import { ResourceType } from '@rbac/interfaces/ResourceType'
+
 import routes from '@common/RouteDefinitions'
 import type { ModulePathParams, ProjectPathProps } from '@common/interfaces/RouteInterfaces'
 import { useFeatureFlag } from '@common/hooks/useFeatureFlag'
@@ -20,6 +24,15 @@ export default function EnvironmentTabs() {
   const { getString } = useStrings()
   const { accountId, orgIdentifier, projectIdentifier, module } = useParams<ProjectPathProps & ModulePathParams>()
   const isEnvGroupEnabled = useFeatureFlag(FeatureFlag.ENV_GROUP)
+  const [canViewEnvGroup] = usePermission(
+    {
+      permissions: [PermissionIdentifier.VIEW_ENVIRONMENT_GROUP],
+      resource: {
+        resourceType: ResourceType.ENVIRONMENT_GROUP
+      }
+    } as PermissionsRequest,
+    []
+  )
   const [navLinks, setNavLinks] = useState([])
 
   useEffect(() => {
@@ -35,7 +48,9 @@ export default function EnvironmentTabs() {
       }
     ]
 
-    if (!isEnvGroupEnabled) {
+    console.log(canViewEnvGroup)
+
+    if (isEnvGroupEnabled && canViewEnvGroup) {
       links.push({
         label: getString('common.environmentGroups.label'),
         to: routes.toEnvironmentGroups({

@@ -40,20 +40,9 @@ import CreateEnvironmentGroupModal from './CreateEnvironmentGroupModal'
 import EnvironmentGroupsList from './EnvironmentGroupsList'
 import NoEnvironmentGroups from './NoEnvironmentGroups'
 import EnvironmentTabs from '../Environments/EnvironmentTabs'
+import { Sort, SortFields } from './utils'
 
 import css from './EnvironmentGroups.module.scss'
-
-enum SortFields {
-  LastUpdatedAt = 'lastModifiedAt',
-  AZ09 = 'AZ09',
-  ZA90 = 'ZA90',
-  Name = 'envGroup.name'
-}
-
-enum Sort {
-  DESC = 'DESC',
-  ASC = 'ASC'
-}
 
 export default function EnvironmentGroupsPage(): React.ReactElement {
   const { accountId, orgIdentifier, projectIdentifier, module } = useParams<ProjectPathProps & ModulePathParams>()
