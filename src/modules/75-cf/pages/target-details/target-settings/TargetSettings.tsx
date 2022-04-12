@@ -14,7 +14,8 @@ import type { Target } from 'services/cf'
 import { DetailHeading } from '../DetailHeading'
 import TabAttributes from '../attributes/TabAttributes'
 import { TabSegments } from '../segments/TabSegments'
-import css from '../TargetDetailPage.module.scss'
+
+import css from './TargetSettings.module.scss'
 
 export interface TargetSettingsProps {
   target: Target
