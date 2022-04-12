@@ -117,6 +117,7 @@ describe('RUN PIPELINE MODAL', () => {
 
     describe('Checks visual to YAML and visual to variable view parity', () => {
       beforeEach(() => {
+        cy.intercept('GET', cdFailureStrategiesYaml, { fixture: 'pipeline/api/pipelines/failureStrategiesYaml' })
         cy.intercept('GET', servicesCall, { fixture: 'ng/api/servicesV2' })
         cy.intercept('GET', environmentsCall, { fixture: 'ng/api/environmentsV2' })
         cy.intercept('GET', connectorsCall, { fixture: 'ng/api/connectors' })
