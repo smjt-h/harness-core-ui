@@ -23,6 +23,7 @@ export interface ErrorHandlerProps {
   skipUrlsInErrorHeader?: boolean
   className?: string
   connectorType?: string
+  isCeConnector?: boolean
 }
 
 const extractInfo = (
@@ -100,7 +101,6 @@ const Suggestions: React.FC<{
       firstStr = msg.slice(0, docIndex)
       secondStr = msg.slice(docIndex)
     }
-
     return { firstStr, secondStr }
   }
 
@@ -137,35 +137,43 @@ const Suggestions: React.FC<{
             <Container margin={{ bottom: 'xsmall' }} key={index}>
               <Text color={Color.BLACK} font={{ variation: FontVariation.SMALL }} className={css.text}>
                 {firstStr}
+                {secondStr ? (
+                  <a href={docUrl} target="_blank" rel="noreferrer" className={cx(css.link, css.linkSmall)}>
+                    {secondStr}
+                  </a>
+                ) : null}
               </Text>
-              {secondStr ? (
-                <a href={docUrl} target="_blank" rel="noreferrer" className={cx(css.link, css.linkSmall)}>
-                  {secondStr}
-                </a>
+              {!secondStr ? (
+                <Text font={{ variation: FontVariation.SMALL_SEMI }} color={Color.BLACK} margin={{ bottom: 'xsmall' }}>
+                  {`${getString('common.errorHandler.contactLabel')} `}
+                  <a href="mailto:support@harness.io">{getString('common.errorHandler.contactSupport')}</a>
+                  {` ${getString('or')} `}
+                  <a href="https://community.harness.io/" target="_blank" rel="noreferrer">
+                    {getString('common.errorHandler.communityForum')}
+                  </a>
+                </Text>
               ) : null}
             </Container>
           )
         })}
-        <Text font={{ variation: FontVariation.SMALL_SEMI }} color={Color.BLACK} margin={{ bottom: 'xsmall' }}>
-          {`${getString('common.errorHandler.contactLabel')} `}
-          <a href="mailto:support@harness.io">{getString('common.errorHandler.contactSupport')}</a>
-          {` ${getString('or')} `}
-          <a href="https://community.harness.io/" target="_blank" rel="noreferrer">
-            {getString('common.errorHandler.communityForum')}
-          </a>
-        </Text>
       </Layout.Vertical>
     </Layout.Horizontal>
   )
 }
 
 export const ErrorHandler: React.FC<ErrorHandlerProps> = props => {
-  const { responseMessages, width, height, skipUrlsInErrorHeader = false, className = '', connectorType = '' } = props
+  const {
+    responseMessages,
+    width,
+    height,
+    skipUrlsInErrorHeader = false,
+    className = '',
+    connectorType = '',
+    isCeConnector = false
+  } = props
   const errorObjects = useMemo(() => extractInfo(responseMessages), [responseMessages])
   const { getString } = useStrings()
-  const isCeConnector = Boolean(
-    Connectors.CE_KUBERNETES || Connectors.CEAWS || Connectors.CE_AZURE || Connectors.CE_GCP
-  )
+
   return (
     <Layout.Vertical
       background={Color.RED_100}

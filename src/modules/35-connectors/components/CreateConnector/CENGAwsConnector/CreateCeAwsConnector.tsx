@@ -49,7 +49,6 @@ const CreateCeAwsConnector: React.FC<CreateConnectorModalProps> = props => {
             trackEvent(CCM_CONNECTOR_SAVE_EVENT, { connectorType: Connectors.CEAWS })
             props.onClose?.()
           }}
-          isEditAndPermissionVisible={false}
         />
       </StepWizard>
     </DialogExtention>

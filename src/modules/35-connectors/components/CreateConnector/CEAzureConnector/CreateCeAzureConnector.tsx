@@ -53,7 +53,6 @@ const CreateCeAzureConnector: React.FC<CreateConnectorModalProps> = props => {
             trackEvent(CCM_CONNECTOR_SAVE_EVENT, { type: Connectors.CE_AZURE })
             props.onClose?.()
           }}
-          isEditAndPermissionVisible={false}
         />
       </StepWizard>
     </ModalExtension>

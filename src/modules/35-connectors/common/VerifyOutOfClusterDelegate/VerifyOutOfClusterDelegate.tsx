@@ -54,7 +54,6 @@ interface VerifyOutOfClusterDelegateProps {
   connectorInfo: ConnectorInfoDTO | void
   gitDetails?: EntityGitDetails
   stepIndex?: number // will make this mandatory once all usages sends the value
-  isEditAndPermissionVisible?: boolean
 }
 export interface VerifyOutOfClusterStepProps extends ConnectorConfigDTO {
   isEditMode?: boolean
@@ -149,7 +148,7 @@ const RenderUrlInfo: React.FC<StepProps<VerifyOutOfClusterStepProps> & RenderUrl
 
 const VerifyOutOfClusterDelegate: React.FC<StepProps<VerifyOutOfClusterStepProps> & VerifyOutOfClusterDelegateProps> =
   props => {
-    const { prevStepData, nextStep, isLastStep = false, connectorInfo, isEditAndPermissionVisible = true } = props
+    const { prevStepData, nextStep, isLastStep = false, connectorInfo } = props
     const branch = props.isStep ? prevStepData?.branch : props.gitDetails?.branch
     const repoIdentifier = props.isStep ? prevStepData?.repo : props.gitDetails?.repoIdentifier
     const {
@@ -167,6 +166,10 @@ const VerifyOutOfClusterDelegate: React.FC<StepProps<VerifyOutOfClusterStepProps
       intent: Intent.WARNING,
       status: 'PROCESS'
     })
+
+    const isCeConnector = Boolean(
+      Connectors.CE_KUBERNETES || Connectors.CEAWS || Connectors.CE_AZURE || Connectors.CE_GCP
+    )
 
     const { trackEvent } = useTelemetry()
 
@@ -191,6 +194,7 @@ const VerifyOutOfClusterDelegate: React.FC<StepProps<VerifyOutOfClusterStepProps
 
     const { getString } = useStrings()
 
+    /* istanbul ignore next */
     const getPermissionsLink = (): string => {
       switch (props.type) {
         case Connectors.KUBERNETES_CLUSTER:
@@ -289,12 +293,17 @@ const VerifyOutOfClusterDelegate: React.FC<StepProps<VerifyOutOfClusterStepProps
       return (
         <Layout.Vertical className={css.stepError}>
           {responseMessages ? (
-            <ErrorHandler responseMessages={responseMessages} className={css.errorHandler} connectorType={props.type} />
+            <ErrorHandler
+              responseMessages={responseMessages}
+              className={css.errorHandler}
+              connectorType={props.type}
+              isCeConnector={isCeConnector}
+            />
           ) : (
             genericHandler
           )}
           {/* TODO: when install delegate behaviour is known {testConnectionResponse?.data?.delegateId ? ( */}
-          {isEditAndPermissionVisible ? (
+          {!isCeConnector ? (
             <Layout.Horizontal spacing="small">
               {props.isStep ? (
                 <Button

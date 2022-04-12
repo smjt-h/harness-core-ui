@@ -85,37 +85,19 @@ exports[`<ErrorHandler /> tests should render ErrorHandler component 1`] = `
             class="Layout--vertical StyledProps--main errorListTextContainer shrink"
           >
             <p
-              class="StyledProps--font StyledProps--main StyledProps--font-variation-small-semi StyledProps--color StyledProps--color-black StyledProps--margin-bottom-xsmall"
+              class="StyledProps--font StyledProps--main StyledProps--font-weight-semi-bold StyledProps--font-size-small StyledProps--color StyledProps--color-black StyledProps--margin-bottom-xsmall"
             >
               common.errorHandler.tryTheseSuggestions
             </p>
             <div
               class="StyledProps--font StyledProps--main StyledProps--margin-bottom-xsmall"
             >
-              <p
-                class="StyledProps--font StyledProps--main text StyledProps--color StyledProps--color-black StyledProps--font-variation-small"
+              <span
+                class="StyledProps--font StyledProps--main text StyledProps--color StyledProps--color-black StyledProps--font-size-small StyledProps--inline"
               >
-                No connector found with identifier test35
-              </p>
+                - No connector found with identifier test35
+              </span>
             </div>
-            <p
-              class="StyledProps--font StyledProps--main StyledProps--font-variation-small-semi StyledProps--color StyledProps--color-black StyledProps--margin-bottom-xsmall"
-            >
-              common.errorHandler.contactLabel 
-              <a
-                href="mailto:support@harness.io"
-              >
-                common.errorHandler.contactSupport
-              </a>
-               or 
-              <a
-                href="https://community.harness.io/"
-                rel="noreferrer"
-                target="_blank"
-              >
-                common.errorHandler.communityForum
-              </a>
-            </p>
           </div>
         </div>
       </div>

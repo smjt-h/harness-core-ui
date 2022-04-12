@@ -53,7 +53,6 @@ const CreateCeGcpConnector: React.FC<CreateConnectorModalProps> = props => {
             trackEvent(CCM_CONNECTOR_SAVE_EVENT, { type: Connectors.CE_GCP })
             props.onClose?.()
           }}
-          isEditAndPermissionVisible={false}
         />
       </StepWizard>
     </DialogExtention>
