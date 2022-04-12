@@ -2292,6 +2292,7 @@ exports[`Auto stopping Rule creation Tests fill remaining form for ASGs 1`] = `
                                 <input
                                   autocomplete="off"
                                   class="bp3-input"
+                                  min="1"
                                   name="odInstance"
                                   pattern="[0-9]*"
                                   type="number"
@@ -3037,6 +3038,7 @@ exports[`Auto stopping Rule creation Tests fill remaining form for ASGs 2`] = `
                                 <input
                                   autocomplete="off"
                                   class="bp3-input"
+                                  min="1"
                                   name="odInstance"
                                   pattern="[0-9]*"
                                   type="number"

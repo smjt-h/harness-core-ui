@@ -356,9 +356,9 @@ describe('Auto stopping Rule creation Tests', () => {
 
     const addAsgBtn = getByText('+ ce.co.autoStoppingRule.configuration.step2.addResourceCta.asg')
     fireEvent.click(addAsgBtn)
-    expect(getByText('Select Auto scaling group')).toBeTruthy()
+    expect(getByText('ce.co.autoStoppingRule.configuration.asgModal.title')).toBeTruthy()
     fireEvent.click(getByTestId('close-asg-modal'))
-    expect(queryByText('Select Auto scaling group')).toBeFalsy()
+    expect(queryByText('ce.co.autoStoppingRule.configuration.asgModal.title')).toBeFalsy()
 
     expect(getByText('ce.co.autoStoppingRule.configuration.step3.asgSubTitle')).toBeDefined()
     const odInstanceInput = container.querySelector('input[name="odInstance"]') as HTMLInputElement

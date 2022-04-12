@@ -8,16 +8,17 @@
 import { useParams } from 'react-router-dom'
 import { useToaster } from '@harness/uicore'
 import patch from '@cf/utils/instructions'
-import { PatchFeatureQueryParams, usePatchFeature } from 'services/cf'
+import { PatchFeatureQueryParams, usePatchFeature, Variation } from 'services/cf'
 import useActiveEnvironment from '@cf/hooks/useActiveEnvironment'
 import { showToaster } from '@cf/utils/CFUtils'
 import { useStrings } from 'framework/strings'
 import useRBACError from '@rbac/utils/useRBACError/useRBACError'
-import type { FormVariationMap, TargetingRulesFormValues } from '../Types.types'
+import type { TargetingRulesFormValues } from '../Types.types'
 import { PatchFeatureFlagUtils } from './utils/PatchFeatureFlagUtils'
 export interface UsePatchFeatureFlagProps {
   featureFlagIdentifier: string
   initialValues: TargetingRulesFormValues
+  variations: Variation[]
   refetchFlag: () => Promise<unknown>
 }
 
@@ -29,6 +30,7 @@ interface UsePatchFeatureFlagReturn {
 const usePatchFeatureFlag = ({
   featureFlagIdentifier,
   initialValues,
+  variations,
   refetchFlag
 }: UsePatchFeatureFlagProps): UsePatchFeatureFlagReturn => {
   const { projectIdentifier, orgIdentifier, accountId: accountIdentifier } = useParams<Record<string, string>>()
@@ -66,38 +68,41 @@ const usePatchFeatureFlag = ({
     }
 
     // for each variation, iterate and compare initial Targets/Target groups against the submitted Targets/Target groups and create instructions
-    initialValues.formVariationMap.forEach((formVariation: FormVariationMap) => {
-      const addedTargetGroups = patchFeatureUtils.addedTargetGroups(formVariation)
+    variations.forEach((variation: Variation) => {
+      const addedTargetGroups = patchFeatureUtils.addedTargetGroups(variation.identifier)
       if (addedTargetGroups.length) {
-        patchFeatureUtils.createAddTargetGroupInstructions(formVariation, addedTargetGroups)
+        patchFeatureUtils.createAddTargetGroupInstructions(variation.identifier, addedTargetGroups)
       }
 
-      const removedTargetGroups = patchFeatureUtils.removedTargetGroups(formVariation)
+      const removedTargetGroups = patchFeatureUtils.removedTargetGroups(variation.identifier)
       if (removedTargetGroups.length) {
         patchFeatureUtils.createRemoveTargetGroupsInstructions(removedTargetGroups)
       }
 
-      const addedTargetIds = patchFeatureUtils.addedTargets(formVariation)
+      const addedTargetIds = patchFeatureUtils.addedTargets(variation.identifier)
+
       if (addedTargetIds.length) {
-        patchFeatureUtils.createAddTargetsInstructions(formVariation, addedTargetIds)
+        patchFeatureUtils.createAddTargetsInstructions(variation.identifier, addedTargetIds)
       }
 
-      const removedTargetIds = patchFeatureUtils.removedTargets(formVariation)
+      const removedTargetIds = patchFeatureUtils.removedTargets(variation.identifier)
       if (removedTargetIds.length) {
-        patchFeatureUtils.createRemoveTargetsInstructions(formVariation, removedTargetIds)
+        patchFeatureUtils.createRemoveTargetsInstructions(variation.identifier, removedTargetIds)
       }
     })
 
+    // handle added/removed/updated percentage rollouts
     const addedPercentageRollouts = patchFeatureUtils.addedPercentageRollouts()
-    const removedPercentageRollouts = patchFeatureUtils.removedPercentageRollouts()
-    const updatedPercentageRollouts = patchFeatureUtils.updatedPercentageRollouts()
-
     if (addedPercentageRollouts.length) {
       patchFeatureUtils.createAddPercentageRolloutInstructions(addedPercentageRollouts)
     }
+
+    const removedPercentageRollouts = patchFeatureUtils.removedPercentageRollouts()
     if (removedPercentageRollouts.length) {
       patchFeatureUtils.createRemovePercentageRolloutInstructions(removedPercentageRollouts)
     }
+
+    const updatedPercentageRollouts = patchFeatureUtils.updatedPercentageRollouts()
     if (updatedPercentageRollouts.length) {
       patchFeatureUtils.createUpdatePercentageRolloutInstructions(updatedPercentageRollouts)
     }

@@ -11,22 +11,21 @@ import React, { ReactElement } from 'react'
 import { useStrings } from 'framework/strings'
 import type { Segment, Target, TargetMap, Variation } from 'services/cf'
 import DefaultRules from '../default-rules/DefaultRules'
-import SpecificTargetingItem from '../specific-targeting-item.tsx/SpecificTargetingItem'
-import type { FormVariationMap, VariationPercentageRollout, TargetGroup } from '../../Types.types'
+import SpecificTargetingItem from '../specific-targeting-item/SpecificTargetingItem'
+import { FormVariationMap, VariationPercentageRollout, TargetGroup, TargetingRuleItemType } from '../../Types.types'
 import PercentageRolloutItem from '../percentage-rollout-item/PercentageRolloutItem'
 import AddTargetingButton from '../add-targeting-button/AddTargetingButton'
 
 export interface FlagEnabledRulesCardProps {
   targets: Target[]
   segments: Segment[]
-  formVariationMap: FormVariationMap[]
+  targetingRuleItems: (VariationPercentageRollout | FormVariationMap)[]
   featureFlagVariations: Variation[]
-  variationPercentageRollouts: VariationPercentageRollout[]
   disabled: boolean
   updateTargetGroups: (index: number, newTargetGroups: TargetGroup[]) => void
   updateTargets: (index: number, newTargetGroups: TargetMap[]) => void
-  addVariation: (newVariation: FormVariationMap) => void
-  removeVariation: (removedVariation: FormVariationMap) => void
+  addVariation: (newVariation: Variation) => void
+  removeVariation: (removedVariationIndex: number) => void
   addPercentageRollout: () => void
   removePercentageRollout: (index: number) => void
 }
@@ -35,9 +34,8 @@ const FlagEnabledRulesCard = (props: FlagEnabledRulesCardProps): ReactElement =>
   const {
     targets,
     segments,
-    formVariationMap,
+    targetingRuleItems,
     featureFlagVariations,
-    variationPercentageRollouts,
     updateTargetGroups,
     updateTargets,
     addVariation,
@@ -49,7 +47,12 @@ const FlagEnabledRulesCard = (props: FlagEnabledRulesCardProps): ReactElement =>
 
   const { getString } = useStrings()
 
-  const addTargetingDropdownVariations = formVariationMap.filter(variation => !variation.isVisible)
+  const targetingDropdownVariations = featureFlagVariations.filter(
+    variation =>
+      !targetingRuleItems
+        .map(targetingRuleItem => (targetingRuleItem as FormVariationMap).variationIdentifier)
+        .includes(variation.identifier)
+  )
 
   return (
     <Card data-testid="flag-enabled-rules-card">
@@ -62,47 +65,49 @@ const FlagEnabledRulesCard = (props: FlagEnabledRulesCardProps): ReactElement =>
       </Container>
       <Container padding={{ bottom: 'medium' }}>
         <Layout.Vertical spacing="medium">
-          <Heading level={4} font={{ variation: FontVariation.BODY2 }} margin={{ top: 'medium' }}>
-            {getString('cf.featureFlags.rules.specificTargeting')}
-          </Heading>
-          {formVariationMap.map((formVariationMapItem, index) => (
-            <>
-              {formVariationMapItem.isVisible && (
-                <SpecificTargetingItem
-                  key={`${formVariationMapItem.variationIdentifier}_${index}`}
-                  index={index}
+          {targetingRuleItems.map((targetingRuleItem, index) => {
+            if (targetingRuleItem.type === TargetingRuleItemType.VARIATION) {
+              const item = targetingRuleItem as FormVariationMap
+              return (
+                <>
+                  <Heading level={4} font={{ variation: FontVariation.BODY2 }} margin={{ top: 'medium' }}>
+                    {getString('cf.featureFlags.rules.specificTargeting')}
+                  </Heading>
+                  <SpecificTargetingItem
+                    key={`${item.variationIdentifier}_${index}`}
+                    index={index}
+                    disabled={disabled}
+                    targets={targets}
+                    segments={segments}
+                    formVariationMapItem={item}
+                    updateTargetGroups={updateTargetGroups}
+                    updateTargets={updateTargets}
+                    removeVariation={() => removeVariation(index)}
+                  />
+                </>
+              )
+            } else {
+              const item = targetingRuleItem as VariationPercentageRollout
+              return (
+                <PercentageRolloutItem
+                  key={item.ruleId}
                   disabled={disabled}
-                  targets={targets}
+                  index={index}
+                  featureFlagVariations={featureFlagVariations}
+                  removePercentageRollout={removePercentageRollout}
                   segments={segments}
-                  formVariationMapItem={formVariationMapItem}
-                  updateTargetGroups={updateTargetGroups}
-                  updateTargets={updateTargets}
-                  removeVariation={() => removeVariation(formVariationMapItem)}
+                  variationPercentageRollout={item}
                 />
-              )}
-            </>
-          ))}
+              )
+            }
+          })}
 
-          {variationPercentageRollouts.map((variationPercentageRollout, index) => (
-            <PercentageRolloutItem
-              key={variationPercentageRollout.ruleId}
-              disabled={disabled}
-              index={index}
-              featureFlagVariations={featureFlagVariations}
-              removePercentageRollout={removePercentageRollout}
-              segments={segments}
-              variationPercentageRollout={variationPercentageRollout}
-            />
-          ))}
-
-          {(addTargetingDropdownVariations.length > 0 || variationPercentageRollouts.length > 0) && (
-            <AddTargetingButton
-              addPercentageRollout={addPercentageRollout}
-              addTargetingDropdownVariations={addTargetingDropdownVariations}
-              addVariation={addVariation}
-              disabled={disabled}
-            />
-          )}
+          <AddTargetingButton
+            addPercentageRollout={addPercentageRollout}
+            targetingDropdownVariations={targetingDropdownVariations}
+            addVariation={addVariation}
+            disabled={disabled}
+          />
         </Layout.Vertical>
       </Container>
     </Card>
