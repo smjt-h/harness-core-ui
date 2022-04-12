@@ -631,7 +631,7 @@ function RunPipelineFormBasic({
           validate={handleValidation}
         >
           {formik => {
-            const { submitForm, values, setFormikState } = formik
+            const { submitForm, values, setValues, setFormikState } = formik
             formikRef.current = formik
             valuesPipelineRef.current = values
 
@@ -737,7 +737,17 @@ function RunPipelineFormBasic({
                           ) {
                             setExistingProvide('provide')
                           } else {
-                            submitForm()
+                            if (selectedView === SelectedView.YAML) {
+                              const parsedYaml = yamlParse<PipelineConfig>(defaultTo(yamlHandler?.getLatestYaml(), ''))
+                              if (parsedYaml.pipeline) {
+                                setValues(parsedYaml.pipeline)
+                                setTimeout(() => {
+                                  submitForm()
+                                }, 0)
+                              }
+                            } else {
+                              submitForm()
+                            }
                           }
                         }}
                         featuresProps={getFeaturePropsForRunPipelineButton({
