@@ -29,6 +29,8 @@ const { addMatchImageSnapshotPlugin } = require('cypress-image-snapshot/plugin')
 
 const cypressTypeScriptPreprocessor = require('./cy-ts-preprocessor')
 module.exports = (on: Cypress.PluginEvents, config: Cypress.PluginConfigOptions) => {
+  // we register our plugin using its register method:
+  addMatchImageSnapshotPlugin(on, config)
   // Deleting retried screenshots if test passes eventually
   on('after:spec', (spec, results) => {
     const deleteScrenshots = []
@@ -56,6 +58,32 @@ module.exports = (on: Cypress.PluginEvents, config: Cypress.PluginConfigOptions)
     require('@cypress/code-coverage/task')(on, config)
   }
   on('file:preprocessor', cypressTypeScriptPreprocessor)
-  addMatchImageSnapshotPlugin(on, config);
+  // force color profile
+  // https://www.thisdot.co/blog/how-to-set-up-screenshot-comparison-testing-with-cypress-inside-an-nx
+  on('before:browser:launch', (browser: { name: string; family: string } = { name: '', family: '' }, launchOptions) => {
+    if (browser.family === 'chromium' && browser.name !== 'electron') {
+      launchOptions.args.push('--force-color-profile=srgb')
+    }
+
+    // if (browser.name === 'chrome') {
+    //   launchOptions.args.push('--window-size=1440,900')
+    // } else if (browser.name === 'electron') {
+    //   launchOptions.preferences['width'] = 1440
+    //   launchOptions.preferences['height'] = 900
+    // }
+    if (browser.name === 'chrome') {
+      // launchOptions.push('--window-size=1920,1080');
+      launchOptions.args.push('--window-size=1920,1080');
+      // return launchOptions;
+    }
+
+    if (browser.name === 'electron') {
+      // fullPage screenshot size is 768x1024
+      launchOptions.preferences.width = 768;
+      launchOptions.preferences.height = 1024;
+      launchOptions.preferences.frame = false;
+      launchOptions.preferences.useContentSize = true;
+    }
+  })
   return config
 }

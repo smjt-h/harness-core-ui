@@ -3,6 +3,9 @@
   "integrationFolder": "cypress/integration",
   "experimentalInteractiveRunEvents": true,
   "retries": 2,
-  "viewportWidth": 1500,
-  "viewportHeight": 1000
+  "viewportWidth": 1980,
+  "viewportHeight": 1080,
+  "env": {
+    "ALLOW_SCREENSHOT": true
+  }
 }
