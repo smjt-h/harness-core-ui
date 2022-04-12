@@ -72,6 +72,7 @@ co:
             ec2Vms: 'EC2 VM(s)'
             ecsService: 'ECS Service'
             rdsInstances: 'RDS Instance'
+            ig: Instance groups
       step3:
         title: 'Choose instance fulfilment'
         description:
@@ -102,12 +103,14 @@ co:
           kubernetes: 'Add a cluster to be managed by the AutoStopping Rule.'
           ecs: 'Add an ECS Service to be managed by the AutoStopping Rule'
           rds: 'Add the RDS instance to be managed by this Autostopping Rule'
+          ig: 'Add an Instance group to be managed by this Autostopping Rule'
         addResourceCta:
           instance: 'Add an instance'
           asg: 'Add a auto-scaling group'
           kubernetes: 'Add a cluster'
           ecs: 'Add an ECS Service'
           rds: 'Add RDS instance'
+          ig: 'Add an Instance group'
       step3:
         title: 'Choose to convert the selected instance(s) to spot or remain on-demand. '
         asgTitle: 'Choose the on-demand vs spot ratio for your Auto Scaling group'
@@ -166,6 +169,11 @@ co:
       rdsModal:
         title: 'Select RDS instance(s)'
         emptyDescription: 'Select a Region to see all the databases.'
+      asgModal:
+        title: 'Select Auto scaling group'
+      igModal:
+        title: 'Select instance group'
+        gcpFiltersNotSelectedDescription: 'Select a region to see all the instance groups.'
     review:
       configDetails: 'Configuration Details'
       cloudAccountDetails: 'Cloud account details'
