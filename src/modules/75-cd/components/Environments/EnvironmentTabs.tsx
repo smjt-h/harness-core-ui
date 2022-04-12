@@ -48,8 +48,6 @@ export default function EnvironmentTabs() {
       }
     ]
 
-    console.log(canViewEnvGroup)
-
     if (isEnvGroupEnabled && canViewEnvGroup) {
       links.push({
         label: getString('common.environmentGroups.label'),
