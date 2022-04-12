@@ -466,15 +466,18 @@ export function generateSchemaFields(
         validationRule = (validationRule as any).required(
           getString('fieldRequired', { field: getString(label as StringKeys) })
         )
-        if (buildInfrastructureType === 'VM' && type === Types.Identifier) {
-          validationRule = validationRule.matches(
-            serviceDependencyIdRegex,
-            getString('pipeline.ci.validations.serviceDependencyIdentifier', { regex: serviceDependencyIdRegex.source })
-          )
-        } else {
-          validationRule = validationRule
-            .matches(regexIdentifier, getString('validation.validIdRegex'))
-            .notOneOf(illegalIdentifiers)
+        if (type === Types.Identifier) {
+          if (buildInfrastructureType === 'VM') {
+            validationRule = validationRule.matches(
+              serviceDependencyIdRegex,
+              getString('pipeline.ci.validations.serviceDependencyIdentifier', {
+                regex: serviceDependencyIdRegex.source
+              })
+            )
+          } else {
+            validationRule = validationRule.matches(regexIdentifier, getString('validation.validIdRegex'))
+          }
+          validationRule = validationRule.notOneOf(illegalIdentifiers)
         }
       } else if (stepViewType !== StepViewType.Template && type !== Types.Identifier && type !== Types.Name) {
         validationRule = yup.string().required(getString('fieldRequired', { field: getString(label as StringKeys) }))
