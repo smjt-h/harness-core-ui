@@ -12,8 +12,7 @@ import type {
   ExecutionGraphAddStepEvent,
   ExecutionGraphRefObj
 } from '@pipeline/components/PipelineStudio/ExecutionGraph/ExecutionGraph'
-import { DrawerTypes, TemplateDrawerTypes } from '@pipeline/components/PipelineStudio/PipelineContext/PipelineActions'
-import type { TemplateSummaryResponse } from 'services/template-ng'
+import { DrawerTypes } from '@pipeline/components/PipelineStudio/PipelineContext/PipelineActions'
 import { addStepOrGroup } from '@pipeline/components/PipelineStudio/ExecutionGraph/ExecutionGraphUtil'
 import { StepCategory, useGetStepsV2 } from 'services/pipeline-ng'
 import { createStepNodeFromTemplate } from '@pipeline/utils/templateUtils'
@@ -22,9 +21,10 @@ import { usePipelineContext } from '@pipeline/components/PipelineStudio/Pipeline
 import { useMutateAsGet } from '@common/hooks'
 import { getStepPaletteModuleInfosFromStage } from '@pipeline/utils/stepUtils'
 import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
+import { useTemplateSelector } from '@pipeline/utils/useTemplateSelector'
 
 interface AddStepTemplateReturnType {
-  addTemplate: (event: ExecutionGraphAddStepEvent) => void
+  addTemplate: (event: ExecutionGraphAddStepEvent) => Promise<void>
 }
 
 interface AddStepTemplate {
@@ -38,17 +38,15 @@ export function useAddStepTemplate(props: AddStepTemplate): AddStepTemplateRetur
   const {
     state: {
       pipelineView,
-      selectionState: { selectedStageId },
-      templateTypes
+      selectionState: { selectedStageId }
     },
     updateStage,
     getStageFromPipeline,
-    updatePipelineView,
-    updateTemplateView,
-    setTemplateTypes
+    updatePipelineView
   } = pipelineContext
   const { stage: selectedStage } = getStageFromPipeline(defaultTo(selectedStageId, ''))
   const [allChildTypes, setAllChildTypes] = React.useState<string[]>([])
+  const { getTemplate } = useTemplateSelector()
 
   const { data: stepsData } = useMutateAsGet(useGetStepsV2, {
     queryParams: { accountId },
@@ -79,71 +77,52 @@ export function useAddStepTemplate(props: AddStepTemplate): AddStepTemplateRetur
     }
   }, [stepsData?.data?.stepCategories])
 
-  const addTemplate = (event: ExecutionGraphAddStepEvent) => {
-    updateTemplateView({
-      isTemplateDrawerOpened: true,
-      templateDrawerData: {
-        type: TemplateDrawerTypes.UseTemplate,
-        data: {
-          selectorData: {
-            templateType: 'Step',
-            allChildTypes,
-            onUseTemplate: async (template: TemplateSummaryResponse, isCopied = false) => {
-              const newStepData = { step: createStepNodeFromTemplate(template, isCopied) }
-              const { stage: pipelineStage } = cloneDeep(getStageFromPipeline(selectedStageId || ''))
-              if (pipelineStage && !pipelineStage.stage?.spec) {
-                set(pipelineStage, 'stage.spec', {})
-              }
-              if (pipelineStage && isNil(pipelineStage.stage?.spec?.execution)) {
-                if (event.isRollback) {
-                  set(pipelineStage, 'stage.spec.execution', { rollbackSteps: [] })
-                } else {
-                  set(pipelineStage, 'stage.spec.execution', { steps: [] })
-                }
-              }
-              executionRef?.stepGroupUpdated?.(newStepData.step)
-              addStepOrGroup(
-                event.entity,
-                pipelineStage?.stage?.spec?.execution as any,
-                newStepData,
-                event.isParallel,
-                event.isRollback
-              )
-              if (pipelineStage?.stage) {
-                await updateStage(pipelineStage?.stage)
-              }
-              if (!isCopied && template?.identifier && template?.childType) {
-                templateTypes[template.identifier] = template.childType
-                setTemplateTypes(templateTypes)
-              }
-              updateTemplateView({
-                isTemplateDrawerOpened: false,
-                templateDrawerData: {
-                  type: TemplateDrawerTypes.UseTemplate
-                }
-              })
-              updatePipelineView({
-                ...pipelineView,
-                isDrawerOpened: true,
-                drawerData: {
-                  type: DrawerTypes.StepConfig,
-                  data: {
-                    stepConfig: {
-                      node: newStepData.step,
-                      stepsMap: event.stepsMap,
-                      onUpdate: executionRef?.stepGroupUpdated,
-                      isStepGroup: false,
-                      addOrEdit: 'edit',
-                      hiddenAdvancedPanels: [AdvancedPanels.PreRequisites]
-                    }
-                  }
-                }
-              })
+  const addTemplate = async (event: ExecutionGraphAddStepEvent) => {
+    try {
+      const { template, isCopied } = await getTemplate({ templateType: 'Step', allChildTypes })
+      const newStepData = { step: createStepNodeFromTemplate(template, isCopied) }
+      const { stage: pipelineStage } = cloneDeep(getStageFromPipeline(selectedStageId || ''))
+      if (pipelineStage && !pipelineStage.stage?.spec) {
+        set(pipelineStage, 'stage.spec', {})
+      }
+      if (pipelineStage && isNil(pipelineStage.stage?.spec?.execution)) {
+        if (event.isRollback) {
+          set(pipelineStage, 'stage.spec.execution', { rollbackSteps: [] })
+        } else {
+          set(pipelineStage, 'stage.spec.execution', { steps: [] })
+        }
+      }
+      executionRef?.stepGroupUpdated?.(newStepData.step)
+      addStepOrGroup(
+        event.entity,
+        pipelineStage?.stage?.spec?.execution as any,
+        newStepData,
+        event.isParallel,
+        event.isRollback
+      )
+      if (pipelineStage?.stage) {
+        await updateStage(pipelineStage?.stage)
+      }
+      updatePipelineView({
+        ...pipelineView,
+        isDrawerOpened: true,
+        drawerData: {
+          type: DrawerTypes.StepConfig,
+          data: {
+            stepConfig: {
+              node: newStepData.step,
+              stepsMap: event.stepsMap,
+              onUpdate: executionRef?.stepGroupUpdated,
+              isStepGroup: false,
+              addOrEdit: 'edit',
+              hiddenAdvancedPanels: [AdvancedPanels.PreRequisites]
             }
           }
         }
-      }
-    })
+      })
+    } catch (_) {
+      // Do nothing.. user cancelled template selection
+    }
   }
 
   return { addTemplate }

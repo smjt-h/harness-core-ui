@@ -42,11 +42,7 @@ export const getPropsForMinimalStage = (): PipelineStagesProps<ApprovalStageMini
       type: '',
       key: 'approval'
     }
-  ],
-  templateTypes: {},
-  setTemplateTypes: jest.fn(),
-  openTemplateSelector: jest.fn(),
-  closeTemplateSelector: jest.fn()
+  ]
 })
 
 export const getPropsForMinimalStageWithTemplateUsed = (): ApprovalStageMinimalModeProps => ({
