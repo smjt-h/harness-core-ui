@@ -392,7 +392,7 @@ export function InputSetForm(props: InputSetFormProps): React.ReactElement {
               }
             })
             closeInvalidFieldsModal()
-            if (response.data?.shouldDeleteInputSet) {
+            if (response?.data?.shouldDeleteInputSet) {
               openDeleteInputSetModal()
             } else {
               setInputSetUpdateResponse({

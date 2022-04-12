@@ -210,7 +210,6 @@ describe('Approval Stage minimal view when a template is used', () => {
       fireEvent.click(getByText('pipelineSteps.build.create.setupStage'))
     })
     await waitFor(() => {
-      expect(pipelineContextMockValue.setTemplateTypes).toBeCalled()
       expect(props.onSubmit).toBeCalledWith(
         {
           stage: {

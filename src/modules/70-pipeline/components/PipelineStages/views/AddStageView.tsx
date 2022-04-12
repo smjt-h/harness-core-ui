@@ -29,7 +29,7 @@ export interface AddStageViewProps {
   stages: Array<PipelineStageProps>
   isParallel?: boolean
   contextType?: string
-  onOpenTemplateSelector?: () => void
+  onUseTemplate?: () => void
 }
 
 export interface SelectedAddStageTypeData {
@@ -46,7 +46,7 @@ export function AddStageView({
   isParallel = false,
   stages,
   contextType,
-  onOpenTemplateSelector
+  onUseTemplate
 }: AddStageViewProps): JSX.Element {
   const isTemplatesEnabled = useFeatureFlag(FeatureFlag.NG_TEMPLATES)
   const { getString } = useStrings()
@@ -73,7 +73,7 @@ export function AddStageView({
               size={ButtonSize.SMALL}
               icon="template-library"
               iconProps={{ size: 12 }}
-              onClick={onOpenTemplateSelector}
+              onClick={onUseTemplate}
               featuresProps={{
                 featuresRequest: {
                   featureNames: [FeatureIdentifier.TEMPLATE_SERVICE]

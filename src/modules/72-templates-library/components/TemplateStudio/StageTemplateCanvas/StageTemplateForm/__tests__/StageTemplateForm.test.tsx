@@ -7,7 +7,7 @@
 
 import React from 'react'
 import { render } from '@testing-library/react'
-import { noop, set } from 'lodash-es'
+import { set } from 'lodash-es'
 import produce from 'immer'
 import { TestWrapper } from '@common/utils/testUtils'
 import routes from '@common/RouteDefinitions'
@@ -51,11 +51,7 @@ describe('<StageTemplateFormWithRef /> tests', () => {
     expect(pipelineContext.renderPipelineStage).toBeCalledWith({
       stageType: 'CI',
       minimal: false,
-      contextType: 'Template',
-      templateTypes: pipelineContext.state.templateTypes,
-      setTemplateTypes: pipelineContext.setTemplateTypes,
-      openTemplateSelector: noop,
-      closeTemplateSelector: noop
+      contextType: 'Template'
     })
   })
   test('should not call renderPipelineStage when template drawer is open', async () => {

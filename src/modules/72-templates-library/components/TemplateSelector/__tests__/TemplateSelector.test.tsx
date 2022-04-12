@@ -55,8 +55,7 @@ jest.mock('@templates-library/components/TemplateDetails/TemplateDetails', () =>
 describe('<TemplateSelector /> tests', () => {
   test('snapshot test', async () => {
     const context = { ...pipelineContextMock }
-    set(context, 'state.templateView.templateDrawerData.data.selectorData.onUseTemplate', jest.fn())
-    set(context, 'state.templateView.templateDrawerData.data.selectorData.onCopyTemplate', jest.fn())
+    set(context, 'state.templateView.templateDrawerData.data.selectorData.onSubmit', jest.fn())
     set(context, 'state.templateView.templateDrawerData.data.selectorData.selectedTemplateRef', 'templateRef')
     const { container, getByRole } = render(
       <PipelineContext.Provider value={context}>
@@ -84,7 +83,7 @@ describe('<TemplateSelector /> tests', () => {
     await act(async () => {
       fireEvent.click(copyBtn)
     })
-    expect(context.state.templateView.templateDrawerData.data?.selectorData?.onUseTemplate).toBeCalled()
+    expect(context.state.templateView.templateDrawerData.data?.selectorData?.onSubmit).toBeCalled()
 
     const useTemplateBtn = getByRole('button', { name: 'templatesLibrary.useTemplate' })
     await act(async () => {
@@ -94,6 +93,6 @@ describe('<TemplateSelector /> tests', () => {
     await act(async () => {
       fireEvent.click(useBtn)
     })
-    expect(context.state.templateView.templateDrawerData.data?.selectorData?.onUseTemplate).toBeCalled()
+    expect(context.state.templateView.templateDrawerData.data?.selectorData?.onSubmit).toBeCalled()
   })
 })

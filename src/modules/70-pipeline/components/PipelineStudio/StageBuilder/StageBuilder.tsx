@@ -116,10 +116,8 @@ export const renderPopover = ({
   renderPipelineStage,
   isHoverView,
   contextType,
-  templateTypes,
-  setTemplateTypes,
-  openTemplateSelector,
-  closeTemplateSelector
+  getTemplate,
+  templateTypes
 }: PopoverData): JSX.Element => {
   if (isStageView && data) {
     const stageData = {
@@ -141,10 +139,7 @@ export const renderPopover = ({
           onSubmitPrimaryData?.(values, identifier)
         }
       },
-      openTemplateSelector,
-      closeTemplateSelector,
-      templateTypes,
-      setTemplateTypes
+      getTemplate
     })
   } else if (isGroupStage) {
     return (
@@ -180,10 +175,7 @@ export const renderPopover = ({
       }
     },
     contextType: contextType,
-    templateTypes,
-    setTemplateTypes,
-    openTemplateSelector,
-    closeTemplateSelector
+    getTemplate
   })
 }
 
@@ -207,15 +199,14 @@ function StageBuilder(): React.ReactElement {
     updatePipelineView,
     renderPipelineStage,
     getStageFromPipeline,
-    setSelection,
-    setTemplateTypes
+    setSelection
   } = usePipelineContext()
 
   // NOTE: we are using ref as setSelection is getting cached somewhere
   const setSelectionRef = React.useRef(setSelection)
   setSelectionRef.current = setSelection
 
-  const { openTemplateSelector, closeTemplateSelector } = useTemplateSelector()
+  const { getTemplate } = useTemplateSelector()
 
   const { trackEvent } = useTelemetry()
 
@@ -421,10 +412,8 @@ function StageBuilder(): React.ReactElement {
               renderPipelineStage,
               stagesMap,
               contextType,
-              templateTypes,
-              setTemplateTypes,
-              openTemplateSelector,
-              closeTemplateSelector
+              getTemplate,
+              templateTypes
             },
             { useArrows: true, darkMode: false, fixedPosition: false }
           )
@@ -449,10 +438,8 @@ function StageBuilder(): React.ReactElement {
                 stagesMap,
                 renderPipelineStage,
                 contextType,
-                templateTypes,
-                setTemplateTypes,
-                openTemplateSelector,
-                closeTemplateSelector
+                getTemplate,
+                templateTypes
               },
               { useArrows: false, darkMode: false, fixedPosition: false }
             )
@@ -477,10 +464,8 @@ function StageBuilder(): React.ReactElement {
                   stagesMap,
                   renderPipelineStage,
                   contextType,
-                  templateTypes,
-                  setTemplateTypes,
-                  openTemplateSelector,
-                  closeTemplateSelector
+                  getTemplate,
+                  templateTypes
                 },
                 { useArrows: false, darkMode: false, fixedPosition: false }
               )
@@ -510,10 +495,8 @@ function StageBuilder(): React.ReactElement {
                   stagesMap,
                   renderPipelineStage,
                   contextType,
-                  templateTypes,
-                  setTemplateTypes,
-                  openTemplateSelector,
-                  closeTemplateSelector
+                  getTemplate,
+                  templateTypes
                 },
                 { useArrows: false, darkMode: false, fixedPosition: false }
               )
@@ -552,10 +535,8 @@ function StageBuilder(): React.ReactElement {
             stagesMap,
             renderPipelineStage,
             contextType,
-            templateTypes,
-            setTemplateTypes,
-            openTemplateSelector,
-            closeTemplateSelector
+            getTemplate,
+            templateTypes
           },
           { useArrows: false, darkMode: false, fixedPosition: false },
           eventTemp.callback
@@ -646,10 +627,8 @@ function StageBuilder(): React.ReactElement {
             stagesMap,
             renderPipelineStage,
             contextType,
-            templateTypes,
-            setTemplateTypes,
-            openTemplateSelector,
-            closeTemplateSelector
+            getTemplate,
+            templateTypes
           },
           { useArrows: true, darkMode: false, fixedPosition: false, placement: 'top' },
           noop,
@@ -698,10 +677,8 @@ function StageBuilder(): React.ReactElement {
             stagesMap,
             renderPipelineStage,
             contextType,
-            templateTypes,
-            setTemplateTypes,
-            openTemplateSelector,
-            closeTemplateSelector
+            getTemplate,
+            templateTypes
           },
           { useArrows: false, darkMode: false, fixedPosition: openSplitView }
         )
@@ -886,11 +863,7 @@ function StageBuilder(): React.ReactElement {
             {openSplitView && type === SplitViewTypes.StageView
               ? renderPipelineStage({
                   stageType: stageType,
-                  minimal: false,
-                  templateTypes,
-                  setTemplateTypes,
-                  openTemplateSelector,
-                  closeTemplateSelector
+                  minimal: false
                 })
               : null}
           </div>

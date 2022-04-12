@@ -8,7 +8,6 @@
 import React from 'react'
 import { Container } from '@wings-software/uicore'
 import { Color } from '@harness/design-system'
-import { noop } from 'lodash-es'
 import type { TemplateFormRef } from '@templates-library/components/TemplateStudio/TemplateStudio'
 import { usePipelineContext } from '@pipeline/components/PipelineStudio/PipelineContext/PipelineContext'
 import { TemplateContext } from '@templates-library/components/TemplateStudio/TemplateContext/TemplateContext'
@@ -19,11 +18,9 @@ export const DefaultNewStageId = 'stage_name'
 const StageTemplateForm = (_props: unknown, _formikRef: TemplateFormRef) => {
   const {
     state: {
-      selectionState: { selectedStageId },
-      templateTypes
+      selectionState: { selectedStageId }
     },
     contextType,
-    setTemplateTypes,
     renderPipelineStage,
     getStageFromPipeline
   } = usePipelineContext()
@@ -40,11 +37,7 @@ const StageTemplateForm = (_props: unknown, _formikRef: TemplateFormRef) => {
         renderPipelineStage({
           stageType: selectedStage?.stage?.stage?.type,
           minimal: false,
-          contextType,
-          templateTypes,
-          setTemplateTypes,
-          openTemplateSelector: noop,
-          closeTemplateSelector: noop
+          contextType
         })}
     </Container>
   )

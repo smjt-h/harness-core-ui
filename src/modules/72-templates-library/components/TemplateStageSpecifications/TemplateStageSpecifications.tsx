@@ -165,7 +165,7 @@ export const TemplateStageSpecifications = (): JSX.Element => {
     refetchTemplateInputSet()
   }
 
-  const { onRemoveTemplate, onOpenTemplateSelector } = useStageTemplateActions()
+  const { addOrUpdateTemplate, removeTemplate } = useStageTemplateActions()
 
   const formRefDom = React.useRef<HTMLElement | undefined>()
 
@@ -182,8 +182,8 @@ export const TemplateStageSpecifications = (): JSX.Element => {
         {stage?.stage?.template && (
           <TemplateBar
             templateLinkConfig={stage?.stage.template}
-            onRemoveTemplate={onRemoveTemplate}
-            onOpenTemplateSelector={onOpenTemplateSelector}
+            onRemoveTemplate={removeTemplate}
+            onOpenTemplateSelector={addOrUpdateTemplate}
             className={css.templateBar}
           />
         )}

@@ -6,20 +6,19 @@
  */
 
 import React from 'react'
-import { Container, Layout, Text, IconName } from '@harness/uicore'
-import { Color } from '@harness/design-system'
+import { Layout, Text, IconName, Page, Heading, Container, Breadcrumb } from '@harness/uicore'
+import { Color, FontVariation } from '@harness/design-system'
 import { IdentifierText } from '@cf/components/IdentifierText/IdentifierText'
 import { NGBreadcrumbs } from '@common/components/NGBreadcrumbs/NGBreadcrumbs'
+import RbacOptionsMenuButton, {
+  RbacOptionsMenuButtonProps
+} from '@rbac/components/RbacOptionsMenuButton/RbacOptionsMenuButton'
+import { StringKeys, useStrings } from 'framework/strings'
 
-const HEADER_HEIGHT = 120
-
-interface DetailPageTemplateBreadcrumbLink {
-  title: string
-  url: string
-}
+import css from './DetailPageTemplate.module.scss'
 
 export interface DetailPageTemplateProps {
-  breadcrumbs: DetailPageTemplateBreadcrumbLink[]
+  breadcrumbs: Breadcrumb[]
   title: React.ReactNode
   titleIcon?: IconName | React.ReactNode
   subTitle?: string
@@ -28,7 +27,8 @@ export interface DetailPageTemplateProps {
 
   /** Optional extra components to be added into header (context menu, edit button, etc...)  */
   /** Note: Use absolute position to style it */
-  headerExtras?: React.ReactNode
+  menuItems?: RbacOptionsMenuButtonProps['items']
+  metaData?: Record<string, string>
 }
 
 export const DetailPageTemplate: React.FC<DetailPageTemplateProps> = ({
@@ -36,42 +36,53 @@ export const DetailPageTemplate: React.FC<DetailPageTemplateProps> = ({
   title,
   subTitle,
   identifier,
-  headerExtras,
-  children
+  children,
+  menuItems = [],
+  metaData = {}
 }) => {
+  const { getString } = useStrings()
+
   return (
     <>
-      <Container
-        height={HEADER_HEIGHT}
-        padding={{ top: 'large', right: 'xlarge', bottom: 'large', left: 'xlarge' }}
-        style={{
-          background: 'rgba(219, 241, 255, .46)',
-          position: 'relative',
-          borderBottom: '.5px solid rgb(227 224 224 / 50%)'
-        }}
-      >
-        <Layout.Vertical spacing="medium">
-          <NGBreadcrumbs
-            customPathParams={{ module: 'cf' }}
-            links={breadcrumbs.map(({ title: label, url }) => ({ label, url }))}
-          />
-          <Container>
-            <Layout.Horizontal spacing="medium">
-              <Text style={{ fontSize: '20px', color: 'var(--black)' }}>{title}</Text>
-              {identifier && <IdentifierText identifier={identifier} allowCopy style={{ marginBottom: 0 }} />}
+      <Page.Header
+        size="large"
+        breadcrumbs={<NGBreadcrumbs customPathParams={{ module: 'cf' }} links={breadcrumbs} />}
+        title={
+          <>
+            <Layout.Horizontal spacing="small">
+              <Heading level={3} font={{ variation: FontVariation.H4 }}>
+                {title}
+              </Heading>
+              {identifier && <IdentifierText identifier={identifier} allowCopy />}
             </Layout.Horizontal>
             {subTitle && (
-              <Text color={Color.GREY_400} padding={{ top: 'xsmall' }}>
+              <Text font={{ variation: FontVariation.SMALL }} color={Color.GREY_400} padding={{ top: 'xsmall' }}>
                 {subTitle}
               </Text>
             )}
-          </Container>
-        </Layout.Vertical>
-        {headerExtras}
-      </Container>
-      <Container style={{ height: `calc(100% - ${HEADER_HEIGHT}px)`, overflow: 'auto', background: '#e4ebf433' }}>
-        {children}
-      </Container>
+          </>
+        }
+        content={
+          <>
+            {!!menuItems.length && (
+              <Container className={css.optionsMenu}>
+                <RbacOptionsMenuButton items={menuItems} />
+              </Container>
+            )}
+            {!!Object.keys(metaData).length && (
+              <dl className={css.metaData}>
+                {Object.entries(metaData).map(([key, val]) => (
+                  <div className={css.metaDataPair} key={key}>
+                    <dt>{getString(key as StringKeys)}</dt>
+                    <dd>{val}</dd>
+                  </div>
+                ))}
+              </dl>
+            )}
+          </>
+        }
+      />
+      <Page.Body>{children}</Page.Body>
     </>
   )
 }
