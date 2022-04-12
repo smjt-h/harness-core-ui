@@ -15,6 +15,7 @@ import { useModuleInfo } from '@common/hooks/useModuleInfo'
 import { TrialLicenseBanner } from '@common/layouts/TrialLicenseBanner'
 import { useTelemetry } from '@common/hooks/useTelemetry'
 import { usePage } from '@common/pages/pageContext/PageProvider'
+import { useAppStore } from 'framework/AppStore/AppStoreContext'
 
 import FeatureBanner from './FeatureBanner'
 
@@ -24,10 +25,12 @@ export function DefaultLayout(props: React.PropsWithChildren<unknown>): React.Re
   const { title, subtitle, icon, navComponent: NavComponent } = useSidebar()
   const { pageName } = usePage()
   const { module } = useModuleInfo()
-  const { trackPage } = useTelemetry()
+  const { trackPage, identifyUser } = useTelemetry()
+  const { currentUserInfo } = useAppStore()
 
   useEffect(() => {
     if (pageName) {
+      identifyUser(currentUserInfo.email)
       trackPage(pageName, { module: module || '' })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
