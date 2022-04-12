@@ -11332,8 +11332,12 @@ export const listApiKeysPromise = (
     signal
   )
 
+export interface CreateApiKeyQueryParams {
+  accountIdentifier: string
+}
+
 export type CreateApiKeyProps = Omit<
-  MutateProps<ResponseApiKeyDTO, Failure | Error, void, ApiKeyDTORequestBody, void>,
+  MutateProps<ResponseApiKeyDTO, Failure | Error, CreateApiKeyQueryParams, ApiKeyDTORequestBody, void>,
   'path' | 'verb'
 >
 
@@ -11341,7 +11345,7 @@ export type CreateApiKeyProps = Omit<
  * Create API key
  */
 export const CreateApiKey = (props: CreateApiKeyProps) => (
-  <Mutate<ResponseApiKeyDTO, Failure | Error, void, ApiKeyDTORequestBody, void>
+  <Mutate<ResponseApiKeyDTO, Failure | Error, CreateApiKeyQueryParams, ApiKeyDTORequestBody, void>
     verb="POST"
     path={`/apikey`}
     base={getConfig('ng/api')}
@@ -11350,7 +11354,7 @@ export const CreateApiKey = (props: CreateApiKeyProps) => (
 )
 
 export type UseCreateApiKeyProps = Omit<
-  UseMutateProps<ResponseApiKeyDTO, Failure | Error, void, ApiKeyDTORequestBody, void>,
+  UseMutateProps<ResponseApiKeyDTO, Failure | Error, CreateApiKeyQueryParams, ApiKeyDTORequestBody, void>,
   'path' | 'verb'
 >
 
@@ -11358,19 +11362,20 @@ export type UseCreateApiKeyProps = Omit<
  * Create API key
  */
 export const useCreateApiKey = (props: UseCreateApiKeyProps) =>
-  useMutate<ResponseApiKeyDTO, Failure | Error, void, ApiKeyDTORequestBody, void>('POST', `/apikey`, {
-    base: getConfig('ng/api'),
-    ...props
-  })
+  useMutate<ResponseApiKeyDTO, Failure | Error, CreateApiKeyQueryParams, ApiKeyDTORequestBody, void>(
+    'POST',
+    `/apikey`,
+    { base: getConfig('ng/api'), ...props }
+  )
 
 /**
  * Create API key
  */
 export const createApiKeyPromise = (
-  props: MutateUsingFetchProps<ResponseApiKeyDTO, Failure | Error, void, ApiKeyDTORequestBody, void>,
+  props: MutateUsingFetchProps<ResponseApiKeyDTO, Failure | Error, CreateApiKeyQueryParams, ApiKeyDTORequestBody, void>,
   signal?: RequestInit['signal']
 ) =>
-  mutateUsingFetch<ResponseApiKeyDTO, Failure | Error, void, ApiKeyDTORequestBody, void>(
+  mutateUsingFetch<ResponseApiKeyDTO, Failure | Error, CreateApiKeyQueryParams, ApiKeyDTORequestBody, void>(
     'POST',
     getConfig('ng/api'),
     `/apikey`,
@@ -28756,8 +28761,12 @@ export const getSmtpConfigPromise = (
     signal
   )
 
+export interface CreateSmtpConfigQueryParams {
+  accountIdentifier: string
+}
+
 export type CreateSmtpConfigProps = Omit<
-  MutateProps<ResponseNgSmtpDTO, Failure | Error, void, NgSmtpDTORequestBody, void>,
+  MutateProps<ResponseNgSmtpDTO, Failure | Error, CreateSmtpConfigQueryParams, NgSmtpDTORequestBody, void>,
   'path' | 'verb'
 >
 
@@ -28765,7 +28774,7 @@ export type CreateSmtpConfigProps = Omit<
  * Create SMTP config
  */
 export const CreateSmtpConfig = (props: CreateSmtpConfigProps) => (
-  <Mutate<ResponseNgSmtpDTO, Failure | Error, void, NgSmtpDTORequestBody, void>
+  <Mutate<ResponseNgSmtpDTO, Failure | Error, CreateSmtpConfigQueryParams, NgSmtpDTORequestBody, void>
     verb="POST"
     path={`/smtpConfig`}
     base={getConfig('ng/api')}
@@ -28774,7 +28783,7 @@ export const CreateSmtpConfig = (props: CreateSmtpConfigProps) => (
 )
 
 export type UseCreateSmtpConfigProps = Omit<
-  UseMutateProps<ResponseNgSmtpDTO, Failure | Error, void, NgSmtpDTORequestBody, void>,
+  UseMutateProps<ResponseNgSmtpDTO, Failure | Error, CreateSmtpConfigQueryParams, NgSmtpDTORequestBody, void>,
   'path' | 'verb'
 >
 
@@ -28782,19 +28791,26 @@ export type UseCreateSmtpConfigProps = Omit<
  * Create SMTP config
  */
 export const useCreateSmtpConfig = (props: UseCreateSmtpConfigProps) =>
-  useMutate<ResponseNgSmtpDTO, Failure | Error, void, NgSmtpDTORequestBody, void>('POST', `/smtpConfig`, {
-    base: getConfig('ng/api'),
-    ...props
-  })
+  useMutate<ResponseNgSmtpDTO, Failure | Error, CreateSmtpConfigQueryParams, NgSmtpDTORequestBody, void>(
+    'POST',
+    `/smtpConfig`,
+    { base: getConfig('ng/api'), ...props }
+  )
 
 /**
  * Create SMTP config
  */
 export const createSmtpConfigPromise = (
-  props: MutateUsingFetchProps<ResponseNgSmtpDTO, Failure | Error, void, NgSmtpDTORequestBody, void>,
+  props: MutateUsingFetchProps<
+    ResponseNgSmtpDTO,
+    Failure | Error,
+    CreateSmtpConfigQueryParams,
+    NgSmtpDTORequestBody,
+    void
+  >,
   signal?: RequestInit['signal']
 ) =>
-  mutateUsingFetch<ResponseNgSmtpDTO, Failure | Error, void, NgSmtpDTORequestBody, void>(
+  mutateUsingFetch<ResponseNgSmtpDTO, Failure | Error, CreateSmtpConfigQueryParams, NgSmtpDTORequestBody, void>(
     'POST',
     getConfig('ng/api'),
     `/smtpConfig`,
@@ -28802,8 +28818,12 @@ export const createSmtpConfigPromise = (
     signal
   )
 
+export interface UpdateSmtpQueryParams {
+  accountIdentifier: string
+}
+
 export type UpdateSmtpProps = Omit<
-  MutateProps<ResponseNgSmtpDTO, Failure | Error, void, NgSmtpDTORequestBody, void>,
+  MutateProps<ResponseNgSmtpDTO, Failure | Error, UpdateSmtpQueryParams, NgSmtpDTORequestBody, void>,
   'path' | 'verb'
 >
 
@@ -28811,7 +28831,7 @@ export type UpdateSmtpProps = Omit<
  * Update SmtpConfig
  */
 export const UpdateSmtp = (props: UpdateSmtpProps) => (
-  <Mutate<ResponseNgSmtpDTO, Failure | Error, void, NgSmtpDTORequestBody, void>
+  <Mutate<ResponseNgSmtpDTO, Failure | Error, UpdateSmtpQueryParams, NgSmtpDTORequestBody, void>
     verb="PUT"
     path={`/smtpConfig`}
     base={getConfig('ng/api')}
@@ -28820,7 +28840,7 @@ export const UpdateSmtp = (props: UpdateSmtpProps) => (
 )
 
 export type UseUpdateSmtpProps = Omit<
-  UseMutateProps<ResponseNgSmtpDTO, Failure | Error, void, NgSmtpDTORequestBody, void>,
+  UseMutateProps<ResponseNgSmtpDTO, Failure | Error, UpdateSmtpQueryParams, NgSmtpDTORequestBody, void>,
   'path' | 'verb'
 >
 
@@ -28828,19 +28848,20 @@ export type UseUpdateSmtpProps = Omit<
  * Update SmtpConfig
  */
 export const useUpdateSmtp = (props: UseUpdateSmtpProps) =>
-  useMutate<ResponseNgSmtpDTO, Failure | Error, void, NgSmtpDTORequestBody, void>('PUT', `/smtpConfig`, {
-    base: getConfig('ng/api'),
-    ...props
-  })
+  useMutate<ResponseNgSmtpDTO, Failure | Error, UpdateSmtpQueryParams, NgSmtpDTORequestBody, void>(
+    'PUT',
+    `/smtpConfig`,
+    { base: getConfig('ng/api'), ...props }
+  )
 
 /**
  * Update SmtpConfig
  */
 export const updateSmtpPromise = (
-  props: MutateUsingFetchProps<ResponseNgSmtpDTO, Failure | Error, void, NgSmtpDTORequestBody, void>,
+  props: MutateUsingFetchProps<ResponseNgSmtpDTO, Failure | Error, UpdateSmtpQueryParams, NgSmtpDTORequestBody, void>,
   signal?: RequestInit['signal']
 ) =>
-  mutateUsingFetch<ResponseNgSmtpDTO, Failure | Error, void, NgSmtpDTORequestBody, void>(
+  mutateUsingFetch<ResponseNgSmtpDTO, Failure | Error, UpdateSmtpQueryParams, NgSmtpDTORequestBody, void>(
     'PUT',
     getConfig('ng/api'),
     `/smtpConfig`,
@@ -28961,8 +28982,12 @@ export const validateNamePromise = (
     signal
   )
 
+export interface DeleteSmtpConfigQueryParams {
+  accountIdentifier: string
+}
+
 export type DeleteSmtpConfigProps = Omit<
-  MutateProps<ResponseBoolean, Failure | Error, void, string, void>,
+  MutateProps<ResponseBoolean, Failure | Error, DeleteSmtpConfigQueryParams, string, void>,
   'path' | 'verb'
 >
 
@@ -28970,7 +28995,7 @@ export type DeleteSmtpConfigProps = Omit<
  * Delete Smtp Config
  */
 export const DeleteSmtpConfig = (props: DeleteSmtpConfigProps) => (
-  <Mutate<ResponseBoolean, Failure | Error, void, string, void>
+  <Mutate<ResponseBoolean, Failure | Error, DeleteSmtpConfigQueryParams, string, void>
     verb="DELETE"
     path={`/smtpConfig`}
     base={getConfig('ng/api')}
@@ -28979,7 +29004,7 @@ export const DeleteSmtpConfig = (props: DeleteSmtpConfigProps) => (
 )
 
 export type UseDeleteSmtpConfigProps = Omit<
-  UseMutateProps<ResponseBoolean, Failure | Error, void, string, void>,
+  UseMutateProps<ResponseBoolean, Failure | Error, DeleteSmtpConfigQueryParams, string, void>,
   'path' | 'verb'
 >
 
@@ -28987,7 +29012,7 @@ export type UseDeleteSmtpConfigProps = Omit<
  * Delete Smtp Config
  */
 export const useDeleteSmtpConfig = (props: UseDeleteSmtpConfigProps) =>
-  useMutate<ResponseBoolean, Failure | Error, void, string, void>('DELETE', `/smtpConfig`, {
+  useMutate<ResponseBoolean, Failure | Error, DeleteSmtpConfigQueryParams, string, void>('DELETE', `/smtpConfig`, {
     base: getConfig('ng/api'),
     ...props
   })
@@ -28996,10 +29021,10 @@ export const useDeleteSmtpConfig = (props: UseDeleteSmtpConfigProps) =>
  * Delete Smtp Config
  */
 export const deleteSmtpConfigPromise = (
-  props: MutateUsingFetchProps<ResponseBoolean, Failure | Error, void, string, void>,
+  props: MutateUsingFetchProps<ResponseBoolean, Failure | Error, DeleteSmtpConfigQueryParams, string, void>,
   signal?: RequestInit['signal']
 ) =>
-  mutateUsingFetch<ResponseBoolean, Failure | Error, void, string, void>(
+  mutateUsingFetch<ResponseBoolean, Failure | Error, DeleteSmtpConfigQueryParams, string, void>(
     'DELETE',
     getConfig('ng/api'),
     `/smtpConfig`,
@@ -29287,8 +29312,12 @@ export const getTokenPromise = (
     signal
   )
 
+export interface CreateTokenQueryParams {
+  accountIdentifier: string
+}
+
 export type CreateTokenProps = Omit<
-  MutateProps<ResponseString, Failure | Error, void, TokenDTORequestBody, void>,
+  MutateProps<ResponseString, Failure | Error, CreateTokenQueryParams, TokenDTORequestBody, void>,
   'path' | 'verb'
 >
 
@@ -29296,7 +29325,7 @@ export type CreateTokenProps = Omit<
  * Create token
  */
 export const CreateToken = (props: CreateTokenProps) => (
-  <Mutate<ResponseString, Failure | Error, void, TokenDTORequestBody, void>
+  <Mutate<ResponseString, Failure | Error, CreateTokenQueryParams, TokenDTORequestBody, void>
     verb="POST"
     path={`/token`}
     base={getConfig('ng/api')}
@@ -29305,7 +29334,7 @@ export const CreateToken = (props: CreateTokenProps) => (
 )
 
 export type UseCreateTokenProps = Omit<
-  UseMutateProps<ResponseString, Failure | Error, void, TokenDTORequestBody, void>,
+  UseMutateProps<ResponseString, Failure | Error, CreateTokenQueryParams, TokenDTORequestBody, void>,
   'path' | 'verb'
 >
 
@@ -29313,7 +29342,7 @@ export type UseCreateTokenProps = Omit<
  * Create token
  */
 export const useCreateToken = (props: UseCreateTokenProps) =>
-  useMutate<ResponseString, Failure | Error, void, TokenDTORequestBody, void>('POST', `/token`, {
+  useMutate<ResponseString, Failure | Error, CreateTokenQueryParams, TokenDTORequestBody, void>('POST', `/token`, {
     base: getConfig('ng/api'),
     ...props
   })
@@ -29322,10 +29351,10 @@ export const useCreateToken = (props: UseCreateTokenProps) =>
  * Create token
  */
 export const createTokenPromise = (
-  props: MutateUsingFetchProps<ResponseString, Failure | Error, void, TokenDTORequestBody, void>,
+  props: MutateUsingFetchProps<ResponseString, Failure | Error, CreateTokenQueryParams, TokenDTORequestBody, void>,
   signal?: RequestInit['signal']
 ) =>
-  mutateUsingFetch<ResponseString, Failure | Error, void, TokenDTORequestBody, void>(
+  mutateUsingFetch<ResponseString, Failure | Error, CreateTokenQueryParams, TokenDTORequestBody, void>(
     'POST',
     getConfig('ng/api'),
     `/token`,
@@ -29514,12 +29543,16 @@ export const deleteTokenPromise = (
     signal
   )
 
+export interface UpdateTokenQueryParams {
+  accountIdentifier: string
+}
+
 export interface UpdateTokenPathParams {
   identifier: string
 }
 
 export type UpdateTokenProps = Omit<
-  MutateProps<ResponseTokenDTO, Failure | Error, void, TokenDTORequestBody, UpdateTokenPathParams>,
+  MutateProps<ResponseTokenDTO, Failure | Error, UpdateTokenQueryParams, TokenDTORequestBody, UpdateTokenPathParams>,
   'path' | 'verb'
 > &
   UpdateTokenPathParams
@@ -29528,7 +29561,7 @@ export type UpdateTokenProps = Omit<
  * Update token
  */
 export const UpdateToken = ({ identifier, ...props }: UpdateTokenProps) => (
-  <Mutate<ResponseTokenDTO, Failure | Error, void, TokenDTORequestBody, UpdateTokenPathParams>
+  <Mutate<ResponseTokenDTO, Failure | Error, UpdateTokenQueryParams, TokenDTORequestBody, UpdateTokenPathParams>
     verb="PUT"
     path={`/token/${identifier}`}
     base={getConfig('ng/api')}
@@ -29537,7 +29570,7 @@ export const UpdateToken = ({ identifier, ...props }: UpdateTokenProps) => (
 )
 
 export type UseUpdateTokenProps = Omit<
-  UseMutateProps<ResponseTokenDTO, Failure | Error, void, TokenDTORequestBody, UpdateTokenPathParams>,
+  UseMutateProps<ResponseTokenDTO, Failure | Error, UpdateTokenQueryParams, TokenDTORequestBody, UpdateTokenPathParams>,
   'path' | 'verb'
 > &
   UpdateTokenPathParams
@@ -29546,7 +29579,7 @@ export type UseUpdateTokenProps = Omit<
  * Update token
  */
 export const useUpdateToken = ({ identifier, ...props }: UseUpdateTokenProps) =>
-  useMutate<ResponseTokenDTO, Failure | Error, void, TokenDTORequestBody, UpdateTokenPathParams>(
+  useMutate<ResponseTokenDTO, Failure | Error, UpdateTokenQueryParams, TokenDTORequestBody, UpdateTokenPathParams>(
     'PUT',
     (paramsInPath: UpdateTokenPathParams) => `/token/${paramsInPath.identifier}`,
     { base: getConfig('ng/api'), pathParams: { identifier }, ...props }
@@ -29559,18 +29592,22 @@ export const updateTokenPromise = (
   {
     identifier,
     ...props
-  }: MutateUsingFetchProps<ResponseTokenDTO, Failure | Error, void, TokenDTORequestBody, UpdateTokenPathParams> & {
-    identifier: string
-  },
+  }: MutateUsingFetchProps<
+    ResponseTokenDTO,
+    Failure | Error,
+    UpdateTokenQueryParams,
+    TokenDTORequestBody,
+    UpdateTokenPathParams
+  > & { identifier: string },
   signal?: RequestInit['signal']
 ) =>
-  mutateUsingFetch<ResponseTokenDTO, Failure | Error, void, TokenDTORequestBody, UpdateTokenPathParams>(
-    'PUT',
-    getConfig('ng/api'),
-    `/token/${identifier}`,
-    props,
-    signal
-  )
+  mutateUsingFetch<
+    ResponseTokenDTO,
+    Failure | Error,
+    UpdateTokenQueryParams,
+    TokenDTORequestBody,
+    UpdateTokenPathParams
+  >('PUT', getConfig('ng/api'), `/token/${identifier}`, props, signal)
 
 export interface GetLicenseUsageQueryParams {
   accountIdentifier?: string

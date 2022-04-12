@@ -8,10 +8,12 @@
 import React, { useState } from 'react'
 import type { ModalErrorHandlerBinding } from '@wings-software/uicore'
 import { defaultTo, omit } from 'lodash-es'
+import { useParams } from 'react-router-dom'
 import { useToaster } from '@common/components'
 import { useStrings } from 'framework/strings'
 import { useUpdateToken } from 'services/cd-ng'
 import useRBACError from '@rbac/utils/useRBACError/useRBACError'
+import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
 import TokenForm, { TokenFormData } from './TokenForm'
 import type { TokenModalProps } from './CreateToken'
 
@@ -20,6 +22,8 @@ const EditTokenForm: React.FC<TokenModalProps> = props => {
   const { getRBACErrorMessage } = useRBACError()
   const { getString } = useStrings()
   const { showSuccess } = useToaster()
+
+  const { accountId } = useParams<ProjectPathProps>()
   const [modalErrorHandler, setModalErrorHandler] = useState<ModalErrorHandlerBinding>()
 
   const { mutate: editToken, loading: updating } = useUpdateToken({
@@ -33,7 +37,7 @@ const EditTokenForm: React.FC<TokenModalProps> = props => {
       dataToSubmit['validTo'] = Date.parse(values['expiryDate'])
     }
     try {
-      const updated = await editToken(dataToSubmit)
+      const updated = await editToken(dataToSubmit, { queryParams: { accountIdentifier: accountId } })
       /* istanbul ignore else */ if (updated) {
         showSuccess(getString('rbac.token.form.editSuccess', { name: values.name }))
         onSubmit()
