@@ -37,7 +37,8 @@ const strings = {
     validation: {
       nameIsRequired: 'common.validation.nameIsRequired',
       namePatternIsNotValid: 'common.validation.namePatternIsNotValid',
-      fieldIsRequired: 'common.validation.fieldIsRequired'
+      fieldIsRequired: 'common.validation.fieldIsRequired',
+      stepNamePatternIsNotValid: 'common.validation.stepNamePatternIsNotValid'
     }
   },
   pipeline: {
