@@ -1046,6 +1046,7 @@ export function PipelineCanvas({
                       onClick={saveAndPublish}
                       icon="send-data"
                       className={css.saveButton}
+                      disabled={!isUpdated}
                     />
                   )}
                   {pipelineIdentifier !== DefaultNewPipelineId && !isReadonly && (
