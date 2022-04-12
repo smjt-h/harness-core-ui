@@ -14,6 +14,13 @@ Grouped Code Coverage report for master branch: [Coverage Report](https://github
 
 [Documentation](./docs/README.md)
 
+### Community and Support
+[Harness Community Slack](https://join.slack.com/t/harnesscommunity/shared_invite/zt-y4hdqh7p-RVuEQyIl5Hcx4Ck8VCvzBw) - Join the `#continuous-delivery` slack channel to connect with our engineers and other users running Harness Continuous Delivery.
+
+[Harness Community Forum](https://community.harness.io/) - Ask questions, find answers, and help other users.
+
+[Events](https://www.meetup.com/harness/) - Keep up to date with Harness events and check out previous events [here](https://www.youtube.com/watch?v=Oq34ImUGcHA&list=PLXsYHFsLmqf3zwelQDAKoVNmLeqcVsD9o).
+
 ### Getting Started
 
 1. Install **NodeJS v14.16** or above. There are many ways to do this (**choose any one**):
