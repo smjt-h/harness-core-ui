@@ -45,7 +45,7 @@ import { useGitScope } from '@pipeline/utils/CIUtils'
 import { ConnectorRefWidth } from '@pipeline/utils/constants'
 import { FormMultiTypeConnectorField } from '@connectors/components/ConnectorReferenceField/FormMultiTypeConnectorField'
 import type { StringsMap } from 'stringTypes'
-import { getCustomStepProps } from '@pipeline/utils/stageHelpers'
+import { getCustomStepProps, infraDefinitionTypeMapping } from '@pipeline/utils/stageHelpers'
 import factory from '../PipelineSteps/PipelineStepFactory'
 import { StepType } from '../PipelineSteps/PipelineStepInterface'
 
@@ -804,8 +804,10 @@ export function StageInputSetFormInternal({
                   deploymentStage?.infrastructure?.infrastructureDefinition?.spec || /* istanbul ignore next */ {}
                 }
                 type={
-                  (deploymentStage?.infrastructure?.infrastructureDefinition?.type as StepType) ||
-                  /* istanbul ignore next */ StepType.KubernetesDirect
+                  ((infraDefinitionTypeMapping[
+                    deploymentStage?.infrastructure?.infrastructureDefinition?.type as string
+                  ] || deploymentStage?.infrastructure?.infrastructureDefinition?.type) as StepType) ||
+                  StepType.KubernetesDirect
                 }
                 path={`${path}.infrastructure.infrastructureDefinition.spec`}
                 readonly={readonly}
