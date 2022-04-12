@@ -740,7 +740,7 @@ function RunPipelineFormBasic({
           enableReinitialize
           validate={handleValidation}
         >
-          {({ submitForm, values, setFormikState }) => {
+          {({ submitForm, values, setValues, setFormikState }) => {
             return (
               <Layout.Vertical
                 ref={ref => {
@@ -845,7 +845,17 @@ function RunPipelineFormBasic({
                           ) {
                             setExistingProvide('provide')
                           } else {
-                            submitForm()
+                            if (selectedView === SelectedView.YAML) {
+                              const parsedYaml = parse(defaultTo(yamlHandler?.getLatestYaml(), ''))
+                              if (parsedYaml.pipeline) {
+                                setValues(parsedYaml.pipeline)
+                                setTimeout(() => {
+                                  submitForm()
+                                }, 0)
+                              }
+                            } else {
+                              submitForm()
+                            }
                           }
                         }}
                         featuresProps={getFeaturePropsForRunPipelineButton({
