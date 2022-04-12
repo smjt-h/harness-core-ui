@@ -51,6 +51,8 @@ export const regexEmail =
 
 export const regexName = /^[A-Za-z0-9_-][A-Za-z0-9 _-]*$/
 
+export const stepNameRegex = /^[a-zA-Z_][-0-9a-zA-Z_\s]{0,63}$/
+
 export const regexPositiveNumbers = /^[1-9]+[0-9]*$/
 
 export const regexIdentifier = /^[a-zA-Z_.][0-9a-zA-Z_$]*$/

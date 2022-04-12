@@ -721,6 +721,7 @@ export interface StringsMap {
   'common.validation.provisionerIdentifierIsRequired': string
   'common.validation.provisionerIdentifierPatternIsNotValid': string
   'common.validation.repositoryName': string
+  'common.validation.stepNamePatternIsNotValid': string
   'common.validation.testRepoIsRequired': string
   'common.validation.typeIsRequired': string
   'common.validation.urlIsRequired': string
