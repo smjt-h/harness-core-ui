@@ -30,8 +30,7 @@ const defaultInitialValues = {
   state: 'off',
   onVariation: 'False',
   offVariation: 'True',
-  formVariationMap: [],
-  variationPercentageRollouts: mockPercentageVariationRollout
+  targetingRuleItems: [mockPercentageVariationRollout]
 }
 
 const renderHookUnderTest = (props: Partial<UsePatchFeatureFlagProps> = {}) => {
@@ -52,6 +51,18 @@ const renderHookUnderTest = (props: Partial<UsePatchFeatureFlagProps> = {}) => {
         featureFlagIdentifier: '',
         initialValues: defaultInitialValues,
         refetchFlag: jest.fn(),
+        variations: [
+          {
+            identifier: 'true',
+            name: 'True',
+            value: 'true'
+          },
+          {
+            identifier: 'false',
+            name: 'False',
+            value: 'false'
+          }
+        ],
         ...props
       }),
     { wrapper }
@@ -84,8 +95,7 @@ describe('usePatchFeatureFlag', () => {
         state: 'on',
         onVariation: 'True',
         offVariation: 'False',
-        formVariationMap: [],
-        variationPercentageRollouts: mockPercentageVariationRollout
+        targetingRuleItems: [mockPercentageVariationRollout]
       }
       result.current.saveChanges(newValues)
 
@@ -125,8 +135,7 @@ describe('usePatchFeatureFlag', () => {
         state: 'off',
         onVariation: 'False',
         offVariation: 'True',
-        variationPercentageRollouts: mockPercentageVariationRollout,
-        formVariationMap: []
+        targetingRuleItems: [mockPercentageVariationRollout]
       }
       result.current.saveChanges(newValues)
 
@@ -143,15 +152,13 @@ describe('usePatchFeatureFlag', () => {
         refetchFlag: refetchFlagMock.mockResolvedValueOnce({}),
         initialValues: {
           ...defaultInitialValues,
-          variationPercentageRollouts: mockPercentageVariationRollout,
-          formVariationMap: targetGroupsAddedFixture.initialFormVariationMap
+          targetingRuleItems: [mockPercentageVariationRollout, targetGroupsAddedFixture.initialFormVariationMap]
         }
       })
 
       const newValues = {
         ...defaultInitialValues,
-        variationPercentageRollouts: mockPercentageVariationRollout,
-        formVariationMap: targetGroupsAddedFixture.newFormVariationMap
+        targetingRuleItems: [mockPercentageVariationRollout, targetGroupsAddedFixture.newFormVariationMap]
       }
       result.current.saveChanges(newValues)
 
@@ -166,15 +173,13 @@ describe('usePatchFeatureFlag', () => {
         refetchFlag: refetchFlagMock.mockResolvedValueOnce({}),
         initialValues: {
           ...defaultInitialValues,
-          variationPercentageRollouts: mockPercentageVariationRollout,
-          formVariationMap: targetGroupsRemovedFixture.initialFormVariationMap
+          targetingRuleItems: [mockPercentageVariationRollout, targetGroupsRemovedFixture.initialFormVariationMap]
         }
       })
 
       const newValues = {
         ...defaultInitialValues,
-        variationPercentageRollouts: mockPercentageVariationRollout,
-        formVariationMap: targetGroupsRemovedFixture.newFormVariationMap
+        targetingRuleItems: [mockPercentageVariationRollout, targetGroupsRemovedFixture.newFormVariationMap]
       }
       result.current.saveChanges(newValues)
 
@@ -189,15 +194,13 @@ describe('usePatchFeatureFlag', () => {
         refetchFlag: refetchFlagMock.mockResolvedValueOnce({}),
         initialValues: {
           ...defaultInitialValues,
-          variationPercentageRollouts: mockPercentageVariationRollout,
-          formVariationMap: targetAddedFixture.initialFormVariationMap
+          targetingRuleItems: [mockPercentageVariationRollout, targetAddedFixture.initialFormVariationMap]
         }
       })
 
       const newValues = {
         ...defaultInitialValues,
-        variationPercentageRollouts: mockPercentageVariationRollout,
-        formVariationMap: targetAddedFixture.newFormVariationMap
+        targetingRuleItems: [mockPercentageVariationRollout, targetAddedFixture.newFormVariationMap]
       }
       result.current.saveChanges(newValues)
 
@@ -212,15 +215,13 @@ describe('usePatchFeatureFlag', () => {
         refetchFlag: refetchFlagMock.mockResolvedValueOnce({}),
         initialValues: {
           ...defaultInitialValues,
-          variationPercentageRollouts: mockPercentageVariationRollout,
-          formVariationMap: targetRemovedFixture.initialFormVariationMap
+          targetingRuleItems: [mockPercentageVariationRollout, targetRemovedFixture.initialFormVariationMap]
         }
       })
 
       const newValues = {
         ...defaultInitialValues,
-        variationPercentageRollouts: mockPercentageVariationRollout,
-        formVariationMap: targetRemovedFixture.newFormVariationMap
+        targetingRuleItems: [mockPercentageVariationRollout, targetRemovedFixture.newFormVariationMap]
       }
       result.current.saveChanges(newValues)
 
@@ -237,15 +238,13 @@ describe('usePatchFeatureFlag', () => {
         refetchFlag: refetchFlagMock.mockResolvedValueOnce({}),
         initialValues: {
           ...defaultInitialValues,
-          variationPercentageRollouts: [],
-          formVariationMap: []
+          targetingRuleItems: []
         }
       })
 
       const newValues = {
         ...defaultInitialValues,
-        variationPercentageRollouts: [percentageRolloutAdded.newPercentageRolloutAdded],
-        formVariationMap: []
+        targetingRuleItems: [percentageRolloutAdded.newPercentageRolloutAdded]
       }
       result.current.saveChanges(newValues)
 
@@ -259,21 +258,20 @@ describe('usePatchFeatureFlag', () => {
         refetchFlag: refetchFlagMock.mockResolvedValueOnce({}),
         initialValues: {
           ...defaultInitialValues,
-          variationPercentageRollouts: [percentageRolloutUpdated.initialVariationPercentageRollout],
-          formVariationMap: []
+          targetingRuleItems: [percentageRolloutUpdated.initialVariationPercentageRollout]
         }
       })
 
       const newValues = {
         ...defaultInitialValues,
-        variationPercentageRollouts: [percentageRolloutUpdated.newPercentageRolloutAdded],
-        formVariationMap: []
+        targetingRuleItems: [percentageRolloutUpdated.newPercentageRolloutAdded]
       }
       result.current.saveChanges(newValues)
 
       expect(mutateMock).toBeCalledWith(percentageRolloutUpdated.expected)
       await waitFor(() => expect(refetchFlagMock).toBeCalled())
     })
+
     test('it should send correct values when Percentage Rollout removed', async () => {
       const refetchFlagMock = jest.fn()
 
@@ -281,15 +279,13 @@ describe('usePatchFeatureFlag', () => {
         refetchFlag: refetchFlagMock.mockResolvedValueOnce({}),
         initialValues: {
           ...defaultInitialValues,
-          variationPercentageRollouts: [percentageRolloutRemoved.initialVariationPercentageRollout],
-          formVariationMap: []
+          targetingRuleItems: [percentageRolloutRemoved.initialVariationPercentageRollout]
         }
       })
 
       const newValues = {
         ...defaultInitialValues,
-        variationPercentageRollouts: [],
-        formVariationMap: []
+        targetingRuleItems: []
       }
       result.current.saveChanges(newValues)
 
@@ -314,8 +310,7 @@ describe('usePatchFeatureFlag', () => {
         state: 'on',
         onVariation: 'True',
         offVariation: 'False',
-        variationPercentageRollouts: mockPercentageVariationRollout,
-        formVariationMap: []
+        targetingRuleItems: []
       }
       result.current.saveChanges(newValues)
 
