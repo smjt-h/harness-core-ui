@@ -416,3 +416,7 @@ export const deleteStageData = (stage?: DeploymentStageElementConfig): void => {
     delete stage?.spec?.execution?.rollbackSteps
   }
 }
+
+export const infraDefinitionTypeMapping: { [key: string]: string } = {
+  ServerlessAwsLambda: 'ServerlessAwsInfra'
+}

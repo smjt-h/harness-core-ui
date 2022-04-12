@@ -91,6 +91,13 @@ const TagFields = (props: TagFieldsProps): JSX.Element => {
     return `artifacts.${artifactPath}.spec.tag`
   }
 
+  const getTagRegexFieldName = (): string => {
+    if (isServerlessDeploymentTypeSelected) {
+      return `artifacts.${artifactPath}.spec.artifactPathFilter`
+    }
+    return `artifacts.${artifactPath}.spec.tagRegex`
+  }
+
   return (
     <>
       {!!fromTrigger && isFieldRuntime(getTagsFieldName(), template) && (
@@ -119,9 +126,9 @@ const TagFields = (props: TagFieldsProps): JSX.Element => {
           isServerlessDeploymentTypeSelected={isServerlessDeploymentTypeSelected}
         />
       )}
-      {isFieldRuntime(`artifacts.${artifactPath}.spec.tagRegex`, template) && (
+      {isFieldRuntime(getTagRegexFieldName(), template) && (
         <FormInput.MultiTextInput
-          disabled={isFieldDisabled(`artifacts.${artifactPath}.spec.tagRegex`)}
+          disabled={isFieldDisabled(getTagRegexFieldName())}
           multiTextInputProps={{
             expressions,
             allowableTypes
@@ -129,7 +136,11 @@ const TagFields = (props: TagFieldsProps): JSX.Element => {
           label={
             isServerlessDeploymentTypeSelected ? getString('pipeline.artifactPathFilterLabel') : getString('tagRegex')
           }
-          name={`${path}.artifacts.${artifactPath}.spec.tagRegex`}
+          name={
+            isServerlessDeploymentTypeSelected
+              ? `${path}.artifacts.${artifactPath}.spec.artifactPathFilter`
+              : `${path}.artifacts.${artifactPath}.spec.tagRegex`
+          }
         />
       )}
     </>
@@ -333,7 +344,9 @@ const Content = (props: ArtifactoryRenderContent): JSX.Element => {
             />
           ) : (
             <ServerlessArtifactoryRepository
-              connectorRef={get(initialValues, `artifacts.${artifactPath}.spec.connectorRef`, '')}
+              connectorRef={
+                get(initialValues, `artifacts.${artifactPath}.spec.connectorRef`, '') || artifact?.spec?.connectorRef
+              }
               expressions={expressions}
               allowableTypes={allowableTypes}
               formik={formik}

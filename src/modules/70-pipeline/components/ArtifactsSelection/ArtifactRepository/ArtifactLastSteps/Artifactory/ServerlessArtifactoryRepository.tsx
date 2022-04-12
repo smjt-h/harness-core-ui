@@ -73,6 +73,11 @@ export default function ServerlessArtifactoryRepository(
     if ((artifactRepoError?.data as Failure)?.status === 'ERROR') {
       const errorMessage = (artifactRepoError?.data as Failure)?.message as string
       setConnectorRepos([{ label: errorMessage, value: errorMessage }])
+    } else if ((artifactRepoError?.data as Failure)?.status === 'FAILURE') {
+      const erroObj = (artifactRepoError?.data as Failure)?.errors?.[0]
+      const errorMessage =
+        erroObj?.fieldId && erroObj?.error ? `${erroObj?.fieldId} ${erroObj?.error}` : getString('somethingWentWrong')
+      setConnectorRepos([{ label: errorMessage, value: errorMessage }])
     }
   }, [artifactRepoLoading, artifactRepoError])
 
