@@ -156,24 +156,31 @@ const COAsgSelector: React.FC<COAsgSelectorprops> = props => {
             )}
           </Text>
         </Container>
-        <GroupsFilter
-          gatewayDetails={props.gatewayDetails}
-          isEditFlow={false}
-          onGcpFiltersChangeCallback={onGcpFiltersChange}
-        />
+        {isGcpProvider && <div className={css.sectionSeparator} />}
+        <Layout.Vertical style={{ paddingTop: 20 }}>
+          <GroupsFilter
+            gatewayDetails={props.gatewayDetails}
+            isEditFlow={false}
+            onGcpFiltersChangeCallback={onGcpFiltersChange}
+          />
+        </Layout.Vertical>
         <div className={css.sectionSeparator} />
-        <ExpandingSearchInput
-          className={css.searchContainer}
-          onChange={(text: string) => props.search(text)}
-          alwaysExpanded
-        />
-        <Container>
-          {props.loading && (
+        {/* <Layout.Vertical style={{ paddingTop: 20 }}>
+        </Layout.Vertical> */}
+        <Container style={{ minHeight: 250 }}>
+          <Layout.Horizontal className={css.searchAndFilterWrapper}>
+            <ExpandingSearchInput
+              className={css.searchContainer}
+              onChange={(text: string) => props.search(text)}
+              alwaysExpanded
+            />
+          </Layout.Horizontal>
+          {loadingEnabled && (
             <Layout.Horizontal flex={{ justifyContent: 'center' }}>
               <Icon name="spinner" size={24} color="blue500" />
             </Layout.Horizontal>
           )}
-          {!loadingEnabled && _isEmpty(gcpFilters?.region) ? (
+          {!loadingEnabled && isGcpProvider && _isEmpty(gcpFilters?.region) ? (
             <Layout.Horizontal flex={{ justifyContent: 'center' }}>
               <Text icon={'execution-warning'} font={{ size: 'medium' }} iconProps={{ size: 20 }}>
                 {getString('ce.co.autoStoppingRule.configuration.igModal.gcpFiltersNotSelectedDescription')}
@@ -225,27 +232,27 @@ const COAsgSelector: React.FC<COAsgSelectorprops> = props => {
               ]}
             />
           )}
-          <Container style={{ marginTop: 'var(--spacing-medium)' }}>
-            <Layout.Horizontal flex={{ alignItems: 'center' }}>
-              <Button
-                onClick={addAsg}
-                disabled={!isAsgSelected}
-                style={{
-                  backgroundColor: isAsgSelected ? 'var(--primary-7)' : 'inherit',
-                  color: isAsgSelected ? 'var(--grey-100)' : 'inherit',
-                  marginRight: 20
-                }}
-              >
-                {getString('ce.co.autoStoppingRule.configuration.addSelectedBtnText')}
-              </Button>
-              <div onClick={handleRefresh}>
-                <Icon name="refresh" color="primary7" size={14} />
-                <span style={{ color: 'var(--primary-7)', margin: '0 5px', cursor: 'pointer' }}>
-                  {getString('ce.common.refresh')}
-                </span>
-              </div>
-            </Layout.Horizontal>
-          </Container>
+        </Container>
+        <Container style={{ marginTop: 'var(--spacing-medium)' }}>
+          <Layout.Horizontal flex={{ alignItems: 'center' }}>
+            <Button
+              onClick={addAsg}
+              disabled={!isAsgSelected}
+              style={{
+                backgroundColor: isAsgSelected ? 'var(--primary-7)' : 'inherit',
+                color: isAsgSelected ? 'var(--grey-100)' : 'inherit',
+                marginRight: 20
+              }}
+            >
+              {getString('ce.co.autoStoppingRule.configuration.addSelectedBtnText')}
+            </Button>
+            <div onClick={handleRefresh}>
+              <Icon name="refresh" color="primary7" size={14} />
+              <span style={{ color: 'var(--primary-7)', margin: '0 5px', cursor: 'pointer' }}>
+                {getString('ce.common.refresh')}
+              </span>
+            </div>
+          </Layout.Horizontal>
         </Container>
       </Layout.Vertical>
     </Container>
