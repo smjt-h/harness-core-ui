@@ -6,10 +6,13 @@
  */
 
 import React from 'react'
-import { render, waitFor, fireEvent, createEvent, act } from '@testing-library/react'
+import { render, waitFor, fireEvent, act } from '@testing-library/react'
 import { cloneDeep, noop } from 'lodash-es'
-import { findDialogContainer, TestWrapper } from '@common/utils/testUtils'
+import { VisualYamlSelectedView as SelectedView } from '@wings-software/uicore'
+import type { FormikProps } from 'formik'
+import { TestWrapper } from '@common/utils/testUtils'
 import { defaultAppStoreValues } from '@common/utils/DefaultAppStoreData'
+import * as usePermission from '@rbac/hooks/usePermission'
 import routes from '@common/RouteDefinitions'
 import {
   accountPathProps,
@@ -17,11 +20,13 @@ import {
   inputSetFormPathProps,
   pipelinePathProps
 } from '@common/utils/routeUtils'
+import * as pipelineng from 'services/pipeline-ng'
 import type { YamlBuilderHandlerBinding, YamlBuilderProps } from '@common/interfaces/YAMLBuilderProps'
 import { branchStatusMock, gitConfigs, sourceCodeManagers } from '@connectors/mocks/mock'
-import { OverlayInputSetForm } from '@pipeline/components/OverlayInputSetForm/OverlayInputSetForm'
 import { PipelineContext } from '@pipeline/components/PipelineStudio/PipelineContext/PipelineContext'
+import type { InputSetDTO } from '@pipeline/utils/types'
 import type { ResponseInputSetTemplateWithReplacedExpressionsResponse } from 'services/pipeline-ng'
+import type { GitContextProps } from '@common/components/GitContextForm/GitContextForm'
 import { EnhancedInputSetForm } from '../InputSetForm'
 import {
   TemplateResponse,
@@ -33,9 +38,7 @@ import {
   GetOverlayInputSetEdit,
   MergedPipelineResponse
 } from './InputSetMocks'
-import { isYamlPresent, showPipelineInputSetForm } from '../FormikInputSetForm'
-
-const eventData = { dataTransfer: { setData: jest.fn(), dropEffect: '', getData: () => '1' } }
+import FormikInputSetForm, { isYamlPresent, showPipelineInputSetForm } from '../FormikInputSetForm'
 
 const successResponse = (): Promise<{ status: string }> => Promise.resolve({ status: 'SUCCESS' })
 jest.mock('@common/utils/YamlUtils', () => ({}))
@@ -132,36 +135,39 @@ const TEST_INPUT_SET_FORM_PATH = routes.toInputSetForm({
   ...pipelineModuleParams
 })
 
+const renderSetup = () =>
+  render(
+    <TestWrapper
+      path={TEST_INPUT_SET_FORM_PATH}
+      pathParams={{
+        accountId: 'testAcc',
+        orgIdentifier: 'testOrg',
+        projectIdentifier: 'test',
+        pipelineIdentifier: 'pipeline',
+        inputSetIdentifier: '-1',
+        module: 'cd'
+      }}
+      defaultAppStoreValues={defaultAppStoreValues}
+    >
+      <PipelineContext.Provider
+        value={
+          {
+            state: { pipeline: { name: '', identifier: '' } } as any,
+            getStageFromPipeline: jest.fn((_stageId, pipeline) => ({
+              stage: pipeline.stages[0],
+              parent: undefined
+            }))
+          } as any
+        }
+      >
+        <EnhancedInputSetForm />
+      </PipelineContext.Provider>
+    </TestWrapper>
+  )
+
 describe('Render Forms - Snapshot Testing', () => {
   test('render Input Set Form view', async () => {
-    const { getByText, container } = render(
-      <TestWrapper
-        path={TEST_INPUT_SET_FORM_PATH}
-        pathParams={{
-          accountId: 'testAcc',
-          orgIdentifier: 'testOrg',
-          projectIdentifier: 'test',
-          pipelineIdentifier: 'pipeline',
-          inputSetIdentifier: '-1',
-          module: 'cd'
-        }}
-        defaultAppStoreValues={defaultAppStoreValues}
-      >
-        <PipelineContext.Provider
-          value={
-            {
-              state: { pipeline: { name: '', identifier: '' } } as any,
-              getStageFromPipeline: jest.fn((_stageId, pipeline) => ({
-                stage: pipeline.stages[0],
-                parent: undefined
-              }))
-            } as any
-          }
-        >
-          <EnhancedInputSetForm />
-        </PipelineContext.Provider>
-      </TestWrapper>
-    )
+    const { getByText, container } = renderSetup()
     jest.runOnlyPendingTimers()
     // // Switch Mode
     // fireEvent.click(getByText('YAML'))
@@ -211,34 +217,7 @@ describe('Render Forms - Snapshot Testing', () => {
   })
 
   test('name id validation on save click', async () => {
-    const { getByText, getAllByDisplayValue } = render(
-      <TestWrapper
-        path={TEST_INPUT_SET_FORM_PATH}
-        pathParams={{
-          accountId: 'testAcc',
-          orgIdentifier: 'testOrg',
-          projectIdentifier: 'test',
-          pipelineIdentifier: 'pipeline',
-          inputSetIdentifier: '-1',
-          module: 'cd'
-        }}
-        defaultAppStoreValues={defaultAppStoreValues}
-      >
-        <PipelineContext.Provider
-          value={
-            {
-              state: { pipeline: { name: '', identifier: '' } } as any,
-              getStageFromPipeline: jest.fn((_stageId, pipeline) => ({
-                stage: pipeline.stages[0],
-                parent: undefined
-              }))
-            } as any
-          }
-        >
-          <EnhancedInputSetForm />
-        </PipelineContext.Provider>
-      </TestWrapper>
-    )
+    const { getByText, getAllByDisplayValue } = renderSetup()
     jest.runOnlyPendingTimers()
 
     // find the name field and clear the existing name
@@ -253,38 +232,6 @@ describe('Render Forms - Snapshot Testing', () => {
     // wait for the error
     await waitFor(() => expect(getByText('common.errorCount')).toBeTruthy())
   })
-
-  test('render Overlay Input Set Form view', async () => {
-    const { getByText } = render(
-      <TestWrapper
-        path={TEST_INPUT_SET_PATH}
-        pathParams={{
-          accountId: 'testAcc',
-          orgIdentifier: 'testOrg',
-          projectIdentifier: 'test',
-          pipelineIdentifier: 'pipeline',
-          module: 'cd'
-        }}
-        defaultAppStoreValues={defaultAppStoreValues}
-      >
-        <OverlayInputSetForm hideForm={jest.fn()} />
-      </TestWrapper>
-    )
-    jest.runOnlyPendingTimers()
-    const container = findDialogContainer()
-
-    await waitFor(() => getByText('pipeline.inputSets.selectPlaceholder'))
-    // Add two
-    act(() => {
-      fireEvent.click(getByText('pipeline.inputSets.selectPlaceholder'))
-      fireEvent.click(getByText('pipeline.inputSets.selectPlaceholder'))
-    })
-    // Remove the last
-    const remove = container?.querySelectorAll('[data-icon="cross"]')[1]
-    fireEvent.click(remove!)
-    expect(container).toMatchSnapshot()
-  })
-
   test('render Edit Input Set Form view', async () => {
     const { getAllByText, getByText, container } = render(
       <TestWrapper
@@ -330,78 +277,6 @@ describe('Render Forms - Snapshot Testing', () => {
     fireEvent.click(getByText('save'))
     expect(container).toMatchSnapshot()
   })
-
-  test('render Edit Overlay Input Set Form view', async () => {
-    const { getAllByText, getByText } = render(
-      <TestWrapper
-        path={TEST_INPUT_SET_PATH}
-        pathParams={{
-          accountId: 'testAcc',
-          orgIdentifier: 'testOrg',
-          projectIdentifier: 'test',
-          pipelineIdentifier: 'pipeline',
-          module: 'cd'
-        }}
-        defaultAppStoreValues={defaultAppStoreValues}
-      >
-        <OverlayInputSetForm hideForm={jest.fn()} identifier="OverLayInput" />
-      </TestWrapper>
-    )
-    jest.runOnlyPendingTimers()
-    const container = findDialogContainer()
-    await waitFor(() => getByText('test'))
-    expect(container).toMatchSnapshot()
-    fireEvent.click(getByText('save'))
-    // Switch Mode
-    fireEvent.click(getByText('YAML'))
-    await waitFor(() => getAllByText('Yaml View'))
-    fireEvent.click(getByText('save'))
-  })
-
-  test('render Edit Overlay Input Set Form and test drag drop', async () => {
-    const { getByTestId, getByText } = render(
-      <TestWrapper
-        path={TEST_INPUT_SET_PATH}
-        pathParams={{
-          accountId: 'testAcc',
-          orgIdentifier: 'testOrg',
-          projectIdentifier: 'test',
-          pipelineIdentifier: 'pipeline',
-          module: 'cd'
-        }}
-        defaultAppStoreValues={defaultAppStoreValues}
-      >
-        <OverlayInputSetForm hideForm={jest.fn()} identifier="OverLayInput" />
-      </TestWrapper>
-    )
-    jest.runOnlyPendingTimers()
-    await waitFor(() => getByText('asd'))
-
-    act(() => {
-      fireEvent.click(getByText('pipeline.inputSets.selectPlaceholder'))
-    })
-
-    const container = getByTestId('asd')
-    const container2 = getByTestId('test')
-    act(() => {
-      const dragStartEvent = Object.assign(createEvent.dragStart(container), eventData)
-
-      fireEvent(container, dragStartEvent)
-      expect(container).toMatchSnapshot()
-
-      fireEvent.dragEnd(container)
-      expect(container).toMatchSnapshot()
-
-      fireEvent.dragLeave(container)
-
-      const dropEffectEvent = Object.assign(createEvent.dragOver(container), eventData)
-      fireEvent(container2, dropEffectEvent)
-
-      const dropEvent = Object.assign(createEvent.drop(container), eventData)
-      fireEvent(container2, dropEvent)
-    })
-  })
-
   test('showPipelineInputSetForm function', async () => {
     const templateData = cloneDeep(TemplateResponse.data)
     let returnVal = showPipelineInputSetForm(
@@ -450,5 +325,180 @@ describe('Render Forms - Snapshot Testing', () => {
     expect(returnVal).toBe(undefined)
     returnVal = isYamlPresent(null, null)
     expect(returnVal).toBe(undefined)
+  })
+
+  test('FormikInputSetForm in YAML view', async () => {
+    jest.spyOn(usePermission, 'usePermission').mockReturnValue([true])
+    const templateData = cloneDeep(TemplateResponse.data)
+    const { container, getByText } = render(
+      <TestWrapper
+        path={TEST_INPUT_SET_PATH}
+        pathParams={{
+          accountId: 'testAcc',
+          orgIdentifier: 'testOrg',
+          projectIdentifier: 'test',
+          pipelineIdentifier: 'pipeline',
+          module: 'cd'
+        }}
+        defaultAppStoreValues={defaultAppStoreValues}
+      >
+        <FormikInputSetForm
+          template={templateData as ResponseInputSetTemplateWithReplacedExpressionsResponse}
+          pipeline={PipelineResponse.data}
+          inputSet={{
+            description: 'asd',
+            entityValidityDetails: {
+              valid: false
+            },
+            gitDetails: {
+              branch: 'feature',
+              filePath: 'asd.yaml',
+              objectId: '4471ec3aa40c26377353974c29a6670d998db06g',
+              repoIdentifier: 'gitSyncRepo',
+              rootFolder: '/rootFolderTest/.harness/'
+            },
+            identifier: 'asd56',
+            name: 'asd',
+            orgIdentifier: 'Harness11',
+            pipelineIdentifier: 'testqqq',
+            outdated: false
+          }}
+          selectedView={SelectedView.YAML}
+          handleSubmit={jest.fn()}
+          isEdit={true}
+          setFormErrors={jest.fn()}
+          setYamlHandler={jest.fn()}
+          formErrors={{}}
+          formikRef={jest.fn() as any}
+          yamlHandler={{
+            getLatestYaml: jest.fn(),
+            getYAMLValidationErrorMap: () => new Map(),
+            setLatestYaml: () => ''
+          }}
+        />
+      </TestWrapper>
+    )
+    const editorDiv = container.querySelector('.editor')
+    await waitFor(() => expect(editorDiv).toBeTruthy())
+
+    // click cancel
+    fireEvent.click(getByText('cancel'))
+    await waitFor(() => {
+      expect(container).toMatchSnapshot()
+    })
+  })
+
+  test('FormikInputSetForm in VISUAL view with formError', async () => {
+    jest.spyOn(usePermission, 'usePermission').mockReturnValue([true])
+    const ref = React.createRef<FormikProps<InputSetDTO & GitContextProps> | undefined>()
+    const handleSubmit = jest.fn()
+    const templateData = cloneDeep(TemplateResponse.data)
+    const { container, getByText } = render(
+      <TestWrapper
+        path={TEST_INPUT_SET_PATH}
+        pathParams={{
+          accountId: 'testAcc',
+          orgIdentifier: 'testOrg',
+          projectIdentifier: 'test',
+          pipelineIdentifier: 'pipeline',
+          module: 'cd'
+        }}
+        defaultAppStoreValues={defaultAppStoreValues}
+      >
+        <FormikInputSetForm
+          template={templateData as ResponseInputSetTemplateWithReplacedExpressionsResponse}
+          pipeline={PipelineResponse.data}
+          inputSet={{
+            description: 'asd',
+            entityValidityDetails: {
+              valid: false
+            },
+            gitDetails: {
+              branch: 'feature',
+              filePath: 'asd.yaml',
+              objectId: '4471ec3aa40c26377353974c29a6670d998db06g',
+              repoIdentifier: 'gitSyncRepo',
+              rootFolder: '/rootFolderTest/.harness/'
+            },
+            identifier: 'asd56',
+            orgIdentifier: 'Harness11',
+            pipelineIdentifier: 'testqqq'
+          }}
+          selectedView={SelectedView.VISUAL}
+          handleSubmit={handleSubmit}
+          isEdit={true}
+          setFormErrors={jest.fn()}
+          setYamlHandler={jest.fn()}
+          formErrors={{ name: 'required' }}
+          formikRef={ref as any}
+          yamlHandler={{
+            getLatestYaml: jest.fn(),
+            getYAMLValidationErrorMap: () => new Map(),
+            setLatestYaml: () => ''
+          }}
+        />
+      </TestWrapper>
+    )
+    act(() => {
+      fireEvent.change(container.querySelector('input[name="name"]')!, { target: { value: 'asd56' } })
+    })
+    await act(() => ref.current?.submitForm())
+    expect(handleSubmit).toHaveBeenCalledWith(
+      {
+        branch: '',
+        description: 'asd',
+        identifier: 'asd56',
+        name: 'asd56',
+        orgIdentifier: 'Harness11',
+        pipelineIdentifier: 'testqqq',
+        repo: ''
+      },
+      { branch: '', repoIdentifier: '' }
+    )
+    //ErrorStrip
+    await waitFor(() => expect(getByText('common.errorCount')).toBeTruthy())
+  })
+
+  test('render inputset with no inputSetResponse and check Yaml toggle ', async () => {
+    jest.spyOn(pipelineng, 'useGetInputSetForPipeline').mockImplementation((): any => {
+      return { data: {}, error: null, loading: false }
+    })
+    jest.spyOn(pipelineng, 'useGetMergeInputSetFromPipelineTemplateWithListInput').mockImplementation((): any => {
+      return { mutate: () => Promise.resolve(), loading: false }
+    })
+    jest.spyOn(pipelineng, 'useGetPipeline').mockImplementation((): any => {
+      return {
+        data: {
+          status: 'SUCCESS',
+          data: {
+            ...PipelineResponse,
+            gitDetails: {
+              branch: 'feature',
+              filePath: 'asd.yaml',
+              objectId: '4471ec3aa40c26377353974c29a6670d998db06g',
+              repoIdentifier: 'gitSyncRepo',
+              rootFolder: '/rootFolderTest/.harness/'
+            }
+          }
+        },
+        loading: false,
+        refetch: jest.fn()
+      }
+    })
+    const { container, getByText } = renderSetup()
+
+    // Check for Yaml toggle - YAML view
+    fireEvent.click(getByText('YAML'))
+    const editorDiv = container.querySelector('.editor')
+    await waitFor(() => expect(editorDiv).toBeTruthy())
+
+    // Back to VISUAL View
+    fireEvent.click(getByText('VISUAL'))
+
+    // click save
+    act(() => {
+      fireEvent.click(getByText('save'))
+    })
+    expect(container).toMatchSnapshot()
   })
 })

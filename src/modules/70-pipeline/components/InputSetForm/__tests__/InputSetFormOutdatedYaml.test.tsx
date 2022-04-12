@@ -6,11 +6,12 @@
  */
 
 import React from 'react'
-import { render, getByText as getByTextGlobal } from '@testing-library/react'
+import { render, getByText as getByTextGlobal, fireEvent, act } from '@testing-library/react'
 import { noop } from 'lodash-es'
 import { TestWrapper } from '@common/utils/testUtils'
 import { defaultAppStoreValues } from '@common/utils/DefaultAppStoreData'
 import routes from '@common/RouteDefinitions'
+import * as pipelineng from 'services/pipeline-ng'
 import { accountPathProps, pipelineModuleParams, inputSetFormPathProps } from '@common/utils/routeUtils'
 import type { YamlBuilderHandlerBinding, YamlBuilderProps } from '@common/interfaces/YAMLBuilderProps'
 import { branchStatusMock, gitConfigs, sourceCodeManagers } from '@connectors/mocks/mock'
@@ -23,6 +24,7 @@ import {
   GetInputSetsResponse,
   MergeInputSetResponse,
   GetOverlayInputSetEdit,
+  inputSetSanitiseResponse,
   MergedPipelineResponse
 } from './InputSetMocks'
 
@@ -145,36 +147,42 @@ const TEST_INPUT_SET_FORM_PATH = routes.toInputSetForm({
   ...pipelineModuleParams
 })
 
+const renderSetup = () =>
+  render(
+    <TestWrapper
+      path={TEST_INPUT_SET_FORM_PATH}
+      pathParams={{
+        accountId: 'testAcc',
+        orgIdentifier: 'testOrg',
+        projectIdentifier: 'test',
+        pipelineIdentifier: 'pipeline',
+        inputSetIdentifier: 'test_input_set',
+        module: 'cd'
+      }}
+      defaultAppStoreValues={defaultAppStoreValues}
+    >
+      <PipelineContext.Provider
+        value={
+          {
+            state: { pipeline: { name: '', identifier: '' } } as any,
+            getStageFromPipeline: jest.fn((_stageId, pipeline) => ({
+              stage: pipeline.stages[0],
+              parent: undefined
+            }))
+          } as any
+        }
+      >
+        <EnhancedInputSetForm />
+      </PipelineContext.Provider>
+    </TestWrapper>
+  )
+
 describe('Input Set - Invalid YAML Flow', () => {
   test('invalid yaml flow - should open yaml view and render invalid fields dialog', async () => {
-    render(
-      <TestWrapper
-        path={TEST_INPUT_SET_FORM_PATH}
-        pathParams={{
-          accountId: 'testAcc',
-          orgIdentifier: 'testOrg',
-          projectIdentifier: 'test',
-          pipelineIdentifier: 'pipeline',
-          inputSetIdentifier: 'test_input_set',
-          module: 'cd'
-        }}
-        defaultAppStoreValues={defaultAppStoreValues}
-      >
-        <PipelineContext.Provider
-          value={
-            {
-              state: { pipeline: { name: '', identifier: '' } } as any,
-              getStageFromPipeline: jest.fn((_stageId, pipeline) => ({
-                stage: pipeline.stages[0],
-                parent: undefined
-              }))
-            } as any
-          }
-        >
-          <EnhancedInputSetForm />
-        </PipelineContext.Provider>
-      </TestWrapper>
-    )
+    jest.spyOn(pipelineng, 'useSanitiseInputSet').mockImplementation((): any => {
+      return { mutate: () => Promise.resolve(inputSetSanitiseResponse), loading: false }
+    })
+    renderSetup()
     jest.runOnlyPendingTimers()
     expect(getByTextGlobal(document.body, 'pipeline.inputSets.removeInvalidFields')).toBeDefined()
     expect(getByTextGlobal(document.body, 'pipeline.inputSets.invalidInputSet1')).toBeDefined()
@@ -182,9 +190,89 @@ describe('Input Set - Invalid YAML Flow', () => {
     expect(getByTextGlobal(document.body, 'pipeline.inputSets.editInYamlView')).toBeDefined()
     expect(document.getElementsByClassName('bp3-dialog')[0]).toMatchSnapshot('invalid yaml dialog')
 
-    // fireEvent.click(getByTextGlobal(document.body,'pipeline.inputSets.removeInvalidFields'))
+    await act(() => {
+      fireEvent.click(getByTextGlobal(document.body, 'pipeline.inputSets.removeInvalidFields'))
+    })
+    expect(pipelineng.useSanitiseInputSet).toHaveBeenCalled()
 
-    // expect(useSanitiseInputSet).toHaveBeenCalled()
-    // expect(container).toMatchSnapshot()
+    //check if dailog closed
+    expect(document.getElementsByClassName('bp3-dialog')[0]).toBeFalsy()
+  })
+
+  test('invalid yaml flow - should open DeleteInputSetModal', async () => {
+    jest.spyOn(pipelineng, 'useSanitiseInputSet').mockImplementation((): any => {
+      return {
+        mutate: () =>
+          Promise.resolve({
+            status: 'SUCCESS',
+            data: {
+              inputSetUpdateResponse: inputSetSanitiseResponse.data.inputSetUpdateResponse,
+              shouldDeleteInputSet: true
+            }
+          }),
+        loading: false
+      }
+    })
+    jest.spyOn(pipelineng, 'useGetPipeline').mockImplementation((): any => {
+      return {
+        data: {
+          status: 'SUCCESS',
+          data: {
+            ...PipelineResponse,
+            gitDetails: {
+              branch: 'feature',
+              filePath: 'asd.yaml',
+              objectId: '4471ec3aa40c26377353974c29a6670d998db06g',
+              repoIdentifier: 'gitSyncRepo',
+              rootFolder: '/rootFolderTest/.harness/'
+            }
+          }
+        },
+        loading: false,
+        refetch: jest.fn()
+      }
+    })
+    renderSetup()
+    jest.runOnlyPendingTimers()
+    expect(getByTextGlobal(document.body, 'pipeline.inputSets.removeInvalidFields')).toBeDefined()
+    expect(document.getElementsByClassName('bp3-dialog')[0]).toMatchSnapshot('invalid yaml dialog')
+
+    await act(() => {
+      fireEvent.click(getByTextGlobal(document.body, 'pipeline.inputSets.removeInvalidFields'))
+    })
+    expect(pipelineng.useSanitiseInputSet).toHaveBeenCalled()
+
+    //check if invalidFieldModal closed
+    expect(document.getElementsByClassName('bp3-dialog')[0]).toBeFalsy()
+
+    // open deleteInputSetModal
+    jest.runOnlyPendingTimers()
+    expect(getByTextGlobal(document.body, 'pipeline.inputSets.deleteInputSet')).toBeDefined()
+    expect(document.getElementsByClassName('bp3-dialog')[0]).toMatchSnapshot()
+    await act(() => {
+      fireEvent.click(getByTextGlobal(document.body, 'pipeline.inputSets.deleteInputSet'))
+    })
+    expect(pipelineng.useDeleteInputSetForPipeline).toHaveBeenCalled()
+
+    //check if dailog closed
+    expect(document.getElementsByClassName('bp3-dialog')[0]).toBeFalsy()
+  })
+
+  test('invalid yaml flow - should close modal through button', async () => {
+    jest.spyOn(pipelineng, 'useSanitiseInputSet').mockImplementation((): any => {
+      return { mutate: () => Promise.resolve(), loading: false }
+    })
+    renderSetup()
+    jest.runOnlyPendingTimers()
+    expect(getByTextGlobal(document.body, 'pipeline.inputSets.removeInvalidFields')).toBeDefined()
+    expect(getByTextGlobal(document.body, 'pipeline.inputSets.editInYamlView')).toBeDefined()
+    expect(document.getElementsByClassName('bp3-dialog')[0]).toMatchSnapshot('invalid yaml dialog')
+
+    await act(() => {
+      fireEvent.click(getByTextGlobal(document.body, 'pipeline.inputSets.editInYamlView'))
+    })
+
+    //check if dailog closed
+    expect(document.getElementsByClassName('bp3-dialog')[0]).toBeFalsy()
   })
 })
