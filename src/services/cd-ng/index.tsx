@@ -1888,6 +1888,7 @@ export interface DelegateProfileFilterProperties {
     | 'Deployment'
     | 'Audit'
     | 'Template'
+    | 'EnvironmentGroup'
   identifier?: string
   name?: string
   selectors?: string[]
@@ -2360,6 +2361,12 @@ export interface EnvironmentGroupDeleteResponse {
   identifier?: string
   orgIdentifier?: string
   projectIdentifier?: string
+}
+
+export type EnvironmentGroupFilterProperties = FilterProperties & {
+  description?: string
+  envGroupName?: string
+  envIdentifiers?: string[]
 }
 
 export interface EnvironmentGroupResponse {
@@ -3403,6 +3410,7 @@ export interface FilterProperties {
     | 'Deployment'
     | 'Audit'
     | 'Template'
+    | 'EnvironmentGroup'
   tags?: {
     [key: string]: string
   }
@@ -5416,9 +5424,10 @@ export type NumberNGVariable = NGVariable & {
   value: number
 }
 
-export type OAuthSettings = NGAuthSettings & {
+export interface OAuthSettings {
   allowedProviders?: ('AZURE' | 'BITBUCKET' | 'GITHUB' | 'GITLAB' | 'GOOGLE' | 'LINKEDIN')[]
   filter?: string
+  settingsType?: 'USER_PASSWORD' | 'SAML' | 'LDAP' | 'OAUTH'
 }
 
 export interface OAuthSignupDTO {
@@ -6054,6 +6063,7 @@ export type PipelineFilterProperties = FilterProperties & {
 
 export interface PipelineInfoConfig {
   allowStageExecutions?: boolean
+  delegateSelectors?: string[]
   description?: string
   flowControl?: FlowControlConfig
   identifier: string
@@ -6204,6 +6214,14 @@ export type RateLimitRestrictionMetadataDTO = RestrictionMetadataDTO & {
   allowedIfEqual?: boolean
   limit?: number
   timeUnit?: TimeUnit
+}
+
+export interface ReferenceDTO {
+  accountIdentifier?: string
+  identifier?: string
+  name?: string
+  orgIdentifier?: string
+  projectIdentifier?: string
 }
 
 export type ReferenceInstanceInfoDTO = InstanceInfoDTO & {
@@ -7715,6 +7733,13 @@ export interface ResponseServiceHeaderInfo {
   status?: 'SUCCESS' | 'FAILURE' | 'ERROR'
 }
 
+export interface ResponseServiceInstanceUsageDTO {
+  correlationId?: string
+  data?: ServiceInstanceUsageDTO
+  metaData?: { [key: string]: any }
+  status?: 'SUCCESS' | 'FAILURE' | 'ERROR'
+}
+
 export interface ResponseServiceResponse {
   correlationId?: string
   data?: ServiceResponse
@@ -7725,6 +7750,13 @@ export interface ResponseServiceResponse {
 export interface ResponseServiceResponseDTO {
   correlationId?: string
   data?: ServiceResponseDTO
+  metaData?: { [key: string]: any }
+  status?: 'SUCCESS' | 'FAILURE' | 'ERROR'
+}
+
+export interface ResponseServiceUsageDTO {
+  correlationId?: string
+  data?: ServiceUsageDTO
   metaData?: { [key: string]: any }
   status?: 'SUCCESS' | 'FAILURE' | 'ERROR'
 }
@@ -8644,6 +8676,15 @@ export interface ServiceHeaderInfo {
   name?: string
 }
 
+export interface ServiceInstanceUsageDTO {
+  accountIdentifier?: string
+  activeServiceInstances?: UsageDataDTO
+  activeServices?: UsageDataDTO
+  cdLicenseType?: 'SERVICES' | 'SERVICE_INSTANCES'
+  module?: string
+  timestamp?: number
+}
+
 export type ServiceNowApprovalStepInfo = StepSpecType & {
   approvalCriteria: CriteriaSpecWrapper
   connectorRef: string
@@ -8766,6 +8807,16 @@ export interface ServiceSpec {
   manifests?: ManifestConfigWrapper[]
   variableOverrideSets?: NGVariableOverrideSetWrapper[]
   variables?: NGVariable[]
+}
+
+export interface ServiceUsageDTO {
+  accountIdentifier?: string
+  activeServiceInstances?: UsageDataDTO
+  activeServices?: UsageDataDTO
+  cdLicenseType?: 'SERVICES' | 'SERVICE_INSTANCES'
+  module?: string
+  serviceLicenses?: UsageDataDTO
+  timestamp?: number
 }
 
 export interface ServiceUseFromStage {
@@ -9049,6 +9100,7 @@ export interface StepElementConfig {
 }
 
 export interface StepGroupElementConfig {
+  delegateSelectors?: string[]
   failureStrategies?: FailureStrategyConfig[]
   identifier: string
   name?: string
@@ -9366,6 +9418,12 @@ export interface UpdateRuleYamlSpec {
   ruleID: string
   serve?: Serve
   variations?: VariationYamlSpec[]
+}
+
+export interface UsageDataDTO {
+  count?: number
+  displayName?: string
+  references?: ReferenceDTO[]
 }
 
 export interface User {
@@ -9815,7 +9873,7 @@ export type YamlSchemaDetailsWrapperRequestBody = YamlSchemaDetailsWrapper
 
 export type GetBuildDetailsForEcrWithYamlBodyRequestBody = string
 
-export type ProcessPollingResultNgBodyRequestBody = string[]
+export type UnsubscribeBodyRequestBody = string[]
 
 export type UpdateEnvironmentGroupBodyRequestBody = string
 
@@ -19641,6 +19699,7 @@ export interface GetFilterListQueryParams {
     | 'Deployment'
     | 'Audit'
     | 'Template'
+    | 'EnvironmentGroup'
 }
 
 export type GetFilterListProps = Omit<
@@ -19801,6 +19860,7 @@ export interface DeleteFilterQueryParams {
     | 'Deployment'
     | 'Audit'
     | 'Template'
+    | 'EnvironmentGroup'
 }
 
 export type DeleteFilterProps = Omit<
@@ -19862,6 +19922,7 @@ export interface GetFilterQueryParams {
     | 'Deployment'
     | 'Audit'
     | 'Template'
+    | 'EnvironmentGroup'
 }
 
 export interface GetFilterPathParams {
@@ -24932,7 +24993,7 @@ export type ProcessPollingResultNgProps = Omit<
     void,
     Failure | Error,
     ProcessPollingResultNgQueryParams,
-    ProcessPollingResultNgBodyRequestBody,
+    UnsubscribeBodyRequestBody,
     ProcessPollingResultNgPathParams
   >,
   'path' | 'verb'
@@ -24944,7 +25005,7 @@ export const ProcessPollingResultNg = ({ perpetualTaskId, ...props }: ProcessPol
     void,
     Failure | Error,
     ProcessPollingResultNgQueryParams,
-    ProcessPollingResultNgBodyRequestBody,
+    UnsubscribeBodyRequestBody,
     ProcessPollingResultNgPathParams
   >
     verb="POST"
@@ -24959,7 +25020,7 @@ export type UseProcessPollingResultNgProps = Omit<
     void,
     Failure | Error,
     ProcessPollingResultNgQueryParams,
-    ProcessPollingResultNgBodyRequestBody,
+    UnsubscribeBodyRequestBody,
     ProcessPollingResultNgPathParams
   >,
   'path' | 'verb'
@@ -24971,7 +25032,7 @@ export const useProcessPollingResultNg = ({ perpetualTaskId, ...props }: UseProc
     void,
     Failure | Error,
     ProcessPollingResultNgQueryParams,
-    ProcessPollingResultNgBodyRequestBody,
+    UnsubscribeBodyRequestBody,
     ProcessPollingResultNgPathParams
   >(
     'POST',
@@ -24987,7 +25048,7 @@ export const processPollingResultNgPromise = (
     void,
     Failure | Error,
     ProcessPollingResultNgQueryParams,
-    ProcessPollingResultNgBodyRequestBody,
+    UnsubscribeBodyRequestBody,
     ProcessPollingResultNgPathParams
   > & { perpetualTaskId: string },
   signal?: RequestInit['signal']
@@ -24996,17 +25057,17 @@ export const processPollingResultNgPromise = (
     void,
     Failure | Error,
     ProcessPollingResultNgQueryParams,
-    ProcessPollingResultNgBodyRequestBody,
+    UnsubscribeBodyRequestBody,
     ProcessPollingResultNgPathParams
   >('POST', getConfig('ng/api'), `/polling/delegate-response/${perpetualTaskId}`, props, signal)
 
 export type SubscribeProps = Omit<
-  MutateProps<ResponsePollingResponseDTO, Failure | Error, void, ProcessPollingResultNgBodyRequestBody, void>,
+  MutateProps<ResponsePollingResponseDTO, Failure | Error, void, UnsubscribeBodyRequestBody, void>,
   'path' | 'verb'
 >
 
 export const Subscribe = (props: SubscribeProps) => (
-  <Mutate<ResponsePollingResponseDTO, Failure | Error, void, ProcessPollingResultNgBodyRequestBody, void>
+  <Mutate<ResponsePollingResponseDTO, Failure | Error, void, UnsubscribeBodyRequestBody, void>
     verb="POST"
     path={`/polling/subscribe`}
     base={getConfig('ng/api')}
@@ -25015,28 +25076,22 @@ export const Subscribe = (props: SubscribeProps) => (
 )
 
 export type UseSubscribeProps = Omit<
-  UseMutateProps<ResponsePollingResponseDTO, Failure | Error, void, ProcessPollingResultNgBodyRequestBody, void>,
+  UseMutateProps<ResponsePollingResponseDTO, Failure | Error, void, UnsubscribeBodyRequestBody, void>,
   'path' | 'verb'
 >
 
 export const useSubscribe = (props: UseSubscribeProps) =>
-  useMutate<ResponsePollingResponseDTO, Failure | Error, void, ProcessPollingResultNgBodyRequestBody, void>(
+  useMutate<ResponsePollingResponseDTO, Failure | Error, void, UnsubscribeBodyRequestBody, void>(
     'POST',
     `/polling/subscribe`,
     { base: getConfig('ng/api'), ...props }
   )
 
 export const subscribePromise = (
-  props: MutateUsingFetchProps<
-    ResponsePollingResponseDTO,
-    Failure | Error,
-    void,
-    ProcessPollingResultNgBodyRequestBody,
-    void
-  >,
+  props: MutateUsingFetchProps<ResponsePollingResponseDTO, Failure | Error, void, UnsubscribeBodyRequestBody, void>,
   signal?: RequestInit['signal']
 ) =>
-  mutateUsingFetch<ResponsePollingResponseDTO, Failure | Error, void, ProcessPollingResultNgBodyRequestBody, void>(
+  mutateUsingFetch<ResponsePollingResponseDTO, Failure | Error, void, UnsubscribeBodyRequestBody, void>(
     'POST',
     getConfig('ng/api'),
     `/polling/subscribe`,
@@ -25045,12 +25100,12 @@ export const subscribePromise = (
   )
 
 export type UnsubscribeProps = Omit<
-  MutateProps<boolean, Failure | Error, void, ProcessPollingResultNgBodyRequestBody, void>,
+  MutateProps<boolean, Failure | Error, void, UnsubscribeBodyRequestBody, void>,
   'path' | 'verb'
 >
 
 export const Unsubscribe = (props: UnsubscribeProps) => (
-  <Mutate<boolean, Failure | Error, void, ProcessPollingResultNgBodyRequestBody, void>
+  <Mutate<boolean, Failure | Error, void, UnsubscribeBodyRequestBody, void>
     verb="POST"
     path={`/polling/unsubscribe`}
     base={getConfig('ng/api')}
@@ -25059,22 +25114,21 @@ export const Unsubscribe = (props: UnsubscribeProps) => (
 )
 
 export type UseUnsubscribeProps = Omit<
-  UseMutateProps<boolean, Failure | Error, void, ProcessPollingResultNgBodyRequestBody, void>,
+  UseMutateProps<boolean, Failure | Error, void, UnsubscribeBodyRequestBody, void>,
   'path' | 'verb'
 >
 
 export const useUnsubscribe = (props: UseUnsubscribeProps) =>
-  useMutate<boolean, Failure | Error, void, ProcessPollingResultNgBodyRequestBody, void>(
-    'POST',
-    `/polling/unsubscribe`,
-    { base: getConfig('ng/api'), ...props }
-  )
+  useMutate<boolean, Failure | Error, void, UnsubscribeBodyRequestBody, void>('POST', `/polling/unsubscribe`, {
+    base: getConfig('ng/api'),
+    ...props
+  })
 
 export const unsubscribePromise = (
-  props: MutateUsingFetchProps<boolean, Failure | Error, void, ProcessPollingResultNgBodyRequestBody, void>,
+  props: MutateUsingFetchProps<boolean, Failure | Error, void, UnsubscribeBodyRequestBody, void>,
   signal?: RequestInit['signal']
 ) =>
-  mutateUsingFetch<boolean, Failure | Error, void, ProcessPollingResultNgBodyRequestBody, void>(
+  mutateUsingFetch<boolean, Failure | Error, void, UnsubscribeBodyRequestBody, void>(
     'POST',
     getConfig('ng/api'),
     `/polling/unsubscribe`,
@@ -29608,6 +29662,109 @@ export const updateTokenPromise = (
     TokenDTORequestBody,
     UpdateTokenPathParams
   >('PUT', getConfig('ng/api'), `/token/${identifier}`, props, signal)
+
+export interface GetCDLicenseUsageForServiceInstancesQueryParams {
+  accountIdentifier?: string
+  timestamp?: number
+}
+
+export type GetCDLicenseUsageForServiceInstancesProps = Omit<
+  GetProps<ResponseServiceInstanceUsageDTO, Failure | Error, GetCDLicenseUsageForServiceInstancesQueryParams, void>,
+  'path'
+>
+
+/**
+ * Gets License Usage By Timestamp for Service Instances in CD Module
+ */
+export const GetCDLicenseUsageForServiceInstances = (props: GetCDLicenseUsageForServiceInstancesProps) => (
+  <Get<ResponseServiceInstanceUsageDTO, Failure | Error, GetCDLicenseUsageForServiceInstancesQueryParams, void>
+    path={`/usage/CD/serviceInstancesLicense`}
+    base={getConfig('ng/api')}
+    {...props}
+  />
+)
+
+export type UseGetCDLicenseUsageForServiceInstancesProps = Omit<
+  UseGetProps<ResponseServiceInstanceUsageDTO, Failure | Error, GetCDLicenseUsageForServiceInstancesQueryParams, void>,
+  'path'
+>
+
+/**
+ * Gets License Usage By Timestamp for Service Instances in CD Module
+ */
+export const useGetCDLicenseUsageForServiceInstances = (props: UseGetCDLicenseUsageForServiceInstancesProps) =>
+  useGet<ResponseServiceInstanceUsageDTO, Failure | Error, GetCDLicenseUsageForServiceInstancesQueryParams, void>(
+    `/usage/CD/serviceInstancesLicense`,
+    { base: getConfig('ng/api'), ...props }
+  )
+
+/**
+ * Gets License Usage By Timestamp for Service Instances in CD Module
+ */
+export const getCDLicenseUsageForServiceInstancesPromise = (
+  props: GetUsingFetchProps<
+    ResponseServiceInstanceUsageDTO,
+    Failure | Error,
+    GetCDLicenseUsageForServiceInstancesQueryParams,
+    void
+  >,
+  signal?: RequestInit['signal']
+) =>
+  getUsingFetch<
+    ResponseServiceInstanceUsageDTO,
+    Failure | Error,
+    GetCDLicenseUsageForServiceInstancesQueryParams,
+    void
+  >(getConfig('ng/api'), `/usage/CD/serviceInstancesLicense`, props, signal)
+
+export interface GetCDLicenseUsageForServicesQueryParams {
+  accountIdentifier?: string
+  timestamp?: number
+}
+
+export type GetCDLicenseUsageForServicesProps = Omit<
+  GetProps<ResponseServiceUsageDTO, Failure | Error, GetCDLicenseUsageForServicesQueryParams, void>,
+  'path'
+>
+
+/**
+ * Gets License Usage By Timestamp for Services in CD Module
+ */
+export const GetCDLicenseUsageForServices = (props: GetCDLicenseUsageForServicesProps) => (
+  <Get<ResponseServiceUsageDTO, Failure | Error, GetCDLicenseUsageForServicesQueryParams, void>
+    path={`/usage/CD/servicesLicense`}
+    base={getConfig('ng/api')}
+    {...props}
+  />
+)
+
+export type UseGetCDLicenseUsageForServicesProps = Omit<
+  UseGetProps<ResponseServiceUsageDTO, Failure | Error, GetCDLicenseUsageForServicesQueryParams, void>,
+  'path'
+>
+
+/**
+ * Gets License Usage By Timestamp for Services in CD Module
+ */
+export const useGetCDLicenseUsageForServices = (props: UseGetCDLicenseUsageForServicesProps) =>
+  useGet<ResponseServiceUsageDTO, Failure | Error, GetCDLicenseUsageForServicesQueryParams, void>(
+    `/usage/CD/servicesLicense`,
+    { base: getConfig('ng/api'), ...props }
+  )
+
+/**
+ * Gets License Usage By Timestamp for Services in CD Module
+ */
+export const getCDLicenseUsageForServicesPromise = (
+  props: GetUsingFetchProps<ResponseServiceUsageDTO, Failure | Error, GetCDLicenseUsageForServicesQueryParams, void>,
+  signal?: RequestInit['signal']
+) =>
+  getUsingFetch<ResponseServiceUsageDTO, Failure | Error, GetCDLicenseUsageForServicesQueryParams, void>(
+    getConfig('ng/api'),
+    `/usage/CD/servicesLicense`,
+    props,
+    signal
+  )
 
 export interface GetLicenseUsageQueryParams {
   accountIdentifier?: string

@@ -664,6 +664,8 @@ export interface StringsMap {
   'common.subscriptions.usage.activeDevelopers': string
   'common.subscriptions.usage.ccmTooltip': string
   'common.subscriptions.usage.ccmUsers': string
+  'common.subscriptions.usage.cdSITooltip': string
+  'common.subscriptions.usage.cdServiceTooltip': string
   'common.subscriptions.usage.cdUsers': string
   'common.subscriptions.usage.ciTooltip': string
   'common.subscriptions.usage.ciUsers': string
