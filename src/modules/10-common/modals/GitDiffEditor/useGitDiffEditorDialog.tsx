@@ -176,7 +176,12 @@ export function useGitDiffEditorDialog<T>(props: UseGitDiffEditorDialogProps<T>)
         }
       })
       try {
-        setEntityAsYaml(yamlStringify(sanitize(_entity), FORMATTING_OPTIONS))
+        setEntityAsYaml(
+          yamlStringify(
+            sanitize(_entity, { removeEmptyString: false, removeEmptyArray: false, removeEmptyObject: false }),
+            FORMATTING_OPTIONS
+          )
+        )
       } catch (e) {
         //ignore error
       }
