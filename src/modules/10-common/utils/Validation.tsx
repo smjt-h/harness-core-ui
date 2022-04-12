@@ -7,10 +7,20 @@
 
 import * as Yup from 'yup'
 import { useStrings, UseStringsReturn } from 'framework/strings'
-import { illegalIdentifiers, regexEmail, regexIdentifier, stepNameRegex } from '@common/utils/StringUtils'
+import { illegalIdentifiers, regexEmail, regexIdentifier, regexName, stepNameRegex } from '@common/utils/StringUtils'
 interface EmailProps {
   allowMultiple?: boolean
   emailSeparator?: string
+}
+
+export function StepNameSchema(
+  getString: UseStringsReturn['getString'],
+  config?: { requiredErrorMsg?: string }
+): Yup.Schema<string> {
+  return Yup.string()
+    .trim()
+    .required(config?.requiredErrorMsg ? config?.requiredErrorMsg : getString('common.validation.nameIsRequired'))
+    .matches(stepNameRegex, getString('common.validation.stepNamePatternIsNotValid', { regex: stepNameRegex.source }))
 }
 
 export function NameSchemaWithoutHook(
@@ -20,7 +30,7 @@ export function NameSchemaWithoutHook(
   return Yup.string()
     .trim()
     .required(config?.requiredErrorMsg ? config?.requiredErrorMsg : getString('common.validation.nameIsRequired'))
-    .matches(stepNameRegex, getString('common.validation.stepNamePatternIsNotValid', { regex: stepNameRegex.source }))
+    .matches(regexName, getString('common.validation.namePatternIsNotValid'))
 }
 
 export function NameSchema(config?: { requiredErrorMsg?: string }): Yup.Schema<string> {

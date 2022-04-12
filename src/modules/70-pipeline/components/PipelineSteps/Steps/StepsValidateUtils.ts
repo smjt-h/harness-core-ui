@@ -21,12 +21,7 @@ import {
   serviceDependencyIdRegex
 } from '@common/utils/StringUtils'
 import { StepType } from '@pipeline/components/PipelineSteps/PipelineStepInterface'
-import {
-  IdentifierSchema,
-  IdentifierSchemaWithoutHook,
-  NameSchema,
-  NameSchemaWithoutHook
-} from '@common/utils/Validation'
+import { IdentifierSchema, IdentifierSchemaWithoutHook, NameSchema, StepNameSchema } from '@common/utils/Validation'
 import { StepViewType } from '@pipeline/components/AbstractSteps/Step'
 
 export enum Types {
@@ -108,7 +103,7 @@ function generateSchemaForIdentifier({
 }
 
 function generateSchemaForName({ getString }: GenerateSchemaDependencies): StringSchema {
-  return NameSchemaWithoutHook(getString) as StringSchema
+  return StepNameSchema(getString) as StringSchema
 }
 
 function generateSchemaForList(
