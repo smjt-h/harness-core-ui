@@ -8,7 +8,8 @@ import {
   triggerPiplelineDetails,
   triggersAPI,
   triggersListData,
-  triggersRoute
+  triggersRoute,
+  gitTriggerEventDetailsList
 } from '../../support/70-pipeline/constants'
 
 describe('Triggers for Pipeline', () => {
@@ -24,6 +25,27 @@ describe('Triggers for Pipeline', () => {
 
     cy.intercept('GET', pipelineSummaryCallAPI, { fixture: '/ng/api/pipelineSummary' }).as('pipelineSummary')
     cy.intercept('GET', triggersAPI, { fixture: 'ng/api/triggers/triggersList.empty.json' }).as('emptyTriggersList')
+    cy.intercept('GET', gitTriggerEventDetailsList).as('gitTriggerEventDetailsList')
+
+    cy.intercept('GET', gitTriggerEventDetailsList, req => {
+      req.continue(res => {
+        res.send({
+          status: 'SUCCESS',
+          data: {
+            Github: {
+              PullRequest: ['Close', 'Edit', 'Open', 'Reopen', 'Label', 'Unlabel', 'Synchronize'],
+              IssueComment: ['Create', 'Edit', 'Delete'],
+              Push: []
+            },
+            AwsCodeCommit: { Push: [] },
+            Bitbucket: { PullRequest: ['Create', 'Update', 'Merge', 'Decline'], Push: [] },
+            Gitlab: { MergeRequest: ['Open', 'Close', 'Reopen', 'Merge', 'Update', 'Sync'], Push: [] }
+          },
+          metaData: null,
+          correlationId: 'c8ccf102-3af5-4ab7-80eb-2eaafe405a44'
+        })
+      })
+    })
 
     cy.visit(triggersRoute, {
       timeout: 30000
@@ -160,5 +182,95 @@ describe('Triggers for Pipeline', () => {
     cy.contains('span', 'Delete').should('be.visible').click()
     cy.wait(1000)
     cy.contains('span', 'Trigger testTrigger Deleted').should('be.visible')
+  })
+
+  it('Github Trigger', () => {
+    cy.wait('@emptyTriggersList')
+    cy.contains('span', 'Add New Trigger').should('be.visible').click()
+    cy.intercept('POST', inputSetsTemplateCall, { fixture: '/ng/api/triggers/triggerInputSet' }).as('triggerInputSet')
+
+    cy.intercept('GET', triggerPiplelineDetails, { fixture: 'ng/api/triggers/triggerPiplelineDetails' }).as(
+      'triggerPiplelineDetails'
+    )
+
+    cy.get('[class*="AddDrawer"][class*="stepsRenderer"]')
+      .should('be.visible')
+      .within(() => {
+        cy.contains('section', 'GitHub').should('be.visible').click()
+      })
+    cy.wait('@triggerPiplelineDetails')
+    cy.wait(1000)
+
+    // Configuration Tab
+    cy.fillField('name', 'GitHubTriggerTest')
+    cy.findByText('GitHubTriggerTest').should('exist')
+    cy.get('[value="GitHubTriggerTest"]').should('be.visible')
+
+    cy.contains('span', 'Select Connector').click({ force: true })
+    cy.contains('p', 'github final test').click({ force: true })
+    cy.contains('span', 'Apply Selected').click({ force: true })
+
+    cy.get('.custom-event').find('input[placeholder="- Select Event -"]').click({ force: true })
+    cy.get('.Select--menuItem.Select--active').click({ force: true })
+
+    cy.get('.bp3-tag-input-values').find('input[placeholder="- Select -"]').click({ force: true })
+    cy.get('.MultiSelect--menuItem.MultiSelect--active').click({ force: true })
+
+    cy.contains('span', 'Continue').click({ force: true })
+
+    cy.contains('span', 'Continue').click({ force: true })
+    cy.intercept('GET', servicesCallV2, servicesV2AccessResponse).as('servicesCallV2')
+
+    cy.get('.bp3-input-group').find('input[placeholder="- Select Service -"]').click({ force: true })
+    cy.wait(1000)
+    cy.get('.Select--menuItem.Select--active').click({ force: true })
+    cy.contains('span', 'Create Trigger').click({ force: true })
+    cy.wait(1000)
+    cy.contains('span', 'Successfully created').should('be.visible')
+  })
+
+  it('Gitlab Trigger', () => {
+    cy.wait('@emptyTriggersList')
+    cy.contains('span', 'Add New Trigger').should('be.visible').click()
+    cy.intercept('POST', inputSetsTemplateCall, { fixture: '/ng/api/triggers/triggerInputSet' }).as('triggerInputSet')
+
+    cy.intercept('GET', triggerPiplelineDetails, { fixture: 'ng/api/triggers/triggerPiplelineDetails' }).as(
+      'triggerPiplelineDetails'
+    )
+
+    cy.get('[class*="AddDrawer"][class*="stepsRenderer"]')
+      .should('be.visible')
+      .within(() => {
+        cy.contains('section', 'GitLab').should('be.visible').click()
+      })
+    cy.wait('@triggerPiplelineDetails')
+    cy.wait(1000)
+
+    // Configuration Tab
+    cy.fillField('name', 'GitlabTriggerTest')
+    cy.findByText('GitlabTriggerTest').should('exist')
+    cy.get('[value="GitlabTriggerTest"]').should('be.visible')
+
+    cy.contains('span', 'Select Connector').click({ force: true })
+    cy.contains('p', 'gitlab test').click({ force: true })
+    cy.contains('span', 'Apply Selected').click({ force: true })
+
+    cy.get('.custom-event').find('input[placeholder="- Select Event -"]').click({ force: true })
+    cy.get('.Select--menuItem.Select--active').click({ force: true })
+
+    cy.get('.bp3-tag-input-values').find('input[placeholder="- Select -"]').click({ force: true })
+    cy.get('.MultiSelect--menuItem.MultiSelect--active').click({ force: true })
+
+    cy.contains('span', 'Continue').click({ force: true })
+
+    cy.contains('span', 'Continue').click({ force: true })
+    cy.intercept('GET', servicesCallV2, servicesV2AccessResponse).as('servicesCallV2')
+
+    cy.get('.bp3-input-group').find('input[placeholder="- Select Service -"]').click({ force: true })
+    cy.wait(1000)
+    cy.get('.Select--menuItem.Select--active').click({ force: true })
+    cy.contains('span', 'Create Trigger').click({ force: true })
+    cy.wait(1000)
+    cy.contains('span', 'Successfully created').should('be.visible')
   })
 })

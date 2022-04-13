@@ -60,6 +60,7 @@ export const envUpsertCall = `/ng/api/environmentsV2/upsert?routingId=${accountI
 export const envUpdateList = `/ng/api/environmentsV2?routingId=${accountId}&accountIdentifier=${accountId}&orgIdentifier=${orgIdentifier}&projectIdentifier=${projectId}&page=0&size=10`
 export const pipelineHealthCall = `/pipeline/api/pipelines/pipelineHealth?routingId=${accountId}&accountIdentifier=${accountId}&projectIdentifier=${projectId}&orgIdentifier=${orgIdentifier}*`
 export const pipelineExecutionCall = `/pipeline/api/pipelines/pipelineExecution?routingId=${accountId}&accountIdentifier=${accountId}&projectIdentifier=${projectId}&orgIdentifier=${orgIdentifier}*`
+export const gitTriggerEventDetailsList = `/pipeline/api/webhook/gitTriggerEventDetails?routingId=${accountId}`
 
 // Routes
 export const executionListRoute = `#/account/${accountId}/cd/orgs/${orgIdentifier}/projects/${projectId}/deployments`

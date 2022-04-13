@@ -371,6 +371,118 @@
           "valid": true,
           "invalidYaml": null
         }
+      },
+      {
+        "connector": {
+          "name": "github final test",
+          "identifier": "github_final_test",
+          "description": "",
+          "orgIdentifier": "default",
+          "projectIdentifier": "Test_Yunus",
+          "tags": {},
+          "type": "Github",
+          "spec": {
+            "url": "https://github.com/wings-software/terraform",
+            "validationRepo": null,
+            "authentication": {
+              "type": "Http",
+              "spec": {
+                "type": "UsernameToken",
+                "spec": {
+                  "username": "willd0yle",
+                  "usernameRef": null,
+                  "tokenRef": "Will_github_token"
+                }
+              }
+            },
+            "apiAccess": null,
+            "delegateSelectors": [],
+            "executeOnDelegate": true,
+            "type": "Repo"
+          }
+        },
+        "createdAt": 1644426270401,
+        "lastModifiedAt": 1644426270397,
+        "status": {
+          "status": "SUCCESS",
+          "errorSummary": null,
+          "errors": null,
+          "testedAt": 1644940012438,
+          "lastTestedAt": 0,
+          "lastConnectedAt": 1644940012438
+        },
+        "activityDetails": {
+          "lastActivityTime": 1644426270426
+        },
+        "harnessManaged": false,
+        "gitDetails": {
+          "objectId": null,
+          "branch": null,
+          "repoIdentifier": null,
+          "rootFolder": null,
+          "filePath": null,
+          "repoName": null
+        },
+        "entityValidityDetails": {
+          "valid": true,
+          "invalidYaml": null
+        }
+      },
+      {
+        "connector": {
+          "name": "gitlab test",
+          "identifier": "gitlab_test",
+          "description": "",
+          "orgIdentifier": "default",
+          "projectIdentifier": "Test_Yunus",
+          "tags": {},
+          "type": "Gitlab",
+          "spec": {
+            "url": "https://github.com/wings-software/harness-ui-core",
+            "validationRepo": null,
+            "authentication": {
+              "type": "Http",
+              "spec": {
+                "type": "UsernameToken",
+                "spec": {
+                  "username": "willd0yle",
+                  "usernameRef": null,
+                  "tokenRef": "Will_github_token"
+                }
+              }
+            },
+            "apiAccess": null,
+            "delegateSelectors": [],
+            "executeOnDelegate": true,
+            "type": "Repo"
+          }
+        },
+        "createdAt": 1644426270401,
+        "lastModifiedAt": 1644426270397,
+        "status": {
+          "status": "SUCCESS",
+          "errorSummary": null,
+          "errors": null,
+          "testedAt": 1644940012438,
+          "lastTestedAt": 0,
+          "lastConnectedAt": 1644940012438
+        },
+        "activityDetails": {
+          "lastActivityTime": 1644426270426
+        },
+        "harnessManaged": false,
+        "gitDetails": {
+          "objectId": null,
+          "branch": null,
+          "repoIdentifier": null,
+          "rootFolder": null,
+          "filePath": null,
+          "repoName": null
+        },
+        "entityValidityDetails": {
+          "valid": true,
+          "invalidYaml": null
+        }
       }
     ],
     "pageIndex": 0,

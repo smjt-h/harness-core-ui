@@ -86,7 +86,7 @@ export const renderNonCustomEventFields = ({
     <>
       {sourceRepo && <ConnectorSection formikProps={formikProps} />}
       <FormInput.Select
-        className={cx(!event && css.bottomMarginZero)}
+        className={cx('custom-event', !event && css.bottomMarginZero)}
         key={event}
         label={getString('triggers.triggerConfigurationPanel.event')}
         name="event"
