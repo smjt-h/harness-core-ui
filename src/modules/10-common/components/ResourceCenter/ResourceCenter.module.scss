@@ -19,14 +19,6 @@
 .middleregion {
   border-top: var(--grey-600) thin solid;
   border-bottom: var(--grey-600) thin solid;
-
-  .bottomBorder {
-    border-bottom: var(--grey-600) thin solid;
-  }
-
-  svg {
-    color: var(--primary-3) !important;
-  }
 }
 
 .bottombutton {
@@ -48,9 +40,9 @@
 }
 
 .helpCenterIcon {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  display: flex !important;
+  justify-content: center !important;
+  align-items: center !important;
   width: 88px !important;
   height: 80px !important;
   position: relative;
@@ -70,10 +62,6 @@
 
 .communityTooltip {
   width: 250px !important;
-}
-
-.communityPopover {
-  margin-left: 20px !important;
 }
 
 .university {
@@ -96,4 +84,23 @@
 
 .txtAlignCenter {
   text-align: center;
+}
+
+.menuItem {
+  padding: var(--spacing-small) !important;
+  border-radius: var(--spacing-2);
+  background: rgba(255, 255, 255, 0.05) !important;
+  width: 100% !important;
+  justify-content: space-between;
+  &:hover {
+    background: rgba(255, 255, 255, 0) !important;
+    border: 1px solid var(--primary-7);
+    cursor: pointer;
+  }
+}
+
+.onHover {
+  &:hover {
+    cursor: pointer;
+  }
 }

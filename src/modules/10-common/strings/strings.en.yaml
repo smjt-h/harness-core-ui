@@ -776,9 +776,8 @@ community: Community
 resourceCenter:
   title: 'RESOURCE CENTER'
   ticketmenu:
-    tickets: 'My support requests'
+    tickets: 'My tickets'
     ticketsDesc: 'View and manage your tickets'
-    submit: Submit a support request
     submitDesc: 'Get help from our expert system'
   bottomlayout:
     desc: Other useful resources

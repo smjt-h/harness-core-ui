@@ -3,75 +3,68 @@
 exports[`MenuItems Community Plan 1`] = `
 <div>
   <div
-    class="Layout--horizontal StyledProps--main middleregion StyledProps--padding-xlarge StyledProps--flex StyledProps--flex-justifyContent-space-between"
+    class="bp3-popover-wrapper bp3-dark bp3-fill"
   >
     <div
-      class="Layout--vertical StyledProps--main"
+      class="bp3-popover-target"
     >
-      <p
-        class="StyledProps--font StyledProps--main StyledProps--font-variation-h4 StyledProps--padding-bottom-xsmall StyledProps--color StyledProps--color-grey300"
-        style="display: flex; align-items: center;"
+      <div
+        class="Layout--horizontal StyledProps--main middleregion onHover StyledProps--padding-xlarge StyledProps--flex StyledProps--flex-justifyContent-space-between"
       >
+        <div
+          class="Layout--vertical StyledProps--main"
+        >
+          <p
+            class="StyledProps--font StyledProps--main StyledProps--font-variation-h4 StyledProps--padding-bottom-xsmall StyledProps--color StyledProps--color-grey300"
+            style="display: flex; align-items: center;"
+          >
+            <span
+              class="bp3-icon StyledProps--main Text--icon StyledProps--padding-right-medium"
+              data-icon="flash"
+            >
+              <svg
+                height="25"
+                viewBox="0 0 33 28"
+                width="25"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  clip-rule="evenodd"
+                  d="M3.773 17.341L20.885 1.75l-2.297 8.909h8.184L9.66 26.25l2.297-8.909z"
+                  fill="#ff5310"
+                  fill-rule="evenodd"
+                />
+              </svg>
+            </span>
+            Common.contactsupport
+          </p>
+          <p
+            class="StyledProps--font StyledProps--main StyledProps--font-variation-body2 StyledProps--padding-bottom-xsmall StyledProps--color StyledProps--color-grey300"
+          >
+            common.resourceCenter.ticketmenu.submitDesc
+          </p>
+        </div>
         <span
-          class="bp3-icon StyledProps--main Text--icon StyledProps--padding-right-medium"
-          data-icon="flash"
+          class="bp3-icon bp3-icon-chevron-right StyledProps--main StyledProps--color StyledProps--color-grey300"
+          icon="chevron-right"
         >
           <svg
-            height="25"
-            viewBox="0 0 33 28"
-            width="25"
-            xmlns="http://www.w3.org/2000/svg"
+            data-icon="chevron-right"
+            height="16"
+            viewBox="0 0 16 16"
+            width="16"
           >
+            <desc>
+              chevron-right
+            </desc>
             <path
-              clip-rule="evenodd"
-              d="M3.773 17.341L20.885 1.75l-2.297 8.909h8.184L9.66 26.25l2.297-8.909z"
-              fill="#ff5310"
+              d="M10.71 7.29l-4-4a1.003 1.003 0 00-1.42 1.42L8.59 8 5.3 11.29c-.19.18-.3.43-.3.71a1.003 1.003 0 001.71.71l4-4c.18-.18.29-.43.29-.71 0-.28-.11-.53-.29-.71z"
               fill-rule="evenodd"
             />
           </svg>
         </span>
-        common.resourceCenter.ticketmenu.submit
-      </p>
-      <p
-        class="StyledProps--font StyledProps--main StyledProps--font-variation-body2 StyledProps--padding-bottom-xsmall StyledProps--color StyledProps--color-grey300"
-      >
-        common.resourceCenter.ticketmenu.submitDesc
-      </p>
+      </div>
     </div>
-    <span
-      class="bp3-popover-wrapper bp3-dark"
-    >
-      <span
-        class="bp3-popover-target"
-      >
-        <a
-          class="bp3-button bp3-disabled Button--button StyledProps--font StyledProps--main Button--with-current-color Button--iconOnly Button--withLeftIcon Button--variation Button--variation-icon"
-          disabled=""
-          role="button"
-          tabindex="-1"
-        >
-          <span
-            class="bp3-icon bp3-icon-chevron-right StyledProps--main StyledProps--color StyledProps--color-primary4"
-            icon="chevron-right"
-          >
-            <svg
-              data-icon="chevron-right"
-              height="16"
-              viewBox="0 0 16 16"
-              width="16"
-            >
-              <desc>
-                chevron-right
-              </desc>
-              <path
-                d="M10.71 7.29l-4-4a1.003 1.003 0 00-1.42 1.42L8.59 8 5.3 11.29c-.19.18-.3.43-.3.71a1.003 1.003 0 001.71.71l4-4c.18-.18.29-.43.29-.71 0-.28-.11-.53-.29-.71z"
-                fill-rule="evenodd"
-              />
-            </svg>
-          </span>
-        </a>
-      </span>
-    </span>
   </div>
 </div>
 `;
@@ -82,31 +75,30 @@ exports[`MenuItems SAAS Plan 1`] = `
     class="Layout--vertical StyledProps--main middleregion StyledProps--padding-xlarge"
   >
     <div
-      class="Layout--horizontal StyledProps--main bottomBorder StyledProps--padding-bottom-medium StyledProps--flex StyledProps--flex-justifyContent-space-between"
+      class="Layout--horizontal StyledProps--main StyledProps--flex StyledProps--flex-justifyContent-space-between"
     >
       <div
-        class="Layout--vertical StyledProps--main"
+        class="Layout--horizontal StyledProps--main menuItem"
       >
-        <p
-          class="StyledProps--font StyledProps--main StyledProps--font-variation-h4 StyledProps--padding-bottom-xsmall StyledProps--color StyledProps--color-primary3"
+        <div
+          class="Layout--vertical StyledProps--main"
         >
-          common.resourceCenter.ticketmenu.submit
-        </p>
-        <p
-          class="StyledProps--font StyledProps--main StyledProps--font-variation-body2 StyledProps--padding-bottom-xsmall StyledProps--color StyledProps--color-white"
-        >
-          common.resourceCenter.ticketmenu.submitDesc
-        </p>
-      </div>
-      <div
-        class="Layout--horizontal Layout--layout-spacing-medium StyledProps--main StyledProps--flex StyledProps--flex-alignItems-center"
-      >
-        <button
-          class="bp3-button Button--button StyledProps--font StyledProps--main Button--with-current-color Button--iconOnly Button--withLeftIcon Button--variation Button--variation-icon"
-          type="button"
+          <p
+            class="StyledProps--font StyledProps--main StyledProps--font-variation-h4 StyledProps--padding-bottom-xsmall StyledProps--color StyledProps--color-grey0"
+          >
+            Common.contactsupport
+          </p>
+          <p
+            class="StyledProps--font StyledProps--main StyledProps--font-variation-body2 StyledProps--padding-bottom-xsmall StyledProps--color StyledProps--color-grey100"
+          >
+            common.resourceCenter.ticketmenu.submitDesc
+          </p>
+        </div>
+        <div
+          class="Layout--horizontal Layout--layout-spacing-medium StyledProps--main StyledProps--flex StyledProps--flex-alignItems-center"
         >
           <span
-            class="bp3-icon bp3-icon-chevron-right StyledProps--main StyledProps--color StyledProps--color-primary4"
+            class="bp3-icon bp3-icon-chevron-right StyledProps--main StyledProps--color StyledProps--color-grey0"
             icon="chevron-right"
           >
             <svg
@@ -124,35 +116,34 @@ exports[`MenuItems SAAS Plan 1`] = `
               />
             </svg>
           </span>
-        </button>
+        </div>
       </div>
     </div>
     <div
       class="Layout--horizontal StyledProps--main StyledProps--padding-top-medium StyledProps--flex StyledProps--flex-justifyContent-space-between"
     >
       <div
-        class="Layout--vertical StyledProps--main"
+        class="Layout--horizontal StyledProps--main menuItem"
       >
-        <p
-          class="StyledProps--font StyledProps--main StyledProps--font-variation-h4 StyledProps--padding-bottom-xsmall StyledProps--color StyledProps--color-primary3"
+        <div
+          class="Layout--vertical StyledProps--main"
         >
-          common.resourceCenter.ticketmenu.tickets
-        </p>
-        <p
-          class="StyledProps--font StyledProps--main StyledProps--font-variation-body2 StyledProps--padding-bottom-xsmall StyledProps--color StyledProps--color-white"
-        >
-          common.resourceCenter.ticketmenu.ticketsDesc
-        </p>
-      </div>
-      <div
-        class="Layout--horizontal Layout--layout-spacing-medium StyledProps--main StyledProps--flex StyledProps--flex-alignItems-center"
-      >
-        <button
-          class="bp3-button Button--button StyledProps--font StyledProps--main Button--with-current-color Button--iconOnly Button--withLeftIcon Button--variation Button--variation-icon"
-          type="button"
+          <p
+            class="StyledProps--font StyledProps--main StyledProps--font-variation-h4 StyledProps--padding-bottom-xsmall StyledProps--color StyledProps--color-grey0"
+          >
+            common.resourceCenter.ticketmenu.tickets
+          </p>
+          <p
+            class="StyledProps--font StyledProps--main StyledProps--font-variation-body2 StyledProps--padding-bottom-xsmall StyledProps--color StyledProps--color-grey100"
+          >
+            common.resourceCenter.ticketmenu.ticketsDesc
+          </p>
+        </div>
+        <div
+          class="Layout--horizontal Layout--layout-spacing-medium StyledProps--main StyledProps--flex StyledProps--flex-alignItems-center"
         >
           <span
-            class="bp3-icon bp3-icon-chevron-right StyledProps--main StyledProps--color StyledProps--color-primary4"
+            class="bp3-icon bp3-icon-chevron-right StyledProps--main StyledProps--color StyledProps--color-grey0"
             icon="chevron-right"
           >
             <svg
@@ -170,7 +161,7 @@ exports[`MenuItems SAAS Plan 1`] = `
               />
             </svg>
           </span>
-        </button>
+        </div>
       </div>
     </div>
   </div>
@@ -183,13 +174,13 @@ exports[`MenuItems has Feedback when SHOW_NG_REFINER_FEEDBACK is true 1`] = `
     class="Layout--vertical StyledProps--main middleregion StyledProps--padding-xlarge"
   >
     <div
-      class="Layout--horizontal StyledProps--main bottomBorder StyledProps--padding-bottom-medium StyledProps--flex StyledProps--flex-justifyContent-space-between"
+      class="Layout--horizontal StyledProps--main menuItem StyledProps--padding-bottom-medium"
     >
       <div
         class="Layout--vertical StyledProps--main"
       >
         <p
-          class="StyledProps--font StyledProps--main StyledProps--font-variation-h4 StyledProps--padding-bottom-xsmall StyledProps--color StyledProps--color-primary3"
+          class="StyledProps--font StyledProps--main StyledProps--font-variation-h4 StyledProps--padding-bottom-xsmall StyledProps--color StyledProps--color-grey0"
         >
           common.resourceCenter.feedback.submit
         </p>
@@ -197,105 +188,53 @@ exports[`MenuItems has Feedback when SHOW_NG_REFINER_FEEDBACK is true 1`] = `
       <div
         class="Layout--horizontal Layout--layout-spacing-medium StyledProps--main StyledProps--flex StyledProps--flex-alignItems-center"
       >
-        <button
-          class="bp3-button Button--button StyledProps--font StyledProps--main Button--with-current-color Button--iconOnly Button--withLeftIcon Button--variation Button--variation-icon"
+        <span
+          class="bp3-icon bp3-icon-chevron-right StyledProps--main StyledProps--color StyledProps--color-grey0"
           data-testid="feedback"
-          type="button"
+          icon="chevron-right"
         >
-          <span
-            class="bp3-icon bp3-icon-chevron-right StyledProps--main StyledProps--color StyledProps--color-primary4"
-            icon="chevron-right"
+          <svg
+            data-icon="chevron-right"
+            height="16"
+            viewBox="0 0 16 16"
+            width="16"
           >
-            <svg
-              data-icon="chevron-right"
-              height="16"
-              viewBox="0 0 16 16"
-              width="16"
-            >
-              <desc>
-                chevron-right
-              </desc>
-              <path
-                d="M10.71 7.29l-4-4a1.003 1.003 0 00-1.42 1.42L8.59 8 5.3 11.29c-.19.18-.3.43-.3.71a1.003 1.003 0 001.71.71l4-4c.18-.18.29-.43.29-.71 0-.28-.11-.53-.29-.71z"
-                fill-rule="evenodd"
-              />
-            </svg>
-          </span>
-        </button>
-      </div>
-    </div>
-    <div
-      class="Layout--horizontal StyledProps--main bottomBorder StyledProps--padding-top-medium StyledProps--padding-bottom-medium StyledProps--flex StyledProps--flex-justifyContent-space-between"
-    >
-      <div
-        class="Layout--vertical StyledProps--main"
-      >
-        <p
-          class="StyledProps--font StyledProps--main StyledProps--font-variation-h4 StyledProps--padding-bottom-xsmall StyledProps--color StyledProps--color-primary3"
-        >
-          common.resourceCenter.ticketmenu.submit
-        </p>
-        <p
-          class="StyledProps--font StyledProps--main StyledProps--font-variation-body2 StyledProps--padding-bottom-xsmall StyledProps--color StyledProps--color-white"
-        >
-          common.resourceCenter.ticketmenu.submitDesc
-        </p>
-      </div>
-      <div
-        class="Layout--horizontal Layout--layout-spacing-medium StyledProps--main StyledProps--flex StyledProps--flex-alignItems-center"
-      >
-        <button
-          class="bp3-button Button--button StyledProps--font StyledProps--main Button--with-current-color Button--iconOnly Button--withLeftIcon Button--variation Button--variation-icon"
-          type="button"
-        >
-          <span
-            class="bp3-icon bp3-icon-chevron-right StyledProps--main StyledProps--color StyledProps--color-primary4"
-            icon="chevron-right"
-          >
-            <svg
-              data-icon="chevron-right"
-              height="16"
-              viewBox="0 0 16 16"
-              width="16"
-            >
-              <desc>
-                chevron-right
-              </desc>
-              <path
-                d="M10.71 7.29l-4-4a1.003 1.003 0 00-1.42 1.42L8.59 8 5.3 11.29c-.19.18-.3.43-.3.71a1.003 1.003 0 001.71.71l4-4c.18-.18.29-.43.29-.71 0-.28-.11-.53-.29-.71z"
-                fill-rule="evenodd"
-              />
-            </svg>
-          </span>
-        </button>
+            <desc>
+              chevron-right
+            </desc>
+            <path
+              d="M10.71 7.29l-4-4a1.003 1.003 0 00-1.42 1.42L8.59 8 5.3 11.29c-.19.18-.3.43-.3.71a1.003 1.003 0 001.71.71l4-4c.18-.18.29-.43.29-.71 0-.28-.11-.53-.29-.71z"
+              fill-rule="evenodd"
+            />
+          </svg>
+        </span>
       </div>
     </div>
     <div
       class="Layout--horizontal StyledProps--main StyledProps--padding-top-medium StyledProps--flex StyledProps--flex-justifyContent-space-between"
     >
       <div
-        class="Layout--vertical StyledProps--main"
+        class="Layout--horizontal StyledProps--main menuItem"
       >
-        <p
-          class="StyledProps--font StyledProps--main StyledProps--font-variation-h4 StyledProps--padding-bottom-xsmall StyledProps--color StyledProps--color-primary3"
+        <div
+          class="Layout--vertical StyledProps--main"
         >
-          common.resourceCenter.ticketmenu.tickets
-        </p>
-        <p
-          class="StyledProps--font StyledProps--main StyledProps--font-variation-body2 StyledProps--padding-bottom-xsmall StyledProps--color StyledProps--color-white"
-        >
-          common.resourceCenter.ticketmenu.ticketsDesc
-        </p>
-      </div>
-      <div
-        class="Layout--horizontal Layout--layout-spacing-medium StyledProps--main StyledProps--flex StyledProps--flex-alignItems-center"
-      >
-        <button
-          class="bp3-button Button--button StyledProps--font StyledProps--main Button--with-current-color Button--iconOnly Button--withLeftIcon Button--variation Button--variation-icon"
-          type="button"
+          <p
+            class="StyledProps--font StyledProps--main StyledProps--font-variation-h4 StyledProps--padding-bottom-xsmall StyledProps--color StyledProps--color-grey0"
+          >
+            Common.contactsupport
+          </p>
+          <p
+            class="StyledProps--font StyledProps--main StyledProps--font-variation-body2 StyledProps--padding-bottom-xsmall StyledProps--color StyledProps--color-grey100"
+          >
+            common.resourceCenter.ticketmenu.submitDesc
+          </p>
+        </div>
+        <div
+          class="Layout--horizontal Layout--layout-spacing-medium StyledProps--main StyledProps--flex StyledProps--flex-alignItems-center"
         >
           <span
-            class="bp3-icon bp3-icon-chevron-right StyledProps--main StyledProps--color StyledProps--color-primary4"
+            class="bp3-icon bp3-icon-chevron-right StyledProps--main StyledProps--color StyledProps--color-grey0"
             icon="chevron-right"
           >
             <svg
@@ -313,7 +252,52 @@ exports[`MenuItems has Feedback when SHOW_NG_REFINER_FEEDBACK is true 1`] = `
               />
             </svg>
           </span>
-        </button>
+        </div>
+      </div>
+    </div>
+    <div
+      class="Layout--horizontal StyledProps--main StyledProps--padding-top-medium StyledProps--flex StyledProps--flex-justifyContent-space-between"
+    >
+      <div
+        class="Layout--horizontal StyledProps--main menuItem"
+      >
+        <div
+          class="Layout--vertical StyledProps--main"
+        >
+          <p
+            class="StyledProps--font StyledProps--main StyledProps--font-variation-h4 StyledProps--padding-bottom-xsmall StyledProps--color StyledProps--color-grey0"
+          >
+            common.resourceCenter.ticketmenu.tickets
+          </p>
+          <p
+            class="StyledProps--font StyledProps--main StyledProps--font-variation-body2 StyledProps--padding-bottom-xsmall StyledProps--color StyledProps--color-grey100"
+          >
+            common.resourceCenter.ticketmenu.ticketsDesc
+          </p>
+        </div>
+        <div
+          class="Layout--horizontal Layout--layout-spacing-medium StyledProps--main StyledProps--flex StyledProps--flex-alignItems-center"
+        >
+          <span
+            class="bp3-icon bp3-icon-chevron-right StyledProps--main StyledProps--color StyledProps--color-grey0"
+            icon="chevron-right"
+          >
+            <svg
+              data-icon="chevron-right"
+              height="16"
+              viewBox="0 0 16 16"
+              width="16"
+            >
+              <desc>
+                chevron-right
+              </desc>
+              <path
+                d="M10.71 7.29l-4-4a1.003 1.003 0 00-1.42 1.42L8.59 8 5.3 11.29c-.19.18-.3.43-.3.71a1.003 1.003 0 001.71.71l4-4c.18-.18.29-.43.29-.71 0-.28-.11-.53-.29-.71z"
+                fill-rule="evenodd"
+              />
+            </svg>
+          </span>
+        </div>
       </div>
     </div>
   </div>
