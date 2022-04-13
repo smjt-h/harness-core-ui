@@ -23,7 +23,9 @@ import {
   stepsData,
   StepResourceObject,
   pipelineStudioRoute,
-  inputSetsRoute, pipelinesRoute, featureFlagsCall
+  inputSetsRoute,
+  pipelinesRoute,
+  featureFlagsCall
 } from '../../support/70-pipeline/constants'
 import { getIdentifierFromName } from '../../utils/stringHelpers'
 
@@ -239,6 +241,108 @@ describe('Execution Stages', () => {
   })
 })
 
+describe('ServerlessAwsLambda as deployment type with fixed values to region, stage', () => {
+  beforeEach(() => {
+    cy.on('uncaught:exception', () => {
+      // returning false here prevents Cypress from
+      // failing the test
+      return false
+    })
+    cy.initializeRoute()
+    cy.intercept('GET', gitSyncEnabledCall, { connectivityMode: null, gitSyncEnabled: false })
+    cy.intercept('POST', pipelineSaveCall, { fixture: 'pipeline/api/pipelines.post' })
+    cy.intercept('POST', stepLibrary, { fixture: 'ng/api/stepLibrary' }).as('stepLibrary')
+    cy.intercept('POST', pipelineSaveCall, { fixture: 'pipeline/api/pipelines.postsuccess' })
+    // Input Set APIs
+    cy.intercept('POST', inputSetsTemplateCall, { fixture: 'pipeline/api/inputSet/inputSetsTemplateCall' }).as(
+      'inputSetsTemplateCall'
+    )
+    cy.intercept('GET', pipelineDetails, { fixture: 'pipeline/api/inputSet/pipelineDetails' }).as('pipelineDetails')
+    cy.intercept('POST', applyTemplatesCall, { fixture: 'pipeline/api/inputSet/applyTemplatesCall' })
+    cy.intercept('GET', inputSetsCall, { fixture: 'pipeline/api/inputSet/emptyInputSetsList' }).as('emptyInputSetList')
+  })
+
+  const yamlValidations = function (stageName: string, regionName: string): void {
+    // Toggle to YAML view
+    cy.get('[data-name="toggle-option-two"]').click({ force: true })
+    cy.wait(1000)
+    cy.get('.monaco-editor .overflow-guard').scrollTo('0%', '25%', { ensureScrollable: false })
+    cy.contains('span', stageName).should('be.visible')
+    cy.contains('span', regionName).should('be.visible')
+  }
+
+  it(`Stage Steps`, () => {
+    cy.visit(pipelineStudioRoute, { timeout: 30000 })
+    cy.get(`div[data-testid="pipeline-studio"]`, {
+      timeout: 5000
+    }).should('be.visible')
+    cy.contains('p', 'testStage_Cypress').click()
+    cy.contains('p', 'Serverless AWS Lambda').click()
+    cy.wait(1000)
+    cy.contains('span', 'Confirm').click()
+    cy.wait(1000)
+    cy.contains('span', 'Next').click()
+    cy.contains('span', 'Select Connector').click()
+    cy.contains('p', 'dynatrace').click()
+    cy.wait(500)
+    cy.contains('span', 'Apply Selected').click()
+    cy.wait(500)
+    cy.get('input[name="region"]').type('region1')
+    cy.wait(500)
+    cy.get('input[name="stage"]').type('stage1')
+    cy.wait(1000)
+    yamlValidations('stage1', 'region1')
+  })
+})
+
+describe('ServerlessAwsLambda as deployment type with runtime values to region, stage', () => {
+  beforeEach(() => {
+    cy.on('uncaught:exception', () => {
+      // returning false here prevents Cypress from
+      // failing the test
+      return false
+    })
+    cy.initializeRoute()
+    cy.intercept('GET', gitSyncEnabledCall, { connectivityMode: null, gitSyncEnabled: false })
+    cy.intercept('POST', pipelineSaveCall, { fixture: 'pipeline/api/pipelines.post' })
+    cy.intercept('POST', stepLibrary, { fixture: 'ng/api/stepLibrary' }).as('stepLibrary')
+    cy.intercept('POST', pipelineSaveCall, { fixture: 'pipeline/api/pipelines.postsuccess' })
+    // Input Set APIs
+    cy.intercept('POST', inputSetsTemplateCall, { fixture: 'pipeline/api/inputSet/inputSetsTemplateCall' }).as(
+      'inputSetsTemplateCall'
+    )
+    cy.intercept('GET', pipelineDetails, { fixture: 'pipeline/api/inputSet/pipelineDetails' }).as('pipelineDetails')
+    cy.intercept('POST', applyTemplatesCall, { fixture: 'pipeline/api/inputSet/applyTemplatesCall' })
+    cy.intercept('GET', inputSetsCall, { fixture: 'pipeline/api/inputSet/emptyInputSetsList' }).as('emptyInputSetList')
+  })
+
+  const yamlValidations = function (): void {
+    // Toggle to YAML view
+    cy.get('[data-name="toggle-option-two"]').click({ force: true })
+    cy.wait(1000)
+    cy.get('.monaco-editor .overflow-guard').scrollTo('0%', '25%', { ensureScrollable: false })
+    cy.contains('span', '<+input>').should('be.visible')
+  }
+
+  it(`Stage Steps`, () => {
+    cy.visit(pipelineStudioRoute, { timeout: 30000 })
+    cy.get(`div[data-testid="pipeline-studio"]`, {
+      timeout: 5000
+    }).should('be.visible')
+    cy.contains('p', 'testStage_Cypress').click()
+    cy.contains('p', 'Serverless AWS Lambda').click()
+    cy.wait(1000)
+    cy.contains('span', 'Confirm').click()
+    cy.wait(1000)
+    cy.contains('span', 'Next').click()
+    cy.get('span[data-icon="fixed-input"]').eq(1).click()
+    cy.get('.MultiTypeInput--header svg[data-icon="cross"]').eq(0).click()
+    cy.contains('div', 'Runtime input').click()
+    cy.wait(1000)
+    yamlValidations()
+  })
+})
+
 describe('Input Sets', () => {
   beforeEach(() => {
     cy.on('uncaught:exception', () => {
@@ -366,14 +470,16 @@ describe('Add stage view with disabled licences', () => {
     })
     cy.intercept('GET', gitSyncEnabledCall, { connectivityMode: null, gitSyncEnabled: false })
 
-    cy.fixture('api/users/feature-flags/accountId').then((featureFlagsData) => {
-
+    cy.fixture('api/users/feature-flags/accountId').then(featureFlagsData => {
       const disabledLicenses = ['NG_TEMPLATES', 'SECURITY_STAGE', 'CING_ENABLED']
 
       const updatedFeatureFlagsList = featureFlagsData.resource.reduce((acc, currentFlagData) => {
-        if(disabledLicenses.includes(currentFlagData.name)){
+        if (disabledLicenses.includes(currentFlagData.name)) {
           acc.push({
-            "uuid": null, "name": currentFlagData.name, "enabled": false, "lastUpdatedAt": 0
+            uuid: null,
+            name: currentFlagData.name,
+            enabled: false,
+            lastUpdatedAt: 0
           })
           return acc
         }
@@ -381,7 +487,6 @@ describe('Add stage view with disabled licences', () => {
         acc.push(currentFlagData)
         return acc
       }, [])
-
 
       cy.intercept('GET', featureFlagsCall, {
         ...featureFlagsData,
@@ -409,4 +514,3 @@ describe('Add stage view with disabled licences', () => {
     cy.findByTestId('stage-Security').should('not.exist')
   })
 })
-
