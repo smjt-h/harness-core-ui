@@ -25,7 +25,10 @@ import {
   pipelineStudioRoute,
   inputSetsRoute,
   pipelinesRoute,
-  featureFlagsCall
+  featureFlagsCall,
+  approvalStageYamlSnippet,
+  jiraApprovalStageYamlSnippet,
+  snowApprovalStageYamlSnippet
 } from '../../support/70-pipeline/constants'
 import { getIdentifierFromName } from '../../utils/stringHelpers'
 
@@ -100,6 +103,98 @@ describe('GIT SYNC DISABLED', () => {
     cy.wait('@pipelineSaveCall')
     cy.wait(500)
     cy.contains('span', 'Pipeline published successfully').should('be.visible')
+  })
+})
+
+describe('APPROVAL STAGE', () => {
+  beforeEach(() => {
+    cy.on('uncaught:exception', () => {
+      // returning false here prevents Cypress from
+      // failing the test
+      return false
+    })
+    cy.intercept('GET', gitSyncEnabledCall, { connectivityMode: null, gitSyncEnabled: false })
+    cy.login('test', 'test')
+
+    cy.visitCreatePipeline()
+
+    cy.fillName('testPipeline_Cypress')
+
+    cy.clickSubmit()
+
+    cy.get('[icon="plus"]').click()
+    cy.findByTestId('stage-Approval').click()
+  })
+
+  it('should add harness approval stage with default failure strategy and when condition', () => {
+    cy.intercept('GET', approvalStageYamlSnippet, { fixture: 'pipeline/api/approvals/stageYamlSnippet' })
+    cy.fillName('testApprovalStage_Cypress')
+    cy.clickSubmit()
+
+    cy.contains('span', 'Approval type is required').should('be.visible').should('have.class', 'FormError--error')
+
+    cy.get('[data-icon="nav-harness"]').click()
+
+    cy.clickSubmit()
+
+    cy.get('[data-icon="harness-with-color"]').should('be.visible')
+
+    cy.contains('span', 'Advanced').click({ force: true })
+
+    // By default unknown errors should be filled
+    cy.contains('span', 'Unknown Errors').should('be.visible')
+
+    // default action should be roolback stage
+    cy.contains('p', 'Rollback Stage').should('be.visible')
+
+    // By default the when condition selected should be 'execute this stage if pipeline execution is successful thus far'
+    cy.get('[value="Success"]').should('be.checked')
+  })
+
+  it('should add jira approval stage with default failure strategy and when condition', () => {
+    cy.intercept('GET', jiraApprovalStageYamlSnippet, { fixture: 'pipeline/api/approvals/jiraStageYamlSnippet' })
+    cy.fillName('testJiraApprovalStage_Cypress')
+    cy.get('[data-icon="service-jira"]').click()
+
+    cy.clickSubmit()
+
+    cy.get('[data-icon="jira-create"]').should('be.visible')
+    cy.get('[data-icon="jira-approve"]').should('be.visible')
+    cy.get('[data-icon="jira-update"]').should('be.visible')
+
+    cy.contains('span', 'Advanced').click({ force: true })
+
+    // By default unknown errors should be filled
+    cy.contains('span', 'Unknown Errors').should('be.visible')
+
+    // default action should be roolback stage
+    cy.contains('p', 'Rollback Stage').should('be.visible')
+
+    // By default the when condition selected should be 'execute this stage if pipeline execution is successful thus far'
+    cy.get('[value="Success"]').should('be.checked')
+  })
+
+  it('should add servicenow approval stage with default failure strategy and when condition', () => {
+    cy.intercept('GET', snowApprovalStageYamlSnippet, {
+      fixture: 'pipeline/api/approvals/snowApprovalStageYamlSnippet'
+    })
+    cy.fillName('testSnowApprovalStage_Cypress')
+    cy.get('[data-icon="service-servicenow"]').click()
+
+    cy.clickSubmit()
+
+    cy.get('[data-icon="servicenow-approve"]').should('be.visible')
+
+    cy.contains('span', 'Advanced').click({ force: true })
+
+    // By default unknown errors should be filled
+    cy.contains('span', 'Unknown Errors').should('be.visible')
+
+    // default action should be roolback stage
+    cy.contains('p', 'Rollback Stage').should('be.visible')
+
+    // By default the when condition selected should be 'execute this stage if pipeline execution is successful thus far'
+    cy.get('[value="Success"]').should('be.checked')
   })
 })
 
