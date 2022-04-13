@@ -10,17 +10,12 @@ exports[`<ServicePopoverCard /> tests snapshot test for service popover card 1`]
     >
       primaryArtifactText
     </div>
-    <div>
-      artifactDisplay
-    </div>
     <div
       class="title"
     >
       sidecarsText
     </div>
-    <div>
-      artifactDisplay
-    </div>
+    <div />
   </div>
 </div>
 `;

@@ -21,11 +21,11 @@ exports[`FlagActivation it should render correctly 1`] = `
             <div
               class="Layout--horizontal Layout--layout-spacing-small StyledProps--main container"
             >
-              <span
-                class="label"
+              <p
+                class="StyledProps--font StyledProps--main StyledProps--font-variation-form-label"
               >
                 environment
-              </span>
+              </p>
               <div />
             </div>
           </div>

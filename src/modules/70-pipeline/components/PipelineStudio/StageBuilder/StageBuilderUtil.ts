@@ -27,7 +27,7 @@ import {
 import type { StageType } from '@pipeline/utils/stageHelpers'
 import type { StageElementWrapper } from '@pipeline/utils/pipelineTypes'
 import type { TemplateSummaryResponse } from 'services/template-ng'
-import type { SelectorData } from '@pipeline/components/PipelineStudio/PipelineContext/PipelineActions'
+import type { GetTemplateProps, GetTemplateResponse } from '@pipeline/utils/useTemplateSelector'
 import { EmptyStageName } from '../PipelineConstants'
 import type { PipelineContextInterface, StagesMap } from '../PipelineContext/PipelineContext'
 import { getStageFromPipeline } from '../PipelineContext/helpers'
@@ -59,10 +59,8 @@ export interface PopoverData {
   onClickGroupStage?: (stageId: string, type: StageType) => void
   renderPipelineStage: PipelineContextInterface['renderPipelineStage']
   isHoverView?: boolean
+  getTemplate: (data: GetTemplateProps) => Promise<GetTemplateResponse>
   templateTypes: { [key: string]: string }
-  setTemplateTypes: (data: { [key: string]: string }) => void
-  openTemplateSelector: (selectorData: SelectorData) => void
-  closeTemplateSelector: () => void
 }
 
 export const getStageIndexByIdentifier = (

@@ -10,11 +10,13 @@ import {
   Button,
   ButtonVariation,
   Container,
+  Text,
   MultiSelectDropDown,
   MultiSelectOption,
   Select,
   SelectOption
 } from '@wings-software/uicore'
+import { FontVariation } from '@harness/design-system'
 import React, { useCallback, useEffect, useMemo, useState } from 'react'
 import type { Column } from 'react-table'
 import moment from 'moment'
@@ -174,7 +176,9 @@ export const CVChanges = ({ updateTime }: { updateTime?: Date }): JSX.Element =>
         <HorizontalLayout alignItem={'flex-end'}>
           <NGBreadcrumbs />
         </HorizontalLayout>
-        <p>{getString('changes')}</p>
+        <Text font={{ variation: FontVariation.H4 }} tooltipProps={{ dataTooltipId: 'changesDashboardTitle' }}>
+          {getString('changes')}
+        </Text>
       </ChangesHeader>
       <ChangeTimeLineHeader>
         <Container className={css.serviceHealthCard} flex style={{ justifyContent: 'flex-start' }}>
@@ -229,8 +233,12 @@ export const CVChanges = ({ updateTime }: { updateTime?: Date }): JSX.Element =>
       </ChangeTimeLineHeader>
       <PBody>
         <HorizontalLayout>
-          <p className={css.timelineText}>{getString('cv.cvChanges.changesTimeline')}</p>
-          <p className={css.timelineText}>{`${getString('lastUpdated')}: ${moment(lastUpdated).format('lll')}`}</p>
+          <Text tooltipProps={{ dataTooltipId: 'changesTimeline' }} className={css.timelineText}>
+            {getString('cv.cvChanges.changesTimeline')}
+          </Text>
+          <Text className={css.timelineText}>{`${getString('lastUpdated')}: ${moment(lastUpdated).format(
+            'lll'
+          )}`}</Text>
         </HorizontalLayout>
         <Container>
           <TimeLine
@@ -254,6 +262,7 @@ export const CVChanges = ({ updateTime }: { updateTime?: Date }): JSX.Element =>
             {...queryParams}
             recordsPerPage={25}
             customCols={columns}
+            dataTooltipId={'CVChangesTable'}
           />
         </Container>
       </PBody>

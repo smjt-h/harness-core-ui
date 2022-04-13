@@ -582,7 +582,9 @@ function RetryPipeline({
   return (
     <Formik<PipelineInfoConfig>
       initialValues={
-        currentPipeline?.pipeline ? clearRuntimeInput(currentPipeline.pipeline) : { name: '', identifier: '' }
+        currentPipeline?.pipeline
+          ? clearRuntimeInput(currentPipeline.pipeline)
+          : { name: '', identifier: '', stages: [] }
       }
       formName="retryPipeline"
       onSubmit={values => {

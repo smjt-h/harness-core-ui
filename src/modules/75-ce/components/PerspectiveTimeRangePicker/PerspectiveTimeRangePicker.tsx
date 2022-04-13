@@ -294,6 +294,7 @@ const PerspectiveTimeRangePicker: React.FC<PerspectiveTimeRangePickerProps> = ({
               content={
                 <DateRangePicker
                   defaultValue={[fromDate, toDate]}
+                  allowSingleDayRange={true}
                   contiguousCalendarMonths={false}
                   shortcuts={false}
                   maxDate={maxDate}

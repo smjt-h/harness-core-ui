@@ -22,9 +22,40 @@ import { Color, FontVariation } from '@harness/design-system'
 import { useStrings } from 'framework/strings'
 import { getConnectorNameFromValue, getStatus } from '@pipeline/components/PipelineStudio/StageBuilder/StageBuilderUtil'
 import type { SidecarArtifactWrapper } from 'services/cd-ng'
-import { ArtifactIconByType, ModalViewFor } from '../ArtifactHelper'
+import {
+  ArtifactIconByType,
+  ENABLED_ARTIFACT_TYPES,
+  ModalViewFor
+} from '@pipeline/components/ArtifactsSelection/ArtifactHelper'
 import type { ArtifactListViewProps, ArtifactType } from '../ArtifactInterface'
+import { showConnectorStep } from '../ArtifactUtils'
 import css from '../ArtifactsSelection.module.scss'
+
+function ArtifactRepositoryTooltip({
+  artifactType,
+  artifactConnectorName,
+  artifactConnectorRef
+}: {
+  artifactType: ArtifactType
+  artifactConnectorName?: string
+  artifactConnectorRef: string
+}): React.ReactElement | null {
+  if (artifactType === ENABLED_ARTIFACT_TYPES.CustomArtifact) {
+    return null
+  }
+  return (
+    <Container className={css.borderRadius} padding="medium">
+      <div>
+        <Text font="small" color={Color.GREY_100}>
+          {artifactConnectorName}
+        </Text>
+        <Text font="small" color={Color.GREY_300}>
+          {artifactConnectorRef}
+        </Text>
+      </div>
+    </Container>
+  )
+}
 
 function ArtifactListView({
   accountId,
@@ -45,6 +76,13 @@ function ArtifactListView({
     accountId
   )
   const primaryConnectorName = getConnectorNameFromValue(primaryArtifact?.spec?.connectorRef, fetchedConnectorResponse)
+
+  const getPrimaryArtifactRepository = (artifactType: ArtifactType): string => {
+    if (artifactType === ENABLED_ARTIFACT_TYPES.CustomArtifact) {
+      return getString('common.repo_provider.customLabel')
+    }
+    return primaryConnectorName ?? primaryArtifact.spec?.connectorRef
+  }
 
   return (
     <Layout.Vertical style={{ width: '100%' }}>
@@ -71,23 +109,18 @@ function ArtifactListView({
                   <Icon padding={{ right: 'small' }} name={ArtifactIconByType[primaryArtifact.type]} size={18} />
                   <Text
                     tooltip={
-                      <Container className={css.borderRadius} padding="medium">
-                        <div>
-                          <Text font="small" color={Color.GREY_100}>
-                            {primaryConnectorName}
-                          </Text>
-                          <Text font="small" color={Color.GREY_300}>
-                            {primaryArtifact.spec?.connectorRef}
-                          </Text>
-                        </div>
-                      </Container>
+                      <ArtifactRepositoryTooltip
+                        artifactConnectorName={primaryConnectorName}
+                        artifactConnectorRef={primaryArtifact.spec?.connectorRef}
+                        artifactType={primaryArtifact.type}
+                      />
                     }
                     tooltipProps={{ isDark: true }}
-                    alwaysShowTooltip
+                    alwaysShowTooltip={showConnectorStep(primaryArtifact.type)}
                     className={css.connectorName}
                     lineClamp={1}
                   >
-                    {primaryConnectorName ?? primaryArtifact.spec?.connectorRef}
+                    {getPrimaryArtifactRepository(primaryArtifact.type)}
                   </Text>
 
                   {getMultiTypeFromValue(primaryArtifact.spec?.connectorRef) === MultiTypeInputType.FIXED && (
@@ -129,6 +162,13 @@ function ArtifactListView({
                   fetchedConnectorResponse
                 )
 
+                const getSidecarArtifactRepository = (artifactType: ArtifactType): string => {
+                  if (artifactType === ENABLED_ARTIFACT_TYPES.CustomArtifact) {
+                    return getString('common.repo_provider.customLabel')
+                  }
+                  return sidecarConnectorName ?? sidecar?.spec?.connectorRef
+                }
+
                 return (
                   <section className={cx(css.artifactList, css.rowItem)} key={`${sidecar?.identifier}-${index}`}>
                     <div>
@@ -150,21 +190,16 @@ function ArtifactListView({
                         className={css.connectorName}
                         lineClamp={1}
                         tooltip={
-                          <Container className={css.borderRadius} padding="medium">
-                            <div>
-                              <Text font="small" color={Color.GREY_100}>
-                                {sidecarConnectorName}
-                              </Text>
-                              <Text font="small" color={Color.GREY_300}>
-                                {sidecar?.spec?.connectorRef}
-                              </Text>
-                            </div>
-                          </Container>
+                          <ArtifactRepositoryTooltip
+                            artifactConnectorName={sidecarConnectorName}
+                            artifactConnectorRef={sidecar?.spec?.connectorRef}
+                            artifactType={sidecar?.type as ArtifactType}
+                          />
                         }
                         tooltipProps={{ isDark: true }}
-                        alwaysShowTooltip
+                        alwaysShowTooltip={showConnectorStep(sidecar?.type as ArtifactType)}
                       >
-                        {sidecarConnectorName ?? sidecar?.spec?.connectorRef}
+                        {getSidecarArtifactRepository(sidecar?.type as ArtifactType)}
                       </Text>
                       {getMultiTypeFromValue(sidecar?.spec?.connectorRef) === MultiTypeInputType.FIXED && (
                         <Icon name="full-circle" size={8} color={sideCarConnectionColor} />

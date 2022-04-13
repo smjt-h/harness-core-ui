@@ -26,6 +26,7 @@ const ExecutionLog: React.FC<ExecutionAndAPICallLogProps> = ({
   isFullScreen,
   setIsFullScreen,
   verifyStepExecutionId,
+  monitoredServiceIdentifier,
   serviceName,
   envName,
   resource,
@@ -104,6 +105,7 @@ const ExecutionLog: React.FC<ExecutionAndAPICallLogProps> = ({
       <LogContentHeader
         logType={LogTypes.ExecutionLog}
         verifyStepExecutionId={verifyStepExecutionId}
+        monitoredServiceIdentifier={monitoredServiceIdentifier}
         serviceName={serviceName}
         envName={envName}
         healthSource={healthSource}
@@ -121,6 +123,7 @@ const ExecutionLog: React.FC<ExecutionAndAPICallLogProps> = ({
         setIsFullScreen={setIsFullScreen}
         isVerifyStep={Boolean(verifyStepExecutionId)}
         timeRange={timeRange}
+        isMonitoredService={Boolean(monitoredServiceIdentifier)}
         handleDownloadLogs={handleDownloadLogs}
       />
       <div className={cx(css.main, { [css.fullScreen]: isFullScreen })}>

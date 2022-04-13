@@ -21,11 +21,10 @@ import { Color } from '@harness/design-system'
 import { useModalHook } from '@harness/use-modal'
 import cx from 'classnames'
 import { useHistory } from 'react-router-dom'
-import { parse } from 'yaml'
 import { isEmpty, defaultTo, keyBy } from 'lodash-es'
 import type { FormikErrors, FormikProps } from 'formik'
 import useRBACError from '@rbac/utils/useRBACError/useRBACError'
-import type { PipelineInfoConfig, ResponseJsonNode } from 'services/cd-ng'
+import type { PipelineConfig, PipelineInfoConfig, ResponseJsonNode } from 'services/cd-ng'
 import {
   useGetPipeline,
   usePostPipelineExecuteWithInputSetYaml,
@@ -59,7 +58,7 @@ import {
   StageSelectionData
 } from '@pipeline/utils/runPipelineUtils'
 import { useQueryParams } from '@common/hooks'
-import { yamlStringify } from '@common/utils/YamlHelperMethods'
+import { yamlStringify, yamlParse } from '@common/utils/YamlHelperMethods'
 import { PipelineActions } from '@common/constants/TrackingConstants'
 import { useTelemetry } from '@common/hooks/useTelemetry'
 import type { InputSetDTO } from '@pipeline/utils/types'
@@ -211,12 +210,12 @@ function RunPipelineFormBasic({
   })
 
   const pipeline: PipelineInfoConfig | undefined = React.useMemo(
-    () => parse(defaultTo(pipelineResponse?.data?.yamlPipeline, ''))?.pipeline,
+    () => yamlParse<PipelineConfig>(defaultTo(pipelineResponse?.data?.yamlPipeline, ''))?.pipeline,
     [pipelineResponse?.data?.yamlPipeline]
   )
 
   const resolvedPipeline: PipelineInfoConfig | undefined = React.useMemo(
-    () => parse(defaultTo(pipelineResponse?.data?.resolvedTemplatesPipelineYaml, ''))?.pipeline,
+    () => yamlParse<PipelineConfig>(defaultTo(pipelineResponse?.data?.resolvedTemplatesPipelineYaml, ''))?.pipeline,
     [pipelineResponse?.data?.resolvedTemplatesPipelineYaml]
   )
 
@@ -485,7 +484,7 @@ function RunPipelineFormBasic({
 
   function handleModeSwitch(view: SelectedView): void {
     if (view === SelectedView.VISUAL && yamlHandler && formikRef.current) {
-      const parsedYaml = parse(defaultTo(yamlHandler.getLatestYaml(), ''))
+      const parsedYaml = yamlParse<PipelineConfig>(defaultTo(yamlHandler.getLatestYaml(), ''))
 
       if (parsedYaml.pipeline) {
         formikRef.current.setValues(parsedYaml.pipeline)
@@ -632,7 +631,7 @@ function RunPipelineFormBasic({
           validate={handleValidation}
         >
           {formik => {
-            const { submitForm, values, setFormikState } = formik
+            const { submitForm, values, setValues, setFormikState } = formik
             formikRef.current = formik
             valuesPipelineRef.current = values
 
@@ -652,7 +651,7 @@ function RunPipelineFormBasic({
                   selectedView={selectedView}
                   executionView={executionView}
                   pipelineResponse={pipelineResponse}
-                  getTemplateFromPipeline={() => void 0}
+                  getTemplateFromPipeline={getTemplateFromPipeline}
                   template={inputSetYamlResponse}
                   formRefDom={formRefDom}
                   formErrors={formErrors}
@@ -738,7 +737,17 @@ function RunPipelineFormBasic({
                           ) {
                             setExistingProvide('provide')
                           } else {
-                            submitForm()
+                            if (selectedView === SelectedView.YAML) {
+                              const parsedYaml = yamlParse<PipelineConfig>(defaultTo(yamlHandler?.getLatestYaml(), ''))
+                              if (parsedYaml.pipeline) {
+                                setValues(parsedYaml.pipeline)
+                                setTimeout(() => {
+                                  submitForm()
+                                }, 0)
+                              }
+                            } else {
+                              submitForm()
+                            }
                           }
                         }}
                         featuresProps={getFeaturePropsForRunPipelineButton({

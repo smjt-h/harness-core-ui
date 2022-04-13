@@ -11,6 +11,7 @@ import { fireEvent, render } from '@testing-library/react'
 import { TestWrapper } from '@common/utils/testUtils'
 import { GatewayKindType } from '@ce/constants'
 import COGatewayAnalytics from '../COGatewayAnalytics'
+import { mockedEcsClusterServiceData } from './data'
 
 const mockServiceData = {
   id: 10,
@@ -56,6 +57,10 @@ jest.mock('services/lw', () => ({
   })),
   useDeleteStaticSchedule: jest.fn().mockImplementation(() => ({
     mutate: jest.fn()
+  })),
+  useDescribeServiceInContainerServiceCluster: jest.fn().mockImplementation(() => ({
+    data: { response: mockedEcsClusterServiceData },
+    loading: false
   }))
 }))
 

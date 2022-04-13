@@ -80,10 +80,10 @@ export const getHelpeTextForTags = (
   ) {
     invalidFields.push(getString('connectors.GCR.registryHostname'))
   }
-  if (!imagePath || getMultiTypeFromValue(imagePath) === MultiTypeInputType.RUNTIME) {
+  if (imagePath === '' || getMultiTypeFromValue(imagePath) === MultiTypeInputType.RUNTIME) {
     invalidFields.push(getString('pipeline.imagePathLabel'))
   }
-  if (!imagePath || getMultiTypeFromValue(artifactPath) === MultiTypeInputType.RUNTIME) {
+  if (artifactPath === '' || getMultiTypeFromValue(artifactPath) === MultiTypeInputType.RUNTIME) {
     invalidFields.push(getString('pipeline.artifactPathLabel'))
   }
   if (repository !== undefined && (!repository || getMultiTypeFromValue(repository) === MultiTypeInputType.RUNTIME)) {

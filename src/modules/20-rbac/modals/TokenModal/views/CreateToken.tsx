@@ -8,10 +8,12 @@
 import React, { useState } from 'react'
 import type { ModalErrorHandlerBinding } from '@wings-software/uicore'
 import { omit } from 'lodash-es'
+import { useParams } from 'react-router-dom'
 import { useToaster } from '@common/components'
 import { useStrings } from 'framework/strings'
 import { TokenDTO, useCreateToken } from 'services/cd-ng'
 import useRBACError from '@rbac/utils/useRBACError/useRBACError'
+import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
 import TokenForm, { TokenFormData } from './TokenForm'
 
 export interface TokenModalProps {
@@ -26,11 +28,12 @@ export interface TokenModalProps {
 
 const CreateTokenForm: React.FC<TokenModalProps> = props => {
   const { onSubmit } = props
+  const { accountId } = useParams<ProjectPathProps>()
   const { getRBACErrorMessage } = useRBACError()
   const { getString } = useStrings()
   const { showSuccess } = useToaster()
   const [modalErrorHandler, setModalErrorHandler] = useState<ModalErrorHandlerBinding>()
-  const { mutate: createToken, loading: saving } = useCreateToken({})
+  const { mutate: createToken, loading: saving } = useCreateToken({ queryParams: { accountIdentifier: accountId } })
   const [token, setToken] = useState<string>()
 
   const handleSubmit = async (values: TokenFormData): Promise<void> => {

@@ -20,6 +20,7 @@ const LogContentToolbar: React.FC<LogContentToolbarProps> = ({
   setIsFullScreen,
   isVerifyStep,
   timeRange,
+  isMonitoredService,
   handleDownloadLogs
 }) => {
   const { getString } = useStrings()
@@ -32,7 +33,7 @@ const LogContentToolbar: React.FC<LogContentToolbarProps> = ({
       border={{ bottom: true, color: logType === LogTypes.ExecutionLog ? Color.GREY_700 : Color.GREY_200 }}
     >
       <Container padding={{ left: 'medium' }}>
-        {!isVerifyStep && (
+        {!isVerifyStep && !isMonitoredService && (
           <Text
             icon="info"
             color={Color.GREY_400}

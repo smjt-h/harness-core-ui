@@ -16,28 +16,28 @@ import { ResourceType } from '@rbac/interfaces/ResourceType'
 import { PermissionIdentifier } from '@rbac/interfaces/PermissionIdentifier'
 import { CFVariationColors } from '@cf/constants'
 
-import type { FormVariationMap } from '../../Types.types'
-interface AddTargetingButtonProps {
-  addTargetingDropdownVariations: FormVariationMap[]
-  addVariation: (newVariation: FormVariationMap) => void
+import type { Variation } from 'services/cf'
+export interface AddTargetingButtonProps {
+  targetingDropdownVariations: Variation[]
+  addVariation: (newVariation: Variation) => void
   addPercentageRollout: () => void
   featureDisabled?: boolean
   disabled?: boolean
 }
 
 const AddTargetingButton = ({
-  addTargetingDropdownVariations,
+  targetingDropdownVariations,
   addVariation,
   addPercentageRollout
 }: AddTargetingButtonProps): ReactElement => {
   const { getString } = useStrings()
 
   const items = [
-    ...addTargetingDropdownVariations.map((variation, index) => ({
-      'data-testid': `variation_option_${variation.variationIdentifier}`,
+    ...targetingDropdownVariations.map((variation, index) => ({
+      'data-testid': `variation_option_${variation.identifier}`,
       onClick: () => addVariation(variation),
       icon: <Icon icon="full-circle" color={CFVariationColors[index]} />,
-      text: variation.variationName,
+      text: variation.name || variation.identifier,
       permission: {
         resource: { resourceType: ResourceType.FEATUREFLAG },
         permission: PermissionIdentifier.EDIT_FF_FEATUREFLAG

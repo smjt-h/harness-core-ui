@@ -12,27 +12,97 @@ import { GitSyncTestWrapper } from '@common/utils/gitSyncTestUtils'
 import { gitConfigs, sourceCodeManagers } from '@connectors/mocks/mock'
 import { projectPathProps } from '@common/utils/routeUtils'
 import routes from '@common/RouteDefinitions'
+import useCreateConnectorModalMock from '@connectors/modals/ConnectorModal/__mocks__/useCreateConnectorModal'
 import GitSyncRepoForm from '../GitSyncRepoForm'
-import { gitHubMock } from './mockData'
+import { gitHubMock, mockBranches } from './mockData'
 
 const branches = { data: ['master', 'devBranch'], status: 'SUCCESS' }
 const fetchBranches = jest.fn(() => Promise.resolve(branches))
 const createGitSynRepo = jest.fn()
 const getGitConnector = jest.fn(() => Promise.resolve({}))
 
-jest.mock('services/cd-ng', () => ({
-  usePostGitSync: jest.fn().mockImplementation(() => ({ mutate: createGitSynRepo })),
-  useGetConnector: jest.fn().mockImplementation(() => ({ data: gitHubMock, refetch: getGitConnector })),
-  getConnectorListPromise: jest.fn().mockImplementation(() => Promise.resolve(gitHubMock)),
-  useGetListOfBranchesByConnector: jest.fn().mockImplementation(() => ({ data: branches, refetch: fetchBranches })),
-  useGetTestGitRepoConnectionResult: jest.fn().mockImplementation(() => ({ mutate: jest.fn })),
-  useListGitSync: jest
-    .fn()
-    .mockImplementation(() => ({ data: gitConfigs, refetch: () => Promise.resolve(gitConfigs) })),
-  useGetSourceCodeManagers: jest.fn().mockImplementation(() => {
-    return { data: sourceCodeManagers, refetch: () => Promise.resolve(sourceCodeManagers) }
+const getListOfBranchesWithStatus = jest.fn(() => Promise.resolve(mockBranches))
+let getTestConnectionResultPromiseCalled = false
+jest.mock('@connectors/modals/ConnectorModal/useCreateConnectorModal', () =>
+  useCreateConnectorModalMock({
+    connector: {
+      name: 'abhinav-github',
+      identifier: 'abhinavgithub',
+      description: '',
+      orgIdentifier: undefined,
+      projectIdentifier: undefined,
+      tags: {},
+      type: 'Github',
+      spec: {
+        url: 'https://github.com/harness/harness-core-ui/',
+        validationRepo: null,
+        authentication: {
+          type: 'Http',
+          spec: {
+            type: 'UsernameToken',
+            spec: { username: null, usernameRef: 'account.autouser1', tokenRef: 'account.abhinavtest2' }
+          }
+        },
+        apiAccess: null,
+        delegateSelectors: [],
+        executeOnDelegate: false,
+        type: 'Repo'
+      }
+    },
+    createdAt: 1649150274945,
+    lastModifiedAt: 1649299488973,
+    status: {
+      status: 'SUCCESS',
+      errorSummary: null,
+      errors: null,
+      testedAt: 1649299467270,
+      lastTestedAt: 0,
+      lastConnectedAt: 1649299467270
+    },
+    activityDetails: { lastActivityTime: 1649299463522 },
+    harnessManaged: false,
+    gitDetails: {
+      objectId: null,
+      branch: null,
+      repoIdentifier: null,
+      rootFolder: null,
+      filePath: null,
+      repoName: null
+    },
+    entityValidityDetails: { valid: true, invalidYaml: null }
   })
-}))
+)
+jest.mock('services/cd-ng', () => {
+  return {
+    getTestConnectionResultPromise: jest.fn().mockImplementation(() => {
+      getTestConnectionResultPromiseCalled = true
+      return Promise.resolve({ data: { data: { status: 'SUCESS' } } })
+    }),
+    usePostGitSync: jest.fn().mockImplementation(() => ({ mutate: createGitSynRepo })),
+    useGetConnector: jest.fn().mockImplementation(() => ({ data: gitHubMock, refetch: getGitConnector })),
+    getConnectorListPromise: jest.fn().mockImplementation(() => Promise.resolve(gitHubMock)),
+    useGetListOfBranchesByConnector: jest.fn().mockImplementation(() => ({ data: branches, refetch: fetchBranches })),
+    useGetTestGitRepoConnectionResult: jest.fn().mockImplementation(() => ({ mutate: jest.fn })),
+    useListGitSync: jest
+      .fn()
+      .mockImplementation(() => ({ data: gitConfigs, refetch: () => Promise.resolve(gitConfigs) })),
+
+    useGetListOfBranchesWithStatus: jest.fn().mockImplementation((): any => {
+      return {
+        data: mockBranches,
+        refetch: getListOfBranchesWithStatus,
+        error: null,
+        loading: false,
+        absolutePath: '',
+        cancel: jest.fn(),
+        response: null
+      }
+    }),
+    useGetSourceCodeManagers: jest.fn().mockImplementation(() => {
+      return { data: sourceCodeManagers, refetch: () => Promise.resolve(sourceCodeManagers) }
+    })
+  }
+})
 
 const pathParams = { accountId: 'dummy', orgIdentifier: 'default', projectIdentifier: 'dummyProject' }
 
@@ -182,5 +252,52 @@ describe('Git Sync - repo tab', () => {
         repo: 'https://github.com/wings-software/sunnykesh-gitSync'
       })
     })
+  })
+
+  test('Updating the status of connector', async () => {
+    const { container, getByText } = render(
+      <GitSyncTestWrapper path={routes.toGitSyncReposAdmin(projectPathProps)} pathParams={pathParams}>
+        <GitSyncRepoForm
+          {...pathParams}
+          isEditMode={false}
+          isNewUser={false}
+          gitSyncRepoInfo={undefined}
+          onSuccess={noop}
+          onClose={noop}
+        />
+      </GitSyncTestWrapper>
+    )
+
+    await waitFor(() => {
+      expect(getByText('selectGitProvider')).toBeTruthy()
+    })
+
+    const connnectorRefInput = queryByAttribute('data-testid', container, /gitConnector/)
+    expect(connnectorRefInput).toBeDefined()
+    fireEvent.click(connnectorRefInput!)
+
+    await act(async () => {
+      const connectorSelectorDialog = document.getElementsByClassName('bp3-dialog')[0]
+      const githubConnector = await findAllByText(connectorSelectorDialog as HTMLElement, 'ValidGithubRepo')
+      expect(connectorSelectorDialog).toMatchSnapshot('connectorSelectorDialog')
+      expect(githubConnector).toBeTruthy()
+      const editBtn = document.getElementsByClassName('editBtn')[0]
+
+      expect(editBtn).toBeDefined()
+      expect(editBtn).toMatchSnapshot('editBtn')
+      await act(async () => {
+        fireEvent.click(editBtn! as HTMLElement)
+      })
+    })
+    const connectorDialog = document.getElementsByClassName('bp3-dialog')[1]
+    expect(connectorDialog).toBeDefined()
+    expect(connectorDialog).toMatchSnapshot('connectorDialog')
+
+    const continueStepOne = await findByText(connectorDialog as HTMLElement, 'save')
+    expect(continueStepOne).toBeDefined()
+    await act(async () => {
+      fireEvent.click(continueStepOne! as HTMLElement)
+    })
+    expect(getTestConnectionResultPromiseCalled).toBeTruthy()
   })
 })

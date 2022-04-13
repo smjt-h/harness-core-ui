@@ -8,7 +8,11 @@
 import React from 'react'
 import { renderHook } from '@testing-library/react-hooks'
 import { TestWrapper } from '@common/utils/testUtils'
-import { useGetLicensesAndSummary } from 'services/cd-ng'
+import {
+  useGetLicensesAndSummary,
+  useGetCDLicenseUsageForServiceInstances,
+  useGetCDLicenseUsageForServices
+} from 'services/cd-ng'
 import { useGetLicenseUsage } from 'services/cf'
 import { useGetUsage } from 'services/ci'
 import { useGetCCMLicenseUsage } from 'services/ce'
@@ -17,6 +21,34 @@ import { useGetUsageAndLimit } from '../useGetUsageAndLimit'
 
 jest.mock('services/cd-ng')
 const useGetLicensesAndSummaryMock = useGetLicensesAndSummary as jest.MockedFunction<any>
+const useGetCDLicenseUsageForServiceInstancesMock = useGetCDLicenseUsageForServiceInstances as jest.MockedFunction<any>
+const useGetCDLicenseUsageForServicesMock = useGetCDLicenseUsageForServices as jest.MockedFunction<any>
+useGetCDLicenseUsageForServiceInstancesMock.mockImplementation(() => {
+  return {
+    data: {
+      data: {
+        activeServiceInstances: {
+          count: 200,
+          displayName: 'Last 30 Days'
+        }
+      }
+    }
+  }
+})
+
+useGetCDLicenseUsageForServicesMock.mockImplementation(() => {
+  return {
+    data: {
+      data: {
+        activeServices: {
+          count: 23,
+          displayName: 'Last 30 Days'
+        }
+      }
+    }
+  }
+})
+
 jest.mock('services/cf')
 const useGetFFLicenseUsageMock = useGetLicenseUsage as jest.MockedFunction<any>
 useGetFFLicenseUsageMock.mockImplementation(() => {
@@ -131,5 +163,31 @@ describe('useGetUsageAndLimit', () => {
     expect(result.current.usageData.usage?.ci).toBeUndefined()
     expect(result.current.usageData.usage?.ff).toBeUndefined()
     expect(result.current.usageData.usage?.ccm?.activeSpend?.count).toBe(29)
+  })
+
+  test('should fetch CD usage and limit when module is CD', async () => {
+    useGetLicensesAndSummaryMock.mockImplementation(() => {
+      return {
+        data: {
+          data: {
+            totalServiceInstances: 1000,
+            totalWorkload: 100
+          },
+          status: 'SUCCESS'
+        }
+      }
+    })
+    const wrapper = ({ children }: React.PropsWithChildren<unknown>): React.ReactElement => (
+      <TestWrapper>{children}</TestWrapper>
+    )
+    const { result } = renderHook(() => useGetUsageAndLimit(ModuleName.CD), { wrapper })
+    expect(result.current.limitData.limit?.ci).toBeUndefined()
+    expect(result.current.limitData.limit?.ff).toBeUndefined()
+    expect(result.current.limitData.limit?.cd?.totalServiceInstances).toBe(1000)
+    expect(result.current.limitData.limit?.cd?.totalWorkload).toBe(100)
+    expect(result.current.usageData.usage?.ci).toBeUndefined()
+    expect(result.current.usageData.usage?.ff).toBeUndefined()
+    expect(result.current.usageData.usage?.cd?.activeServiceInstances?.count).toBe(200)
+    expect(result.current.usageData.usage?.cd?.activeServices?.count).toBe(23)
   })
 })

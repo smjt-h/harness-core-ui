@@ -287,10 +287,12 @@ describe('RUN PIPELINE MODAL', () => {
       cy.fillName('JiraStageTest')
       cy.contains('p', 'Jira').click({ multiple: true })
       cy.clickSubmit()
-      cy.intercept('GET', jirayamlSnippetCall, { fixture: 'pipeline/api/jiraStage/stageYamlSnippet' })
+      cy.intercept('GET', jirayamlSnippetCall, { fixture: 'pipeline/api/jiraStage/stageYamlSnippet' }).as('stageYaml')
       cy.intercept('POST', stepsCall, { fixture: 'pipeline/api/approvals/steps' })
     })
     it('should display the delete pipeline stage modal', () => {
+      cy.wait('@stageYaml')
+      cy.wait(1000)
       cy.get('[icon="play"]').click({ force: true, multiple: true })
       cy.wait(2000)
       cy.contains('p', 'JiraStageTest').trigger('mouseover')
@@ -302,6 +304,7 @@ describe('RUN PIPELINE MODAL', () => {
 
     describe('Jira Create Form Test', () => {
       it('Submit empty form Validations', () => {
+        cy.wait('@stageYaml')
         cy.contains('span', 'Advanced').click({ force: true })
         cy.wait(1000)
         cy.contains('span', 'Execution').click({ force: true })
@@ -342,6 +345,7 @@ describe('RUN PIPELINE MODAL', () => {
 
     describe('Jira Approval Form Test', () => {
       it('Submit empty form Validations', () => {
+        cy.wait('@stageYaml')
         cy.contains('span', 'Advanced').click({ force: true })
         cy.wait(1000)
         cy.contains('span', 'Execution').click({ force: true })
@@ -379,6 +383,7 @@ describe('RUN PIPELINE MODAL', () => {
 
     describe('Jira Update Form Test', () => {
       it('Submit empty form Validations', () => {
+        cy.wait('@stageYaml')
         cy.contains('span', 'Advanced').click({ force: true })
         cy.wait(1000)
         cy.contains('span', 'Execution').click({ force: true })

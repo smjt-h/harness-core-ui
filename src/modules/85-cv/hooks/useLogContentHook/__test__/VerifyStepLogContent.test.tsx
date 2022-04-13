@@ -32,6 +32,9 @@ jest.mock('services/cv', () => ({
   useGetVerifyStepLogs: jest
     .fn()
     .mockImplementation(() => ({ data: executionLogsResponse, loading: false, error: null, refetch: jest.fn() })),
+  useGetAllHealthSourcesForServiceAndEnvironment: jest
+    .fn()
+    .mockImplementation(() => ({ data: {}, loading: false, error: null, refetch: jest.fn() })),
   getVerifyStepLogsPromise: jest.fn().mockImplementation(() => executionLogsResponse),
   useGetVerifyStepDeploymentActivitySummary: jest.fn().mockImplementation(() => ({
     data: deploymentActivitySummaryResponse,

@@ -6,23 +6,23 @@
  */
 
 import React from 'react'
-import { Layout } from '@wings-software/uicore'
+import { Layout, PageError } from '@wings-software/uicore'
 import { useStrings } from 'framework/strings'
-import UsageInfoCard from './UsageInfoCard'
-export interface CDUsageInfoProps {
-  subscribedIns: number
-  activeIns: number
-  subscribedService: number
-  activeService: number
-  subscribedUsers: number
-  activeUsers: number
-}
-const ActiveInstanceCard: React.FC<{ subscribedIns: number; activeIns: number }> = ({ subscribedIns, activeIns }) => {
+import { useGetUsageAndLimit } from '@common/hooks/useGetUsageAndLimit'
+import { ContainerSpinner } from '@common/components/ContainerSpinner/ContainerSpinner'
+import { ModuleName } from 'framework/types/ModuleName'
+import UsageInfoCard, { ErrorContainer } from './UsageInfoCard'
+
+const ActiveInstanceCard: React.FC<{ subscribedIns: number; activeIns: number; displayName?: string }> = ({
+  subscribedIns,
+  activeIns,
+  displayName
+}) => {
   const { getString } = useStrings()
 
   const leftHeader = getString('common.subscriptions.usage.srvcInst')
-  const tooltip = 'Active Instance tooltip placeholder'
-  const rightHeader = getString('common.subscriptions.usage.last30days')
+  const tooltip = getString('common.subscriptions.usage.cdSITooltip')
+  const rightHeader = displayName || getString('common.subscriptions.usage.last30days')
   const hasBar = true
   const leftFooter = getString('common.subscribed')
   const rightFooter = getString('common.subscribed')
@@ -39,16 +39,16 @@ const ActiveInstanceCard: React.FC<{ subscribedIns: number; activeIns: number }>
   return <UsageInfoCard {...props} />
 }
 
-const ActiveServices: React.FC<{ subscribedService: number; activeService: number }> = ({
+const ActiveServices: React.FC<{ subscribedService: number; activeService: number; displayName?: string }> = ({
   subscribedService,
-  activeService
+  activeService,
+  displayName
 }) => {
   const { getString } = useStrings()
 
   const leftHeader = getString('common.subscriptions.usage.services')
-  //TO-DO: replace with tooltip
-  const tooltip = 'Services tooltip placeholder'
-  const rightHeader = getString('common.subscriptions.usage.last30days')
+  const tooltip = getString('common.subscriptions.usage.cdServiceTooltip')
+  const rightHeader = displayName || getString('common.subscriptions.usage.last30days')
   const hasBar = true
   const leftFooter = getString('total')
   const props = {
@@ -63,40 +63,44 @@ const ActiveServices: React.FC<{ subscribedService: number; activeService: numbe
   return <UsageInfoCard {...props} />
 }
 
-const ActiveUsers: React.FC<{ subscribedUsers: number; activeUsers: number }> = ({ subscribedUsers, activeUsers }) => {
-  const { getString } = useStrings()
+const CDUsageInfo: React.FC = () => {
+  const { limitData, usageData } = useGetUsageAndLimit(ModuleName.CD)
+  const isLoading = limitData.loadingLimit || usageData.loadingUsage
 
-  const leftHeader = getString('common.subscriptions.usage.cdUsers')
-  //TO-DO: replace with tooltip
-  const tooltip = 'Active CD Users tooltip placeholder'
-  const rightHeader = getString('common.subscriptions.usage.last30days')
-  const hasBar = true
-  const leftFooter = getString('common.subscribed')
-  const props = {
-    subscribed: subscribedUsers,
-    usage: activeUsers,
-    leftHeader,
-    tooltip,
-    rightHeader,
-    hasBar,
-    leftFooter
+  if (isLoading) {
+    return <ContainerSpinner />
   }
-  return <UsageInfoCard {...props} />
-}
 
-const CDUsageInfo: React.FC<CDUsageInfoProps> = ({
-  subscribedIns,
-  activeIns,
-  subscribedService,
-  activeService,
-  subscribedUsers,
-  activeUsers
-}) => {
+  const { usageErrorMsg, refetchUsage, usage } = usageData
+  const { limitErrorMsg, refetchLimit, limit } = limitData
+
+  if (usageErrorMsg) {
+    return (
+      <ErrorContainer>
+        <PageError message={usageErrorMsg} onClick={() => refetchUsage?.()} />
+      </ErrorContainer>
+    )
+  }
+
+  if (limitErrorMsg) {
+    return (
+      <ErrorContainer>
+        <PageError message={limitErrorMsg} onClick={() => refetchLimit?.()} />
+      </ErrorContainer>
+    )
+  }
   return (
     <Layout.Horizontal spacing="large">
-      <ActiveInstanceCard subscribedIns={subscribedIns} activeIns={activeIns} />
-      <ActiveServices subscribedService={subscribedService} activeService={activeService} />
-      <ActiveUsers subscribedUsers={subscribedUsers} activeUsers={activeUsers} />
+      <ActiveInstanceCard
+        subscribedIns={limit?.cd?.totalServiceInstances || 0}
+        activeIns={usage?.cd?.activeServiceInstances?.count || 0}
+        displayName={usage?.cd?.activeServiceInstances?.displayName}
+      />
+      <ActiveServices
+        subscribedService={limit?.cd?.totalWorkload || 0}
+        activeService={usage?.cd?.activeServices?.count || 0}
+        displayName={usage?.cd?.activeServices?.displayName}
+      />
     </Layout.Horizontal>
   )
 }

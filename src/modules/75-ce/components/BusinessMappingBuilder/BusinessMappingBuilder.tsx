@@ -156,8 +156,9 @@ const BusinessMappingBuilder: (props: BusinessMappingBuilderProps) => React.Reac
         name: selectedBM.name || '',
         costTargetsKey: 0,
         sharedCostsKey: 0,
-        unallocatedCost: {
-          label: 'Others'
+        unallocatedCost: selectedBM.unallocatedCost || {
+          label: 'Others',
+          strategy: 'DISPLAY_NAME'
         }
       }}
       formLoading={fetching ? true : undefined}

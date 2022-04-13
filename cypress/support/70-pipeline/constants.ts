@@ -51,6 +51,10 @@ export const triggerPiplelineDetails = `pipeline/api/pipelines/${pipelineIdentif
 export const inputSetListAPI = `pipeline/api/inputSets?routingId=${accountId}&accountIdentifier=${accountId}&orgIdentifier=${orgIdentifier}&projectIdentifier=${projectId}&pipelineIdentifier=${pipelineIdentifier}`
 export const featureFlagsCall = `/api/users/feature-flags/accountId?routingId=${accountId}`
 export const cdFailureStrategiesYaml = `/ng/api/pipelines/configuration/cd-stage-yaml-snippet?routingId=${accountId}`
+export const servicesUpsertCall = `/ng/api/servicesV2/upsert?routingId=${accountId}&accountIdentifier=${accountId}`
+export const servicesUpdateList = `/ng/api/servicesV2?routingId=${accountId}&accountIdentifier=${accountId}&orgIdentifier=${orgIdentifier}&projectIdentifier=${projectId}&size=10&page=0`
+export const envUpsertCall = `/ng/api/environmentsV2/upsert?routingId=${accountId}&accountIdentifier=${accountId}`
+export const envUpdateList = `/ng/api/environmentsV2?routingId=${accountId}&accountIdentifier=${accountId}&orgIdentifier=${orgIdentifier}&projectIdentifier=${projectId}&page=0&size=10`
 
 export interface ValidObject {
   resourceName: StepResourceObject[]

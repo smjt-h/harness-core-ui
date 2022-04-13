@@ -81,10 +81,18 @@ export const getServiceObjectFromgatewayDetails = (
     kind = GatewayKindType.DATABASE
     routing.database = gatewayDetails.routing.database
   } else {
+    let filterText = ''
+    if (isGcpProvider) {
+      filterText = `id = ['${gatewayDetails.routing.instance.scale_group?.id}'] \n regions = ['${gatewayDetails.routing.instance.scale_group?.region}']`
+      if (!_isEmpty(gatewayDetails.routing.instance.scale_group?.availability_zones)) {
+        filterText += `\n zones = ['${gatewayDetails.routing.instance.scale_group?.availability_zones?.[0]}']`
+      }
+      kind = GatewayKindType.CLUSTERS
+    }
     // ASG rule check
     routing.instance = {
-      filter_text: '', // eslint-disable-line
-      scale_group: gatewayDetails.routing.instance.scale_group // eslint-disable-line
+      filter_text: filterText,
+      scale_group: gatewayDetails.routing.instance.scale_group
     }
   }
 

@@ -37,7 +37,10 @@ jest.mock('services/cv', () => ({
   getServiceLevelObjectiveLogsPromise: jest.fn().mockImplementation(() => executionLogsResponse),
   useGetVerifyStepHealthSources: jest
     .fn()
-    .mockImplementation(() => ({ data: {}, loading: false, error: null, refetch: fetchHealthSources }))
+    .mockImplementation(() => ({ data: {}, loading: false, error: null, refetch: fetchHealthSources })),
+  useGetAllHealthSourcesForServiceAndEnvironment: jest
+    .fn()
+    .mockImplementation(() => ({ data: {}, loading: false, error: null, refetch: jest.fn() }))
 }))
 
 jest.mock('moment', () => () => ({

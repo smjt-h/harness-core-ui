@@ -7,7 +7,8 @@
  **/
 // this is an auto-generated file, do not update this manually
 declare const styles: {
-  readonly metaData: string
-  readonly optionsMenu: string
+  readonly tabContainer: string
+  readonly tabTitle: string
+  readonly targetSettings: string
 }
 export default styles

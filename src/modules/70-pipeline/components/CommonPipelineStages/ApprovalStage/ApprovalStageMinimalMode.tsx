@@ -38,9 +38,8 @@ export function ApprovalStageMinimalMode(props: ApprovalStageMinimalModeProps): 
   const { onChange, onSubmit, data, template } = props
 
   const {
-    state: { pipeline, templateTypes },
-    contextType,
-    setTemplateTypes
+    state: { pipeline },
+    contextType
   } = usePipelineContext()
 
   const handleValidate = (values: ApprovalStageMinimalValues): Record<string, string | undefined> | undefined => {
@@ -57,10 +56,6 @@ export function ApprovalStageMinimalMode(props: ApprovalStageMinimalModeProps): 
   const handleSubmit = (values: ApprovalStageMinimalValues): void => {
     if (data?.stage) {
       if (template) {
-        if (template.identifier && template.childType) {
-          templateTypes[template.identifier] = template.childType
-          setTemplateTypes(templateTypes)
-        }
         onSubmit?.({ stage: createTemplate(values, template) }, values.identifier)
       } else {
         data.stage.identifier = values.identifier

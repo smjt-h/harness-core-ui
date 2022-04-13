@@ -9,8 +9,8 @@ import React from 'react'
 import { useParams } from 'react-router-dom'
 import { FontVariation, Heading, Layout, Container, Text, Color, Select, Checkbox } from '@harness/uicore'
 import { useStrings } from 'framework/strings'
-import { useGetVerifyStepHealthSources } from 'services/cv'
-import type { AccountPathProps } from '@common/interfaces/RouteInterfaces'
+import { useGetAllHealthSourcesForServiceAndEnvironment, useGetVerifyStepHealthSources } from 'services/cv'
+import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
 import { getHealthSourceOptions, getTimeRangeOptions } from '../../useLogContentHook.utils'
 import { LogTypes } from '../../useLogContentHook.types'
 import type { LogContentHeaderProps } from './LogContentHeader.types'
@@ -18,20 +18,43 @@ import type { LogContentHeaderProps } from './LogContentHeader.types'
 const LogContentHeader: React.FC<LogContentHeaderProps> = ({
   logType,
   verifyStepExecutionId = '',
-  serviceName,
-  envName,
+  serviceName = '',
+  envName = '',
   healthSource,
   handleHealthSource,
+  monitoredServiceIdentifier,
   timeRange,
   handleTimeRange,
   errorLogsOnly,
   handleDisplayOnlyErrors
 }) => {
   const { getString } = useStrings()
-  const { accountId } = useParams<AccountPathProps>()
-  const isVerifyStep = Boolean(verifyStepExecutionId)
 
-  const { data, loading, refetch } = useGetVerifyStepHealthSources({
+  const isVerifyStep = Boolean(verifyStepExecutionId)
+  const isMonitoredDetailsStep = Boolean(monitoredServiceIdentifier)
+
+  const { orgIdentifier, projectIdentifier, accountId } = useParams<ProjectPathProps & { identifier: string }>()
+
+  const {
+    data: monitoredService,
+    loading: monitoredServiceLoading,
+    refetch: refetchMonitoredHealthScore
+  } = useGetAllHealthSourcesForServiceAndEnvironment({
+    queryParams: {
+      orgIdentifier,
+      projectIdentifier,
+      accountId,
+      serviceIdentifier: serviceName,
+      environmentIdentifier: envName
+    },
+    lazy: true
+  })
+
+  const {
+    data: verifyStep,
+    loading,
+    refetch
+  } = useGetVerifyStepHealthSources({
     verifyStepExecutionId,
     queryParams: {
       accountId
@@ -45,6 +68,13 @@ const LogContentHeader: React.FC<LogContentHeaderProps> = ({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isVerifyStep])
+
+  React.useEffect(() => {
+    if (isMonitoredDetailsStep) {
+      refetchMonitoredHealthScore()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isMonitoredDetailsStep])
 
   return (
     <div>
@@ -83,15 +113,18 @@ const LogContentHeader: React.FC<LogContentHeaderProps> = ({
         </Container>
         <Container border={{ left: true }} />
         <Container width={230}>
-          {isVerifyStep ? (
+          {isVerifyStep || isMonitoredDetailsStep ? (
             <Select
               value={{
                 label: `${getString('pipeline.verification.healthSourceLabel')}: ${healthSource?.label}`,
                 value: healthSource?.value ?? ''
               }}
-              items={getHealthSourceOptions(getString, data?.resource)}
+              items={getHealthSourceOptions(
+                getString,
+                isVerifyStep ? verifyStep?.resource : monitoredService?.resource
+              )}
               onChange={handleHealthSource}
-              disabled={loading}
+              disabled={loading || monitoredServiceLoading}
             />
           ) : (
             <Select value={timeRange} items={getTimeRangeOptions(getString)} onChange={handleTimeRange} />

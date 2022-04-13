@@ -187,7 +187,14 @@ export const GetOverlayInputSetEdit: UseGetReturnData<ResponseOverlayInputSetRes
       inputSetReferences: ['asd', 'test'],
       overlayInputSetYaml:
         'overlayInputSet:\n  name: OverLayInput\n  identifier: OverLayInput\n  description: OverLayInput\n  inputSetReferences:\n    - asd\n    - test\n',
-      errorResponse: false
+      errorResponse: false,
+      gitDetails: {
+        branch: 'feature',
+        filePath: 'asd.yaml',
+        objectId: '4471ec3aa40c26377353974c29a6670d998db06g',
+        repoIdentifier: 'gitSyncRepo',
+        rootFolder: '/rootFolderTest/.harness/'
+      }
     },
     correlationId: '4cccf1ad-e86d-4629-9c85-95a23225f2e4'
   }
@@ -302,6 +309,10 @@ export const errorResponse = (): Promise<{ status: string }> =>
         uuidToErrorResponseMap: {
           field1: { errors: [{ fieldName: 'field1', message: 'field1 error message' }] },
           field2: { errors: [{ fieldName: 'field2', message: 'field2 error message' }] }
+        },
+        invalidReferences: {
+          field1: { errors: [{ fieldName: 'field1', message: 'field1 error message' }] },
+          field2: { errors: [{ fieldName: 'field2', message: 'field2 error message' }] }
         }
       }
     }
@@ -314,3 +325,61 @@ export const errorResponseWithoutErrorMap = (): Promise<{ status: string }> =>
       metadata: {}
     }
   })
+
+export const inputSetSanitiseResponse = {
+  status: 'SUCCESS',
+  data: {
+    inputSetUpdateResponse: {
+      accountId: 'kmpySmUISimoRrJL6NL73w',
+      description: 'asd',
+      entityValidityDetails: {
+        valid: false
+      },
+      errorResponse: false,
+      gitDetails: {
+        branch: 'feature',
+        filePath: 'asd.yaml',
+        objectId: '4471ec3aa40c26377353974c29a6670d998db06g',
+        repoIdentifier: 'gitSyncRepo',
+        rootFolder: '/rootFolderTest/.harness/'
+      },
+      identifier: 'asd56',
+      inputSetErrorWrapper: {},
+      inputSetYaml:
+        'inputSet:\n  name: asd\n  identifier: asd\n  description: asd\n  pipeline:\n    identifier: testqqq\n    stages:\n      - stage:\n          identifier: asd\n          type: Deployment\n          spec:\n            infrastructure:\n              infrastructureDefinition:\n                type: KubernetesDirect\n                spec:\n                  connectorRef: org.tesa1\n                  namespace: asd\n                  releaseName: asd\n',
+      name: 'asd',
+      orgIdentifier: 'Harness11',
+      projectIdentifier: 'Uhat_Project',
+      pipelineIdentifier: 'testqqq',
+      version: 1
+    },
+    shouldDeleteInputSet: false
+  }
+}
+
+export const sourceCodeManage = {
+  status: 'SUCCESS',
+  data: [
+    {
+      id: '62284c2d9fc0b41653b10016',
+      userIdentifier: 'ZHAbHPxORiGc8McvshFkqA',
+      accountIdentifier: 'px7xd_BFRCi-pfWPYXVjvw',
+      name: 'dummy_Pipeline',
+      createdAt: 1646808109391,
+      lastModifiedAt: 1646808109391,
+      type: 'GITHUB',
+      authentication: {
+        type: 'Http',
+        spec: {
+          type: 'UsernameToken',
+          spec: {
+            username: 'dummy',
+            usernameRef: null,
+            tokenRef: 'account.GithubPersonalToken'
+          }
+        }
+      }
+    }
+  ],
+  correlationId: '86eb32ff-8d35-478c-a5b8-bb3e373ad03f'
+}

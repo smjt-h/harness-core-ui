@@ -46,7 +46,7 @@ const ApiKeyForm: React.FC<ApiKeyModalData> = ({ data, isEdit, onSubmit, apiKeyT
     ProjectPathProps & ServiceAccountPathProps
   >()
   const { showSuccess } = useToaster()
-  const { mutate: createApiKey, loading: saving } = useCreateApiKey({})
+  const { mutate: createApiKey, loading: saving } = useCreateApiKey({ queryParams: { accountIdentifier: accountId } })
   const { mutate: editApiKey, loading: updating } = useUpdateApiKey({
     identifier: data?.identifier || /* istanbul ignore next */ ''
   })
@@ -54,13 +54,13 @@ const ApiKeyForm: React.FC<ApiKeyModalData> = ({ data, isEdit, onSubmit, apiKeyT
   const handleSubmit = async (values: ApiKeyDTO): Promise<void> => {
     try {
       if (isEdit) {
-        const updated = await editApiKey(values)
+        const updated = await editApiKey({ ...values, accountIdentifier: accountId })
         /* istanbul ignore else */ if (updated) {
           showSuccess(getString('rbac.apiKey.form.editSuccess', { name: values.name }))
           onSubmit?.(values)
         }
       } else {
-        const created = await createApiKey(values)
+        const created = await createApiKey({ ...values })
         /* istanbul ignore else */ if (created) {
           showSuccess(getString('rbac.apiKey.form.createSuccess', { name: values.name }))
           onSubmit?.(values)

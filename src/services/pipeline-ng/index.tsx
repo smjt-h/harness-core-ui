@@ -1621,6 +1621,13 @@ export type NexusRegistrySpec = ArtifactTypeSpec & {
   tag?: string
 }
 
+export interface NodeErrorInfo {
+  fqn?: string
+  identifier?: string
+  name?: string
+  type?: string
+}
+
 export interface NodeRunInfo {
   [key: string]: any
 }
@@ -3320,6 +3327,18 @@ export interface YamlOutputProperties {
 
 export interface YamlProperties {
   [key: string]: any
+}
+
+export interface YamlSchemaErrorDTO {
+  fqn?: string
+  hintMessage?: string
+  message?: string
+  stageInfo?: NodeErrorInfo
+  stepInfo?: NodeErrorInfo
+}
+
+export type YamlSchemaErrorWrapperDTO = ErrorMetadataDTO & {
+  schemaErrors?: YamlSchemaErrorDTO[]
 }
 
 export interface YamlSchemaResponse {

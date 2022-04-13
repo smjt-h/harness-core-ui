@@ -422,6 +422,8 @@ subscriptions:
     services: Active Services
     srvcInst: Active Service Instances
     cdUsers: Active CD Users
+    cdSITooltip: Service Instances represent the dynamic instantiation of a service you deploy via Harness. For a service representing a Docker image, Service Instances are the number of pods running with the docker image. For a service that deploys .NET web app, Service Instances are the number of VMs running the web app.
+    cdServiceTooltip: A Service is an independent unit of software you deploy through Harness CD pipelines. An Active Service is a service deployed in the last 30 days.
     ciUsers: Active CI Developers
     ciTooltip: A Developer is an active code committer observed in the builds managed by Harness CI over last 30 days.
     ffActiveUserTootip: Monthly Active Users (MAUs) are only applicable to client-side applications and are defined as unique end users evaluating flags from client-side SDKs (JavaScript, iOS, Android, C/C++, React, etc) over a 30-day period.

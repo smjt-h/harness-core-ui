@@ -51,7 +51,7 @@ const getEditProps = (
   branch = ''
 ): PipelineCreateProps => ({
   afterSave,
-  initialValues: { identifier, description, name, repo, branch },
+  initialValues: { identifier, description, name, repo, branch, stages: [] },
   closeModal
 })
 
@@ -140,7 +140,8 @@ describe('PipelineCreate test', () => {
       {
         description: 'desc',
         identifier: 'test',
-        name: 'pipeline'
+        name: 'pipeline',
+        stages: []
       },
       undefined
     )
@@ -171,7 +172,8 @@ describe('PipelineCreate test', () => {
       name: 'Pipeline 1',
       description: 'abc',
       repo: 'repo',
-      branch: 'branch'
+      branch: 'branch',
+      stages: []
     }
     const { getByText } = render(
       <TestWrapper
@@ -204,7 +206,8 @@ describe('PipelineCreate test', () => {
       {
         identifier: 'pipeline1',
         name: 'Pipeline 1',
-        description: 'abc'
+        description: 'abc',
+        stages: []
       },
       {
         repoIdentifier: 'identifier',

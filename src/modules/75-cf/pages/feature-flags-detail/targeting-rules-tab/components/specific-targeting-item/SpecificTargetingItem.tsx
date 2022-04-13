@@ -85,6 +85,7 @@ const SpecificTargetingItem = (props: SpecificTargetingItemProps): ReactElement 
               const newTargetGroups: TargetGroup[] = selectedItems.map(item => {
                 const value = item.toString().split(delimiter)
                 return {
+                  priority: 1,
                   identifier: value[0],
                   ruleId: '',
                   name: value[1]

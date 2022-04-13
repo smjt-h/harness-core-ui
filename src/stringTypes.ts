@@ -646,6 +646,8 @@ export interface StringsMap {
   'common.subscriptions.usage.activeDevelopers': string
   'common.subscriptions.usage.ccmTooltip': string
   'common.subscriptions.usage.ccmUsers': string
+  'common.subscriptions.usage.cdSITooltip': string
+  'common.subscriptions.usage.cdServiceTooltip': string
   'common.subscriptions.usage.cdUsers': string
   'common.subscriptions.usage.ciTooltip': string
   'common.subscriptions.usage.ciUsers': string
@@ -2365,6 +2367,7 @@ export interface StringsMap {
   'pipeline.artifactsSelection.validation.sidecarId': string
   'pipeline.artifactsSelection.validation.tag': string
   'pipeline.artifactsSelection.validation.tagRegex': string
+  'pipeline.artifactsSelection.versionPlaceholder': string
   'pipeline.barrierStep.barrierReference': string
   'pipeline.barrierStep.barrierReferencePlaceholder': string
   'pipeline.barrierStep.barrierReferenceRequired': string
@@ -2380,7 +2383,7 @@ export interface StringsMap {
   'pipeline.buildInfra.containerSecurityContext': string
   'pipeline.buildInfra.dropCapabilities': string
   'pipeline.buildInfra.poolId': string
-  'pipeline.buildInfra.priorityClass': string
+  'pipeline.buildInfra.priorityClassName': string
   'pipeline.buildInfra.privileged': string
   'pipeline.buildInfra.readOnlyRootFilesystem': string
   'pipeline.buildInfra.runAsNonRoot': string
@@ -2451,6 +2454,22 @@ export interface StringsMap {
   'pipeline.discard': string
   'pipeline.duration': string
   'pipeline.enableVerificationOptions': string
+  'pipeline.errorFramework.fixErrors': string
+  'pipeline.errorFramework.fixStage': string
+  'pipeline.errorFramework.fixStep': string
+  'pipeline.errorFramework.header1': string
+  'pipeline.errorFramework.header10': string
+  'pipeline.errorFramework.header11': string
+  'pipeline.errorFramework.header12': string
+  'pipeline.errorFramework.header2': string
+  'pipeline.errorFramework.header3': string
+  'pipeline.errorFramework.header4': string
+  'pipeline.errorFramework.header5': string
+  'pipeline.errorFramework.header6': string
+  'pipeline.errorFramework.header7': string
+  'pipeline.errorFramework.header8': string
+  'pipeline.errorFramework.header9': string
+  'pipeline.errorFramework.pipelineErrorsTitle': string
   'pipeline.estimatedTimeRemaining': string
   'pipeline.execution.actions.abortPipeline': string
   'pipeline.execution.actions.abortStage': string
@@ -3324,6 +3343,8 @@ export interface StringsMap {
   'cd.learnMore': string
   'cd.learnMoreAboutHarnessAdapter': string
   'cd.manifestPathsCannotBeEmpty': string
+  'cd.moreIssue': string
+  'cd.moreIssues': string
   'cd.nameEmptyError': string
   'cd.namespaceValidation': string
   'cd.newAdapter': string
@@ -3534,6 +3555,7 @@ export interface StringsMap {
   'ce.businessMapping.sharedCostBucket.sharingStrategyLabel': string
   'ce.businessMapping.sharedCostBucket.title': string
   'ce.businessMapping.shownAs': string
+  'ce.businessMapping.shownAsHidden': string
   'ce.businessMapping.sideNavText': string
   'ce.businessMapping.stepText': string
   'ce.businessMapping.tableHeadings.costBuckets': string
@@ -3607,9 +3629,12 @@ export interface StringsMap {
   'ce.co.accessPoint.zone': string
   'ce.co.autoStopping': string
   'ce.co.autoStoppingRule.configuration.addSelectedBtnText': string
+  'ce.co.autoStoppingRule.configuration.asgModal.title': string
   'ce.co.autoStoppingRule.configuration.asgSelectionInfoText': string
   'ce.co.autoStoppingRule.configuration.ecsModal.emptyDescription': string
   'ce.co.autoStoppingRule.configuration.ecsModal.title': string
+  'ce.co.autoStoppingRule.configuration.igModal.gcpFiltersNotSelectedDescription': string
+  'ce.co.autoStoppingRule.configuration.igModal.title': string
   'ce.co.autoStoppingRule.configuration.instanceModal.description': string
   'ce.co.autoStoppingRule.configuration.instanceModal.gcpEmptyInstancesDescription': string
   'ce.co.autoStoppingRule.configuration.instanceModal.gcpFiltersNotSelectedDescription': string
@@ -3625,11 +3650,13 @@ export interface StringsMap {
   'ce.co.autoStoppingRule.configuration.step1.title': string
   'ce.co.autoStoppingRule.configuration.step2.addResourceCta.asg': string
   'ce.co.autoStoppingRule.configuration.step2.addResourceCta.ecs': string
+  'ce.co.autoStoppingRule.configuration.step2.addResourceCta.ig': string
   'ce.co.autoStoppingRule.configuration.step2.addResourceCta.instance': string
   'ce.co.autoStoppingRule.configuration.step2.addResourceCta.kubernetes': string
   'ce.co.autoStoppingRule.configuration.step2.addResourceCta.rds': string
   'ce.co.autoStoppingRule.configuration.step2.additionalResourceInfo.asg': string
   'ce.co.autoStoppingRule.configuration.step2.additionalResourceInfo.ecs': string
+  'ce.co.autoStoppingRule.configuration.step2.additionalResourceInfo.ig': string
   'ce.co.autoStoppingRule.configuration.step2.additionalResourceInfo.instance': string
   'ce.co.autoStoppingRule.configuration.step2.additionalResourceInfo.kubernetes': string
   'ce.co.autoStoppingRule.configuration.step2.additionalResourceInfo.rds': string
@@ -3689,6 +3716,7 @@ export interface StringsMap {
   'ce.co.autoStoppingRule.helpText.step2.description.resourceList.ec2Vms': string
   'ce.co.autoStoppingRule.helpText.step2.description.resourceList.ecsService': string
   'ce.co.autoStoppingRule.helpText.step2.description.resourceList.gcpVms': string
+  'ce.co.autoStoppingRule.helpText.step2.description.resourceList.ig': string
   'ce.co.autoStoppingRule.helpText.step2.description.resourceList.kubernetes': string
   'ce.co.autoStoppingRule.helpText.step2.description.resourceList.rdsInstances': string
   'ce.co.autoStoppingRule.helpText.step2.description.resourceList.vms': string
@@ -4652,6 +4680,7 @@ export interface StringsMap {
   'cf.shared.archived': string
   'cf.shared.environment': string
   'cf.shared.evaluations': string
+  'cf.shared.false': string
   'cf.shared.flags': string
   'cf.shared.getStarted': string
   'cf.shared.individual': string
@@ -4667,6 +4696,7 @@ export interface StringsMap {
   'cf.shared.target': string
   'cf.shared.targetManagement': string
   'cf.shared.targets': string
+  'cf.shared.true': string
   'cf.shared.variation': string
   'cf.shared.variations': string
   'cf.targetDetail.addTargetToSegment': string
@@ -4768,6 +4798,9 @@ export interface StringsMap {
   'ci.description': string
   'ci.executionLabel': string
   'ci.fileStore': string
+  'ci.getStartedWithCI.accessTokenLabel': string
+  'ci.getStartedWithCI.authMethod': string
+  'ci.getStartedWithCI.authMethodLabel': string
   'ci.getStartedWithCI.awsBuildLocation': string
   'ci.getStartedWithCI.buildLocation': string
   'ci.getStartedWithCI.buildPipeline': string
@@ -4790,9 +4823,12 @@ export interface StringsMap {
   'ci.getStartedWithCI.chooseAnOption': string
   'ci.getStartedWithCI.chooseDiffInfra': string
   'ci.getStartedWithCI.codeRepo': string
+  'ci.getStartedWithCI.codeRepoLabel': string
+  'ci.getStartedWithCI.codebaseHelptext': string
   'ci.getStartedWithCI.codebaseRepoLabel': string
   'ci.getStartedWithCI.configInfra': string
   'ci.getStartedWithCI.connectSCM': string
+  'ci.getStartedWithCI.createPipeline': string
   'ci.getStartedWithCI.devFriendly': string
   'ci.getStartedWithCI.devFriendlyHelpText': string
   'ci.getStartedWithCI.dockerRunner': string
@@ -4811,6 +4847,7 @@ export interface StringsMap {
   'ci.getStartedWithCI.k8sBuildLocation': string
   'ci.getStartedWithCI.languageAgnostic': string
   'ci.getStartedWithCI.languageAgnosticHelpText': string
+  'ci.getStartedWithCI.oAuthLabel': string
   'ci.getStartedWithCI.onCloudLabel': string
   'ci.getStartedWithCI.onPremLabel': string
   'ci.getStartedWithCI.parallelization': string
@@ -4819,10 +4856,12 @@ export interface StringsMap {
   'ci.getStartedWithCI.parameterizationHelpText': string
   'ci.getStartedWithCI.provisionSecureEnv': string
   'ci.getStartedWithCI.quicklyCreate': string
+  'ci.getStartedWithCI.searchRepo': string
   'ci.getStartedWithCI.security': string
   'ci.getStartedWithCI.securityHelpText': string
   'ci.getStartedWithCI.selectInfra': string
   'ci.getStartedWithCI.selectRepo': string
+  'ci.getStartedWithCI.selectYourRepo': string
   'ci.getStartedWithCI.startSamplePipeline': string
   'ci.getStartedWithCI.takeToTheNextLevel': string
   'ci.getStartedWithCI.ti': string
