@@ -13,6 +13,7 @@ import type { GatewayDetails } from '../COCreateGateway/models'
 
 const tabs = [ASRuleTabs.CONFIGURATION, ASRuleTabs.SETUP_ACCESS, ASRuleTabs.REVIEW]
 
+/* istanbul ignore next */
 export const trackPrimaryBtnClick = (
   selectedTabId: string,
   dataToTrack: Record<ASRuleTabs, any>,
@@ -31,6 +32,7 @@ export const trackPrimaryBtnClick = (
   }
 }
 
+/* istanbul ignore next */
 export const isPrimaryBtnDisable = (
   selectedTabId: string,
   validTabs: { config: boolean; setupAccess: boolean },
@@ -46,6 +48,7 @@ export const isPrimaryBtnDisable = (
   )
 }
 
+/* istanbul ignore next */
 export const getServiceObjectFromgatewayDetails = (
   gatewayDetails: GatewayDetails,
   orgIdentifier: string,
@@ -99,25 +102,25 @@ export const getServiceObjectFromgatewayDetails = (
   routing.custom_domain_providers = gatewayDetails.routing.custom_domain_providers
   const gateway: Service = {
     name: gatewayDetails.name,
-    org_id: orgIdentifier, // eslint-disable-line
-    project_id: projectIdentifier, // eslint-disable-line
-    account_identifier: accountId, // eslint-disable-line
+    org_id: orgIdentifier,
+    project_id: projectIdentifier,
+    account_identifier: accountId,
     fulfilment: Utils.getConditionalResult(isK8sRule, 'kubernetes', gatewayDetails.fullfilment || 'ondemand'),
     kind,
-    cloud_account_id: gatewayDetails.cloudAccount.id, // eslint-disable-line
-    idle_time_mins: gatewayDetails.idleTimeMins, // eslint-disable-line
+    cloud_account_id: gatewayDetails.cloudAccount.id,
+    idle_time_mins: gatewayDetails.idleTimeMins,
     custom_domains: Utils.getAllCustomDomains(serverNames, gatewayDetails.customDomains),
     health_check: gatewayDetails.healthCheck,
     routing,
     opts: {
-      preserve_private_ip: false, // eslint-disable-line
-      always_use_private_ip: false, // eslint-disable-line
-      access_details: gatewayDetails.opts.access_details // eslint-disable-line
+      ...gatewayDetails.opts,
+      preserve_private_ip: false,
+      always_use_private_ip: false
     },
     metadata: gatewayDetails.metadata,
     disabled: gatewayDetails.disabled,
-    match_all_subdomains: gatewayDetails.matchAllSubdomains, // eslint-disable-line
-    access_point_id: gatewayDetails.accessPointID // eslint-disable-line
+    match_all_subdomains: gatewayDetails.matchAllSubdomains,
+    access_point_id: gatewayDetails.accessPointID
   }
   if (gatewayDetails.id) {
     gateway.id = gatewayDetails.id
