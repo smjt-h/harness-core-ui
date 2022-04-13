@@ -75,25 +75,11 @@
     display: flex;
     .textInput {
       margin-top: var(--spacing-xsmall);
-      min-height: 200px;
       flex: 1;
-    }
-  }
-}
-
-.hostTable {
-  border: 1px solid var(--grey-200);
-  border-radius: 8px;
-  margin-top: var(--spacing-large);
-  background-color: white;
-  tr {
-    height: 40px;
-    th {
-      color: var(--grey-400);
-      vertical-align: middle;
-    }
-    td {
-      vertical-align: middle;
+      textarea {
+        resize: vertical;
+        min-height: 200px;
+      }
     }
   }
 }

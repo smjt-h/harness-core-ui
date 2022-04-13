@@ -15,7 +15,8 @@ import {
   Container,
   ButtonVariation,
   PageSpinner,
-  HarnessDocTooltip
+  HarnessDocTooltip,
+  FormInput
 } from '@wings-software/uicore'
 import { FontVariation } from '@harness/design-system'
 import type { ConnectorConfigDTO, ConnectorInfoDTO } from 'services/cd-ng'
@@ -105,15 +106,20 @@ const PdcDetails: React.FC<StepProps<StepConfigureProps> & PdcDetailsProps> = pr
         {formikProps => (
           <>
             <Container className={css.clusterWrapper}>
-              <Layout.Horizontal className={css.hostContainer} spacing="small">
+              <Layout.Horizontal className={css.hostContainer} spacing="xxlarge">
                 <div className={css.manualHostContainer}>
-                  <HarnessDocTooltip tooltipId={'pdc-connector-hosts'} labelText={getString('connectors.pdc.hosts')} />
-                  <textarea
+                  <FormInput.TextArea
                     className={css.textInput}
-                    value={manualTypedHosts}
-                    onInput={(event: React.ChangeEvent<HTMLTextAreaElement>) => {
+                    name="hosts"
+                    onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) => {
                       setManualTypedHosts(event.target.value)
                     }}
+                    label={
+                      <HarnessDocTooltip
+                        tooltipId={'pdc-connector-hosts'}
+                        labelText={getString('connectors.pdc.hosts')}
+                      />
+                    }
                   />
                 </div>
                 <span>{getString('common.orCaps')}</span>

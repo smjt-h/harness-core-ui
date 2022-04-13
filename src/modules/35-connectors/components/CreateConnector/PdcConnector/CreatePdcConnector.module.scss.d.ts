@@ -12,7 +12,6 @@ declare const styles: {
   readonly clusterWrapper: string
   readonly headingStepTwo: string
   readonly hostContainer: string
-  readonly hostTable: string
   readonly manualHostContainer: string
   readonly secondStep: string
   readonly selectedCard: string

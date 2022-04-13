@@ -61,16 +61,9 @@ const TestConnection: React.FC<StepProps<TestConnectionProps> & WizardProps> = p
   const [currentIntent, setCurrentIntent] = useState<Intent>(Intent.NONE)
   const [currentStep, setCurrentStep] = useState<number>(1)
   const [modalErrorHandler, setModalErrorHandler] = useState<ModalErrorHandlerBinding | undefined>()
-  const [validationHostData, setValidationHostData] = useState([] as HostValidationDTO[])
-  const [hostErrors, setHostErrors] = useState([] as string[])
   const [isTesting, setIsTesting] = useState(true)
 
   const steps: string[] = useMemo(() => [getString('connectors.pdc.testConnection.step1')], [])
-
-  const { data: delegateStatus } = useGetDelegatesStatus({
-    queryParams: { accountId },
-    lazy: false
-  })
 
   const { mutate: testConnection } = useGetTestConnectionResult({
     identifier: prevStepData?.identifier || '',
@@ -86,48 +79,18 @@ const TestConnection: React.FC<StepProps<TestConnectionProps> & WizardProps> = p
     }
   })
 
-  const { mutate: validateSshHosts } = useValidateSshHosts({
-    queryParams: {
-      accountIdentifier: accountId,
-      orgIdentifier,
-      projectIdentifier,
-      identifier: prevStepData?.sshKeyRef || ''
-    }
-  })
-
-  useEffect(() => {
-    if ((delegateStatus?.resource?.delegates?.length || 0) > 0) {
-      setCurrentIntent(Intent.SUCCESS)
-      setCurrentStatus(Status.DONE)
-      setCurrentStep(2)
-      setCurrentStatus(Status.PROCESS)
-      verifyTestConnection()
-    } else {
-      setCurrentStatus(Status.ERROR)
-      setCurrentIntent(Intent.DANGER)
-    }
-  }, [delegateStatus])
-
   const verifyTestConnection = async (): Promise<void> => {
     try {
       setCurrentStatus(Status.PROCESS)
       const result = await testConnection()
-      const { validationFailedHosts, validationPassedHosts } = result.data as any
-      const validationPassed = validationPassedHosts.map((host: string) => ({
-        host: host,
-        status: hostStatus.SUCCESS
-      }))
-      const validationFailed = validationFailedHosts.map((host: string) => ({
-        host: host,
-        status: hostStatus.FAILED
-      }))
-      setValidationHostData(validationPassed.concat(validationFailed))
-      setHostErrors(result?.data?.errors?.map?.(error => error.reason || '') || [])
       if (result.data?.status === 'SUCCESS') {
         setCurrentIntent(Intent.SUCCESS)
         setCurrentStatus(Status.DONE)
+        setCurrentStep(2)
       } else {
-        throw new Error('connectors.ceAws.testConnection.error')
+        setCurrentStatus(Status.ERROR)
+        setCurrentIntent(Intent.DANGER)
+        modalErrorHandler?.showDanger(result.data?.errors)
       }
     } catch (e) {
       modalErrorHandler?.showDanger(e.data?.message)
@@ -138,94 +101,18 @@ const TestConnection: React.FC<StepProps<TestConnectionProps> & WizardProps> = p
     }
   }
 
-  const testHost = async (host: string) => {
-    const testHostResponse = await validateSshHosts([host])
-    const newData = [...validationHostData]
-    newData.map(hostItem => {
-      if (hostItem.host === host[0]) {
-        return testHostResponse.data
-      }
-      return host
-    })
-    setValidationHostData(newData)
-  }
-
-  const noColumnRenderer: Renderer<CellProps<HostValidationDTO>> = useMemo(
-    () => data => <span>{data.row.index + 1}</span>,
-    []
-  )
-  const hostColumnRenderer: Renderer<CellProps<HostValidationDTO>> = useMemo(
-    () => data => <span>{data.row.original?.host || ''}</span>,
-    []
-  )
-  const statusColumnRenderer: Renderer<CellProps<HostValidationDTO>> = useMemo(
-    () => data =>
-      (
-        <Text color={data.row.original.status === hostStatus.SUCCESS ? Color.GREEN_900 : Color.RED_900}>
-          {data.row.original.status === hostStatus.SUCCESS ? getString('success') : getString('failed')}
-        </Text>
-      ),
-    []
-  )
-  const menuColumnRenderer: Renderer<CellProps<HostValidationDTO>> = useMemo(
-    () => data =>
-      data.row.original.status === hostStatus.SUCCESS ? (
-        <span />
-      ) : (
-        <Button variation={ButtonVariation.SECONDARY} onClick={() => testHost(data.row.original.host || '')}>
-          {getString('retry')}
-        </Button>
-      ),
-    []
-  )
+  useEffect(() => {
+    verifyTestConnection()
+  }, [])
 
   return (
     <Layout.Vertical spacing="medium" height="100%">
       <Layout.Vertical spacing="medium" className={css.testConnectionContentContainer}>
-        <ModalErrorHandler bind={setModalErrorHandler} />
         <Text font={{ variation: FontVariation.H3 }} tooltipProps={{ dataTooltipId: 'pdcTextConnection' }}>
           {getString('common.smtp.testConnection')}
         </Text>
         <StepsProgress steps={steps} intent={currentIntent} current={currentStep} currentStatus={currentStatus} />
-        {hostErrors.map(error => (
-          <Text key={error} color={Color.RED_900}>
-            {error}
-          </Text>
-        ))}
-        {validationHostData.length > 0 && (
-          <Table<HostValidationDTO>
-            className={css.hostTable}
-            data={validationHostData}
-            bpTableProps={{ bordered: true, condensed: true, striped: false }}
-            columns={[
-              {
-                Header: 'NO.',
-                width: '10%',
-                Cell: noColumnRenderer
-              },
-              {
-                accessor: 'host',
-                Header: 'HOST',
-                width: '30%',
-                Cell: hostColumnRenderer,
-                disableSortBy: true
-              },
-              {
-                accessor: 'status',
-                Header: 'STATUS',
-                width: '30%',
-                Cell: statusColumnRenderer,
-                disableSortBy: true
-              },
-              {
-                Header: '',
-                id: 'menu',
-                width: '30%',
-                Cell: menuColumnRenderer
-              }
-            ]}
-          />
-        )}
+        <ModalErrorHandler bind={setModalErrorHandler} style={{ marginTop: 'var(--spacing-large)' }} />
       </Layout.Vertical>
       <Layout.Horizontal padding={{ top: 'small' }} spacing="medium">
         <Button

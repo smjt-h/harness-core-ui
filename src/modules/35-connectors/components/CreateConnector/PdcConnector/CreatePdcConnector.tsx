@@ -33,7 +33,7 @@ const CreateGcpConnector: React.FC<CreateConnectorModalProps> = props => {
     <>
       <StepWizard
         icon={getConnectorIconByType(Connectors.PDC)}
-        iconProps={{ size: 37, color: 'transparent' }}
+        iconProps={{ size: 36 }}
         title={getString(getConnectorTitleIdByType(Connectors.PDC))}
       >
         <ConnectorDetailsStep
