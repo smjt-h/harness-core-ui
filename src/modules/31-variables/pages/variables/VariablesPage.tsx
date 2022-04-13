@@ -18,12 +18,15 @@ import { NGBreadcrumbs } from '@common/components/NGBreadcrumbs/NGBreadcrumbs'
 import { getLinkForAccountResources } from '@common/utils/BreadcrumbUtils'
 import ScopedTitle from '@common/components/Title/ScopedTitle'
 import { Scope } from '@common/interfaces/SecretsInterface'
+import useCreateEditVariableModal from '@variables/modals/CreateEditVariableModal/useCreateEditVariableModal'
 
 const VariablesPage: React.FC = () => {
   const { accountId, orgIdentifier, projectIdentifier } = useParams<ProjectPathProps & ModulePathParams>()
   const { getString } = useStrings()
   const variableLabel = getString('common.variables')
   useDocumentTitle(variableLabel)
+
+  const { openCreateUpdateVariableModal } = useCreateEditVariableModal({})
 
   return (
     <>
@@ -52,6 +55,7 @@ const VariablesPage: React.FC = () => {
             icon="plus"
             id="newVariableBtn"
             data-test="newVariableButton"
+            onClick={openCreateUpdateVariableModal}
           />
         </Layout.Horizontal>
         <ExpandingSearchInput
