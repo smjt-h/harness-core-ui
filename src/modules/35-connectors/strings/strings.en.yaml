@@ -793,7 +793,6 @@ pdc:
   hostsUpload2: 'or click to upload'
   errorUploading: 'Uploading file error'
   testConnection:
-    step1: 'Checking for eligible delegates for connectivity with PDC Connector'
-    step2: 'Validating the hosts connection status'
+    step1: 'Validating the PDC hosts connectivity'
 connectorReferenceText: "can't be deleted as it is being referenced by other entities. To see the list of entities referencing this connector,"
 cantDeleteConnector: "Can't Delete Connector"

@@ -1918,7 +1918,6 @@ export interface StringsMap {
   'connectors.pdc.hostsUpload1': string
   'connectors.pdc.hostsUpload2': string
   'connectors.pdc.testConnection.step1': string
-  'connectors.pdc.testConnection.step2': string
   'connectors.prometheus.urlValidation': string
   'connectors.prometheusConnectorDetails': string
   'connectors.prometheusLabel': string

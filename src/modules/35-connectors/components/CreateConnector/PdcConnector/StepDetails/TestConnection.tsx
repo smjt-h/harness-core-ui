@@ -65,13 +65,7 @@ const TestConnection: React.FC<StepProps<TestConnectionProps> & WizardProps> = p
   const [hostErrors, setHostErrors] = useState([] as string[])
   const [isTesting, setIsTesting] = useState(true)
 
-  const steps: string[] = useMemo(
-    () =>
-      prevStepData?.hosts
-        ? [getString('connectors.pdc.testConnection.step1'), getString('connectors.pdc.testConnection.step2')]
-        : [getString('connectors.pdc.testConnection.step1')],
-    [prevStepData?.hosts]
-  )
+  const steps: string[] = useMemo(() => [getString('connectors.pdc.testConnection.step1')], [])
 
   const { data: delegateStatus } = useGetDelegatesStatus({
     queryParams: { accountId },

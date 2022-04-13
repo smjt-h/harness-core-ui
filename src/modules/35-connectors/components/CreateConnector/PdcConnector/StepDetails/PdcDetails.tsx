@@ -18,10 +18,7 @@ import {
   HarnessDocTooltip
 } from '@wings-software/uicore'
 import { FontVariation } from '@harness/design-system'
-import * as Yup from 'yup'
 import type { ConnectorConfigDTO, ConnectorInfoDTO } from 'services/cd-ng'
-import type { SecretReferenceInterface } from '@secrets/utils/SecretField'
-import SSHSecretInput from '@secrets/components/SSHSecretInput/SSHSecretInput'
 import { setupPDCFormData } from '@connectors/pages/connectors/utils/ConnectorUtils'
 import { useStrings } from 'framework/strings'
 import UploadJSON from '../components/UploadJSON'
@@ -51,16 +48,13 @@ interface StepConfigureProps {
 
 interface PDCFormInterface {
   delegateType?: string
-  password: SecretReferenceInterface | void
 }
 const PdcDetails: React.FC<StepProps<StepConfigureProps> & PdcDetailsProps> = props => {
   const { prevStepData, nextStep } = props
   const { accountId } = props
   const { getString } = useStrings()
 
-  const defaultInitialFormData: PDCFormInterface = {
-    password: undefined
-  }
+  const defaultInitialFormData: PDCFormInterface = {}
 
   const [initialValues, setInitialValues] = useState(defaultInitialFormData)
   const [hostsJSON, setHostsJSON] = useState([] as uploadHostItem[])
@@ -89,15 +83,7 @@ const PdcDetails: React.FC<StepProps<StepConfigureProps> & PdcDetailsProps> = pr
 
   const handleSubmit = (formData: ConnectorConfigDTO) => {
     const data = { ...formData }
-    const { sshKey } = formData
     data.hosts = hostsJSON ? hostsJSON : manualTypedHosts
-    if (sshKey) {
-      data.sshKeyRef = sshKey.projectIdentifier
-        ? sshKey.identifier
-        : sshKey.orgIdentifier
-        ? `org.${sshKey.identifier}`
-        : `account.${sshKey.identifier}`
-    }
     nextStep?.({ ...props.connectorInfo, ...prevStepData, ...data } as StepConfigureProps)
   }
 
@@ -114,9 +100,6 @@ const PdcDetails: React.FC<StepProps<StepConfigureProps> & PdcDetailsProps> = pr
           ...props.prevStepData
         }}
         formName="pdcDetailsForm"
-        validationSchema={Yup.object().shape({
-          sshKey: Yup.object().required(getString('validation.sshKey'))
-        })}
         onSubmit={handleSubmit}
       >
         {formikProps => (
@@ -141,10 +124,6 @@ const PdcDetails: React.FC<StepProps<StepConfigureProps> & PdcDetailsProps> = pr
                   }}
                 />
               </Layout.Horizontal>
-              <Layout.Vertical style={{ width: '54%' }} margin={{ top: 'large' }}>
-                <Text font={{ variation: FontVariation.H5 }}>{getString('authentication')}</Text>
-                <SSHSecretInput name="sshKey" label={getString('SSH_KEY')} />
-              </Layout.Vertical>
             </Container>
             <Layout.Horizontal padding={{ top: 'small' }} spacing="medium">
               <Button
