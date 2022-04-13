@@ -74,7 +74,7 @@ export const ServicesListPage: React.FC = () => {
         canEscapeKeyClose
         canOutsideClickClose
         onClose={hideModal}
-        title={getString('cd.addService')}
+        title={getString('cd.addRemote')}
         isCloseButtonShown
         className={cx('padded-dialog', css.dialogStyles)}
       >
