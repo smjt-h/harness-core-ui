@@ -130,6 +130,9 @@ describe('CCM Budget Creation flow', () => {
     cy.get(`[name="budgetName"]`).clear().type('Test Budget 12')
     cy.clickSubmit()
 
+    cy.get(`input[name="type"]`).click()
+    cy.contains('p', `Specified amount`).click()
+
     cy.get(`[name="budgetAmount"]`).clear().type('10000')
     cy.clickSubmit()
 
