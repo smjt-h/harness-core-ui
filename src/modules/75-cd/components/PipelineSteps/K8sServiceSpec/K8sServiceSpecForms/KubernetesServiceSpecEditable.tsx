@@ -23,7 +23,7 @@ import css from '../K8sServiceSpec.module.scss'
 
 const getManifestCardHeader = (
   selectedDeploymentType: string,
-  getString: (key: keyof StringsMap, vars?: Record<string, any> | undefined) => string
+  getString: (key: keyof StringsMap, vars?: Record<string, unknown> | undefined) => string
 ): React.ReactElement => {
   if (isServerlessDeploymentType(selectedDeploymentType)) {
     return (

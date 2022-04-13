@@ -85,18 +85,18 @@ export const RightDrawer: React.FC = (): JSX.Element => {
 
   React.useEffect(() => {
     if (module === 'cd') {
-      setStepPaletteModuleInfos(getStepPaletteModuleInfosFromStage(StageType.DEPLOY))
+      setStepPaletteModuleInfos(getStepPaletteModuleInfosFromStage([], StageType.DEPLOY))
     } else if (module === 'ci') {
-      setStepPaletteModuleInfos(getStepPaletteModuleInfosFromStage(StageType.BUILD))
+      setStepPaletteModuleInfos(getStepPaletteModuleInfosFromStage([], StageType.BUILD))
     } else if (module === 'cf') {
-      setStepPaletteModuleInfos(getStepPaletteModuleInfosFromStage(StageType.FEATURE))
+      setStepPaletteModuleInfos(getStepPaletteModuleInfosFromStage([], StageType.FEATURE))
     } else {
       if (CDNG_ENABLED && CING_ENABLED) {
         setStepPaletteModuleInfos(getAllStepPaletteModuleInfos())
       } else if (CDNG_ENABLED) {
-        setStepPaletteModuleInfos(getStepPaletteModuleInfosFromStage(StageType.DEPLOY))
+        setStepPaletteModuleInfos(getStepPaletteModuleInfosFromStage([], StageType.DEPLOY))
       } else if (CING_ENABLED) {
-        setStepPaletteModuleInfos(getStepPaletteModuleInfosFromStage(StageType.BUILD))
+        setStepPaletteModuleInfos(getStepPaletteModuleInfosFromStage([], StageType.BUILD))
       }
     }
   }, [module])

@@ -85,7 +85,7 @@ export const ServerlessSpecEditable: React.FC<ServerlessSpecEditableProps> = ({
   React.useEffect(() => {
     subscribeForm({ tab: DeployTabs.INFRASTRUCTURE, form: formikRef })
     return () => unSubscribeForm({ tab: DeployTabs.INFRASTRUCTURE, form: formikRef })
-  }, [])
+  }, [subscribeForm, unSubscribeForm])
 
   return (
     <Layout.Vertical spacing="medium">

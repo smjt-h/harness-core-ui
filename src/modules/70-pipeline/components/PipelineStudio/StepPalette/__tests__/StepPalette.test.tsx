@@ -46,7 +46,7 @@ const getProps = () => ({
   onClose: jest.fn(),
   stepsFactory: stepFactory,
   selectedStage: {},
-  stepPaletteModuleInfos: getStepPaletteModuleInfosFromStage(StageType.DEPLOY),
+  stepPaletteModuleInfos: getStepPaletteModuleInfosFromStage([], StageType.DEPLOY),
   stageType: StageType.DEPLOY
 })
 

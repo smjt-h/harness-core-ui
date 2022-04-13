@@ -117,7 +117,7 @@ export default function ServerlessArtifactoryRepository(
           expressions,
           allowableTypes,
           selectProps: {
-            defaultSelectedItem: formik.values?.repository,
+            defaultSelectedItem: formik.values?.repository as SelectOption,
             noResults: <NoRepositoryResults error={artifactRepoError} />,
             items: connectorRepos,
             addClearBtn: !isReadonly,
@@ -139,7 +139,7 @@ export default function ServerlessArtifactoryRepository(
       {getMultiTypeFromValue(formik.values.repository) === MultiTypeInputType.RUNTIME && (
         <div className={css.configureOptions}>
           <ConfigureOptions
-            value={formik.values.repository}
+            value={formik.values.repository as string}
             type="String"
             variableName="repository"
             showRequiredField={false}
