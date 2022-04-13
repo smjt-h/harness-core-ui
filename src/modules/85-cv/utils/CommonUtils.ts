@@ -156,6 +156,16 @@ export const getCVMonitoringServicesSearchParam = (props: GetCVMonitoringService
   )
 }
 
+export function getSearchString(params: { [key: string]: unknown }): string {
+  return (
+    '?' +
+    Object.entries(params)
+      .filter(param => param[1] !== undefined)
+      .map(param => `${param[0]}=${param[1]}`)
+      .join('&')
+  )
+}
+
 export const prepareFilterInfo = (data?: MultiSelectOption[]): Array<string | number> => {
   return data ? data.map((d: MultiSelectOption) => d.value as string) : []
 }

@@ -129,6 +129,7 @@ allowpaths:
   - /slo/{identifier}/resetErrorBudget
   - /slo/{identifier}/errorBudgetResetHistory
   - /slo-dashboard/widgets
+  - /slo-dashboard/widget/{identifier}
   - /monitored-service/all/time-series-health-sources
   - /monitored-service/{monitoredServiceIdentifier}/health-source/{healthSourceIdentifier}/slo-metrics
   - /monitored-service/{monitoredServiceIdentifier}/sli/onboarding-graph

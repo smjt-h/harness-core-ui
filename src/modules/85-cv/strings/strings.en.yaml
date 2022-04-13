@@ -634,7 +634,6 @@ healthSource:
 
 slos:
   title: SLOs
-  editSLO: 'Edit SLO: {{name}}'
   deleteSLO: Delete SLO
   createSLO: Create SLO
   healthSource: Health source
@@ -714,6 +713,7 @@ slos:
       calendarBasedDefinition: Compliance periods can be set to calendar periods like a weekly, monthly or quarterly. At the end of a calendar period, you are given a performance score. The performance score, which is calculated against the performance threshold, tells you whether your service was compliant or not. Even though you may view the performance throughout the period when you use a calendar period, you only get a compliance rating for every compliance period.
       calendarBasedDefinition2: Calendar windows are more closely aligned with business planning and project work.
 SLO: SLO
+SLOWithName: 'SLO: {{ name }}'
 SLOPerformanceTrend: SLO Performance Trend
 sloRecalculationInProgress: SLO recalculation in progress
 errorBudgetRecalculationInProgress: Error Budget recalculation in progress

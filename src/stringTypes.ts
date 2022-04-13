@@ -4931,6 +4931,7 @@ export interface StringsMap {
   'cv.SLO': string
   'cv.SLOPerformanceTrend': string
   'cv.SLOTarget': string
+  'cv.SLOWithName': string
   'cv.abbreviatedCategories.errors': string
   'cv.abbreviatedCategories.infrastructure': string
   'cv.abbreviatedCategories.performance': string
@@ -5574,7 +5575,6 @@ export interface StringsMap {
   'cv.slos.contextualHelp.target.rollingWindowDefinition2': string
   'cv.slos.createSLO': string
   'cv.slos.deleteSLO': string
-  'cv.slos.editSLO': string
   'cv.slos.healthSource': string
   'cv.slos.healthSourceForSLI': string
   'cv.slos.latencySLI': string

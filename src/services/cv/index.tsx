@@ -423,6 +423,56 @@ export type AzureManualDetails = AzureCredentialSpec & {
   tenantId: string
 }
 
+export interface AzureRepoApiAccess {
+  spec?: AzureRepoApiAccessSpecDTO
+  type: 'Token'
+}
+
+export interface AzureRepoApiAccessSpecDTO {
+  [key: string]: any
+}
+
+export interface AzureRepoAuthentication {
+  spec: AzureRepoCredentialsDTO
+  type: 'Http' | 'Ssh'
+}
+
+export type AzureRepoConnector = ConnectorConfigDTO & {
+  apiAccess?: AzureRepoApiAccess
+  authentication: AzureRepoAuthentication
+  delegateSelectors?: string[]
+  type: 'Organization' | 'Repo'
+  url: string
+  validationRepo?: string
+}
+
+export interface AzureRepoCredentialsDTO {
+  [key: string]: any
+}
+
+export type AzureRepoHttpCredentials = AzureRepoCredentialsDTO & {
+  spec: AzureRepoHttpCredentialsSpecDTO
+  type: 'UsernameToken'
+}
+
+export interface AzureRepoHttpCredentialsSpecDTO {
+  [key: string]: any
+}
+
+export type AzureRepoSshCredentials = AzureRepoCredentialsDTO & {
+  sshKeyRef: string
+}
+
+export type AzureRepoTokenSpec = AzureRepoApiAccessSpecDTO & {
+  tokenRef: string
+}
+
+export type AzureRepoUsernameToken = AzureRepoHttpCredentialsSpecDTO & {
+  tokenRef: string
+  username?: string
+  usernameRef?: string
+}
+
 export interface BillingExportSpec {
   containerName: string
   directoryName: string
@@ -669,7 +719,7 @@ export interface ClusterCoordinates {
 }
 
 export interface ClusterSummary {
-  clusterType?: 'KNOWN_EVENT' | 'UNKNOWN_EVENT' | 'UNEXPECTED_FREQUENCY'
+  clusterType?: 'BASELINE' | 'KNOWN_EVENT' | 'UNKNOWN_EVENT' | 'UNEXPECTED_FREQUENCY'
   count?: number
   label?: number
   risk?: number
@@ -742,6 +792,8 @@ export interface ConnectorInfoDTO {
     | 'CustomHealth'
     | 'ServiceNow'
     | 'ErrorTracking'
+    | 'AzureRepo'
+    | 'Pdc'
 }
 
 export interface ControlClusterSummary {
@@ -904,6 +956,7 @@ export interface DataCollectionTaskDTO {
 export interface DataCollectionTaskResult {
   dataCollectionTaskId?: string
   exception?: string
+  executionLogs?: ExecutionLog[]
   stacktrace?: string
   status?: 'FAILED' | 'QUEUED' | 'RUNNING' | 'WAITING' | 'EXPIRED' | 'SUCCESS' | 'ABORTED'
 }
@@ -1478,7 +1531,7 @@ export type ErrorTrackingHealthSourceSpec = HealthSourceSpec & {
 }
 
 export interface EventCount {
-  clusterType?: 'KNOWN_EVENT' | 'UNKNOWN_EVENT' | 'UNEXPECTED_FREQUENCY'
+  clusterType?: 'BASELINE' | 'KNOWN_EVENT' | 'UNKNOWN_EVENT' | 'UNEXPECTED_FREQUENCY'
   count?: number
   displayName?: string
 }
@@ -1486,6 +1539,11 @@ export interface EventCount {
 export interface ExceptionInfo {
   exception?: string
   stackTrace?: string
+}
+
+export interface ExecutionLog {
+  log?: string
+  logLevel?: 'INFO' | 'WARN' | 'ERROR'
 }
 
 export type ExecutionLogDTO = CVNGLogDTO & {
@@ -2117,6 +2175,13 @@ export interface HistoricalTrend {
   healthScores?: RiskData[]
 }
 
+export interface HostDTO {
+  hostAttributes?: {
+    [key: string]: string
+  }
+  hostname: string
+}
+
 export interface HostData {
   anomalous?: boolean
   controlData?: number[]
@@ -2369,7 +2434,7 @@ export interface LogAnalysisCluster {
 }
 
 export interface LogAnalysisClusterChartDTO {
-  clusterType?: 'KNOWN_EVENT' | 'UNKNOWN_EVENT' | 'UNEXPECTED_FREQUENCY'
+  clusterType?: 'BASELINE' | 'KNOWN_EVENT' | 'UNKNOWN_EVENT' | 'UNEXPECTED_FREQUENCY'
   hostName?: string
   label?: number
   risk?: 'NO_DATA' | 'NO_ANALYSIS' | 'HEALTHY' | 'OBSERVE' | 'NEED_ATTENTION' | 'UNHEALTHY'
@@ -2379,7 +2444,7 @@ export interface LogAnalysisClusterChartDTO {
 }
 
 export interface LogAnalysisClusterDTO {
-  clusterType?: 'KNOWN_EVENT' | 'UNKNOWN_EVENT' | 'UNEXPECTED_FREQUENCY'
+  clusterType?: 'BASELINE' | 'KNOWN_EVENT' | 'UNKNOWN_EVENT' | 'UNEXPECTED_FREQUENCY'
   controlFrequencyData?: number[]
   count?: number
   label?: number
@@ -2405,6 +2470,36 @@ export interface LogAnalysisDTO {
   logClusters?: LogAnalysisCluster[]
   score?: number
   verificationTaskId?: string
+}
+
+export interface LogAnalysisRadarChartClusterDTO {
+  angle?: number
+  baseline?: LogAnalysisRadarChartClusterDTO
+  clusterType?: 'BASELINE' | 'KNOWN_EVENT' | 'UNKNOWN_EVENT' | 'UNEXPECTED_FREQUENCY'
+  hasControlData?: boolean
+  label?: number
+  message?: string
+  radius?: number
+  risk?: 'NO_DATA' | 'NO_ANALYSIS' | 'HEALTHY' | 'OBSERVE' | 'NEED_ATTENTION' | 'UNHEALTHY'
+}
+
+export interface LogAnalysisRadarChartListDTO {
+  angle?: number
+  baseline?: LogAnalysisRadarChartListDTO
+  clusterType?: 'BASELINE' | 'KNOWN_EVENT' | 'UNKNOWN_EVENT' | 'UNEXPECTED_FREQUENCY'
+  count?: number
+  frequencyData?: number[]
+  hasControlData?: boolean
+  label?: number
+  message?: string
+  radius?: number
+  risk?: 'NO_DATA' | 'NO_ANALYSIS' | 'HEALTHY' | 'OBSERVE' | 'NEED_ATTENTION' | 'UNHEALTHY'
+}
+
+export interface LogAnalysisRadarChartListWithCountDTO {
+  eventCounts?: EventCount[]
+  logAnalysisRadarCharts?: PageLogAnalysisRadarChartListDTO
+  totalClusters?: number
 }
 
 export interface LogAnalysisRecord {
@@ -2840,6 +2935,16 @@ export interface PageLogAnalysisClusterDTO {
   totalPages?: number
 }
 
+export interface PageLogAnalysisRadarChartListDTO {
+  content?: LogAnalysisRadarChartListDTO[]
+  empty?: boolean
+  pageIndex?: number
+  pageItemCount?: number
+  pageSize?: number
+  totalItems?: number
+  totalPages?: number
+}
+
 export interface PageMonitoredServiceListItemDTO {
   content?: MonitoredServiceListItemDTO[]
   empty?: boolean
@@ -2997,6 +3102,12 @@ export interface PartialSchemaDTO {
   skipStageSchema?: boolean
 }
 
+export type PhysicalDataCenterConnectorDTO = ConnectorConfigDTO & {
+  delegateSelectors?: string[]
+  hosts?: HostDTO[]
+  sshKeyRef: string
+}
+
 export interface Point {
   timestamp?: number
   value?: number
@@ -3009,6 +3120,7 @@ export interface ProgressLog {
   finalState?: boolean
   log?: string
   startTime?: number
+  timeTakenToFinish?: Duration
   verificationJobExecutionStatus?: 'QUEUED' | 'RUNNING' | 'FAILED' | 'SUCCESS' | 'TIMEOUT' | 'ABORTED'
   verificationTaskId?: string
 }
@@ -3662,6 +3774,13 @@ export interface ResponsePageUserJourneyResponse {
   status?: 'SUCCESS' | 'FAILURE' | 'ERROR'
 }
 
+export interface ResponseSLODashboardDetail {
+  correlationId?: string
+  data?: SLODashboardDetail
+  metaData?: { [key: string]: any }
+  status?: 'SUCCESS' | 'FAILURE' | 'ERROR'
+}
+
 export interface ResponseSLORiskCountResponse {
   correlationId?: string
   data?: SLORiskCountResponse
@@ -3850,6 +3969,14 @@ export interface RestResponseListLogAnalysisClusterChartDTO {
   responseMessages?: ResponseMessage[]
 }
 
+export interface RestResponseListLogAnalysisRadarChartClusterDTO {
+  metaData?: {
+    [key: string]: { [key: string]: any }
+  }
+  resource?: LogAnalysisRadarChartClusterDTO[]
+  responseMessages?: ResponseMessage[]
+}
+
 export interface RestResponseListLogAnalysisRecord {
   metaData?: {
     [key: string]: { [key: string]: any }
@@ -3975,6 +4102,14 @@ export interface RestResponseLogAnalysisClusterWithCountDTO {
     [key: string]: { [key: string]: any }
   }
   resource?: LogAnalysisClusterWithCountDTO
+  responseMessages?: ResponseMessage[]
+}
+
+export interface RestResponseLogAnalysisRadarChartListWithCountDTO {
+  metaData?: {
+    [key: string]: { [key: string]: any }
+  }
+  resource?: LogAnalysisRadarChartListWithCountDTO
   responseMessages?: ResponseMessage[]
 }
 
@@ -4259,6 +4394,11 @@ export interface SLIRecord {
   validUntil?: string
   verificationTaskId?: string
   version?: number
+}
+
+export interface SLODashboardDetail {
+  description?: string
+  sloDashboardWidget?: SLODashboardWidget
 }
 
 export interface SLODashboardWidget {
@@ -5491,8 +5631,8 @@ export interface GetDeploymentLogAnalysisClustersQueryParams {
   hostName?: string
   healthSource?: string[]
   healthSources?: string[]
-  clusterType?: ('KNOWN_EVENT' | 'UNKNOWN_EVENT' | 'UNEXPECTED_FREQUENCY')[]
-  clusterTypes?: ('KNOWN_EVENT' | 'UNKNOWN_EVENT' | 'UNEXPECTED_FREQUENCY')[]
+  clusterType?: ('BASELINE' | 'KNOWN_EVENT' | 'UNKNOWN_EVENT' | 'UNEXPECTED_FREQUENCY')[]
+  clusterTypes?: ('BASELINE' | 'KNOWN_EVENT' | 'UNKNOWN_EVENT' | 'UNEXPECTED_FREQUENCY')[]
 }
 
 export interface GetDeploymentLogAnalysisClustersPathParams {
@@ -5585,8 +5725,8 @@ export interface GetDeploymentLogAnalysisResultQueryParams {
   hostName?: string
   healthSource?: string[]
   healthSources?: string[]
-  clusterType?: 'KNOWN_EVENT' | 'UNKNOWN_EVENT' | 'UNEXPECTED_FREQUENCY'
-  clusterTypes?: ('KNOWN_EVENT' | 'UNKNOWN_EVENT' | 'UNEXPECTED_FREQUENCY')[]
+  clusterType?: 'BASELINE' | 'KNOWN_EVENT' | 'UNKNOWN_EVENT' | 'UNEXPECTED_FREQUENCY'
+  clusterTypes?: ('BASELINE' | 'KNOWN_EVENT' | 'UNKNOWN_EVENT' | 'UNEXPECTED_FREQUENCY')[]
 }
 
 export interface GetDeploymentLogAnalysisResultPathParams {
@@ -7846,9 +7986,9 @@ export const saveMetricPacksPromise = (
   )
 
 export interface ListMonitoredServiceQueryParams {
-  accountId?: string
-  orgIdentifier?: string
-  projectIdentifier?: string
+  accountId: string
+  orgIdentifier: string
+  projectIdentifier: string
   environmentIdentifier?: string
   offset?: number
   pageSize?: number
@@ -7978,9 +8118,9 @@ export const saveMonitoredServicePromise = (
   >('POST', getConfig('cv/api'), `/monitored-service`, props, signal)
 
 export interface GetAllMonitoredServicesWithTimeSeriesHealthSourcesQueryParams {
-  accountId?: string
-  orgIdentifier?: string
-  projectIdentifier?: string
+  accountId: string
+  orgIdentifier: string
+  projectIdentifier: string
 }
 
 export type GetAllMonitoredServicesWithTimeSeriesHealthSourcesProps = Omit<
@@ -8054,9 +8194,9 @@ export const getAllMonitoredServicesWithTimeSeriesHealthSourcesPromise = (
   >(getConfig('cv/api'), `/monitored-service/all/time-series-health-sources`, props, signal)
 
 export interface GetCountOfServicesQueryParams {
-  accountId?: string
-  orgIdentifier?: string
-  projectIdentifier?: string
+  accountId: string
+  orgIdentifier: string
+  projectIdentifier: string
   environmentIdentifier?: string
   filter?: string
 }
@@ -8283,9 +8423,9 @@ export const getAllHealthSourcesForServiceAndEnvironmentPromise = (
   )
 
 export interface GetMonitoredServiceListQueryParams {
-  accountId?: string
-  orgIdentifier?: string
-  projectIdentifier?: string
+  accountId: string
+  orgIdentifier: string
+  projectIdentifier: string
   environmentIdentifier?: string
   environmentIdentifiers?: string[]
   offset?: number
@@ -8338,9 +8478,9 @@ export const getMonitoredServiceListPromise = (
   )
 
 export interface GetMonitoredServiceFromServiceAndEnvironmentQueryParams {
-  accountId?: string
-  orgIdentifier?: string
-  projectIdentifier?: string
+  accountId: string
+  orgIdentifier: string
+  projectIdentifier: string
   serviceIdentifier?: string
   environmentIdentifier?: string
 }
@@ -8503,9 +8643,9 @@ export const deleteMonitoredServicePromise = (
   )
 
 export interface GetMonitoredServiceQueryParams {
-  accountId?: string
-  orgIdentifier?: string
-  projectIdentifier?: string
+  accountId: string
+  orgIdentifier: string
+  projectIdentifier: string
 }
 
 export interface GetMonitoredServicePathParams {
@@ -8723,9 +8863,9 @@ export const getAnomaliesSummaryPromise = (
   >(getConfig('cv/api'), `/monitored-service/${identifier}/anomaliesCount`, props, signal)
 
 export interface SetHealthMonitoringFlagQueryParams {
-  accountId?: string
-  orgIdentifier?: string
-  projectIdentifier?: string
+  accountId: string
+  orgIdentifier: string
+  projectIdentifier: string
   enable?: boolean
 }
 
@@ -8817,9 +8957,9 @@ export const setHealthMonitoringFlagPromise = (
   >('PUT', getConfig('cv/api'), `/monitored-service/${identifier}/health-monitoring-flag`, props, signal)
 
 export interface GetMonitoredServiceOverAllHealthScoreQueryParams {
-  accountId?: string
-  orgIdentifier?: string
-  projectIdentifier?: string
+  accountId: string
+  orgIdentifier: string
+  projectIdentifier: string
   duration?: 'FOUR_HOURS' | 'TWENTY_FOUR_HOURS' | 'THREE_DAYS' | 'SEVEN_DAYS' | 'THIRTY_DAYS'
   endTime?: number
 }
@@ -8910,9 +9050,9 @@ export const getMonitoredServiceOverAllHealthScorePromise = (
   >(getConfig('cv/api'), `/monitored-service/${identifier}/overall-health-score`, props, signal)
 
 export interface GetMonitoredServiceScoresQueryParams {
-  accountId?: string
-  orgIdentifier?: string
-  projectIdentifier?: string
+  accountId: string
+  orgIdentifier: string
+  projectIdentifier: string
 }
 
 export interface GetMonitoredServiceScoresPathParams {
@@ -10205,6 +10345,67 @@ export const getServiceLevelObjectivesRiskCountPromise = (
   getUsingFetch<ResponseSLORiskCountResponse, unknown, GetServiceLevelObjectivesRiskCountQueryParams, void>(
     getConfig('cv/api'),
     `/slo-dashboard/risk-count`,
+    props,
+    signal
+  )
+
+export interface GetSLODetailsQueryParams {
+  accountId: string
+  orgIdentifier: string
+  projectIdentifier: string
+}
+
+export interface GetSLODetailsPathParams {
+  identifier: string
+}
+
+export type GetSLODetailsProps = Omit<
+  GetProps<ResponseSLODashboardDetail, unknown, GetSLODetailsQueryParams, GetSLODetailsPathParams>,
+  'path'
+> &
+  GetSLODetailsPathParams
+
+/**
+ * get SLO Dashboard Detail
+ */
+export const GetSLODetails = ({ identifier, ...props }: GetSLODetailsProps) => (
+  <Get<ResponseSLODashboardDetail, unknown, GetSLODetailsQueryParams, GetSLODetailsPathParams>
+    path={`/slo-dashboard/widget/${identifier}`}
+    base={getConfig('cv/api')}
+    {...props}
+  />
+)
+
+export type UseGetSLODetailsProps = Omit<
+  UseGetProps<ResponseSLODashboardDetail, unknown, GetSLODetailsQueryParams, GetSLODetailsPathParams>,
+  'path'
+> &
+  GetSLODetailsPathParams
+
+/**
+ * get SLO Dashboard Detail
+ */
+export const useGetSLODetails = ({ identifier, ...props }: UseGetSLODetailsProps) =>
+  useGet<ResponseSLODashboardDetail, unknown, GetSLODetailsQueryParams, GetSLODetailsPathParams>(
+    (paramsInPath: GetSLODetailsPathParams) => `/slo-dashboard/widget/${paramsInPath.identifier}`,
+    { base: getConfig('cv/api'), pathParams: { identifier }, ...props }
+  )
+
+/**
+ * get SLO Dashboard Detail
+ */
+export const getSLODetailsPromise = (
+  {
+    identifier,
+    ...props
+  }: GetUsingFetchProps<ResponseSLODashboardDetail, unknown, GetSLODetailsQueryParams, GetSLODetailsPathParams> & {
+    identifier: string
+  },
+  signal?: RequestInit['signal']
+) =>
+  getUsingFetch<ResponseSLODashboardDetail, unknown, GetSLODetailsQueryParams, GetSLODetailsPathParams>(
+    getConfig('cv/api'),
+    `/slo-dashboard/widget/${identifier}`,
     props,
     signal
   )
