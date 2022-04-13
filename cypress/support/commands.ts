@@ -81,7 +81,7 @@ declare global {
       verifyStepChooseRuntimeInput(): void
       verifyStepSelectStrategyAndVerifyStep(): void
       // https://github.com/jaredpalmer/cypress-image-snapshot
-      matchImageSnapshot(snapshotName?: string, options?: any): void
+      matchImageSnapshot(snapshotName?: string, options?: unknown): void
     }
   }
 }
@@ -95,7 +95,7 @@ addMatchImageSnapshotCommand({
   capture: 'viewport' // capture viewport in screenshot
 })
 
-// We also overwrite the command, so it does not take a screenshot if we run the tests inside the test runner
+// We also overwrite the command, so it does not take a screenshot if we run the tests inside the test runner (cypress:open)
 Cypress.Commands.overwrite('matchImageSnapshot', (originalFn, snapshotName, options) => {
   if (Cypress.env('ALLOW_SCREENSHOT')) {
     originalFn(snapshotName, options)
