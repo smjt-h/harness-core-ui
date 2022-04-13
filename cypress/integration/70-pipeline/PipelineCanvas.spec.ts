@@ -45,11 +45,7 @@ describe('GIT SYNC DISABLED', () => {
 
     cy.clickSubmit()
 
-    cy.get('[icon="plus"]').click()
-    cy.findByTestId('stage-Deployment').click()
-
-    cy.fillName('testStage_Cypress')
-    cy.clickSubmit()
+    cy.createDeploymentStage()
   })
 
   it('should display the error returned by pipeline save API', () => {
@@ -127,11 +123,7 @@ describe('GIT SYNC ENABLED', () => {
 
     cy.clickSubmit()
 
-    cy.get('[icon="plus"]').click()
-    cy.findByTestId('stage-Deployment').click()
-
-    cy.fillName('testStage_Cypress')
-    cy.clickSubmit()
+    cy.createDeploymentStage()
   })
 
   it('should display the git sync dialog on save', () => {
