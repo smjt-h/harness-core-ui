@@ -631,7 +631,7 @@ export type AppDynamicsConnectorDTO = ConnectorConfigDTO & {
   clientId?: string
   clientSecretRef?: string
   controllerUrl: string
-  delegateSelectors?: string[]
+  delegateSelectors?: string | string[] | undefined
   passwordRef?: string
   username?: string
 }
@@ -773,7 +773,7 @@ export interface ArtifactoryBuildDetailsDTO {
 export type ArtifactoryConnector = ConnectorConfigDTO & {
   artifactoryServerUrl: string
   auth?: ArtifactoryAuthentication
-  delegateSelectors?: string[]
+  delegateSelectors?: string[] | string |undefined
 }
 
 export type ArtifactoryRegistryArtifactConfig = ArtifactConfig & {
@@ -877,7 +877,7 @@ export interface AwsCodeCommitAuthenticationDTO {
 
 export type AwsCodeCommitConnectorDTO = ConnectorConfigDTO & {
   authentication: AwsCodeCommitAuthenticationDTO
-  delegateSelectors?: string[]
+  delegateSelectors?: string[] | string |undefined
   type: 'Repo' | 'Region'
   url: string
 }
@@ -907,7 +907,7 @@ export type AwsCodeCommitSecretKeyAccessKeyDTO = AwsCodeCommitHttpsCredentialsSp
 
 export type AwsConnector = ConnectorConfigDTO & {
   credential: AwsCredential
-  delegateSelectors?: string[]
+  delegateSelectors?: string[] | string |undefined
 }
 
 export interface AwsCredential {
@@ -935,7 +935,7 @@ export interface AwsKmsConnectorCredential {
 export type AwsKmsConnectorDTO = ConnectorConfigDTO & {
   credential: AwsKmsConnectorCredential
   default?: boolean
-  delegateSelectors?: string[]
+  delegateSelectors?: string[] | string |undefined
   kmsArn: string
   region: string
 }
@@ -991,7 +991,7 @@ export interface AwsSecretManagerCredentialSpec {
 export type AwsSecretManagerDTO = ConnectorConfigDTO & {
   credential: AwsSecretManagerCredential
   default?: boolean
-  delegateSelectors?: string[]
+  delegateSelectors?: string[] | string |undefined
   region: string
   secretNamePrefix?: string
 }
@@ -1016,7 +1016,7 @@ export type AzureClientSecretKeyDTO = AzureAuthCredentialDTO & {
 export type AzureConnector = ConnectorConfigDTO & {
   azureEnvironmentType: 'AZURE' | 'AZURE_US_GOVERNMENT'
   credential: AzureCredential
-  delegateSelectors?: string[]
+  delegateSelectors?: string[] | string |undefined
 }
 
 export interface AzureCredential {
@@ -1036,7 +1036,7 @@ export type AzureKeyVaultConnectorDTO = ConnectorConfigDTO & {
   azureEnvironmentType?: 'AZURE' | 'AZURE_US_GOVERNMENT'
   clientId: string
   default?: boolean
-  delegateSelectors?: string[]
+  delegateSelectors?: string[] | string |undefined
   secretKey: string
   subscription: string
   tenantId: string
@@ -1046,7 +1046,7 @@ export type AzureKeyVaultConnectorDTO = ConnectorConfigDTO & {
 export type AzureKeyVaultMetadataRequestSpecDTO = SecretManagerMetadataRequestSpecDTO & {
   azureEnvironmentType?: 'AZURE' | 'AZURE_US_GOVERNMENT'
   clientId: string
-  delegateSelectors?: string[]
+  delegateSelectors?: string[] | string |undefined
   secretKey: string
   subscription: string
   tenantId: string
@@ -1079,7 +1079,7 @@ export interface AzureRepoAuthentication {
 export type AzureRepoConnector = ConnectorConfigDTO & {
   apiAccess?: AzureRepoApiAccess
   authentication: AzureRepoAuthentication
-  delegateSelectors?: string[]
+  delegateSelectors?: string[] | string |undefined
   type: 'Organization' | 'Repo'
   url: string
   validationRepo?: string
@@ -1150,7 +1150,7 @@ export interface BitbucketAuthentication {
 export type BitbucketConnector = ConnectorConfigDTO & {
   apiAccess?: BitbucketApiAccess
   authentication: BitbucketAuthentication
-  delegateSelectors?: string[]
+  delegateSelectors?: string[] | string |undefined
   type: 'Account' | 'Repo'
   url: string
   validationRepo?: string
@@ -1694,7 +1694,7 @@ export type CustomArtifactConfig = ArtifactConfig & {
 
 export type CustomHealthConnectorDTO = ConnectorConfigDTO & {
   baseURL: string
-  delegateSelectors?: string[]
+  delegateSelectors?: string[] | string |undefined
   headers?: CustomHealthKeyAndValue[]
   method: 'GET' | 'POST'
   params?: CustomHealthKeyAndValue[]
@@ -1742,7 +1742,7 @@ export interface DashboardWorkloadDeployment {
 export type DatadogConnectorDTO = ConnectorConfigDTO & {
   apiKeyRef: string
   applicationKeyRef: string
-  delegateSelectors?: string[]
+  delegateSelectors?: string[] | string |undefined
   url: string
 }
 
@@ -2024,7 +2024,7 @@ export interface DockerBuildDetailsDTO {
 
 export type DockerConnectorDTO = ConnectorConfigDTO & {
   auth?: DockerAuthenticationDTO
-  delegateSelectors?: string[]
+  delegateSelectors?: string[] | string |undefined
   dockerRegistryUrl: string
   providerType: 'DockerHub' | 'Harbor' | 'Quay' | 'Other'
 }
@@ -2117,7 +2117,7 @@ export type DurationRestrictionMetadataDTO = RestrictionMetadataDTO & {
 
 export type DynatraceConnectorDTO = ConnectorConfigDTO & {
   apiTokenRef: string
-  delegateSelectors?: string[]
+  delegateSelectors?: string[] | string |undefined
   url: string
 }
 
@@ -2761,7 +2761,7 @@ export interface ErrorMetadataDTO {
 
 export type ErrorTrackingConnectorDTO = ConnectorConfigDTO & {
   apiKeyRef: string
-  delegateSelectors?: string[]
+  delegateSelectors?: string[] | string |undefined
   url: string
 }
 
@@ -3441,7 +3441,7 @@ export type GcpCloudCostConnector = ConnectorConfigDTO & {
 
 export type GcpConnector = ConnectorConfigDTO & {
   credential?: GcpConnectorCredential
-  delegateSelectors?: string[]
+  delegateSelectors?: string[] | string |undefined
 }
 
 export interface GcpConnectorCredential {
@@ -3456,7 +3456,7 @@ export interface GcpCredentialSpec {
 export type GcpKmsConnectorDTO = ConnectorConfigDTO & {
   credentials: string
   default?: boolean
-  delegateSelectors?: string[]
+  delegateSelectors?: string[] | string |undefined
   keyName: string
   keyRing: string
   projectId: string
@@ -3531,7 +3531,7 @@ export interface GitBranchListDTO {
 export type GitConfigDTO = ConnectorConfigDTO & {
   branchName?: string
   connectionType: 'Account' | 'Repo'
-  delegateSelectors?: string[]
+  delegateSelectors?: string[] | string |undefined
   executeOnDelegate?: boolean
   spec: GitAuthenticationDTO
   type: 'Http' | 'Ssh'
@@ -4271,7 +4271,7 @@ export interface GithubAuthentication {
 export type GithubConnector = ConnectorConfigDTO & {
   apiAccess?: GithubApiAccess
   authentication: GithubAuthentication
-  delegateSelectors?: string[]
+  delegateSelectors?: string[] | string |undefined
   executeOnDelegate?: boolean
   type: 'Account' | 'Repo'
   url: string
@@ -4343,7 +4343,7 @@ export interface GitlabAuthentication {
 export type GitlabConnector = ConnectorConfigDTO & {
   apiAccess?: GitlabApiAccess
   authentication: GitlabAuthentication
-  delegateSelectors?: string[]
+  delegateSelectors?: string[] | string |undefined
   type: 'Account' | 'Repo'
   url: string
   validationRepo?: string
@@ -4444,7 +4444,7 @@ export type HelmChartManifest = ManifestAttributes & {
 }
 
 export type HelmDeployStepInfo = StepSpecType & {
-  delegateSelectors?: string[]
+  delegateSelectors?: string[] | string |undefined
 }
 
 export interface HelmManifestCommandFlag {
@@ -4463,7 +4463,7 @@ export interface HelmManifestCommandFlag {
 }
 
 export type HelmRollbackStepInfo = StepSpecType & {
-  delegateSelectors?: string[]
+  delegateSelectors?: string[] | string |undefined
 }
 
 export interface HoldingScope {
@@ -4505,7 +4505,7 @@ export interface HttpHelmAuthenticationDTO {
 
 export type HttpHelmConnectorDTO = ConnectorConfigDTO & {
   auth?: HttpHelmAuthenticationDTO
-  delegateSelectors?: string[]
+  delegateSelectors?: string[] | string |undefined
   helmRepoUrl: string
 }
 
@@ -4571,7 +4571,7 @@ export type HttpStateExecutionData = DelegateResponseData & {
 
 export type HttpStepInfo = StepSpecType & {
   assertion?: string
-  delegateSelectors?: string[]
+  delegateSelectors?: string[] | string |undefined
   headers?: HttpHeaderConfig[]
   method: string
   outputVariables?: NGVariable[]
@@ -4711,13 +4711,13 @@ export type JexlCriteriaSpec = CriteriaSpec & {
 export type JiraApprovalStepInfo = StepSpecType & {
   approvalCriteria: CriteriaSpecWrapper
   connectorRef: string
-  delegateSelectors?: string[]
+  delegateSelectors?: string[] | string |undefined
   issueKey: string
   rejectionCriteria?: CriteriaSpecWrapper
 }
 
 export type JiraConnector = ConnectorConfigDTO & {
-  delegateSelectors?: string[]
+  delegateSelectors?: string[] | string |undefined
   jiraUrl: string
   passwordRef: string
   username?: string
@@ -4726,7 +4726,7 @@ export type JiraConnector = ConnectorConfigDTO & {
 
 export type JiraCreateStepInfo = StepSpecType & {
   connectorRef: string
-  delegateSelectors?: string[]
+  delegateSelectors?: string[] | string |undefined
   fields?: JiraField[]
   issueType: string
   projectKey: string
@@ -4811,7 +4811,7 @@ export interface JiraStatusNG {
 
 export type JiraUpdateStepInfo = StepSpecType & {
   connectorRef: string
-  delegateSelectors?: string[]
+  delegateSelectors?: string[] | string |undefined
   fields?: JiraField[]
   issueKey: string
   transitionTo?: TransitionTo
@@ -4848,29 +4848,29 @@ export type K8SDirectInfrastructure = Infrastructure & {
 }
 
 export type K8sApplyStepInfo = StepSpecType & {
-  delegateSelectors?: string[]
+  delegateSelectors?: string[] | string |undefined
   filePaths?: string[]
   skipDryRun?: boolean
   skipSteadyStateCheck?: boolean
 }
 
 export type K8sBGSwapServicesStepInfo = StepSpecType & {
-  delegateSelectors?: string[]
+  delegateSelectors?: string[] | string |undefined
   skipDryRun?: boolean
 }
 
 export type K8sBlueGreenStepInfo = StepSpecType & {
-  delegateSelectors?: string[]
+  delegateSelectors?: string[] | string |undefined
   skipDryRun?: boolean
 }
 
 export type K8sCanaryDeleteStepInfo = StepSpecType & {
-  delegateSelectors?: string[]
+  delegateSelectors?: string[] | string |undefined
   skipDryRun?: boolean
 }
 
 export type K8sCanaryStepInfo = StepSpecType & {
-  delegateSelectors?: string[]
+  delegateSelectors?: string[] | string |undefined
   instanceSelection: InstanceSelectionWrapper
   skipDryRun?: boolean
 }
@@ -4887,7 +4887,7 @@ export interface K8sContainer {
 }
 
 export type K8sDeleteStepInfo = StepSpecType & {
-  delegateSelectors?: string[]
+  delegateSelectors?: string[] | string |undefined
   deleteResources: DeleteResourcesWrapper
   skipDryRun?: boolean
 }
@@ -4921,17 +4921,17 @@ export type K8sManifest = ManifestAttributes & {
 }
 
 export type K8sRollingRollbackStepInfo = StepSpecType & {
-  delegateSelectors?: string[]
+  delegateSelectors?: string[] | string |undefined
   skipDryRun?: boolean
 }
 
 export type K8sRollingStepInfo = StepSpecType & {
-  delegateSelectors?: string[]
+  delegateSelectors?: string[] | string |undefined
   skipDryRun?: boolean
 }
 
 export type K8sScaleStepInfo = StepSpecType & {
-  delegateSelectors?: string[]
+  delegateSelectors?: string[] | string |undefined
   instanceSelection: InstanceSelectionWrapper
   skipDryRun?: boolean
   skipSteadyStateCheck?: boolean
@@ -4974,7 +4974,7 @@ export type KubernetesClientKeyCertDTO = KubernetesAuthCredentialDTO & {
 
 export type KubernetesClusterConfigDTO = ConnectorConfigDTO & {
   credential: KubernetesCredentialDTO
-  delegateSelectors?: string[]
+  delegateSelectors?: string[] | string |undefined
 }
 
 export type KubernetesClusterDetailsDTO = KubernetesCredentialSpecDTO & {
@@ -5283,7 +5283,7 @@ export type NativeHelmServiceSpec = ServiceSpec & {
 
 export type NewRelicConnectorDTO = ConnectorConfigDTO & {
   apiKeyRef: string
-  delegateSelectors?: string[]
+  delegateSelectors?: string[] | string |undefined
   newRelicAccountId: string
   url: string
 }
@@ -5311,7 +5311,7 @@ export interface NexusBuildDetailsDTO {
 
 export type NexusConnector = ConnectorConfigDTO & {
   auth?: NexusAuthentication
-  delegateSelectors?: string[]
+  delegateSelectors?: string[] | string |undefined
   nexusServerUrl: string
   version: string
 }
@@ -5879,7 +5879,7 @@ export type PagerDutyConfigDTO = NotificationSettingConfigDTO & {
 
 export type PagerDutyConnectorDTO = ConnectorConfigDTO & {
   apiTokenRef: string
-  delegateSelectors?: string[]
+  delegateSelectors?: string[] | string |undefined
 }
 
 export interface Pair {
@@ -5990,7 +5990,7 @@ export type PdcInfrastructure = Infrastructure & {
     [key: string]: string
   }
   connectorRef?: string
-  delegateSelectors?: string[]
+  delegateSelectors?: string[] | string |undefined
   hostFilters?: string[]
   hosts?: string[]
   sshKeyRef: string
@@ -6008,7 +6008,7 @@ export interface PermissionCheck {
 }
 
 export type PhysicalDataCenterConnectorDTO = ConnectorConfigDTO & {
-  delegateSelectors?: string[]
+  delegateSelectors?: string[] | string |undefined
   hosts?: HostDTO[]
   sshKeyRef: string
 }
@@ -6184,7 +6184,7 @@ export interface ProjectsDashboardInfo {
 }
 
 export type PrometheusConnectorDTO = ConnectorConfigDTO & {
-  delegateSelectors?: string[]
+  delegateSelectors?: string[] | string |undefined | string |undefined
   url: string
 }
 
@@ -8648,14 +8648,14 @@ export interface ServiceHeaderInfo {
 export type ServiceNowApprovalStepInfo = StepSpecType & {
   approvalCriteria: CriteriaSpecWrapper
   connectorRef: string
-  delegateSelectors?: string[]
+  delegateSelectors?: string[] | string |undefined
   rejectionCriteria?: CriteriaSpecWrapper
   ticketNumber: string
   ticketType: string
 }
 
 export type ServiceNowConnector = ConnectorConfigDTO & {
-  delegateSelectors?: string[]
+  delegateSelectors?: string[] | string |undefined
   passwordRef: string
   serviceNowUrl: string
   username?: string
@@ -8664,7 +8664,7 @@ export type ServiceNowConnector = ConnectorConfigDTO & {
 
 export type ServiceNowCreateStepInfo = StepSpecType & {
   connectorRef: string
-  delegateSelectors?: string[]
+  delegateSelectors?: string[] | string |undefined
   fields?: ServiceNowField[]
   templateName?: string
   ticketType: string
@@ -8705,7 +8705,7 @@ export interface ServiceNowTicketTypeDTO {
 
 export type ServiceNowUpdateStepInfo = StepSpecType & {
   connectorRef: string
-  delegateSelectors?: string[]
+  delegateSelectors?: string[] | string |undefined
   fields?: ServiceNowField[]
   templateName?: string
   ticketNumber: string
@@ -8852,7 +8852,7 @@ export interface ShellScriptSourceWrapper {
 }
 
 export type ShellScriptStepInfo = StepSpecType & {
-  delegateSelectors?: string[]
+  delegateSelectors?: string[] | string |undefined
   environmentVariables?: NGVariable[]
   executionTarget?: ExecutionTarget
   metadata?: string
@@ -8928,7 +8928,7 @@ export interface SourceCodeManagerDTO {
 
 export type SplunkConnectorDTO = ConnectorConfigDTO & {
   accountId: string
-  delegateSelectors?: string[]
+  delegateSelectors?: string[] | string |undefined
   passwordRef: string
   splunkUrl: string
   username?: string
@@ -9091,7 +9091,7 @@ export type StringNGVariable = NGVariable & {
 export type SumoLogicConnectorDTO = ConnectorConfigDTO & {
   accessIdRef: string
   accessKeyRef: string
-  delegateSelectors?: string[]
+  delegateSelectors?: string[] | string |undefined
   url: string
 }
 
@@ -9145,7 +9145,7 @@ export interface TemplateLinkConfig {
 
 export type TerraformApplyStepInfo = StepSpecType & {
   configuration: TerraformStepConfiguration
-  delegateSelectors?: string[]
+  delegateSelectors?: string[] | string |undefined
   metadata?: string
   provisionerIdentifier: string
 }
@@ -9165,7 +9165,7 @@ export interface TerraformConfigFilesWrapper {
 
 export type TerraformDestroyStepInfo = StepSpecType & {
   configuration: TerraformStepConfiguration
-  delegateSelectors?: string[]
+  delegateSelectors?: string[] | string |undefined
   metadata?: string
   provisionerIdentifier: string
 }
@@ -9192,12 +9192,12 @@ export interface TerraformPlanExecutionData {
 
 export type TerraformPlanStepInfo = StepSpecType & {
   configuration: TerraformPlanExecutionData
-  delegateSelectors?: string[]
+  delegateSelectors?: string[] | string |undefined
   provisionerIdentifier: string
 }
 
 export type TerraformRollbackStepInfo = StepSpecType & {
-  delegateSelectors?: string[]
+  delegateSelectors?: string[] | string |undefined
   provisionerIdentifier: string
 }
 
@@ -9598,7 +9598,7 @@ export type VaultConnectorDTO = ConnectorConfigDTO & {
   awsRegion?: string
   basePath?: string
   default?: boolean
-  delegateSelectors?: string[]
+  delegateSelectors?: string[] | string |undefined
   namespace?: string
   readOnly?: boolean
   renewalIntervalMinutes: number
@@ -9628,7 +9628,7 @@ export type VaultK8sCredentialDTO = VaultCredentialDTO & {
 
 export type VaultMetadataRequestSpecDTO = SecretManagerMetadataRequestSpecDTO & {
   accessType: 'APP_ROLE' | 'TOKEN' | 'VAULT_AGENT' | 'AWS_IAM' | 'K8s_AUTH'
-  delegateSelectors?: string[]
+  delegateSelectors?: string[] | string |undefined
   namespace?: string
   spec?: VaultCredentialDTO
   url: string
