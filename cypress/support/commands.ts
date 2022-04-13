@@ -60,6 +60,7 @@ declare global {
     /* eslint-disable @typescript-eslint/no-unused-vars  */
     interface Chainable<Subject> {
       login(username: string, pass: string): void
+      createDeploymentStage(): void
       visitCreatePipeline(): void
       visitPipelinesList(): void
       visitChangeIntelligence(): void
@@ -94,6 +95,14 @@ Cypress.Commands.add('login', (emailValue: string, password: string) => {
   cy.visit('#/login')
   cy.get('[data-id="email-0"] input').clear().type(emailValue)
   cy.get('[data-id="password-1"] input').clear().type(password)
+  cy.clickSubmit()
+})
+
+Cypress.Commands.add('createDeploymentStage', () => {
+  cy.get('[icon="plus"]').click()
+  cy.findByTestId('stage-Deployment').click()
+
+  cy.fillName('testStage_Cypress')
   cy.clickSubmit()
 })
 
