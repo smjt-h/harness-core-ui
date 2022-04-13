@@ -15,7 +15,8 @@ import {
   Button,
   StepProps,
   Text,
-  ButtonVariation
+  ButtonVariation,
+  SelectOption
 } from '@wings-software/uicore'
 import { FontVariation } from '@harness/design-system'
 import { Form } from 'formik'
@@ -54,11 +55,11 @@ const getRepositoryValue = (
   isServerlessDeploymentTypeSelected = false
 ): string => {
   if (isServerlessDeploymentTypeSelected) {
-    if (formData?.repository?.value) {
-      return formData?.repository?.value
+    if ((formData?.repository as SelectOption)?.value) {
+      return (formData?.repository as SelectOption)?.value as string
     }
   }
-  return formData?.repository
+  return formData?.repository as string
 }
 
 function Artifactory({

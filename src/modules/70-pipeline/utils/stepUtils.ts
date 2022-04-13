@@ -9,7 +9,7 @@ import produce from 'immer'
 import { isEmpty, set, get } from 'lodash-es'
 import { StepType } from '@pipeline/components/PipelineSteps/PipelineStepInterface'
 import { StageType } from '@pipeline/utils/stageHelpers'
-import type { StageElementConfig, StepElementConfig } from 'services/cd-ng'
+import type { StageElementConfig, StageElementWrapperConfig, StepElementConfig } from 'services/cd-ng'
 import type { StepPalleteModuleInfo } from 'services/pipeline-ng'
 import {
   StepOrStepGroupOrTemplateStepData,
@@ -17,6 +17,7 @@ import {
   Values
 } from '@pipeline/components/PipelineStudio/StepCommands/StepCommandTypes'
 import { sanitize } from '@common/utils/JSONUtils'
+import type { DeploymentStageElementConfigWrapper } from './pipelineTypes'
 
 export enum StepMode {
   STAGE = 'STAGE',
@@ -58,11 +59,21 @@ export function getAllStepPaletteModuleInfos(): StepPalleteModuleInfo[] {
 }
 
 export function getStepPaletteModuleInfosFromStage(
+  stages: StageElementWrapperConfig[],
   stageType?: string,
   stage?: StageElementConfig,
   initialCategory?: string
 ): StepPalleteModuleInfo[] {
-  const deploymentType = get(stage, 'spec.serviceConfig.serviceDefinition.type', undefined)
+  let deploymentType = get(stage, 'spec.serviceConfig.serviceDefinition.type', undefined)
+  // When stage is propagated from other previous stage
+  const propagateFromStageId = get(stage, 'spec.serviceConfig.useFromStage.stage', undefined)
+  if (!deploymentType && stages.length && propagateFromStageId) {
+    const propagateFromStage = stages.find(
+      currStage => (currStage as DeploymentStageElementConfigWrapper).stage.identifier === propagateFromStageId
+    ) as DeploymentStageElementConfigWrapper
+    deploymentType = propagateFromStage?.stage.spec?.serviceConfig.serviceDefinition?.type
+  }
+
   let category = initialCategory
   switch (deploymentType) {
     case 'Kubernetes':

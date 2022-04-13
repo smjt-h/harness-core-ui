@@ -5,7 +5,7 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import type { MultiTypeInputType } from '@wings-software/uicore'
+import type { MultiTypeInputType, SelectOption } from '@wings-software/uicore'
 import type { FormikValues } from 'formik'
 import type { GetDataError } from 'restful-react'
 import type { ConnectorSelectedValue } from '@connectors/components/ConnectorReferenceField/ConnectorReferenceField'
@@ -77,7 +77,7 @@ export interface ImagePathTypes {
   registryHostname?: string
   region?: any
   repositoryPort?: number | string
-  repository?: any
+  repository?: string | SelectOption
   repositoryUrl?: string
   repositoryPortorRepositoryURL?: string
   artifactDirectory?: string

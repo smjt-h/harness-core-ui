@@ -51,7 +51,7 @@ export function useAddStepTemplate(props: AddStepTemplate): AddStepTemplateRetur
   const { data: stepsData } = useMutateAsGet(useGetStepsV2, {
     queryParams: { accountId },
     body: {
-      stepPalleteModuleInfos: getStepPaletteModuleInfosFromStage(selectedStage?.stage?.type, selectedStage?.stage)
+      stepPalleteModuleInfos: getStepPaletteModuleInfosFromStage([], selectedStage?.stage?.type, selectedStage?.stage)
     }
   })
 
