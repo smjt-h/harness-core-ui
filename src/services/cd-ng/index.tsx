@@ -6067,6 +6067,7 @@ export interface PipelineInfoConfig {
     [key: string]: string
   }
   timeout?: string
+  delegateSelectors?:string[] | string |undefined
   variables?: NGVariable[]
 }
 
@@ -8958,6 +8959,7 @@ export interface StageElementConfig {
   type?: string
   variables?: NGVariable[]
   when?: StageWhenCondition
+  delegateSelectors?:string[]
 }
 
 export interface StageElementWrapperConfig {

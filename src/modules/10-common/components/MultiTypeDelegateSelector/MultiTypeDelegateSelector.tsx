@@ -31,6 +31,7 @@ export interface MultiTypeDelegateSelectorProps extends IFormGroupProps {
   allowableTypes?: MultiTypeInputType[]
   tooltipProps?: DataTooltipInterface
   inputProps: Omit<DelegateSelectorsProps, 'onChange'>
+  formik?: any
 }
 
 export interface ConnectedMultiTypeDelegateSelectorProps extends MultiTypeDelegateSelectorProps {
@@ -50,6 +51,9 @@ export function MultiTypeDelegateSelector(props: ConnectedMultiTypeDelegateSelec
   } = props
 
   const value = get(formik.values, name)
+  // if (!isEmpty(formik.values.delegateSelectors) && formik.values.delegateSelectors[0] === RUNTIME_INPUT_VALUE) {
+  //   formik.values.delegateSelectors = `${[formik.values.delegateSelectors]}`
+  // }
   const hasError = errorCheck(name, formik)
 
   const { getString } = useStrings()

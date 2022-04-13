@@ -1,0 +1,104 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
+import React from 'react'
+import { Formik, FormikProps } from 'formik'
+
+import { debounce, isEmpty } from 'lodash-es'
+import { RUNTIME_INPUT_VALUE } from '@wings-software/uicore'
+import type { StageElementWrapperConfig } from 'services/cd-ng'
+
+import DelegateSelectorPanel from '@pipeline/components/PipelineSteps/AdvancedSteps/DelegateSelectorPanel/DelegateSelectorPanel'
+
+import { StageErrorContext } from '@pipeline/context/StageErrorContext'
+import type { StepCommandsRef } from '../StepCommands/StepCommands'
+
+export interface DelegateSelectorProps {
+  selectedStage?: StageElementWrapperConfig
+  isReadonly: boolean
+  onUpdate(data: { delegateSelectors: string[] | string }): void
+  tabName?: string
+}
+
+export function DelegateSelector(props: DelegateSelectorProps, ref: StepCommandsRef): React.ReactElement {
+  const { selectedStage, onUpdate, isReadonly, tabName } = props
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  const debouncedUpdate = React.useCallback(debounce(onUpdate, 300), [onUpdate])
+  const formikRef = React.useRef<FormikProps<unknown> | null>(null)
+  const { subscribeForm, unSubscribeForm } = React.useContext(StageErrorContext)
+  React.useEffect(() => {
+    !!tabName && subscribeForm({ tab: tabName, form: formikRef })
+    return () => {
+      !!tabName && unSubscribeForm({ tab: tabName, form: formikRef })
+    }
+  }, [subscribeForm, unSubscribeForm, tabName])
+
+  React.useImperativeHandle(ref, () => ({
+    setFieldError(key: string, error: string) {
+      if (formikRef.current) {
+        formikRef.current.setFieldError(key, error)
+      }
+    },
+    isDirty() {
+      if (formikRef.current) {
+        return formikRef.current.dirty
+      }
+    },
+    submitForm() {
+      if (formikRef.current) {
+        return formikRef.current.submitForm()
+      }
+    },
+    getErrors() {
+      if (formikRef.current) {
+        return formikRef.current.errors
+      }
+
+      return {}
+    },
+    getValues() {
+      if (formikRef.current) {
+        return formikRef.current.values
+      }
+
+      return {}
+    },
+    resetForm() {
+      if (formikRef.current) {
+        return formikRef.current.resetForm()
+      }
+
+      return {}
+    }
+  }))
+
+  let selectedDelegateSelectors: string[] | string = []
+  if (!isEmpty(selectedStage?.stage?.delegateSelectors)) {
+    if (selectedStage?.stage?.delegateSelectors?.[0] === RUNTIME_INPUT_VALUE) {
+      selectedDelegateSelectors = `${selectedStage?.stage?.delegateSelectors[0]}`
+    } else {
+      selectedDelegateSelectors = selectedStage?.stage?.delegateSelectors || []
+    }
+  }
+
+  return (
+    <Formik
+      initialValues={{
+        delegateSelectors: selectedDelegateSelectors
+      }}
+      onSubmit={onUpdate}
+      validate={debouncedUpdate}
+    >
+      {formik => {
+        formikRef.current = formik
+        return <DelegateSelectorPanel isReadonly={isReadonly} />
+      }}
+    </Formik>
+  )
+}
+
+export const DelegateSelectorWithRef = React.forwardRef(DelegateSelector)

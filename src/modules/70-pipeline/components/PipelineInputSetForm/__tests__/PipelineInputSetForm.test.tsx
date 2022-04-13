@@ -17,7 +17,13 @@ import { PipelineInputSetForm, PipelineInputSetFormProps } from '../PipelineInpu
 jest.mock('@common/components/YAMLBuilder/YamlBuilder')
 
 jest.mock('@common/utils/YamlUtils', () => ({}))
-
+const mockGetCallFunction = jest.fn()
+jest.mock('services/portal', () => ({
+  useGetDelegateSelectorsUpTheHierarchy: jest.fn().mockImplementation(args => {
+    mockGetCallFunction(args)
+    return []
+  })
+}))
 jest.mock('services/cd-ng', () => ({
   useGetOrganizationAggregateDTO: jest.fn().mockImplementation(() => {
     return { data: {} }
@@ -89,7 +95,8 @@ const getPropsForCIStage = (): PipelineInputSetFormProps => ({
         }
       }
     },
-    stages: []
+    stages: [],
+    delegateSelectors: ['random']
   },
   ...getCommonProps()
 })
@@ -153,6 +160,7 @@ const getPropsForCDStage = (withStageVariables = false, withStageSpec = false): 
   template: {
     name: 'TestPipeline',
     identifier: 'TestPipeline',
+    delegateSelectors: ['random'],
     stages: [
       {
         stage: {
