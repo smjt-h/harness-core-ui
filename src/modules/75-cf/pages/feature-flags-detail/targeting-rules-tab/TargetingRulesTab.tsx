@@ -10,7 +10,7 @@ import React, { ReactElement } from 'react'
 import { useParams } from 'react-router-dom'
 import { v4 as uuid } from 'uuid'
 import * as yup from 'yup'
-import { validateYupSchema, yupToFormErrors } from 'formik'
+import { FieldArray, validateYupSchema, yupToFormErrors } from 'formik'
 import FlagToggleSwitch from '@cf/components/EditFlagTabs/FlagToggleSwitch'
 import {
   Feature,
@@ -27,7 +27,13 @@ import usePatchFeatureFlag from './hooks/usePatchFeatureFlag'
 import TargetingRulesTabFooter from './components/tab-targeting-footer/TargetingRulesTabFooter'
 
 import FlagEnabledRulesCard from './components/flag-enabled-rules-card/FlagEnabledRulesCard'
-import type { FormVariationMap, VariationPercentageRollout, TargetGroup, TargetingRulesFormValues } from './Types.types'
+import {
+  FormVariationMap,
+  VariationPercentageRollout,
+  TargetGroup,
+  TargetingRulesFormValues,
+  TargetingRuleItemType
+} from './Types.types'
 import useFeatureEnabled from './hooks/useFeatureEnabled'
 import DefaultRules from './components/default-rules/DefaultRules'
 import css from './TargetingRulesTab.module.scss'
@@ -70,31 +76,58 @@ const TargetingRulesTab = ({
   const targets = targetsData?.targets || []
 
   // convert variations/targets/target groups into a more UI friendly structure
-  const formVariationMap: FormVariationMap[] = featureFlagData.variations.map(variation => {
+  const formVariationMap: FormVariationMap[] = []
+
+  featureFlagData.variations.forEach(variation => {
     const variationTargets =
       featureFlagData.envProperties?.variationMap?.find(
         variationMapItem => variation.identifier === variationMapItem.variation
       )?.targets || []
 
-    const variationTargetGroups =
+    const variationTargetGroups: TargetGroup[] =
       featureFlagData.envProperties?.rules
         ?.filter(rule => rule.serve.variation === variation.identifier)
         .map(targetGroupRule => ({
+          priority: targetGroupRule.priority,
           identifier: targetGroupRule.clauses[0].values[0],
           ruleId: targetGroupRule.ruleId as string,
           name: segments.find(segment => segment.identifier === targetGroupRule.clauses[0].values[0])?.name as string
         })) || []
 
-    return {
-      variationIdentifier: variation.identifier,
-      variationName: variation.name as string,
-      targets: variationTargets,
-      targetGroups: variationTargetGroups,
-      isVisible: variationTargets.length > 0 || variationTargetGroups.length > 0
+    const highestPriority =
+      variationTargetGroups?.reduce(
+        (prev: TargetGroup, current: TargetGroup) => (prev.priority < current.priority ? prev : current),
+        {} as TargetGroup
+      ).priority || 0
+
+    // if this variation doesn't contain any targets/target groups we dont display it initially
+    if (variationTargets.length || variationTargetGroups.length) {
+      formVariationMap.push({
+        priority: highestPriority,
+        type: TargetingRuleItemType.VARIATION,
+        variationIdentifier: variation.identifier,
+        variationName: variation.name as string,
+        targets: variationTargets,
+        targetGroups: variationTargetGroups
+      })
     }
   })
 
-  const variationPercentageRollouts = featureFlagData.envProperties?.rules?.filter(rule => rule.serve.distribution)
+  const percentageRolloutRules = featureFlagData.envProperties?.rules?.filter(rule => rule.serve.distribution)
+  const variationPercentageRollouts: VariationPercentageRollout[] = percentageRolloutRules
+    ? percentageRolloutRules.map(percentageRollout => ({
+        type: TargetingRuleItemType.PERCENTAGE_ROLLOUT,
+        priority: percentageRollout.priority,
+        variations: percentageRollout.serve.distribution?.variations || [],
+        bucketBy: percentageRollout.serve.distribution?.bucketBy || 'identifier',
+        clauses: percentageRollout.clauses,
+        ruleId: percentageRollout.ruleId as string
+      }))
+    : []
+
+  const targetingRuleItems = [...formVariationMap, ...variationPercentageRollouts].sort(
+    (prev, next) => prev?.priority - next?.priority
+  )
 
   const initialValues: TargetingRulesFormValues = {
     state: featureFlagData.envProperties?.state as string,
@@ -102,15 +135,7 @@ const TargetingRulesTab = ({
       ? featureFlagData.envProperties?.defaultServe.variation
       : featureFlagData.defaultOnVariation,
     offVariation: featureFlagData.envProperties?.offVariation as string,
-    formVariationMap,
-    variationPercentageRollouts: variationPercentageRollouts
-      ? variationPercentageRollouts.map(percentageRollout => ({
-          variations: percentageRollout.serve.distribution?.variations || [],
-          bucketBy: percentageRollout.serve.distribution?.bucketBy || 'identifier',
-          clauses: percentageRollout.clauses,
-          ruleId: percentageRollout.ruleId as string
-        }))
-      : []
+    targetingRuleItems
   }
 
   const validate = (values: TargetingRulesFormValues) => {
@@ -118,39 +143,29 @@ const TargetingRulesTab = ({
       validateYupSchema(
         values,
         yup.object({
-          variationPercentageRollouts: yup.array().of(
+          targetingRuleItems: yup.array().of(
             yup.object({
               clauses: yup.array().of(
                 yup.object({
-                  values:
-                    values.variationPercentageRollouts.length > 0
-                      ? yup
-                          .array()
-                          .of(yup.string().required(getString('cf.featureFlags.rules.validation.selectTargetGroup')))
-                      : yup.array().of(yup.string())
+                  values: yup
+                    .array()
+                    .of(yup.string().required(getString('cf.featureFlags.rules.validation.selectTargetGroup')))
                 })
               ),
               variations: yup.lazy(value => {
                 return yup.array().of(
                   yup.object({
-                    weight:
-                      values.variationPercentageRollouts.length > 0
-                        ? yup
-                            .number()
-                            .typeError(getString('cf.creationModal.mustBeNumber'))
-                            .required(getString('cf.featureFlags.rules.validation.valueRequired'))
-                            .test(
-                              'weight-sum-test',
-                              getString('cf.featureFlags.rules.validation.valueMustAddTo100'),
-                              () => {
-                                const totalWeight = (value as WeightedVariation[])
-                                  .map(x => x.weight)
-                                  .reduce((previous, current) => previous + current, 0)
+                    weight: yup
+                      .number()
+                      .typeError(getString('cf.creationModal.mustBeNumber'))
+                      .required(getString('cf.featureFlags.rules.validation.valueRequired'))
+                      .test('weight-sum-test', getString('cf.featureFlags.rules.validation.valueMustAddTo100'), () => {
+                        const totalWeight = (value as WeightedVariation[])
+                          .map(x => x.weight)
+                          .reduce((previous, current) => previous + current, 0)
 
-                                return totalWeight === 100
-                              }
-                            )
-                        : yup.number()
+                        return totalWeight === 100
+                      })
                   })
                 )
               })
@@ -169,6 +184,7 @@ const TargetingRulesTab = ({
 
   const { saveChanges, loading: patchFeatureLoading } = usePatchFeatureFlag({
     initialValues,
+    variations: featureFlagData.variations,
     featureFlagIdentifier: featureFlagData.identifier,
     refetchFlag
   })
@@ -212,64 +228,72 @@ const TargetingRulesTab = ({
                     }
                   />
                 </Card>
-
-                <FlagEnabledRulesCard
-                  formVariationMap={formikProps.values.formVariationMap}
-                  targets={targets}
-                  segments={segments}
-                  featureFlagVariations={featureFlagData.variations}
-                  variationPercentageRollouts={formikProps.values.variationPercentageRollouts}
-                  disabled={disabled}
-                  updateTargetGroups={(index: number, newTargetGroups: TargetGroup[]) =>
-                    formikProps.setFieldValue(`formVariationMap[${index}].targetGroups`, newTargetGroups)
-                  }
-                  updateTargets={(index: number, newTargets) =>
-                    formikProps.setFieldValue(`formVariationMap[${index}].targets`, newTargets)
-                  }
-                  addVariation={newVariation => {
-                    const addedVariationIndex = formVariationMap.findIndex(
-                      variation => variation.variationIdentifier === newVariation.variationIdentifier
-                    )
-                    formikProps.setFieldValue(`formVariationMap[${addedVariationIndex}].isVisible`, true)
-                  }}
-                  removeVariation={removedVariation => {
-                    const removedVariationIndex = formVariationMap.findIndex(
-                      variation => variation.variationIdentifier === removedVariation.variationIdentifier
-                    )
-                    formikProps.setFieldValue(`formVariationMap[${removedVariationIndex}]`, {
-                      ...removedVariation,
-                      targets: [],
-                      targetGroups: [],
-                      isVisible: false
-                    })
-                  }}
-                  addPercentageRollout={() => {
-                    // need to add with empty fields so the validation messages appear correctly
-                    const newPercentageRollout: VariationPercentageRollout = {
-                      bucketBy: 'identifier',
-                      clauses: [
-                        {
-                          attribute: '',
-                          id: '',
-                          negate: false,
-                          op: '',
-                          values: ['']
+                <FieldArray
+                  name="targetingRuleItems"
+                  render={arrayHelpers => (
+                    <FlagEnabledRulesCard
+                      targetingRuleItems={formikProps.values.targetingRuleItems}
+                      targets={targets}
+                      segments={segments}
+                      featureFlagVariations={featureFlagData.variations}
+                      disabled={disabled}
+                      updateTargetGroups={(index: number, newTargetGroups: TargetGroup[]) => {
+                        const newTargetingRuleItem = {
+                          ...formikProps.values.targetingRuleItems[index],
+                          targetGroups: newTargetGroups
                         }
-                      ],
-                      variations: featureFlagData.variations.map(variation => ({
-                        variation: variation.identifier,
-                        weight: 0
-                      })),
-                      ruleId: uuid()
-                    }
-                    const percentageRollouts = [...formikProps.values.variationPercentageRollouts, newPercentageRollout]
-                    formikProps.setFieldValue(`variationPercentageRollouts`, percentageRollouts)
-                  }}
-                  removePercentageRollout={index => {
-                    const percentageRollouts = [...formikProps.values.variationPercentageRollouts]
-                    percentageRollouts.splice(index, 1)
-                    formikProps.setFieldValue(`variationPercentageRollouts`, percentageRollouts)
-                  }}
+                        arrayHelpers.replace(index, newTargetingRuleItem)
+                      }}
+                      updateTargets={(index: number, newTargets) => {
+                        const newTargetingRuleItem = {
+                          ...formikProps.values.targetingRuleItems[index],
+                          targets: newTargets
+                        }
+                        arrayHelpers.replace(index, newTargetingRuleItem)
+                      }}
+                      addVariation={newVariation => {
+                        const variation = {
+                          priority: 100,
+                          type: TargetingRuleItemType.VARIATION,
+                          variationIdentifier: newVariation.identifier,
+                          variationName: newVariation.name,
+                          targets: [],
+                          targetGroups: []
+                        }
+
+                        arrayHelpers.push(variation)
+                      }}
+                      removeVariation={removedVariationIndex => {
+                        arrayHelpers.remove(removedVariationIndex)
+                      }}
+                      addPercentageRollout={() => {
+                        // need to add with empty fields so the validation messages appear correctly
+                        const newPercentageRollout: VariationPercentageRollout = {
+                          type: TargetingRuleItemType.PERCENTAGE_ROLLOUT,
+                          priority: 100,
+                          bucketBy: 'identifier',
+                          clauses: [
+                            {
+                              attribute: '',
+                              id: '',
+                              negate: false,
+                              op: '',
+                              values: ['']
+                            }
+                          ],
+                          variations: featureFlagData.variations.map(variation => ({
+                            variation: variation.identifier,
+                            weight: 0
+                          })),
+                          ruleId: uuid()
+                        }
+                        arrayHelpers.push(newPercentageRollout)
+                      }}
+                      removePercentageRollout={index => {
+                        arrayHelpers.remove(index)
+                      }}
+                    />
+                  )}
                 />
 
                 <Card>

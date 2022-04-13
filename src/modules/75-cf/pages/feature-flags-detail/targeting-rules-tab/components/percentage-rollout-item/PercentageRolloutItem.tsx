@@ -35,7 +35,10 @@ const PercentageRolloutItem = ({
 
   return (
     <>
-      <Container flex={{ justifyContent: 'space-between', alignItems: 'center' }}>
+      <Container
+        flex={{ justifyContent: 'space-between', alignItems: 'center' }}
+        data-testid={`percentage_rollout_item_${index}`}
+      >
         <Heading level={4} font={{ variation: FontVariation.BODY2 }}>
           {getString('cf.featureFlags.percentageRollout')}
         </Heading>
@@ -51,18 +54,13 @@ const PercentageRolloutItem = ({
         </DisabledFeatureTooltip>
       </Container>
 
-      <Container
-        key={`percentage_rollout_item_${variationPercentageRollout.ruleId}`}
-        data-testid={`percentage_rollout_item_${index}`}
-      >
-        <PercentageRollout
-          targetGroups={segments}
-          bucketByAttributes={[variationPercentageRollout.bucketBy]}
-          variations={featureFlagVariations}
-          fieldValues={variationPercentageRollout}
-          prefix={(fieldName: string) => `variationPercentageRollouts[${index}].${fieldName}`}
-        />
-      </Container>
+      <PercentageRollout
+        targetGroups={segments}
+        variations={featureFlagVariations}
+        fieldValues={variationPercentageRollout}
+        prefix={(fieldName: string) => `targetingRuleItems[${index}].${fieldName}`}
+        hideOverError
+      />
       <Container border={{ bottom: true }} />
     </>
   )

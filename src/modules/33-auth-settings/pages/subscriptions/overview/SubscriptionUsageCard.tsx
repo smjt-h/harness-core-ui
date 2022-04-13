@@ -14,6 +14,7 @@ import { ModuleName } from 'framework/types/ModuleName'
 import CCMUsageInfo from '@auth-settings/pages/subscriptions/overview/CCMUsageInfo'
 import CIUsageInfo from './CIUsageInfo'
 import FFUsageInfo from './FFUsageInfo'
+import CDUsageInfo from './CDUsageInfo'
 import css from '../SubscriptionsPage.module.scss'
 
 interface SubscriptionUsageProps {
@@ -28,6 +29,8 @@ const getModuleUsages = (props: SubscriptionUsageProps): React.ReactElement | un
       return <FFUsageInfo />
     case ModuleName.CE:
       return <CCMUsageInfo />
+    case ModuleName.CD:
+      return <CDUsageInfo />
     default:
       return undefined
   }

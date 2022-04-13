@@ -5,12 +5,14 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { Text, Layout, Formik, FormikForm as Form, Button, FormInput } from '@wings-software/uicore'
 import { Color } from '@harness/design-system'
 import * as Yup from 'yup'
 import { useStrings } from 'framework/strings'
 import PipelineSelect from '@pipeline/components/PipelineSelect/PipelineSelect'
+import { useTelemetry } from '@common/hooks/useTelemetry'
+import { Category, PipelineActions } from '@common/constants/TrackingConstants'
 import css from './SelectOrCreatePipelineForm.module.scss'
 
 interface SelectOrCreatePipelineFormProps {
@@ -23,6 +25,15 @@ export function SelectOrCreatePipelineForm(props: SelectOrCreatePipelineFormProp
   const { getString } = useStrings()
   const [select, setSelect] = useState('')
   const { openCreatPipeLineModal, handleSubmit, closeModal } = props
+  const { trackEvent } = useTelemetry()
+
+  useEffect(() => {
+    trackEvent(PipelineActions.LoadSelectOrCreatePipeline, {
+      category: Category.PIPELINE
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   return (
     <Formik
       initialValues={{
@@ -37,6 +48,9 @@ export function SelectOrCreatePipelineForm(props: SelectOrCreatePipelineFormProp
       enableReinitialize={true}
       onSubmit={() => {
         handleSubmit(select)
+        trackEvent(PipelineActions.SelectAPipeline, {
+          category: Category.PIPELINE
+        })
         closeModal?.()
       }}
       formName="selectCreatePipeline"
@@ -71,7 +85,12 @@ export function SelectOrCreatePipelineForm(props: SelectOrCreatePipelineFormProp
             height={33}
             inline
             border={{ width: 1 }}
-            onClick={openCreatPipeLineModal}
+            onClick={() => {
+              openCreatPipeLineModal()
+              trackEvent(PipelineActions.CreateAPipeline, {
+                category: Category.PIPELINE
+              })
+            }}
           />
         </Layout.Horizontal>
       </Form>

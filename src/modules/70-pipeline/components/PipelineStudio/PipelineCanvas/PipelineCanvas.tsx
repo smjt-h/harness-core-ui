@@ -736,7 +736,6 @@ export function PipelineCanvas({
         })
       }
       hideModal()
-      trackEvent(PipelineActions.StartedPipelineCreation, { module, data })
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [hideModal, pipeline, updatePipeline]
@@ -1056,6 +1055,7 @@ export function PipelineCanvas({
                       onClick={saveAndPublish}
                       icon="send-data"
                       className={css.saveButton}
+                      disabled={!isUpdated}
                     />
                   )}
                   {pipelineIdentifier !== DefaultNewPipelineId && !isReadonly && (
