@@ -1052,7 +1052,8 @@ export const useAllAccessPoints = ({ account_id, ...props }: UseAllAccessPointsP
 
 export interface AccessPointResourcesQueryParams {
   cloud_account_id: string
-  region: string
+  region?: string
+  vpc?: string
   resource_group_name?: string
   accountIdentifier: string
   service?: string

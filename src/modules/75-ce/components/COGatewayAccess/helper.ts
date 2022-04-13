@@ -291,13 +291,15 @@ export const getSupportedResourcesQueryParams = ({
 }: BaseFetchDetails): AccessPointResourcesQueryParams => {
   const params: AccessPointResourcesQueryParams = {
     cloud_account_id: gatewayDetails.cloudAccount.id,
-    accountIdentifier: accountId,
-    region: ''
+    accountIdentifier: accountId
   }
+  const isGcpProvider = Utils.isProviderGcp(gatewayDetails.provider)
   if (!_isEmpty(gatewayDetails.routing.container_svc)) {
     params.region = _defaultTo(gatewayDetails.routing.container_svc?.region, '')
     params.cluster = _defaultTo(gatewayDetails.routing.container_svc?.cluster, '')
     params.service = _defaultTo(gatewayDetails.routing.container_svc?.service, '')
+  } else if (isGcpProvider && gatewayDetails.selectedInstances?.length) {
+    params.vpc = gatewayDetails.selectedInstances?.[0].vpc
   } else {
     params.region = gatewayDetails.selectedInstances?.length
       ? gatewayDetails.selectedInstances[0].region
