@@ -208,11 +208,11 @@ describe('CVCreateSLO - Edit', () => {
       .mockImplementation(() => ({ data: SLOResponse, loading: false, error: null, refetch: jest.fn() } as any))
   })
 
-  test('it should render breadcrumb, edit title and name tab by default', () => {
+  test('it should not render header in case of Edit', () => {
     renderEditComponent()
 
-    expect(screen.getByText('cv.slos.title')).toBeInTheDocument()
-    expect(screen.getByText('cv.slos.editSLO')).toBeInTheDocument()
+    expect(screen.queryByText('cv.slos.title')).not.toBeInTheDocument()
+    expect(screen.queryByText('cv.slos.createSLO')).not.toBeInTheDocument()
     expect(screen.getByText('name')).toHaveAttribute('aria-selected', 'true')
   })
 

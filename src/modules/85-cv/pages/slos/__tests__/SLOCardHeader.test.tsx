@@ -11,11 +11,13 @@ import { render, screen, getByText, waitFor, queryByText } from '@testing-librar
 import routes from '@common/RouteDefinitions'
 import { InputTypes, setFieldValue } from '@common/utils/JestFormHelper'
 import { findDialogContainer, findPopoverContainer, TestWrapper } from '@common/utils/testUtils'
+import { getSearchString } from '@cv/utils/CommonUtils'
 import {
   LogTypes,
   SLOLogContentProps,
   VerifyStepLogContentProps
 } from '@cv/hooks/useLogContentHook/useLogContentHook.types'
+import { SLODetailsPageTabIds } from '@cv/pages/slos/CVSLODetailsPage/CVSLODetailsPage.types'
 import { PeriodTypes } from '../components/CVCreateSLO/CVCreateSLO.types'
 import SLOCardHeader from '../SLOCard/SLOCardHeader'
 import type { SLOCardHeaderProps } from '../CVSLOsListingPage.types'
@@ -74,7 +76,8 @@ describe('SLOCardHeader', () => {
 
     expect(
       screen.getByText(
-        routes.toCVEditSLOs({ ...pathParams, identifier: dashboardWidgetsContent.sloIdentifier, module: 'cv' })
+        routes.toCVSLODetailsPage({ ...pathParams, identifier: dashboardWidgetsContent.sloIdentifier }) +
+          getSearchString({ tab: SLODetailsPageTabIds.Configurations })
       )
     ).toBeInTheDocument()
   })
@@ -90,8 +93,11 @@ describe('SLOCardHeader', () => {
 
     expect(
       screen.getByText(
-        routes.toCVEditSLOs({ ...pathParams, identifier: dashboardWidgetsContent.sloIdentifier, module: 'cv' }) +
-          '?monitoredServiceIdentifier=monitored_service_identifier'
+        routes.toCVSLODetailsPage({ ...pathParams, identifier: dashboardWidgetsContent.sloIdentifier }) +
+          getSearchString({
+            tab: SLODetailsPageTabIds.Configurations,
+            monitoredServiceIdentifier: 'monitored_service_identifier'
+          })
       )
     ).toBeInTheDocument()
   })

@@ -7,6 +7,7 @@
 
 import type { MultiSelectOption } from '@wings-software/uicore'
 import uniqBy from 'lodash/uniqBy'
+import type { IconProps } from '@harness/uicore/dist/icons/Icon'
 import type { AuditTrailFormType, ProjectSelectOption } from '@audit-trail/components/FilterDrawer/FilterDrawer'
 import type { AuditEventDTO, AuditFilterProperties, ResourceScopeDTO } from 'services/audit'
 import type { StringKeys } from 'framework/strings'
@@ -59,6 +60,46 @@ export const getModuleNameFromAuditModule = (auditModule: AuditEventDTO['module'
       return 'cv'
   }
   return undefined
+}
+
+interface ModuleInfo {
+  moduleLabel: StringKeys
+  icon: IconProps
+}
+
+export const moduleInfoMap: Record<AuditEventDTO['module'], ModuleInfo> = {
+  CD: {
+    moduleLabel: 'common.purpose.cd.continuous',
+    icon: { name: 'cd' }
+  },
+  CI: {
+    moduleLabel: 'common.purpose.ci.continuous',
+    icon: { name: 'ci-main' }
+  },
+  CF: {
+    moduleLabel: 'common.purpose.cf.continuous',
+    icon: { name: 'cf-main' }
+  },
+  CE: {
+    moduleLabel: 'cloudCostsText',
+    icon: { name: 'ce-main' }
+  },
+  CV: {
+    moduleLabel: 'common.purpose.cv.serviceReliability',
+    icon: { name: 'cv-main' }
+  },
+  PMS: {
+    moduleLabel: 'common.pipeline',
+    icon: { name: 'pipeline' }
+  },
+  CORE: {
+    moduleLabel: 'auditTrail.Platform',
+    icon: { name: 'nav-settings' }
+  },
+  TEMPLATESERVICE: {
+    moduleLabel: 'common.module.templateService',
+    icon: { name: 'nav-settings' }
+  }
 }
 
 export type ShowEventFilterType = Exclude<AuditFilterProperties['staticFilter'], undefined>

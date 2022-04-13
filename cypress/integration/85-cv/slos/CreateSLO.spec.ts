@@ -31,7 +31,9 @@ import {
   listSLOsCallWithCVNGProd,
   getSLORiskCountWithCVNGProd,
   getTwoSLODashboardWidgets,
-  getTwoSLOsRiskCountResponse
+  getTwoSLOsRiskCountResponse,
+  getSLODetails,
+  responseSLODashboardDetail
 } from '../../../support/85-cv/slos/constants'
 
 describe('Create SLO', () => {
@@ -128,6 +130,7 @@ describe('Create SLO', () => {
     cy.intercept('GET', getMonitoredService, getMonitoredServiceResponse)
     cy.intercept('GET', getSLOMetrics, listSLOMetricsCallResponse)
     cy.intercept('GET', getServiceLevelObjective, errorResponse).as('getServiceLevelObjective')
+    cy.intercept('GET', getSLODetails, responseSLODashboardDetail)
 
     cy.contains('p', 'SLOs').click()
     cy.get('[data-icon="Options"]').click()
@@ -139,7 +142,7 @@ describe('Create SLO', () => {
 
     cy.contains('span', 'Retry').click()
 
-    cy.contains('Edit SLO: SLO-1').should('be.visible')
+    cy.contains('SLO: SLO-1').should('be.visible')
 
     cy.get('input[name="name"]').should('have.value', 'SLO-1')
     cy.get('input[name="User Journey"]').should('have.value', 'new-one')

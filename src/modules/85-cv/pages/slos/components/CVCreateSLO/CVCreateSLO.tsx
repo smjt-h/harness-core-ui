@@ -191,8 +191,6 @@ const CVCreateSLO: React.FC = () => {
     }
   }
 
-  const sloName = SLODataResponse?.resource?.serviceLevelObjective.name
-  const title = identifier ? getString('cv.slos.editSLO', { name: sloName }) : getString('cv.slos.createSLO')
   const links = [
     {
       url: routes.toCVSLOs({ accountId, orgIdentifier, projectIdentifier, module: 'cv' }),
@@ -202,15 +200,17 @@ const CVCreateSLO: React.FC = () => {
 
   return (
     <>
-      <Page.Header
-        breadcrumbs={<NGBreadcrumbs links={links} />}
-        title={
-          <Heading level={3} font={{ variation: FontVariation.H4 }}>
-            {title}
-            <HarnessDocTooltip tooltipId={'createSLO'} useStandAlone />
-          </Heading>
-        }
-      />
+      {!identifier && (
+        <Page.Header
+          breadcrumbs={<NGBreadcrumbs links={links} />}
+          title={
+            <Heading level={3} font={{ variation: FontVariation.H4 }}>
+              {getString('cv.slos.createSLO')}
+              <HarnessDocTooltip tooltipId={'createSLO'} useStandAlone />
+            </Heading>
+          }
+        />
+      )}
       <Formik<SLOForm>
         initialValues={getSLOInitialFormData(
           SLODataResponse?.resource?.serviceLevelObjective,
