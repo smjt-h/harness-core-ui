@@ -84,7 +84,7 @@ const PdcDetails: React.FC<StepProps<StepConfigureProps> & PdcDetailsProps> = pr
 
   const handleSubmit = (formData: ConnectorConfigDTO) => {
     const data = { ...formData }
-    data.hosts = hostsJSON ? hostsJSON : manualTypedHosts
+    data.hosts = hostsJSON?.length > 0 ? hostsJSON : manualTypedHosts
     nextStep?.({ ...props.connectorInfo, ...prevStepData, ...data } as StepConfigureProps)
   }
 

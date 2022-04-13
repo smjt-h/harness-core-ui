@@ -7,29 +7,15 @@
 
 import React, { useState, useEffect, useMemo } from 'react'
 import { useParams } from 'react-router-dom'
-import type { Renderer, CellProps } from 'react-table'
-import {
-  Layout,
-  Table,
-  Button,
-  Text,
-  ButtonVariation,
-  StepProps,
-  StepsProgress,
-  ModalErrorHandler,
-  ModalErrorHandlerBinding
-} from '@wings-software/uicore'
-import { Color, Intent, FontVariation } from '@harness/design-system'
+import { Layout, Button, Text, ButtonVariation, StepProps, StepsProgress } from '@wings-software/uicore'
+import { Intent, FontVariation } from '@harness/design-system'
 import { useStrings } from 'framework/strings'
-import { useGetTestConnectionResult, useValidateSshHosts, HostValidationDTO } from 'services/cd-ng'
-import { useGetDelegatesStatus } from 'services/portal'
+import { ResponseMessage, useGetTestConnectionResult } from 'services/cd-ng'
 import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
+import { ErrorHandler } from '@common/components/ErrorHandler/ErrorHandler'
+
 import css from '../CreatePdcConnector.module.scss'
 
-const hostStatus = {
-  SUCCESS: 'SUCCESS',
-  FAILED: 'FAILED'
-}
 interface TestConnectionProps {
   name: string
   isStep: boolean
@@ -60,8 +46,7 @@ const TestConnection: React.FC<StepProps<TestConnectionProps> & WizardProps> = p
   const [currentStatus, setCurrentStatus] = useState<Status>(Status.PROCESS)
   const [currentIntent, setCurrentIntent] = useState<Intent>(Intent.NONE)
   const [currentStep, setCurrentStep] = useState<number>(1)
-  const [modalErrorHandler, setModalErrorHandler] = useState<ModalErrorHandlerBinding | undefined>()
-  const [isTesting, setIsTesting] = useState(true)
+  const [errors, setErrors] = useState<ResponseMessage[] | null>(null)
 
   const steps: string[] = useMemo(() => [getString('connectors.pdc.testConnection.step1')], [])
 
@@ -90,19 +75,24 @@ const TestConnection: React.FC<StepProps<TestConnectionProps> & WizardProps> = p
       } else {
         setCurrentStatus(Status.ERROR)
         setCurrentIntent(Intent.DANGER)
-        modalErrorHandler?.showDanger(result.data?.errors)
+        setErrors(
+          result?.data?.errors?.map(error => ({
+            level: 'ERROR',
+            message: error.reason
+          })) as ResponseMessage[]
+        )
       }
     } catch (e) {
-      modalErrorHandler?.showDanger(e.data?.message)
+      setErrors([{ message: e.data?.message }])
       setCurrentStatus(Status.ERROR)
       setCurrentIntent(Intent.DANGER)
-    } finally {
-      setIsTesting(false)
     }
   }
 
   useEffect(() => {
-    verifyTestConnection()
+    setTimeout(() => {
+      verifyTestConnection()
+    }, 200)
   }, [])
 
   return (
@@ -112,7 +102,7 @@ const TestConnection: React.FC<StepProps<TestConnectionProps> & WizardProps> = p
           {getString('common.smtp.testConnection')}
         </Text>
         <StepsProgress steps={steps} intent={currentIntent} current={currentStep} currentStatus={currentStatus} />
-        <ModalErrorHandler bind={setModalErrorHandler} style={{ marginTop: 'var(--spacing-large)' }} />
+        {errors && <ErrorHandler responseMessages={errors} />}
       </Layout.Vertical>
       <Layout.Horizontal padding={{ top: 'small' }} spacing="medium">
         <Button
@@ -124,10 +114,9 @@ const TestConnection: React.FC<StepProps<TestConnectionProps> & WizardProps> = p
         />
         <Button
           type="submit"
-          disabled={isTesting}
           onClick={props.onClose}
           variation={ButtonVariation.PRIMARY}
-          text={getString('finish')}
+          text={getString('close')}
           rightIcon="chevron-right"
         />
       </Layout.Horizontal>
