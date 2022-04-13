@@ -646,7 +646,7 @@ exports[`WebhookTriggerConfigPanel Triggers tests Renders/snapshots Initial Rend
                 </p>
               </section>
               <div
-                class="bp3-form-group bottomMarginZero"
+                class="bp3-form-group custom-event bottomMarginZero"
                 data-id="event-3"
               >
                 <label
