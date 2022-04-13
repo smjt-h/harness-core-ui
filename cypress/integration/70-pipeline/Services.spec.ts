@@ -24,7 +24,7 @@ describe('Services for Pipeline', () => {
     cy.contains('div', 'Manage Service').should('be.visible')
     cy.contains('div', 'Manage Service').click()
     cy.wait('@emptyServicesList')
-    cy.wait(500)
+    cy.wait(501)
     cy.contains('span', 'New Service').should('be.visible')
     cy.contains('span', 'New Service').click()
     cy.matchImageSnapshot('New Service Modal')
