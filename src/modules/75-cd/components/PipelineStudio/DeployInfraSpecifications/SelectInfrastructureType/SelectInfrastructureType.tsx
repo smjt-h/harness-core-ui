@@ -13,7 +13,7 @@ import { IconName, GroupedThumbnailSelect } from '@wings-software/uicore'
 import { useStrings, UseStringsReturn } from 'framework/strings'
 import { StageErrorContext } from '@pipeline/context/StageErrorContext'
 import { DeployTabs } from '@cd/components/PipelineStudio/DeployStageSetupShell/DeployStageSetupShellUtils'
-import { InfraDeploymentType } from '@cd/components/PipelineSteps/PipelineStepsUtil'
+import { InfraDeploymentType, ServiceDeploymentType } from '@cd/components/PipelineSteps/PipelineStepsUtil'
 import css from './SelectInfrastructureType.module.scss'
 
 export function getInfraDeploymentTypeSchema(
@@ -37,15 +37,16 @@ interface InfrastructureGroup {
 }
 
 interface SelectDeploymentTypeProps {
+  selectedServiceType?: string
   selectedInfrastructureType?: string
   onChange: (deploymentType: string | undefined) => void
   isReadonly: boolean
 }
 
 export default function SelectDeploymentType(props: SelectDeploymentTypeProps): JSX.Element {
-  const { selectedInfrastructureType, onChange, isReadonly } = props
+  const { selectedInfrastructureType, onChange, isReadonly, selectedServiceType } = props
   const { getString } = useStrings()
-  const infraGroups: InfrastructureGroup[] = [
+  const k8sInfraGroups: InfrastructureGroup[] = [
     {
       groupLabel: getString('pipelineSteps.deploy.infrastructure.directConnection'),
       items: [
@@ -67,6 +68,21 @@ export default function SelectDeploymentType(props: SelectDeploymentTypeProps): 
       ]
     }
   ]
+
+  const sshInfraGroups: InfrastructureGroup[] = [
+    {
+      groupLabel: '',
+      items: [
+        {
+          label: 'Physical Data Center',
+          icon: 'pdc',
+          value: InfraDeploymentType.PDC
+        }
+      ]
+    }
+  ]
+
+  const infraGroupByService = selectedServiceType === ServiceDeploymentType.ssh ? sshInfraGroups : k8sInfraGroups
 
   const { subscribeForm, unSubscribeForm } = React.useContext(StageErrorContext)
 
@@ -94,7 +110,7 @@ export default function SelectDeploymentType(props: SelectDeploymentTypeProps): 
             className={css.thumbnailSelect}
             name={'deploymentType'}
             onChange={onChange}
-            groups={infraGroups}
+            groups={infraGroupByService}
             isReadonly={isReadonly}
           />
         )

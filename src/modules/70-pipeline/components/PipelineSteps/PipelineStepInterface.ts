@@ -28,6 +28,7 @@ export enum StepType {
   Plugin = 'Plugin',
   Run = 'Run',
   GCR = 'BuildAndPushGCR',
+  PDC = 'PDC',
   ECR = 'BuildAndPushECR',
   SaveCacheGCS = 'SaveCacheGCS',
   RestoreCacheGCS = 'RestoreCacheGCS',

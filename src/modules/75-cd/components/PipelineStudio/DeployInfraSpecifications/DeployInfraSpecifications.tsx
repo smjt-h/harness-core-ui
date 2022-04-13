@@ -5,7 +5,7 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useMemo } from 'react'
 import YAML from 'yaml'
 import { Card, Accordion, Container, Text, RUNTIME_INPUT_VALUE } from '@wings-software/uicore'
 import { get, isEmpty, isNil, omit, debounce, set } from 'lodash-es'
@@ -24,9 +24,11 @@ import factory from '@pipeline/components/PipelineSteps/PipelineStepFactory'
 import { StepType } from '@pipeline/components/PipelineSteps/PipelineStepInterface'
 import type { InfraProvisioningData } from '@cd/components/PipelineSteps/InfraProvisioning/InfraProvisioning'
 import type { GcpInfrastructureSpec } from '@cd/components/PipelineSteps/GcpInfrastructureSpec/GcpInfrastructureSpec'
+import type { PDCInfrastructureSpec } from '@cd/components/PipelineSteps/PDCInfrastructureSpec/PDCInfrastructureSpec'
 import { useStrings } from 'framework/strings'
 import { usePipelineContext } from '@pipeline/components/PipelineStudio/PipelineContext/PipelineContext'
 import { StepWidget } from '@pipeline/components/AbstractSteps/StepWidget'
+import { InfraDeploymentType } from '@cd/components/PipelineSteps/PipelineStepsUtil'
 import DeployServiceErrors from '@cd/components/PipelineStudio/DeployServiceSpecifications/DeployServiceErrors'
 import { DeployTabs } from '@cd/components/PipelineStudio/DeployStageSetupShell/DeployStageSetupShellUtils'
 import { StageErrorContext } from '@pipeline/context/StageErrorContext'
@@ -253,7 +255,7 @@ export default function DeployInfraSpecifications(props: React.PropsWithChildren
     const type = infrastructure?.type || deploymentType
     const allowSimultaneousDeployments = get(stageData, 'stage.spec.infrastructure.allowSimultaneousDeployments', false)
     switch (type) {
-      case 'KubernetesDirect': {
+      case InfraDeploymentType.KubernetesDirect: {
         const connectorRef = infrastructure?.spec?.connectorRef
         const namespace = infrastructure?.spec?.namespace
         const releaseName = infrastructure?.spec?.releaseName ?? DEFAULT_RELEASE_NAME
@@ -264,7 +266,21 @@ export default function DeployInfraSpecifications(props: React.PropsWithChildren
           allowSimultaneousDeployments
         }
       }
-      case 'KubernetesGcp': {
+      case InfraDeploymentType.KubernetesGcp: {
+        const connectorRef = infrastructure?.spec?.connectorRef
+        const namespace = infrastructure?.spec?.namespace
+        const releaseName = infrastructure?.spec?.releaseName ?? DEFAULT_RELEASE_NAME
+        const cluster = infrastructure?.spec?.cluster
+
+        return {
+          connectorRef,
+          namespace,
+          releaseName,
+          cluster,
+          allowSimultaneousDeployments
+        }
+      }
+      case InfraDeploymentType.PDC: {
         const connectorRef = infrastructure?.spec?.connectorRef
         const namespace = infrastructure?.spec?.namespace
         const releaseName = infrastructure?.spec?.releaseName ?? DEFAULT_RELEASE_NAME
@@ -286,7 +302,7 @@ export default function DeployInfraSpecifications(props: React.PropsWithChildren
 
   const getClusterConfigurationStep = (type: string): React.ReactElement => {
     switch (type) {
-      case 'KubernetesDirect': {
+      case InfraDeploymentType.KubernetesDirect: {
         return (
           <StepWidget<K8SDirectInfrastructure>
             factory={factory}
@@ -304,13 +320,13 @@ export default function DeployInfraSpecifications(props: React.PropsWithChildren
                   releaseName: value.releaseName,
                   allowSimultaneousDeployments: value.allowSimultaneousDeployments
                 },
-                'KubernetesDirect'
+                InfraDeploymentType.KubernetesDirect
               )
             }
           />
         )
       }
-      case 'KubernetesGcp': {
+      case InfraDeploymentType.KubernetesGcp: {
         return (
           <StepWidget<GcpInfrastructureSpec>
             factory={factory}
@@ -329,7 +345,32 @@ export default function DeployInfraSpecifications(props: React.PropsWithChildren
                   releaseName: value.releaseName,
                   allowSimultaneousDeployments: value.allowSimultaneousDeployments
                 },
-                'KubernetesGcp'
+                InfraDeploymentType.KubernetesGcp
+              )
+            }
+          />
+        )
+      }
+      case InfraDeploymentType.PDC: {
+        return (
+          <StepWidget<PDCInfrastructureSpec>
+            factory={factory}
+            key={stage?.stage?.identifier}
+            readonly={isReadonly}
+            initialValues={initialInfrastructureDefinitionValues as PDCInfrastructureSpec}
+            type={StepType.PDC}
+            stepViewType={StepViewType.Edit}
+            allowableTypes={allowableTypes}
+            onUpdate={value =>
+              onUpdateInfrastructureDefinition(
+                {
+                  connectorRef: value.connectorRef,
+                  cluster: value.cluster,
+                  namespace: value.namespace,
+                  releaseName: value.releaseName,
+                  allowSimultaneousDeployments: value.allowSimultaneousDeployments
+                },
+                InfraDeploymentType.PDC
               )
             }
           />
@@ -357,6 +398,26 @@ export default function DeployInfraSpecifications(props: React.PropsWithChildren
     },
     [stage, debounceUpdateStage, stage?.stage?.spec?.infrastructure?.infrastructureDefinition]
   )
+
+  const infraLabels = useMemo(() => {
+    return {
+      PDC: (
+        <StringWithTooltip
+          tooltipId="pipelineStep.infrastructureDefinitionMethod"
+          stringId="pipelineSteps.deploy.infrastructure.selectMethodK8S"
+        />
+      ),
+      Kubernetes: (
+        <StringWithTooltip
+          tooltipId="pipelineStep.infrastructureDefinitionMethodSSH"
+          stringId="pipelineSteps.deploy.infrastructure.selectMethodSSH"
+        />
+      )
+    }
+  }, [])
+
+  const isSSH = stage?.stage?.spec?.serviceConfig.serviceDefinition?.type === 'Ssh'
+
   return (
     <div className={stageCss.serviceOverrides} key="1">
       <DeployServiceErrors domRef={scrollRef as React.MutableRefObject<HTMLElement | undefined>} />
@@ -389,13 +450,10 @@ export default function DeployInfraSpecifications(props: React.PropsWithChildren
           />
         </div>
         <Card className={stageCss.sectionCard}>
-          <Text margin={{ bottom: 'medium' }} className={stageCss.info}>
-            <StringWithTooltip
-              tooltipId="pipelineStep.infrastructureDefinitionMethod"
-              stringId="pipelineSteps.deploy.infrastructure.selectMethod"
-            />
-          </Text>
+          <Text margin={{ bottom: 'medium' }} className={stageCss.info}></Text>
+          {infraLabels[isSSH ? 'PDC' : 'Kubernetes']}
           <SelectDeploymentType
+            selectedServiceType={stage?.stage?.spec?.serviceConfig.serviceDefinition?.type}
             isReadonly={isReadonly}
             selectedInfrastructureType={selectedDeploymentType}
             onChange={deploymentType => {

@@ -7818,7 +7818,11 @@ export interface StringsMap {
   /**
    * @deprecated migrate this string to module level file
    */
-  'pipelineSteps.deploy.infrastructure.selectMethod': string
+  'pipelineSteps.deploy.infrastructure.selectMethodK8S': string
+  /**
+   * @deprecated migrate this string to module level file
+   */
+  'pipelineSteps.deploy.infrastructure.selectMethodSSH': string
   /**
    * @deprecated migrate this string to module level file
    */
@@ -7859,6 +7863,10 @@ export interface StringsMap {
    * @deprecated migrate this string to module level file
    */
   'pipelineSteps.deploymentTypes.kubernetes': string
+  /**
+   * @deprecated migrate this string to module level file
+   */
+  'pipelineSteps.deploymentTypes.pdc': string
   /**
    * @deprecated migrate this string to module level file
    */

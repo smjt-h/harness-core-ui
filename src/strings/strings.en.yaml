@@ -875,6 +875,7 @@ pipelineSteps:
   deploymentTypes:
     kubernetes: '{{$.kubernetesText}}'
     gk8engine: Google Kubernetes Engine
+    pdc: PDC
   skipSteadyStateCheck: Skip Steady State Check
   workload: 'Workload'
   stepNameRequired: 'Step Name is required'
@@ -929,7 +930,8 @@ pipelineSteps:
         manifests: '{{ $.manifests }}'
     infrastructure:
       infraDefinition: Infrastructure Definition
-      selectMethod: Select the best method for Harness to reach your Kubernetes Cluster.
+      selectMethodK8S: Select the best method for Harness to reach your Kubernetes Cluster.
+      selectMethodSSH: Select the location of your hosts to deploy to.
       directConnection: Direct Connection
       viaCloudProvider: Via Cloud Provider
     provisioner:

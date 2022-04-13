@@ -96,6 +96,11 @@ export default function SelectDeploymentType(props: SelectServiceDeploymentTypeP
         label: getString('pipeline.serviceDeploymentTypes.kubernetes'),
         icon: 'service-kubernetes',
         value: ServiceDeploymentType.Kubernetes
+      },
+      {
+        label: getString('pipeline.serviceDeploymentTypes.ssh'),
+        icon: 'secret-ssh',
+        value: ServiceDeploymentType.ssh
       }
     ],
     [getString]
@@ -138,11 +143,6 @@ export default function SelectDeploymentType(props: SelectServiceDeploymentTypeP
         label: getString('pipeline.serviceDeploymentTypes.pcf'),
         icon: 'service-pivotal',
         value: ServiceDeploymentType.pcf
-      },
-      {
-        label: getString('pipeline.serviceDeploymentTypes.ssh'),
-        icon: 'secret-ssh',
-        value: ServiceDeploymentType.ssh
       }
     ],
     [getString]
