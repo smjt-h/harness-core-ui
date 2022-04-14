@@ -16,6 +16,7 @@ import { useFeatureFlags } from '@common/hooks/useFeatureFlag'
 import { useCommunity } from 'framework/LicenseStore/useCommunity'
 import { useAppStore } from 'framework/AppStore/AppStoreContext'
 import { useStrings } from 'framework/strings'
+import SessionToken from 'framework/utils/SessionToken'
 import Feedback from './Feedback'
 import { getMenuItems } from './ResourceCenterUtil'
 import css from './ResourceCenter.module.scss'
@@ -107,9 +108,15 @@ const MenuItems: React.FC<MenuItemsProps> = ({ closeResourceCenter }: MenuItemsP
   const openFileATicket = (e: React.MouseEvent<Element, MouseEvent>): void => {
     e.stopPropagation()
     e.preventDefault()
+    const token = SessionToken.getToken()
     window.Saber.do('set_options', {
       feedback_values: {
         Email: currentUserInfo.email // set default value for email field
+      },
+      cookies: {
+        'https://pr.harness.io': {
+          Authorization: `Bearer ${token}`
+        }
       }
     })
     closeResourceCenter()

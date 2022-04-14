@@ -105,26 +105,24 @@
     <!-- saberToken -->
     <!-- Saber Feedback button -->
     <script async type="text/javascript">
-      if (window.HARNESS_ENABLE_SABER && window.saberToken) {
-        ;(function () {
-          window.Saber = {
-            apiKey: window.saberToken,
-            com: [],
-            do: function () {
-              this.com.push(arguments)
-            }
+      ;(function () {
+        window.Saber = {
+          apiKey: '5d6770dd66aaee8ba531',
+          com: [],
+          do: function () {
+            this.com.push(arguments)
           }
-          var e = document.createElement('script')
-          e.setAttribute('type', 'text/javascript')
-          e.setAttribute('src', 'https://widget.saberfeedback.com/v2/widget.js')
-          e.onload = function () {
-            Saber.do('set_option', 'hide_button', true)
-            Saber.do('set_option', 'show_thanks', false)
-            Saber.do('set_option', 'suppress_localhost_warning', true)
-          }
-          document.getElementsByTagName('head')[0].appendChild(e)
-        })()
-      }
+        }
+        var e = document.createElement('script')
+        e.setAttribute('type', 'text/javascript')
+        e.setAttribute('src', 'https://widget.saberfeedback.com/v2/widget.js')
+        e.onload = function () {
+          Saber.do('set_option', 'hide_button', true)
+          Saber.do('set_option', 'show_thanks', false)
+          Saber.do('set_option', 'suppress_localhost_warning', true)
+        }
+        document.getElementsByTagName('head')[0].appendChild(e)
+      })()
     </script>
     <!-- End of Saber Feedback button -->
   </head>
