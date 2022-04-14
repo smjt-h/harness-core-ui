@@ -79,7 +79,7 @@ const TestConnection: React.FC<StepProps<TestConnectionProps> & WizardProps> = p
         setErrors(
           result?.data?.errors?.map(error => ({
             level: 'ERROR',
-            message: error.reason
+            message: `${error.reason}. ${error.message}`
           })) as ResponseMessage[]
         )
       }

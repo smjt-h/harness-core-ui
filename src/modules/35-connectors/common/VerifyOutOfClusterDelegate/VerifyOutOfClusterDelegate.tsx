@@ -268,6 +268,7 @@ const VerifyOutOfClusterDelegate: React.FC<StepProps<VerifyOutOfClusterStepProps
           ) : null}
         </Layout.Vertical>
       )
+      const permissionLink = getPermissionsLink()
       return (
         <Layout.Vertical className={css.stepError}>
           {responseMessages ? (
@@ -294,13 +295,15 @@ const VerifyOutOfClusterDelegate: React.FC<StepProps<VerifyOutOfClusterStepProps
                 withoutBoxShadow
               />
             ) : null}
-            <Text
-              onClick={() => window.open(getPermissionsLink(), '_blank')}
-              className={cx(css.veiwPermission, { [css.marginAuto]: props.isStep })}
-              intent="primary"
-            >
-              {getString('connectors.testConnectionStep.viewPermissions')}
-            </Text>
+            {permissionLink && (
+              <Text
+                onClick={() => window.open(permissionLink, '_blank')}
+                className={cx(css.veiwPermission, { [css.marginAuto]: props.isStep })}
+                intent="primary"
+              >
+                {getString('connectors.testConnectionStep.viewPermissions')}
+              </Text>
+            )}
           </Layout.Horizontal>
           {/* ) : (
           <Button text={getString('connectors.testConnectionStep.installNewDelegate')} disabled width="160px" />

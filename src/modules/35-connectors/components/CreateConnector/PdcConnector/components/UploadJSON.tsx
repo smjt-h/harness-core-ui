@@ -5,7 +5,7 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import React, { useEffect, useState, useRef, DragEvent } from 'react'
+import React, { useState, useRef, DragEvent } from 'react'
 import { Icon, Text } from '@harness/uicore'
 import { useToaster } from '@common/exports'
 import { useStrings } from 'framework/strings'
@@ -21,13 +21,8 @@ const UploadJSON = ({ setJsonValue }: UploadJSONInterface) => {
   const { getString } = useStrings()
   const { showError } = useToaster()
   const inputRef = useRef() as React.MutableRefObject<HTMLInputElement>
-  const [fileContent, setFileContent] = useState([] as uploadHostItem[])
   const [fileName, setFileName] = useState<string>('')
   const [dropHighlight, setDropHighlight] = useState(false)
-
-  useEffect(() => {
-    setJsonValue(fileContent)
-  }, [fileContent])
 
   const handleFileUpload = async (file: File) => {
     setFileName('')
@@ -35,7 +30,7 @@ const UploadJSON = ({ setJsonValue }: UploadJSONInterface) => {
       const fr = new FileReader()
       fr.onload = () => {
         try {
-          setFileContent(JSON.parse(fr.result as string))
+          setJsonValue(JSON.parse(fr.result as string))
           setFileName(file.name)
         } catch (e) {
           showError(e.message)

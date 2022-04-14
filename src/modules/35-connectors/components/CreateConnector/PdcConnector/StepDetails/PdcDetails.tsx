@@ -5,7 +5,7 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import {
   Layout,
   Button,
@@ -14,13 +14,11 @@ import {
   StepProps,
   Container,
   ButtonVariation,
-  PageSpinner,
   HarnessDocTooltip,
   FormInput
 } from '@wings-software/uicore'
 import { FontVariation } from '@harness/design-system'
 import type { ConnectorConfigDTO, ConnectorInfoDTO } from 'services/cd-ng'
-import { setupPDCFormData } from '@connectors/pages/connectors/utils/ConnectorUtils'
 import { useStrings } from 'framework/strings'
 import UploadJSON from '../components/UploadJSON'
 
@@ -32,10 +30,11 @@ interface PdcDetailsProps {
   setIsEditMode: (val: boolean) => void
   setFormData?: (formData: ConnectorConfigDTO) => void
   onConnectorCreated: (data?: ConnectorConfigDTO) => void | Promise<void>
-  connectorInfo: ConnectorInfoDTO | void
+  connectorInfo?: ConnectorInfoDTO
   accountId: string
   orgIdentifier: string
   projectIdentifier: string
+  hosts: string | []
 }
 
 export interface uploadHostItem {
@@ -44,65 +43,43 @@ export interface uploadHostItem {
 interface StepConfigureProps {
   closeModal?: () => void
   onSuccess?: () => void
-  hosts?: string
+  hosts?: string | []
+  spec?: { hosts: string }
 }
 
-interface PDCFormInterface {
-  delegateType?: string
-}
 const PdcDetails: React.FC<StepProps<StepConfigureProps> & PdcDetailsProps> = props => {
   const { prevStepData, nextStep } = props
-  const { accountId } = props
   const { getString } = useStrings()
 
-  const defaultInitialFormData: PDCFormInterface = {}
-
-  const [initialValues, setInitialValues] = useState(defaultInitialFormData)
   const [hostsJSON, setHostsJSON] = useState([] as uploadHostItem[])
-  const [loadingConnectorSecrets, setLoadingConnectorSecrets] = useState(props.isEditMode)
-  const [manualTypedHosts, setManualTypedHosts] = useState('')
 
   useEffect(() => {
-    setManualTypedHosts(prevStepData?.hosts || '')
-  }, [])
-
-  useEffect(() => {
-    if (loadingConnectorSecrets) {
-      if (props.isEditMode) {
-        if (props.connectorInfo) {
-          setManualTypedHosts(props.connectorInfo?.spec?.hosts?.map?.((host: any) => host.hostname).join('\n'))
-          setupPDCFormData(props.connectorInfo, accountId).then(data => {
-            setInitialValues(data as PDCFormInterface)
-            setLoadingConnectorSecrets(false)
-          })
-        } else {
-          setLoadingConnectorSecrets(false)
-        }
-      }
+    if (typeof prevStepData?.spec?.hosts === 'object') {
+      setHostsJSON(prevStepData?.spec?.hosts)
     }
-  }, [loadingConnectorSecrets])
+  }, [])
 
   const handleSubmit = (formData: ConnectorConfigDTO) => {
     const data = { ...formData }
-    data.hosts = hostsJSON?.length > 0 ? hostsJSON : manualTypedHosts
-    nextStep?.({ ...props.connectorInfo, ...prevStepData, ...data } as StepConfigureProps)
+    if (hostsJSON?.length > 0) {
+      data.hosts = hostsJSON
+    }
+    nextStep?.({ ...prevStepData, ...data } as StepConfigureProps)
   }
 
-  return loadingConnectorSecrets ? (
-    <PageSpinner />
-  ) : (
+  const initialFormValues = useMemo(() => {
+    const hosts = prevStepData?.hosts || prevStepData?.spec?.hosts
+    return {
+      hosts: typeof hosts === 'string' ? hosts : hosts?.map?.((host: any) => host.hostname).join('\n')
+    }
+  }, [])
+
+  return (
     <Layout.Vertical spacing="medium" className={css.secondStep}>
       <Text font={{ variation: FontVariation.H3 }} tooltipProps={{ dataTooltipId: 'pdcHostDetails' }}>
         {getString('details')}
       </Text>
-      <Formik
-        initialValues={{
-          ...initialValues,
-          ...props.prevStepData
-        }}
-        formName="pdcDetailsForm"
-        onSubmit={handleSubmit}
-      >
+      <Formik initialValues={initialFormValues} formName="pdcDetailsForm" onSubmit={handleSubmit}>
         {formikProps => (
           <>
             <Container className={css.clusterWrapper}>
@@ -111,9 +88,6 @@ const PdcDetails: React.FC<StepProps<StepConfigureProps> & PdcDetailsProps> = pr
                   <FormInput.TextArea
                     className={css.textInput}
                     name="hosts"
-                    onChange={(event: React.ChangeEvent<HTMLTextAreaElement>) => {
-                      setManualTypedHosts(event.target.value)
-                    }}
                     label={
                       <HarnessDocTooltip
                         tooltipId={'pdc-connector-hosts'}
@@ -126,7 +100,7 @@ const PdcDetails: React.FC<StepProps<StepConfigureProps> & PdcDetailsProps> = pr
                 <UploadJSON
                   setJsonValue={json => {
                     setHostsJSON(json)
-                    setManualTypedHosts(json.map(hostItem => hostItem.hostname).join('\n'))
+                    formikProps.setFieldValue('hosts', json.map(hostItem => hostItem.hostname).join('\n'))
                   }}
                 />
               </Layout.Horizontal>
