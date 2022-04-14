@@ -9072,6 +9072,7 @@ export interface StageElementConfig {
   type?: string
   variables?: NGVariable[]
   when?: StageWhenCondition
+  delegateSelectors?: string[]
 }
 
 export interface StageElementWrapperConfig {
