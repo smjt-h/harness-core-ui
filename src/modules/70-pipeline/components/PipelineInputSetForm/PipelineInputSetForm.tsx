@@ -228,7 +228,7 @@ function PipelineInputSetFormInternal(props: PipelineInputSetFormProps): React.R
           />
         </div>
       ) : null}
-      {getMultiTypeFromValue(template?.delegateSelectors) ? (
+      {getMultiTypeFromValue(template?.delegateSelectors) === MultiTypeInputType.RUNTIME ? (
         <div className={cx(stepCss.formGroup, stepCss.sm, stepCss.delegate)}>
           <DelegateSelectorPanel isReadonly={readonly || false} allowableTypes={allowableTypes} />
         </div>
