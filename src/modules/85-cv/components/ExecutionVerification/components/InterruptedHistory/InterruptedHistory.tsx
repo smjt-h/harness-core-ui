@@ -10,11 +10,11 @@ import { Color } from '@harness/design-system'
 import moment from 'moment'
 import React from 'react'
 import { useStrings } from 'framework/strings'
-import type { InterruptEffect } from 'services/pipeline-ng'
+import type { InterruptEffectDTO } from 'services/pipeline-ng'
 import styles from './InterruptedHistory.module.scss'
 
 interface InterruptedHistory {
-  interruptedHistories?: InterruptEffect[]
+  interruptedHistories?: InterruptEffectDTO[]
 }
 
 export default function InterruptedHistory(props: InterruptedHistory): JSX.Element {

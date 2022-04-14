@@ -16,6 +16,18 @@ export type AbortFailureActionConfig = FailureStrategyActionConfig & {
   type: 'Abort'
 }
 
+export interface AdviserIssuer {
+  adviseType:
+    | 'UNKNOWN'
+    | 'NEXT_STEP'
+    | 'RETRY'
+    | 'INTERVENTION_WAIT'
+    | 'END_PLAN'
+    | 'MARK_SUCCESS'
+    | 'IGNORE_FAILURE'
+    | 'UNRECOGNIZED'
+}
+
 export interface ApprovalInstanceDetailsDTO {
   [key: string]: any
 }
@@ -252,6 +264,7 @@ export type ConnectorFilterProperties = FilterProperties & {
     | 'ServiceNow'
     | 'ErrorTracking'
     | 'Pdc'
+    | 'AzureRepo'
   )[]
 }
 
@@ -725,7 +738,7 @@ export interface ExecutionNode {
   executableResponses?: ExecutableResponse[]
   failureInfo?: FailureInfoDTO
   identifier?: string
-  interruptHistories?: InterruptEffect[]
+  interruptHistories?: InterruptEffectDTO[]
   name?: string
   nodeRunInfo?: NodeRunInfo
   outcomes?: {
@@ -1146,6 +1159,7 @@ export interface FilterProperties {
     | 'Deployment'
     | 'Audit'
     | 'Template'
+    | 'EnvironmentGroup'
   tags?: {
     [key: string]: string
   }
@@ -1417,10 +1431,11 @@ export interface InputSetTemplateWithReplacedExpressionsResponse {
 }
 
 export interface InterruptConfig {
-  [key: string]: any
+  issuedBy: IssuedBy
+  retryInterruptConfig?: RetryInterruptConfig
 }
 
-export interface InterruptEffect {
+export interface InterruptEffectDTO {
   interruptConfig: InterruptConfig
   interruptId: string
   interruptType:
@@ -1443,6 +1458,14 @@ export interface InterruptEffect {
     | 'EXPIRE_ALL'
     | 'UNRECOGNIZED'
   tookEffectAt: number
+}
+
+export interface IssuedBy {
+  adviserIssuer?: AdviserIssuer
+  issueTime: number
+  manualIssuer?: ManualIssuer
+  timeoutIssuer?: TimeoutIssuer
+  triggerIssuer?: TriggerIssuer
 }
 
 export type JexlCriteriaSpec = CriteriaSpecDTO & {
@@ -1516,6 +1539,13 @@ export interface ManualFailureSpecConfig {
 export type ManualInterventionFailureActionConfig = FailureStrategyActionConfig & {
   spec: ManualFailureSpecConfig
   type: 'ManualIntervention'
+}
+
+export interface ManualIssuer {
+  email_id: string
+  identifier: string
+  type: string
+  user_id: string
 }
 
 export type MarkAsSuccessFailureActionConfig = FailureStrategyActionConfig & {
@@ -2913,6 +2943,13 @@ export interface ResponseTemplateStepNode {
   status?: 'SUCCESS' | 'FAILURE' | 'ERROR'
 }
 
+export interface ResponseTemplatesResolvedPipelineResponseDTO {
+  correlationId?: string
+  data?: TemplatesResolvedPipelineResponseDTO
+  metaData?: { [key: string]: any }
+  status?: 'SUCCESS' | 'FAILURE' | 'ERROR'
+}
+
 export interface ResponseVariableMergeServiceResponse {
   correlationId?: string
   data?: VariableMergeServiceResponse
@@ -2975,6 +3012,10 @@ export interface RetryInfo {
   errorMessage?: string
   groups?: RetryGroup[]
   resumable?: boolean
+}
+
+export interface RetryInterruptConfig {
+  retryId: string
 }
 
 export interface RetryLatestExecutionResponseDto {
@@ -3227,12 +3268,21 @@ export interface TemplateStepNode {
   template: TemplateLinkConfig
 }
 
+export interface TemplatesResolvedPipelineResponseDTO {
+  resolvedTemplatesPipelineYaml?: string
+  yamlPipeline?: string
+}
+
 export interface Throwable {
   cause?: Throwable
   localizedMessage?: string
   message?: string
   stackTrace?: StackTraceElement[]
   suppressed?: Throwable[]
+}
+
+export interface TimeoutIssuer {
+  timeoutInstanceId: string
 }
 
 export interface TotalHealthInfo {
@@ -3244,6 +3294,11 @@ export interface TriggerEventDataCondition {
   key?: string
   operator?: 'In' | 'Equals' | 'NotEquals' | 'NotIn' | 'Regex' | 'EndsWith' | 'StartsWith' | 'Contains'
   value?: string
+}
+
+export interface TriggerIssuer {
+  abortPrevConcurrentExecution: boolean
+  triggerRef: string
 }
 
 export interface TriggerStatus {
@@ -3281,6 +3336,7 @@ export interface VariableMergeServiceResponse {
 }
 
 export interface VariableResponseMapValue {
+  yamlExtraProperties?: YamlExtraProperties
   yamlOutputProperties?: YamlOutputProperties
   yamlProperties?: YamlProperties
 }
@@ -3318,6 +3374,10 @@ export type WebhookTriggerConfigV2 = NGTriggerSpecV2 & {
 }
 
 export interface WebhookTriggerSpecV2 {
+  [key: string]: any
+}
+
+export interface YamlExtraProperties {
   [key: string]: any
 }
 
@@ -3967,6 +4027,7 @@ export interface GetFilterListQueryParams {
     | 'Deployment'
     | 'Audit'
     | 'Template'
+    | 'EnvironmentGroup'
 }
 
 export type GetFilterListProps = Omit<
@@ -4127,6 +4188,7 @@ export interface DeleteFilterQueryParams {
     | 'Deployment'
     | 'Audit'
     | 'Template'
+    | 'EnvironmentGroup'
 }
 
 export type DeleteFilterProps = Omit<
@@ -4188,6 +4250,7 @@ export interface GetFilterQueryParams {
     | 'Deployment'
     | 'Audit'
     | 'Template'
+    | 'EnvironmentGroup'
 }
 
 export interface GetFilterPathParams {
@@ -8195,6 +8258,94 @@ export const getPipelinedHealthPromise = (
     signal
   )
 
+export interface GetTemplateResolvedPipelineQueryParams {
+  accountIdentifier: string
+  orgIdentifier: string
+  projectIdentifier: string
+  branch?: string
+  repoIdentifier?: string
+  getDefaultFromOtherRepo?: boolean
+}
+
+export interface GetTemplateResolvedPipelinePathParams {
+  pipelineIdentifier: string
+}
+
+export type GetTemplateResolvedPipelineProps = Omit<
+  GetProps<
+    ResponseTemplatesResolvedPipelineResponseDTO,
+    Failure | Error,
+    GetTemplateResolvedPipelineQueryParams,
+    GetTemplateResolvedPipelinePathParams
+  >,
+  'path'
+> &
+  GetTemplateResolvedPipelinePathParams
+
+/**
+ * Gets template resolved pipeline yaml
+ */
+export const GetTemplateResolvedPipeline = ({ pipelineIdentifier, ...props }: GetTemplateResolvedPipelineProps) => (
+  <Get<
+    ResponseTemplatesResolvedPipelineResponseDTO,
+    Failure | Error,
+    GetTemplateResolvedPipelineQueryParams,
+    GetTemplateResolvedPipelinePathParams
+  >
+    path={`/pipelines/resolved-templates-pipeline-yaml/${pipelineIdentifier}`}
+    base={getConfig('pipeline/api')}
+    {...props}
+  />
+)
+
+export type UseGetTemplateResolvedPipelineProps = Omit<
+  UseGetProps<
+    ResponseTemplatesResolvedPipelineResponseDTO,
+    Failure | Error,
+    GetTemplateResolvedPipelineQueryParams,
+    GetTemplateResolvedPipelinePathParams
+  >,
+  'path'
+> &
+  GetTemplateResolvedPipelinePathParams
+
+/**
+ * Gets template resolved pipeline yaml
+ */
+export const useGetTemplateResolvedPipeline = ({ pipelineIdentifier, ...props }: UseGetTemplateResolvedPipelineProps) =>
+  useGet<
+    ResponseTemplatesResolvedPipelineResponseDTO,
+    Failure | Error,
+    GetTemplateResolvedPipelineQueryParams,
+    GetTemplateResolvedPipelinePathParams
+  >(
+    (paramsInPath: GetTemplateResolvedPipelinePathParams) =>
+      `/pipelines/resolved-templates-pipeline-yaml/${paramsInPath.pipelineIdentifier}`,
+    { base: getConfig('pipeline/api'), pathParams: { pipelineIdentifier }, ...props }
+  )
+
+/**
+ * Gets template resolved pipeline yaml
+ */
+export const getTemplateResolvedPipelinePromise = (
+  {
+    pipelineIdentifier,
+    ...props
+  }: GetUsingFetchProps<
+    ResponseTemplatesResolvedPipelineResponseDTO,
+    Failure | Error,
+    GetTemplateResolvedPipelineQueryParams,
+    GetTemplateResolvedPipelinePathParams
+  > & { pipelineIdentifier: string },
+  signal?: RequestInit['signal']
+) =>
+  getUsingFetch<
+    ResponseTemplatesResolvedPipelineResponseDTO,
+    Failure | Error,
+    GetTemplateResolvedPipelineQueryParams,
+    GetTemplateResolvedPipelinePathParams
+  >(getConfig('pipeline/api'), `/pipelines/resolved-templates-pipeline-yaml/${pipelineIdentifier}`, props, signal)
+
 export interface GetPipelineSummaryQueryParams {
   accountIdentifier: string
   orgIdentifier: string
@@ -8417,6 +8568,68 @@ export const getStepsV2Promise = (
     'POST',
     getConfig('pipeline/api'),
     `/pipelines/v2/steps`,
+    props,
+    signal
+  )
+
+export interface CreateVariablesV2QueryParams {
+  accountIdentifier: string
+  orgIdentifier: string
+  projectIdentifier: string
+  branch?: string
+  repoIdentifier?: string
+  getDefaultFromOtherRepo?: boolean
+}
+
+export type CreateVariablesV2Props = Omit<
+  MutateProps<ResponseVariableMergeServiceResponse, Failure | Error, CreateVariablesV2QueryParams, void, void>,
+  'path' | 'verb'
+>
+
+/**
+ * Create variables for Pipeline
+ */
+export const CreateVariablesV2 = (props: CreateVariablesV2Props) => (
+  <Mutate<ResponseVariableMergeServiceResponse, Failure | Error, CreateVariablesV2QueryParams, void, void>
+    verb="POST"
+    path={`/pipelines/v2/variables`}
+    base={getConfig('pipeline/api')}
+    {...props}
+  />
+)
+
+export type UseCreateVariablesV2Props = Omit<
+  UseMutateProps<ResponseVariableMergeServiceResponse, Failure | Error, CreateVariablesV2QueryParams, void, void>,
+  'path' | 'verb'
+>
+
+/**
+ * Create variables for Pipeline
+ */
+export const useCreateVariablesV2 = (props: UseCreateVariablesV2Props) =>
+  useMutate<ResponseVariableMergeServiceResponse, Failure | Error, CreateVariablesV2QueryParams, void, void>(
+    'POST',
+    `/pipelines/v2/variables`,
+    { base: getConfig('pipeline/api'), ...props }
+  )
+
+/**
+ * Create variables for Pipeline
+ */
+export const createVariablesV2Promise = (
+  props: MutateUsingFetchProps<
+    ResponseVariableMergeServiceResponse,
+    Failure | Error,
+    CreateVariablesV2QueryParams,
+    void,
+    void
+  >,
+  signal?: RequestInit['signal']
+) =>
+  mutateUsingFetch<ResponseVariableMergeServiceResponse, Failure | Error, CreateVariablesV2QueryParams, void, void>(
+    'POST',
+    getConfig('pipeline/api'),
+    `/pipelines/v2/variables`,
     props,
     signal
   )
@@ -8658,6 +8871,9 @@ export interface CreateVariablesQueryParams {
   accountIdentifier: string
   orgIdentifier: string
   projectIdentifier: string
+  branch?: string
+  repoIdentifier?: string
+  getDefaultFromOtherRepo?: boolean
 }
 
 export type CreateVariablesProps = Omit<
