@@ -89,7 +89,7 @@ describe('Services for Pipeline', () => {
     cy.contains('span', 'serviceTag').should('be.visible')
     cy.matchImageSnapshot('Edit Service Modal - YAML View')
 
-    //upsert call
+    //intercept call
     cy.intercept('GET', servicesUpsertCall, { fixture: 'ng/api/servicesV2/servicesUpdate.json' })
     cy.contains('span', 'Save').click()
 
