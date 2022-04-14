@@ -5,7 +5,7 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import { Button, Container, FontVariation, Label, SimpleTagInput, Text } from '@harness/uicore'
+import { Container, FontVariation, Label, SimpleTagInput, Text } from '@harness/uicore'
 import React, { ReactElement } from 'react'
 import { useStrings } from 'framework/strings'
 import type { Segment, Target, TargetMap } from 'services/cf'
@@ -21,7 +21,6 @@ export interface SpecificTargetingItemProps {
   formVariationMapItem: FormVariationMap
   updateTargetGroups: (index: number, newTargetGroups: TargetGroup[]) => void
   updateTargets: (index: number, newTargets: TargetMap[]) => void
-  removeVariation: () => void
 }
 
 export interface TagInputItem {
@@ -30,16 +29,7 @@ export interface TagInputItem {
 }
 
 const SpecificTargetingItem = (props: SpecificTargetingItemProps): ReactElement => {
-  const {
-    targets,
-    segments,
-    formVariationMapItem,
-    index,
-    disabled,
-    updateTargetGroups,
-    updateTargets,
-    removeVariation
-  } = props
+  const { targets, segments, formVariationMapItem, index, disabled, updateTargetGroups, updateTargets } = props
 
   const delimiter = ','
 
@@ -51,17 +41,6 @@ const SpecificTargetingItem = (props: SpecificTargetingItemProps): ReactElement 
         <Text inline font={{ variation: FontVariation.BODY }} icon="full-circle">
           {formVariationMapItem.variationName}
         </Text>
-
-        <DisabledFeatureTooltip>
-          <Button
-            disabled={disabled}
-            data-testid={`remove_variation_${formVariationMapItem.variationIdentifier}`}
-            icon="trash"
-            minimal
-            withoutCurrentColor
-            onClick={removeVariation}
-          />
-        </DisabledFeatureTooltip>
       </Container>
       <div data-testid={`${formVariationMapItem.variationIdentifier}_target_groups`}>
         <DisabledFeatureTooltip fullWidth>

@@ -5,7 +5,7 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import { Card, Container, FontVariation, Heading, Layout } from '@harness/uicore'
+import { Button, Card, Container, FontVariation, Heading, Layout } from '@harness/uicore'
 import React, { ReactElement } from 'react'
 
 import { useStrings } from 'framework/strings'
@@ -15,6 +15,7 @@ import SpecificTargetingItem from '../specific-targeting-item/SpecificTargetingI
 import { FormVariationMap, VariationPercentageRollout, TargetGroup, TargetingRuleItemType } from '../../Types.types'
 import PercentageRolloutItem from '../percentage-rollout-item/PercentageRolloutItem'
 import AddTargetingButton from '../add-targeting-button/AddTargetingButton'
+import DisabledFeatureTooltip from '../disabled-feature-tooltip/DisabledFeatureTooltip'
 
 export interface FlagEnabledRulesCardProps {
   targets: Target[]
@@ -70,9 +71,25 @@ const FlagEnabledRulesCard = (props: FlagEnabledRulesCardProps): ReactElement =>
               const item = targetingRuleItem as FormVariationMap
               return (
                 <>
-                  <Heading level={4} font={{ variation: FontVariation.BODY2 }} margin={{ top: 'medium' }}>
-                    {getString('cf.featureFlags.rules.specificTargeting')}
-                  </Heading>
+                  <Container flex={{ justifyContent: 'space-between' }}>
+                    <Heading level={4} font={{ variation: FontVariation.BODY2 }} margin={{ top: 'medium' }}>
+                      {getString('cf.featureFlags.rules.specificTargeting')}
+                    </Heading>
+                    <DisabledFeatureTooltip>
+                      <Button
+                        disabled={disabled}
+                        data-testid={`remove_variation_${item.variationIdentifier}`}
+                        icon="trash"
+                        minimal
+                        withoutCurrentColor
+                        onClick={e => {
+                          e.preventDefault()
+                          removeVariation(index)
+                        }}
+                      />
+                    </DisabledFeatureTooltip>
+                  </Container>
+
                   <SpecificTargetingItem
                     key={`${item.variationIdentifier}_${index}`}
                     index={index}
@@ -82,7 +99,6 @@ const FlagEnabledRulesCard = (props: FlagEnabledRulesCardProps): ReactElement =>
                     formVariationMapItem={item}
                     updateTargetGroups={updateTargetGroups}
                     updateTargets={updateTargets}
-                    removeVariation={() => removeVariation(index)}
                   />
                 </>
               )
