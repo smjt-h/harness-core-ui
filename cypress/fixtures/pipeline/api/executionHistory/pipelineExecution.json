@@ -1,0 +1,40 @@
+{
+  "status": "SUCCESS",
+  "data": {
+    "pipelineExecutionInfoList": [
+      { "date": 1647216000000, "count": { "total": 1, "success": 0, "failure": 1 } },
+      { "date": 1647302400000, "count": { "total": 0, "success": 0, "failure": 0 } },
+      { "date": 1647388800000, "count": { "total": 0, "success": 0, "failure": 0 } },
+      { "date": 1647475200000, "count": { "total": 1, "success": 0, "failure": 1 } },
+      { "date": 1647561600000, "count": { "total": 0, "success": 0, "failure": 0 } },
+      { "date": 1647648000000, "count": { "total": 0, "success": 0, "failure": 0 } },
+      { "date": 1647734400000, "count": { "total": 0, "success": 0, "failure": 0 } },
+      { "date": 1647820800000, "count": { "total": 0, "success": 0, "failure": 0 } },
+      { "date": 1647907200000, "count": { "total": 0, "success": 0, "failure": 0 } },
+      { "date": 1647993600000, "count": { "total": 0, "success": 0, "failure": 0 } },
+      { "date": 1648080000000, "count": { "total": 0, "success": 0, "failure": 0 } },
+      { "date": 1648166400000, "count": { "total": 10, "success": 10, "failure": 0 } },
+      { "date": 1648252800000, "count": { "total": 0, "success": 0, "failure": 0 } },
+      { "date": 1648339200000, "count": { "total": 0, "success": 0, "failure": 0 } },
+      { "date": 1648425600000, "count": { "total": 120, "success": 120, "failure": 0 } },
+      { "date": 1648512000000, "count": { "total": 0, "success": 0, "failure": 0 } },
+      { "date": 1648598400000, "count": { "total": 0, "success": 0, "failure": 0 } },
+      { "date": 1648684800000, "count": { "total": 150, "success": 150, "failure": 0 } },
+      { "date": 1648771200000, "count": { "total": 0, "success": 0, "failure": 0 } },
+      { "date": 1648857600000, "count": { "total": 600, "success": 0, "failure": 0 } },
+      { "date": 1648944000000, "count": { "total": 500, "success": 250, "failure": 250 } },
+      { "date": 1649030400000, "count": { "total": 134, "success": 0, "failure": 134 } },
+      { "date": 1649116800000, "count": { "total": 436, "success": 0, "failure": 436 } },
+      { "date": 1649203200000, "count": { "total": 724, "success": 0, "failure": 724 } },
+      { "date": 1649289600000, "count": { "total": 720, "success": 0, "failure": 720 } },
+      { "date": 1649376000000, "count": { "total": 720, "success": 0, "failure": 720 } },
+      { "date": 1649462400000, "count": { "total": 718, "success": 0, "failure": 718 } },
+      { "date": 1649548800000, "count": { "total": 687, "success": 0, "failure": 687 } },
+      { "date": 1649635200000, "count": { "total": 720, "success": 0, "failure": 720 } },
+      { "date": 1649721600000, "count": { "total": 720, "success": 0, "failure": 720 } },
+      { "date": 1649808000000, "count": { "total": 414, "success": 0, "failure": 414 } }
+    ]
+  },
+  "metaData": null,
+  "correlationId": "0ca2af26-c3fa-45bc-84d8-2d80ea8da452"
+}

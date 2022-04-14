@@ -6,7 +6,7 @@
  */
 
 import React from 'react'
-import { act, fireEvent, getByText, render } from '@testing-library/react'
+import { act, fireEvent, getByText, render, waitFor } from '@testing-library/react'
 import { findDialogContainer, findPopoverContainer, TestWrapper } from '@common/utils/testUtils'
 import routes from '@common/RouteDefinitions'
 import { accountPathProps, pipelineModuleParams, pipelinePathProps } from '@common/utils/routeUtils'
@@ -44,6 +44,9 @@ describe('<TemplateBar /> tests', () => {
       onOpenTemplateSelector: jest.fn(),
       onRemoveTemplate: jest.fn()
     }
+
+    window.open = jest.fn()
+
     const { container } = render(
       <TestWrapper
         path={routes.toPipelineStudio({ ...accountPathProps, ...pipelinePathProps, ...pipelineModuleParams })}
@@ -63,6 +66,9 @@ describe('<TemplateBar /> tests', () => {
     await act(async () => {
       fireEvent.click(optionsBtn)
     })
+    const menuContainer = document.body.querySelector('.bp3-menu') as HTMLElement
+    await waitFor(() => expect(menuContainer).not.toBeNull())
+    fireEvent.click(menuContainer)
     const popover = findPopoverContainer()
     const changeBtn = getByText(popover as HTMLElement, 'pipeline.changeTemplateLabel')
     await act(async () => {
@@ -78,5 +84,11 @@ describe('<TemplateBar /> tests', () => {
       fireEvent.click(submitBtn)
     })
     expect(props.onRemoveTemplate).toBeCalled()
+
+    const openTemplateInNewTabBtn = getByText(popover as HTMLElement, 'pipeline.openTemplateInNewTabLabel')
+    act(() => {
+      fireEvent.click(openTemplateInNewTabBtn)
+    })
+    expect(window.open).toHaveBeenCalled()
   })
 })

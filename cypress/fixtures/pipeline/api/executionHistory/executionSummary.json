@@ -1,0 +1,527 @@
+{
+  "status": "SUCCESS",
+  "data": {
+    "content": [
+      {
+        "pipelineIdentifier": "testPipeline_Cypress",
+        "planExecutionId": "jDwNFYhgT2KTW_zVDZdhHg",
+        "name": "testPipeline_Cypress",
+        "status": "Success",
+        "tags": [],
+        "executionTriggerInfo": {
+          "triggerType": "MANUAL",
+          "triggeredBy": {
+            "uuid": "UXBrSK-YSZa4UgcmgTNTVQ",
+            "identifier": "John Doe",
+            "extraInfo": {
+              "email": "john.doe@harness.io"
+            }
+          },
+          "isRerun": false
+        },
+        "governanceMetadata": {
+          "id": "0",
+          "deny": false,
+          "details": [],
+          "message": "",
+          "timestamp": "1649664049492",
+          "status": "pass",
+          "accountId": "accountId",
+          "orgId": "default",
+          "projectId": "project1",
+          "entity": "accountIdentifier%3AaccountId%2ForgIdentifier%3Adefault%2FprojectIdentifier%3Aproject1%2FpipelineIdentifier%3AtestPipeline_Cypress",
+          "type": "pipeline",
+          "action": "onrun",
+          "created": "1649664049481"
+        },
+        "moduleInfo": {
+          "pms": {
+            "__recast": "io.harness.pms.plan.execution.PmsPipelineModuleInfo",
+            "approvalStageNames": ["sads"],
+            "hasApprovalStage": true
+          }
+        },
+        "layoutNodeMap": {
+          "q73qDaNlRO2NrRzMqHAvnw": {
+            "nodeType": "Approval",
+            "nodeGroup": "STAGE",
+            "nodeIdentifier": "sads",
+            "name": "sads",
+            "nodeUuid": "q73qDaNlRO2NrRzMqHAvnw",
+            "status": "Success",
+            "module": "pms",
+            "moduleInfo": {
+              "pms": { "__recast": "io.harness.pms.plan.execution.PmsExecutionServiceInfoProvider$PmsNoopModuleInfo" }
+            },
+            "startTs": 1649664049690,
+            "endTs": 1649664060630,
+            "edgeLayoutList": { "currentNodeChildren": [], "nextIds": [] },
+            "nodeRunInfo": {
+              "whenCondition": "\u003c+OnPipelineSuccess\u003e",
+              "evaluatedCondition": true,
+              "expressions": [
+                {
+                  "expression": "OnPipelineSuccess",
+                  "expressionValue": "true",
+                  "count": 1
+                }
+              ]
+            },
+            "failureInfo": {
+              "message": ""
+            },
+            "failureInfoDTO": { "message": "", "failureTypeList": [], "responseMessages": [] }
+          }
+        },
+        "modules": ["pms"],
+        "startingNodeId": "q73qDaNlRO2NrRzMqHAvnw",
+        "startTs": 1649664049492,
+        "endTs": 1649664060741,
+        "createdAt": 1649664049551,
+        "canRetry": true,
+        "showRetryHistory": false,
+        "runSequence": 39,
+        "successfulStagesCount": 1,
+        "runningStagesCount": 0,
+        "failedStagesCount": 0,
+        "totalStagesCount": 1,
+        "allowStageExecutions": false,
+        "stagesExecution": false
+      },
+      {
+        "pipelineIdentifier": "testPipeline_Cypress",
+        "planExecutionId": "2BNrdFYSTCKTcVXlLnhP7Q",
+        "name": "testPipeline_Cypress",
+        "status": "Aborted",
+        "tags": [],
+        "executionTriggerInfo": {
+          "triggerType": "MANUAL",
+          "triggeredBy": {
+            "uuid": "UXBrSK-YSZa4UgcmgTNTVQ",
+            "identifier": "John Doe",
+            "extraInfo": {
+              "email": "john.doe@harness.io"
+            }
+          },
+          "isRerun": false
+        },
+        "governanceMetadata": {
+          "id": "0",
+          "deny": false,
+          "details": [],
+          "message": "",
+          "timestamp": "1649146300864",
+          "status": "pass",
+          "accountId": "accountId",
+          "orgId": "default",
+          "projectId": "project1",
+          "entity": "accountIdentifier%3AaccountId%2ForgIdentifier%3Adefault%2FprojectIdentifier%3Aproject1%2FpipelineIdentifier%3AtestPipeline_Cypress",
+          "type": "pipeline",
+          "action": "onrun",
+          "created": "1649146300854"
+        },
+        "moduleInfo": {
+          "pms": {
+            "__recast": "io.harness.pms.plan.execution.PmsPipelineModuleInfo",
+            "approvalStageNames": ["sads"],
+            "hasApprovalStage": true
+          }
+        },
+        "layoutNodeMap": {
+          "lPhIjrivRperevc9YZVYyA": {
+            "nodeType": "Approval",
+            "nodeGroup": "STAGE",
+            "nodeIdentifier": "sads",
+            "name": "sads",
+            "nodeUuid": "lPhIjrivRperevc9YZVYyA",
+            "status": "Aborted",
+            "module": "pms",
+            "moduleInfo": {
+              "pms": { "__recast": "io.harness.pms.plan.execution.PmsExecutionServiceInfoProvider$PmsNoopModuleInfo" }
+            },
+            "startTs": 1649146301039,
+            "endTs": 1649146308025,
+            "edgeLayoutList": { "currentNodeChildren": [], "nextIds": [] },
+            "nodeRunInfo": {
+              "whenCondition": "\u003c+OnPipelineSuccess\u003e",
+              "evaluatedCondition": true,
+              "expressions": [
+                {
+                  "expression": "OnPipelineSuccess",
+                  "expressionValue": "true",
+                  "count": 1
+                }
+              ]
+            },
+            "failureInfo": {
+              "message": ""
+            },
+            "failureInfoDTO": { "message": "", "failureTypeList": [], "responseMessages": [] }
+          }
+        },
+        "modules": ["pms"],
+        "startingNodeId": "lPhIjrivRperevc9YZVYyA",
+        "startTs": 1649146300864,
+        "endTs": 1649146309123,
+        "createdAt": 1649146300892,
+        "canRetry": true,
+        "showRetryHistory": false,
+        "runSequence": 38,
+        "successfulStagesCount": 0,
+        "runningStagesCount": 0,
+        "failedStagesCount": 0,
+        "totalStagesCount": 1,
+        "allowStageExecutions": false,
+        "stagesExecution": false
+      },
+      {
+        "pipelineIdentifier": "testPipeline_Cypress",
+        "planExecutionId": "og6igi2RRcWUVLPqUUeAHQ",
+        "name": "testPipeline_Cypress",
+        "status": "Failed",
+        "tags": [],
+        "executionTriggerInfo": {
+          "triggerType": "MANUAL",
+          "triggeredBy": {
+            "uuid": "qUaLKpHcTOS3ThJVG2bwIw",
+            "identifier": "John Doe",
+            "extraInfo": {
+              "email": "john.doe@harness.io"
+            }
+          },
+          "isRerun": false
+        },
+        "executionErrorInfo": {
+          "message": "Shell Script execution failed. Please check execution logs."
+        },
+        "governanceMetadata": {
+          "id": "0",
+          "deny": false,
+          "details": [],
+          "message": "",
+          "timestamp": "1649675020783",
+          "status": "pass",
+          "accountId": "accountId",
+          "orgId": "default",
+          "projectId": "project1",
+          "entity": "accountIdentifier%3AaccountId%2ForgIdentifier%3Adefault%2FprojectIdentifier%3Aproject1%2FpipelineIdentifier%3AtestPipeline_Cypress",
+          "type": "pipeline",
+          "action": "onrun",
+          "created": "1649675020770"
+        },
+        "moduleInfo": {
+          "cd": {
+            "__recast": "io.harness.cdng.pipeline.executions.beans.CDPipelineModuleInfo",
+            "envIdentifiers": ["re"],
+            "environmentTypes": ["Production"],
+            "infrastructureTypes": ["KubernetesDirect"],
+            "serviceDefinitionTypes": ["Kubernetes"],
+            "serviceIdentifiers": ["testService"]
+          },
+          "pms": {
+            "__recast": "io.harness.pms.plan.execution.PmsPipelineModuleInfo",
+            "approvalStageNames": ["test5"],
+            "hasApprovalStage": true
+          }
+        },
+        "layoutNodeMap": {
+          "qPklNWawTlWr-f1Ih7BX0A": {
+            "nodeType": "Deployment",
+            "nodeGroup": "STAGE",
+            "nodeIdentifier": "test2",
+            "name": "test2",
+            "nodeUuid": "qPklNWawTlWr-f1Ih7BX0A",
+            "status": "Success",
+            "module": "cd",
+            "moduleInfo": {
+              "cd": {
+                "__recast": "io.harness.cdng.pipeline.executions.beans.CDStageModuleInfo",
+                "serviceInfo": {
+                  "__recast": "io.harness.cdng.pipeline.executions.beans.ServiceExecutionSummary",
+                  "identifier": "testService",
+                  "displayName": "testService",
+                  "deploymentType": "Kubernetes",
+                  "artifacts": {
+                    "__recast": "io.harness.cdng.pipeline.executions.beans.ServiceExecutionSummary$ArtifactsSummary",
+                    "sidecars": []
+                  }
+                },
+                "infraExecutionSummary": {
+                  "__recast": "io.harness.cdng.pipeline.executions.beans.InfraExecutionSummary",
+                  "identifier": "re",
+                  "name": "testEnv",
+                  "type": "Production"
+                }
+              }
+            },
+            "startTs": 1649675033834,
+            "endTs": 1649675042868,
+            "edgeLayoutList": {
+              "currentNodeChildren": [],
+              "nextIds": ["_5nj-QzESby_L2HwP-ltkQparallel"]
+            },
+            "nodeRunInfo": {
+              "whenCondition": "\u003c+OnPipelineSuccess\u003e",
+              "evaluatedCondition": true,
+              "expressions": [
+                {
+                  "expression": "OnPipelineSuccess",
+                  "expressionValue": "true",
+                  "count": 1
+                }
+              ]
+            },
+            "failureInfo": {
+              "message": ""
+            },
+            "failureInfoDTO": {
+              "message": "",
+              "failureTypeList": [],
+              "responseMessages": []
+            }
+          },
+          "AXcvGz9FSiqNGahv00NgzA": {
+            "nodeType": "Deployment",
+            "nodeGroup": "STAGE",
+            "nodeIdentifier": "test1",
+            "name": "test1",
+            "nodeUuid": "AXcvGz9FSiqNGahv00NgzA",
+            "status": "Success",
+            "module": "cd",
+            "moduleInfo": {
+              "cd": {
+                "__recast": "io.harness.cdng.pipeline.executions.beans.CDStageModuleInfo",
+                "serviceInfo": {
+                  "__recast": "io.harness.cdng.pipeline.executions.beans.ServiceExecutionSummary",
+                  "identifier": "testService",
+                  "displayName": "testService",
+                  "deploymentType": "Kubernetes",
+                  "artifacts": {
+                    "__recast": "io.harness.cdng.pipeline.executions.beans.ServiceExecutionSummary$ArtifactsSummary",
+                    "sidecars": []
+                  }
+                },
+                "infraExecutionSummary": {
+                  "__recast": "io.harness.cdng.pipeline.executions.beans.InfraExecutionSummary",
+                  "identifier": "re",
+                  "name": "testEnv",
+                  "type": "Production"
+                }
+              }
+            },
+            "startTs": 1649675021006,
+            "endTs": 1649675033827,
+            "edgeLayoutList": {
+              "currentNodeChildren": [],
+              "nextIds": ["qPklNWawTlWr-f1Ih7BX0A"]
+            },
+            "nodeRunInfo": {
+              "whenCondition": "\u003c+OnPipelineSuccess\u003e",
+              "evaluatedCondition": true,
+              "expressions": [
+                {
+                  "expression": "OnPipelineSuccess",
+                  "expressionValue": "true",
+                  "count": 1
+                }
+              ]
+            },
+            "failureInfo": {
+              "message": ""
+            },
+            "failureInfoDTO": {
+              "message": "",
+              "failureTypeList": [],
+              "responseMessages": []
+            }
+          },
+          "GSipvRB9QAyVCSJdv6NXNA": {
+            "nodeType": "Approval",
+            "nodeGroup": "STAGE",
+            "nodeIdentifier": "test5",
+            "name": "test5",
+            "nodeUuid": "GSipvRB9QAyVCSJdv6NXNA",
+            "status": "Failed",
+            "module": "pms",
+            "moduleInfo": {
+              "pms": {
+                "__recast": "io.harness.pms.plan.execution.PmsExecutionServiceInfoProvider$PmsNoopModuleInfo"
+              }
+            },
+            "startTs": 1649675056034,
+            "endTs": 1649675060960,
+            "edgeLayoutList": { "currentNodeChildren": [], "nextIds": [] },
+            "nodeRunInfo": {
+              "whenCondition": "\u003c+OnPipelineSuccess\u003e",
+              "evaluatedCondition": true,
+              "expressions": [
+                {
+                  "expression": "OnPipelineSuccess",
+                  "expressionValue": "true",
+                  "count": 1
+                }
+              ]
+            },
+            "failureInfo": {
+              "message": "Shell Script execution failed. Please check execution logs."
+            },
+            "failureInfoDTO": {
+              "message": "Shell Script execution failed. Please check execution logs.",
+              "failureTypeList": [],
+              "responseMessages": []
+            }
+          },
+          "_5nj-QzESby_L2HwP-ltkQparallel": {
+            "nodeType": "parallel",
+            "nodeGroup": "STAGE",
+            "nodeIdentifier": "parallel_5nj-QzESby_L2HwP-ltkQparallel",
+            "name": "",
+            "nodeUuid": "_5nj-QzESby_L2HwP-ltkQparallel",
+            "status": "NotStarted",
+            "edgeLayoutList": {
+              "currentNodeChildren": ["N8s1-CSsQc6BIfIcIGfbNA", "SspOWPt-S1CIIFho6k4EIg"],
+              "nextIds": ["GSipvRB9QAyVCSJdv6NXNA"]
+            }
+          },
+          "SspOWPt-S1CIIFho6k4EIg": {
+            "nodeType": "Deployment",
+            "nodeGroup": "STAGE",
+            "nodeIdentifier": "test4",
+            "name": "test4",
+            "nodeUuid": "SspOWPt-S1CIIFho6k4EIg",
+            "status": "Success",
+            "module": "cd",
+            "moduleInfo": {
+              "cd": {
+                "__recast": "io.harness.cdng.pipeline.executions.beans.CDStageModuleInfo",
+                "serviceInfo": {
+                  "__recast": "io.harness.cdng.pipeline.executions.beans.ServiceExecutionSummary",
+                  "identifier": "testService",
+                  "displayName": "testService",
+                  "deploymentType": "Kubernetes",
+                  "artifacts": {
+                    "__recast": "io.harness.cdng.pipeline.executions.beans.ServiceExecutionSummary$ArtifactsSummary",
+                    "sidecars": []
+                  }
+                },
+                "infraExecutionSummary": {
+                  "__recast": "io.harness.cdng.pipeline.executions.beans.InfraExecutionSummary",
+                  "identifier": "re",
+                  "name": "testEnv",
+                  "type": "Production"
+                }
+              }
+            },
+            "startTs": 1649675042942,
+            "endTs": 1649675054928,
+            "edgeLayoutList": { "currentNodeChildren": [], "nextIds": [] },
+            "nodeRunInfo": {
+              "whenCondition": "\u003c+OnPipelineSuccess\u003e",
+              "evaluatedCondition": true,
+              "expressions": [
+                {
+                  "expression": "OnPipelineSuccess",
+                  "expressionValue": "true",
+                  "count": 1
+                }
+              ]
+            },
+            "failureInfo": {
+              "message": ""
+            },
+            "failureInfoDTO": {
+              "message": "",
+              "failureTypeList": [],
+              "responseMessages": []
+            }
+          },
+          "N8s1-CSsQc6BIfIcIGfbNA": {
+            "nodeType": "Deployment",
+            "nodeGroup": "STAGE",
+            "nodeIdentifier": "test3",
+            "name": "test3",
+            "nodeUuid": "N8s1-CSsQc6BIfIcIGfbNA",
+            "status": "Success",
+            "module": "cd",
+            "moduleInfo": {
+              "cd": {
+                "__recast": "io.harness.cdng.pipeline.executions.beans.CDStageModuleInfo",
+                "serviceInfo": {
+                  "__recast": "io.harness.cdng.pipeline.executions.beans.ServiceExecutionSummary",
+                  "identifier": "testService",
+                  "displayName": "testService",
+                  "deploymentType": "Kubernetes",
+                  "artifacts": {
+                    "__recast": "io.harness.cdng.pipeline.executions.beans.ServiceExecutionSummary$ArtifactsSummary",
+                    "sidecars": []
+                  }
+                },
+                "infraExecutionSummary": {
+                  "__recast": "io.harness.cdng.pipeline.executions.beans.InfraExecutionSummary",
+                  "identifier": "re",
+                  "name": "testEnv",
+                  "type": "Production"
+                }
+              }
+            },
+            "startTs": 1649675042940,
+            "endTs": 1649675053713,
+            "edgeLayoutList": { "currentNodeChildren": [], "nextIds": [] },
+            "nodeRunInfo": {
+              "whenCondition": "\u003c+OnPipelineSuccess\u003e",
+              "evaluatedCondition": true,
+              "expressions": [
+                {
+                  "expression": "OnPipelineSuccess",
+                  "expressionValue": "true",
+                  "count": 1
+                }
+              ]
+            },
+            "failureInfo": {
+              "message": ""
+            },
+            "failureInfoDTO": {
+              "message": "",
+              "failureTypeList": [],
+              "responseMessages": []
+            }
+          }
+        },
+        "modules": ["cd", "pms"],
+        "startingNodeId": "AXcvGz9FSiqNGahv00NgzA",
+        "startTs": 1649675020783,
+        "endTs": 1649675062123,
+        "createdAt": 1649675020877,
+        "canRetry": true,
+        "showRetryHistory": false,
+        "runSequence": 7,
+        "successfulStagesCount": 4,
+        "runningStagesCount": 0,
+        "failedStagesCount": 1,
+        "totalStagesCount": 5,
+        "allowStageExecutions": false,
+        "stagesExecution": false
+      }
+    ],
+    "pageable": {
+      "sort": { "unsorted": false, "sorted": true, "empty": false },
+      "pageNumber": 0,
+      "pageSize": 20,
+      "offset": 0,
+      "paged": true,
+      "unpaged": false
+    },
+    "last": false,
+    "totalPages": 1,
+    "totalElements": 3,
+    "sort": { "unsorted": false, "sorted": true, "empty": false },
+    "first": true,
+    "numberOfElements": 3,
+    "size": 3,
+    "number": 0,
+    "empty": false
+  },
+  "metaData": null,
+  "correlationId": "56da63a2-cf55-468e-a9fa-3358554803e6"
+}
