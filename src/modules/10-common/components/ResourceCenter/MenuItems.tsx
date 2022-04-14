@@ -7,7 +7,9 @@
 
 import React from 'react'
 import moment from 'moment'
-import { Button, ButtonVariation, Layout, Text } from '@wings-software/uicore'
+import cx from 'classnames'
+import { capitalize } from 'lodash-es'
+import { Button, ButtonVariation, Layout, Text, Popover, Icon } from '@wings-software/uicore'
 import { Color, FontVariation } from '@harness/design-system'
 import { PopoverInteractionKind, Classes, Position } from '@blueprintjs/core'
 import { useFeatureFlags } from '@common/hooks/useFeatureFlag'
@@ -48,36 +50,38 @@ const CommunitySubmitTicket: React.FC = () => {
   )
 
   return (
-    <Layout.Horizontal padding={'xlarge'} className={css.middleregion} flex={{ justifyContent: 'space-between' }}>
-      <Layout.Vertical>
-        <Text
-          font={{ variation: FontVariation.H4 }}
-          padding={{ bottom: 'xsmall' }}
-          color={Color.GREY_300}
-          icon="flash"
-          iconProps={{ padding: { right: 'medium' }, size: 25 }}
-        >
-          {getString('common.resourceCenter.ticketmenu.submit')}
-        </Text>
-        <Text font={{ variation: FontVariation.BODY2 }} padding={{ bottom: 'xsmall' }} color={Color.GREY_300}>
-          {getString('common.resourceCenter.ticketmenu.submitDesc')}
-        </Text>
-      </Layout.Vertical>
-      <Button
-        icon="chevron-right"
-        variation={ButtonVariation.ICON}
-        disabled
-        iconProps={{ color: Color.PRIMARY_4 }}
-        tooltip={tooltip}
-        tooltipProps={{
-          position: Position.RIGHT,
-          className: Classes.DARK,
-          hoverCloseDelay: 50,
-          interactionKind: PopoverInteractionKind.HOVER,
-          popoverClassName: css.communityPopover
-        }}
-      />
-    </Layout.Horizontal>
+    <Popover
+      openOnTargetFocus={false}
+      fill
+      usePortal
+      hoverCloseDelay={50}
+      interactionKind={PopoverInteractionKind.HOVER}
+      content={tooltip}
+      position={Position.RIGHT}
+      className={Classes.DARK}
+    >
+      <Layout.Horizontal
+        padding={'xlarge'}
+        className={cx(css.middleregion, css.onHover)}
+        flex={{ justifyContent: 'space-between' }}
+      >
+        <Layout.Vertical>
+          <Text
+            font={{ variation: FontVariation.H4 }}
+            padding={{ bottom: 'xsmall' }}
+            color={Color.GREY_300}
+            icon="flash"
+            iconProps={{ padding: { right: 'medium' }, size: 25 }}
+          >
+            {capitalize(getString('common.contactSupport'))}
+          </Text>
+          <Text font={{ variation: FontVariation.BODY2 }} padding={{ bottom: 'xsmall' }} color={Color.GREY_300}>
+            {getString('common.resourceCenter.ticketmenu.submitDesc')}
+          </Text>
+        </Layout.Vertical>
+        <Icon name="chevron-right" color={Color.GREY_300} />
+      </Layout.Horizontal>
+    </Popover>
   )
 }
 
@@ -118,12 +122,11 @@ const MenuItems: React.FC<MenuItemsProps> = ({ closeResourceCenter }: MenuItemsP
     <Layout.Vertical padding={'xlarge'} className={css.middleregion}>
       {SHOW_NG_REFINER_FEEDBACK && <Feedback label={getString('common.resourceCenter.feedback.submit')} />}
       <Layout.Horizontal
-        padding={SHOW_NG_REFINER_FEEDBACK ? { top: 'medium', bottom: 'medium' } : { bottom: 'medium' }}
+        padding={SHOW_NG_REFINER_FEEDBACK ? { top: 'medium' } : {}}
         flex={{ justifyContent: 'space-between' }}
-        className={css.bottomBorder}
       >
         {getMenuItems({
-          title: getString('common.resourceCenter.ticketmenu.submit'),
+          title: capitalize(getString('common.contactSupport')),
           description: getString('common.resourceCenter.ticketmenu.submitDesc'),
           onClick: e => {
             openFileATicket(e)

@@ -24,8 +24,6 @@ describe('Connectors list', () => {
     )
 
     cy.wait(1000)
-    cy.wait('@connectorsCatalogue')
-    cy.wait(500)
 
     cy.contains('p', 'There are no connectors in your project').should('be.visible')
     cy.contains('span', 'Create a Connector').should('be.visible')
@@ -68,8 +66,6 @@ describe('Connectors list', () => {
 
     cy.intercept('GET', delegatesListAPI, { fixture: 'ng/api/connectors/delegates.json' }).as('connectorsCatalogue')
 
-    cy.wait(1000)
-    cy.wait('@connectorsCatalogue')
     cy.wait(1000)
 
     cy.get('input[placeholder="Select or Enter Delegates"]').type('arpit').type('{enter}')

@@ -31,6 +31,7 @@
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 import '@testing-library/cypress/add-commands'
+import { addMatchImageSnapshotCommand } from '../../node_modules/cypress-image-snapshot/command'
 import { getConnectorIconByType } from '../utils/connctors-utils'
 import {
   servicesCall,
@@ -79,9 +80,29 @@ declare global {
       verifyStepSelectConnector(): void
       verifyStepChooseRuntimeInput(): void
       verifyStepSelectStrategyAndVerifyStep(): void
+      // https://github.com/jaredpalmer/cypress-image-snapshot
+      matchImageSnapshot(snapshotName?: string, options?: unknown): void
     }
   }
 }
+
+// We set up the settings
+addMatchImageSnapshotCommand({
+  customSnapshotsDir: 'cypress/snapshots',
+  failureThreshold: 2, // threshold for entire image
+  failureThresholdType: 'percent', // percent of image or number of pixels
+  customDiffConfig: { threshold: 0.1 }, // threshold for each pixel
+  capture: 'viewport' // capture viewport in screenshot
+})
+
+// We also overwrite the command, so it does not take a screenshot if we run the tests inside the test runner (cypress:open)
+Cypress.Commands.overwrite('matchImageSnapshot', (originalFn, snapshotName, options) => {
+  if (Cypress.env('ALLOW_SCREENSHOT')) {
+    originalFn(snapshotName, options)
+  } else {
+    cy.log(`Screenshot comparison is disabled`)
+  }
+})
 
 Cypress.Commands.add('clickSubmit', () => {
   cy.get('[type="submit"]').click()

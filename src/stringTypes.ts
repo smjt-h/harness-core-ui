@@ -545,7 +545,6 @@ export interface StringsMap {
   'common.resourceCenter.communityLevelUp': string
   'common.resourceCenter.communitySlack': string
   'common.resourceCenter.feedback.submit': string
-  'common.resourceCenter.ticketmenu.submit': string
   'common.resourceCenter.ticketmenu.submitDesc': string
   'common.resourceCenter.ticketmenu.tickets': string
   'common.resourceCenter.ticketmenu.ticketsDesc': string

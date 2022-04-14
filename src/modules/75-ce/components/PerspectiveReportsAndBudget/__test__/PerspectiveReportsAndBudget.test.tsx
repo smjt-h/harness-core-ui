@@ -335,7 +335,7 @@ describe('test cases for Perspective Create Budgets', () => {
     })
 
     expect(getByText('ce.perspectives.budgets.setBudgetAmount.budgetPeriod')).toBeDefined()
-    expect(getByText('ce.perspectives.budgets.setBudgetAmount.specifyAmount')).toBeDefined()
+    expect(getByText('ce.perspectives.budgets.setBudgetAmount.lastMonthSpend')).toBeDefined()
 
     await act(async () => {
       clickSubmit(modal!)
