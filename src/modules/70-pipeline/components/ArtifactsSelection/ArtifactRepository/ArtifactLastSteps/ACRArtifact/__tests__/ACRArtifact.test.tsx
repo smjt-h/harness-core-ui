@@ -38,10 +38,10 @@ jest.mock('services/cd-ng', () => ({
       loading: false
     }
   }),
-  useGetAzureRegistriesBySubscription: jest.fn().mockImplementation(() => {
+  useGetACRRegistriesBySubscription: jest.fn().mockImplementation(() => {
     return { data: mockRegistries, refetch: jest.fn().mockReturnValue(mockRegistries), error: null, loading: false }
   }),
-  useGetAzureRepositories: jest.fn().mockImplementation(() => {
+  useGetACRRepositories: jest.fn().mockImplementation(() => {
     return { data: mockRepositories, refetch: jest.fn().mockReturnValue(mockRepositories), error: null, loading: false }
   })
 }))

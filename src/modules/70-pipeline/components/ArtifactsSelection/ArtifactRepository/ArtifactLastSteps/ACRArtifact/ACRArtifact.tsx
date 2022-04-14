@@ -28,8 +28,8 @@ import {
   ConnectorConfigDTO,
   useGetBuildDetailsForACRRepository,
   useGetAzureSubscriptions,
-  useGetAzureRegistriesBySubscription,
-  useGetAzureRepositories
+  useGetACRRegistriesBySubscription,
+  useGetACRRepositories
 } from 'services/cd-ng'
 import { useStrings } from 'framework/strings'
 import { EXPRESSION_STRING } from '@pipeline/utils/constants'
@@ -183,14 +183,14 @@ export function ACRArtifact({
     refetch: refetchRegistries,
     loading: loadingRegistries,
     error: registriesError
-  } = useGetAzureRegistriesBySubscription({
+  } = useGetACRRegistriesBySubscription({
     queryParams: {
       connectorRef: getConnectorRefQueryData(),
       accountIdentifier: accountId,
       orgIdentifier,
-      projectIdentifier
+      projectIdentifier,
+      subscription: initialValues?.subscription
     },
-    subscription: initialValues?.subscription,
     lazy: true,
     debounce: 300
   })
@@ -208,9 +208,7 @@ export function ACRArtifact({
           connectorRef: getConnectorRefQueryData(),
           accountIdentifier: accountId,
           orgIdentifier,
-          projectIdentifier
-        },
-        pathParams: {
+          projectIdentifier,
           subscription: getValue(initialValues.subscription)
         }
       })
@@ -233,14 +231,14 @@ export function ACRArtifact({
     refetch: refetchRepositories,
     loading: loadingRepositories,
     error: repositoriesError
-  } = useGetAzureRepositories({
+  } = useGetACRRepositories({
     queryParams: {
       connectorRef: getConnectorRefQueryData(),
       accountIdentifier: accountId,
       orgIdentifier,
-      projectIdentifier
+      projectIdentifier,
+      subscription: initialValues?.subscription
     },
-    subscription: initialValues?.subscription,
     registry: initialValues?.registry,
     lazy: true,
     debounce: 300
@@ -261,10 +259,10 @@ export function ACRArtifact({
           connectorRef: getConnectorRefQueryData(),
           accountIdentifier: accountId,
           orgIdentifier,
-          projectIdentifier
+          projectIdentifier,
+          subscription: getValue(initialValues.subscription)
         },
         pathParams: {
-          subscription: getValue(initialValues.subscription),
           registry: getValue(initialValues.registry)
         }
       })
@@ -413,9 +411,7 @@ export function ACRArtifact({
                             connectorRef: getConnectorRefQueryData(),
                             accountIdentifier: accountId,
                             orgIdentifier,
-                            projectIdentifier
-                          },
-                          pathParams: {
+                            projectIdentifier,
                             subscription: getValue(value)
                           }
                         })
@@ -479,10 +475,10 @@ export function ACRArtifact({
                             connectorRef: getConnectorRefQueryData(),
                             accountIdentifier: accountId,
                             orgIdentifier,
-                            projectIdentifier
+                            projectIdentifier,
+                            subscription: getValue(formik.values.subscription)
                           },
                           pathParams: {
-                            subscription: getValue(formik.values.subscription),
                             registry: getValue(value)
                           }
                         })

@@ -23,8 +23,8 @@ import {
   SidecarArtifact,
   useGetBuildDetailsForAcrArtifactWithYaml,
   useGetAzureSubscriptions,
-  useGetAzureRegistriesBySubscription,
-  useGetAzureRepositories
+  useGetACRRegistriesBySubscription,
+  useGetACRRepositories
 } from 'services/cd-ng'
 import { ArtifactToConnectorMap, ENABLED_ARTIFACT_TYPES } from '@pipeline/components/ArtifactsSelection/ArtifactHelper'
 import { TriggerDefaultFieldList } from '@triggers/pages/triggers/utils/TriggersWizardPageUtils'
@@ -161,14 +161,14 @@ const Content = (props: ACRRenderContent): JSX.Element => {
     refetch: refetchRegistries,
     loading: loadingRegistries,
     error: registriesError
-  } = useGetAzureRegistriesBySubscription({
+  } = useGetACRRegistriesBySubscription({
     queryParams: {
       connectorRef: artifact?.spec?.connectorRef,
       accountIdentifier: accountId,
       orgIdentifier,
-      projectIdentifier
+      projectIdentifier,
+      subscription: artifact?.spec?.subscription
     },
-    subscription: artifact?.spec?.subscription,
     lazy: true,
     debounce: 300
   })
@@ -183,9 +183,7 @@ const Content = (props: ACRRenderContent): JSX.Element => {
           connectorRef: artifact?.spec?.connectorRef,
           accountIdentifier: accountId,
           orgIdentifier,
-          projectIdentifier
-        },
-        pathParams: {
+          projectIdentifier,
           subscription: artifact?.spec?.subscription
         }
       })
@@ -205,14 +203,14 @@ const Content = (props: ACRRenderContent): JSX.Element => {
     refetch: refetchRepositories,
     loading: loadingRepositories,
     error: repositoriesError
-  } = useGetAzureRepositories({
+  } = useGetACRRepositories({
     queryParams: {
       connectorRef: artifact?.spec?.connectorRef,
       accountIdentifier: accountId,
       orgIdentifier,
-      projectIdentifier
+      projectIdentifier,
+      subscription: artifact?.spec?.subscription
     },
-    subscription: artifact?.spec?.subscription,
     registry: artifact?.spec?.registry,
     lazy: true,
     debounce: 300
@@ -229,10 +227,10 @@ const Content = (props: ACRRenderContent): JSX.Element => {
           connectorRef: artifact?.spec?.connectorRef,
           accountIdentifier: accountId,
           orgIdentifier,
-          projectIdentifier
+          projectIdentifier,
+          subscription: artifact?.spec?.subscription
         },
         pathParams: {
-          subscription: artifact?.spec?.subscription,
           registry: artifact?.spec?.registry
         }
       })
@@ -327,9 +325,7 @@ const Content = (props: ACRRenderContent): JSX.Element => {
                       connectorRef: get(formik?.values, `${path}.artifacts.${artifactPath}.spec.connectorRef`),
                       accountIdentifier: accountId,
                       orgIdentifier,
-                      projectIdentifier
-                    },
-                    pathParams: {
+                      projectIdentifier,
                       subscription: getValue(value)
                     }
                   })
@@ -372,10 +368,10 @@ const Content = (props: ACRRenderContent): JSX.Element => {
                       connectorRef: get(formik.values, `${path}.artifacts.${artifactPath}.spec.connectorRef`),
                       accountIdentifier: accountId,
                       orgIdentifier,
-                      projectIdentifier
+                      projectIdentifier,
+                      subscription: get(formik.values, `${path}.artifacts.${artifactPath}.spec.subscription`)
                     },
                     pathParams: {
-                      subscription: get(formik.values, `${path}.artifacts.${artifactPath}.spec.subscription`),
                       registry: getValue(value)
                     }
                   })

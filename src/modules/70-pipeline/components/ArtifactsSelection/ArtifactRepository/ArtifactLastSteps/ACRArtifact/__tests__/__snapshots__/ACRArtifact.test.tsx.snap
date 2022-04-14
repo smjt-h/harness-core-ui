@@ -473,7 +473,7 @@ exports[`Acr Artifact tests Should match snapshot for primary artifact 1`] = `
                 <div
                   class="bp3-form-helper-text"
                 >
-                  pipeline.imagePathLabel, pipeline.artifactPathLabel, repository  are  pipeline.tagDependencyRequired
+                  connector  is  pipeline.tagDependencyRequired
                 </div>
               </div>
             </div>
@@ -1059,7 +1059,7 @@ exports[`Acr Artifact tests Should match snapshot for sidecar artifact 1`] = `
                 <div
                   class="bp3-form-helper-text"
                 >
-                  pipeline.imagePathLabel, pipeline.artifactPathLabel, repository  are  pipeline.tagDependencyRequired
+                  connector  is  pipeline.tagDependencyRequired
                 </div>
               </div>
             </div>
