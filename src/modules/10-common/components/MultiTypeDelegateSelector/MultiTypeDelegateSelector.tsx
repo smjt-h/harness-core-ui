@@ -31,7 +31,6 @@ export interface MultiTypeDelegateSelectorProps extends IFormGroupProps {
   allowableTypes?: MultiTypeInputType[]
   tooltipProps?: DataTooltipInterface
   inputProps: Omit<DelegateSelectorsProps, 'onChange'>
-  formik?: any
 }
 
 export interface ConnectedMultiTypeDelegateSelectorProps extends MultiTypeDelegateSelectorProps {
