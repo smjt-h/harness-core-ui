@@ -20,6 +20,7 @@ declare const styles: {
   readonly bottomSpacing: string
   readonly checkbox: string
   readonly code: string
+  readonly delegate: string
   readonly divider: string
   readonly duration: string
   readonly fieldsGroup: string
