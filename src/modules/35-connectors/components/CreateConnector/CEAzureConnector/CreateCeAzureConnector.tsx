@@ -11,17 +11,20 @@ import { Connectors, CreateConnectorModalProps } from '@connectors/constants'
 import { getConnectorIconByType, getConnectorTitleIdByType } from '@connectors/pages/connectors/utils/ConnectorHelper'
 import { useStrings } from 'framework/strings'
 
+import VerifyOutOfClusterDelegate from '@connectors/common/VerifyOutOfClusterDelegate/VerifyOutOfClusterDelegate'
+import { useTelemetry } from '@common/hooks/useTelemetry'
+import { CCM_CONNECTOR_SAVE_EVENT } from '@connectors/trackingConstants'
 import Overview, { CEAzureDTO } from './Steps/Overview/AzureConnectorOverview'
 import Billing from './Steps/Billing/AzureConnectorBilling'
 import ModalExtension from './ModalExtension'
 import AzureConnectorBillingExtension from './Steps/Billing/AzureConnectorBillingExtension'
 import ChooseRequirements from './Steps/CreateServicePrincipal/ChooseRequirements'
 import CreateServicePrincipal from './Steps/CreateServicePrincipal/CreateServicePrincipal'
-import VerifyConnection from './Steps/VerifyConnection/VerifyConnection'
 import css from './CreateCeAzureConnector_new.module.scss'
 
 const CreateCeAzureConnector: React.FC<CreateConnectorModalProps> = props => {
   const { getString } = useStrings()
+  const { trackEvent } = useTelemetry()
   return (
     <ModalExtension renderExtension={AzureConnectorBillingExtension}>
       <StepWizard
@@ -40,7 +43,17 @@ const CreateCeAzureConnector: React.FC<CreateConnectorModalProps> = props => {
         <Billing name={getString('connectors.ceAzure.steps.billingExports')} />
         <ChooseRequirements name={getString('connectors.ceAzure.steps.requirements')} />
         <CreateServicePrincipal name={getString('connectors.ceAzure.steps.servicePrincipal')} />
-        <VerifyConnection name={getString('connectors.ceAzure.steps.testConnection')} onClose={props.onClose} />
+        <VerifyOutOfClusterDelegate
+          name={getString('connectors.ceAzure.testConnection.heading')}
+          connectorInfo={props.connectorInfo}
+          isStep={true}
+          isLastStep={true}
+          type={Connectors.CE_AZURE}
+          onClose={() => {
+            trackEvent(CCM_CONNECTOR_SAVE_EVENT, { type: Connectors.CE_AZURE })
+            props.onClose?.()
+          }}
+        />
       </StepWizard>
     </ModalExtension>
   )
