@@ -942,3 +942,5 @@ errorFramework:
   header12: 'it needs'
 ACR:
   name: Acr
+delegate:
+  DelegateSelectorOptional: 'Delegate Selector (optional)'
