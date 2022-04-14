@@ -726,6 +726,10 @@ export interface Tags {
   values?: string[]
 }
 
+export interface TagsResponse {
+  response?: Tags[]
+}
+
 export interface TargetGroupMinimal {
   id?: string
   name?: string
@@ -3269,7 +3273,7 @@ export interface GetInstancesTagsPathParams {
 }
 
 export type GetInstancesTagsProps = Omit<
-  GetProps<Tags[], unknown, GetInstancesTagsQueryParams, GetInstancesTagsPathParams>,
+  GetProps<TagsResponse, unknown, GetInstancesTagsQueryParams, GetInstancesTagsPathParams>,
   'path'
 > &
   GetInstancesTagsPathParams
@@ -3280,7 +3284,7 @@ export type GetInstancesTagsProps = Omit<
  * Fetches all the tags (key and values) associated with instances
  */
 export const GetInstancesTags = ({ account_id, ...props }: GetInstancesTagsProps) => (
-  <Get<Tags[], unknown, GetInstancesTagsQueryParams, GetInstancesTagsPathParams>
+  <Get<TagsResponse, unknown, GetInstancesTagsQueryParams, GetInstancesTagsPathParams>
     path={`accounts/${account_id}/tags`}
     base={getConfig('lw/api')}
     {...props}
@@ -3288,7 +3292,7 @@ export const GetInstancesTags = ({ account_id, ...props }: GetInstancesTagsProps
 )
 
 export type UseGetInstancesTagsProps = Omit<
-  UseGetProps<Tags[], unknown, GetInstancesTagsQueryParams, GetInstancesTagsPathParams>,
+  UseGetProps<TagsResponse, unknown, GetInstancesTagsQueryParams, GetInstancesTagsPathParams>,
   'path'
 > &
   GetInstancesTagsPathParams
@@ -3299,7 +3303,7 @@ export type UseGetInstancesTagsProps = Omit<
  * Fetches all the tags (key and values) associated with instances
  */
 export const useGetInstancesTags = ({ account_id, ...props }: UseGetInstancesTagsProps) =>
-  useGet<Tags[], unknown, GetInstancesTagsQueryParams, GetInstancesTagsPathParams>(
+  useGet<TagsResponse, unknown, GetInstancesTagsQueryParams, GetInstancesTagsPathParams>(
     (paramsInPath: GetInstancesTagsPathParams) => `accounts/${paramsInPath.account_id}/tags`,
     { base: getConfig('lw/api'), pathParams: { account_id }, ...props }
   )

@@ -2153,10 +2153,7 @@
           "200": {
             "description": "successful operation",
             "schema": {
-              "type": "array",
-              "items": {
-                "$ref": "#/definitions/Tags"
-              }
+              "$ref": "#/definitions/TagsResponse"
             }
           }
         }
@@ -2206,6 +2203,17 @@
         },
         "is_default": {
           "type": "boolean"
+        }
+      }
+    },
+    "TagsResponse": {
+      "type": "object",
+      "properties": {
+        "response": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/Tags"
+          }
         }
       }
     },

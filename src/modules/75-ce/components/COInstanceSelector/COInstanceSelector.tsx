@@ -25,7 +25,7 @@ import {
 import { Color, FontVariation } from '@harness/design-system'
 import type { GatewayDetails, InstanceDetails } from '@ce/components/COCreateGateway/models'
 import { useTelemetry } from '@common/hooks/useTelemetry'
-import { ResourceGroup, useAllResourceGroups, useAllZones } from 'services/lw'
+import { ResourceGroup, useAllResourceGroups, useAllZones, useGetInstancesTags } from 'services/lw'
 import type { AccountPathProps } from '@common/interfaces/RouteInterfaces'
 import useRegionsForSelection from '@ce/common/hooks/useRegionsForSelection'
 import { useStrings } from 'framework/strings'
@@ -44,9 +44,19 @@ interface COInstanceSelectorprops {
   isEditFlow: boolean
 }
 
+interface SelectedTagFilter {
+  key?: string
+  value?: string
+}
+
 interface GCPFiltersProps {
   region?: SelectOption
   zone?: SelectOption
+}
+
+interface AWSFiltersProps {
+  region?: SelectOption
+  tags?: SelectedTagFilter
 }
 
 function TableCell(tableProps: CellProps<InstanceDetails>): JSX.Element {
@@ -96,6 +106,18 @@ const COInstanceSelector: React.FC<COInstanceSelectorprops> = props => {
     setGcpFilters(filters)
     if (filters.zone) {
       const filterText = `regions=['${filters.zone.label}']`
+      props.refresh?.(filterText)
+    }
+    setIsLoading(loadingFilters)
+  }
+
+  const onAwsFiltersChange = (filters: AWSFiltersProps, loadingFilters: boolean) => {
+    setGcpFilters(filters)
+    if (filters.region) {
+      let filterText = `regions=['${filters.region.label}']`
+      if (filters.tags?.key && filters.tags.value) {
+        filterText += `\n tags={'${filters.tags.key}':'${filters.tags.value}'}`
+      }
       props.refresh?.(filterText)
     }
     setIsLoading(loadingFilters)
@@ -173,6 +195,7 @@ const COInstanceSelector: React.FC<COInstanceSelectorprops> = props => {
             gatewayDetails={props.gatewayDetails}
             onResourceGroupSelectCallback={onResourceGroupSelect}
             onGcpFiltersChangeCallback={onGcpFiltersChange}
+            onAwsFiltersChangeCallback={onAwsFiltersChange}
             selectedInstances={selectedInstances}
             isEditFlow={props.isEditFlow}
           />
@@ -226,6 +249,7 @@ interface InstancesFilterProps {
   gatewayDetails: GatewayDetails
   onResourceGroupSelectCallback: (resourceGroup: SelectOption | null, resourceGroupLoading: boolean) => void
   onGcpFiltersChangeCallback: (values: GCPFiltersProps, loading: boolean) => void
+  onAwsFiltersChangeCallback: (values: AWSFiltersProps, loading: boolean) => void
   selectedInstances: InstanceDetails[]
   isEditFlow: boolean
 }
@@ -234,6 +258,7 @@ const InstancesFilter: React.FC<InstancesFilterProps> = ({
   gatewayDetails,
   onResourceGroupSelectCallback,
   onGcpFiltersChangeCallback,
+  onAwsFiltersChangeCallback,
   selectedInstances,
   isEditFlow
 }) => {
@@ -241,15 +266,19 @@ const InstancesFilter: React.FC<InstancesFilterProps> = ({
   const { getString } = useStrings()
   const isAzureProvider = Utils.isProviderAzure(gatewayDetails.provider)
   const isGcpProvider = Utils.isProviderGcp(gatewayDetails.provider)
+  const isAwsProvider = Utils.isProviderAws(gatewayDetails.provider)
 
   // Azure filters data
   const [resourceGroupData, setResourceGroupData] = useState<SelectOption[]>([])
   const [selectedResourceGroup, setSelectedResourceGroup] = useState<SelectOption>()
+  const [tagKeys, setTagKeys] = useState<SelectOption[]>([])
+  const [tagValues, setTagValues] = useState<SelectOption[]>([])
+  const [selectedTagPair, setSelectedTagPair] = useState<SelectedTagFilter>()
 
   // GCP filters data
   const { data: regionsData, loading: regionsLoading } = useRegionsForSelection({
     cloudAccountId: gatewayDetails.cloudAccount.id,
-    additionalProps: { lazy: !isGcpProvider }
+    additionalProps: { lazy: isAzureProvider }
   })
   const [selectedRegion, setSelectedRegion] = useState<SelectOption>()
   const [zonesData, setZonesData] = useState<SelectOption[]>([])
@@ -278,6 +307,21 @@ const InstancesFilter: React.FC<InstancesFilterProps> = ({
     lazy: true
   })
 
+  const {
+    data: tagsData,
+    loading: tagsLoading,
+    refetch: fetchTags
+  } = useGetInstancesTags({
+    account_id: accountId,
+    queryParams: {
+      cloud_account_id: gatewayDetails.cloudAccount.id,
+      accountIdentifier: accountId,
+      routingId: accountId,
+      filter: _defaultTo(selectedRegion?.label, '')
+    },
+    lazy: true
+  })
+
   useEffect(() => {
     setResourceGroupDataFromResponse(resourceGroups?.response)
   }, [resourceGroups?.response])
@@ -293,21 +337,14 @@ const InstancesFilter: React.FC<InstancesFilterProps> = ({
   }, [selectedResourceGroup, resourceGroupsLoading])
 
   useEffect(() => {
-    handleGcpRegionsFilterUpdate()
+    handleRegionsFilterUpdate()
   }, [regionsData])
 
   useEffect(() => {
-    if (selectedRegion) {
-      fetchZones({
-        queryParams: {
-          cloud_account_id: gatewayDetails.cloudAccount.id,
-          accountIdentifier: accountId,
-          region: selectedRegion.label
-        }
-      })
-    }
-    if (isGcpProvider) {
-      onGcpFiltersChangeCallback({ region: selectedRegion }, regionsLoading)
+    if (isAwsProvider) {
+      handleAwsRegionFilterUpdate()
+    } else {
+      handleGcpRegionFilterUpdate()
     }
   }, [selectedRegion, regionsLoading])
 
@@ -322,10 +359,53 @@ const InstancesFilter: React.FC<InstancesFilterProps> = ({
   }, [zonesData])
 
   useEffect(() => {
+    if (tagsData?.response?.length) {
+      const keys = tagsData.response.map(tag => ({ label: tag.key as string, value: tag.key as string }))
+      setTagKeys(keys)
+    }
+  }, [tagsData])
+
+  useEffect(() => {
+    if (selectedTagPair?.key) {
+      const selectedTag = tagsData?.response?.find(tag => tag.key === selectedTagPair.key)
+      setTagValues(
+        _defaultTo(
+          selectedTag?.values?.map(v => ({ label: v, value: v })),
+          []
+        )
+      )
+    }
+  }, [selectedTagPair?.key])
+
+  useEffect(() => {
+    if (selectedTagPair?.key && selectedTagPair.value) {
+      onAwsFiltersChangeCallback({ region: selectedRegion, tags: selectedTagPair }, false)
+    }
+  }, [selectedTagPair])
+
+  useEffect(() => {
     if (selectedRegion) {
       onGcpFiltersChangeCallback({ region: selectedRegion, zone: selectedZone }, zonesLoading)
     }
   }, [selectedZone, zonesLoading])
+
+  const handleAwsRegionFilterUpdate = () => {
+    fetchTags()
+    onAwsFiltersChangeCallback({ region: selectedRegion }, regionsLoading)
+  }
+
+  const handleGcpRegionFilterUpdate = () => {
+    if (selectedRegion) {
+      fetchZones({
+        queryParams: {
+          cloud_account_id: gatewayDetails.cloudAccount.id,
+          accountIdentifier: accountId,
+          region: selectedRegion.label
+        }
+      })
+    }
+    onGcpFiltersChangeCallback({ region: selectedRegion }, regionsLoading)
+  }
 
   const handleAzureFiltersUpdate = () => {
     if (!selectedResourceGroup && !_isEmpty(selectedInstances)) {
@@ -335,8 +415,8 @@ const InstancesFilter: React.FC<InstancesFilterProps> = ({
     }
   }
 
-  const handleGcpRegionsFilterUpdate = () => {
-    if (isGcpProvider && !selectedRegion && !_isEmpty(selectedInstances)) {
+  const handleRegionsFilterUpdate = () => {
+    if ((isGcpProvider || isAwsProvider) && !selectedRegion && !_isEmpty(selectedInstances)) {
       const region = selectedInstances?.[0]?.region?.toLowerCase()
       const regionToSelect = regionsData.find(r => r.label.toLowerCase() === region)
       setSelectedRegion(regionToSelect)
@@ -366,18 +446,28 @@ const InstancesFilter: React.FC<InstancesFilterProps> = ({
           {getString('ce.co.autoStoppingRule.configuration.instanceModal.labels.selectTags')}
         </Text>
         <Select
-          items={[]}
+          items={tagKeys}
           inputProps={{
             placeholder: getString('ce.co.autoStoppingRule.configuration.instanceModal.labels.selectTagKey')
+          }}
+          value={selectedTagPair?.key ? { label: selectedTagPair.key, value: selectedTagPair.key } : null}
+          disabled={!selectedRegion || tagsLoading}
+          onChange={item => {
+            setSelectedTagPair({ key: item.label })
           }}
         />
       </div>
       <div>
         <Text font={{ variation: FontVariation.FORM_LABEL }} className={cx(css.filterLabel, css.emptyLabel)} />
         <Select
-          items={[]}
+          items={tagValues}
           inputProps={{
             placeholder: getString('ce.co.autoStoppingRule.configuration.instanceModal.labels.selectTagVal')
+          }}
+          disabled={!selectedTagPair?.key}
+          value={selectedTagPair?.value ? { label: selectedTagPair.value, value: selectedTagPair.value } : null}
+          onChange={item => {
+            setSelectedTagPair(prevTagPair => ({ ...prevTagPair, value: item.label }))
           }}
         />
       </div>
@@ -436,7 +526,19 @@ const InstancesFilter: React.FC<InstancesFilterProps> = ({
   }
 
   return (
-    <Layout.Horizontal flex={{ justifyContent: 'flex-start' }} spacing={'large'} style={{ maxWidth: '40%' }}>
+    <Layout.Horizontal flex={{ justifyContent: 'flex-start' }} spacing={'large'}>
+      <div>
+        <Text font={{ variation: FontVariation.FORM_LABEL }} className={css.filterLabel}>
+          {getString('ce.co.autoStoppingRule.configuration.instanceModal.labels.selectRegion')}
+        </Text>
+        <Select
+          disabled={regionsLoading || isEditFlow}
+          items={regionsData}
+          onChange={setSelectedRegion}
+          value={selectedRegion}
+          name="regionsSelector"
+        />
+      </div>
       {tagsFilter}
     </Layout.Horizontal>
   )
