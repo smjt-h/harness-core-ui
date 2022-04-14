@@ -68,12 +68,13 @@ describe('RUN PIPELINE MODAL', () => {
           cy.createDeploymentStage()
           break
       }
-    })
 
-    it('should display the delete pipeline stage modal', () => {
       cy.intercept('GET', cdFailureStrategiesYaml, { fixture: 'pipeline/api/pipelines/failureStrategiesYaml' }).as(
         'cdFailureStrategiesYaml'
       )
+    })
+
+    it('should display the delete pipeline stage modal', () => {
       cy.wait(2000)
       cy.get('[icon="play"]').click({ force: true })
       cy.wait(2000)
