@@ -5,7 +5,7 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import React, { useState, useEffect, useMemo } from 'react'
+import React, { useState, useEffect, useMemo, useCallback } from 'react'
 import { useParams } from 'react-router-dom'
 import { Layout, Button, Text, ButtonVariation, StepProps, StepsProgress } from '@wings-software/uicore'
 import { Intent, FontVariation } from '@harness/design-system'
@@ -64,10 +64,11 @@ const TestConnection: React.FC<StepProps<TestConnectionProps> & WizardProps> = p
     }
   })
 
-  const verifyTestConnection = async (): Promise<void> => {
+  const verifyTestConnection = useCallback(async (): Promise<void> => {
     try {
       setCurrentStatus(Status.PROCESS)
       const result = await testConnection()
+
       if (result.data?.status === 'SUCCESS') {
         setCurrentIntent(Intent.SUCCESS)
         setCurrentStatus(Status.DONE)
@@ -83,17 +84,15 @@ const TestConnection: React.FC<StepProps<TestConnectionProps> & WizardProps> = p
         )
       }
     } catch (e) {
-      setErrors([{ message: e.data?.message }])
+      setErrors(e.data?.responseMessages)
       setCurrentStatus(Status.ERROR)
       setCurrentIntent(Intent.DANGER)
     }
-  }
+  }, [])
 
   useEffect(() => {
-    setTimeout(() => {
-      verifyTestConnection()
-    }, 200)
-  }, [])
+    verifyTestConnection()
+  }, [verifyTestConnection])
 
   return (
     <Layout.Vertical spacing="medium" height="100%">
@@ -102,7 +101,11 @@ const TestConnection: React.FC<StepProps<TestConnectionProps> & WizardProps> = p
           {getString('common.smtp.testConnection')}
         </Text>
         <StepsProgress steps={steps} intent={currentIntent} current={currentStep} currentStatus={currentStatus} />
-        {errors && <ErrorHandler responseMessages={errors} />}
+        {errors && (
+          <Layout.Vertical>
+            <ErrorHandler responseMessages={errors} className={css.errorPanel} />
+          </Layout.Vertical>
+        )}
       </Layout.Vertical>
       <Layout.Horizontal padding={{ top: 'small' }} spacing="medium">
         <Button

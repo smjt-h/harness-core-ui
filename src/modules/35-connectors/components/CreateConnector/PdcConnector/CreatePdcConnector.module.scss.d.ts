@@ -10,6 +10,7 @@ declare const styles: {
   readonly card: string
   readonly cardRow: string
   readonly clusterWrapper: string
+  readonly errorPanel: string
   readonly headingStepTwo: string
   readonly hostContainer: string
   readonly manualHostContainer: string

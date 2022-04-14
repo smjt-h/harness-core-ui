@@ -88,3 +88,7 @@
   flex: 1;
   overflow-y: scroll;
 }
+
+.errorPanel {
+  margin-top: var(--spacing-large) !important;
+}
