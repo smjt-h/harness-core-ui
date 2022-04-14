@@ -126,6 +126,7 @@ export function StageFormInternal({
           deploymentStageTemplate={(template as StageElementWrapperConfig).stage}
           readonly={readonly}
           allowableTypes={allowableTypes}
+          delegateSelectors={template?.stage?.delegateSelectors}
         />
       )}
     </div>
