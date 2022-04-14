@@ -321,6 +321,11 @@ export interface GatewaySessionReportResponse {
   response?: SessionReportRows
 }
 
+export interface GcpMachineType {
+  is_default?: boolean
+  name?: string
+}
+
 export interface GetAccessPointResponse {
   response?: AccessPoint
 }
@@ -3187,7 +3192,7 @@ export const useGetAppId = (props: UseGetAppIdProps) =>
   useGet<AppIdResponse, void, void, void>(`/app_id`, { base: getConfig('lw/api'), ...props })
 
 export interface GetMachineListForZoneResponse {
-  response?: string[]
+  response?: GcpMachineType[]
 }
 
 export interface GetMachineListForZoneQueryParams {
