@@ -12,6 +12,10 @@ export const pipelineIdentifier = 'testPipeline_Cypress'
 export const executionId = 'executionId'
 export const delegateExecutionId = 'delegate-executionId'
 export const stageNodeId = 'nodeId'
+const connectorRef = 'connector'
+const repositoryType = 'generic'
+const artifactPath = '/'
+const repository = 'lambda'
 
 // APIs
 export const pipelineListAPI = `/pipeline/api/pipelines/list?routingId=${accountId}&accountIdentifier=${accountId}&projectIdentifier=${projectId}&module=cd&orgIdentifier=${orgIdentifier}&searchTerm=&page=0&sort=lastUpdatedAt%2CDESC&size=20`
@@ -58,6 +62,9 @@ export const servicesUpsertCall = `/ng/api/servicesV2/upsert?routingId=${account
 export const servicesUpdateList = `/ng/api/servicesV2?routingId=${accountId}&accountIdentifier=${accountId}&orgIdentifier=${orgIdentifier}&projectIdentifier=${projectId}&size=10&page=0`
 export const envUpsertCall = `/ng/api/environmentsV2/upsert?routingId=${accountId}&accountIdentifier=${accountId}`
 export const envUpdateList = `/ng/api/environmentsV2?routingId=${accountId}&accountIdentifier=${accountId}&orgIdentifier=${orgIdentifier}&projectIdentifier=${projectId}&page=0&size=10`
+export const connectorList = `/ng/api/connectors/connector?routingId=${accountId}&accountIdentifier=${accountId}&orgIdentifier=${orgIdentifier}&projectIdentifier=${projectId}`
+export const serverlessRepositoriesDetails = `/ng/api/artifacts/artifactory/repositoriesDetails?routingId=${accountId}&connectorRef=${connectorRef}&accountIdentifier=${accountId}&orgIdentifier=${orgIdentifier}&projectIdentifier=${projectId}&repositoryType=${repositoryType}`
+export const serverlessBuildDetails = `/ng/api/artifacts/artifactory/getBuildDetails?routingId=${accountId}&artifactPath=${artifactPath}&repository=${repository}&repositoryFormat=${repositoryType}&connectorRef=${connectorRef}&accountIdentifier=${accountId}&orgIdentifier=${orgIdentifier}&projectIdentifier=${projectId}`
 export const pipelineHealthCall = `/pipeline/api/pipelines/pipelineHealth?routingId=${accountId}&accountIdentifier=${accountId}&projectIdentifier=${projectId}&orgIdentifier=${orgIdentifier}*`
 export const pipelineExecutionCall = `/pipeline/api/pipelines/pipelineExecution?routingId=${accountId}&accountIdentifier=${accountId}&projectIdentifier=${projectId}&orgIdentifier=${orgIdentifier}*`
 
