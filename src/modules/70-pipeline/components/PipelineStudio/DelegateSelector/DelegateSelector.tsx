@@ -76,14 +76,7 @@ export function DelegateSelector(props: DelegateSelectorProps, ref: StepCommands
     }
   }))
 
-  let selectedDelegateSelectors: string[] | string = []
-  if (!isEmpty(selectedStage?.stage?.delegateSelectors)) {
-    if (selectedStage?.stage?.delegateSelectors?.[0] === RUNTIME_INPUT_VALUE) {
-      selectedDelegateSelectors = `${selectedStage?.stage?.delegateSelectors[0]}`
-    } else {
-      selectedDelegateSelectors = selectedStage?.stage?.delegateSelectors || []
-    }
-  }
+  const selectedDelegateSelectors: string[] | string = selectedStage?.stage?.delegateSelectors || []
 
   return (
     <Formik
