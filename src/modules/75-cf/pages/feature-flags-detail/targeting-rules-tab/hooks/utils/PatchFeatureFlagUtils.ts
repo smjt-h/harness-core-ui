@@ -45,6 +45,8 @@ export const PatchFeatureFlagUtils = (
   submittedValues: TargetingRulesFormValues,
   initialValues: TargetingRulesFormValues
 ): PatchFeatureFlagUtilsReturn => {
+  const BASE_PRIORITY = 1000
+
   const initialPercentageRollouts = initialValues.targetingRuleItems.filter(
     targetingRule => targetingRule.type === TargetingRuleItemType.PERCENTAGE_ROLLOUT
   ) as VariationPercentageRollout[]
@@ -140,11 +142,14 @@ export const PatchFeatureFlagUtils = (
     patch.feature.addInstruction(patch.creators.updateOffVariation(submittedValues.offVariation))
 
   const createAddTargetGroupInstructions = (variationIdentifier: string, targetGroups: TargetGroup[]): void => {
+    const variationIndex = submittedValues.targetingRuleItems.findIndex(
+      rule => (rule as FormVariationMap).variationIdentifier === variationIdentifier
+    )
     patch.feature.addAllInstructions(
-      targetGroups.map(targetGroup =>
+      targetGroups.map((targetGroup, index) =>
         patch.creators.addRule({
           uuid: uuid(),
-          priority: 100,
+          priority: (variationIndex + 1) * BASE_PRIORITY + (index + 1),
           serve: {
             variation: variationIdentifier
           },
@@ -175,10 +180,13 @@ export const PatchFeatureFlagUtils = (
 
   const createAddPercentageRolloutInstructions = (percentageRollouts: VariationPercentageRollout[]): void => {
     patch.feature.addAllInstructions(
-      percentageRollouts.map(percentageRollout =>
-        patch.creators.addRule({
+      percentageRollouts.map(percentageRollout => {
+        const percentageRolloutIndex = submittedValues.targetingRuleItems.findIndex(
+          rule => (rule as VariationPercentageRollout).ruleId === percentageRollout.ruleId
+        )
+        return patch.creators.addRule({
           uuid: uuid(),
-          priority: 102,
+          priority: (percentageRolloutIndex + 1) * BASE_PRIORITY + 1,
           serve: {
             distribution: {
               bucketBy: percentageRollout.bucketBy,
@@ -192,7 +200,7 @@ export const PatchFeatureFlagUtils = (
             }
           ]
         })
-      )
+      })
     )
   }
 

@@ -68,7 +68,7 @@ const targetGroupsAddedFixture = {
         kind: 'addRule',
         parameters: {
           clauses: [{ op: 'segmentMatch', values: ['target_group_2'] }],
-          priority: 100,
+          priority: 2001,
           serve: { variation: 'true' },
           uuid: 'UUID'
         }
@@ -77,9 +77,9 @@ const targetGroupsAddedFixture = {
         kind: 'addRule',
         parameters: {
           clauses: [{ op: 'segmentMatch', values: ['target_group_3'] }],
-          priority: 100,
+          priority: 2002,
           serve: { variation: 'true' },
-          uuid: expect.anything()
+          uuid: 'UUID'
         }
       }
     ]
@@ -244,7 +244,7 @@ const percentageRolloutAdded = {
         kind: 'addRule',
         parameters: {
           uuid: 'UUID',
-          priority: 102,
+          priority: 1001,
           serve: {
             distribution: {
               bucketBy: 'identifier',

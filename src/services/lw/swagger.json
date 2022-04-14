@@ -2101,7 +2101,7 @@
                 "response": {
                   "type": "array",
                   "items": {
-                    "type": "string"
+                    "$ref": "#/definitions/GcpMachineType"
                   }
                 }
               }
@@ -2142,6 +2142,17 @@
           }
         },
         "with_resources": {
+          "type": "boolean"
+        }
+      }
+    },
+    "GcpMachineType": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "is_default": {
           "type": "boolean"
         }
       }

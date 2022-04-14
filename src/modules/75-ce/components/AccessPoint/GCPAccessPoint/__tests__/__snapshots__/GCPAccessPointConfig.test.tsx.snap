@@ -1226,7 +1226,7 @@ exports[`GCP DNS mapping screen render second step 1`] = `
                             placeholder="- ce.co.accessPoint.select.machineType -"
                             style="padding-right: 0px;"
                             type="text"
-                            value=""
+                            value="a2-highgpu-1g"
                           />
                           <span
                             class="bp3-input-action"

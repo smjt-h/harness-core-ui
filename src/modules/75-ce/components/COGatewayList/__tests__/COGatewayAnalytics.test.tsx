@@ -25,7 +25,12 @@ const mockServiceData = {
   idle_time_mins: 10,
   host_name: 'string',
   disabled: false,
-  custom_domains: ['custom.doamin.in']
+  custom_domains: ['custom.doamin.in'],
+  metadata: {
+    cloud_provider_details: {
+      name: 'Test Connector'
+    }
+  }
 }
 const mockedK8sServiceData = { ...mockServiceData, kind: GatewayKindType.KUBERNETES }
 
@@ -38,6 +43,20 @@ const savingsData = {
   usage_date: '0001-01-01T00:00:00Z',
   idle_hours: 0,
   actual_hours: 0
+}
+
+const mockedConnectorData = {
+  data: {
+    connector: {
+      name: 'harness-qa',
+      identifier: 'harnessqa',
+      description: null,
+      orgIdentifier: null,
+      projectIdentifier: null,
+      tags: {},
+      type: 'CEAws'
+    }
+  }
 }
 
 jest.mock('services/lw', () => ({
@@ -60,6 +79,13 @@ jest.mock('services/lw', () => ({
   })),
   useDescribeServiceInContainerServiceCluster: jest.fn().mockImplementation(() => ({
     data: { response: mockedEcsClusterServiceData },
+    loading: false
+  }))
+}))
+
+jest.mock('services/cd-ng', () => ({
+  useGetConnector: jest.fn().mockImplementation(() => ({
+    data: mockedConnectorData,
     loading: false
   }))
 }))

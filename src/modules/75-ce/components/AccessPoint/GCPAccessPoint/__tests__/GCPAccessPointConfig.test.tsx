@@ -171,7 +171,7 @@ describe('GCP DNS mapping screen', () => {
             vpc: mockedVpn.name,
             metadata: {
               security_groups: [mockedSecurityGroup.name],
-              machine_type: mockedMachine,
+              machine_type: mockedMachine.name,
               subnet_name: mockedSubnet.name
             }
           }}

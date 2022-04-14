@@ -23,6 +23,7 @@ import {
   targetGroupsRemovedFixture,
   targetRemovedFixture
 } from './fixtures/target_groups_and_targets_fixtures'
+import type { TargetingRulesFormValues } from '../../Types.types'
 
 jest.mock('uuid')
 
@@ -156,7 +157,7 @@ describe('usePatchFeatureFlag', () => {
         }
       })
 
-      const newValues = {
+      const newValues: TargetingRulesFormValues = {
         ...defaultInitialValues,
         targetingRuleItems: [mockPercentageVariationRollout, targetGroupsAddedFixture.newFormVariationMap]
       }

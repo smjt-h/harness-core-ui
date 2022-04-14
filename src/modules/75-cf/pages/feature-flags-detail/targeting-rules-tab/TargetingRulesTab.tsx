@@ -76,8 +76,11 @@ const TargetingRulesTab = ({
   const targets = targetsData?.targets || []
 
   // convert variations/targets/target groups into a more UI friendly structure
+  // Individual rules (variations/percentage rollouts) don't have a priority - only target groups do
+  // so we sort the rules initially by target group priority,
+  // and assign a "base priority" to the rule, which the target groups added to a variation will base their priorities off.
+  // This is to maintain the ordering
   const formVariationMap: FormVariationMap[] = []
-
   featureFlagData.variations.forEach(variation => {
     const variationTargets =
       featureFlagData.envProperties?.variationMap?.find(
@@ -94,6 +97,7 @@ const TargetingRulesTab = ({
           name: segments.find(segment => segment.identifier === targetGroupRule.clauses[0].values[0])?.name as string
         })) || []
 
+    // highest priority = lowest number
     const highestPriority =
       variationTargetGroups?.reduce(
         (prev: TargetGroup, current: TargetGroup) => (prev.priority < current.priority ? prev : current),
@@ -268,9 +272,8 @@ const TargetingRulesTab = ({
                       }}
                       addPercentageRollout={() => {
                         // need to add with empty fields so the validation messages appear correctly
-                        const newPercentageRollout: VariationPercentageRollout = {
+                        const newPercentageRollout = {
                           type: TargetingRuleItemType.PERCENTAGE_ROLLOUT,
-                          priority: 100,
                           bucketBy: 'identifier',
                           clauses: [
                             {

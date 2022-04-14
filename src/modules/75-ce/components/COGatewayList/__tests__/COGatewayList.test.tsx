@@ -81,6 +81,20 @@ const mockedSavingsData = [
 
 const mockedSavingsOfServiceData = { response: mockedSavingsData }
 
+const mockedConnectorData = {
+  data: {
+    connector: {
+      name: 'harness-qa',
+      identifier: 'harnessqa',
+      description: null,
+      orgIdentifier: null,
+      projectIdentifier: null,
+      tags: {},
+      type: 'CEAws'
+    }
+  }
+}
+
 jest.mock('services/lw', () => ({
   useAllServiceResources: jest.fn().mockImplementation(() => ({
     data: null,
@@ -137,6 +151,13 @@ jest.mock('services/lw', () => ({
   })),
   useDescribeServiceInContainerServiceCluster: jest.fn().mockImplementation(() => ({
     data: { response: mockedEcsClusterServiceData },
+    loading: false
+  }))
+}))
+
+jest.mock('services/cd-ng', () => ({
+  useGetConnector: jest.fn().mockImplementation(() => ({
+    data: mockedConnectorData,
     loading: false
   }))
 }))
