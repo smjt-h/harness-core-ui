@@ -7,6 +7,17 @@
 
 .serviceOverrides {
   min-width: 464px;
+  :global {
+    .bp3-input.bp3-tag-input.bp3-multi-select {
+      min-width: 500px;
+    }
+    .MultiTypeDelegateSelector-module_fieldSelectorContainer__OSFui .bp3-disabled input {
+      min-width: 500px;
+    }
+    .ExpressionsListInput-module_expressionsInputContainer_rQDK5H {
+      min-width: 500px;
+    }
+  }
   .content-section {
     background-color: var(--form-bg);
     padding: var(--spacing-xxlarge) var(--spacing-huge) var(--spacing-13) var(--spacing-huge);

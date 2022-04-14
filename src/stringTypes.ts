@@ -2452,6 +2452,7 @@ export interface StringsMap {
   'pipeline.dashboards.totalBuilds': string
   'pipeline.dashboards.totalExecutions': string
   'pipeline.dashboards.workloads': string
+  'pipeline.delegate.DelegateSelectorOptional': string
   'pipeline.deploymentFrequency': string
   'pipeline.depth': string
   'pipeline.discard': string

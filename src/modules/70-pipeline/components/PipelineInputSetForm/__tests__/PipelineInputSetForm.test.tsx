@@ -102,7 +102,8 @@ const getPropsForCIStage = (): PipelineInputSetFormProps => ({
         }
       }
     },
-    stages: []
+    stages: [],
+    delegateSelectors: ['random']
   },
   ...getCommonProps()
 })
@@ -171,6 +172,7 @@ const getPropsForCDStage = (
     name: 'TestPipeline',
     identifier: 'TestPipeline',
     timeout: RUNTIME_INPUT_VALUE,
+    delegateSelectors: ['random'],
     stages: [
       {
         stage: {
