@@ -46,6 +46,7 @@ describe('Services for Pipeline', () => {
     cy.contains('span', 'testService').should('be.visible')
     cy.contains('span', 'Test Service Description').should('be.visible')
     cy.contains('span', 'serviceTag').should('be.visible')
+    cy.matchImageSnapshot('New Service Modal - YAML View')
 
     // // Saving
     cy.contains('span', 'Save').click()
@@ -77,6 +78,7 @@ describe('Services for Pipeline', () => {
 
     //edit values
     cy.wait(1000)
+    cy.matchImageSnapshot('Edit Service Modal')
     cy.fillName('NewtestService')
 
     // YAML assertion
@@ -85,6 +87,7 @@ describe('Services for Pipeline', () => {
     cy.contains('span', 'NewtestService').should('be.visible')
     cy.contains('span', 'Test Service Description').should('be.visible')
     cy.contains('span', 'serviceTag').should('be.visible')
+    cy.matchImageSnapshot('Edit Service Modal - YAML View')
 
     //upsert call
     cy.intercept('GET', servicesUpsertCall, { fixture: 'ng/api/servicesV2/servicesUpdate.json' })
