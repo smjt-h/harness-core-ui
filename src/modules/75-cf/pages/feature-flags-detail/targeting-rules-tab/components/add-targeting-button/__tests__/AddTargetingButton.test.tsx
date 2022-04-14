@@ -20,6 +20,10 @@ const renderComponent = (): void => {
       <AddTargetingButton
         addPercentageRollout={jest.fn()}
         addVariation={jest.fn()}
+        variationColorMap={{
+          true_id: 'blue',
+          false_id: 'red'
+        }}
         targetingDropdownVariations={[
           {
             identifier: 'true_id',

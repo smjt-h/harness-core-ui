@@ -23,6 +23,7 @@ import {
 import { FeatureFlagActivationStatus } from '@cf/utils/CFUtils'
 import useActiveEnvironment from '@cf/hooks/useActiveEnvironment'
 import { useStrings } from 'framework/strings'
+import { CFVariationColors } from '@cf/constants'
 import usePatchFeatureFlag from './hooks/usePatchFeatureFlag'
 import TargetingRulesTabFooter from './components/tab-targeting-footer/TargetingRulesTabFooter'
 
@@ -32,7 +33,8 @@ import {
   VariationPercentageRollout,
   TargetGroup,
   TargetingRulesFormValues,
-  TargetingRuleItemType
+  TargetingRuleItemType,
+  VariationColorMap
 } from './Types.types'
 import useFeatureEnabled from './hooks/useFeatureEnabled'
 import DefaultRules from './components/default-rules/DefaultRules'
@@ -81,7 +83,9 @@ const TargetingRulesTab = ({
   // and assign a "base priority" to the rule, which the target groups added to a variation will base their priorities off.
   // This is to maintain the ordering
   const formVariationMap: FormVariationMap[] = []
-  featureFlagData.variations.forEach(variation => {
+  const variationColorMap: VariationColorMap = {}
+  featureFlagData.variations.forEach((variation, variationIndex) => {
+    variationColorMap[variation.identifier] = CFVariationColors[variationIndex]
     const variationTargets =
       featureFlagData.envProperties?.variationMap?.find(
         variationMapItem => variation.identifier === variationMapItem.variation
@@ -236,6 +240,7 @@ const TargetingRulesTab = ({
                   name="targetingRuleItems"
                   render={arrayHelpers => (
                     <FlagEnabledRulesCard
+                      variationColorMap={variationColorMap}
                       targetingRuleItems={formikProps.values.targetingRuleItems}
                       targets={targets}
                       segments={segments}
@@ -256,11 +261,11 @@ const TargetingRulesTab = ({
                         arrayHelpers.replace(index, newTargetingRuleItem)
                       }}
                       addVariation={newVariation => {
-                        const variation = {
+                        const variation: FormVariationMap = {
                           priority: 100,
                           type: TargetingRuleItemType.VARIATION,
                           variationIdentifier: newVariation.identifier,
-                          variationName: newVariation.name,
+                          variationName: newVariation.name as string,
                           targets: [],
                           targetGroups: []
                         }
