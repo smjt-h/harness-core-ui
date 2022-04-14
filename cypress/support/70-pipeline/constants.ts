@@ -17,6 +17,7 @@ export const pipelineListAPI = `/pipeline/api/pipelines/list?routingId=${account
 export const pipelineSummaryAPI = `/pipeline/api/pipelines/summary/appdtest?routingId=${accountId}&accountIdentifier=${accountId}&orgIdentifier=${orgIdentifier}&projectIdentifier=${projectId}`
 export const pipelineDetailsAPI = `/pipeline/api/pipelines/appdtest?accountIdentifier=${accountId}&orgIdentifier=${orgIdentifier}&projectIdentifier=${projectId}`
 export const pipelineExecutionSummaryAPI = `/pipeline/api/pipelines/execution/summary?routingId=${accountId}&accountIdentifier=${accountId}&projectIdentifier=${projectId}&orgIdentifier=${orgIdentifier}&module=cd&size=20&pipelineIdentifier=*&page=0&myDeployments=false`
+export const executionSummaryApi = `/pipeline/api/pipelines/execution/summary?routingId=${accountId}&accountIdentifier=${accountId}&projectIdentifier=${projectId}&orgIdentifier=${orgIdentifier}&module=cd&size=20&page=0&myDeployments=false`
 export const pipelineExecutionAPI = `/pipeline/api/pipelines/execution/C9mgNjxSS7-B-qQek27iuA?routingId=${accountId}&orgIdentifier=${orgIdentifier}&projectIdentifier=${projectId}&accountIdentifier=${accountId}`
 export const pipelineExecutionForNodeAPI = `/pipeline/api/pipelines/execution/C9mgNjxSS7-B-qQek27iuA?routingId=${accountId}&orgIdentifier=${orgIdentifier}&projectIdentifier=${projectId}&accountIdentifier=${accountId}&stageNodeId=g_LkakmWRPm-wC6rfC2ufg`
 export const servicesCallV2 = `/ng/api/servicesV2/list/access?routingId=${accountId}&accountIdentifier=${accountId}&orgIdentifier=${orgIdentifier}&projectIdentifier=${projectId}`
@@ -47,6 +48,7 @@ export const servicesRoute = `#/account/${accountId}/cd/orgs/${orgIdentifier}/pr
 export const servicesCall = `/ng/api/servicesV2?routingId=${accountId}&accountIdentifier=${accountId}&orgIdentifier=${orgIdentifier}&projectIdentifier=${projectId}&size=10&page=0`
 export const pipelinesRoute = `#/account/${accountId}/cd/orgs/${orgIdentifier}/projects/${projectId}/pipelines`
 export const pipelinesExecutionDelegateRoute = `#/account/${accountId}/cd/orgs/${orgIdentifier}/projects/${projectId}/pipelines/${pipelineIdentifier}/executions/${delegateExecutionId}/pipeline`
+export const executionListRoute = `#/account/${accountId}/cd/orgs/${orgIdentifier}/projects/${projectId}/deployments`
 export const executePipeline = `/pipeline/api/pipeline/execute/${pipelineIdentifier}?routingId=${accountId}&accountIdentifier=${accountId}&projectIdentifier=${projectId}&orgIdentifier=${orgIdentifier}&moduleType=cd`
 export const serviceStepAPI = `/pipeline/api/pipelines/execution/${executionId}?routingId=${accountId}&orgIdentifier=${orgIdentifier}&projectIdentifier=${projectId}&accountIdentifier=${accountId}`
 export const serviceStepStageID = `/pipeline/api/pipelines/execution/${executionId}?routingId=${accountId}&orgIdentifier=${orgIdentifier}&projectIdentifier=${projectId}&accountIdentifier=${accountId}&stageNodeId=${stageNodeId}`

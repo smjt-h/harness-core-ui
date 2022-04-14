@@ -781,6 +781,7 @@ function RetryPipeline({
                     permission: PermissionIdentifier.EXECUTE_PIPELINE
                   }}
                   disabled={getRetryPipelineDisabledState()}
+                  data-testid="retry-failed-pipeline"
                 />
                 <div className={css.secondaryButton}>
                   <Button
