@@ -660,7 +660,7 @@ export type AppDynamicsConnectorDTO = ConnectorConfigDTO & {
   clientId?: string
   clientSecretRef?: string
   controllerUrl: string
-  delegateSelectors?: string | string[] | undefined
+  delegateSelectors?: string[] | string | undefined
   passwordRef?: string
   username?: string
 }
