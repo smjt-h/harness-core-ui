@@ -45,7 +45,7 @@ describe('Environment for Pipeline', () => {
     cy.contains('span', 'Test Environment Description').should('be.visible')
     cy.contains('span', 'envTag').should('be.visible')
     cy.contains('span', 'Production').should('be.visible')
-    cy.matchImageSnapshot('New Environment Modal - YAML View')
+    cy.get('.bp3-dialog').matchImageSnapshot('New Environment Modal - YAML View')
 
     // Saving
     cy.contains('span', 'Save').click()
@@ -75,7 +75,7 @@ describe('Environment for Pipeline', () => {
 
     //Edit values
     cy.wait(1000)
-    cy.matchImageSnapshot('Edit Environment Modal')
+    cy.get('.bp3-dialog').matchImageSnapshot('Edit Environment Modal')
     cy.fillName('New testEnv')
     cy.get('button[data-testid="thumbnail-select-change"]').click()
     cy.contains('p', 'Pre Production').click()
@@ -87,7 +87,7 @@ describe('Environment for Pipeline', () => {
     cy.contains('span', 'Test Environment Description').should('be.visible')
     cy.contains('span', 'env').should('be.visible')
     cy.contains('span', 'PreProduction').should('be.visible')
-    cy.matchImageSnapshot('Edit Environment Modal - YAML View')
+    cy.get('.bp3-dialog').matchImageSnapshot('Edit Environment Modal - YAML View')
 
     //upsert call
     cy.intercept('GET', envUpsertCall, { fixture: 'ng/api/environments/upsertCall.json' })
@@ -131,6 +131,6 @@ describe('Environment for Pipeline', () => {
     cy.contains('span', 'Confirm').click()
     cy.wait(1000)
     cy.contains('span', 'Successfully deleted environment testEnv').should('be.visible')
-    cy.matchImageSnapshot('Delete toaster for Environment')
+    cy.get('.bp3-toast').matchImageSnapshot('Delete toaster for Environment')
   })
 })
