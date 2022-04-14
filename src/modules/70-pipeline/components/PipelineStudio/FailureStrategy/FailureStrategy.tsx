@@ -9,7 +9,6 @@ import React from 'react'
 import { Formik, FormikProps } from 'formik'
 import * as Yup from 'yup'
 import { debounce } from 'lodash-es'
-
 import type { StageElementWrapperConfig } from 'services/cd-ng'
 import { useStrings } from 'framework/strings'
 import FailureStrategyPanel from '@pipeline/components/PipelineSteps/AdvancedSteps/FailureStrategyPanel/FailureStrategyPanel'
@@ -83,7 +82,7 @@ export function FailureStrategy(props: FailureStrategyProps, ref: StepCommandsRe
   }))
 
   const stageType = selectedStage?.stage?.type as StageType
-  
+
   return (
     <Formik
       initialValues={{
