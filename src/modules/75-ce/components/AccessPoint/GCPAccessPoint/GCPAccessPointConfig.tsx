@@ -70,6 +70,7 @@ const GCPAccessPointConfig: React.FC<GCPAccessPointConfigProps> = ({
     moveForward()
   }
 
+  /* istanbul ignore next */
   const saveLb = async (lbToSave: AccessPoint): Promise<void> => {
     setLbCreationInProgress(true)
     try {
