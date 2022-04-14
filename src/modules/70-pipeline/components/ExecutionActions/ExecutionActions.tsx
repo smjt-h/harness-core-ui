@@ -367,6 +367,7 @@ export default function ExecutionActions(props: ExecutionActionsProps): React.Re
                 featuresProps={getFeaturePropsForRunPipelineButton({ modules, getString })}
                 text={getString('pipeline.retryPipeline')}
                 onClick={retryPipeline}
+                data-testid="retry-pipeline-menu"
               />
             )}
             {/* {stageId ? null : <MenuItem text={getString('pipeline.execution.actions.downloadLogs')} disabled />} */}

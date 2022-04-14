@@ -20,6 +20,7 @@ export interface ErrorHandlerProps {
   height?: number | string
   skipUrlsInErrorHeader?: boolean
   className?: string
+  errorHintsRenderer?: (item: ResponseMessage[]) => React.ReactElement
 }
 
 const extractInfo = (
@@ -80,9 +81,10 @@ const ErrorList: React.FC<{
 }
 
 export const ErrorHandler: React.FC<ErrorHandlerProps> = props => {
-  const { responseMessages, width, height, skipUrlsInErrorHeader = false, className = '' } = props
+  const { responseMessages, width, height, errorHintsRenderer, skipUrlsInErrorHeader = false, className = '' } = props
   const errorObjects = useMemo(() => extractInfo(responseMessages), [responseMessages])
   const { getString } = useStrings()
+
   return (
     <Layout.Vertical
       background={Color.RED_100}
@@ -110,13 +112,15 @@ export const ErrorHandler: React.FC<ErrorHandlerProps> = props => {
                 )}
               </Container>
               {<ErrorList items={explanations} header={getString('common.errorHandler.issueCouldBe')} icon={'info'} />}
-              {
+              {errorHintsRenderer ? (
+                errorHintsRenderer(hints)
+              ) : (
                 <ErrorList
                   items={hints}
                   header={getString('common.errorHandler.tryTheseSuggestions')}
                   icon={'lightbulb'}
                 />
-              }
+              )}
             </Layout.Vertical>
           )
         })}

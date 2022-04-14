@@ -64,6 +64,7 @@ declare global {
       createDeploymentStage(): void
       visitCreatePipeline(): void
       visitPipelinesList(): void
+      visitExecutionsList(): void
       visitChangeIntelligence(): void
       fillName(name: string): void
       initializeRoute(): void
@@ -132,6 +133,13 @@ Cypress.Commands.add('visitPipelinesList', () => {
   cy.contains('p', 'Project 1').click()
   cy.contains('p', 'Delivery').click()
   cy.contains('p', 'Pipelines').click()
+})
+
+Cypress.Commands.add('visitExecutionsList', () => {
+  cy.contains('p', 'Projects').click()
+  cy.contains('p', 'Project 1').click()
+  cy.contains('p', 'Delivery').click()
+  cy.contains('p', 'Deployments').click()
 })
 
 Cypress.Commands.add('visitCreatePipeline', () => {
