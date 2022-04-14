@@ -5,6 +5,7 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
+import { cdFailureStrategiesYaml } from '../../support/70-pipeline/constants'
 import { invalidYAMLErrorMsgOnEmptyStageSave, pipelineSaveCall } from '../../support/70-pipeline/constants'
 
 describe('RUN PIPELINE MODAL', () => {
@@ -70,6 +71,9 @@ describe('RUN PIPELINE MODAL', () => {
     })
 
     it('should display the delete pipeline stage modal', () => {
+      cy.intercept('GET', cdFailureStrategiesYaml, { fixture: 'pipeline/api/pipelines/failureStrategiesYaml' }).as(
+        'cdFailureStrategiesYaml'
+      )
       cy.wait(2000)
       cy.get('[icon="play"]').click({ force: true })
       cy.wait(2000)
@@ -108,6 +112,7 @@ describe('RUN PIPELINE MODAL', () => {
 
     describe('Checks visual to YAML and visual to variable view parity', () => {
       beforeEach(() => {
+        cy.intercept('GET', cdFailureStrategiesYaml, { fixture: 'pipeline/api/pipelines/failureStrategiesYaml' })
         cy.intercept('GET', servicesCall, { fixture: 'ng/api/servicesV2' })
         cy.intercept('GET', environmentsCall, { fixture: 'ng/api/environmentsV2' })
         cy.intercept('GET', connectorsCall, { fixture: 'ng/api/connectors' })

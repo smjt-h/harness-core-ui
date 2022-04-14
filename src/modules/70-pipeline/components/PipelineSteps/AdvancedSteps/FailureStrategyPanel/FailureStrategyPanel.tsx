@@ -18,7 +18,7 @@ import type { StepMode as Modes } from '@pipeline/utils/stepUtils'
 import FailureTypeMultiSelect from './FailureTypeMultiSelect'
 import { allowedStrategiesAsPerStep, errorTypesForStages } from './StrategySelection/StrategyConfig'
 import StrategySelection from './StrategySelection/StrategySelection'
-import { isDefaultStageStrategy, findTabWithErrors, hasItems, handleChangeInStrategies, getTabIntent } from './utils'
+import { findTabWithErrors, hasItems, handleChangeInStrategies, getTabIntent } from './utils'
 import type { AllFailureStrategyConfig } from './utils'
 import css from './FailureStrategyPanel.module.scss'
 
@@ -165,7 +165,7 @@ export default function FailureStrategyPanel(props: FailureStrategyPanelProps): 
                     <String stringID="add" />
                   </Button>
                 </div>
-                {hasFailureStrategies && !isDefaultStageStrategy(mode, stageType, selectedStrategyNum) ? (
+                {hasFailureStrategies ? (
                   <Button
                     icon="main-trash"
                     minimal
