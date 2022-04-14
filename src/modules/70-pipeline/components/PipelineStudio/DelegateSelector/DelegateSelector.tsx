@@ -8,8 +8,7 @@
 import React from 'react'
 import { Formik, FormikProps } from 'formik'
 
-import { debounce, isEmpty } from 'lodash-es'
-import { RUNTIME_INPUT_VALUE } from '@wings-software/uicore'
+import { debounce } from 'lodash-es'
 import type { StageElementWrapperConfig } from 'services/cd-ng'
 
 import DelegateSelectorPanel from '@pipeline/components/PipelineSteps/AdvancedSteps/DelegateSelectorPanel/DelegateSelectorPanel'
