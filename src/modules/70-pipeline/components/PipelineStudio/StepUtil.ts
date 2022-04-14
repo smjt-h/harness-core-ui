@@ -28,6 +28,7 @@ import type {
 import type { UseStringsReturn } from 'framework/strings'
 import { getDurationValidationSchema } from '@common/components/MultiTypeDuration/MultiTypeDuration'
 import type { TemplateStepNode } from 'services/pipeline-ng'
+import { ServiceDeploymentType } from '@pipeline/utils/stageHelpers'
 import factory from '../PipelineSteps/PipelineStepFactory'
 import { StepType } from '../PipelineSteps/PipelineStepInterface'
 // eslint-disable-next-line no-restricted-imports
@@ -275,8 +276,11 @@ export const validateStage = ({
         set(errors, 'variables', errorsResponse?.variables)
       }
     }
-    if (originalStageConfig?.serviceConfig?.serviceDefinition?.type === 'Kubernetes') {
-      const step = factory.getStep(StepType.K8sServiceSpec)
+    if (
+      originalStageConfig?.serviceConfig?.serviceDefinition?.type === ServiceDeploymentType.Kubernetes ||
+      originalStageConfig?.serviceConfig?.serviceDefinition?.type === ServiceDeploymentType.ServerlessAwsLambda
+    ) {
+      const step = factory.getStep(originalStageConfig?.serviceConfig?.serviceDefinition?.type)
       const errorsResponse = step?.validateInputSet({
         data: stageConfig?.serviceConfig?.serviceDefinition?.spec,
         template: templateStageConfig?.serviceConfig?.serviceDefinition?.spec,

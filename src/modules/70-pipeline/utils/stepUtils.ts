@@ -59,15 +59,15 @@ export function getAllStepPaletteModuleInfos(): StepPalleteModuleInfo[] {
 }
 
 export function getStepPaletteModuleInfosFromStage(
-  stages: StageElementWrapperConfig[],
   stageType?: string,
   stage?: StageElementConfig,
-  initialCategory?: string
+  initialCategory?: string,
+  stages?: StageElementWrapperConfig[]
 ): StepPalleteModuleInfo[] {
   let deploymentType = get(stage, 'spec.serviceConfig.serviceDefinition.type', undefined)
   // When stage is propagated from other previous stage
   const propagateFromStageId = get(stage, 'spec.serviceConfig.useFromStage.stage', undefined)
-  if (!deploymentType && stages.length && propagateFromStageId) {
+  if (!deploymentType && stages?.length && propagateFromStageId) {
     const propagateFromStage = stages.find(
       currStage => (currStage as DeploymentStageElementConfigWrapper).stage.identifier === propagateFromStageId
     ) as DeploymentStageElementConfigWrapper

@@ -732,7 +732,12 @@ export function RightDrawer(): React.ReactElement {
       {type === DrawerTypes.AddStep && selectedStageId && data?.paletteData && (
         <StepPalette
           stepsFactory={stepsFactory}
-          stepPaletteModuleInfos={getStepPaletteModuleInfosFromStage(pipeline.stages, stageType, selectedStage?.stage)}
+          stepPaletteModuleInfos={getStepPaletteModuleInfosFromStage(
+            stageType,
+            selectedStage?.stage,
+            undefined,
+            pipeline.stages
+          )}
           stageType={stageType as StageType}
           onSelect={onStepSelection}
         />
@@ -790,10 +795,10 @@ export function RightDrawer(): React.ReactElement {
         <StepPalette
           stepsFactory={stepsFactory}
           stepPaletteModuleInfos={getStepPaletteModuleInfosFromStage(
-            pipeline.stages,
             stageType,
             undefined,
-            'Provisioner'
+            'Provisioner',
+            pipeline.stages
           )}
           stageType={stageType as StageType}
           isProvisioner={true}

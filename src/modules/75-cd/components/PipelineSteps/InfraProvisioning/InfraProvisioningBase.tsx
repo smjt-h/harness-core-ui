@@ -82,10 +82,10 @@ export const InfraProvisioningBase = (
     queryParams: { accountId },
     body: {
       stepPalleteModuleInfos: getStepPaletteModuleInfosFromStage(
-        pipeline.stages,
         selectedStage?.stage?.type,
         undefined,
-        'Provisioner'
+        'Provisioner',
+        pipeline.stages
       )
     },
     lazy: true
