@@ -218,10 +218,17 @@ export class ServerlessAwsLambdaServiceSpec extends Step<ServiceSpec> {
       isRequired &&
       getMultiTypeFromValue(template?.artifacts?.primary?.spec?.connectorRef) === MultiTypeInputType.RUNTIME
     ) {
-      set(errors, 'artifacts.primary.spec.connectorRef', getString?.('fieldRequired', { field: 'ConnectorRef' }))
+      set(errors, 'artifacts.primary.spec.connectorRef', getString?.('fieldRequired', { field: 'Artifact Server' }))
     }
     if (
-      !tagExists(data?.artifacts?.primary?.spec?.artifactDirectory) &&
+      isEmpty(data?.artifacts?.primary?.spec?.repository) &&
+      isRequired &&
+      getMultiTypeFromValue(template?.artifacts?.primary?.spec?.repository) === MultiTypeInputType.RUNTIME
+    ) {
+      set(errors, 'artifacts.primary.spec.repository', getString?.('fieldRequired', { field: 'Repository' }))
+    }
+    if (
+      isEmpty(data?.artifacts?.primary?.spec?.artifactDirectory) &&
       isRequired &&
       getMultiTypeFromValue(template?.artifacts?.primary?.spec?.artifactDirectory) === MultiTypeInputType.RUNTIME
     ) {
