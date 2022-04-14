@@ -83,7 +83,7 @@ export function FailureStrategy(props: FailureStrategyProps, ref: StepCommandsRe
   }))
 
   const stageType = selectedStage?.stage?.type as StageType
-
+  
   return (
     <Formik
       initialValues={{
