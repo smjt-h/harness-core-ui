@@ -10,6 +10,7 @@ import { defaultTo } from 'lodash-es'
 import { useParams } from 'react-router-dom'
 import { Container, Icon, IconName, Layout, Popover, Text, useConfirmationDialog } from '@wings-software/uicore'
 import { Color } from '@harness/design-system'
+import { useModalHook } from '@harness/use-modal'
 import { Classes, Dialog, Intent, Menu, Position } from '@blueprintjs/core'
 import cx from 'classnames'
 import { useStrings } from 'framework/strings'
@@ -52,8 +53,6 @@ export function TemplateBar(props: TemplateBarProps): JSX.Element {
       featureName: FeatureIdentifier.TEMPLATE_SERVICE
     }
   })
-
-  const [isTemplatePreviewModalOpen, setIsTemplatePreviewModalOpen] = React.useState(false)
 
   const { data } = useGetTemplate({
     templateIdentifier: getIdentifierFromValue(templateLinkConfig.templateRef),
@@ -102,9 +101,27 @@ export function TemplateBar(props: TemplateBarProps): JSX.Element {
     }
   }
 
-  const onShowTemplateYAMLPreview = () => {
-    setIsTemplatePreviewModalOpen(true)
-  }
+  const [showTemplateYAMLPreviewModal, hideTemplateYAMLPreviewModal] = useModalHook(
+    () => (
+      <Dialog
+        isOpen
+        enforceFocus={false}
+        canEscapeKeyClose
+        canOutsideClickClose
+        onClose={hideTemplateYAMLPreviewModal}
+        title={'template.yaml'}
+        isCloseButtonShown
+        className={cx(Classes.DIALOG, css.templateYamlPreviewDialog)}
+        usePortal
+        backdropClassName={css.templateYamlPreviewDialogBackdrop}
+      >
+        <Container className={css.templateYamlPreviewContainer}>
+          <TemplateYaml templateYaml={defaultTo(selectedTemplate?.yaml, '')} withoutHeader />
+        </Container>
+      </Dialog>
+    ),
+    [selectedTemplate?.yaml]
+  )
 
   const getItems = (): TemplateMenuItem[] => {
     return [
@@ -129,81 +146,64 @@ export function TemplateBar(props: TemplateBarProps): JSX.Element {
         icon: 'main-view',
         label: getString('pipeline.previewTemplateLabel'),
         disabled: !selectedTemplate,
-        onClick: onShowTemplateYAMLPreview
+        onClick: showTemplateYAMLPreviewModal
       }
     ]
   }
 
   return (
-    <>
-      <Container
-        padding={{ top: 'small', right: 'medium', bottom: 'small', left: 'medium' }}
-        background={Color.PRIMARY_6}
-        border={{ radius: 4 }}
-        className={cx(css.container, className)}
-      >
-        <Layout.Horizontal spacing={'small'} flex={{ alignItems: 'center', justifyContent: 'flex-start' }}>
-          <Icon size={11} color={Color.WHITE} name={'template-library'} />
-          <Text style={{ flexGrow: 1 }} font={{ size: 'small' }} color={Color.WHITE}>
-            {selectedTemplate ? `Using Template: ${getTemplateNameWithLabel(selectedTemplate)}` : getString('loading')}
-          </Text>
-          <Popover
-            isOpen={menuOpen}
-            onInteraction={nextOpenState => {
-              setMenuOpen(nextOpenState)
+    <Container
+      padding={{ top: 'small', right: 'medium', bottom: 'small', left: 'medium' }}
+      background={Color.PRIMARY_6}
+      border={{ radius: 4 }}
+      className={cx(css.container, className)}
+    >
+      <Layout.Horizontal spacing={'small'} flex={{ alignItems: 'center', justifyContent: 'flex-start' }}>
+        <Icon size={11} color={Color.WHITE} name={'template-library'} />
+        <Text style={{ flexGrow: 1 }} font={{ size: 'small' }} color={Color.WHITE}>
+          {selectedTemplate ? `Using Template: ${getTemplateNameWithLabel(selectedTemplate)}` : getString('loading')}
+        </Text>
+        <Popover
+          isOpen={menuOpen}
+          onInteraction={nextOpenState => {
+            setMenuOpen(nextOpenState)
+          }}
+          position={Position.BOTTOM_RIGHT}
+          className={css.main}
+          disabled={!selectedTemplate}
+          portalClassName={css.popover}
+        >
+          <Icon
+            name={'more'}
+            color={Color.WHITE}
+            className={css.actionButton}
+            onClick={e => {
+              e.stopPropagation()
+              setMenuOpen(true)
             }}
-            position={Position.BOTTOM_RIGHT}
-            className={css.main}
-            disabled={!selectedTemplate}
-            portalClassName={css.popover}
-          >
-            <Icon
-              name={'more'}
-              color={Color.WHITE}
-              className={css.actionButton}
-              onClick={e => {
-                e.stopPropagation()
-                setMenuOpen(true)
-              }}
-            />
-            <Menu style={{ minWidth: 'unset' }} onClick={e => e.stopPropagation()}>
-              {getItems()?.map(item => {
-                return (
-                  <li
-                    key={item.label}
-                    className={cx(css.menuItem, { [css.disabled]: item.disabled })}
-                    onClick={e => {
-                      e.stopPropagation()
-                      if (!item.disabled) {
-                        item.onClick()
-                        setMenuOpen(false)
-                      }
-                    }}
-                  >
-                    {item.icon && <Icon name={item.icon} size={12} />}
-                    <Text lineClamp={1}>{item.label}</Text>
-                  </li>
-                )
-              })}
-            </Menu>
-          </Popover>
-        </Layout.Horizontal>
-      </Container>
-      <Dialog
-        isOpen={isTemplatePreviewModalOpen}
-        enforceFocus={false}
-        canEscapeKeyClose
-        canOutsideClickClose
-        onClose={() => setIsTemplatePreviewModalOpen(false)}
-        title={'template.yaml'}
-        isCloseButtonShown
-        className={Classes.DIALOG}
-        usePortal={false}
-      >
-        <Container className={css.templateYamlPreviewContainer}>
-          <TemplateYaml templateYaml={defaultTo(selectedTemplate?.yaml, '')} withoutHeader={true} />
-        </Container>
-      </Dialog>
-    </>
+          />
+          <Menu style={{ minWidth: 'unset' }} onClick={e => e.stopPropagation()}>
+            {getItems()?.map(item => {
+              return (
+                <li
+                  key={item.label}
+                  className={cx(css.menuItem, { [css.disabled]: item.disabled })}
+                  onClick={e => {
+                    e.stopPropagation()
+                    if (!item.disabled) {
+                      item.onClick()
+                      setMenuOpen(false)
+                    }
+                  }}
+                >
+                  {item.icon && <Icon name={item.icon} size={12} />}
+                  <Text lineClamp={1}>{item.label}</Text>
+                </li>
+              )
+            })}
+          </Menu>
+        </Popover>
+      </Layout.Horizontal>
+    </Container>
   )
 }
