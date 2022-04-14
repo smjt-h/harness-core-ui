@@ -68,6 +68,7 @@ describe('GIT SYNC DISABLED', () => {
 
     cy.contains('span', '+ Add Variable').click()
     cy.fillName('testVariable')
+    cy.get('.bp3-dialog').matchImageSnapshot('Add Variable Form')
     cy.findByTestId('addVariableSave').click()
 
     cy.get('[name="variables[0].value"]').type('varvalue')
@@ -84,6 +85,7 @@ describe('GIT SYNC DISABLED', () => {
     cy.get('[value="testEnv"]').should('be.visible')
 
     cy.get('[data-name="toggle-option-two"]').click()
+    cy.matchImageSnapshot('Pipeline Canvas - Yaml Editor')
 
     // Enable YAML editing
     cy.contains('span', 'Edit YAML').click({ force: true })
