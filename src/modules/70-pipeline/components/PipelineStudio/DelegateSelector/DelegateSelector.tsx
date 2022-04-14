@@ -10,10 +10,7 @@ import { Formik, FormikProps } from 'formik'
 
 import { debounce } from 'lodash-es'
 import type { StageElementWrapperConfig } from 'services/cd-ng'
-
 import DelegateSelectorPanel from '@pipeline/components/PipelineSteps/AdvancedSteps/DelegateSelectorPanel/DelegateSelectorPanel'
-
-import { StageErrorContext } from '@pipeline/context/StageErrorContext'
 import type { StepCommandsRef } from '../StepCommands/StepCommands'
 
 export interface DelegateSelectorProps {
@@ -23,7 +20,7 @@ export interface DelegateSelectorProps {
   tabName?: string
 }
 
-export function DelegateSelector(props: DelegateSelectorProps, ref: StepCommandsRef): React.ReactElement {
+export function DelegateSelector(props: DelegateSelectorProps): React.ReactElement {
   const { selectedStage, onUpdate, isReadonly, tabName } = props
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const debouncedUpdate = React.useCallback(debounce(onUpdate, 300), [onUpdate])
