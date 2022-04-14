@@ -83,6 +83,8 @@ const mockedRegionsData = { data: { response: [{ name: 'ap-southeast-1', label: 
 
 const mockedZonesData = { response: ['us-container-1'] }
 
+const mockedTagsData = { response: [{ key: 'testTagKey', values: ['testTagValue'] }] }
+
 jest.mock('services/lw', () => ({
   useAllResourceGroups: jest.fn().mockImplementation(() => ({
     data: { response: mockedResourceGroupResponse },
@@ -92,6 +94,11 @@ jest.mock('services/lw', () => ({
   useAllZones: jest.fn().mockImplementation(() => ({
     data: mockedZonesData,
     loading: false
+  })),
+  useGetInstancesTags: jest.fn().mockImplementation(() => ({
+    data: mockedTagsData,
+    loading: false,
+    refetch: jest.fn()
   }))
 }))
 
@@ -234,7 +241,7 @@ describe('Instance Selector Modal', () => {
         />
       </TestWrapper>
     )
-    const refreshBtn = getByText('Refresh')
+    const refreshBtn = getByText('ce.common.refresh')
     expect(refreshBtn).toBeDefined()
     act(() => {
       fireEvent.click(refreshBtn)
