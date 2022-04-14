@@ -330,6 +330,10 @@ export interface AccessControlCheckError {
     | 'INVALID_ARTIFACTORY_REGISTRY_REQUEST'
     | 'INVALID_NEXUS_REGISTRY_REQUEST'
     | 'ENTITY_NOT_FOUND'
+    | 'INVALID_AZURE_CONTAINER_REGISTRY_REQUEST'
+    | 'AZURE_AUTHENTICATION_ERROR'
+    | 'AZURE_CONFIG_ERROR'
+    | 'DATA_PROCESSING_ERROR'
   correlationId?: string
   detailedMessage?: string
   failedPermissionChecks?: PermissionCheck[]
@@ -507,6 +511,32 @@ export interface AccountSettings {
   type: 'Connector'
 }
 
+export type AcrArtifactConfig = ArtifactConfig & {
+  connectorRef: string
+  metadata?: string
+  registry: string
+  repository: string
+  subscription: string
+  tag?: string
+  tagRegex?: string
+}
+
+export interface AcrBuildDetailsDTO {
+  buildUrl?: string
+  labels?: {
+    [key: string]: string
+  }
+  metadata?: {
+    [key: string]: string
+  }
+  repository?: string
+  tag?: string
+}
+
+export interface AcrResponseDTO {
+  buildDetailsList?: AcrBuildDetailsDTO[]
+}
+
 export interface ActiveProjectsCountDTO {
   count?: number
 }
@@ -631,7 +661,7 @@ export type AppDynamicsConnectorDTO = ConnectorConfigDTO & {
   clientId?: string
   clientSecretRef?: string
   controllerUrl: string
-  delegateSelectors?: string[] | string
+  delegateSelectors?: string[]
   passwordRef?: string
   username?: string
 }
@@ -773,7 +803,7 @@ export interface ArtifactoryBuildDetailsDTO {
 export type ArtifactoryConnector = ConnectorConfigDTO & {
   artifactoryServerUrl: string
   auth?: ArtifactoryAuthentication
-  delegateSelectors?: string[] | string
+  delegateSelectors?: string[]
 }
 
 export type ArtifactoryRegistryArtifactConfig = ArtifactConfig & {
@@ -877,7 +907,7 @@ export interface AwsCodeCommitAuthenticationDTO {
 
 export type AwsCodeCommitConnectorDTO = ConnectorConfigDTO & {
   authentication: AwsCodeCommitAuthenticationDTO
-  delegateSelectors?: string[] | string
+  delegateSelectors?: string[]
   type: 'Repo' | 'Region'
   url: string
 }
@@ -907,7 +937,7 @@ export type AwsCodeCommitSecretKeyAccessKeyDTO = AwsCodeCommitHttpsCredentialsSp
 
 export type AwsConnector = ConnectorConfigDTO & {
   credential: AwsCredential
-  delegateSelectors?: string[] | string
+  delegateSelectors?: string[]
 }
 
 export interface AwsCredential {
@@ -935,7 +965,7 @@ export interface AwsKmsConnectorCredential {
 export type AwsKmsConnectorDTO = ConnectorConfigDTO & {
   credential: AwsKmsConnectorCredential
   default?: boolean
-  delegateSelectors?: string[] | string
+  delegateSelectors?: string[]
   kmsArn: string
   region: string
 }
@@ -945,12 +975,12 @@ export interface AwsKmsCredentialSpec {
 }
 
 export type AwsKmsCredentialSpecAssumeIAM = AwsKmsCredentialSpec & {
-  delegateSelectors: string[] | string
+  delegateSelectors: string[]
 }
 
 export type AwsKmsCredentialSpecAssumeSTS = AwsKmsCredentialSpec & {
   assumeStsRoleDuration?: number
-  delegateSelectors: string[] | string
+  delegateSelectors: string[]
   externalName?: string
   roleArn: string
 }
@@ -991,7 +1021,7 @@ export interface AwsSecretManagerCredentialSpec {
 export type AwsSecretManagerDTO = ConnectorConfigDTO & {
   credential: AwsSecretManagerCredential
   default?: boolean
-  delegateSelectors?: string[] | string
+  delegateSelectors?: string[]
   region: string
   secretNamePrefix?: string
 }
@@ -1016,7 +1046,7 @@ export type AzureClientSecretKeyDTO = AzureAuthCredentialDTO & {
 export type AzureConnector = ConnectorConfigDTO & {
   azureEnvironmentType: 'AZURE' | 'AZURE_US_GOVERNMENT'
   credential: AzureCredential
-  delegateSelectors?: string[] | string
+  delegateSelectors?: string[]
 }
 
 export interface AzureCredential {
@@ -1036,7 +1066,7 @@ export type AzureKeyVaultConnectorDTO = ConnectorConfigDTO & {
   azureEnvironmentType?: 'AZURE' | 'AZURE_US_GOVERNMENT'
   clientId: string
   default?: boolean
-  delegateSelectors?: string[] | string
+  delegateSelectors?: string[]
   secretKey: string
   subscription: string
   tenantId: string
@@ -1046,7 +1076,7 @@ export type AzureKeyVaultConnectorDTO = ConnectorConfigDTO & {
 export type AzureKeyVaultMetadataRequestSpecDTO = SecretManagerMetadataRequestSpecDTO & {
   azureEnvironmentType?: 'AZURE' | 'AZURE_US_GOVERNMENT'
   clientId: string
-  delegateSelectors?: string[] | string
+  delegateSelectors?: string[]
   secretKey: string
   subscription: string
   tenantId: string
@@ -1057,8 +1087,8 @@ export type AzureKeyVaultMetadataSpecDTO = SecretManagerMetadataSpecDTO & {
 }
 
 export type AzureManualDetails = AzureCredentialSpec & {
+  applicationId: string
   auth: AzureAuthDTO
-  clientId: string
   tenantId: string
 }
 
@@ -1079,7 +1109,7 @@ export interface AzureRepoAuthentication {
 export type AzureRepoConnector = ConnectorConfigDTO & {
   apiAccess?: AzureRepoApiAccess
   authentication: AzureRepoAuthentication
-  delegateSelectors?: string[] | string
+  delegateSelectors?: string[]
   type: 'Organization' | 'Repo'
   url: string
   validationRepo?: string
@@ -1150,7 +1180,7 @@ export interface BitbucketAuthentication {
 export type BitbucketConnector = ConnectorConfigDTO & {
   apiAccess?: BitbucketApiAccess
   authentication: BitbucketAuthentication
-  delegateSelectors?: string[] | string
+  delegateSelectors?: string[]
   type: 'Account' | 'Repo'
   url: string
   validationRepo?: string
@@ -1694,7 +1724,7 @@ export type CustomArtifactConfig = ArtifactConfig & {
 
 export type CustomHealthConnectorDTO = ConnectorConfigDTO & {
   baseURL: string
-  delegateSelectors?: string[] | string
+  delegateSelectors?: string[]
   headers?: CustomHealthKeyAndValue[]
   method: 'GET' | 'POST'
   params?: CustomHealthKeyAndValue[]
@@ -1742,7 +1772,7 @@ export interface DashboardWorkloadDeployment {
 export type DatadogConnectorDTO = ConnectorConfigDTO & {
   apiKeyRef: string
   applicationKeyRef: string
-  delegateSelectors?: string[] | string
+  delegateSelectors?: string[]
   url: string
 }
 
@@ -2025,7 +2055,7 @@ export interface DockerBuildDetailsDTO {
 
 export type DockerConnectorDTO = ConnectorConfigDTO & {
   auth?: DockerAuthenticationDTO
-  delegateSelectors?: string[] | string
+  delegateSelectors?: string[]
   dockerRegistryUrl: string
   providerType: 'DockerHub' | 'Harbor' | 'Quay' | 'Other'
 }
@@ -2118,7 +2148,7 @@ export type DurationRestrictionMetadataDTO = RestrictionMetadataDTO & {
 
 export type DynatraceConnectorDTO = ConnectorConfigDTO & {
   apiTokenRef: string
-  delegateSelectors?: string[] | string
+  delegateSelectors?: string[]
   url: string
 }
 
@@ -2748,6 +2778,10 @@ export interface Error {
     | 'INVALID_ARTIFACTORY_REGISTRY_REQUEST'
     | 'INVALID_NEXUS_REGISTRY_REQUEST'
     | 'ENTITY_NOT_FOUND'
+    | 'INVALID_AZURE_CONTAINER_REGISTRY_REQUEST'
+    | 'AZURE_AUTHENTICATION_ERROR'
+    | 'AZURE_CONFIG_ERROR'
+    | 'DATA_PROCESSING_ERROR'
   correlationId?: string
   detailedMessage?: string
   message?: string
@@ -2768,7 +2802,7 @@ export interface ErrorMetadataDTO {
 
 export type ErrorTrackingConnectorDTO = ConnectorConfigDTO & {
   apiKeyRef: string
-  delegateSelectors?: string[] | string
+  delegateSelectors?: string[]
   url: string
 }
 
@@ -3131,6 +3165,10 @@ export interface Failure {
     | 'INVALID_ARTIFACTORY_REGISTRY_REQUEST'
     | 'INVALID_NEXUS_REGISTRY_REQUEST'
     | 'ENTITY_NOT_FOUND'
+    | 'INVALID_AZURE_CONTAINER_REGISTRY_REQUEST'
+    | 'AZURE_AUTHENTICATION_ERROR'
+    | 'AZURE_CONFIG_ERROR'
+    | 'DATA_PROCESSING_ERROR'
   correlationId?: string
   errors?: ValidationError[]
   message?: string
@@ -3449,7 +3487,7 @@ export type GcpCloudCostConnector = ConnectorConfigDTO & {
 
 export type GcpConnector = ConnectorConfigDTO & {
   credential?: GcpConnectorCredential
-  delegateSelectors?: string[] | string
+  delegateSelectors?: string[]
 }
 
 export interface GcpConnectorCredential {
@@ -3464,7 +3502,7 @@ export interface GcpCredentialSpec {
 export type GcpKmsConnectorDTO = ConnectorConfigDTO & {
   credentials: string
   default?: boolean
-  delegateSelectors?: string[] | string
+  delegateSelectors?: string[]
   keyName: string
   keyRing: string
   projectId: string
@@ -3539,7 +3577,7 @@ export interface GitBranchListDTO {
 export type GitConfigDTO = ConnectorConfigDTO & {
   branchName?: string
   connectionType: 'Account' | 'Repo'
-  delegateSelectors?: string[] | string
+  delegateSelectors?: string[]
   executeOnDelegate?: boolean
   spec: GitAuthenticationDTO
   type: 'Http' | 'Ssh'
@@ -4279,7 +4317,7 @@ export interface GithubAuthentication {
 export type GithubConnector = ConnectorConfigDTO & {
   apiAccess?: GithubApiAccess
   authentication: GithubAuthentication
-  delegateSelectors?: string[] | string
+  delegateSelectors?: string[]
   executeOnDelegate?: boolean
   type: 'Account' | 'Repo'
   url: string
@@ -4351,7 +4389,7 @@ export interface GitlabAuthentication {
 export type GitlabConnector = ConnectorConfigDTO & {
   apiAccess?: GitlabApiAccess
   authentication: GitlabAuthentication
-  delegateSelectors?: string[] | string
+  delegateSelectors?: string[]
   type: 'Account' | 'Repo'
   url: string
   validationRepo?: string
@@ -4452,7 +4490,7 @@ export type HelmChartManifest = ManifestAttributes & {
 }
 
 export type HelmDeployStepInfo = StepSpecType & {
-  delegateSelectors?: string[] | string
+  delegateSelectors?: string[]
 }
 
 export interface HelmManifestCommandFlag {
@@ -4471,7 +4509,7 @@ export interface HelmManifestCommandFlag {
 }
 
 export type HelmRollbackStepInfo = StepSpecType & {
-  delegateSelectors?: string[] | string
+  delegateSelectors?: string[]
 }
 
 export interface HoldingScope {
@@ -4513,7 +4551,7 @@ export interface HttpHelmAuthenticationDTO {
 
 export type HttpHelmConnectorDTO = ConnectorConfigDTO & {
   auth?: HttpHelmAuthenticationDTO
-  delegateSelectors?: string[] | string
+  delegateSelectors?: string[]
   helmRepoUrl: string
 }
 
@@ -4579,7 +4617,7 @@ export type HttpStateExecutionData = DelegateResponseData & {
 
 export type HttpStepInfo = StepSpecType & {
   assertion?: string
-  delegateSelectors?: string[] | string
+  delegateSelectors?: string[]
   headers?: HttpHeaderConfig[]
   method: string
   outputVariables?: NGVariable[]
@@ -4719,13 +4757,13 @@ export type JexlCriteriaSpec = CriteriaSpec & {
 export type JiraApprovalStepInfo = StepSpecType & {
   approvalCriteria: CriteriaSpecWrapper
   connectorRef: string
-  delegateSelectors?: string[] | string
+  delegateSelectors?: string[]
   issueKey: string
   rejectionCriteria?: CriteriaSpecWrapper
 }
 
 export type JiraConnector = ConnectorConfigDTO & {
-  delegateSelectors?: string[] | string
+  delegateSelectors?: string[]
   jiraUrl: string
   passwordRef: string
   username?: string
@@ -4734,7 +4772,7 @@ export type JiraConnector = ConnectorConfigDTO & {
 
 export type JiraCreateStepInfo = StepSpecType & {
   connectorRef: string
-  delegateSelectors?: string[] | string
+  delegateSelectors?: string[]
   fields?: JiraField[]
   issueType: string
   projectKey: string
@@ -4819,7 +4857,7 @@ export interface JiraStatusNG {
 
 export type JiraUpdateStepInfo = StepSpecType & {
   connectorRef: string
-  delegateSelectors?: string[] | string
+  delegateSelectors?: string[]
   fields?: JiraField[]
   issueKey: string
   transitionTo?: TransitionTo
@@ -4856,29 +4894,29 @@ export type K8SDirectInfrastructure = Infrastructure & {
 }
 
 export type K8sApplyStepInfo = StepSpecType & {
-  delegateSelectors?: string[] | string
+  delegateSelectors?: string[]
   filePaths?: string[]
   skipDryRun?: boolean
   skipSteadyStateCheck?: boolean
 }
 
 export type K8sBGSwapServicesStepInfo = StepSpecType & {
-  delegateSelectors?: string[] | string
+  delegateSelectors?: string[]
   skipDryRun?: boolean
 }
 
 export type K8sBlueGreenStepInfo = StepSpecType & {
-  delegateSelectors?: string[] | string
+  delegateSelectors?: string[]
   skipDryRun?: boolean
 }
 
 export type K8sCanaryDeleteStepInfo = StepSpecType & {
-  delegateSelectors?: string[] | string
+  delegateSelectors?: string[]
   skipDryRun?: boolean
 }
 
 export type K8sCanaryStepInfo = StepSpecType & {
-  delegateSelectors?: string[] | string
+  delegateSelectors?: string[]
   instanceSelection: InstanceSelectionWrapper
   skipDryRun?: boolean
 }
@@ -4895,7 +4933,7 @@ export interface K8sContainer {
 }
 
 export type K8sDeleteStepInfo = StepSpecType & {
-  delegateSelectors?: string[] | string
+  delegateSelectors?: string[]
   deleteResources: DeleteResourcesWrapper
   skipDryRun?: boolean
 }
@@ -4929,17 +4967,17 @@ export type K8sManifest = ManifestAttributes & {
 }
 
 export type K8sRollingRollbackStepInfo = StepSpecType & {
-  delegateSelectors?: string[] | string
+  delegateSelectors?: string[]
   skipDryRun?: boolean
 }
 
 export type K8sRollingStepInfo = StepSpecType & {
-  delegateSelectors?: string[] | string
+  delegateSelectors?: string[]
   skipDryRun?: boolean
 }
 
 export type K8sScaleStepInfo = StepSpecType & {
-  delegateSelectors?: string[] | string
+  delegateSelectors?: string[]
   instanceSelection: InstanceSelectionWrapper
   skipDryRun?: boolean
   skipSteadyStateCheck?: boolean
@@ -4982,7 +5020,7 @@ export type KubernetesClientKeyCertDTO = KubernetesAuthCredentialDTO & {
 
 export type KubernetesClusterConfigDTO = ConnectorConfigDTO & {
   credential: KubernetesCredentialDTO
-  delegateSelectors?: string[] | string
+  delegateSelectors?: string[]
 }
 
 export type KubernetesClusterDetailsDTO = KubernetesCredentialSpecDTO & {
@@ -5291,7 +5329,7 @@ export type NativeHelmServiceSpec = ServiceSpec & {
 
 export type NewRelicConnectorDTO = ConnectorConfigDTO & {
   apiKeyRef: string
-  delegateSelectors?: string[] | string
+  delegateSelectors?: string[]
   newRelicAccountId: string
   url: string
 }
@@ -5319,7 +5357,7 @@ export interface NexusBuildDetailsDTO {
 
 export type NexusConnector = ConnectorConfigDTO & {
   auth?: NexusAuthentication
-  delegateSelectors?: string[] | string
+  delegateSelectors?: string[]
   nexusServerUrl: string
   version: string
 }
@@ -5888,7 +5926,7 @@ export type PagerDutyConfigDTO = NotificationSettingConfigDTO & {
 
 export type PagerDutyConnectorDTO = ConnectorConfigDTO & {
   apiTokenRef: string
-  delegateSelectors?: string[] | string
+  delegateSelectors?: string[]
 }
 
 export interface Pair {
@@ -5999,7 +6037,7 @@ export type PdcInfrastructure = Infrastructure & {
     [key: string]: string
   }
   connectorRef?: string
-  delegateSelectors?: string[] | string
+  delegateSelectors?: string[]
   hostFilters?: string[]
   hosts?: string[]
   sshKeyRef: string
@@ -6017,7 +6055,7 @@ export interface PermissionCheck {
 }
 
 export type PhysicalDataCenterConnectorDTO = ConnectorConfigDTO & {
-  delegateSelectors?: string[] | string
+  delegateSelectors?: string[]
   hosts?: HostDTO[]
   sshKeyRef: string
 }
@@ -6137,7 +6175,7 @@ export interface PollingResponseDTO {
 
 export interface PrimaryArtifact {
   spec: ArtifactConfig
-  type: 'DockerRegistry' | 'Gcr' | 'Ecr' | 'Nexus3Registry' | 'ArtifactoryRegistry' | 'CustomArtifact'
+  type: 'DockerRegistry' | 'Gcr' | 'Ecr' | 'Acr' | 'Nexus3Registry' | 'ArtifactoryRegistry' | 'CustomArtifact'
 }
 
 export interface Principal {
@@ -6193,7 +6231,7 @@ export interface ProjectsDashboardInfo {
 }
 
 export type PrometheusConnectorDTO = ConnectorConfigDTO & {
-  delegateSelectors?: string[] | string
+  delegateSelectors?: string[]
   url: string
 }
 
@@ -6352,6 +6390,13 @@ export interface ResponseAccountResourcesDTO {
 export interface ResponseAccountSettingResponse {
   correlationId?: string
   data?: AccountSettingResponse
+  metaData?: { [key: string]: any }
+  status?: 'SUCCESS' | 'FAILURE' | 'ERROR'
+}
+
+export interface ResponseAcrResponseDTO {
+  correlationId?: string
+  data?: AcrResponseDTO
   metaData?: { [key: string]: any }
   status?: 'SUCCESS' | 'FAILURE' | 'ERROR'
 }
@@ -7311,6 +7356,10 @@ export interface ResponseMessage {
     | 'INVALID_ARTIFACTORY_REGISTRY_REQUEST'
     | 'INVALID_NEXUS_REGISTRY_REQUEST'
     | 'ENTITY_NOT_FOUND'
+    | 'INVALID_AZURE_CONTAINER_REGISTRY_REQUEST'
+    | 'AZURE_AUTHENTICATION_ERROR'
+    | 'AZURE_CONFIG_ERROR'
+    | 'DATA_PROCESSING_ERROR'
   exception?: Throwable
   failureTypes?: (
     | 'EXPIRED'
@@ -8688,14 +8737,14 @@ export interface ServiceInstanceUsageDTO {
 export type ServiceNowApprovalStepInfo = StepSpecType & {
   approvalCriteria: CriteriaSpecWrapper
   connectorRef: string
-  delegateSelectors?: string[] | string
+  delegateSelectors?: string[]
   rejectionCriteria?: CriteriaSpecWrapper
   ticketNumber: string
   ticketType: string
 }
 
 export type ServiceNowConnector = ConnectorConfigDTO & {
-  delegateSelectors?: string[] | string
+  delegateSelectors?: string[]
   passwordRef: string
   serviceNowUrl: string
   username?: string
@@ -8704,7 +8753,7 @@ export type ServiceNowConnector = ConnectorConfigDTO & {
 
 export type ServiceNowCreateStepInfo = StepSpecType & {
   connectorRef: string
-  delegateSelectors?: string[] | string
+  delegateSelectors?: string[]
   fields?: ServiceNowField[]
   templateName?: string
   ticketType: string
@@ -8745,7 +8794,7 @@ export interface ServiceNowTicketTypeDTO {
 
 export type ServiceNowUpdateStepInfo = StepSpecType & {
   connectorRef: string
-  delegateSelectors?: string[] | string
+  delegateSelectors?: string[]
   fields?: ServiceNowField[]
   templateName?: string
   ticketNumber: string
@@ -8902,7 +8951,7 @@ export interface ShellScriptSourceWrapper {
 }
 
 export type ShellScriptStepInfo = StepSpecType & {
-  delegateSelectors?: string[] | string
+  delegateSelectors?: string[]
   environmentVariables?: NGVariable[]
   executionTarget?: ExecutionTarget
   metadata?: string
@@ -8915,7 +8964,7 @@ export type ShellScriptStepInfo = StepSpecType & {
 export interface SidecarArtifact {
   identifier: string
   spec: ArtifactConfig
-  type: 'DockerRegistry' | 'Gcr' | 'Ecr' | 'Nexus3Registry' | 'ArtifactoryRegistry' | 'CustomArtifact'
+  type: 'DockerRegistry' | 'Gcr' | 'Ecr' | 'Acr' | 'Nexus3Registry' | 'ArtifactoryRegistry' | 'CustomArtifact'
 }
 
 export interface SidecarArtifactWrapper {
@@ -8978,7 +9027,7 @@ export interface SourceCodeManagerDTO {
 
 export type SplunkConnectorDTO = ConnectorConfigDTO & {
   accountId: string
-  delegateSelectors?: string[] | string
+  delegateSelectors?: string[]
   passwordRef: string
   splunkUrl: string
   username?: string
@@ -9141,7 +9190,7 @@ export type StringNGVariable = NGVariable & {
 export type SumoLogicConnectorDTO = ConnectorConfigDTO & {
   accessIdRef: string
   accessKeyRef: string
-  delegateSelectors?: string[] | string
+  delegateSelectors?: string[]
   url: string
 }
 
@@ -9195,7 +9244,7 @@ export interface TemplateLinkConfig {
 
 export type TerraformApplyStepInfo = StepSpecType & {
   configuration: TerraformStepConfiguration
-  delegateSelectors?: string[] | string
+  delegateSelectors?: string[]
   metadata?: string
   provisionerIdentifier: string
 }
@@ -9215,7 +9264,7 @@ export interface TerraformConfigFilesWrapper {
 
 export type TerraformDestroyStepInfo = StepSpecType & {
   configuration: TerraformStepConfiguration
-  delegateSelectors?: string[] | string
+  delegateSelectors?: string[]
   metadata?: string
   provisionerIdentifier: string
 }
@@ -9242,12 +9291,12 @@ export interface TerraformPlanExecutionData {
 
 export type TerraformPlanStepInfo = StepSpecType & {
   configuration: TerraformPlanExecutionData
-  delegateSelectors?: string[] | string
+  delegateSelectors?: string[]
   provisionerIdentifier: string
 }
 
 export type TerraformRollbackStepInfo = StepSpecType & {
-  delegateSelectors?: string[] | string
+  delegateSelectors?: string[]
   provisionerIdentifier: string
 }
 
@@ -9272,6 +9321,7 @@ export interface TerraformVarFileWrapper {
 
 export interface Throwable {
   cause?: Throwable
+  detailMessage?: string
   localizedMessage?: string
   message?: string
   stackTrace?: StackTraceElement[]
@@ -9654,7 +9704,7 @@ export type VaultConnectorDTO = ConnectorConfigDTO & {
   awsRegion?: string
   basePath?: string
   default?: boolean
-  delegateSelectors?: string[] | string
+  delegateSelectors?: string[]
   namespace?: string
   readOnly?: boolean
   renewalIntervalMinutes: number
@@ -9684,7 +9734,7 @@ export type VaultK8sCredentialDTO = VaultCredentialDTO & {
 
 export type VaultMetadataRequestSpecDTO = SecretManagerMetadataRequestSpecDTO & {
   accessType: 'APP_ROLE' | 'TOKEN' | 'VAULT_AGENT' | 'AWS_IAM' | 'K8s_AUTH'
-  delegateSelectors?: string[] | string
+  delegateSelectors?: string[]
   namespace?: string
   spec?: VaultCredentialDTO
   url: string
@@ -9847,9 +9897,9 @@ export type ScimUserRequestBody = ScimUser
 
 export type ScopingRuleDetailsNgArrayRequestBody = ScopingRuleDetailsNg[]
 
-export type SecretRequestWrapperRequestBody = SecretRequestWrapper
+export type SecretRequestWrapperRequestBody = void
 
-export type SecretRequestWrapper2RequestBody = void
+export type SecretRequestWrapper2RequestBody = SecretRequestWrapper
 
 export type ServiceAccountDTORequestBody = ServiceAccountDTO
 
@@ -9871,7 +9921,7 @@ export type UserGroupDTORequestBody = UserGroupDTO
 
 export type YamlSchemaDetailsWrapperRequestBody = YamlSchemaDetailsWrapper
 
-export type GetBuildDetailsForEcrWithYamlBodyRequestBody = string
+export type GetBuildDetailsForAcrArtifactWithYamlBodyRequestBody = string
 
 export type UnsubscribeBodyRequestBody = string[]
 
@@ -11681,6 +11731,270 @@ export const updateApiKeyPromise = (
     signal
   )
 
+export interface GetACRRegistriesBySubscriptionQueryParams {
+  connectorRef: string
+  accountIdentifier: string
+  orgIdentifier: string
+  projectIdentifier: string
+  subscription: string
+}
+
+export type GetACRRegistriesBySubscriptionProps = Omit<
+  GetProps<ResponseListString, Failure | Error, GetACRRegistriesBySubscriptionQueryParams, void>,
+  'path'
+>
+
+/**
+ * Gets ACR registries by subscription
+ */
+export const GetACRRegistriesBySubscription = (props: GetACRRegistriesBySubscriptionProps) => (
+  <Get<ResponseListString, Failure | Error, GetACRRegistriesBySubscriptionQueryParams, void>
+    path={`/artifacts/acr/container-registries`}
+    base={getConfig('ng/api')}
+    {...props}
+  />
+)
+
+export type UseGetACRRegistriesBySubscriptionProps = Omit<
+  UseGetProps<ResponseListString, Failure | Error, GetACRRegistriesBySubscriptionQueryParams, void>,
+  'path'
+>
+
+/**
+ * Gets ACR registries by subscription
+ */
+export const useGetACRRegistriesBySubscription = (props: UseGetACRRegistriesBySubscriptionProps) =>
+  useGet<ResponseListString, Failure | Error, GetACRRegistriesBySubscriptionQueryParams, void>(
+    `/artifacts/acr/container-registries`,
+    { base: getConfig('ng/api'), ...props }
+  )
+
+/**
+ * Gets ACR registries by subscription
+ */
+export const getACRRegistriesBySubscriptionPromise = (
+  props: GetUsingFetchProps<ResponseListString, Failure | Error, GetACRRegistriesBySubscriptionQueryParams, void>,
+  signal?: RequestInit['signal']
+) =>
+  getUsingFetch<ResponseListString, Failure | Error, GetACRRegistriesBySubscriptionQueryParams, void>(
+    getConfig('ng/api'),
+    `/artifacts/acr/container-registries`,
+    props,
+    signal
+  )
+
+export interface GetACRRepositoriesQueryParams {
+  connectorRef: string
+  accountIdentifier: string
+  orgIdentifier: string
+  projectIdentifier: string
+  subscription: string
+}
+
+export interface GetACRRepositoriesPathParams {
+  registry: string
+}
+
+export type GetACRRepositoriesProps = Omit<
+  GetProps<ResponseListString, Failure | Error, GetACRRepositoriesQueryParams, GetACRRepositoriesPathParams>,
+  'path'
+> &
+  GetACRRepositoriesPathParams
+
+/**
+ * Gets ACR repositories by subscription and container registry name
+ */
+export const GetACRRepositories = ({ registry, ...props }: GetACRRepositoriesProps) => (
+  <Get<ResponseListString, Failure | Error, GetACRRepositoriesQueryParams, GetACRRepositoriesPathParams>
+    path={`/artifacts/acr/container-registries/${registry}/repositories`}
+    base={getConfig('ng/api')}
+    {...props}
+  />
+)
+
+export type UseGetACRRepositoriesProps = Omit<
+  UseGetProps<ResponseListString, Failure | Error, GetACRRepositoriesQueryParams, GetACRRepositoriesPathParams>,
+  'path'
+> &
+  GetACRRepositoriesPathParams
+
+/**
+ * Gets ACR repositories by subscription and container registry name
+ */
+export const useGetACRRepositories = ({ registry, ...props }: UseGetACRRepositoriesProps) =>
+  useGet<ResponseListString, Failure | Error, GetACRRepositoriesQueryParams, GetACRRepositoriesPathParams>(
+    (paramsInPath: GetACRRepositoriesPathParams) =>
+      `/artifacts/acr/container-registries/${paramsInPath.registry}/repositories`,
+    { base: getConfig('ng/api'), pathParams: { registry }, ...props }
+  )
+
+/**
+ * Gets ACR repositories by subscription and container registry name
+ */
+export const getACRRepositoriesPromise = (
+  {
+    registry,
+    ...props
+  }: GetUsingFetchProps<
+    ResponseListString,
+    Failure | Error,
+    GetACRRepositoriesQueryParams,
+    GetACRRepositoriesPathParams
+  > & { registry: string },
+  signal?: RequestInit['signal']
+) =>
+  getUsingFetch<ResponseListString, Failure | Error, GetACRRepositoriesQueryParams, GetACRRepositoriesPathParams>(
+    getConfig('ng/api'),
+    `/artifacts/acr/container-registries/${registry}/repositories`,
+    props,
+    signal
+  )
+
+export interface GetBuildDetailsForACRRepositoryQueryParams {
+  subscription?: string
+  registry?: string
+  repository?: string
+  connectorRef?: string
+  accountIdentifier: string
+  orgIdentifier: string
+  projectIdentifier: string
+  branch?: string
+  repoIdentifier?: string
+  getDefaultFromOtherRepo?: boolean
+}
+
+export type GetBuildDetailsForACRRepositoryProps = Omit<
+  GetProps<ResponseAcrResponseDTO, Failure | Error, GetBuildDetailsForACRRepositoryQueryParams, void>,
+  'path'
+>
+
+/**
+ * Gets ACR repository build details
+ */
+export const GetBuildDetailsForACRRepository = (props: GetBuildDetailsForACRRepositoryProps) => (
+  <Get<ResponseAcrResponseDTO, Failure | Error, GetBuildDetailsForACRRepositoryQueryParams, void>
+    path={`/artifacts/acr/getBuildDetails`}
+    base={getConfig('ng/api')}
+    {...props}
+  />
+)
+
+export type UseGetBuildDetailsForACRRepositoryProps = Omit<
+  UseGetProps<ResponseAcrResponseDTO, Failure | Error, GetBuildDetailsForACRRepositoryQueryParams, void>,
+  'path'
+>
+
+/**
+ * Gets ACR repository build details
+ */
+export const useGetBuildDetailsForACRRepository = (props: UseGetBuildDetailsForACRRepositoryProps) =>
+  useGet<ResponseAcrResponseDTO, Failure | Error, GetBuildDetailsForACRRepositoryQueryParams, void>(
+    `/artifacts/acr/getBuildDetails`,
+    { base: getConfig('ng/api'), ...props }
+  )
+
+/**
+ * Gets ACR repository build details
+ */
+export const getBuildDetailsForACRRepositoryPromise = (
+  props: GetUsingFetchProps<ResponseAcrResponseDTO, Failure | Error, GetBuildDetailsForACRRepositoryQueryParams, void>,
+  signal?: RequestInit['signal']
+) =>
+  getUsingFetch<ResponseAcrResponseDTO, Failure | Error, GetBuildDetailsForACRRepositoryQueryParams, void>(
+    getConfig('ng/api'),
+    `/artifacts/acr/getBuildDetails`,
+    props,
+    signal
+  )
+
+export interface GetBuildDetailsForAcrArtifactWithYamlQueryParams {
+  subscription?: string
+  registry?: string
+  repository?: string
+  connectorRef?: string
+  accountIdentifier: string
+  orgIdentifier: string
+  projectIdentifier: string
+  pipelineIdentifier: string
+  fqnPath: string
+  branch?: string
+  repoIdentifier?: string
+  getDefaultFromOtherRepo?: boolean
+}
+
+export type GetBuildDetailsForAcrArtifactWithYamlProps = Omit<
+  MutateProps<
+    ResponseAcrResponseDTO,
+    Failure | Error,
+    GetBuildDetailsForAcrArtifactWithYamlQueryParams,
+    GetBuildDetailsForAcrArtifactWithYamlBodyRequestBody,
+    void
+  >,
+  'path' | 'verb'
+>
+
+/**
+ * Gets ACR build details with yaml input for expression resolution
+ */
+export const GetBuildDetailsForAcrArtifactWithYaml = (props: GetBuildDetailsForAcrArtifactWithYamlProps) => (
+  <Mutate<
+    ResponseAcrResponseDTO,
+    Failure | Error,
+    GetBuildDetailsForAcrArtifactWithYamlQueryParams,
+    GetBuildDetailsForAcrArtifactWithYamlBodyRequestBody,
+    void
+  >
+    verb="POST"
+    path={`/artifacts/acr/getBuildDetailsV2`}
+    base={getConfig('ng/api')}
+    {...props}
+  />
+)
+
+export type UseGetBuildDetailsForAcrArtifactWithYamlProps = Omit<
+  UseMutateProps<
+    ResponseAcrResponseDTO,
+    Failure | Error,
+    GetBuildDetailsForAcrArtifactWithYamlQueryParams,
+    GetBuildDetailsForAcrArtifactWithYamlBodyRequestBody,
+    void
+  >,
+  'path' | 'verb'
+>
+
+/**
+ * Gets ACR build details with yaml input for expression resolution
+ */
+export const useGetBuildDetailsForAcrArtifactWithYaml = (props: UseGetBuildDetailsForAcrArtifactWithYamlProps) =>
+  useMutate<
+    ResponseAcrResponseDTO,
+    Failure | Error,
+    GetBuildDetailsForAcrArtifactWithYamlQueryParams,
+    GetBuildDetailsForAcrArtifactWithYamlBodyRequestBody,
+    void
+  >('POST', `/artifacts/acr/getBuildDetailsV2`, { base: getConfig('ng/api'), ...props })
+
+/**
+ * Gets ACR build details with yaml input for expression resolution
+ */
+export const getBuildDetailsForAcrArtifactWithYamlPromise = (
+  props: MutateUsingFetchProps<
+    ResponseAcrResponseDTO,
+    Failure | Error,
+    GetBuildDetailsForAcrArtifactWithYamlQueryParams,
+    GetBuildDetailsForAcrArtifactWithYamlBodyRequestBody,
+    void
+  >,
+  signal?: RequestInit['signal']
+) =>
+  mutateUsingFetch<
+    ResponseAcrResponseDTO,
+    Failure | Error,
+    GetBuildDetailsForAcrArtifactWithYamlQueryParams,
+    GetBuildDetailsForAcrArtifactWithYamlBodyRequestBody,
+    void
+  >('POST', getConfig('ng/api'), `/artifacts/acr/getBuildDetailsV2`, props, signal)
+
 export interface GetArtifactsBuildsDetailsForArtifactoryQueryParams {
   connectorRef: string
   repositoryName: string
@@ -12662,7 +12976,7 @@ export type GetBuildDetailsForEcrWithYamlProps = Omit<
     ResponseEcrResponseDTO,
     Failure | Error,
     GetBuildDetailsForEcrWithYamlQueryParams,
-    GetBuildDetailsForEcrWithYamlBodyRequestBody,
+    GetBuildDetailsForAcrArtifactWithYamlBodyRequestBody,
     void
   >,
   'path' | 'verb'
@@ -12676,7 +12990,7 @@ export const GetBuildDetailsForEcrWithYaml = (props: GetBuildDetailsForEcrWithYa
     ResponseEcrResponseDTO,
     Failure | Error,
     GetBuildDetailsForEcrWithYamlQueryParams,
-    GetBuildDetailsForEcrWithYamlBodyRequestBody,
+    GetBuildDetailsForAcrArtifactWithYamlBodyRequestBody,
     void
   >
     verb="POST"
@@ -12691,7 +13005,7 @@ export type UseGetBuildDetailsForEcrWithYamlProps = Omit<
     ResponseEcrResponseDTO,
     Failure | Error,
     GetBuildDetailsForEcrWithYamlQueryParams,
-    GetBuildDetailsForEcrWithYamlBodyRequestBody,
+    GetBuildDetailsForAcrArtifactWithYamlBodyRequestBody,
     void
   >,
   'path' | 'verb'
@@ -12705,7 +13019,7 @@ export const useGetBuildDetailsForEcrWithYaml = (props: UseGetBuildDetailsForEcr
     ResponseEcrResponseDTO,
     Failure | Error,
     GetBuildDetailsForEcrWithYamlQueryParams,
-    GetBuildDetailsForEcrWithYamlBodyRequestBody,
+    GetBuildDetailsForAcrArtifactWithYamlBodyRequestBody,
     void
   >('POST', `/artifacts/ecr/getBuildDetailsV2`, { base: getConfig('ng/api'), ...props })
 
@@ -12717,7 +13031,7 @@ export const getBuildDetailsForEcrWithYamlPromise = (
     ResponseEcrResponseDTO,
     Failure | Error,
     GetBuildDetailsForEcrWithYamlQueryParams,
-    GetBuildDetailsForEcrWithYamlBodyRequestBody,
+    GetBuildDetailsForAcrArtifactWithYamlBodyRequestBody,
     void
   >,
   signal?: RequestInit['signal']
@@ -12726,7 +13040,7 @@ export const getBuildDetailsForEcrWithYamlPromise = (
     ResponseEcrResponseDTO,
     Failure | Error,
     GetBuildDetailsForEcrWithYamlQueryParams,
-    GetBuildDetailsForEcrWithYamlBodyRequestBody,
+    GetBuildDetailsForAcrArtifactWithYamlBodyRequestBody,
     void
   >('POST', getConfig('ng/api'), `/artifacts/ecr/getBuildDetailsV2`, props, signal)
 
@@ -13106,7 +13420,7 @@ export type GetBuildDetailsForGcrWithYamlProps = Omit<
     ResponseGcrResponseDTO,
     Failure | Error,
     GetBuildDetailsForGcrWithYamlQueryParams,
-    GetBuildDetailsForEcrWithYamlBodyRequestBody,
+    GetBuildDetailsForAcrArtifactWithYamlBodyRequestBody,
     void
   >,
   'path' | 'verb'
@@ -13120,7 +13434,7 @@ export const GetBuildDetailsForGcrWithYaml = (props: GetBuildDetailsForGcrWithYa
     ResponseGcrResponseDTO,
     Failure | Error,
     GetBuildDetailsForGcrWithYamlQueryParams,
-    GetBuildDetailsForEcrWithYamlBodyRequestBody,
+    GetBuildDetailsForAcrArtifactWithYamlBodyRequestBody,
     void
   >
     verb="POST"
@@ -13135,7 +13449,7 @@ export type UseGetBuildDetailsForGcrWithYamlProps = Omit<
     ResponseGcrResponseDTO,
     Failure | Error,
     GetBuildDetailsForGcrWithYamlQueryParams,
-    GetBuildDetailsForEcrWithYamlBodyRequestBody,
+    GetBuildDetailsForAcrArtifactWithYamlBodyRequestBody,
     void
   >,
   'path' | 'verb'
@@ -13149,7 +13463,7 @@ export const useGetBuildDetailsForGcrWithYaml = (props: UseGetBuildDetailsForGcr
     ResponseGcrResponseDTO,
     Failure | Error,
     GetBuildDetailsForGcrWithYamlQueryParams,
-    GetBuildDetailsForEcrWithYamlBodyRequestBody,
+    GetBuildDetailsForAcrArtifactWithYamlBodyRequestBody,
     void
   >('POST', `/artifacts/gcr/getBuildDetailsV2`, { base: getConfig('ng/api'), ...props })
 
@@ -13161,7 +13475,7 @@ export const getBuildDetailsForGcrWithYamlPromise = (
     ResponseGcrResponseDTO,
     Failure | Error,
     GetBuildDetailsForGcrWithYamlQueryParams,
-    GetBuildDetailsForEcrWithYamlBodyRequestBody,
+    GetBuildDetailsForAcrArtifactWithYamlBodyRequestBody,
     void
   >,
   signal?: RequestInit['signal']
@@ -13170,7 +13484,7 @@ export const getBuildDetailsForGcrWithYamlPromise = (
     ResponseGcrResponseDTO,
     Failure | Error,
     GetBuildDetailsForGcrWithYamlQueryParams,
-    GetBuildDetailsForEcrWithYamlBodyRequestBody,
+    GetBuildDetailsForAcrArtifactWithYamlBodyRequestBody,
     void
   >('POST', getConfig('ng/api'), `/artifacts/gcr/getBuildDetailsV2`, props, signal)
 
@@ -18278,9 +18592,10 @@ export interface GetEnvironmentGroupListQueryParams {
   orgIdentifier: string
   projectIdentifier: string
   searchTerm?: string
-  pageIndex?: number
-  pageSize?: number
-  sortOrders?: string[]
+  page?: number
+  size?: number
+  sort?: string[]
+  filterIdentifier?: string
   branch?: string
   repoIdentifier?: string
   getDefaultFromOtherRepo?: boolean
@@ -32730,7 +33045,7 @@ export type PostSecretProps = Omit<
     ResponseSecretResponseWrapper,
     Failure | Error,
     PostSecretQueryParams,
-    SecretRequestWrapperRequestBody,
+    SecretRequestWrapper2RequestBody,
     void
   >,
   'path' | 'verb'
@@ -32740,7 +33055,7 @@ export type PostSecretProps = Omit<
  * Create a secret
  */
 export const PostSecret = (props: PostSecretProps) => (
-  <Mutate<ResponseSecretResponseWrapper, Failure | Error, PostSecretQueryParams, SecretRequestWrapperRequestBody, void>
+  <Mutate<ResponseSecretResponseWrapper, Failure | Error, PostSecretQueryParams, SecretRequestWrapper2RequestBody, void>
     verb="POST"
     path={`/v2/secrets`}
     base={getConfig('ng/api')}
@@ -32753,7 +33068,7 @@ export type UsePostSecretProps = Omit<
     ResponseSecretResponseWrapper,
     Failure | Error,
     PostSecretQueryParams,
-    SecretRequestWrapperRequestBody,
+    SecretRequestWrapper2RequestBody,
     void
   >,
   'path' | 'verb'
@@ -32767,7 +33082,7 @@ export const usePostSecret = (props: UsePostSecretProps) =>
     ResponseSecretResponseWrapper,
     Failure | Error,
     PostSecretQueryParams,
-    SecretRequestWrapperRequestBody,
+    SecretRequestWrapper2RequestBody,
     void
   >('POST', `/v2/secrets`, { base: getConfig('ng/api'), ...props })
 
@@ -32779,7 +33094,7 @@ export const postSecretPromise = (
     ResponseSecretResponseWrapper,
     Failure | Error,
     PostSecretQueryParams,
-    SecretRequestWrapperRequestBody,
+    SecretRequestWrapper2RequestBody,
     void
   >,
   signal?: RequestInit['signal']
@@ -32788,7 +33103,7 @@ export const postSecretPromise = (
     ResponseSecretResponseWrapper,
     Failure | Error,
     PostSecretQueryParams,
-    SecretRequestWrapperRequestBody,
+    SecretRequestWrapper2RequestBody,
     void
   >('POST', getConfig('ng/api'), `/v2/secrets`, props, signal)
 
@@ -33181,7 +33496,7 @@ export type PostSecretViaYamlProps = Omit<
     ResponseSecretResponseWrapper,
     Failure | Error,
     PostSecretViaYamlQueryParams,
-    SecretRequestWrapper2RequestBody,
+    SecretRequestWrapperRequestBody,
     void
   >,
   'path' | 'verb'
@@ -33195,7 +33510,7 @@ export const PostSecretViaYaml = (props: PostSecretViaYamlProps) => (
     ResponseSecretResponseWrapper,
     Failure | Error,
     PostSecretViaYamlQueryParams,
-    SecretRequestWrapper2RequestBody,
+    SecretRequestWrapperRequestBody,
     void
   >
     verb="POST"
@@ -33210,7 +33525,7 @@ export type UsePostSecretViaYamlProps = Omit<
     ResponseSecretResponseWrapper,
     Failure | Error,
     PostSecretViaYamlQueryParams,
-    SecretRequestWrapper2RequestBody,
+    SecretRequestWrapperRequestBody,
     void
   >,
   'path' | 'verb'
@@ -33224,7 +33539,7 @@ export const usePostSecretViaYaml = (props: UsePostSecretViaYamlProps) =>
     ResponseSecretResponseWrapper,
     Failure | Error,
     PostSecretViaYamlQueryParams,
-    SecretRequestWrapper2RequestBody,
+    SecretRequestWrapperRequestBody,
     void
   >('POST', `/v2/secrets/yaml`, { base: getConfig('ng/api'), ...props })
 
@@ -33236,7 +33551,7 @@ export const postSecretViaYamlPromise = (
     ResponseSecretResponseWrapper,
     Failure | Error,
     PostSecretViaYamlQueryParams,
-    SecretRequestWrapper2RequestBody,
+    SecretRequestWrapperRequestBody,
     void
   >,
   signal?: RequestInit['signal']
@@ -33245,7 +33560,7 @@ export const postSecretViaYamlPromise = (
     ResponseSecretResponseWrapper,
     Failure | Error,
     PostSecretViaYamlQueryParams,
-    SecretRequestWrapper2RequestBody,
+    SecretRequestWrapperRequestBody,
     void
   >('POST', getConfig('ng/api'), `/v2/secrets/yaml`, props, signal)
 
@@ -33380,7 +33695,7 @@ export type PutSecretProps = Omit<
     ResponseSecretResponseWrapper,
     Failure | Error,
     PutSecretQueryParams,
-    SecretRequestWrapperRequestBody,
+    SecretRequestWrapper2RequestBody,
     PutSecretPathParams
   >,
   'path' | 'verb'
@@ -33395,7 +33710,7 @@ export const PutSecret = ({ identifier, ...props }: PutSecretProps) => (
     ResponseSecretResponseWrapper,
     Failure | Error,
     PutSecretQueryParams,
-    SecretRequestWrapperRequestBody,
+    SecretRequestWrapper2RequestBody,
     PutSecretPathParams
   >
     verb="PUT"
@@ -33410,7 +33725,7 @@ export type UsePutSecretProps = Omit<
     ResponseSecretResponseWrapper,
     Failure | Error,
     PutSecretQueryParams,
-    SecretRequestWrapperRequestBody,
+    SecretRequestWrapper2RequestBody,
     PutSecretPathParams
   >,
   'path' | 'verb'
@@ -33425,7 +33740,7 @@ export const usePutSecret = ({ identifier, ...props }: UsePutSecretProps) =>
     ResponseSecretResponseWrapper,
     Failure | Error,
     PutSecretQueryParams,
-    SecretRequestWrapperRequestBody,
+    SecretRequestWrapper2RequestBody,
     PutSecretPathParams
   >('PUT', (paramsInPath: PutSecretPathParams) => `/v2/secrets/${paramsInPath.identifier}`, {
     base: getConfig('ng/api'),
@@ -33444,7 +33759,7 @@ export const putSecretPromise = (
     ResponseSecretResponseWrapper,
     Failure | Error,
     PutSecretQueryParams,
-    SecretRequestWrapperRequestBody,
+    SecretRequestWrapper2RequestBody,
     PutSecretPathParams
   > & { identifier: string },
   signal?: RequestInit['signal']
@@ -33453,7 +33768,7 @@ export const putSecretPromise = (
     ResponseSecretResponseWrapper,
     Failure | Error,
     PutSecretQueryParams,
-    SecretRequestWrapperRequestBody,
+    SecretRequestWrapper2RequestBody,
     PutSecretPathParams
   >('PUT', getConfig('ng/api'), `/v2/secrets/${identifier}`, props, signal)
 
@@ -33472,7 +33787,7 @@ export type PutSecretViaYamlProps = Omit<
     ResponseSecretResponseWrapper,
     Failure | Error,
     PutSecretViaYamlQueryParams,
-    SecretRequestWrapper2RequestBody,
+    SecretRequestWrapperRequestBody,
     PutSecretViaYamlPathParams
   >,
   'path' | 'verb'
@@ -33487,7 +33802,7 @@ export const PutSecretViaYaml = ({ identifier, ...props }: PutSecretViaYamlProps
     ResponseSecretResponseWrapper,
     Failure | Error,
     PutSecretViaYamlQueryParams,
-    SecretRequestWrapper2RequestBody,
+    SecretRequestWrapperRequestBody,
     PutSecretViaYamlPathParams
   >
     verb="PUT"
@@ -33502,7 +33817,7 @@ export type UsePutSecretViaYamlProps = Omit<
     ResponseSecretResponseWrapper,
     Failure | Error,
     PutSecretViaYamlQueryParams,
-    SecretRequestWrapper2RequestBody,
+    SecretRequestWrapperRequestBody,
     PutSecretViaYamlPathParams
   >,
   'path' | 'verb'
@@ -33517,7 +33832,7 @@ export const usePutSecretViaYaml = ({ identifier, ...props }: UsePutSecretViaYam
     ResponseSecretResponseWrapper,
     Failure | Error,
     PutSecretViaYamlQueryParams,
-    SecretRequestWrapper2RequestBody,
+    SecretRequestWrapperRequestBody,
     PutSecretViaYamlPathParams
   >('PUT', (paramsInPath: PutSecretViaYamlPathParams) => `/v2/secrets/${paramsInPath.identifier}/yaml`, {
     base: getConfig('ng/api'),
@@ -33536,7 +33851,7 @@ export const putSecretViaYamlPromise = (
     ResponseSecretResponseWrapper,
     Failure | Error,
     PutSecretViaYamlQueryParams,
-    SecretRequestWrapper2RequestBody,
+    SecretRequestWrapperRequestBody,
     PutSecretViaYamlPathParams
   > & { identifier: string },
   signal?: RequestInit['signal']
@@ -33545,7 +33860,7 @@ export const putSecretViaYamlPromise = (
     ResponseSecretResponseWrapper,
     Failure | Error,
     PutSecretViaYamlQueryParams,
-    SecretRequestWrapper2RequestBody,
+    SecretRequestWrapperRequestBody,
     PutSecretViaYamlPathParams
   >('PUT', getConfig('ng/api'), `/v2/secrets/${identifier}/yaml`, props, signal)
 
