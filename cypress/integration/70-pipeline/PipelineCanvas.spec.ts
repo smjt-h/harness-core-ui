@@ -26,6 +26,7 @@ import {
   inputSetsRoute,
   pipelinesRoute,
   featureFlagsCall,
+  cdFailureStrategiesYaml,
   approvalStageYamlSnippet,
   jiraApprovalStageYamlSnippet,
   snowApprovalStageYamlSnippet
@@ -53,6 +54,9 @@ describe('GIT SYNC DISABLED', () => {
 
   it('should display the error returned by pipeline save API', () => {
     cy.intercept('POST', pipelineSaveCall, { fixture: 'pipeline/api/pipelines.post' }).as('pipelineSaveCall')
+    cy.intercept('GET', cdFailureStrategiesYaml, { fixture: 'pipeline/api/pipelines/failureStrategiesYaml' }).as(
+      'cdFailureStrategiesYaml'
+    )
     cy.contains('span', 'New Service').click()
 
     cy.fillName('testService')
@@ -90,6 +94,7 @@ describe('GIT SYNC DISABLED', () => {
     cy.contains('span', 'Save').click({ force: true })
 
     cy.wait('@pipelineSaveCall')
+    cy.wait('@cdFailureStrategiesYaml')
     cy.wait(500)
     cy.contains(
       'span',
@@ -126,7 +131,7 @@ describe('APPROVAL STAGE', () => {
     cy.findByTestId('stage-Approval').click()
   })
 
-  it('should add harness approval stage with default failure strategy and when condition', () => {
+  it('should add harness approval stage with default when condition and no default failure strategy', () => {
     cy.intercept('GET', approvalStageYamlSnippet, { fixture: 'pipeline/api/approvals/stageYamlSnippet' })
     cy.fillName('testApprovalStage_Cypress')
     cy.clickSubmit()
@@ -141,17 +146,14 @@ describe('APPROVAL STAGE', () => {
 
     cy.contains('span', 'Advanced').click({ force: true })
 
-    // By default unknown errors should be filled
-    cy.contains('span', 'Unknown Errors').should('be.visible')
-
-    // default action should be roolback stage
-    cy.contains('p', 'Rollback Stage').should('be.visible')
+    // By default no input for failure strategy should be present
+    cy.get('input[placeholder="Search..."]').should('not.exist')
 
     // By default the when condition selected should be 'execute this stage if pipeline execution is successful thus far'
     cy.get('[value="Success"]').should('be.checked')
   })
 
-  it('should add jira approval stage with default failure strategy and when condition', () => {
+  it('should add jira approval stage with default when condition and no default failure strategy', () => {
     cy.intercept('GET', jiraApprovalStageYamlSnippet, { fixture: 'pipeline/api/approvals/jiraStageYamlSnippet' })
     cy.fillName('testJiraApprovalStage_Cypress')
     cy.get('[data-icon="service-jira"]').click()
@@ -164,17 +166,14 @@ describe('APPROVAL STAGE', () => {
 
     cy.contains('span', 'Advanced').click({ force: true })
 
-    // By default unknown errors should be filled
-    cy.contains('span', 'Unknown Errors').should('be.visible')
-
-    // default action should be roolback stage
-    cy.contains('p', 'Rollback Stage').should('be.visible')
+    // By default no input for failure strategy should be present
+    cy.get('input[placeholder="Search..."]').should('not.exist')
 
     // By default the when condition selected should be 'execute this stage if pipeline execution is successful thus far'
     cy.get('[value="Success"]').should('be.checked')
   })
 
-  it('should add servicenow approval stage with default failure strategy and when condition', () => {
+  it('should add servicenow approval stage with default when condition and no default failure strategy', () => {
     cy.intercept('GET', snowApprovalStageYamlSnippet, {
       fixture: 'pipeline/api/approvals/snowApprovalStageYamlSnippet'
     })
@@ -187,11 +186,8 @@ describe('APPROVAL STAGE', () => {
 
     cy.contains('span', 'Advanced').click({ force: true })
 
-    // By default unknown errors should be filled
-    cy.contains('span', 'Unknown Errors').should('be.visible')
-
-    // default action should be roolback stage
-    cy.contains('p', 'Rollback Stage').should('be.visible')
+    // By default no input for failure strategy should be present
+    cy.get('input[placeholder="Search..."]').should('not.exist')
 
     // By default the when condition selected should be 'execute this stage if pipeline execution is successful thus far'
     cy.get('[value="Success"]').should('be.checked')
