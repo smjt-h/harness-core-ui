@@ -334,7 +334,6 @@ function Artifactory({
                       allowableTypes
                     }}
                     onChange={() => {
-                      tagList?.length && setTagList([])
                       resetTag(formik)
                     }}
                   />

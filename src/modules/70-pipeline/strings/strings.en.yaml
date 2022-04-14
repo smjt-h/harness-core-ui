@@ -626,6 +626,7 @@ artifactsSelection:
   artifactDetails: Artifact Details
   artifactTyperequired: Artifact Type is required
   loadingTags: Loading Tags...
+  loadingArtifactPaths: Loading Artifact Paths...
   artifactNamePlaceholder: Enter Artifact Path
   artifactDirectory: Artifact Directory
   artifactDirectoryPlaceholder: Enter Artifact Directory

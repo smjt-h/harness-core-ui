@@ -343,15 +343,17 @@ const Content = (props: ArtifactoryRenderContent): JSX.Element => {
               onChange={() => resetTags(formik, `${path}.artifacts.${artifactPath}.spec.tag`)}
             />
           ) : (
-            <ServerlessArtifactoryRepository
-              connectorRef={
-                get(initialValues, `artifacts.${artifactPath}.spec.connectorRef`, '') || artifact?.spec?.connectorRef
-              }
-              expressions={expressions}
-              allowableTypes={allowableTypes}
-              formik={formik}
-              fieldName={`${path}.artifacts.${artifactPath}.spec.repository`}
-            />
+            isFieldRuntime(`artifacts.${artifactPath}.spec.repository`, template) && (
+              <ServerlessArtifactoryRepository
+                connectorRef={
+                  get(initialValues, `artifacts.${artifactPath}.spec.connectorRef`, '') || artifact?.spec?.connectorRef
+                }
+                expressions={expressions}
+                allowableTypes={allowableTypes}
+                formik={formik}
+                fieldName={`${path}.artifacts.${artifactPath}.spec.repository`}
+              />
+            )
           )}
 
           {isFieldRuntime(`artifacts.${artifactPath}.spec.artifactDirectory`, template) &&

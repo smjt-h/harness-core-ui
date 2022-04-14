@@ -40,7 +40,7 @@ export function NoTagResults({
 
   const getErrorText = useCallback(() => {
     if (isServerlessDeploymentTypeSelected) {
-      getString('pipeline.noArtifactPaths')
+      return getString('pipeline.noArtifactPaths')
     }
     return getString('pipelineSteps.deploy.errors.notags')
   }, [isServerlessDeploymentTypeSelected, getString])
@@ -101,7 +101,13 @@ function ArtifactImagePathTagView({
     isServerlessDeploymentTypeSelected
   ])
 
-  const tags = buildDetailsLoading ? [{ label: 'Loading Tags...', value: 'Loading Tags...' }] : getSelectItems()
+  const loadingPlaceholderText = isServerlessDeploymentTypeSelected
+    ? getString('pipeline.artifactsSelection.loadingArtifactPaths')
+    : getString('pipeline.artifactsSelection.loadingTags')
+
+  const tags = buildDetailsLoading
+    ? [{ label: loadingPlaceholderText, value: loadingPlaceholderText }]
+    : getSelectItems()
 
   useEffect(() => {
     if (!isNil(formik.values?.tag)) {
@@ -217,7 +223,12 @@ function ArtifactImagePathTagView({
               allowableTypes,
               selectProps: {
                 defaultSelectedItem: formik.values?.tag,
-                noResults: <NoTagResults tagError={tagError} isServerlessDeploymentTypeSelected />,
+                noResults: (
+                  <NoTagResults
+                    tagError={tagError}
+                    isServerlessDeploymentTypeSelected={isServerlessDeploymentTypeSelected}
+                  />
+                ),
                 items: tags,
                 addClearBtn: true,
                 itemRenderer: itemRenderer,

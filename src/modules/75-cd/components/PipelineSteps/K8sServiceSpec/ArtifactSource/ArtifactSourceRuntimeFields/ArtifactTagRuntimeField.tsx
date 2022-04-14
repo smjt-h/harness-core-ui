@@ -48,7 +48,9 @@ const ArtifactTagRuntimeField = (props: TagsRenderContent): JSX.Element => {
     isServerlessDeploymentTypeSelected = false
   } = props
   const { getString } = useStrings()
-  const loadingTags = getString('pipeline.artifactsSelection.loadingTags')
+  const loadingPlaceholderText = isServerlessDeploymentTypeSelected
+    ? getString('pipeline.artifactsSelection.loadingArtifactPaths')
+    : getString('pipeline.artifactsSelection.loadingTags')
   const { showError } = useToaster()
 
   const [tagsList, setTagsList] = useState<SelectOption[]>([])
@@ -102,8 +104,8 @@ const ArtifactTagRuntimeField = (props: TagsRenderContent): JSX.Element => {
         fetchingTags
           ? [
               {
-                label: loadingTags,
-                value: loadingTags
+                label: loadingPlaceholderText,
+                value: loadingPlaceholderText
               }
             ]
           : tagsList
@@ -126,8 +128,8 @@ const ArtifactTagRuntimeField = (props: TagsRenderContent): JSX.Element => {
           items: fetchingTags
             ? [
                 {
-                  label: loadingTags,
-                  value: loadingTags
+                  label: loadingPlaceholderText,
+                  value: loadingPlaceholderText
                 }
               ]
             : tagsList,
