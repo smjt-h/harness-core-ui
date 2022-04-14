@@ -40,6 +40,7 @@ export interface MultiTypeFieldSelectorProps extends Omit<IFormGroupProps, 'labe
   disableMultiSelectBtn?: boolean
   onTypeChange?: (type: MultiTypeInputType) => void
   hideError?: boolean
+  supportListOfExpressions?: boolean
 }
 
 export interface ConnectedMultiTypeFieldSelectorProps extends MultiTypeFieldSelectorProps {
@@ -62,6 +63,7 @@ export function MultiTypeFieldSelector(props: ConnectedMultiTypeFieldSelectorPro
     hideError,
     optionalLabel = '(optional)',
     onTypeChange,
+    supportListOfExpressions,
     ...restProps
   } = props
   const error = get(formik?.errors, name)
@@ -81,7 +83,7 @@ export function MultiTypeFieldSelector(props: ConnectedMultiTypeFieldSelectorPro
 
   const value: string = get(formik?.values, name, '')
 
-  const [type, setType] = React.useState(getMultiTypeFromValue(value))
+  const [type, setType] = React.useState(getMultiTypeFromValue(value, allowedTypes, supportListOfExpressions))
 
   function handleChange(newType: MultiTypeInputType): void {
     setType(newType)
@@ -90,7 +92,12 @@ export function MultiTypeFieldSelector(props: ConnectedMultiTypeFieldSelectorPro
     formik.setFieldValue(name, newType === MultiTypeInputType.RUNTIME ? RUNTIME_INPUT_VALUE : defaultValueToReset)
   }
 
-  if (type === MultiTypeInputType.RUNTIME && getMultiTypeFromValue(value) !== MultiTypeInputType.RUNTIME) return null
+  if (
+    type === MultiTypeInputType.RUNTIME &&
+    getMultiTypeFromValue(value, allowedTypes, supportListOfExpressions) !== MultiTypeInputType.RUNTIME
+  ) {
+    return null
+  }
 
   return (
     <FormGroup
