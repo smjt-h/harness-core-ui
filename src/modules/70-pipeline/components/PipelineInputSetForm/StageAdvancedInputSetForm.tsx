@@ -32,7 +32,7 @@ interface StageAdvancedInputSetFormProps {
   readonly?: boolean
   stageIdentifier?: string
   allowableTypes?: MultiTypeInputType[]
-  delegateSelectors?: string[] | string | undefined
+  delegateSelectors?: string[] | string
 }
 
 interface ConditionalExecutionFormProps {
