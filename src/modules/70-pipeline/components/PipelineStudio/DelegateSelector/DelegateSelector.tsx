@@ -36,45 +36,6 @@ export function DelegateSelector(props: DelegateSelectorProps, ref: StepCommands
     }
   }, [subscribeForm, unSubscribeForm, tabName])
 
-  React.useImperativeHandle(ref, () => ({
-    setFieldError(key: string, error: string) {
-      if (formikRef.current) {
-        formikRef.current.setFieldError(key, error)
-      }
-    },
-    isDirty() {
-      if (formikRef.current) {
-        return formikRef.current.dirty
-      }
-    },
-    submitForm() {
-      if (formikRef.current) {
-        return formikRef.current.submitForm()
-      }
-    },
-    getErrors() {
-      if (formikRef.current) {
-        return formikRef.current.errors
-      }
-
-      return {}
-    },
-    getValues() {
-      if (formikRef.current) {
-        return formikRef.current.values
-      }
-
-      return {}
-    },
-    resetForm() {
-      if (formikRef.current) {
-        return formikRef.current.resetForm()
-      }
-
-      return {}
-    }
-  }))
-
   const selectedDelegateSelectors: string[] | string = selectedStage?.stage?.delegateSelectors || []
 
   return (
