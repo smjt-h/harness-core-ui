@@ -330,6 +330,10 @@ export interface AccessControlCheckError {
     | 'INVALID_ARTIFACTORY_REGISTRY_REQUEST'
     | 'INVALID_NEXUS_REGISTRY_REQUEST'
     | 'ENTITY_NOT_FOUND'
+    | 'INVALID_AZURE_CONTAINER_REGISTRY_REQUEST'
+    | 'AZURE_AUTHENTICATION_ERROR'
+    | 'AZURE_CONFIG_ERROR'
+    | 'DATA_PROCESSING_ERROR'
   correlationId?: string
   detailedMessage?: string
   failedPermissionChecks?: PermissionCheck[]
@@ -507,6 +511,32 @@ export interface AccountSettings {
   type: 'Connector'
 }
 
+export type AcrArtifactConfig = ArtifactConfig & {
+  connectorRef: string
+  metadata?: string
+  registry: string
+  repository: string
+  subscription: string
+  tag?: string
+  tagRegex?: string
+}
+
+export interface AcrBuildDetailsDTO {
+  buildUrl?: string
+  labels?: {
+    [key: string]: string
+  }
+  metadata?: {
+    [key: string]: string
+  }
+  repository?: string
+  tag?: string
+}
+
+export interface AcrResponseDTO {
+  buildDetailsList?: AcrBuildDetailsDTO[]
+}
+
 export interface ActiveProjectsCountDTO {
   count?: number
 }
@@ -631,7 +661,7 @@ export type AppDynamicsConnectorDTO = ConnectorConfigDTO & {
   clientId?: string
   clientSecretRef?: string
   controllerUrl: string
-  delegateSelectors?: string[] | string
+  delegateSelectors?: string[]
   passwordRef?: string
   username?: string
 }
@@ -773,7 +803,7 @@ export interface ArtifactoryBuildDetailsDTO {
 export type ArtifactoryConnector = ConnectorConfigDTO & {
   artifactoryServerUrl: string
   auth?: ArtifactoryAuthentication
-  delegateSelectors?: string[] | string
+  delegateSelectors?: string[]
 }
 
 export type ArtifactoryRegistryArtifactConfig = ArtifactConfig & {
@@ -877,7 +907,7 @@ export interface AwsCodeCommitAuthenticationDTO {
 
 export type AwsCodeCommitConnectorDTO = ConnectorConfigDTO & {
   authentication: AwsCodeCommitAuthenticationDTO
-  delegateSelectors?: string[] | string
+  delegateSelectors?: string[]
   type: 'Repo' | 'Region'
   url: string
 }
@@ -907,7 +937,7 @@ export type AwsCodeCommitSecretKeyAccessKeyDTO = AwsCodeCommitHttpsCredentialsSp
 
 export type AwsConnector = ConnectorConfigDTO & {
   credential: AwsCredential
-  delegateSelectors?: string[] | string
+  delegateSelectors?: string[]
 }
 
 export interface AwsCredential {
@@ -935,7 +965,7 @@ export interface AwsKmsConnectorCredential {
 export type AwsKmsConnectorDTO = ConnectorConfigDTO & {
   credential: AwsKmsConnectorCredential
   default?: boolean
-  delegateSelectors?: string[] | string
+  delegateSelectors?: string[]
   kmsArn: string
   region: string
 }
@@ -945,12 +975,12 @@ export interface AwsKmsCredentialSpec {
 }
 
 export type AwsKmsCredentialSpecAssumeIAM = AwsKmsCredentialSpec & {
-  delegateSelectors: string[] | string
+  delegateSelectors: string[]
 }
 
 export type AwsKmsCredentialSpecAssumeSTS = AwsKmsCredentialSpec & {
   assumeStsRoleDuration?: number
-  delegateSelectors: string[] | string
+  delegateSelectors: string[]
   externalName?: string
   roleArn: string
 }
@@ -991,7 +1021,7 @@ export interface AwsSecretManagerCredentialSpec {
 export type AwsSecretManagerDTO = ConnectorConfigDTO & {
   credential: AwsSecretManagerCredential
   default?: boolean
-  delegateSelectors?: string[] | string
+  delegateSelectors?: string[]
   region: string
   secretNamePrefix?: string
 }
@@ -1016,7 +1046,7 @@ export type AzureClientSecretKeyDTO = AzureAuthCredentialDTO & {
 export type AzureConnector = ConnectorConfigDTO & {
   azureEnvironmentType: 'AZURE' | 'AZURE_US_GOVERNMENT'
   credential: AzureCredential
-  delegateSelectors?: string[] | string
+  delegateSelectors?: string[]
 }
 
 export interface AzureCredential {
@@ -1036,7 +1066,7 @@ export type AzureKeyVaultConnectorDTO = ConnectorConfigDTO & {
   azureEnvironmentType?: 'AZURE' | 'AZURE_US_GOVERNMENT'
   clientId: string
   default?: boolean
-  delegateSelectors?: string[] | string
+  delegateSelectors?: string[]
   secretKey: string
   subscription: string
   tenantId: string
@@ -1046,7 +1076,7 @@ export type AzureKeyVaultConnectorDTO = ConnectorConfigDTO & {
 export type AzureKeyVaultMetadataRequestSpecDTO = SecretManagerMetadataRequestSpecDTO & {
   azureEnvironmentType?: 'AZURE' | 'AZURE_US_GOVERNMENT'
   clientId: string
-  delegateSelectors?: string[] | string
+  delegateSelectors?: string[]
   secretKey: string
   subscription: string
   tenantId: string
@@ -1057,8 +1087,8 @@ export type AzureKeyVaultMetadataSpecDTO = SecretManagerMetadataSpecDTO & {
 }
 
 export type AzureManualDetails = AzureCredentialSpec & {
+  applicationId: string
   auth: AzureAuthDTO
-  clientId: string
   tenantId: string
 }
 
@@ -1079,7 +1109,7 @@ export interface AzureRepoAuthentication {
 export type AzureRepoConnector = ConnectorConfigDTO & {
   apiAccess?: AzureRepoApiAccess
   authentication: AzureRepoAuthentication
-  delegateSelectors?: string[] | string
+  delegateSelectors?: string[]
   type: 'Organization' | 'Repo'
   url: string
   validationRepo?: string
@@ -1150,7 +1180,7 @@ export interface BitbucketAuthentication {
 export type BitbucketConnector = ConnectorConfigDTO & {
   apiAccess?: BitbucketApiAccess
   authentication: BitbucketAuthentication
-  delegateSelectors?: string[] | string
+  delegateSelectors?: string[]
   type: 'Account' | 'Repo'
   url: string
   validationRepo?: string
@@ -1694,7 +1724,7 @@ export type CustomArtifactConfig = ArtifactConfig & {
 
 export type CustomHealthConnectorDTO = ConnectorConfigDTO & {
   baseURL: string
-  delegateSelectors?: string[] | string
+  delegateSelectors?: string[]
   headers?: CustomHealthKeyAndValue[]
   method: 'GET' | 'POST'
   params?: CustomHealthKeyAndValue[]
@@ -1742,7 +1772,7 @@ export interface DashboardWorkloadDeployment {
 export type DatadogConnectorDTO = ConnectorConfigDTO & {
   apiKeyRef: string
   applicationKeyRef: string
-  delegateSelectors?: string[] | string
+  delegateSelectors?: string[]
   url: string
 }
 
@@ -1888,6 +1918,7 @@ export interface DelegateProfileFilterProperties {
     | 'Deployment'
     | 'Audit'
     | 'Template'
+    | 'EnvironmentGroup'
   identifier?: string
   name?: string
   selectors?: string[]
@@ -2024,7 +2055,7 @@ export interface DockerBuildDetailsDTO {
 
 export type DockerConnectorDTO = ConnectorConfigDTO & {
   auth?: DockerAuthenticationDTO
-  delegateSelectors?: string[] | string
+  delegateSelectors?: string[]
   dockerRegistryUrl: string
   providerType: 'DockerHub' | 'Harbor' | 'Quay' | 'Other'
 }
@@ -2117,7 +2148,7 @@ export type DurationRestrictionMetadataDTO = RestrictionMetadataDTO & {
 
 export type DynatraceConnectorDTO = ConnectorConfigDTO & {
   apiTokenRef: string
-  delegateSelectors?: string[] | string
+  delegateSelectors?: string[]
   url: string
 }
 
@@ -2360,6 +2391,12 @@ export interface EnvironmentGroupDeleteResponse {
   identifier?: string
   orgIdentifier?: string
   projectIdentifier?: string
+}
+
+export type EnvironmentGroupFilterProperties = FilterProperties & {
+  description?: string
+  envGroupName?: string
+  envIdentifiers?: string[]
 }
 
 export interface EnvironmentGroupResponse {
@@ -2741,6 +2778,10 @@ export interface Error {
     | 'INVALID_ARTIFACTORY_REGISTRY_REQUEST'
     | 'INVALID_NEXUS_REGISTRY_REQUEST'
     | 'ENTITY_NOT_FOUND'
+    | 'INVALID_AZURE_CONTAINER_REGISTRY_REQUEST'
+    | 'AZURE_AUTHENTICATION_ERROR'
+    | 'AZURE_CONFIG_ERROR'
+    | 'DATA_PROCESSING_ERROR'
   correlationId?: string
   detailedMessage?: string
   message?: string
@@ -2761,7 +2802,7 @@ export interface ErrorMetadataDTO {
 
 export type ErrorTrackingConnectorDTO = ConnectorConfigDTO & {
   apiKeyRef: string
-  delegateSelectors?: string[] | string
+  delegateSelectors?: string[]
   url: string
 }
 
@@ -3124,6 +3165,10 @@ export interface Failure {
     | 'INVALID_ARTIFACTORY_REGISTRY_REQUEST'
     | 'INVALID_NEXUS_REGISTRY_REQUEST'
     | 'ENTITY_NOT_FOUND'
+    | 'INVALID_AZURE_CONTAINER_REGISTRY_REQUEST'
+    | 'AZURE_AUTHENTICATION_ERROR'
+    | 'AZURE_CONFIG_ERROR'
+    | 'DATA_PROCESSING_ERROR'
   correlationId?: string
   errors?: ValidationError[]
   message?: string
@@ -3403,6 +3448,7 @@ export interface FilterProperties {
     | 'Deployment'
     | 'Audit'
     | 'Template'
+    | 'EnvironmentGroup'
   tags?: {
     [key: string]: string
   }
@@ -3441,7 +3487,7 @@ export type GcpCloudCostConnector = ConnectorConfigDTO & {
 
 export type GcpConnector = ConnectorConfigDTO & {
   credential?: GcpConnectorCredential
-  delegateSelectors?: string[] | string
+  delegateSelectors?: string[]
 }
 
 export interface GcpConnectorCredential {
@@ -3456,7 +3502,7 @@ export interface GcpCredentialSpec {
 export type GcpKmsConnectorDTO = ConnectorConfigDTO & {
   credentials: string
   default?: boolean
-  delegateSelectors?: string[] | string
+  delegateSelectors?: string[]
   keyName: string
   keyRing: string
   projectId: string
@@ -3531,7 +3577,7 @@ export interface GitBranchListDTO {
 export type GitConfigDTO = ConnectorConfigDTO & {
   branchName?: string
   connectionType: 'Account' | 'Repo'
-  delegateSelectors?: string[] | string
+  delegateSelectors?: string[]
   executeOnDelegate?: boolean
   spec: GitAuthenticationDTO
   type: 'Http' | 'Ssh'
@@ -4271,7 +4317,7 @@ export interface GithubAuthentication {
 export type GithubConnector = ConnectorConfigDTO & {
   apiAccess?: GithubApiAccess
   authentication: GithubAuthentication
-  delegateSelectors?: string[] | string
+  delegateSelectors?: string[]
   executeOnDelegate?: boolean
   type: 'Account' | 'Repo'
   url: string
@@ -4343,7 +4389,7 @@ export interface GitlabAuthentication {
 export type GitlabConnector = ConnectorConfigDTO & {
   apiAccess?: GitlabApiAccess
   authentication: GitlabAuthentication
-  delegateSelectors?: string[] | string
+  delegateSelectors?: string[]
   type: 'Account' | 'Repo'
   url: string
   validationRepo?: string
@@ -4444,7 +4490,7 @@ export type HelmChartManifest = ManifestAttributes & {
 }
 
 export type HelmDeployStepInfo = StepSpecType & {
-  delegateSelectors?: string[] | string
+  delegateSelectors?: string[]
 }
 
 export interface HelmManifestCommandFlag {
@@ -4463,7 +4509,7 @@ export interface HelmManifestCommandFlag {
 }
 
 export type HelmRollbackStepInfo = StepSpecType & {
-  delegateSelectors?: string[] | string
+  delegateSelectors?: string[]
 }
 
 export interface HoldingScope {
@@ -4505,7 +4551,7 @@ export interface HttpHelmAuthenticationDTO {
 
 export type HttpHelmConnectorDTO = ConnectorConfigDTO & {
   auth?: HttpHelmAuthenticationDTO
-  delegateSelectors?: string[] | string
+  delegateSelectors?: string[]
   helmRepoUrl: string
 }
 
@@ -4571,7 +4617,7 @@ export type HttpStateExecutionData = DelegateResponseData & {
 
 export type HttpStepInfo = StepSpecType & {
   assertion?: string
-  delegateSelectors?: string[] | string
+  delegateSelectors?: string[]
   headers?: HttpHeaderConfig[]
   method: string
   outputVariables?: NGVariable[]
@@ -4711,13 +4757,13 @@ export type JexlCriteriaSpec = CriteriaSpec & {
 export type JiraApprovalStepInfo = StepSpecType & {
   approvalCriteria: CriteriaSpecWrapper
   connectorRef: string
-  delegateSelectors?: string[] | string
+  delegateSelectors?: string[]
   issueKey: string
   rejectionCriteria?: CriteriaSpecWrapper
 }
 
 export type JiraConnector = ConnectorConfigDTO & {
-  delegateSelectors?: string[] | string
+  delegateSelectors?: string[]
   jiraUrl: string
   passwordRef: string
   username?: string
@@ -4726,7 +4772,7 @@ export type JiraConnector = ConnectorConfigDTO & {
 
 export type JiraCreateStepInfo = StepSpecType & {
   connectorRef: string
-  delegateSelectors?: string[] | string
+  delegateSelectors?: string[]
   fields?: JiraField[]
   issueType: string
   projectKey: string
@@ -4811,7 +4857,7 @@ export interface JiraStatusNG {
 
 export type JiraUpdateStepInfo = StepSpecType & {
   connectorRef: string
-  delegateSelectors?: string[] | string
+  delegateSelectors?: string[]
   fields?: JiraField[]
   issueKey: string
   transitionTo?: TransitionTo
@@ -4848,29 +4894,29 @@ export type K8SDirectInfrastructure = Infrastructure & {
 }
 
 export type K8sApplyStepInfo = StepSpecType & {
-  delegateSelectors?: string[] | string
+  delegateSelectors?: string[]
   filePaths?: string[]
   skipDryRun?: boolean
   skipSteadyStateCheck?: boolean
 }
 
 export type K8sBGSwapServicesStepInfo = StepSpecType & {
-  delegateSelectors?: string[] | string
+  delegateSelectors?: string[]
   skipDryRun?: boolean
 }
 
 export type K8sBlueGreenStepInfo = StepSpecType & {
-  delegateSelectors?: string[] | string
+  delegateSelectors?: string[]
   skipDryRun?: boolean
 }
 
 export type K8sCanaryDeleteStepInfo = StepSpecType & {
-  delegateSelectors?: string[] | string
+  delegateSelectors?: string[]
   skipDryRun?: boolean
 }
 
 export type K8sCanaryStepInfo = StepSpecType & {
-  delegateSelectors?: string[] | string
+  delegateSelectors?: string[]
   instanceSelection: InstanceSelectionWrapper
   skipDryRun?: boolean
 }
@@ -4887,7 +4933,7 @@ export interface K8sContainer {
 }
 
 export type K8sDeleteStepInfo = StepSpecType & {
-  delegateSelectors?: string[] | string
+  delegateSelectors?: string[]
   deleteResources: DeleteResourcesWrapper
   skipDryRun?: boolean
 }
@@ -4921,17 +4967,17 @@ export type K8sManifest = ManifestAttributes & {
 }
 
 export type K8sRollingRollbackStepInfo = StepSpecType & {
-  delegateSelectors?: string[] | string
+  delegateSelectors?: string[]
   skipDryRun?: boolean
 }
 
 export type K8sRollingStepInfo = StepSpecType & {
-  delegateSelectors?: string[] | string
+  delegateSelectors?: string[]
   skipDryRun?: boolean
 }
 
 export type K8sScaleStepInfo = StepSpecType & {
-  delegateSelectors?: string[] | string
+  delegateSelectors?: string[]
   instanceSelection: InstanceSelectionWrapper
   skipDryRun?: boolean
   skipSteadyStateCheck?: boolean
@@ -4974,7 +5020,7 @@ export type KubernetesClientKeyCertDTO = KubernetesAuthCredentialDTO & {
 
 export type KubernetesClusterConfigDTO = ConnectorConfigDTO & {
   credential: KubernetesCredentialDTO
-  delegateSelectors?: string[] | string
+  delegateSelectors?: string[]
 }
 
 export type KubernetesClusterDetailsDTO = KubernetesCredentialSpecDTO & {
@@ -5283,7 +5329,7 @@ export type NativeHelmServiceSpec = ServiceSpec & {
 
 export type NewRelicConnectorDTO = ConnectorConfigDTO & {
   apiKeyRef: string
-  delegateSelectors?: string[] | string
+  delegateSelectors?: string[]
   newRelicAccountId: string
   url: string
 }
@@ -5311,7 +5357,7 @@ export interface NexusBuildDetailsDTO {
 
 export type NexusConnector = ConnectorConfigDTO & {
   auth?: NexusAuthentication
-  delegateSelectors?: string[] | string
+  delegateSelectors?: string[]
   nexusServerUrl: string
   version: string
 }
@@ -5416,9 +5462,10 @@ export type NumberNGVariable = NGVariable & {
   value: number
 }
 
-export type OAuthSettings = NGAuthSettings & {
+export interface OAuthSettings {
   allowedProviders?: ('AZURE' | 'BITBUCKET' | 'GITHUB' | 'GITLAB' | 'GOOGLE' | 'LINKEDIN')[]
   filter?: string
+  settingsType?: 'USER_PASSWORD' | 'SAML' | 'LDAP' | 'OAUTH'
 }
 
 export interface OAuthSignupDTO {
@@ -5879,7 +5926,7 @@ export type PagerDutyConfigDTO = NotificationSettingConfigDTO & {
 
 export type PagerDutyConnectorDTO = ConnectorConfigDTO & {
   apiTokenRef: string
-  delegateSelectors?: string[] | string
+  delegateSelectors?: string[]
 }
 
 export interface Pair {
@@ -5990,7 +6037,7 @@ export type PdcInfrastructure = Infrastructure & {
     [key: string]: string
   }
   connectorRef?: string
-  delegateSelectors?: string[] | string
+  delegateSelectors?: string[]
   hostFilters?: string[]
   hosts?: string[]
   sshKeyRef: string
@@ -6008,7 +6055,7 @@ export interface PermissionCheck {
 }
 
 export type PhysicalDataCenterConnectorDTO = ConnectorConfigDTO & {
-  delegateSelectors?: string[] | string
+  delegateSelectors?: string[]
   hosts?: HostDTO[]
   sshKeyRef: string
 }
@@ -6054,6 +6101,7 @@ export type PipelineFilterProperties = FilterProperties & {
 
 export interface PipelineInfoConfig {
   allowStageExecutions?: boolean
+  delegateSelectors?: string[]
   description?: string
   flowControl?: FlowControlConfig
   identifier: string
@@ -6067,7 +6115,6 @@ export interface PipelineInfoConfig {
     [key: string]: string
   }
   timeout?: string
-  delegateSelectors?: string[] | string
   variables?: NGVariable[]
 }
 
@@ -6128,7 +6175,7 @@ export interface PollingResponseDTO {
 
 export interface PrimaryArtifact {
   spec: ArtifactConfig
-  type: 'DockerRegistry' | 'Gcr' | 'Ecr' | 'Nexus3Registry' | 'ArtifactoryRegistry' | 'CustomArtifact'
+  type: 'DockerRegistry' | 'Gcr' | 'Ecr' | 'Acr' | 'Nexus3Registry' | 'ArtifactoryRegistry' | 'CustomArtifact'
 }
 
 export interface Principal {
@@ -6184,7 +6231,7 @@ export interface ProjectsDashboardInfo {
 }
 
 export type PrometheusConnectorDTO = ConnectorConfigDTO & {
-  delegateSelectors?: string[] | string
+  delegateSelectors?: string[]
   url: string
 }
 
@@ -6205,6 +6252,14 @@ export type RateLimitRestrictionMetadataDTO = RestrictionMetadataDTO & {
   allowedIfEqual?: boolean
   limit?: number
   timeUnit?: TimeUnit
+}
+
+export interface ReferenceDTO {
+  accountIdentifier?: string
+  identifier?: string
+  name?: string
+  orgIdentifier?: string
+  projectIdentifier?: string
 }
 
 export type ReferenceInstanceInfoDTO = InstanceInfoDTO & {
@@ -6335,6 +6390,13 @@ export interface ResponseAccountResourcesDTO {
 export interface ResponseAccountSettingResponse {
   correlationId?: string
   data?: AccountSettingResponse
+  metaData?: { [key: string]: any }
+  status?: 'SUCCESS' | 'FAILURE' | 'ERROR'
+}
+
+export interface ResponseAcrResponseDTO {
+  correlationId?: string
+  data?: AcrResponseDTO
   metaData?: { [key: string]: any }
   status?: 'SUCCESS' | 'FAILURE' | 'ERROR'
 }
@@ -7294,6 +7356,10 @@ export interface ResponseMessage {
     | 'INVALID_ARTIFACTORY_REGISTRY_REQUEST'
     | 'INVALID_NEXUS_REGISTRY_REQUEST'
     | 'ENTITY_NOT_FOUND'
+    | 'INVALID_AZURE_CONTAINER_REGISTRY_REQUEST'
+    | 'AZURE_AUTHENTICATION_ERROR'
+    | 'AZURE_CONFIG_ERROR'
+    | 'DATA_PROCESSING_ERROR'
   exception?: Throwable
   failureTypes?: (
     | 'EXPIRED'
@@ -7716,6 +7782,13 @@ export interface ResponseServiceHeaderInfo {
   status?: 'SUCCESS' | 'FAILURE' | 'ERROR'
 }
 
+export interface ResponseServiceInstanceUsageDTO {
+  correlationId?: string
+  data?: ServiceInstanceUsageDTO
+  metaData?: { [key: string]: any }
+  status?: 'SUCCESS' | 'FAILURE' | 'ERROR'
+}
+
 export interface ResponseServiceResponse {
   correlationId?: string
   data?: ServiceResponse
@@ -7726,6 +7799,13 @@ export interface ResponseServiceResponse {
 export interface ResponseServiceResponseDTO {
   correlationId?: string
   data?: ServiceResponseDTO
+  metaData?: { [key: string]: any }
+  status?: 'SUCCESS' | 'FAILURE' | 'ERROR'
+}
+
+export interface ResponseServiceUsageDTO {
+  correlationId?: string
+  data?: ServiceUsageDTO
   metaData?: { [key: string]: any }
   status?: 'SUCCESS' | 'FAILURE' | 'ERROR'
 }
@@ -8645,17 +8725,26 @@ export interface ServiceHeaderInfo {
   name?: string
 }
 
+export interface ServiceInstanceUsageDTO {
+  accountIdentifier?: string
+  activeServiceInstances?: UsageDataDTO
+  activeServices?: UsageDataDTO
+  cdLicenseType?: 'SERVICES' | 'SERVICE_INSTANCES'
+  module?: string
+  timestamp?: number
+}
+
 export type ServiceNowApprovalStepInfo = StepSpecType & {
   approvalCriteria: CriteriaSpecWrapper
   connectorRef: string
-  delegateSelectors?: string[] | string
+  delegateSelectors?: string[]
   rejectionCriteria?: CriteriaSpecWrapper
   ticketNumber: string
   ticketType: string
 }
 
 export type ServiceNowConnector = ConnectorConfigDTO & {
-  delegateSelectors?: string[] | string
+  delegateSelectors?: string[]
   passwordRef: string
   serviceNowUrl: string
   username?: string
@@ -8664,7 +8753,7 @@ export type ServiceNowConnector = ConnectorConfigDTO & {
 
 export type ServiceNowCreateStepInfo = StepSpecType & {
   connectorRef: string
-  delegateSelectors?: string[] | string
+  delegateSelectors?: string[]
   fields?: ServiceNowField[]
   templateName?: string
   ticketType: string
@@ -8705,7 +8794,7 @@ export interface ServiceNowTicketTypeDTO {
 
 export type ServiceNowUpdateStepInfo = StepSpecType & {
   connectorRef: string
-  delegateSelectors?: string[] | string
+  delegateSelectors?: string[]
   fields?: ServiceNowField[]
   templateName?: string
   ticketNumber: string
@@ -8767,6 +8856,16 @@ export interface ServiceSpec {
   manifests?: ManifestConfigWrapper[]
   variableOverrideSets?: NGVariableOverrideSetWrapper[]
   variables?: NGVariable[]
+}
+
+export interface ServiceUsageDTO {
+  accountIdentifier?: string
+  activeServiceInstances?: UsageDataDTO
+  activeServices?: UsageDataDTO
+  cdLicenseType?: 'SERVICES' | 'SERVICE_INSTANCES'
+  module?: string
+  serviceLicenses?: UsageDataDTO
+  timestamp?: number
 }
 
 export interface ServiceUseFromStage {
@@ -8852,7 +8951,7 @@ export interface ShellScriptSourceWrapper {
 }
 
 export type ShellScriptStepInfo = StepSpecType & {
-  delegateSelectors?: string[] | string
+  delegateSelectors?: string[]
   environmentVariables?: NGVariable[]
   executionTarget?: ExecutionTarget
   metadata?: string
@@ -8865,7 +8964,7 @@ export type ShellScriptStepInfo = StepSpecType & {
 export interface SidecarArtifact {
   identifier: string
   spec: ArtifactConfig
-  type: 'DockerRegistry' | 'Gcr' | 'Ecr' | 'Nexus3Registry' | 'ArtifactoryRegistry' | 'CustomArtifact'
+  type: 'DockerRegistry' | 'Gcr' | 'Ecr' | 'Acr' | 'Nexus3Registry' | 'ArtifactoryRegistry' | 'CustomArtifact'
 }
 
 export interface SidecarArtifactWrapper {
@@ -8928,7 +9027,7 @@ export interface SourceCodeManagerDTO {
 
 export type SplunkConnectorDTO = ConnectorConfigDTO & {
   accountId: string
-  delegateSelectors?: string[] | string
+  delegateSelectors?: string[]
   passwordRef: string
   splunkUrl: string
   username?: string
@@ -8959,7 +9058,6 @@ export interface StageElementConfig {
   type?: string
   variables?: NGVariable[]
   when?: StageWhenCondition
-  delegateSelectors?: string[] | string
 }
 
 export interface StageElementWrapperConfig {
@@ -9051,6 +9149,7 @@ export interface StepElementConfig {
 }
 
 export interface StepGroupElementConfig {
+  delegateSelectors?: string[]
   failureStrategies?: FailureStrategyConfig[]
   identifier: string
   name?: string
@@ -9091,7 +9190,7 @@ export type StringNGVariable = NGVariable & {
 export type SumoLogicConnectorDTO = ConnectorConfigDTO & {
   accessIdRef: string
   accessKeyRef: string
-  delegateSelectors?: string[] | string
+  delegateSelectors?: string[]
   url: string
 }
 
@@ -9145,7 +9244,7 @@ export interface TemplateLinkConfig {
 
 export type TerraformApplyStepInfo = StepSpecType & {
   configuration: TerraformStepConfiguration
-  delegateSelectors?: string[] | string
+  delegateSelectors?: string[]
   metadata?: string
   provisionerIdentifier: string
 }
@@ -9165,7 +9264,7 @@ export interface TerraformConfigFilesWrapper {
 
 export type TerraformDestroyStepInfo = StepSpecType & {
   configuration: TerraformStepConfiguration
-  delegateSelectors?: string[] | string
+  delegateSelectors?: string[]
   metadata?: string
   provisionerIdentifier: string
 }
@@ -9192,12 +9291,12 @@ export interface TerraformPlanExecutionData {
 
 export type TerraformPlanStepInfo = StepSpecType & {
   configuration: TerraformPlanExecutionData
-  delegateSelectors?: string[] | string
+  delegateSelectors?: string[]
   provisionerIdentifier: string
 }
 
 export type TerraformRollbackStepInfo = StepSpecType & {
-  delegateSelectors?: string[] | string
+  delegateSelectors?: string[]
   provisionerIdentifier: string
 }
 
@@ -9222,6 +9321,7 @@ export interface TerraformVarFileWrapper {
 
 export interface Throwable {
   cause?: Throwable
+  detailMessage?: string
   localizedMessage?: string
   message?: string
   stackTrace?: StackTraceElement[]
@@ -9368,6 +9468,12 @@ export interface UpdateRuleYamlSpec {
   ruleID: string
   serve?: Serve
   variations?: VariationYamlSpec[]
+}
+
+export interface UsageDataDTO {
+  count?: number
+  displayName?: string
+  references?: ReferenceDTO[]
 }
 
 export interface User {
@@ -9598,7 +9704,7 @@ export type VaultConnectorDTO = ConnectorConfigDTO & {
   awsRegion?: string
   basePath?: string
   default?: boolean
-  delegateSelectors?: string[] | string
+  delegateSelectors?: string[]
   namespace?: string
   readOnly?: boolean
   renewalIntervalMinutes: number
@@ -9628,7 +9734,7 @@ export type VaultK8sCredentialDTO = VaultCredentialDTO & {
 
 export type VaultMetadataRequestSpecDTO = SecretManagerMetadataRequestSpecDTO & {
   accessType: 'APP_ROLE' | 'TOKEN' | 'VAULT_AGENT' | 'AWS_IAM' | 'K8s_AUTH'
-  delegateSelectors?: string[] | string
+  delegateSelectors?: string[]
   namespace?: string
   spec?: VaultCredentialDTO
   url: string
@@ -9791,9 +9897,9 @@ export type ScimUserRequestBody = ScimUser
 
 export type ScopingRuleDetailsNgArrayRequestBody = ScopingRuleDetailsNg[]
 
-export type SecretRequestWrapperRequestBody = SecretRequestWrapper
+export type SecretRequestWrapperRequestBody = void
 
-export type SecretRequestWrapper2RequestBody = void
+export type SecretRequestWrapper2RequestBody = SecretRequestWrapper
 
 export type ServiceAccountDTORequestBody = ServiceAccountDTO
 
@@ -9815,9 +9921,9 @@ export type UserGroupDTORequestBody = UserGroupDTO
 
 export type YamlSchemaDetailsWrapperRequestBody = YamlSchemaDetailsWrapper
 
-export type GetBuildDetailsForEcrWithYamlBodyRequestBody = string
+export type GetBuildDetailsForAcrArtifactWithYamlBodyRequestBody = string
 
-export type ProcessPollingResultNgBodyRequestBody = string[]
+export type UnsubscribeBodyRequestBody = string[]
 
 export type UpdateEnvironmentGroupBodyRequestBody = string
 
@@ -11334,8 +11440,12 @@ export const listApiKeysPromise = (
     signal
   )
 
+export interface CreateApiKeyQueryParams {
+  accountIdentifier: string
+}
+
 export type CreateApiKeyProps = Omit<
-  MutateProps<ResponseApiKeyDTO, Failure | Error, void, ApiKeyDTORequestBody, void>,
+  MutateProps<ResponseApiKeyDTO, Failure | Error, CreateApiKeyQueryParams, ApiKeyDTORequestBody, void>,
   'path' | 'verb'
 >
 
@@ -11343,7 +11453,7 @@ export type CreateApiKeyProps = Omit<
  * Create API key
  */
 export const CreateApiKey = (props: CreateApiKeyProps) => (
-  <Mutate<ResponseApiKeyDTO, Failure | Error, void, ApiKeyDTORequestBody, void>
+  <Mutate<ResponseApiKeyDTO, Failure | Error, CreateApiKeyQueryParams, ApiKeyDTORequestBody, void>
     verb="POST"
     path={`/apikey`}
     base={getConfig('ng/api')}
@@ -11352,7 +11462,7 @@ export const CreateApiKey = (props: CreateApiKeyProps) => (
 )
 
 export type UseCreateApiKeyProps = Omit<
-  UseMutateProps<ResponseApiKeyDTO, Failure | Error, void, ApiKeyDTORequestBody, void>,
+  UseMutateProps<ResponseApiKeyDTO, Failure | Error, CreateApiKeyQueryParams, ApiKeyDTORequestBody, void>,
   'path' | 'verb'
 >
 
@@ -11360,19 +11470,20 @@ export type UseCreateApiKeyProps = Omit<
  * Create API key
  */
 export const useCreateApiKey = (props: UseCreateApiKeyProps) =>
-  useMutate<ResponseApiKeyDTO, Failure | Error, void, ApiKeyDTORequestBody, void>('POST', `/apikey`, {
-    base: getConfig('ng/api'),
-    ...props
-  })
+  useMutate<ResponseApiKeyDTO, Failure | Error, CreateApiKeyQueryParams, ApiKeyDTORequestBody, void>(
+    'POST',
+    `/apikey`,
+    { base: getConfig('ng/api'), ...props }
+  )
 
 /**
  * Create API key
  */
 export const createApiKeyPromise = (
-  props: MutateUsingFetchProps<ResponseApiKeyDTO, Failure | Error, void, ApiKeyDTORequestBody, void>,
+  props: MutateUsingFetchProps<ResponseApiKeyDTO, Failure | Error, CreateApiKeyQueryParams, ApiKeyDTORequestBody, void>,
   signal?: RequestInit['signal']
 ) =>
-  mutateUsingFetch<ResponseApiKeyDTO, Failure | Error, void, ApiKeyDTORequestBody, void>(
+  mutateUsingFetch<ResponseApiKeyDTO, Failure | Error, CreateApiKeyQueryParams, ApiKeyDTORequestBody, void>(
     'POST',
     getConfig('ng/api'),
     `/apikey`,
@@ -11619,6 +11730,270 @@ export const updateApiKeyPromise = (
     props,
     signal
   )
+
+export interface GetACRRegistriesBySubscriptionQueryParams {
+  connectorRef: string
+  accountIdentifier: string
+  orgIdentifier: string
+  projectIdentifier: string
+  subscription: string
+}
+
+export type GetACRRegistriesBySubscriptionProps = Omit<
+  GetProps<ResponseListString, Failure | Error, GetACRRegistriesBySubscriptionQueryParams, void>,
+  'path'
+>
+
+/**
+ * Gets ACR registries by subscription
+ */
+export const GetACRRegistriesBySubscription = (props: GetACRRegistriesBySubscriptionProps) => (
+  <Get<ResponseListString, Failure | Error, GetACRRegistriesBySubscriptionQueryParams, void>
+    path={`/artifacts/acr/container-registries`}
+    base={getConfig('ng/api')}
+    {...props}
+  />
+)
+
+export type UseGetACRRegistriesBySubscriptionProps = Omit<
+  UseGetProps<ResponseListString, Failure | Error, GetACRRegistriesBySubscriptionQueryParams, void>,
+  'path'
+>
+
+/**
+ * Gets ACR registries by subscription
+ */
+export const useGetACRRegistriesBySubscription = (props: UseGetACRRegistriesBySubscriptionProps) =>
+  useGet<ResponseListString, Failure | Error, GetACRRegistriesBySubscriptionQueryParams, void>(
+    `/artifacts/acr/container-registries`,
+    { base: getConfig('ng/api'), ...props }
+  )
+
+/**
+ * Gets ACR registries by subscription
+ */
+export const getACRRegistriesBySubscriptionPromise = (
+  props: GetUsingFetchProps<ResponseListString, Failure | Error, GetACRRegistriesBySubscriptionQueryParams, void>,
+  signal?: RequestInit['signal']
+) =>
+  getUsingFetch<ResponseListString, Failure | Error, GetACRRegistriesBySubscriptionQueryParams, void>(
+    getConfig('ng/api'),
+    `/artifacts/acr/container-registries`,
+    props,
+    signal
+  )
+
+export interface GetACRRepositoriesQueryParams {
+  connectorRef: string
+  accountIdentifier: string
+  orgIdentifier: string
+  projectIdentifier: string
+  subscription: string
+}
+
+export interface GetACRRepositoriesPathParams {
+  registry: string
+}
+
+export type GetACRRepositoriesProps = Omit<
+  GetProps<ResponseListString, Failure | Error, GetACRRepositoriesQueryParams, GetACRRepositoriesPathParams>,
+  'path'
+> &
+  GetACRRepositoriesPathParams
+
+/**
+ * Gets ACR repositories by subscription and container registry name
+ */
+export const GetACRRepositories = ({ registry, ...props }: GetACRRepositoriesProps) => (
+  <Get<ResponseListString, Failure | Error, GetACRRepositoriesQueryParams, GetACRRepositoriesPathParams>
+    path={`/artifacts/acr/container-registries/${registry}/repositories`}
+    base={getConfig('ng/api')}
+    {...props}
+  />
+)
+
+export type UseGetACRRepositoriesProps = Omit<
+  UseGetProps<ResponseListString, Failure | Error, GetACRRepositoriesQueryParams, GetACRRepositoriesPathParams>,
+  'path'
+> &
+  GetACRRepositoriesPathParams
+
+/**
+ * Gets ACR repositories by subscription and container registry name
+ */
+export const useGetACRRepositories = ({ registry, ...props }: UseGetACRRepositoriesProps) =>
+  useGet<ResponseListString, Failure | Error, GetACRRepositoriesQueryParams, GetACRRepositoriesPathParams>(
+    (paramsInPath: GetACRRepositoriesPathParams) =>
+      `/artifacts/acr/container-registries/${paramsInPath.registry}/repositories`,
+    { base: getConfig('ng/api'), pathParams: { registry }, ...props }
+  )
+
+/**
+ * Gets ACR repositories by subscription and container registry name
+ */
+export const getACRRepositoriesPromise = (
+  {
+    registry,
+    ...props
+  }: GetUsingFetchProps<
+    ResponseListString,
+    Failure | Error,
+    GetACRRepositoriesQueryParams,
+    GetACRRepositoriesPathParams
+  > & { registry: string },
+  signal?: RequestInit['signal']
+) =>
+  getUsingFetch<ResponseListString, Failure | Error, GetACRRepositoriesQueryParams, GetACRRepositoriesPathParams>(
+    getConfig('ng/api'),
+    `/artifacts/acr/container-registries/${registry}/repositories`,
+    props,
+    signal
+  )
+
+export interface GetBuildDetailsForACRRepositoryQueryParams {
+  subscription?: string
+  registry?: string
+  repository?: string
+  connectorRef?: string
+  accountIdentifier: string
+  orgIdentifier: string
+  projectIdentifier: string
+  branch?: string
+  repoIdentifier?: string
+  getDefaultFromOtherRepo?: boolean
+}
+
+export type GetBuildDetailsForACRRepositoryProps = Omit<
+  GetProps<ResponseAcrResponseDTO, Failure | Error, GetBuildDetailsForACRRepositoryQueryParams, void>,
+  'path'
+>
+
+/**
+ * Gets ACR repository build details
+ */
+export const GetBuildDetailsForACRRepository = (props: GetBuildDetailsForACRRepositoryProps) => (
+  <Get<ResponseAcrResponseDTO, Failure | Error, GetBuildDetailsForACRRepositoryQueryParams, void>
+    path={`/artifacts/acr/getBuildDetails`}
+    base={getConfig('ng/api')}
+    {...props}
+  />
+)
+
+export type UseGetBuildDetailsForACRRepositoryProps = Omit<
+  UseGetProps<ResponseAcrResponseDTO, Failure | Error, GetBuildDetailsForACRRepositoryQueryParams, void>,
+  'path'
+>
+
+/**
+ * Gets ACR repository build details
+ */
+export const useGetBuildDetailsForACRRepository = (props: UseGetBuildDetailsForACRRepositoryProps) =>
+  useGet<ResponseAcrResponseDTO, Failure | Error, GetBuildDetailsForACRRepositoryQueryParams, void>(
+    `/artifacts/acr/getBuildDetails`,
+    { base: getConfig('ng/api'), ...props }
+  )
+
+/**
+ * Gets ACR repository build details
+ */
+export const getBuildDetailsForACRRepositoryPromise = (
+  props: GetUsingFetchProps<ResponseAcrResponseDTO, Failure | Error, GetBuildDetailsForACRRepositoryQueryParams, void>,
+  signal?: RequestInit['signal']
+) =>
+  getUsingFetch<ResponseAcrResponseDTO, Failure | Error, GetBuildDetailsForACRRepositoryQueryParams, void>(
+    getConfig('ng/api'),
+    `/artifacts/acr/getBuildDetails`,
+    props,
+    signal
+  )
+
+export interface GetBuildDetailsForAcrArtifactWithYamlQueryParams {
+  subscription?: string
+  registry?: string
+  repository?: string
+  connectorRef?: string
+  accountIdentifier: string
+  orgIdentifier: string
+  projectIdentifier: string
+  pipelineIdentifier: string
+  fqnPath: string
+  branch?: string
+  repoIdentifier?: string
+  getDefaultFromOtherRepo?: boolean
+}
+
+export type GetBuildDetailsForAcrArtifactWithYamlProps = Omit<
+  MutateProps<
+    ResponseAcrResponseDTO,
+    Failure | Error,
+    GetBuildDetailsForAcrArtifactWithYamlQueryParams,
+    GetBuildDetailsForAcrArtifactWithYamlBodyRequestBody,
+    void
+  >,
+  'path' | 'verb'
+>
+
+/**
+ * Gets ACR build details with yaml input for expression resolution
+ */
+export const GetBuildDetailsForAcrArtifactWithYaml = (props: GetBuildDetailsForAcrArtifactWithYamlProps) => (
+  <Mutate<
+    ResponseAcrResponseDTO,
+    Failure | Error,
+    GetBuildDetailsForAcrArtifactWithYamlQueryParams,
+    GetBuildDetailsForAcrArtifactWithYamlBodyRequestBody,
+    void
+  >
+    verb="POST"
+    path={`/artifacts/acr/getBuildDetailsV2`}
+    base={getConfig('ng/api')}
+    {...props}
+  />
+)
+
+export type UseGetBuildDetailsForAcrArtifactWithYamlProps = Omit<
+  UseMutateProps<
+    ResponseAcrResponseDTO,
+    Failure | Error,
+    GetBuildDetailsForAcrArtifactWithYamlQueryParams,
+    GetBuildDetailsForAcrArtifactWithYamlBodyRequestBody,
+    void
+  >,
+  'path' | 'verb'
+>
+
+/**
+ * Gets ACR build details with yaml input for expression resolution
+ */
+export const useGetBuildDetailsForAcrArtifactWithYaml = (props: UseGetBuildDetailsForAcrArtifactWithYamlProps) =>
+  useMutate<
+    ResponseAcrResponseDTO,
+    Failure | Error,
+    GetBuildDetailsForAcrArtifactWithYamlQueryParams,
+    GetBuildDetailsForAcrArtifactWithYamlBodyRequestBody,
+    void
+  >('POST', `/artifacts/acr/getBuildDetailsV2`, { base: getConfig('ng/api'), ...props })
+
+/**
+ * Gets ACR build details with yaml input for expression resolution
+ */
+export const getBuildDetailsForAcrArtifactWithYamlPromise = (
+  props: MutateUsingFetchProps<
+    ResponseAcrResponseDTO,
+    Failure | Error,
+    GetBuildDetailsForAcrArtifactWithYamlQueryParams,
+    GetBuildDetailsForAcrArtifactWithYamlBodyRequestBody,
+    void
+  >,
+  signal?: RequestInit['signal']
+) =>
+  mutateUsingFetch<
+    ResponseAcrResponseDTO,
+    Failure | Error,
+    GetBuildDetailsForAcrArtifactWithYamlQueryParams,
+    GetBuildDetailsForAcrArtifactWithYamlBodyRequestBody,
+    void
+  >('POST', getConfig('ng/api'), `/artifacts/acr/getBuildDetailsV2`, props, signal)
 
 export interface GetArtifactsBuildsDetailsForArtifactoryQueryParams {
   connectorRef: string
@@ -12601,7 +12976,7 @@ export type GetBuildDetailsForEcrWithYamlProps = Omit<
     ResponseEcrResponseDTO,
     Failure | Error,
     GetBuildDetailsForEcrWithYamlQueryParams,
-    GetBuildDetailsForEcrWithYamlBodyRequestBody,
+    GetBuildDetailsForAcrArtifactWithYamlBodyRequestBody,
     void
   >,
   'path' | 'verb'
@@ -12615,7 +12990,7 @@ export const GetBuildDetailsForEcrWithYaml = (props: GetBuildDetailsForEcrWithYa
     ResponseEcrResponseDTO,
     Failure | Error,
     GetBuildDetailsForEcrWithYamlQueryParams,
-    GetBuildDetailsForEcrWithYamlBodyRequestBody,
+    GetBuildDetailsForAcrArtifactWithYamlBodyRequestBody,
     void
   >
     verb="POST"
@@ -12630,7 +13005,7 @@ export type UseGetBuildDetailsForEcrWithYamlProps = Omit<
     ResponseEcrResponseDTO,
     Failure | Error,
     GetBuildDetailsForEcrWithYamlQueryParams,
-    GetBuildDetailsForEcrWithYamlBodyRequestBody,
+    GetBuildDetailsForAcrArtifactWithYamlBodyRequestBody,
     void
   >,
   'path' | 'verb'
@@ -12644,7 +13019,7 @@ export const useGetBuildDetailsForEcrWithYaml = (props: UseGetBuildDetailsForEcr
     ResponseEcrResponseDTO,
     Failure | Error,
     GetBuildDetailsForEcrWithYamlQueryParams,
-    GetBuildDetailsForEcrWithYamlBodyRequestBody,
+    GetBuildDetailsForAcrArtifactWithYamlBodyRequestBody,
     void
   >('POST', `/artifacts/ecr/getBuildDetailsV2`, { base: getConfig('ng/api'), ...props })
 
@@ -12656,7 +13031,7 @@ export const getBuildDetailsForEcrWithYamlPromise = (
     ResponseEcrResponseDTO,
     Failure | Error,
     GetBuildDetailsForEcrWithYamlQueryParams,
-    GetBuildDetailsForEcrWithYamlBodyRequestBody,
+    GetBuildDetailsForAcrArtifactWithYamlBodyRequestBody,
     void
   >,
   signal?: RequestInit['signal']
@@ -12665,7 +13040,7 @@ export const getBuildDetailsForEcrWithYamlPromise = (
     ResponseEcrResponseDTO,
     Failure | Error,
     GetBuildDetailsForEcrWithYamlQueryParams,
-    GetBuildDetailsForEcrWithYamlBodyRequestBody,
+    GetBuildDetailsForAcrArtifactWithYamlBodyRequestBody,
     void
   >('POST', getConfig('ng/api'), `/artifacts/ecr/getBuildDetailsV2`, props, signal)
 
@@ -13045,7 +13420,7 @@ export type GetBuildDetailsForGcrWithYamlProps = Omit<
     ResponseGcrResponseDTO,
     Failure | Error,
     GetBuildDetailsForGcrWithYamlQueryParams,
-    GetBuildDetailsForEcrWithYamlBodyRequestBody,
+    GetBuildDetailsForAcrArtifactWithYamlBodyRequestBody,
     void
   >,
   'path' | 'verb'
@@ -13059,7 +13434,7 @@ export const GetBuildDetailsForGcrWithYaml = (props: GetBuildDetailsForGcrWithYa
     ResponseGcrResponseDTO,
     Failure | Error,
     GetBuildDetailsForGcrWithYamlQueryParams,
-    GetBuildDetailsForEcrWithYamlBodyRequestBody,
+    GetBuildDetailsForAcrArtifactWithYamlBodyRequestBody,
     void
   >
     verb="POST"
@@ -13074,7 +13449,7 @@ export type UseGetBuildDetailsForGcrWithYamlProps = Omit<
     ResponseGcrResponseDTO,
     Failure | Error,
     GetBuildDetailsForGcrWithYamlQueryParams,
-    GetBuildDetailsForEcrWithYamlBodyRequestBody,
+    GetBuildDetailsForAcrArtifactWithYamlBodyRequestBody,
     void
   >,
   'path' | 'verb'
@@ -13088,7 +13463,7 @@ export const useGetBuildDetailsForGcrWithYaml = (props: UseGetBuildDetailsForGcr
     ResponseGcrResponseDTO,
     Failure | Error,
     GetBuildDetailsForGcrWithYamlQueryParams,
-    GetBuildDetailsForEcrWithYamlBodyRequestBody,
+    GetBuildDetailsForAcrArtifactWithYamlBodyRequestBody,
     void
   >('POST', `/artifacts/gcr/getBuildDetailsV2`, { base: getConfig('ng/api'), ...props })
 
@@ -13100,7 +13475,7 @@ export const getBuildDetailsForGcrWithYamlPromise = (
     ResponseGcrResponseDTO,
     Failure | Error,
     GetBuildDetailsForGcrWithYamlQueryParams,
-    GetBuildDetailsForEcrWithYamlBodyRequestBody,
+    GetBuildDetailsForAcrArtifactWithYamlBodyRequestBody,
     void
   >,
   signal?: RequestInit['signal']
@@ -13109,7 +13484,7 @@ export const getBuildDetailsForGcrWithYamlPromise = (
     ResponseGcrResponseDTO,
     Failure | Error,
     GetBuildDetailsForGcrWithYamlQueryParams,
-    GetBuildDetailsForEcrWithYamlBodyRequestBody,
+    GetBuildDetailsForAcrArtifactWithYamlBodyRequestBody,
     void
   >('POST', getConfig('ng/api'), `/artifacts/gcr/getBuildDetailsV2`, props, signal)
 
@@ -18217,9 +18592,10 @@ export interface GetEnvironmentGroupListQueryParams {
   orgIdentifier: string
   projectIdentifier: string
   searchTerm?: string
-  pageIndex?: number
-  pageSize?: number
-  sortOrders?: string[]
+  page?: number
+  size?: number
+  sort?: string[]
+  filterIdentifier?: string
   branch?: string
   repoIdentifier?: string
   getDefaultFromOtherRepo?: boolean
@@ -19638,6 +20014,7 @@ export interface GetFilterListQueryParams {
     | 'Deployment'
     | 'Audit'
     | 'Template'
+    | 'EnvironmentGroup'
 }
 
 export type GetFilterListProps = Omit<
@@ -19798,6 +20175,7 @@ export interface DeleteFilterQueryParams {
     | 'Deployment'
     | 'Audit'
     | 'Template'
+    | 'EnvironmentGroup'
 }
 
 export type DeleteFilterProps = Omit<
@@ -19859,6 +20237,7 @@ export interface GetFilterQueryParams {
     | 'Deployment'
     | 'Audit'
     | 'Template'
+    | 'EnvironmentGroup'
 }
 
 export interface GetFilterPathParams {
@@ -24929,7 +25308,7 @@ export type ProcessPollingResultNgProps = Omit<
     void,
     Failure | Error,
     ProcessPollingResultNgQueryParams,
-    ProcessPollingResultNgBodyRequestBody,
+    UnsubscribeBodyRequestBody,
     ProcessPollingResultNgPathParams
   >,
   'path' | 'verb'
@@ -24941,7 +25320,7 @@ export const ProcessPollingResultNg = ({ perpetualTaskId, ...props }: ProcessPol
     void,
     Failure | Error,
     ProcessPollingResultNgQueryParams,
-    ProcessPollingResultNgBodyRequestBody,
+    UnsubscribeBodyRequestBody,
     ProcessPollingResultNgPathParams
   >
     verb="POST"
@@ -24956,7 +25335,7 @@ export type UseProcessPollingResultNgProps = Omit<
     void,
     Failure | Error,
     ProcessPollingResultNgQueryParams,
-    ProcessPollingResultNgBodyRequestBody,
+    UnsubscribeBodyRequestBody,
     ProcessPollingResultNgPathParams
   >,
   'path' | 'verb'
@@ -24968,7 +25347,7 @@ export const useProcessPollingResultNg = ({ perpetualTaskId, ...props }: UseProc
     void,
     Failure | Error,
     ProcessPollingResultNgQueryParams,
-    ProcessPollingResultNgBodyRequestBody,
+    UnsubscribeBodyRequestBody,
     ProcessPollingResultNgPathParams
   >(
     'POST',
@@ -24984,7 +25363,7 @@ export const processPollingResultNgPromise = (
     void,
     Failure | Error,
     ProcessPollingResultNgQueryParams,
-    ProcessPollingResultNgBodyRequestBody,
+    UnsubscribeBodyRequestBody,
     ProcessPollingResultNgPathParams
   > & { perpetualTaskId: string },
   signal?: RequestInit['signal']
@@ -24993,17 +25372,17 @@ export const processPollingResultNgPromise = (
     void,
     Failure | Error,
     ProcessPollingResultNgQueryParams,
-    ProcessPollingResultNgBodyRequestBody,
+    UnsubscribeBodyRequestBody,
     ProcessPollingResultNgPathParams
   >('POST', getConfig('ng/api'), `/polling/delegate-response/${perpetualTaskId}`, props, signal)
 
 export type SubscribeProps = Omit<
-  MutateProps<ResponsePollingResponseDTO, Failure | Error, void, ProcessPollingResultNgBodyRequestBody, void>,
+  MutateProps<ResponsePollingResponseDTO, Failure | Error, void, UnsubscribeBodyRequestBody, void>,
   'path' | 'verb'
 >
 
 export const Subscribe = (props: SubscribeProps) => (
-  <Mutate<ResponsePollingResponseDTO, Failure | Error, void, ProcessPollingResultNgBodyRequestBody, void>
+  <Mutate<ResponsePollingResponseDTO, Failure | Error, void, UnsubscribeBodyRequestBody, void>
     verb="POST"
     path={`/polling/subscribe`}
     base={getConfig('ng/api')}
@@ -25012,28 +25391,22 @@ export const Subscribe = (props: SubscribeProps) => (
 )
 
 export type UseSubscribeProps = Omit<
-  UseMutateProps<ResponsePollingResponseDTO, Failure | Error, void, ProcessPollingResultNgBodyRequestBody, void>,
+  UseMutateProps<ResponsePollingResponseDTO, Failure | Error, void, UnsubscribeBodyRequestBody, void>,
   'path' | 'verb'
 >
 
 export const useSubscribe = (props: UseSubscribeProps) =>
-  useMutate<ResponsePollingResponseDTO, Failure | Error, void, ProcessPollingResultNgBodyRequestBody, void>(
+  useMutate<ResponsePollingResponseDTO, Failure | Error, void, UnsubscribeBodyRequestBody, void>(
     'POST',
     `/polling/subscribe`,
     { base: getConfig('ng/api'), ...props }
   )
 
 export const subscribePromise = (
-  props: MutateUsingFetchProps<
-    ResponsePollingResponseDTO,
-    Failure | Error,
-    void,
-    ProcessPollingResultNgBodyRequestBody,
-    void
-  >,
+  props: MutateUsingFetchProps<ResponsePollingResponseDTO, Failure | Error, void, UnsubscribeBodyRequestBody, void>,
   signal?: RequestInit['signal']
 ) =>
-  mutateUsingFetch<ResponsePollingResponseDTO, Failure | Error, void, ProcessPollingResultNgBodyRequestBody, void>(
+  mutateUsingFetch<ResponsePollingResponseDTO, Failure | Error, void, UnsubscribeBodyRequestBody, void>(
     'POST',
     getConfig('ng/api'),
     `/polling/subscribe`,
@@ -25042,12 +25415,12 @@ export const subscribePromise = (
   )
 
 export type UnsubscribeProps = Omit<
-  MutateProps<boolean, Failure | Error, void, ProcessPollingResultNgBodyRequestBody, void>,
+  MutateProps<boolean, Failure | Error, void, UnsubscribeBodyRequestBody, void>,
   'path' | 'verb'
 >
 
 export const Unsubscribe = (props: UnsubscribeProps) => (
-  <Mutate<boolean, Failure | Error, void, ProcessPollingResultNgBodyRequestBody, void>
+  <Mutate<boolean, Failure | Error, void, UnsubscribeBodyRequestBody, void>
     verb="POST"
     path={`/polling/unsubscribe`}
     base={getConfig('ng/api')}
@@ -25056,22 +25429,21 @@ export const Unsubscribe = (props: UnsubscribeProps) => (
 )
 
 export type UseUnsubscribeProps = Omit<
-  UseMutateProps<boolean, Failure | Error, void, ProcessPollingResultNgBodyRequestBody, void>,
+  UseMutateProps<boolean, Failure | Error, void, UnsubscribeBodyRequestBody, void>,
   'path' | 'verb'
 >
 
 export const useUnsubscribe = (props: UseUnsubscribeProps) =>
-  useMutate<boolean, Failure | Error, void, ProcessPollingResultNgBodyRequestBody, void>(
-    'POST',
-    `/polling/unsubscribe`,
-    { base: getConfig('ng/api'), ...props }
-  )
+  useMutate<boolean, Failure | Error, void, UnsubscribeBodyRequestBody, void>('POST', `/polling/unsubscribe`, {
+    base: getConfig('ng/api'),
+    ...props
+  })
 
 export const unsubscribePromise = (
-  props: MutateUsingFetchProps<boolean, Failure | Error, void, ProcessPollingResultNgBodyRequestBody, void>,
+  props: MutateUsingFetchProps<boolean, Failure | Error, void, UnsubscribeBodyRequestBody, void>,
   signal?: RequestInit['signal']
 ) =>
-  mutateUsingFetch<boolean, Failure | Error, void, ProcessPollingResultNgBodyRequestBody, void>(
+  mutateUsingFetch<boolean, Failure | Error, void, UnsubscribeBodyRequestBody, void>(
     'POST',
     getConfig('ng/api'),
     `/polling/unsubscribe`,
@@ -28758,8 +29130,12 @@ export const getSmtpConfigPromise = (
     signal
   )
 
+export interface CreateSmtpConfigQueryParams {
+  accountIdentifier: string
+}
+
 export type CreateSmtpConfigProps = Omit<
-  MutateProps<ResponseNgSmtpDTO, Failure | Error, void, NgSmtpDTORequestBody, void>,
+  MutateProps<ResponseNgSmtpDTO, Failure | Error, CreateSmtpConfigQueryParams, NgSmtpDTORequestBody, void>,
   'path' | 'verb'
 >
 
@@ -28767,7 +29143,7 @@ export type CreateSmtpConfigProps = Omit<
  * Create SMTP config
  */
 export const CreateSmtpConfig = (props: CreateSmtpConfigProps) => (
-  <Mutate<ResponseNgSmtpDTO, Failure | Error, void, NgSmtpDTORequestBody, void>
+  <Mutate<ResponseNgSmtpDTO, Failure | Error, CreateSmtpConfigQueryParams, NgSmtpDTORequestBody, void>
     verb="POST"
     path={`/smtpConfig`}
     base={getConfig('ng/api')}
@@ -28776,7 +29152,7 @@ export const CreateSmtpConfig = (props: CreateSmtpConfigProps) => (
 )
 
 export type UseCreateSmtpConfigProps = Omit<
-  UseMutateProps<ResponseNgSmtpDTO, Failure | Error, void, NgSmtpDTORequestBody, void>,
+  UseMutateProps<ResponseNgSmtpDTO, Failure | Error, CreateSmtpConfigQueryParams, NgSmtpDTORequestBody, void>,
   'path' | 'verb'
 >
 
@@ -28784,19 +29160,26 @@ export type UseCreateSmtpConfigProps = Omit<
  * Create SMTP config
  */
 export const useCreateSmtpConfig = (props: UseCreateSmtpConfigProps) =>
-  useMutate<ResponseNgSmtpDTO, Failure | Error, void, NgSmtpDTORequestBody, void>('POST', `/smtpConfig`, {
-    base: getConfig('ng/api'),
-    ...props
-  })
+  useMutate<ResponseNgSmtpDTO, Failure | Error, CreateSmtpConfigQueryParams, NgSmtpDTORequestBody, void>(
+    'POST',
+    `/smtpConfig`,
+    { base: getConfig('ng/api'), ...props }
+  )
 
 /**
  * Create SMTP config
  */
 export const createSmtpConfigPromise = (
-  props: MutateUsingFetchProps<ResponseNgSmtpDTO, Failure | Error, void, NgSmtpDTORequestBody, void>,
+  props: MutateUsingFetchProps<
+    ResponseNgSmtpDTO,
+    Failure | Error,
+    CreateSmtpConfigQueryParams,
+    NgSmtpDTORequestBody,
+    void
+  >,
   signal?: RequestInit['signal']
 ) =>
-  mutateUsingFetch<ResponseNgSmtpDTO, Failure | Error, void, NgSmtpDTORequestBody, void>(
+  mutateUsingFetch<ResponseNgSmtpDTO, Failure | Error, CreateSmtpConfigQueryParams, NgSmtpDTORequestBody, void>(
     'POST',
     getConfig('ng/api'),
     `/smtpConfig`,
@@ -28804,8 +29187,12 @@ export const createSmtpConfigPromise = (
     signal
   )
 
+export interface UpdateSmtpQueryParams {
+  accountIdentifier: string
+}
+
 export type UpdateSmtpProps = Omit<
-  MutateProps<ResponseNgSmtpDTO, Failure | Error, void, NgSmtpDTORequestBody, void>,
+  MutateProps<ResponseNgSmtpDTO, Failure | Error, UpdateSmtpQueryParams, NgSmtpDTORequestBody, void>,
   'path' | 'verb'
 >
 
@@ -28813,7 +29200,7 @@ export type UpdateSmtpProps = Omit<
  * Update SmtpConfig
  */
 export const UpdateSmtp = (props: UpdateSmtpProps) => (
-  <Mutate<ResponseNgSmtpDTO, Failure | Error, void, NgSmtpDTORequestBody, void>
+  <Mutate<ResponseNgSmtpDTO, Failure | Error, UpdateSmtpQueryParams, NgSmtpDTORequestBody, void>
     verb="PUT"
     path={`/smtpConfig`}
     base={getConfig('ng/api')}
@@ -28822,7 +29209,7 @@ export const UpdateSmtp = (props: UpdateSmtpProps) => (
 )
 
 export type UseUpdateSmtpProps = Omit<
-  UseMutateProps<ResponseNgSmtpDTO, Failure | Error, void, NgSmtpDTORequestBody, void>,
+  UseMutateProps<ResponseNgSmtpDTO, Failure | Error, UpdateSmtpQueryParams, NgSmtpDTORequestBody, void>,
   'path' | 'verb'
 >
 
@@ -28830,19 +29217,20 @@ export type UseUpdateSmtpProps = Omit<
  * Update SmtpConfig
  */
 export const useUpdateSmtp = (props: UseUpdateSmtpProps) =>
-  useMutate<ResponseNgSmtpDTO, Failure | Error, void, NgSmtpDTORequestBody, void>('PUT', `/smtpConfig`, {
-    base: getConfig('ng/api'),
-    ...props
-  })
+  useMutate<ResponseNgSmtpDTO, Failure | Error, UpdateSmtpQueryParams, NgSmtpDTORequestBody, void>(
+    'PUT',
+    `/smtpConfig`,
+    { base: getConfig('ng/api'), ...props }
+  )
 
 /**
  * Update SmtpConfig
  */
 export const updateSmtpPromise = (
-  props: MutateUsingFetchProps<ResponseNgSmtpDTO, Failure | Error, void, NgSmtpDTORequestBody, void>,
+  props: MutateUsingFetchProps<ResponseNgSmtpDTO, Failure | Error, UpdateSmtpQueryParams, NgSmtpDTORequestBody, void>,
   signal?: RequestInit['signal']
 ) =>
-  mutateUsingFetch<ResponseNgSmtpDTO, Failure | Error, void, NgSmtpDTORequestBody, void>(
+  mutateUsingFetch<ResponseNgSmtpDTO, Failure | Error, UpdateSmtpQueryParams, NgSmtpDTORequestBody, void>(
     'PUT',
     getConfig('ng/api'),
     `/smtpConfig`,
@@ -28963,8 +29351,12 @@ export const validateNamePromise = (
     signal
   )
 
+export interface DeleteSmtpConfigQueryParams {
+  accountIdentifier: string
+}
+
 export type DeleteSmtpConfigProps = Omit<
-  MutateProps<ResponseBoolean, Failure | Error, void, string, void>,
+  MutateProps<ResponseBoolean, Failure | Error, DeleteSmtpConfigQueryParams, string, void>,
   'path' | 'verb'
 >
 
@@ -28972,7 +29364,7 @@ export type DeleteSmtpConfigProps = Omit<
  * Delete Smtp Config
  */
 export const DeleteSmtpConfig = (props: DeleteSmtpConfigProps) => (
-  <Mutate<ResponseBoolean, Failure | Error, void, string, void>
+  <Mutate<ResponseBoolean, Failure | Error, DeleteSmtpConfigQueryParams, string, void>
     verb="DELETE"
     path={`/smtpConfig`}
     base={getConfig('ng/api')}
@@ -28981,7 +29373,7 @@ export const DeleteSmtpConfig = (props: DeleteSmtpConfigProps) => (
 )
 
 export type UseDeleteSmtpConfigProps = Omit<
-  UseMutateProps<ResponseBoolean, Failure | Error, void, string, void>,
+  UseMutateProps<ResponseBoolean, Failure | Error, DeleteSmtpConfigQueryParams, string, void>,
   'path' | 'verb'
 >
 
@@ -28989,7 +29381,7 @@ export type UseDeleteSmtpConfigProps = Omit<
  * Delete Smtp Config
  */
 export const useDeleteSmtpConfig = (props: UseDeleteSmtpConfigProps) =>
-  useMutate<ResponseBoolean, Failure | Error, void, string, void>('DELETE', `/smtpConfig`, {
+  useMutate<ResponseBoolean, Failure | Error, DeleteSmtpConfigQueryParams, string, void>('DELETE', `/smtpConfig`, {
     base: getConfig('ng/api'),
     ...props
   })
@@ -28998,10 +29390,10 @@ export const useDeleteSmtpConfig = (props: UseDeleteSmtpConfigProps) =>
  * Delete Smtp Config
  */
 export const deleteSmtpConfigPromise = (
-  props: MutateUsingFetchProps<ResponseBoolean, Failure | Error, void, string, void>,
+  props: MutateUsingFetchProps<ResponseBoolean, Failure | Error, DeleteSmtpConfigQueryParams, string, void>,
   signal?: RequestInit['signal']
 ) =>
-  mutateUsingFetch<ResponseBoolean, Failure | Error, void, string, void>(
+  mutateUsingFetch<ResponseBoolean, Failure | Error, DeleteSmtpConfigQueryParams, string, void>(
     'DELETE',
     getConfig('ng/api'),
     `/smtpConfig`,
@@ -29289,8 +29681,12 @@ export const getTokenPromise = (
     signal
   )
 
+export interface CreateTokenQueryParams {
+  accountIdentifier: string
+}
+
 export type CreateTokenProps = Omit<
-  MutateProps<ResponseString, Failure | Error, void, TokenDTORequestBody, void>,
+  MutateProps<ResponseString, Failure | Error, CreateTokenQueryParams, TokenDTORequestBody, void>,
   'path' | 'verb'
 >
 
@@ -29298,7 +29694,7 @@ export type CreateTokenProps = Omit<
  * Create token
  */
 export const CreateToken = (props: CreateTokenProps) => (
-  <Mutate<ResponseString, Failure | Error, void, TokenDTORequestBody, void>
+  <Mutate<ResponseString, Failure | Error, CreateTokenQueryParams, TokenDTORequestBody, void>
     verb="POST"
     path={`/token`}
     base={getConfig('ng/api')}
@@ -29307,7 +29703,7 @@ export const CreateToken = (props: CreateTokenProps) => (
 )
 
 export type UseCreateTokenProps = Omit<
-  UseMutateProps<ResponseString, Failure | Error, void, TokenDTORequestBody, void>,
+  UseMutateProps<ResponseString, Failure | Error, CreateTokenQueryParams, TokenDTORequestBody, void>,
   'path' | 'verb'
 >
 
@@ -29315,7 +29711,7 @@ export type UseCreateTokenProps = Omit<
  * Create token
  */
 export const useCreateToken = (props: UseCreateTokenProps) =>
-  useMutate<ResponseString, Failure | Error, void, TokenDTORequestBody, void>('POST', `/token`, {
+  useMutate<ResponseString, Failure | Error, CreateTokenQueryParams, TokenDTORequestBody, void>('POST', `/token`, {
     base: getConfig('ng/api'),
     ...props
   })
@@ -29324,10 +29720,10 @@ export const useCreateToken = (props: UseCreateTokenProps) =>
  * Create token
  */
 export const createTokenPromise = (
-  props: MutateUsingFetchProps<ResponseString, Failure | Error, void, TokenDTORequestBody, void>,
+  props: MutateUsingFetchProps<ResponseString, Failure | Error, CreateTokenQueryParams, TokenDTORequestBody, void>,
   signal?: RequestInit['signal']
 ) =>
-  mutateUsingFetch<ResponseString, Failure | Error, void, TokenDTORequestBody, void>(
+  mutateUsingFetch<ResponseString, Failure | Error, CreateTokenQueryParams, TokenDTORequestBody, void>(
     'POST',
     getConfig('ng/api'),
     `/token`,
@@ -29516,12 +29912,16 @@ export const deleteTokenPromise = (
     signal
   )
 
+export interface UpdateTokenQueryParams {
+  accountIdentifier: string
+}
+
 export interface UpdateTokenPathParams {
   identifier: string
 }
 
 export type UpdateTokenProps = Omit<
-  MutateProps<ResponseTokenDTO, Failure | Error, void, TokenDTORequestBody, UpdateTokenPathParams>,
+  MutateProps<ResponseTokenDTO, Failure | Error, UpdateTokenQueryParams, TokenDTORequestBody, UpdateTokenPathParams>,
   'path' | 'verb'
 > &
   UpdateTokenPathParams
@@ -29530,7 +29930,7 @@ export type UpdateTokenProps = Omit<
  * Update token
  */
 export const UpdateToken = ({ identifier, ...props }: UpdateTokenProps) => (
-  <Mutate<ResponseTokenDTO, Failure | Error, void, TokenDTORequestBody, UpdateTokenPathParams>
+  <Mutate<ResponseTokenDTO, Failure | Error, UpdateTokenQueryParams, TokenDTORequestBody, UpdateTokenPathParams>
     verb="PUT"
     path={`/token/${identifier}`}
     base={getConfig('ng/api')}
@@ -29539,7 +29939,7 @@ export const UpdateToken = ({ identifier, ...props }: UpdateTokenProps) => (
 )
 
 export type UseUpdateTokenProps = Omit<
-  UseMutateProps<ResponseTokenDTO, Failure | Error, void, TokenDTORequestBody, UpdateTokenPathParams>,
+  UseMutateProps<ResponseTokenDTO, Failure | Error, UpdateTokenQueryParams, TokenDTORequestBody, UpdateTokenPathParams>,
   'path' | 'verb'
 > &
   UpdateTokenPathParams
@@ -29548,7 +29948,7 @@ export type UseUpdateTokenProps = Omit<
  * Update token
  */
 export const useUpdateToken = ({ identifier, ...props }: UseUpdateTokenProps) =>
-  useMutate<ResponseTokenDTO, Failure | Error, void, TokenDTORequestBody, UpdateTokenPathParams>(
+  useMutate<ResponseTokenDTO, Failure | Error, UpdateTokenQueryParams, TokenDTORequestBody, UpdateTokenPathParams>(
     'PUT',
     (paramsInPath: UpdateTokenPathParams) => `/token/${paramsInPath.identifier}`,
     { base: getConfig('ng/api'), pathParams: { identifier }, ...props }
@@ -29561,15 +29961,122 @@ export const updateTokenPromise = (
   {
     identifier,
     ...props
-  }: MutateUsingFetchProps<ResponseTokenDTO, Failure | Error, void, TokenDTORequestBody, UpdateTokenPathParams> & {
-    identifier: string
-  },
+  }: MutateUsingFetchProps<
+    ResponseTokenDTO,
+    Failure | Error,
+    UpdateTokenQueryParams,
+    TokenDTORequestBody,
+    UpdateTokenPathParams
+  > & { identifier: string },
   signal?: RequestInit['signal']
 ) =>
-  mutateUsingFetch<ResponseTokenDTO, Failure | Error, void, TokenDTORequestBody, UpdateTokenPathParams>(
-    'PUT',
+  mutateUsingFetch<
+    ResponseTokenDTO,
+    Failure | Error,
+    UpdateTokenQueryParams,
+    TokenDTORequestBody,
+    UpdateTokenPathParams
+  >('PUT', getConfig('ng/api'), `/token/${identifier}`, props, signal)
+
+export interface GetCDLicenseUsageForServiceInstancesQueryParams {
+  accountIdentifier?: string
+  timestamp?: number
+}
+
+export type GetCDLicenseUsageForServiceInstancesProps = Omit<
+  GetProps<ResponseServiceInstanceUsageDTO, Failure | Error, GetCDLicenseUsageForServiceInstancesQueryParams, void>,
+  'path'
+>
+
+/**
+ * Gets License Usage By Timestamp for Service Instances in CD Module
+ */
+export const GetCDLicenseUsageForServiceInstances = (props: GetCDLicenseUsageForServiceInstancesProps) => (
+  <Get<ResponseServiceInstanceUsageDTO, Failure | Error, GetCDLicenseUsageForServiceInstancesQueryParams, void>
+    path={`/usage/CD/serviceInstancesLicense`}
+    base={getConfig('ng/api')}
+    {...props}
+  />
+)
+
+export type UseGetCDLicenseUsageForServiceInstancesProps = Omit<
+  UseGetProps<ResponseServiceInstanceUsageDTO, Failure | Error, GetCDLicenseUsageForServiceInstancesQueryParams, void>,
+  'path'
+>
+
+/**
+ * Gets License Usage By Timestamp for Service Instances in CD Module
+ */
+export const useGetCDLicenseUsageForServiceInstances = (props: UseGetCDLicenseUsageForServiceInstancesProps) =>
+  useGet<ResponseServiceInstanceUsageDTO, Failure | Error, GetCDLicenseUsageForServiceInstancesQueryParams, void>(
+    `/usage/CD/serviceInstancesLicense`,
+    { base: getConfig('ng/api'), ...props }
+  )
+
+/**
+ * Gets License Usage By Timestamp for Service Instances in CD Module
+ */
+export const getCDLicenseUsageForServiceInstancesPromise = (
+  props: GetUsingFetchProps<
+    ResponseServiceInstanceUsageDTO,
+    Failure | Error,
+    GetCDLicenseUsageForServiceInstancesQueryParams,
+    void
+  >,
+  signal?: RequestInit['signal']
+) =>
+  getUsingFetch<
+    ResponseServiceInstanceUsageDTO,
+    Failure | Error,
+    GetCDLicenseUsageForServiceInstancesQueryParams,
+    void
+  >(getConfig('ng/api'), `/usage/CD/serviceInstancesLicense`, props, signal)
+
+export interface GetCDLicenseUsageForServicesQueryParams {
+  accountIdentifier?: string
+  timestamp?: number
+}
+
+export type GetCDLicenseUsageForServicesProps = Omit<
+  GetProps<ResponseServiceUsageDTO, Failure | Error, GetCDLicenseUsageForServicesQueryParams, void>,
+  'path'
+>
+
+/**
+ * Gets License Usage By Timestamp for Services in CD Module
+ */
+export const GetCDLicenseUsageForServices = (props: GetCDLicenseUsageForServicesProps) => (
+  <Get<ResponseServiceUsageDTO, Failure | Error, GetCDLicenseUsageForServicesQueryParams, void>
+    path={`/usage/CD/servicesLicense`}
+    base={getConfig('ng/api')}
+    {...props}
+  />
+)
+
+export type UseGetCDLicenseUsageForServicesProps = Omit<
+  UseGetProps<ResponseServiceUsageDTO, Failure | Error, GetCDLicenseUsageForServicesQueryParams, void>,
+  'path'
+>
+
+/**
+ * Gets License Usage By Timestamp for Services in CD Module
+ */
+export const useGetCDLicenseUsageForServices = (props: UseGetCDLicenseUsageForServicesProps) =>
+  useGet<ResponseServiceUsageDTO, Failure | Error, GetCDLicenseUsageForServicesQueryParams, void>(
+    `/usage/CD/servicesLicense`,
+    { base: getConfig('ng/api'), ...props }
+  )
+
+/**
+ * Gets License Usage By Timestamp for Services in CD Module
+ */
+export const getCDLicenseUsageForServicesPromise = (
+  props: GetUsingFetchProps<ResponseServiceUsageDTO, Failure | Error, GetCDLicenseUsageForServicesQueryParams, void>,
+  signal?: RequestInit['signal']
+) =>
+  getUsingFetch<ResponseServiceUsageDTO, Failure | Error, GetCDLicenseUsageForServicesQueryParams, void>(
     getConfig('ng/api'),
-    `/token/${identifier}`,
+    `/usage/CD/servicesLicense`,
     props,
     signal
   )
@@ -32538,7 +33045,7 @@ export type PostSecretProps = Omit<
     ResponseSecretResponseWrapper,
     Failure | Error,
     PostSecretQueryParams,
-    SecretRequestWrapperRequestBody,
+    SecretRequestWrapper2RequestBody,
     void
   >,
   'path' | 'verb'
@@ -32548,7 +33055,7 @@ export type PostSecretProps = Omit<
  * Create a secret
  */
 export const PostSecret = (props: PostSecretProps) => (
-  <Mutate<ResponseSecretResponseWrapper, Failure | Error, PostSecretQueryParams, SecretRequestWrapperRequestBody, void>
+  <Mutate<ResponseSecretResponseWrapper, Failure | Error, PostSecretQueryParams, SecretRequestWrapper2RequestBody, void>
     verb="POST"
     path={`/v2/secrets`}
     base={getConfig('ng/api')}
@@ -32561,7 +33068,7 @@ export type UsePostSecretProps = Omit<
     ResponseSecretResponseWrapper,
     Failure | Error,
     PostSecretQueryParams,
-    SecretRequestWrapperRequestBody,
+    SecretRequestWrapper2RequestBody,
     void
   >,
   'path' | 'verb'
@@ -32575,7 +33082,7 @@ export const usePostSecret = (props: UsePostSecretProps) =>
     ResponseSecretResponseWrapper,
     Failure | Error,
     PostSecretQueryParams,
-    SecretRequestWrapperRequestBody,
+    SecretRequestWrapper2RequestBody,
     void
   >('POST', `/v2/secrets`, { base: getConfig('ng/api'), ...props })
 
@@ -32587,7 +33094,7 @@ export const postSecretPromise = (
     ResponseSecretResponseWrapper,
     Failure | Error,
     PostSecretQueryParams,
-    SecretRequestWrapperRequestBody,
+    SecretRequestWrapper2RequestBody,
     void
   >,
   signal?: RequestInit['signal']
@@ -32596,7 +33103,7 @@ export const postSecretPromise = (
     ResponseSecretResponseWrapper,
     Failure | Error,
     PostSecretQueryParams,
-    SecretRequestWrapperRequestBody,
+    SecretRequestWrapper2RequestBody,
     void
   >('POST', getConfig('ng/api'), `/v2/secrets`, props, signal)
 
@@ -32989,7 +33496,7 @@ export type PostSecretViaYamlProps = Omit<
     ResponseSecretResponseWrapper,
     Failure | Error,
     PostSecretViaYamlQueryParams,
-    SecretRequestWrapper2RequestBody,
+    SecretRequestWrapperRequestBody,
     void
   >,
   'path' | 'verb'
@@ -33003,7 +33510,7 @@ export const PostSecretViaYaml = (props: PostSecretViaYamlProps) => (
     ResponseSecretResponseWrapper,
     Failure | Error,
     PostSecretViaYamlQueryParams,
-    SecretRequestWrapper2RequestBody,
+    SecretRequestWrapperRequestBody,
     void
   >
     verb="POST"
@@ -33018,7 +33525,7 @@ export type UsePostSecretViaYamlProps = Omit<
     ResponseSecretResponseWrapper,
     Failure | Error,
     PostSecretViaYamlQueryParams,
-    SecretRequestWrapper2RequestBody,
+    SecretRequestWrapperRequestBody,
     void
   >,
   'path' | 'verb'
@@ -33032,7 +33539,7 @@ export const usePostSecretViaYaml = (props: UsePostSecretViaYamlProps) =>
     ResponseSecretResponseWrapper,
     Failure | Error,
     PostSecretViaYamlQueryParams,
-    SecretRequestWrapper2RequestBody,
+    SecretRequestWrapperRequestBody,
     void
   >('POST', `/v2/secrets/yaml`, { base: getConfig('ng/api'), ...props })
 
@@ -33044,7 +33551,7 @@ export const postSecretViaYamlPromise = (
     ResponseSecretResponseWrapper,
     Failure | Error,
     PostSecretViaYamlQueryParams,
-    SecretRequestWrapper2RequestBody,
+    SecretRequestWrapperRequestBody,
     void
   >,
   signal?: RequestInit['signal']
@@ -33053,7 +33560,7 @@ export const postSecretViaYamlPromise = (
     ResponseSecretResponseWrapper,
     Failure | Error,
     PostSecretViaYamlQueryParams,
-    SecretRequestWrapper2RequestBody,
+    SecretRequestWrapperRequestBody,
     void
   >('POST', getConfig('ng/api'), `/v2/secrets/yaml`, props, signal)
 
@@ -33188,7 +33695,7 @@ export type PutSecretProps = Omit<
     ResponseSecretResponseWrapper,
     Failure | Error,
     PutSecretQueryParams,
-    SecretRequestWrapperRequestBody,
+    SecretRequestWrapper2RequestBody,
     PutSecretPathParams
   >,
   'path' | 'verb'
@@ -33203,7 +33710,7 @@ export const PutSecret = ({ identifier, ...props }: PutSecretProps) => (
     ResponseSecretResponseWrapper,
     Failure | Error,
     PutSecretQueryParams,
-    SecretRequestWrapperRequestBody,
+    SecretRequestWrapper2RequestBody,
     PutSecretPathParams
   >
     verb="PUT"
@@ -33218,7 +33725,7 @@ export type UsePutSecretProps = Omit<
     ResponseSecretResponseWrapper,
     Failure | Error,
     PutSecretQueryParams,
-    SecretRequestWrapperRequestBody,
+    SecretRequestWrapper2RequestBody,
     PutSecretPathParams
   >,
   'path' | 'verb'
@@ -33233,7 +33740,7 @@ export const usePutSecret = ({ identifier, ...props }: UsePutSecretProps) =>
     ResponseSecretResponseWrapper,
     Failure | Error,
     PutSecretQueryParams,
-    SecretRequestWrapperRequestBody,
+    SecretRequestWrapper2RequestBody,
     PutSecretPathParams
   >('PUT', (paramsInPath: PutSecretPathParams) => `/v2/secrets/${paramsInPath.identifier}`, {
     base: getConfig('ng/api'),
@@ -33252,7 +33759,7 @@ export const putSecretPromise = (
     ResponseSecretResponseWrapper,
     Failure | Error,
     PutSecretQueryParams,
-    SecretRequestWrapperRequestBody,
+    SecretRequestWrapper2RequestBody,
     PutSecretPathParams
   > & { identifier: string },
   signal?: RequestInit['signal']
@@ -33261,7 +33768,7 @@ export const putSecretPromise = (
     ResponseSecretResponseWrapper,
     Failure | Error,
     PutSecretQueryParams,
-    SecretRequestWrapperRequestBody,
+    SecretRequestWrapper2RequestBody,
     PutSecretPathParams
   >('PUT', getConfig('ng/api'), `/v2/secrets/${identifier}`, props, signal)
 
@@ -33280,7 +33787,7 @@ export type PutSecretViaYamlProps = Omit<
     ResponseSecretResponseWrapper,
     Failure | Error,
     PutSecretViaYamlQueryParams,
-    SecretRequestWrapper2RequestBody,
+    SecretRequestWrapperRequestBody,
     PutSecretViaYamlPathParams
   >,
   'path' | 'verb'
@@ -33295,7 +33802,7 @@ export const PutSecretViaYaml = ({ identifier, ...props }: PutSecretViaYamlProps
     ResponseSecretResponseWrapper,
     Failure | Error,
     PutSecretViaYamlQueryParams,
-    SecretRequestWrapper2RequestBody,
+    SecretRequestWrapperRequestBody,
     PutSecretViaYamlPathParams
   >
     verb="PUT"
@@ -33310,7 +33817,7 @@ export type UsePutSecretViaYamlProps = Omit<
     ResponseSecretResponseWrapper,
     Failure | Error,
     PutSecretViaYamlQueryParams,
-    SecretRequestWrapper2RequestBody,
+    SecretRequestWrapperRequestBody,
     PutSecretViaYamlPathParams
   >,
   'path' | 'verb'
@@ -33325,7 +33832,7 @@ export const usePutSecretViaYaml = ({ identifier, ...props }: UsePutSecretViaYam
     ResponseSecretResponseWrapper,
     Failure | Error,
     PutSecretViaYamlQueryParams,
-    SecretRequestWrapper2RequestBody,
+    SecretRequestWrapperRequestBody,
     PutSecretViaYamlPathParams
   >('PUT', (paramsInPath: PutSecretViaYamlPathParams) => `/v2/secrets/${paramsInPath.identifier}/yaml`, {
     base: getConfig('ng/api'),
@@ -33344,7 +33851,7 @@ export const putSecretViaYamlPromise = (
     ResponseSecretResponseWrapper,
     Failure | Error,
     PutSecretViaYamlQueryParams,
-    SecretRequestWrapper2RequestBody,
+    SecretRequestWrapperRequestBody,
     PutSecretViaYamlPathParams
   > & { identifier: string },
   signal?: RequestInit['signal']
@@ -33353,7 +33860,7 @@ export const putSecretViaYamlPromise = (
     ResponseSecretResponseWrapper,
     Failure | Error,
     PutSecretViaYamlQueryParams,
-    SecretRequestWrapper2RequestBody,
+    SecretRequestWrapperRequestBody,
     PutSecretViaYamlPathParams
   >('PUT', getConfig('ng/api'), `/v2/secrets/${identifier}/yaml`, props, signal)
 
