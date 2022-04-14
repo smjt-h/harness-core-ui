@@ -25,7 +25,6 @@ describe('Triggers for Pipeline', () => {
 
     cy.intercept('GET', pipelineSummaryCallAPI, { fixture: '/ng/api/pipelineSummary' }).as('pipelineSummary')
     cy.intercept('GET', triggersAPI, { fixture: 'ng/api/triggers/triggersList.empty.json' }).as('emptyTriggersList')
-    cy.intercept('GET', gitTriggerEventDetailsList).as('gitTriggerEventDetailsList')
 
     cy.intercept('GET', gitTriggerEventDetailsList, req => {
       req.continue(res => {
