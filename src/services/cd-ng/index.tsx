@@ -631,7 +631,7 @@ export type AppDynamicsConnectorDTO = ConnectorConfigDTO & {
   clientId?: string
   clientSecretRef?: string
   controllerUrl: string
-  delegateSelectors?: string | string[] | undefined
+  delegateSelectors?: string[] | string | undefined
   passwordRef?: string
   username?: string
 }
@@ -6067,7 +6067,7 @@ export interface PipelineInfoConfig {
     [key: string]: string
   }
   timeout?: string
-  delegateSelectors?:string[] | string | undefined
+  delegateSelectors?: string[] | string | undefined
   variables?: NGVariable[]
 }
 
@@ -8959,7 +8959,7 @@ export interface StageElementConfig {
   type?: string
   variables?: NGVariable[]
   when?: StageWhenCondition
-  delegateSelectors?:string[] | string | undefined
+  delegateSelectors?: string[] | string | undefined
 }
 
 export interface StageElementWrapperConfig {
