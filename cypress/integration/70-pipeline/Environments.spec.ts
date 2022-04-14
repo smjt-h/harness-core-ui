@@ -131,5 +131,6 @@ describe('Environment for Pipeline', () => {
     cy.contains('span', 'Confirm').click()
     cy.wait(1000)
     cy.contains('span', 'Successfully deleted environment testEnv').should('be.visible')
+    cy.matchImageSnapshot('Delete toaster for Environment')
   })
 })

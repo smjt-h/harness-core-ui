@@ -132,5 +132,6 @@ describe('Services for Pipeline', () => {
     cy.contains('span', 'Confirm').click()
     cy.wait(1000)
     cy.contains('span', 'Service deleted').should('be.visible')
+    cy.matchImageSnapshot('Delete toaster for Service')
   })
 })
