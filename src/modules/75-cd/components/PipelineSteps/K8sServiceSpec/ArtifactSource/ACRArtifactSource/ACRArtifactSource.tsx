@@ -150,7 +150,7 @@ const Content = (props: ACRRenderContent): JSX.Element => {
   useEffect(() => {
     const subscriptionValues = [] as SelectOption[]
     forIn(defaultTo(subscriptionsData?.data, {}), (value: string, key: string) => {
-      subscriptionValues.push({ label: value, value: key })
+      subscriptionValues.push({ label: `${value}: ${key}`, value: key })
     })
 
     setSubscriptions(subscriptionValues as SelectOption[])

@@ -170,13 +170,17 @@ export function ACRArtifact({
   })
 
   useEffect(() => {
-    const subscriptionValues = [] as SelectOption[]
-    forIn(defaultTo(subscriptionsData?.data, {}), (value: string, key: string) => {
-      subscriptionValues.push({ label: value, value: key })
-    })
+    if (!loadingSubscriptions) {
+      const subscriptionValues = [] as SelectOption[]
+      forIn(defaultTo(subscriptionsData?.data, {}), (value: string, key: string) => {
+        subscriptionValues.push({ label: `${value}: ${key}`, value: key })
+      })
 
-    setSubscriptions(subscriptionValues as SelectOption[])
-  }, [subscriptionsData])
+      setSubscriptions(subscriptionValues as SelectOption[])
+      formikRef?.current?.setFieldValue('subscription', getSubscription(initialValues))
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [subscriptionsData, loadingSubscriptions])
 
   const {
     data: registiresData,
@@ -301,6 +305,19 @@ export function ACRArtifact({
     return !checkIfQueryParamsisNotEmpty([formikValue?.subscription, formikValue?.registry, formikValue?.repository])
   }, [])
 
+  const getSubscription = (values: ACRArtifactType): SelectOption | void => {
+    /* istanbul ignore else */
+    if (getMultiTypeFromValue(values?.subscription) === MultiTypeInputType.FIXED) {
+      const value = values?.subscription ? values?.subscription : formikRef?.current?.values?.subscription.value
+      return (
+        subscriptions.find(subscription => subscription.value === value) || {
+          label: value,
+          value: value
+        }
+      )
+    }
+  }
+
   const getInitialValues = useCallback((): ACRArtifactType => {
     const values = getArtifactFormData(
       initialValues,
@@ -308,16 +325,8 @@ export function ACRArtifact({
       context === ModalViewFor.SIDECAR
     ) as ACRArtifactType
 
-    /* istanbul ignore else */
-    if (getMultiTypeFromValue(values?.subscription) === MultiTypeInputType.FIXED) {
-      const value = values?.subscription ? values?.subscription : formikRef?.current?.values?.subscription.value
-      values.subscription = subscriptions.find(subscription => subscription.value === value) || {
-        label: value,
-        value: value
-      }
+    values.subscription = getSubscription(values)
 
-      formikRef?.current?.setFieldValue('subscription', values.subscription)
-    }
     /* istanbul ignore else */
     if (getMultiTypeFromValue(values?.registry) === MultiTypeInputType.FIXED) {
       values.registry = {
