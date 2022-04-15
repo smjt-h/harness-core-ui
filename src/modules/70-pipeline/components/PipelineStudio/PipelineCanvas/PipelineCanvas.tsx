@@ -65,6 +65,7 @@ import { useTelemetry } from '@common/hooks/useTelemetry'
 import { PipelineActions } from '@common/constants/TrackingConstants'
 import { useFeatureFlags } from '@common/hooks/useFeatureFlag'
 import GenericErrorHandler from '@common/pages/GenericErrorHandler/GenericErrorHandler'
+import useRBACError from '@rbac/utils/useRBACError/useRBACError'
 import NoEntityFound from '@pipeline/pages/utils/NoEntityFound/NoEntityFound'
 import { getFeaturePropsForRunPipelineButton } from '@pipeline/utils/runPipelineUtils'
 import { RunPipelineForm } from '@pipeline/components/RunPipelineModal/RunPipelineForm'
@@ -73,6 +74,7 @@ import { createTemplate } from '@pipeline/utils/templateUtils'
 import { getStepFromStage, validateCICodebaseConfiguration } from '@pipeline/components/PipelineStudio/StepUtil'
 import { updateStepWithinStage } from '@pipeline/components/PipelineStudio/RightDrawer/RightDrawer'
 import type { TemplateSummaryResponse } from 'services/template-ng'
+import type { AccessControlCheckError } from 'services/rbac'
 import { savePipeline, usePipelineContext } from '../PipelineContext/PipelineContext'
 import CreatePipelines from '../CreateModal/PipelineCreate'
 import PipelineErrors from './PipelineErrors/PipelineErrors'
@@ -211,6 +213,7 @@ export function PipelineCanvas({
   })
 
   const { showSuccess, showError, clear } = useToaster()
+  const { getRBACErrorMessage } = useRBACError()
 
   useDocumentTitle([parse(pipeline?.name || getString('pipelines'))])
   const [discardBEUpdateDialog, setDiscardBEUpdate] = React.useState(false)
@@ -465,7 +468,11 @@ export function PipelineCanvas({
           setUpdatePipelineAPIResponse(response)
           showErrorModal()
         } else {
-          showError(response?.message || getString('errorWhileSaving'), undefined, 'pipeline.save.pipeline.error')
+          showError(
+            getRBACErrorMessage({ data: response as AccessControlCheckError }) || getString('errorWhileSaving'),
+            undefined,
+            'pipeline.save.pipeline.error'
+          )
         }
       } else {
         // isGitSyncEnabled true
