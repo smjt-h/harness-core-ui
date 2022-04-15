@@ -29,6 +29,8 @@ import { useStrings } from 'framework/strings'
 import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
 import { AddDescriptionAndKVTagsWithIdentifier } from '@common/components/AddDescriptionAndTags/AddDescriptionAndTags'
 import { useCreateTokenModal } from '@delegates/components/DelegateTokens/modals/useCreateTokenModal'
+import { useTelemetry } from '@common/hooks/useTelemetry'
+import { Category, DelegateActions } from '@common/constants/TrackingConstants'
 
 import type { DockerDelegateWizardData } from '../CreateDockerDelegate'
 import css from './Step1Setup.module.scss'
@@ -131,6 +133,8 @@ const Step1Setup: React.FC<StepProps<DockerDelegateWizardData> & DelegateSetupSt
 
   const delegateTokenOptions = useMemo(() => formatTokenOptions(tokensResponse), [tokensResponse])
 
+  const { trackEvent } = useTelemetry()
+
   return (
     <Layout.Vertical padding="xxlarge">
       <Container padding="small">
@@ -172,6 +176,9 @@ const Step1Setup: React.FC<StepProps<DockerDelegateWizardData> & DelegateSetupSt
                           onClick={e => {
                             e.preventDefault()
                             openCreateTokenModal()
+                            trackEvent(DelegateActions.LoadCreateTokenModal, {
+                              category: Category.DELEGATE
+                            })
                           }}
                           text={getString('add')}
                         />

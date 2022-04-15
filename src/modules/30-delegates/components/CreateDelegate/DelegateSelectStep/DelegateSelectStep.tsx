@@ -131,6 +131,10 @@ const DelegateSelectStep: React.FC<StepProps<DelegateInfoDTO> & DelegateSelectSt
               onClick={() => {
                 /* istanbul ignore next */
                 props?.onClick(selectedCard)
+                trackEvent(DelegateActions.SelectDelegateType, {
+                  category: Category.DELEGATE,
+                  selectedCard: selectedCard?.type
+                })
               }}
               disabled={selectedCard ? false : true}
             />
