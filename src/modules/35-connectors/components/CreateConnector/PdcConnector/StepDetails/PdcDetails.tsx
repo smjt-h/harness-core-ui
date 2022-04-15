@@ -30,11 +30,10 @@ interface PdcDetailsProps {
   setIsEditMode: (val: boolean) => void
   setFormData?: (formData: ConnectorConfigDTO) => void
   onConnectorCreated: (data?: ConnectorConfigDTO) => void | Promise<void>
-  connectorInfo?: ConnectorInfoDTO
+  connectorInfo: ConnectorInfoDTO | void
   accountId: string
   orgIdentifier: string
   projectIdentifier: string
-  hosts: string | []
 }
 
 export interface uploadHostItem {
