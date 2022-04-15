@@ -87,6 +87,7 @@
 .testConnectionContentContainer {
   flex: 1;
   overflow-y: scroll;
+  max-width: 760px;
 }
 
 .errorPanel {

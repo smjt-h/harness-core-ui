@@ -47,13 +47,13 @@ interface StepConfigureProps {
 }
 
 const PdcDetails: React.FC<StepProps<StepConfigureProps> & PdcDetailsProps> = props => {
-  const { prevStepData, nextStep } = props
+  const { prevStepData, nextStep, isEditMode } = props
   const { getString } = useStrings()
 
   const [hostsJSON, setHostsJSON] = useState([] as uploadHostItem[])
 
   useEffect(() => {
-    if (typeof prevStepData?.spec?.hosts === 'object') {
+    if (typeof prevStepData?.spec?.hosts === 'object' && !isEditMode) {
       setHostsJSON(prevStepData?.spec?.hosts)
     }
   }, [])

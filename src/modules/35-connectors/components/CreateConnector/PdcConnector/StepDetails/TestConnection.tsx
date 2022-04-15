@@ -108,20 +108,7 @@ const TestConnection: React.FC<StepProps<TestConnectionProps> & WizardProps> = p
         )}
       </Layout.Vertical>
       <Layout.Horizontal padding={{ top: 'small' }} spacing="medium">
-        <Button
-          text={getString('back')}
-          icon="chevron-left"
-          variation={ButtonVariation.SECONDARY}
-          onClick={() => props?.previousStep?.(props?.prevStepData)}
-          data-name="pdcBackButton"
-        />
-        <Button
-          type="submit"
-          onClick={props.onClose}
-          variation={ButtonVariation.PRIMARY}
-          text={getString('close')}
-          rightIcon="chevron-right"
-        />
+        <Button type="submit" onClick={props.onClose} variation={ButtonVariation.PRIMARY} text={getString('finish')} />
       </Layout.Horizontal>
     </Layout.Vertical>
   )
