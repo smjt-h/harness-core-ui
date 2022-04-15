@@ -227,6 +227,7 @@ export default function ServiceHealth({
           environmentIdentifier={environmentIdentifier}
           startTime={timeRange?.startTime}
           endTime={timeRange?.endTime}
+          showTimelineSlider={showTimelineSlider}
         />
 
         {isErrorTrackingEnabled && (

@@ -458,6 +458,7 @@ monitoredServices:
   showingAllServices: Showing all Services ({{ serviceCount }})
   showingServiceAtRisk: Showing Services at Risk ({{ serviceCount }})
   noAvailableData: No available data.
+  noAvailableLogData: 'Select a timeline to see logs data'
   noMatchingData: No matching data.
   dependencyHealth: Dependency Health
   dependenciesHealth: Dependencies Health

@@ -5209,6 +5209,7 @@ export interface StringsMap {
   'cv.monitoredServices.nameValidation': string
   'cv.monitoredServices.newMonitoredServices': string
   'cv.monitoredServices.noAvailableData': string
+  'cv.monitoredServices.noAvailableLogData': string
   'cv.monitoredServices.noMatchingData': string
   'cv.monitoredServices.serviceAndEnvironment': string
   'cv.monitoredServices.serviceDependencies.noData': string

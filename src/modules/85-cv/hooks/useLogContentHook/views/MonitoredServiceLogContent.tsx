@@ -26,7 +26,8 @@ const MonitoredServiceLogContent: React.FC<MonitoredServiceLogContentProps> = ({
   serviceName,
   envName,
   startTime = 0,
-  endTime = 0
+  endTime = 0,
+  showTimelineSlider
 }) => {
   const { getString } = useStrings()
   const { showError } = useToaster()
@@ -104,6 +105,7 @@ const MonitoredServiceLogContent: React.FC<MonitoredServiceLogContentProps> = ({
       errorLogsOnly={errorLogsOnly}
       setErrorLogsOnly={setErrorLogsOnly}
       pageNumber={pageNumber}
+      showTimelineSlider={showTimelineSlider}
       setPageNumber={setPageNumber}
       handleDownloadLogs={handleDownloadLogs}
     />
@@ -112,6 +114,7 @@ const MonitoredServiceLogContent: React.FC<MonitoredServiceLogContentProps> = ({
       isFullScreen={isFullScreen}
       setIsFullScreen={setIsFullScreen}
       monitoredServiceIdentifier={monitoredServiceIdentifier}
+      showTimelineSlider={showTimelineSlider}
       serviceName={serviceName}
       envName={envName}
       resource={resource}

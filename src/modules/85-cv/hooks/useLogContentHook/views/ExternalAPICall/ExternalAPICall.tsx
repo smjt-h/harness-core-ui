@@ -77,7 +77,7 @@ const ExternalAPICall: React.FC<ExecutionAndAPICallLogProps> = props => {
       />
       <div className={cx(css.accordionContainer, { [css.fullScreen]: isFullScreen })}>
         <Layout.Vertical height="100%">
-          <ExternalAPICallContent {...props} />
+          <ExternalAPICallContent {...props} errorLogsOnly={errorLogsOnly} />
         </Layout.Vertical>
       </div>
     </div>

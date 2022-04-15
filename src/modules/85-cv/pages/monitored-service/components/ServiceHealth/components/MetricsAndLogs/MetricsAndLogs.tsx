@@ -20,14 +20,15 @@ import css from './MetricsAndLogs.module.scss'
 const MetricsAndLogs: React.FC<MetricsAndLogsProps> = props => {
   const { getString } = useStrings()
 
-  const { startTime, endTime } = props
+  const { startTime, endTime, showTimelineSlider } = props
 
   const { openLogContentHook } = useLogContentHook({
     monitoredServiceStartTime: startTime,
     monitoredServiceEndTime: endTime,
     serviceName: props.serviceIdentifier,
     envName: props.environmentIdentifier,
-    monitoredServiceIdentifier: props.monitoredServiceIdentifier
+    monitoredServiceIdentifier: props.monitoredServiceIdentifier,
+    showTimelineSlider
   })
 
   return (

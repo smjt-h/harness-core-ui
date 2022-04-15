@@ -348,6 +348,6 @@ describe('MonitoredServiceLogContent', () => {
       </TestWrapper>
     )
 
-    expect(screen.getByText('cv.changeSource.noDataAvaiableForCard')).toBeInTheDocument()
+    expect(screen.getByText('cv.monitoredServices.noAvailableLogData')).toBeInTheDocument()
   })
 })

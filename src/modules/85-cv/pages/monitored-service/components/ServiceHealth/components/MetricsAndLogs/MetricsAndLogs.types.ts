@@ -23,4 +23,5 @@ export interface MetricsAndLogsProps {
   environmentIdentifier: string
   startTime?: number
   endTime?: number
+  showTimelineSlider?: boolean
 }
