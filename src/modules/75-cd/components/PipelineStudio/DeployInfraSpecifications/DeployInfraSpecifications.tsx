@@ -401,13 +401,13 @@ export default function DeployInfraSpecifications(props: React.PropsWithChildren
 
   const infraLabels = useMemo(() => {
     return {
-      PDC: (
+      Kubernetes: (
         <StringWithTooltip
           tooltipId="pipelineStep.infrastructureDefinitionMethod"
           stringId="pipelineSteps.deploy.infrastructure.selectMethodK8S"
         />
       ),
-      Kubernetes: (
+      PDC: (
         <StringWithTooltip
           tooltipId="pipelineStep.infrastructureDefinitionMethodSSH"
           stringId="pipelineSteps.deploy.infrastructure.selectMethodSSH"

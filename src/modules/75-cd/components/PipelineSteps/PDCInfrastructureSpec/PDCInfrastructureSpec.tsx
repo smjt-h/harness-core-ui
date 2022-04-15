@@ -184,7 +184,7 @@ const GcpInfrastructureSpecEditable: React.FC<GcpInfrastructureSpecEditableProps
   return (
     <Layout.Vertical spacing="medium">
       <Formik<K8sGcpInfrastructureUI>
-        formName="gcpInfra"
+        formName="pdcInfra"
         initialValues={getInitialValues()}
         validate={value => {
           const data: Partial<K8sGcpInfrastructure> = {
@@ -452,7 +452,7 @@ const GcpInfrastructureSpecInputForm: React.FC<GcpInfrastructureSpecEditableProp
             projectIdentifier={projectIdentifier}
             orgIdentifier={orgIdentifier}
             tooltipProps={{
-              dataTooltipId: 'gcpInfraConnector'
+              dataTooltipId: 'pdcInfraConnector'
             }}
             name={`${path}.connectorRef`}
             label={getString('connector')}
