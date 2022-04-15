@@ -5070,6 +5070,7 @@ export interface StringsMap {
   'cv.errorBudgetIsSuccessfullyReset': string
   'cv.errorBudgetRecalculationInProgress': string
   'cv.errorBudgetRemaining': string
+  'cv.errorBudgetRemainingWithMins': string
   'cv.evaluationPeriod': string
   'cv.executionLogs': string
   'cv.externalAPICalls': string

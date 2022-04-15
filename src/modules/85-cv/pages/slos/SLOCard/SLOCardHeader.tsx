@@ -60,6 +60,14 @@ const SLOCardHeader: React.FC<SLOCardHeaderProps> = ({
     module: 'cv'
   })
 
+  const SLODetailsPagePathname =
+    routes.toCVSLODetailsPage({
+      identifier: serviceLevelObjective.sloIdentifier,
+      accountId,
+      orgIdentifier,
+      projectIdentifier
+    }) + getSearchString({ monitoredServiceIdentifier })
+
   const onEdit = (): void => {
     history.push({
       pathname: routes.toCVSLODetailsPage({
@@ -125,9 +133,11 @@ const SLOCardHeader: React.FC<SLOCardHeaderProps> = ({
   return (
     <>
       <Container flex margin={{ bottom: 'medium' }}>
-        <Heading level={2} font={{ variation: FontVariation.H4 }} color={Color.GREY_800}>
-          {serviceLevelObjective.title}
-        </Heading>
+        <Link to={SLODetailsPagePathname}>
+          <Heading level={2} font={{ variation: FontVariation.H4 }} color={Color.PRIMARY_7}>
+            {serviceLevelObjective.title}
+          </Heading>
+        </Link>
         <Popover
           isOpen={menuOpen}
           onInteraction={nextOpenState => setMenuOpen(nextOpenState)}

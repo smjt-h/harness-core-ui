@@ -5,18 +5,20 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import React from 'react'
+import React, { useEffect, useRef } from 'react'
 import { useParams, useHistory } from 'react-router-dom'
-import { Container, Page, Tabs } from '@harness/uicore'
+import { Container, FlexExpander, Page, Tabs } from '@harness/uicore'
 import { useStrings } from 'framework/strings'
-import { useGetSLODetails } from 'services/cv'
+import { useDeleteSLOData, useGetSLODetails, useResetErrorBudget } from 'services/cv'
 import routes from '@common/RouteDefinitions'
 import { useQueryParams } from '@common/hooks'
 import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
 import { NGBreadcrumbs } from '@common/components/NGBreadcrumbs/NGBreadcrumbs'
-import { getSearchString } from '@cv/utils/CommonUtils'
+import { getErrorMessage, getSearchString } from '@cv/utils/CommonUtils'
 import CVCreateSLO from '@cv/pages/slos/components/CVCreateSLO/CVCreateSLO'
 import HeaderTitle from './views/HeaderTitle'
+import DetailsPanel from './DetailsPanel/DetailsPanel'
+import TabToolbar from './DetailsPanel/views/TabToolbar'
 import { SLODetailsPageTabIds } from './CVSLODetailsPage.types'
 import css from './CVSLODetailsPage.module.scss'
 
@@ -26,10 +28,25 @@ const CVSLODetailsPage: React.FC = () => {
   const { accountId, orgIdentifier, projectIdentifier, identifier } = useParams<
     ProjectPathProps & { identifier: string }
   >()
-  const { tab = SLODetailsPageTabIds.Configurations, monitoredServiceIdentifier } =
+  const { tab = SLODetailsPageTabIds.Details, monitoredServiceIdentifier } =
     useQueryParams<{ tab?: SLODetailsPageTabIds; monitoredServiceIdentifier?: string }>()
 
-  const { data, loading } = useGetSLODetails({
+  const projectIdentifierRef = useRef<string>()
+  useEffect(() => {
+    if (projectIdentifierRef.current && projectIdentifierRef.current !== projectIdentifier) {
+      history.push(routes.toCVSLOs({ accountId, orgIdentifier, projectIdentifier }))
+      return
+    }
+
+    projectIdentifierRef.current = projectIdentifier
+  }, [accountId, orgIdentifier, projectIdentifier, history])
+
+  const {
+    data,
+    loading: sloDetailsLoading,
+    error,
+    refetch
+  } = useGetSLODetails({
     identifier,
     queryParams: {
       accountId,
@@ -38,9 +55,25 @@ const CVSLODetailsPage: React.FC = () => {
     }
   })
 
-  /* istanbul ignore next */
+  const { mutate: resetErrorBudget, loading: resetErrorBudgetLoading } = useResetErrorBudget({
+    identifier: '',
+    queryParams: {
+      accountId,
+      orgIdentifier,
+      projectIdentifier
+    }
+  })
+
+  const { mutate: deleteSLO, loading: deleteSLOLoading } = useDeleteSLOData({
+    queryParams: {
+      accountId,
+      orgIdentifier,
+      projectIdentifier
+    }
+  })
+
   const onTabChange = (nextTab: SLODetailsPageTabIds): void => {
-    if (nextTab !== tab) {
+    /* istanbul ignore else */ if (nextTab !== tab) {
       history.push({
         pathname: routes.toCVSLODetailsPage({
           identifier,
@@ -54,6 +87,8 @@ const CVSLODetailsPage: React.FC = () => {
   }
 
   const { description, sloDashboardWidget } = data?.data ?? {}
+  const loading = sloDetailsLoading || resetErrorBudgetLoading || deleteSLOLoading
+
   const breadcrumbLinks = [
     {
       url: routes.toCVSLOs({ accountId, orgIdentifier, projectIdentifier }),
@@ -62,10 +97,10 @@ const CVSLODetailsPage: React.FC = () => {
   ]
 
   return (
-    <div>
+    <>
       <Page.Header
         size="large"
-        title={<HeaderTitle loading={loading} title={sloDashboardWidget?.title} description={description} />}
+        title={<HeaderTitle loading={sloDetailsLoading} title={sloDashboardWidget?.title} description={description} />}
         breadcrumbs={<NGBreadcrumbs links={breadcrumbLinks} />}
       />
       <Container className={css.tabContainer}>
@@ -76,18 +111,48 @@ const CVSLODetailsPage: React.FC = () => {
           tabList={[
             {
               id: SLODetailsPageTabIds.Details,
-              title: 'Details',
-              disabled: true
+              title: getString('details'),
+              panel: (
+                <DetailsPanel
+                  loading={loading}
+                  errorMessage={getErrorMessage(error)}
+                  retryOnError={() => refetch()}
+                  sloDashboardWidget={sloDashboardWidget}
+                />
+              )
             },
             {
               id: SLODetailsPageTabIds.Configurations,
               title: getString('cv.monitoredServices.monitoredServiceTabs.configurations'),
-              panel: <CVCreateSLO />
+              panel: (
+                <Page.Body
+                  loading={loading}
+                  error={getErrorMessage(error)}
+                  retryOnError={() => refetch()}
+                  noData={{
+                    when: () => !sloDashboardWidget
+                  }}
+                  className={css.pageBody}
+                >
+                  <CVCreateSLO />
+                </Page.Body>
+              )
             }
           ]}
-        ></Tabs>
+        >
+          <FlexExpander />
+          {tab === SLODetailsPageTabIds.Details && sloDashboardWidget && (
+            <TabToolbar
+              sloDashboardWidget={sloDashboardWidget}
+              resetErrorBudget={resetErrorBudget}
+              deleteSLO={deleteSLO}
+              refetchSLODetails={refetch}
+              onTabChange={onTabChange}
+            />
+          )}
+        </Tabs>
       </Container>
-    </div>
+    </>
   )
 }
 

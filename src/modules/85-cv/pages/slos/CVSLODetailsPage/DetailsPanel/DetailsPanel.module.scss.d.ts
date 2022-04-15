@@ -8,6 +8,7 @@
 // this is an auto-generated file, do not update this manually
 declare const styles: {
   readonly pageBody: string
-  readonly tabContainer: string
+  readonly serviceDetailsCard: string
+  readonly tabLink: string
 }
 export default styles

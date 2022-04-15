@@ -717,7 +717,8 @@ SLOWithName: 'SLO: {{ name }}'
 SLOPerformanceTrend: SLO Performance Trend
 sloRecalculationInProgress: SLO recalculation in progress
 errorBudgetRecalculationInProgress: Error Budget recalculation in progress
-errorBudgetRemaining: Error Budget Remaining (mins)
+errorBudgetRemaining: Error Budget Remaining
+errorBudgetRemainingWithMins: Error Budget Remaining (mins)
 minutesRemaining: minutes remaining
 errorBudgetBurnDown: Error Budget Burndown
 SLITriggered: SLI Triggered

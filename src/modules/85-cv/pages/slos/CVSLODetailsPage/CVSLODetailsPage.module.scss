@@ -19,11 +19,9 @@
     }
   }
 
-  .button {
-    color: var(--grey-700) !important;
-
-    &:hover {
-      background-color: var(--grey-0);
-    }
+  .pageBody {
+    --page-header-height: 140px !important;
+    height: calc(100vh - 140px) !important;
+    max-height: calc(100vh - 140px) !important;
   }
 }
