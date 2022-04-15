@@ -582,7 +582,6 @@ export interface StringsMap {
   'common.searchOther': string
   'common.searchPlaceholder': string
   'common.seconds': string
-  'common.secret': string
   'common.secretKey': string
   'common.secrets': string
   'common.seeDetails': string

@@ -8,7 +8,6 @@ agents: Agents
 application: Application
 certificate: Certificate
 repositoryCertificates: Repository Certificates
-secret: Secret
 notEnabled: 'Not Enabled'
 apiStatus: 'API Status'
 gpgkey: 'GPG Key'

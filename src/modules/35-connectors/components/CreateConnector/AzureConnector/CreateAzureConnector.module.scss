@@ -7,12 +7,6 @@
 
 .secondStep {
   height: 100%;
-  > div:last-child {
-    display: flex;
-    height: 100%;
-    flex-direction: column;
-    justify-content: space-between;
-  }
 
   .wrapper {
     overflow: auto;
