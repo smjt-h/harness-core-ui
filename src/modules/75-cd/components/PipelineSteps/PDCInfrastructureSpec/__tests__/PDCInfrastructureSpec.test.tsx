@@ -12,7 +12,7 @@ import type { CompletionItemInterface } from '@common/interfaces/YAMLBuilderProp
 import { StepFormikRef, StepViewType } from '@pipeline/components/AbstractSteps/Step'
 import { StepType } from '@pipeline/components/PipelineSteps/PipelineStepInterface'
 import { factory, TestStepWidget } from '@pipeline/components/PipelineSteps/Steps/__tests__/StepTestUtil'
-import { GcpInfrastructureSpec } from '../PDCInfrastructureSpec'
+import { PDCInfrastructureSpec } from '../PDCInfrastructureSpec'
 import { ConnectorsResponse } from './mock/ConnectorsResponse.mock'
 import { ConnectorResponse } from './mock/ConnectorResponse.mock'
 import { ClusterNamesResponse } from './mock/ClusterNamesResponse.mock'
@@ -58,7 +58,7 @@ const getYaml = () => `pipeline:
               spec:
                   infrastructure:
                       infrastructureDefinition:
-                          type: KubernetesGcp
+                          type: PDC
                           spec:
                               connectorRef: account.connectorRef
                               cluster: cluster
@@ -76,36 +76,28 @@ const getParams = () => ({
 const connectorRefPath = 'pipeline.stages.0.stage.spec.infrastructure.infrastructureDefinition.spec.connectorRef'
 const clusterPath = 'pipeline.stages.0.stage.spec.infrastructure.infrastructureDefinition.spec.cluster'
 
-describe('Test GcpInfrastructureSpec snapshot', () => {
+describe('Test PDCInfrastructureSpec snapshot', () => {
   beforeEach(() => {
-    factory.registerStep(new GcpInfrastructureSpec())
+    factory.registerStep(new PDCInfrastructureSpec())
   })
 
   test('should render edit view with empty initial values', () => {
     const { container } = render(
-      <TestStepWidget initialValues={{}} type={StepType.KubernetesGcp} stepViewType={StepViewType.Edit} />
+      <TestStepWidget initialValues={{}} type={StepType.PDC} stepViewType={StepViewType.Edit} />
     )
     expect(container).toMatchSnapshot()
   })
 
   test('should render edit view with values ', () => {
     const { container } = render(
-      <TestStepWidget
-        initialValues={getInitialValues()}
-        type={StepType.KubernetesGcp}
-        stepViewType={StepViewType.Edit}
-      />
+      <TestStepWidget initialValues={getInitialValues()} type={StepType.PDC} stepViewType={StepViewType.Edit} />
     )
     expect(container).toMatchSnapshot()
   })
 
   test('should render edit view with runtime values ', () => {
     const { container } = render(
-      <TestStepWidget
-        initialValues={getRuntimeInputsValues()}
-        type={StepType.KubernetesGcp}
-        stepViewType={StepViewType.Edit}
-      />
+      <TestStepWidget initialValues={getRuntimeInputsValues()} type={StepType.PDC} stepViewType={StepViewType.Edit} />
     )
     expect(container).toMatchSnapshot()
   })
@@ -116,7 +108,7 @@ describe('Test GcpInfrastructureSpec snapshot', () => {
         initialValues={getInitialValues()}
         template={getRuntimeInputsValues()}
         allValues={getInitialValues()}
-        type={StepType.KubernetesGcp}
+        type={StepType.PDC}
         stepViewType={StepViewType.InputSet}
       />
     )
@@ -129,7 +121,7 @@ describe('Test GcpInfrastructureSpec snapshot', () => {
         initialValues={getInitialValues()}
         template={getRuntimeInputsValues()}
         allValues={getInitialValues()}
-        type={StepType.KubernetesGcp}
+        type={StepType.PDC}
         stepViewType={StepViewType.InputVariable}
       />
     )
@@ -138,9 +130,9 @@ describe('Test GcpInfrastructureSpec snapshot', () => {
   })
 })
 
-describe('Test GcpInfrastructureSpec behavior', () => {
+describe('Test PDCInfrastructureSpec behavior', () => {
   beforeEach(() => {
-    factory.registerStep(new GcpInfrastructureSpec())
+    factory.registerStep(new PDCInfrastructureSpec())
   })
 
   test('should call onUpdate if valid values entered - inputset', async () => {
@@ -150,7 +142,7 @@ describe('Test GcpInfrastructureSpec behavior', () => {
         initialValues={getInitialValues()}
         template={getRuntimeInputsValues()}
         allValues={getInitialValues()}
-        type={StepType.KubernetesGcp}
+        type={StepType.PDC}
         stepViewType={StepViewType.InputSet}
         onUpdate={onUpdateHandler}
       />
@@ -169,7 +161,7 @@ describe('Test GcpInfrastructureSpec behavior', () => {
         initialValues={getEmptyInitialValues()}
         template={getRuntimeInputsValues()}
         allValues={getEmptyInitialValues()}
-        type={StepType.KubernetesGcp}
+        type={StepType.PDC}
         stepViewType={StepViewType.InputSet}
         onUpdate={onUpdateHandler}
       />
@@ -190,7 +182,7 @@ describe('Test GcpInfrastructureSpec behavior', () => {
         initialValues={getInitialValues()}
         template={getRuntimeInputsValues()}
         allValues={getInitialValues()}
-        type={StepType.KubernetesGcp}
+        type={StepType.PDC}
         stepViewType={StepViewType.Edit}
         onUpdate={onUpdateHandler}
         ref={ref}
@@ -214,9 +206,9 @@ describe('Test GcpInfrastructureSpec behavior', () => {
   })
 })
 
-describe('Test GcpInfrastructureSpec autocomplete', () => {
+describe('Test PDCInfrastructureSpec autocomplete', () => {
   test('Test connector autocomplete', async () => {
-    const step = new GcpInfrastructureSpec() as any
+    const step = new PDCInfrastructureSpec() as any
     let list: CompletionItemInterface[]
 
     list = await step.getConnectorsListForYaml(connectorRefPath, getYaml(), getParams())
@@ -233,7 +225,7 @@ describe('Test GcpInfrastructureSpec autocomplete', () => {
   })
 
   test('Test cluster names autocomplete', async () => {
-    const step = new GcpInfrastructureSpec() as any
+    const step = new PDCInfrastructureSpec() as any
     let list: CompletionItemInterface[]
 
     list = await step.getClusterListForYaml(clusterPath, getYaml(), getParams())

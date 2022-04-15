@@ -575,10 +575,9 @@ interface PDCInfrastructureSpecStep extends K8sGcpInfrastructure {
 
 const KubernetesGcpConnectorRegex = /^.+infrastructure\.infrastructureDefinition\.spec\.connectorRef$/
 const KubernetesGcpClusterRegex = /^.+infrastructure\.infrastructureDefinition\.spec\.cluster$/
-const KubernetesGcpType = 'KubernetesGcp'
 export class PDCInfrastructureSpec extends PipelineStep<PDCInfrastructureSpecStep> {
   lastFetched: number
-  protected type = StepType.KubernetesGcp
+  protected type = StepType.PDC
   protected defaultValues: K8sGcpInfrastructure = { cluster: '', connectorRef: '', namespace: '', releaseName: '' }
 
   protected stepIcon: IconName = 'pdc'
@@ -616,7 +615,7 @@ export class PDCInfrastructureSpec extends PipelineStep<PDCInfrastructureSpecSte
     }
     if (pipelineObj) {
       const obj = get(pipelineObj, path.replace('.spec.connectorRef', ''))
-      if (obj?.type === KubernetesGcpType) {
+      if (obj?.type === StepType.PDC) {
         return getConnectorListV2Promise({
           queryParams: {
             accountIdentifier: accountId,
@@ -661,7 +660,7 @@ export class PDCInfrastructureSpec extends PipelineStep<PDCInfrastructureSpecSte
     if (pipelineObj) {
       const obj = get(pipelineObj, path.replace('.spec.cluster', ''))
       if (
-        obj?.type === KubernetesGcpType &&
+        obj?.type === StepType.PDC &&
         obj?.spec?.connectorRef &&
         getMultiTypeFromValue(obj.spec?.connectorRef) === MultiTypeInputType.FIXED
       ) {
