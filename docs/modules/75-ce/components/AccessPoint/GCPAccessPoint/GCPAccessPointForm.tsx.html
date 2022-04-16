@@ -25,28 +25,28 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>68/68</span>
+                <span class='fraction'>69/69</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">90.59% </span>
+                <span class="strong">91.75% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>77/85</span>
+                <span class='fraction'>89/97</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>22/22</span>
+                <span class='fraction'>23/23</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>68/68</span>
+                <span class='fraction'>69/69</span>
             </div>
         
             
@@ -395,7 +395,11 @@
 <a name='L336'></a><a href='#L336'>336</a>
 <a name='L337'></a><a href='#L337'>337</a>
 <a name='L338'></a><a href='#L338'>338</a>
-<a name='L339'></a><a href='#L339'>339</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L339'></a><a href='#L339'>339</a>
+<a name='L340'></a><a href='#L340'>340</a>
+<a name='L341'></a><a href='#L341'>341</a>
+<a name='L342'></a><a href='#L342'>342</a>
+<a name='L343'></a><a href='#L343'>343</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -617,22 +621,14 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">22x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">15x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">25x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -653,6 +649,18 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
@@ -666,7 +674,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">24x</span>
+<span class="cline-any cline-yes">30x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -909,8 +917,8 @@ const GCPAccessPointForm: React.FC&lt;GCPAccessPointFormProps&gt; = ({
     const loaded: SelectOption[] = _defaultTo(
       machinesData?.response?.map(m =&gt; {
         return {
-          label: m,
-          value: m
+          label: m.name as string,
+          value: m.name as string
         }
       }),
       []
@@ -941,9 +949,9 @@ const GCPAccessPointForm: React.FC&lt;GCPAccessPointFormProps&gt; = ({
     &lt;Container&gt;
       &lt;Formik&lt;GcpApFormValue&gt;
         initialValues={{
-          region: loadBalancer.region,
-          zone: loadBalancer.metadata<span class="branch-0 cbranch-no" title="branch not covered" >?.z</span>one,
-          vpc: loadBalancer.vpc,
+          region: _defaultTo(loadBalancer.region, selectedRegion),
+          zone: _defaultTo(loadBalancer.metadata<span class="branch-0 cbranch-no" title="branch not covered" >?.z</span>one, selectedZone),
+          vpc: _defaultTo(loadBalancer.vpc, selectedVpc),
           securityGroups: _defaultTo(
             loadBalancer.metadata<span class="branch-0 cbranch-no" title="branch not covered" >?.s</span>ecurity_groups<span class="branch-0 cbranch-no" title="branch not covered" >?.m</span>ap(x =&gt; {
               return {
@@ -953,9 +961,13 @@ const GCPAccessPointForm: React.FC&lt;GCPAccessPointFormProps&gt; = ({
             }),
             []
           ),
-          machine_type: _defaultTo(loadBalancer.metadata<span class="branch-0 cbranch-no" title="branch not covered" >?.m</span>achine_type, 'n1-standard-1'),
+          machine_type: _defaultTo(
+            loadBalancer.metadata<span class="branch-0 cbranch-no" title="branch not covered" >?.m</span>achine_type,
+            machinesData?.response?.find(m =&gt; m.is_default)?.name
+          ),
           subnet_name: loadBalancer.metadata<span class="branch-0 cbranch-no" title="branch not covered" >?.s</span>ubnet_name
         }}
+        enableReinitialize
         formName="lbFormSecond"
         onSubmit={values =&gt; handleSubmit<span class="branch-0 cbranch-no" title="branch not covered" >?.(v</span>alues)}
         render={({ submitForm, setFieldValue, values }) =&gt; (
@@ -1078,7 +1090,7 @@ export default GCPAccessPointForm
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Tue Apr 12 2022 12:12:53 GMT+0000 (Greenwich Mean Time)
+                at Sat Apr 16 2022 05:47:00 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../../prettify.js"></script>

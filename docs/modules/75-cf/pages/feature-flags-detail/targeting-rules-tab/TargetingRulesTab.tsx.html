@@ -25,7 +25,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>76/76</span>
+                <span class='fraction'>79/79</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>75/75</span>
+                <span class='fraction'>78/78</span>
             </div>
         
             
@@ -381,7 +381,15 @@
 <a name='L322'></a><a href='#L322'>322</a>
 <a name='L323'></a><a href='#L323'>323</a>
 <a name='L324'></a><a href='#L324'>324</a>
-<a name='L325'></a><a href='#L325'>325</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L325'></a><a href='#L325'>325</a>
+<a name='L326'></a><a href='#L326'>326</a>
+<a name='L327'></a><a href='#L327'>327</a>
+<a name='L328'></a><a href='#L328'>328</a>
+<a name='L329'></a><a href='#L329'>329</a>
+<a name='L330'></a><a href='#L330'>330</a>
+<a name='L331'></a><a href='#L331'>331</a>
+<a name='L332'></a><a href='#L332'>332</a>
+<a name='L333'></a><a href='#L333'>333</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -408,9 +416,11 @@
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -459,9 +469,14 @@
 <span class="cline-any cline-yes">22x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">22x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">22x</span>
+<span class="cline-any cline-yes">22x</span>
+<span class="cline-any cline-yes">22x</span>
+<span class="cline-any cline-yes">44x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">44x</span>
 <span class="cline-any cline-yes">32x</span>
@@ -475,6 +490,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">50x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -621,6 +637,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -652,7 +669,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -730,6 +746,7 @@ import {
 import { FeatureFlagActivationStatus } from '@cf/utils/CFUtils'
 import useActiveEnvironment from '@cf/hooks/useActiveEnvironment'
 import { useStrings } from 'framework/strings'
+import { CFVariationColors } from '@cf/constants'
 import usePatchFeatureFlag from './hooks/usePatchFeatureFlag'
 import TargetingRulesTabFooter from './components/tab-targeting-footer/TargetingRulesTabFooter'
 &nbsp;
@@ -739,7 +756,8 @@ import {
   VariationPercentageRollout,
   TargetGroup,
   TargetingRulesFormValues,
-  TargetingRuleItemType
+  TargetingRuleItemType,
+  VariationColorMap
 } from './Types.types'
 import useFeatureEnabled from './hooks/useFeatureEnabled'
 import DefaultRules from './components/default-rules/DefaultRules'
@@ -783,9 +801,14 @@ const TargetingRulesTab = ({
   const targets = targetsData?.targets || []
 &nbsp;
   // convert variations/targets/target groups into a more UI friendly structure
+  // Individual rules (variations/percentage rollouts) don't have a priority - only target groups do
+  // so we sort the rules initially by target group priority,
+  // and assign a "base priority" to the rule, which the target groups added to a variation will base their priorities off.
+  // This is to maintain the ordering
   const formVariationMap: FormVariationMap[] = []
-&nbsp;
-  featureFlagData.variations.forEach(variation =&gt; {
+  const variationColorMap: VariationColorMap = {}
+  featureFlagData.variations.forEach((variation, variationIndex) =&gt; {
+    variationColorMap[variation.identifier] = CFVariationColors[variationIndex]
     const variationTargets =
       featureFlagData.envProperties?.variationMap?.find(
         variationMapItem =&gt; variation.identifier === variationMapItem.variation
@@ -801,6 +824,7 @@ const TargetingRulesTab = ({
           name: segments.find(segment =&gt; segment.identifier === targetGroupRule.clauses[0].values[0])?.name as string
         })) || []
 &nbsp;
+    // highest priority = lowest number
     const highestPriority =
       variationTargetGroups<span class="branch-0 cbranch-no" title="branch not covered" >?.r</span>educe(
         (prev: TargetGroup, current: TargetGroup) =&gt; (prev.priority &lt; current.priority ? prev : current),
@@ -939,6 +963,7 @@ const TargetingRulesTab = ({
                   name="targetingRuleItems"
                   render={arrayHelpers =&gt; (
                     &lt;FlagEnabledRulesCard
+                      variationColorMap={variationColorMap}
                       targetingRuleItems={formikProps.values.targetingRuleItems}
                       targets={targets}
                       segments={segments}
@@ -959,11 +984,11 @@ const TargetingRulesTab = ({
                         arrayHelpers.replace(index, newTargetingRuleItem)
                       }}
                       addVariation={newVariation =&gt; {
-                        const variation = {
+                        const variation: FormVariationMap = {
                           priority: 100,
                           type: TargetingRuleItemType.VARIATION,
                           variationIdentifier: newVariation.identifier,
-                          variationName: newVariation.name,
+                          variationName: newVariation.name as string,
                           targets: [],
                           targetGroups: []
                         }
@@ -975,9 +1000,8 @@ const TargetingRulesTab = ({
                       }}
                       addPercentageRollout={() =&gt; {
                         // need to add with empty fields so the validation messages appear correctly
-                        const newPercentageRollout: VariationPercentageRollout = {
+                        const newPercentageRollout = {
                           type: TargetingRuleItemType.PERCENTAGE_ROLLOUT,
-                          priority: 100,
                           bucketBy: 'identifier',
                           clauses: [
                             {
@@ -1036,7 +1060,7 @@ export default TargetingRulesTab
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Tue Apr 12 2022 12:12:53 GMT+0000 (Greenwich Mean Time)
+                at Sat Apr 16 2022 05:47:00 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../../prettify.js"></script>
