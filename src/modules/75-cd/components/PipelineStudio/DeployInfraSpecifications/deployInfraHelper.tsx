@@ -82,7 +82,8 @@ export const getInfrastructureDefaultValue = (
       return {
         connectorRef,
         region,
-        stage: infraStage
+        stage: infraStage,
+        allowSimultaneousDeployments
       }
     }
     case InfraDeploymentType.ServerlessAzureFunctions:
@@ -92,7 +93,8 @@ export const getInfrastructureDefaultValue = (
 
       return {
         connectorRef,
-        stage: infraStage
+        stage: infraStage,
+        allowSimultaneousDeployments
       }
     }
     default: {

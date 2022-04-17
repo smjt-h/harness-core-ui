@@ -308,13 +308,13 @@ const validateServerlessArtifactsForPropagatedStage = (
     // When artifacts / manifests are overriden over the propagate (previous) stage, else do not validate for fields
     // as fields are already validated in propagate (previous) stage
     if (
-      stage.stage.spec?.serviceConfig.stageOverrides &&
+      stage.stage.spec?.serviceConfig.stageOverrides?.artifacts?.primary &&
       !isPrimaryArtifactFieldPresentInPropagatedStage(stage, 'artifactDirectory')
     ) {
       return 'pipeline.artifactsSelection.validation.artifactDirectory'
     }
     if (
-      stage.stage.spec?.serviceConfig.stageOverrides &&
+      stage.stage.spec?.serviceConfig.stageOverrides?.artifacts?.primary &&
       !isPrimaryArtifactFieldPresentInPropagatedStage(stage, 'artifactPath')
     ) {
       if (!isPrimaryArtifactFieldPresentInPropagatedStage(stage, 'artifactPathFilter')) {

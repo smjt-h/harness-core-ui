@@ -318,7 +318,8 @@ export default function DeployInfraSpecifications(props: React.PropsWithChildren
                 {
                   connectorRef: value.connectorRef,
                   stage: value.stage,
-                  region: value.region
+                  region: value.region,
+                  allowSimultaneousDeployments: value.allowSimultaneousDeployments
                 },
                 'ServerlessAwsLambda'
               )
@@ -341,7 +342,8 @@ export default function DeployInfraSpecifications(props: React.PropsWithChildren
               onUpdateInfrastructureDefinition(
                 {
                   connectorRef: value.connectorRef,
-                  stage: value.stage
+                  stage: value.stage,
+                  allowSimultaneousDeployments: value.allowSimultaneousDeployments
                 },
                 'ServerlessGoogleFunctions'
               )
@@ -364,7 +366,8 @@ export default function DeployInfraSpecifications(props: React.PropsWithChildren
               onUpdateInfrastructureDefinition(
                 {
                   connectorRef: value.connectorRef,
-                  stage: value.stage
+                  stage: value.stage,
+                  allowSimultaneousDeployments: value.allowSimultaneousDeployments
                 },
                 'ServerlessAzureFunctions'
               )

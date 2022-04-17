@@ -93,16 +93,14 @@ export const ServerlessSpecEditable: React.FC<ServerlessSpecEditableProps> = ({
         formName={formInfo.formName}
         initialValues={initialValues}
         validate={value => {
-          const data: Partial<ServerlessInfraTypes> = hasRegion
-            ? {
-                connectorRef: undefined,
-                region: value.region === '' ? undefined : value.region,
-                stage: value.stage === '' ? undefined : value.stage
-              }
-            : {
-                connectorRef: undefined,
-                stage: value.stage === '' ? undefined : value.stage
-              }
+          const data: Partial<ServerlessInfraTypes> = {
+            connectorRef: undefined,
+            stage: value.stage === '' ? undefined : value.stage,
+            allowSimultaneousDeployments: value.allowSimultaneousDeployments
+          }
+          if (hasRegion) {
+            data.region = value.region === '' ? undefined : value.region
+          }
           if (value.connectorRef) {
             data.connectorRef = (value.connectorRef as any)?.value || value.connectorRef
           }
@@ -219,6 +217,22 @@ export const ServerlessSpecEditable: React.FC<ServerlessSpecEditableProps> = ({
                     className={css.marginTop}
                   />
                 )}
+              </Layout.Horizontal>
+              <Layout.Horizontal
+                spacing="medium"
+                style={{ alignItems: 'center' }}
+                margin={{ top: 'medium' }}
+                className={css.lastRow}
+              >
+                <FormInput.CheckBox
+                  className={css.simultaneousDeployment}
+                  name={'allowSimultaneousDeployments'}
+                  label={getString('cd.allowSimultaneousDeployments')}
+                  tooltipProps={{
+                    dataTooltipId: 'k8InfraAllowSimultaneousDeployments'
+                  }}
+                  disabled={readonly}
+                />
               </Layout.Horizontal>
             </FormikForm>
           )

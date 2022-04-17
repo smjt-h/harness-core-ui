@@ -430,6 +430,37 @@ exports[`Test ServerlessAzureSpec snapshot should render edit view with empty in
               </div>
             </div>
           </div>
+          <div
+            class="Layout--horizontal Layout--layout-spacing-medium StyledProps--main lastRow StyledProps--margin-top-medium"
+            style="align-items: center;"
+          >
+            <div
+              class="bp3-form-group"
+              data-id="allowSimultaneousDeployments-2"
+            >
+              <div
+                class="bp3-form-content"
+              >
+                <label
+                  class="bp3-control bp3-checkbox StyledProps--font Checkbox--checkbox simultaneousDeployment StyledProps--main StyledProps--inline"
+                >
+                  <input
+                    name="allowSimultaneousDeployments"
+                    type="checkbox"
+                  />
+                  <span
+                    class="bp3-control-indicator"
+                  />
+                  <span
+                    class="Tooltip--acenter FormikForm--checkBoxDocTooltipLabel"
+                    data-tooltip-id="k8InfraAllowSimultaneousDeployments"
+                  >
+                    cd.allowSimultaneousDeployments
+                  </span>
+                </label>
+              </div>
+            </div>
+          </div>
         </div>
       </form>
     </div>
@@ -671,6 +702,37 @@ exports[`Test ServerlessAzureSpec snapshot should render edit view with runtime 
               </span>
             </span>
           </div>
+          <div
+            class="Layout--horizontal Layout--layout-spacing-medium StyledProps--main lastRow StyledProps--margin-top-medium"
+            style="align-items: center;"
+          >
+            <div
+              class="bp3-form-group"
+              data-id="allowSimultaneousDeployments-2"
+            >
+              <div
+                class="bp3-form-content"
+              >
+                <label
+                  class="bp3-control bp3-checkbox StyledProps--font Checkbox--checkbox simultaneousDeployment StyledProps--main StyledProps--inline"
+                >
+                  <input
+                    name="allowSimultaneousDeployments"
+                    type="checkbox"
+                  />
+                  <span
+                    class="bp3-control-indicator"
+                  />
+                  <span
+                    class="Tooltip--acenter FormikForm--checkBoxDocTooltipLabel"
+                    data-tooltip-id="k8InfraAllowSimultaneousDeployments"
+                  >
+                    cd.allowSimultaneousDeployments
+                  </span>
+                </label>
+              </div>
+            </div>
+          </div>
         </div>
       </form>
     </div>
@@ -907,6 +969,37 @@ exports[`Test ServerlessAzureSpec snapshot should render edit view with values  
                     </span>
                   </span>
                 </div>
+              </div>
+            </div>
+          </div>
+          <div
+            class="Layout--horizontal Layout--layout-spacing-medium StyledProps--main lastRow StyledProps--margin-top-medium"
+            style="align-items: center;"
+          >
+            <div
+              class="bp3-form-group"
+              data-id="allowSimultaneousDeployments-2"
+            >
+              <div
+                class="bp3-form-content"
+              >
+                <label
+                  class="bp3-control bp3-checkbox StyledProps--font Checkbox--checkbox simultaneousDeployment StyledProps--main StyledProps--inline"
+                >
+                  <input
+                    name="allowSimultaneousDeployments"
+                    type="checkbox"
+                  />
+                  <span
+                    class="bp3-control-indicator"
+                  />
+                  <span
+                    class="Tooltip--acenter FormikForm--checkBoxDocTooltipLabel"
+                    data-tooltip-id="k8InfraAllowSimultaneousDeployments"
+                  >
+                    cd.allowSimultaneousDeployments
+                  </span>
+                </label>
               </div>
             </div>
           </div>
