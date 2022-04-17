@@ -52,7 +52,17 @@ export enum ConnectorActions {
 
 export enum DelegateActions {
   StartCreateDelegate = 'Start Create Delegate',
-  SaveCreateDelegate = 'Save Create Delegate'
+  SaveCreateDelegate = 'Save Create Delegate',
+  SelectDelegateType = 'Select Delegate Type',
+  SetupDelegate = 'Set up Delegate',
+  SetupDelegateBack = 'Set up Delegate Back',
+  VerificationBack = 'Verification Back',
+  DownloadYAML = 'Download YAML File',
+  LoadCreateTokenModal = 'Load Create Token Modal',
+  SaveCreateToken = 'Save Create Token',
+  CloseCreateToken = 'Close Create Token',
+  ReviewScriptContinue = 'Review Script Continue',
+  ReviewScriptBack = 'Review Script Back'
 }
 
 export enum StepActions {

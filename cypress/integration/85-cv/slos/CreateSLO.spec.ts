@@ -432,6 +432,7 @@ describe('Create SLO', () => {
     cy.intercept('GET', getUserJourneysCall, listUserJourneysCallResponse)
     cy.intercept('GET', getSLORiskCount, getSLORiskCountResponse)
     cy.intercept('GET', listMonitoredServices, listMonitoredServicesCallResponse).as('getListMonitoredServices')
+    cy.intercept('GET', getSLODetails, responseSLODashboardDetail)
 
     cy.intercept('GET', getMonitoredService, getMonitoredServiceResponse).as('getMonitoredService')
     cy.intercept('GET', listSLOsCallWithCVNGProd, updatedListSLOsCallResponse)
@@ -539,6 +540,7 @@ describe('Create SLO', () => {
     cy.intercept('GET', getUserJourneysCall, listUserJourneysCallResponse)
     cy.intercept('GET', getSLORiskCount, getSLORiskCountResponse)
     cy.intercept('GET', listMonitoredServices, listMonitoredServicesCallResponse)
+    cy.intercept('GET', getSLODetails, responseSLODashboardDetail)
 
     cy.intercept('GET', getMonitoredService, getMonitoredServiceResponse).as('getMonitoredService')
     cy.intercept('GET', listSLOsCallWithCVNGProd, updatedListSLOsCallResponse)

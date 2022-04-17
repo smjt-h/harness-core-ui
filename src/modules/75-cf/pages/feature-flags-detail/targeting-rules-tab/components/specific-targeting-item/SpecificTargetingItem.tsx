@@ -9,7 +9,7 @@ import { Container, FontVariation, Label, SimpleTagInput, Text } from '@harness/
 import React, { ReactElement } from 'react'
 import { useStrings } from 'framework/strings'
 import type { Segment, Target, TargetMap } from 'services/cf'
-import type { FormVariationMap, TargetGroup } from '../../Types.types'
+import type { FormVariationMap, TargetGroup, VariationColorMap } from '../../Types.types'
 import DisabledFeatureTooltip from '../disabled-feature-tooltip/DisabledFeatureTooltip'
 import css from './SpecificTargetingItem.module.scss'
 
@@ -19,6 +19,7 @@ export interface SpecificTargetingItemProps {
   targets: Target[]
   segments: Segment[]
   formVariationMapItem: FormVariationMap
+  variationColorMap: VariationColorMap
   updateTargetGroups: (index: number, newTargetGroups: TargetGroup[]) => void
   updateTargets: (index: number, newTargets: TargetMap[]) => void
 }
@@ -29,16 +30,29 @@ export interface TagInputItem {
 }
 
 const SpecificTargetingItem = (props: SpecificTargetingItemProps): ReactElement => {
-  const { targets, segments, formVariationMapItem, index, disabled, updateTargetGroups, updateTargets } = props
+  const {
+    targets,
+    segments,
+    formVariationMapItem,
+    variationColorMap,
+    index,
+    disabled,
+    updateTargetGroups,
+    updateTargets
+  } = props
 
   const delimiter = ','
 
   const { getString } = useStrings()
-
   return (
     <>
       <Container flex={{ justifyContent: 'space-between' }}>
-        <Text inline font={{ variation: FontVariation.BODY }} icon="full-circle">
+        <Text
+          inline
+          font={{ variation: FontVariation.BODY }}
+          icon="full-circle"
+          iconProps={{ style: { color: variationColorMap[formVariationMapItem.variationIdentifier] } }}
+        >
           {formVariationMapItem.variationName}
         </Text>
       </Container>

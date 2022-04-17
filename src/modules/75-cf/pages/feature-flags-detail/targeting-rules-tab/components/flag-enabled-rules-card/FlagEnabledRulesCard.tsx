@@ -12,7 +12,13 @@ import { useStrings } from 'framework/strings'
 import type { Segment, Target, TargetMap, Variation } from 'services/cf'
 import DefaultRules from '../default-rules/DefaultRules'
 import SpecificTargetingItem from '../specific-targeting-item/SpecificTargetingItem'
-import { FormVariationMap, VariationPercentageRollout, TargetGroup, TargetingRuleItemType } from '../../Types.types'
+import {
+  FormVariationMap,
+  VariationPercentageRollout,
+  TargetGroup,
+  TargetingRuleItemType,
+  VariationColorMap
+} from '../../Types.types'
 import PercentageRolloutItem from '../percentage-rollout-item/PercentageRolloutItem'
 import AddTargetingButton from '../add-targeting-button/AddTargetingButton'
 import DisabledFeatureTooltip from '../disabled-feature-tooltip/DisabledFeatureTooltip'
@@ -22,6 +28,7 @@ export interface FlagEnabledRulesCardProps {
   segments: Segment[]
   targetingRuleItems: (VariationPercentageRollout | FormVariationMap)[]
   featureFlagVariations: Variation[]
+  variationColorMap: VariationColorMap
   disabled: boolean
   updateTargetGroups: (index: number, newTargetGroups: TargetGroup[]) => void
   updateTargets: (index: number, newTargetGroups: TargetMap[]) => void
@@ -37,6 +44,7 @@ const FlagEnabledRulesCard = (props: FlagEnabledRulesCardProps): ReactElement =>
     segments,
     targetingRuleItems,
     featureFlagVariations,
+    variationColorMap,
     updateTargetGroups,
     updateTargets,
     addVariation,
@@ -93,6 +101,7 @@ const FlagEnabledRulesCard = (props: FlagEnabledRulesCardProps): ReactElement =>
                   <SpecificTargetingItem
                     key={`${item.variationIdentifier}_${index}`}
                     index={index}
+                    variationColorMap={variationColorMap}
                     disabled={disabled}
                     targets={targets}
                     segments={segments}
@@ -122,6 +131,7 @@ const FlagEnabledRulesCard = (props: FlagEnabledRulesCardProps): ReactElement =>
             addPercentageRollout={addPercentageRollout}
             targetingDropdownVariations={targetingDropdownVariations}
             addVariation={addVariation}
+            variationColorMap={variationColorMap}
             disabled={disabled}
           />
         </Layout.Vertical>

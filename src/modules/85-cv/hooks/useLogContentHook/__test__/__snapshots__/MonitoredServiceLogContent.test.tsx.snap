@@ -31,6 +31,11 @@ exports[`MonitoredServiceLogContent should render MonitoredServiceLogContent com
               service 1
             </p>
             <p
+              class="StyledProps--font StyledProps--main StyledProps--color StyledProps--color-black StyledProps--font-variation-tiny-semi"
+            >
+              /
+            </p>
+            <p
               class="StyledProps--font Text--lineclamp StyledProps--main StyledProps--font-variation-tiny-semi StyledProps--color StyledProps--color-grey700"
               style="max-width: 100px; --text-line-clamp: 1;"
             >
@@ -331,6 +336,11 @@ exports[`MonitoredServiceLogContent should render MonitoredServiceLogContent com
               style="max-width: 100px; --text-line-clamp: 1;"
             >
               service 1
+            </p>
+            <p
+              class="StyledProps--font StyledProps--main StyledProps--color StyledProps--color-black StyledProps--font-variation-tiny-semi"
+            >
+              /
             </p>
             <p
               class="StyledProps--font Text--lineclamp StyledProps--main StyledProps--font-variation-tiny-semi StyledProps--color StyledProps--color-grey700"

@@ -41,3 +41,7 @@ export interface FormVariationMap {
   targets: TargetMap[]
   type: string
 }
+
+export interface VariationColorMap {
+  [key: string]: string
+}

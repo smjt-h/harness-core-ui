@@ -101,6 +101,9 @@ const LogContentHeader: React.FC<LogContentHeaderProps> = ({
             >
               {serviceName}
             </Text>
+            <Text color={Color.BLACK} font={{ variation: FontVariation.TINY_SEMI }}>
+              /
+            </Text>
             <Text
               font={{ variation: FontVariation.TINY_SEMI }}
               color={Color.GREY_700}

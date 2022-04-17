@@ -5082,6 +5082,7 @@ export interface StringsMap {
   'cv.errorBudgetIsSuccessfullyReset': string
   'cv.errorBudgetRecalculationInProgress': string
   'cv.errorBudgetRemaining': string
+  'cv.errorBudgetRemainingWithMins': string
   'cv.evaluationPeriod': string
   'cv.executionLogs': string
   'cv.externalAPICalls': string
@@ -5220,6 +5221,7 @@ export interface StringsMap {
   'cv.monitoredServices.nameValidation': string
   'cv.monitoredServices.newMonitoredServices': string
   'cv.monitoredServices.noAvailableData': string
+  'cv.monitoredServices.noAvailableLogData': string
   'cv.monitoredServices.noMatchingData': string
   'cv.monitoredServices.serviceAndEnvironment': string
   'cv.monitoredServices.serviceDependencies.noData': string

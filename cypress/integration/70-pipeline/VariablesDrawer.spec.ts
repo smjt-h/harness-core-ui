@@ -1,4 +1,9 @@
-import { gitSyncEnabledCall, pipelineVariablesCall } from '../../support/70-pipeline/constants'
+import {
+  cdFailureStrategiesYaml,
+  gitSyncEnabledCall,
+  pipelinesRoute,
+  pipelineVariablesCall
+} from '../../support/70-pipeline/constants'
 
 describe('Pipeline Variables', () => {
   beforeEach(() => {
@@ -8,9 +13,15 @@ describe('Pipeline Variables', () => {
       return false
     })
     cy.intercept('GET', gitSyncEnabledCall, { connectivityMode: null, gitSyncEnabled: false })
-    cy.login('test', 'test')
+    cy.intercept('GET', cdFailureStrategiesYaml, { fixture: 'pipeline/api/pipelines/failureStrategiesYaml' }).as(
+      'cdFailureStrategiesYaml'
+    )
 
-    cy.visitCreatePipeline()
+    cy.initializeRoute()
+
+    cy.visit(pipelinesRoute)
+
+    cy.contains('span', 'Create a Pipeline').click()
 
     cy.fillName('testPipeline_Cypress')
 
@@ -23,7 +34,7 @@ describe('Pipeline Variables', () => {
     cy.clickSubmit()
 
     cy.contains('span', 'Variables').click()
-    cy.wait(2000)
+    cy.wait('@cdFailureStrategiesYaml')
 
     cy.intercept('POST', pipelineVariablesCall, {
       fixture: 'pipeline/api/runpipeline/pipelines.variables'
@@ -36,7 +47,7 @@ describe('Pipeline Variables', () => {
 
     cy.wait(1000)
 
-    cy.contains('span', 'Add Variable').should('not.be.visible')
+    cy.get('div[data-testid="pipeline.variables-panel"]').contains('span', 'Add Variable').should('not.be.visible')
     cy.get('div[data-testid="pipeline.variables-summary"]').click({ force: true })
 
     cy.contains('span', 'Add Variable').should('have.length', '1')

@@ -6,11 +6,18 @@
  */
 
 import React from 'react'
-import { render, RenderResult } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
+import { render, RenderResult, screen, waitFor } from '@testing-library/react'
 import * as cvServices from 'services/cv'
 import { TestWrapper } from '@common/utils/testUtils'
 import CVSLODetailsPage from '../CVSLODetailsPage'
-import { responseSLODashboardDetail, testWrapperProps } from './CVSLODetailsPage.mock'
+import {
+  responseSLODashboardDetail,
+  testWrapperProps,
+  errorMessage,
+  pathParams,
+  responseSLODashboardDetail2
+} from './CVSLODetailsPage.mock'
 
 jest.mock('@cv/pages/slos/components/CVCreateSLO/CVCreateSLO', () => ({
   __esModule: true,
@@ -44,5 +51,63 @@ describe('Test cases for CVSLODetailsPage', () => {
     const { container } = renderComponent()
 
     expect(container.getElementsByClassName('bp3-skeleton')).toHaveLength(2)
+  })
+
+  test('is should handle retryOnError for both tabs', async () => {
+    const refetch = jest.fn()
+
+    jest
+      .spyOn(cvServices, 'useGetSLODetails')
+      .mockReturnValue({ data: null, loading: false, error: { message: errorMessage }, refetch } as any)
+
+    renderComponent()
+
+    expect(screen.getByText('details')).toHaveAttribute('aria-selected', 'true')
+    expect(screen.getByText(errorMessage)).toBeInTheDocument()
+
+    userEvent.click(screen.getByText('Retry'))
+
+    const { identifier, accountId, orgIdentifier, projectIdentifier } = pathParams
+
+    await waitFor(() => {
+      expect(cvServices.useGetSLODetails).toHaveBeenLastCalledWith({
+        identifier,
+        queryParams: {
+          accountId,
+          orgIdentifier,
+          projectIdentifier
+        }
+      })
+    })
+
+    userEvent.click(screen.getByText('cv.monitoredServices.monitoredServiceTabs.configurations'))
+
+    expect(screen.getByText('cv.monitoredServices.monitoredServiceTabs.configurations')).toHaveAttribute(
+      'aria-selected',
+      'true'
+    )
+
+    userEvent.click(screen.getByText('Retry'))
+
+    await waitFor(() => {
+      expect(cvServices.useGetSLODetails).toHaveBeenLastCalledWith({
+        identifier,
+        queryParams: {
+          accountId,
+          orgIdentifier,
+          projectIdentifier
+        }
+      })
+    })
+  })
+
+  test('it should handle the suffix day/days', () => {
+    jest
+      .spyOn(cvServices, 'useGetSLODetails')
+      .mockReturnValue({ data: responseSLODashboardDetail2, loading: false } as any)
+
+    renderComponent()
+
+    expect(screen.getByText('cv.slos.slis.type.availability')).toBeInTheDocument()
   })
 })

@@ -16,6 +16,7 @@ export interface UseLogContentHookProps {
   monitoredServiceIdentifier?: string
   monitoredServiceStartTime?: number
   monitoredServiceEndTime?: number
+  showTimelineSlider?: boolean
 }
 
 export interface UseLogContentHookReturn {
@@ -39,6 +40,7 @@ export interface MonitoredServiceLogContentProps {
   envName?: string
   startTime?: number
   endTime?: number
+  showTimelineSlider?: boolean
 }
 
 export interface SLOLogContentProps {
@@ -82,4 +84,5 @@ export interface ExecutionAndAPICallLogProps {
   pageNumber: number
   setPageNumber: (pageNumber: number | ((_pageNumber: number) => number)) => void
   handleDownloadLogs: () => Promise<void>
+  showTimelineSlider?: boolean
 }

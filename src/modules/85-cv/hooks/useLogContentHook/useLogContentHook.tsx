@@ -23,7 +23,8 @@ export const useLogContentHook = ({
   envName,
   monitoredServiceIdentifier,
   monitoredServiceStartTime,
-  monitoredServiceEndTime
+  monitoredServiceEndTime,
+  showTimelineSlider
 }: UseLogContentHookProps): UseLogContentHookReturn => {
   const [isFullScreen, setIsFullScreen] = useState(false)
   const [logType, setLogType] = useState<LogTypes>(LogTypes.ExecutionLog)
@@ -68,6 +69,7 @@ export const useLogContentHook = ({
               setIsFullScreen={setIsFullScreen}
               startTime={monitoredServiceStartTime}
               endTime={monitoredServiceEndTime}
+              showTimelineSlider={showTimelineSlider}
             />
           )}
         </div>

@@ -32,6 +32,8 @@ import { useGetDelegateTokens, GetDelegateTokensQueryParams } from 'services/cd-
 
 import { useStrings } from 'framework/strings'
 import type { DelegateTokenDetails } from 'services/portal'
+import { useTelemetry } from '@common/hooks/useTelemetry'
+import { Category, DelegateActions } from '@common/constants/TrackingConstants'
 
 import { useRevokeTokenModal } from './modals/useRevokeTokenModal'
 import { useCreateTokenModal } from './modals/useCreateTokenModal'
@@ -230,6 +232,8 @@ export const DelegateListing: React.FC = () => {
     }
   }, [showRevoked])
 
+  const { trackEvent } = useTelemetry()
+
   return (
     <Container height="100%">
       <Layout.Horizontal className={css.header}>
@@ -237,7 +241,12 @@ export const DelegateListing: React.FC = () => {
           intent="primary"
           text={getString('rbac.token.createLabel')}
           icon="plus"
-          onClick={() => openCreateTokenModal()}
+          onClick={() => {
+            openCreateTokenModal()
+            trackEvent(DelegateActions.LoadCreateTokenModal, {
+              category: Category.DELEGATE
+            })
+          }}
           id="newDelegateBtn"
           data-testid="newDelegateButton"
         />

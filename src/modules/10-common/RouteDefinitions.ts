@@ -1231,7 +1231,7 @@ const routes = {
       projectIdentifier,
       orgIdentifier,
       identifier,
-      module
+      module = 'cv'
     }: Partial<ProjectPathProps & { identifier: string; module: string }>) =>
       `/${module}/orgs/${orgIdentifier}/projects/${projectIdentifier}/monitoringservices/edit/${identifier}`
   ),
