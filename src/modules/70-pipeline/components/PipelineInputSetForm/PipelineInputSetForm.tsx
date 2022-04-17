@@ -20,7 +20,7 @@ import type {
 import { useStrings } from 'framework/strings'
 import type { AllNGVariables } from '@pipeline/utils/types'
 import type { StepViewType } from '@pipeline/components/AbstractSteps/Step'
-
+import DelegateSelectorPanel from '@pipeline/components/PipelineSteps/AdvancedSteps/DelegateSelectorPanel/DelegateSelectorPanel'
 import { FormMultiTypeDurationField } from '@common/components/MultiTypeDuration/MultiTypeDuration'
 import { PubSubPipelineActions } from '@pipeline/factories/PubSubPipelineAction'
 import { PipelineActions } from '@pipeline/factories/PubSubPipelineAction/types'
@@ -119,13 +119,14 @@ export function StageFormInternal({
           allowableTypes={allowableTypes}
         />
       )}
-      {!isEmpty(template?.stage?.when) && (
+      {(!isEmpty(template?.stage?.when) || !isEmpty(template?.stage?.delegateSelectors)) && (
         <StageAdvancedInputSetForm
           stageIdentifier={allValues?.stage?.identifier}
           path={path}
           deploymentStageTemplate={(template as StageElementWrapperConfig).stage}
           readonly={readonly}
           allowableTypes={allowableTypes}
+          delegateSelectors={template?.stage?.delegateSelectors}
         />
       )}
     </div>
@@ -225,6 +226,11 @@ function PipelineInputSetFormInternal(props: PipelineInputSetFormProps): React.R
             name="timeout"
             disabled={readonly}
           />
+        </div>
+      ) : null}
+      {getMultiTypeFromValue(template?.delegateSelectors) === MultiTypeInputType.RUNTIME ? (
+        <div className={cx(stepCss.formGroup, stepCss.sm, stepCss.delegate)}>
+          <DelegateSelectorPanel isReadonly={readonly || false} allowableTypes={allowableTypes} />
         </div>
       ) : null}
       {template?.variables && template?.variables?.length > 0 && (
