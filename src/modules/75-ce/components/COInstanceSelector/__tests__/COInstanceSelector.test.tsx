@@ -93,7 +93,8 @@ jest.mock('services/lw', () => ({
   useAllRegions: jest.fn().mockImplementation(() => mockedRegionsData),
   useAllZones: jest.fn().mockImplementation(() => ({
     data: mockedZonesData,
-    loading: false
+    loading: false,
+    refetch: jest.fn()
   })),
   useGetInstancesTags: jest.fn().mockImplementation(() => ({
     data: mockedTagsData,
@@ -246,5 +247,126 @@ describe('Instance Selector Modal', () => {
     act(() => {
       fireEvent.click(refreshBtn)
     })
+  })
+
+  test('should show message when data is empty for selected resource group', async () => {
+    const { container } = render(
+      <TestWrapper>
+        <COInstanceSelector
+          selectedInstances={[]}
+          setSelectedInstances={jest.fn()}
+          setGatewayDetails={jest.fn()}
+          instances={[]}
+          gatewayDetails={initialGatewayDetails}
+          onInstancesAddSuccess={jest.fn()}
+          loading={false}
+          refresh={jest.fn()}
+          isEditFlow={false}
+        />
+      </TestWrapper>
+    )
+
+    await selectResourceGroup(container)
+
+    act(() => {
+      expect(container).toMatchSnapshot()
+    })
+  })
+})
+
+describe('GCP instance selection', () => {
+  const gcpProvider = {
+    name: 'GCP',
+    value: 'gcp',
+    icon: 'gcp'
+  }
+  const gcpGatewayDetails = { ...initialGatewayDetails, provider: gcpProvider }
+  test('should render GCP instances selection modal with filters', () => {
+    const { container } = render(
+      <TestWrapper>
+        <COInstanceSelector
+          selectedInstances={[]}
+          setSelectedInstances={jest.fn()}
+          setGatewayDetails={jest.fn()}
+          instances={[mockedInstance]}
+          gatewayDetails={gcpGatewayDetails}
+          onInstancesAddSuccess={jest.fn()}
+          loading={false}
+          isEditFlow={false}
+        />
+      </TestWrapper>
+    )
+
+    expect(container).toMatchSnapshot()
+  })
+
+  test('should be able to select filters', async () => {
+    const { container } = render(
+      <TestWrapper>
+        <COInstanceSelector
+          selectedInstances={[]}
+          setSelectedInstances={jest.fn()}
+          setGatewayDetails={jest.fn()}
+          instances={[mockedInstance]}
+          gatewayDetails={gcpGatewayDetails}
+          onInstancesAddSuccess={jest.fn()}
+          loading={false}
+          isEditFlow={false}
+        />
+      </TestWrapper>
+    )
+
+    const regionDropdown = container.querySelector('input[name="regionsSelector"]') as HTMLInputElement
+    const zoneDropdown = container.querySelector('input[name="zoneSelector"]') as HTMLInputElement
+
+    const rgCaret = container
+      .querySelector(`input[name="regionsSelector"] + [class*="bp3-input-action"]`)
+      ?.querySelector('[data-icon="chevron-down"]')
+    act(() => {
+      fireEvent.click(rgCaret!)
+    })
+    const rgToSelect = await findByText(container, 'ap-southeast-1')
+    act(() => {
+      fireEvent.click(rgToSelect)
+    })
+    expect(regionDropdown.value).toBe('ap-southeast-1')
+
+    const zoneCaret = container
+      .querySelector(`input[name="zoneSelector"] + [class*="bp3-input-action"]`)
+      ?.querySelector('[data-icon="chevron-down"]')
+    act(() => {
+      fireEvent.click(zoneCaret!)
+    })
+    const zoneToSelect = await findByText(container, 'us-container-1')
+    act(() => {
+      fireEvent.click(zoneToSelect)
+    })
+    expect(zoneDropdown.value).toBe('us-container-1')
+  })
+})
+
+describe('AWS instance selection', () => {
+  test('should render AWS instances selection modal with filters', () => {
+    const awsProvider = {
+      name: 'AWS',
+      value: 'aws',
+      icon: 'service-aws'
+    }
+    const { container } = render(
+      <TestWrapper>
+        <COInstanceSelector
+          selectedInstances={[]}
+          setSelectedInstances={jest.fn()}
+          setGatewayDetails={jest.fn()}
+          instances={[mockedInstance]}
+          gatewayDetails={{ ...initialGatewayDetails, provider: awsProvider }}
+          onInstancesAddSuccess={jest.fn()}
+          loading={false}
+          isEditFlow={false}
+        />
+      </TestWrapper>
+    )
+
+    expect(container).toMatchSnapshot()
   })
 })

@@ -5,31 +5,21 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import React, { useState, useEffect, ReactNode } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
-import type { CellProps } from 'react-table'
 import cx from 'classnames'
 import { isEmpty as _isEmpty, defaultTo as _defaultTo } from 'lodash-es'
-import {
-  Text,
-  Container,
-  ExpandingSearchInput,
-  Layout,
-  Checkbox,
-  Button,
-  Icon,
-  TableV2,
-  Select,
-  SelectOption
-} from '@wings-software/uicore'
-import { Color, FontVariation } from '@harness/design-system'
+import { Text, Container, Layout, Button, Icon, Select, SelectOption } from '@wings-software/uicore'
+import { FontVariation } from '@harness/design-system'
 import type { GatewayDetails, InstanceDetails } from '@ce/components/COCreateGateway/models'
 import { useTelemetry } from '@common/hooks/useTelemetry'
 import { ResourceGroup, useAllResourceGroups, useAllZones, useGetInstancesTags } from 'services/lw'
 import type { AccountPathProps } from '@common/interfaces/RouteInterfaces'
 import useRegionsForSelection from '@ce/common/hooks/useRegionsForSelection'
+import type { AWSFiltersProps, GCPFiltersProps, SelectedTagFilter } from '@ce/types'
 import { useStrings } from 'framework/strings'
 import { Utils } from '@ce/common/Utils'
+import InstanceSelectorBody from './InstanceSelectorBody'
 import css from './COInstanceSelector.module.scss'
 
 interface COInstanceSelectorprops {
@@ -44,37 +34,24 @@ interface COInstanceSelectorprops {
   isEditFlow: boolean
 }
 
-interface SelectedTagFilter {
-  key?: string
-  value?: string
+const getAwsFilterText = (filters?: AWSFiltersProps) => {
+  let filterText = ''
+  if (filters?.region) {
+    filterText = `regions=['${filters.region?.label}']`
+  }
+  if (filters?.tags?.key && filters.tags.value) {
+    filterText += `\n tags={'${filters.tags.key}':'${filters.tags.value}'}`
+  }
+  return filterText
 }
 
-interface GCPFiltersProps {
-  region?: SelectOption
-  zone?: SelectOption
+const getAzureFilterText = (filters: SelectOption) => {
+  return `resource_groups=['${_defaultTo(filters.label, '')}']`
 }
 
-interface AWSFiltersProps {
-  region?: SelectOption
-  tags?: SelectedTagFilter
+const getGcpFilterText = (filters: GCPFiltersProps) => {
+  return `regions=['${filters.zone?.label}']`
 }
-
-function TableCell(tableProps: CellProps<InstanceDetails>): JSX.Element {
-  return (
-    <Text lineClamp={3} color={Color.BLACK}>
-      {tableProps.value}
-    </Text>
-  )
-}
-function NameCell(tableProps: CellProps<InstanceDetails>): JSX.Element {
-  return (
-    <Text lineClamp={3} color={Color.BLACK} style={{ overflowWrap: 'anywhere', paddingRight: 5 }}>
-      {tableProps.value} {tableProps.row.original.id}
-    </Text>
-  )
-}
-
-const TOTAL_ITEMS_PER_PAGE = 5
 
 const COInstanceSelector: React.FC<COInstanceSelectorprops> = props => {
   const { trackEvent } = useTelemetry()
@@ -85,6 +62,7 @@ const COInstanceSelector: React.FC<COInstanceSelectorprops> = props => {
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [selectedResourceGroup, setSelectedResourceGroup] = useState<SelectOption>()
   const [gcpFilters, setGcpFilters] = useState<GCPFiltersProps>()
+  const [awsFilters, setAwsFilters] = useState<AWSFiltersProps>()
 
   const isAzureProvider = Utils.isProviderAzure(props.gatewayDetails.provider)
   const isGcpProvider = Utils.isProviderGcp(props.gatewayDetails.provider)
@@ -96,8 +74,7 @@ const COInstanceSelector: React.FC<COInstanceSelectorprops> = props => {
   const onResourceGroupSelect = (selectedRg: SelectOption | null, resourceGroupLoading: boolean) => {
     if (selectedRg) {
       setSelectedResourceGroup(selectedRg)
-      const groupText = _defaultTo(selectedRg.label, '')
-      props.refresh?.(`resource_groups=['${groupText}']`)
+      props.refresh?.(getAzureFilterText(selectedRg))
     }
     setIsLoading(resourceGroupLoading)
   }
@@ -105,20 +82,15 @@ const COInstanceSelector: React.FC<COInstanceSelectorprops> = props => {
   const onGcpFiltersChange = (filters: GCPFiltersProps, loadingFilters: boolean) => {
     setGcpFilters(filters)
     if (filters.zone) {
-      const filterText = `regions=['${filters.zone.label}']`
-      props.refresh?.(filterText)
+      props.refresh?.(getGcpFilterText(filters))
     }
     setIsLoading(loadingFilters)
   }
 
   const onAwsFiltersChange = (filters: AWSFiltersProps, loadingFilters: boolean) => {
-    setGcpFilters(filters)
+    setAwsFilters(filters)
     if (filters.region) {
-      let filterText = `regions=['${filters.region.label}']`
-      if (filters.tags?.key && filters.tags.value) {
-        filterText += `\n tags={'${filters.tags.key}':'${filters.tags.value}'}`
-      }
-      props.refresh?.(filterText)
+      props.refresh?.(getAwsFilterText(filters))
     }
     setIsLoading(loadingFilters)
   }
@@ -166,11 +138,11 @@ const COInstanceSelector: React.FC<COInstanceSelectorprops> = props => {
   const handleRefresh = () => {
     refreshPageParams()
     if (isAzureProvider && selectedResourceGroup) {
-      props.refresh?.(`resource_groups=['${selectedResourceGroup.label}']`)
+      props.refresh?.(getAzureFilterText(selectedResourceGroup))
     } else if (isGcpProvider && gcpFilters?.zone) {
-      props.refresh?.(`regions=['${gcpFilters.zone.label}']`)
+      props.refresh?.(getGcpFilterText(gcpFilters))
     } else {
-      props.refresh?.()
+      props.refresh?.(getAwsFilterText(awsFilters))
     }
   }
 
@@ -202,7 +174,7 @@ const COInstanceSelector: React.FC<COInstanceSelectorprops> = props => {
         </Layout.Vertical>
         <div className={css.sectionSeparator} />
         <InstanceSelectorBody
-          isLoading={props.loading || isLoading}
+          isLoading={_defaultTo(props.loading, isLoading)}
           selectedResourceGroup={selectedResourceGroup}
           instances={filteredInstances}
           pageProps={{
@@ -222,8 +194,8 @@ const COInstanceSelector: React.FC<COInstanceSelectorprops> = props => {
             onClick={addInstances}
             disabled={!hasSelectedInstances}
             style={{
-              backgroundColor: hasSelectedInstances ? 'var(--primary-7)' : 'inherit',
-              color: hasSelectedInstances ? 'var(--grey-100)' : 'inherit',
+              backgroundColor: Utils.getConditionalResult(hasSelectedInstances, 'var(--primary-7)', 'inherit'),
+              color: Utils.getConditionalResult(hasSelectedInstances, 'var(--grey-100)', 'inherit'),
               marginRight: 20
             }}
           >
@@ -268,44 +240,14 @@ const InstancesFilter: React.FC<InstancesFilterProps> = ({
   const isGcpProvider = Utils.isProviderGcp(gatewayDetails.provider)
   const isAwsProvider = Utils.isProviderAws(gatewayDetails.provider)
 
-  // Azure filters data
-  const [resourceGroupData, setResourceGroupData] = useState<SelectOption[]>([])
-  const [selectedResourceGroup, setSelectedResourceGroup] = useState<SelectOption>()
+  const { data: regionsData, loading: regionsLoading } = useRegionsForSelection({
+    cloudAccountId: gatewayDetails.cloudAccount.id,
+    additionalProps: { lazy: !isAwsProvider }
+  })
+  const [selectedRegion, setSelectedRegion] = useState<SelectOption>()
   const [tagKeys, setTagKeys] = useState<SelectOption[]>([])
   const [tagValues, setTagValues] = useState<SelectOption[]>([])
   const [selectedTagPair, setSelectedTagPair] = useState<SelectedTagFilter>()
-
-  // GCP filters data
-  const { data: regionsData, loading: regionsLoading } = useRegionsForSelection({
-    cloudAccountId: gatewayDetails.cloudAccount.id,
-    additionalProps: { lazy: isAzureProvider }
-  })
-  const [selectedRegion, setSelectedRegion] = useState<SelectOption>()
-  const [zonesData, setZonesData] = useState<SelectOption[]>([])
-  const [selectedZone, setSelectedZone] = useState<SelectOption>()
-
-  const { data: resourceGroups, loading: resourceGroupsLoading } = useAllResourceGroups({
-    account_id: accountId, // eslint-disable-line
-    queryParams: {
-      cloud_account_id: gatewayDetails.cloudAccount.id, // eslint-disable-line
-      accountIdentifier: accountId
-    },
-    lazy: !isAzureProvider
-  })
-
-  const {
-    data: zones,
-    loading: zonesLoading,
-    refetch: fetchZones
-  } = useAllZones({
-    account_id: accountId,
-    queryParams: {
-      cloud_account_id: gatewayDetails.cloudAccount.id,
-      accountIdentifier: accountId,
-      region: ''
-    },
-    lazy: true
-  })
 
   const {
     data: tagsData,
@@ -323,40 +265,14 @@ const InstancesFilter: React.FC<InstancesFilterProps> = ({
   })
 
   useEffect(() => {
-    setResourceGroupDataFromResponse(resourceGroups?.response)
-  }, [resourceGroups?.response])
-
-  useEffect(() => {
-    if (isAzureProvider) {
-      handleAzureFiltersUpdate()
-    }
-  }, [resourceGroupData])
-
-  useEffect(() => {
-    onResourceGroupSelectCallback(_defaultTo(selectedResourceGroup, null), resourceGroupsLoading)
-  }, [selectedResourceGroup, resourceGroupsLoading])
-
-  useEffect(() => {
     handleRegionsFilterUpdate()
   }, [regionsData])
 
   useEffect(() => {
     if (isAwsProvider) {
       handleAwsRegionFilterUpdate()
-    } else {
-      handleGcpRegionFilterUpdate()
     }
   }, [selectedRegion, regionsLoading])
-
-  useEffect(() => {
-    if (zones?.response) {
-      setZonesData(zones.response.map(z => ({ label: z, value: z })))
-    }
-  }, [zones?.response])
-
-  useEffect(() => {
-    handleGcpZonesFilterUpdate()
-  }, [zonesData])
 
   useEffect(() => {
     if (tagsData?.response?.length) {
@@ -383,60 +299,17 @@ const InstancesFilter: React.FC<InstancesFilterProps> = ({
     }
   }, [selectedTagPair])
 
-  useEffect(() => {
-    if (selectedRegion) {
-      onGcpFiltersChangeCallback({ region: selectedRegion, zone: selectedZone }, zonesLoading)
-    }
-  }, [selectedZone, zonesLoading])
-
   const handleAwsRegionFilterUpdate = () => {
     fetchTags()
     onAwsFiltersChangeCallback({ region: selectedRegion }, regionsLoading)
   }
 
-  const handleGcpRegionFilterUpdate = () => {
-    if (selectedRegion) {
-      fetchZones({
-        queryParams: {
-          cloud_account_id: gatewayDetails.cloudAccount.id,
-          accountIdentifier: accountId,
-          region: selectedRegion.label
-        }
-      })
-    }
-    onGcpFiltersChangeCallback({ region: selectedRegion }, regionsLoading)
-  }
-
-  const handleAzureFiltersUpdate = () => {
-    if (!selectedResourceGroup && !_isEmpty(selectedInstances)) {
-      const groupName = selectedInstances?.[0]?.metadata?.resourceGroup?.toLowerCase()
-      const groupToSelect = resourceGroupData.find(d => d.label.toLowerCase() === groupName)
-      setSelectedResourceGroup(groupToSelect)
-    }
-  }
-
   const handleRegionsFilterUpdate = () => {
-    if ((isGcpProvider || isAwsProvider) && !selectedRegion && !_isEmpty(selectedInstances)) {
+    if (isAwsProvider && !selectedRegion && !_isEmpty(selectedInstances)) {
       const region = selectedInstances?.[0]?.region?.toLowerCase()
       const regionToSelect = regionsData.find(r => r.label.toLowerCase() === region)
       setSelectedRegion(regionToSelect)
     }
-  }
-
-  const handleGcpZonesFilterUpdate = () => {
-    if (isGcpProvider && !selectedZone && !_isEmpty(selectedInstances)) {
-      const zone = selectedInstances?.[0]?.metadata?.availabilityZone?.toLowerCase()
-      const zoneToSelect = zonesData.find(z => z.label.toLowerCase() === zone)
-      setSelectedZone(zoneToSelect)
-    }
-  }
-
-  const setResourceGroupDataFromResponse = (response: ResourceGroup[] = []) => {
-    const loaded = response.map(r => ({
-      label: r.name as string,
-      value: r.name as string
-    }))
-    setResourceGroupData(loaded)
   }
 
   const tagsFilter = (
@@ -476,52 +349,23 @@ const InstancesFilter: React.FC<InstancesFilterProps> = ({
 
   if (isAzureProvider) {
     return (
-      <Layout.Horizontal flex={{ justifyContent: 'flex-start' }} spacing={'large'}>
-        <div>
-          <Text font={{ variation: FontVariation.FORM_LABEL }} className={css.filterLabel}>
-            {getString('ce.co.selectResourceGroupPlaceholder')}
-          </Text>
-          <Select
-            disabled={resourceGroupsLoading}
-            items={resourceGroupData}
-            onChange={setSelectedResourceGroup}
-            value={selectedResourceGroup}
-            name="resourceGroupSelector"
-          />
-        </div>
-        {tagsFilter}
-      </Layout.Horizontal>
+      <InstanceSelectorAzureFilters
+        tagsFilter={tagsFilter}
+        gatewayDetails={gatewayDetails}
+        selectedInstances={selectedInstances}
+        onResourceGroupSelectCallback={onResourceGroupSelectCallback}
+      />
     )
   }
 
   if (isGcpProvider) {
     return (
-      <Layout.Horizontal flex={{ justifyContent: 'flex-start' }} spacing={'large'}>
-        <div>
-          <Text font={{ variation: FontVariation.FORM_LABEL }} className={css.filterLabel}>
-            {getString('ce.co.autoStoppingRule.configuration.instanceModal.labels.selectRegion')}
-          </Text>
-          <Select
-            disabled={regionsLoading || isEditFlow}
-            items={regionsData}
-            onChange={setSelectedRegion}
-            value={selectedRegion}
-            name="regionsSelector"
-          />
-        </div>
-        <div>
-          <Text font={{ variation: FontVariation.FORM_LABEL }} className={css.filterLabel}>
-            {getString('ce.co.accessPoint.select.zone')}
-          </Text>
-          <Select
-            disabled={zonesLoading || isEditFlow}
-            items={zonesData}
-            onChange={setSelectedZone}
-            value={selectedZone}
-            name="zoneSelector"
-          />
-        </div>
-      </Layout.Horizontal>
+      <InstanceSelectorGcpFilters
+        gatewayDetails={gatewayDetails}
+        selectedInstances={selectedInstances}
+        onGcpFiltersChangeCallback={onGcpFiltersChangeCallback}
+        isEditFlow={isEditFlow}
+      />
     )
   }
 
@@ -544,191 +388,198 @@ const InstancesFilter: React.FC<InstancesFilterProps> = ({
   )
 }
 
-interface InstanceSelectorBodyProps {
-  isLoading: boolean
-  selectedResourceGroup?: SelectOption
-  instances: InstanceDetails[]
-  pageProps: { index: number; setIndex: (page: number) => void; totalCount: number }
-  onCheckboxChange: (e: React.FormEvent<HTMLInputElement>, alreadyChecked: boolean, data: InstanceDetails) => void
+interface InstanceSelectorAzureFiltersProps {
+  tagsFilter: React.ReactNode
+  gatewayDetails: GatewayDetails
   selectedInstances: InstanceDetails[]
-  isAzureSelection: boolean
-  isGcpSelection: boolean
-  selectedGcpFilters?: GCPFiltersProps
-  handleSearch: (text: string) => void
+  onResourceGroupSelectCallback: (resourceGroup: SelectOption | null, resourceGroupLoading: boolean) => void
 }
 
-interface WarningMessageProps {
-  messageText: string
-}
+const InstanceSelectorAzureFilters: React.FC<InstanceSelectorAzureFiltersProps> = ({
+  tagsFilter,
+  gatewayDetails,
+  selectedInstances,
+  onResourceGroupSelectCallback
+}) => {
+  const { getString } = useStrings()
+  const { accountId } = useParams<AccountPathProps>()
 
-const WarningMessage = ({ messageText }: WarningMessageProps) => {
+  const [resourceGroupData, setResourceGroupData] = useState<SelectOption[]>([])
+  const [selectedResourceGroup, setSelectedResourceGroup] = useState<SelectOption>()
+
+  const { data: resourceGroups, loading: resourceGroupsLoading } = useAllResourceGroups({
+    account_id: accountId, // eslint-disable-line
+    queryParams: {
+      cloud_account_id: gatewayDetails.cloudAccount.id, // eslint-disable-line
+      accountIdentifier: accountId
+    }
+  })
+
+  useEffect(() => {
+    setResourceGroupDataFromResponse(resourceGroups?.response)
+  }, [resourceGroups?.response])
+
+  useEffect(() => {
+    handleAzureFiltersUpdate()
+  }, [resourceGroupData])
+
+  useEffect(() => {
+    onResourceGroupSelectCallback(_defaultTo(selectedResourceGroup, null), resourceGroupsLoading)
+  }, [selectedResourceGroup, resourceGroupsLoading])
+
+  const setResourceGroupDataFromResponse = (response: ResourceGroup[] = []) => {
+    const loaded = response.map(r => ({
+      label: r.name as string,
+      value: r.name as string
+    }))
+    setResourceGroupData(loaded)
+  }
+
+  const handleAzureFiltersUpdate = () => {
+    if (!selectedResourceGroup && !_isEmpty(selectedInstances)) {
+      const groupName = selectedInstances?.[0]?.metadata?.resourceGroup?.toLowerCase()
+      const groupToSelect = resourceGroupData.find(d => d.label.toLowerCase() === groupName)
+      setSelectedResourceGroup(groupToSelect)
+    }
+  }
+
   return (
-    <Text icon={'execution-warning'} font={{ size: 'medium' }} iconProps={{ size: 20 }}>
-      {messageText}
-    </Text>
+    <Layout.Horizontal flex={{ justifyContent: 'flex-start' }} spacing={'large'}>
+      <div>
+        <Text font={{ variation: FontVariation.FORM_LABEL }} className={css.filterLabel}>
+          {getString('ce.co.selectResourceGroupPlaceholder')}
+        </Text>
+        <Select
+          disabled={resourceGroupsLoading}
+          items={resourceGroupData}
+          onChange={setSelectedResourceGroup}
+          value={selectedResourceGroup}
+          name="resourceGroupSelector"
+        />
+      </div>
+      {tagsFilter}
+    </Layout.Horizontal>
   )
 }
 
-const InstanceSelectorBody: React.FC<InstanceSelectorBodyProps> = ({
-  isLoading,
-  selectedResourceGroup,
-  instances,
-  pageProps,
-  onCheckboxChange,
+interface InstanceSelectorGcpFiltersProps {
+  gatewayDetails: GatewayDetails
+  isEditFlow: boolean
+  selectedInstances: InstanceDetails[]
+  onGcpFiltersChangeCallback: (values: GCPFiltersProps, loading: boolean) => void
+}
+
+const InstanceSelectorGcpFilters: React.FC<InstanceSelectorGcpFiltersProps> = ({
+  gatewayDetails,
+  isEditFlow,
   selectedInstances,
-  isAzureSelection,
-  isGcpSelection,
-  selectedGcpFilters,
-  handleSearch
+  onGcpFiltersChangeCallback
 }) => {
   const { getString } = useStrings()
+  const { accountId } = useParams<AccountPathProps>()
 
-  const isSelectedInstance = (item: InstanceDetails): boolean => {
-    return selectedInstances.findIndex(s => s.id === item.id) >= 0
-  }
+  const { data: regionsData, loading: regionsLoading } = useRegionsForSelection({
+    cloudAccountId: gatewayDetails.cloudAccount.id,
+    additionalProps: {}
+  })
+  const [selectedRegion, setSelectedRegion] = useState<SelectOption>()
+  const [zonesData, setZonesData] = useState<SelectOption[]>([])
+  const [selectedZone, setSelectedZone] = useState<SelectOption>()
 
-  const TableCheck = (tableProps: CellProps<InstanceDetails>): JSX.Element => {
-    const alreadyChecked = isSelectedInstance(tableProps.row.original)
-    return (
-      <Checkbox checked={alreadyChecked} onChange={e => onCheckboxChange(e, alreadyChecked, tableProps.row.original)} />
-    )
-  }
+  const {
+    data: zones,
+    loading: zonesLoading,
+    refetch: fetchZones
+  } = useAllZones({
+    account_id: accountId,
+    queryParams: {
+      cloud_account_id: gatewayDetails.cloudAccount.id,
+      accountIdentifier: accountId,
+      region: ''
+    },
+    lazy: true
+  })
 
-  const renderInstancesTable = (): ReactNode => {
-    return (
-      <TableV2
-        className={css.instancesTable}
-        data={instances.slice(
-          pageProps.index * TOTAL_ITEMS_PER_PAGE,
-          pageProps.index * TOTAL_ITEMS_PER_PAGE + TOTAL_ITEMS_PER_PAGE
-        )}
-        pagination={{
-          pageSize: TOTAL_ITEMS_PER_PAGE,
-          pageIndex: pageProps.index,
-          pageCount: Math.ceil(instances.length / TOTAL_ITEMS_PER_PAGE),
-          itemCount: pageProps.totalCount,
-          gotoPage: newPageIndex => pageProps.setIndex(newPageIndex)
-        }}
-        columns={[
-          {
-            Header: '',
-            id: 'selected',
-            Cell: TableCheck,
-            width: '5%'
-          },
-          {
-            accessor: 'name',
-            Header: getString('ce.co.instanceSelector.name'),
-            width: '35%',
-            Cell: NameCell,
-            disableSortBy: true
-          },
-          {
-            accessor: 'ipv4',
-            Header: getString('ce.co.instanceSelector.ipAddress'),
-            width: '15%',
-            Cell: TableCell,
-            disableSortBy: true
-          },
-          {
-            accessor: 'region',
-            Header: getString('regionLabel'),
-            width: '15%',
-            Cell: TableCell,
-            disableSortBy: true
-          },
-          {
-            accessor: 'type',
-            Header: getString('typeLabel'),
-            width: '15%',
-            Cell: TableCell,
-            disableSortBy: true
-          },
-          {
-            accessor: 'status',
-            Header: getString('status'),
-            width: '10%',
-            Cell: TableCell,
-            disableSortBy: true
-          }
-        ]}
-      />
-    )
-  }
+  useEffect(() => {
+    handleRegionsFilterUpdate()
+  }, [regionsData])
 
-  const azureBodyRenderer = (): ReactNode => {
-    return _isEmpty(selectedResourceGroup) ? (
-      <Layout.Horizontal flex={{ justifyContent: 'center' }}>
-        <WarningMessage
-          messageText={getString('ce.co.autoStoppingRule.configuration.instanceModal.rgEmptyDescription')}
-        />
-      </Layout.Horizontal>
-    ) : _isEmpty(instances) ? (
-      <Layout.Horizontal flex={{ justifyContent: 'center' }}>
-        <Text font={{ size: 'medium' }} iconProps={{ size: 20 }}>
-          {getString('ce.co.autoStoppingRule.configuration.instanceModal.rgEmptyInstancesDescription', {
-            region: selectedResourceGroup?.label
-          })}
-        </Text>
-      </Layout.Horizontal>
-    ) : (
-      renderInstancesTable()
-    )
-  }
+  useEffect(() => {
+    handleGcpRegionFilterUpdate()
+  }, [selectedRegion, regionsLoading])
 
-  const gcpBodyRenderer = (): ReactNode => {
-    return _isEmpty(selectedGcpFilters?.region) ? (
-      <Layout.Horizontal flex={{ justifyContent: 'center' }}>
-        <WarningMessage
-          messageText={getString('ce.co.autoStoppingRule.configuration.instanceModal.gcpFiltersNotSelectedDescription')}
-        />
-      </Layout.Horizontal>
-    ) : _isEmpty(selectedGcpFilters?.zone) ? (
-      <Layout.Horizontal flex={{ justifyContent: 'center' }}>
-        <WarningMessage
-          messageText={getString(
-            'ce.co.autoStoppingRule.configuration.instanceModal.gcpZoneFilterNotSelectedDescription'
-          )}
-        />
-      </Layout.Horizontal>
-    ) : _isEmpty(instances) ? (
-      <Layout.Horizontal flex={{ justifyContent: 'center' }}>
-        <Text font={{ size: 'medium' }} iconProps={{ size: 20 }}>
-          {getString('ce.co.autoStoppingRule.configuration.instanceModal.gcpEmptyInstancesDescription')}
-        </Text>
-      </Layout.Horizontal>
-    ) : (
-      renderInstancesTable()
-    )
-  }
-
-  const renderBody = (): ReactNode => {
-    let body = null
-    if (isAzureSelection) {
-      body = azureBodyRenderer()
-    } else if (isGcpSelection) {
-      body = gcpBodyRenderer()
-    } else {
-      body = renderInstancesTable()
+  useEffect(() => {
+    if (zones?.response) {
+      setZonesData(zones.response.map(z => ({ label: z, value: z })))
     }
-    return body
+  }, [zones?.response])
+
+  useEffect(() => {
+    handleGcpZonesFilterUpdate()
+  }, [zonesData])
+
+  useEffect(() => {
+    if (selectedRegion) {
+      onGcpFiltersChangeCallback({ region: selectedRegion, zone: selectedZone }, zonesLoading)
+    }
+  }, [selectedZone, zonesLoading])
+
+  const handleRegionsFilterUpdate = () => {
+    if (!selectedRegion && !_isEmpty(selectedInstances)) {
+      const region = selectedInstances?.[0]?.region?.toLowerCase()
+      const regionToSelect = regionsData.find(r => r.label.toLowerCase() === region)
+      setSelectedRegion(regionToSelect)
+    }
+  }
+
+  const handleGcpZonesFilterUpdate = () => {
+    if (!selectedZone && !_isEmpty(selectedInstances)) {
+      const zone = selectedInstances?.[0]?.metadata?.availabilityZone?.toLowerCase()
+      const zoneToSelect = zonesData.find(z => z.label.toLowerCase() === zone)
+      setSelectedZone(zoneToSelect)
+    }
+  }
+
+  const handleGcpRegionFilterUpdate = () => {
+    if (selectedRegion) {
+      fetchZones({
+        queryParams: {
+          cloud_account_id: gatewayDetails.cloudAccount.id,
+          accountIdentifier: accountId,
+          region: selectedRegion.label
+        }
+      })
+    }
+    onGcpFiltersChangeCallback({ region: selectedRegion }, regionsLoading)
   }
 
   return (
-    <Container style={{ minHeight: 250, marginBottom: 'var(--spacing-medium)' }}>
-      {isLoading ? (
-        <Layout.Horizontal flex={{ justifyContent: 'center' }}>
-          <Icon name="spinner" size={24} color="blue500" />
-        </Layout.Horizontal>
-      ) : (
-        <Layout.Vertical spacing={'medium'}>
-          <Layout.Horizontal className={css.searchAndFilterWrapper}>
-            <ExpandingSearchInput className={css.searchContainer} onChange={handleSearch} alwaysExpanded />
-          </Layout.Horizontal>
-          {renderBody()}
-        </Layout.Vertical>
-      )}
-    </Container>
+    <Layout.Horizontal flex={{ justifyContent: 'flex-start' }} spacing={'large'}>
+      <div>
+        <Text font={{ variation: FontVariation.FORM_LABEL }} className={css.filterLabel}>
+          {getString('ce.co.autoStoppingRule.configuration.instanceModal.labels.selectRegion')}
+        </Text>
+        <Select
+          disabled={regionsLoading || isEditFlow}
+          items={regionsData}
+          onChange={setSelectedRegion}
+          value={selectedRegion}
+          name="regionsSelector"
+        />
+      </div>
+      <div>
+        <Text font={{ variation: FontVariation.FORM_LABEL }} className={css.filterLabel}>
+          {getString('ce.co.accessPoint.select.zone')}
+        </Text>
+        <Select
+          disabled={zonesLoading || isEditFlow}
+          items={zonesData}
+          onChange={setSelectedZone}
+          value={selectedZone}
+          name="zoneSelector"
+        />
+      </div>
+    </Layout.Horizontal>
   )
 }
 

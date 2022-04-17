@@ -85,7 +85,7 @@ const COAsgSelector: React.FC<COAsgSelectorprops> = props => {
      * equal to max capacity
      *  */
     const desiredCapacityValue = isGcpProvider
-      ? selectedAsg?.desired || 1
+      ? defaultTo(selectedAsg?.desired, 1)
       : selectedAsg?.desired ||
         defaultTo(selectedAsg?.on_demand, 0) + defaultTo(selectedAsg?.spot, 0) ||
         selectedAsg?.max
@@ -239,8 +239,8 @@ const COAsgSelector: React.FC<COAsgSelectorprops> = props => {
               onClick={addAsg}
               disabled={!isAsgSelected}
               style={{
-                backgroundColor: isAsgSelected ? 'var(--primary-7)' : 'inherit',
-                color: isAsgSelected ? 'var(--grey-100)' : 'inherit',
+                backgroundColor: Utils.getConditionalResult(isAsgSelected, 'var(--primary-7)', 'inherit'),
+                color: Utils.getConditionalResult(isAsgSelected, 'var(--grey-100)', 'inherit'),
                 marginRight: 20
               }}
             >
