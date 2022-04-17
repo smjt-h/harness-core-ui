@@ -11,6 +11,7 @@ import { RUNTIME_INPUT_VALUE } from '@wings-software/uicore'
 import { StepFormikRef, StepViewType } from '@pipeline/components/AbstractSteps/Step'
 import { StepType } from '@pipeline/components/PipelineSteps/PipelineStepInterface'
 import { factory, TestStepWidget } from '@pipeline/components/PipelineSteps/Steps/__tests__/StepTestUtil'
+import type { CompletionItemInterface } from '@common/interfaces/YAMLBuilderProps'
 import { ServerlessAzureSpec } from '../ServerlessAzureSpec'
 import {
   getConnectorResponse,
@@ -27,6 +28,8 @@ jest.mock('services/cd-ng', () => ({
   getConnectorListV2Promise: jest.fn(() => Promise.resolve(MultipleConnectorsResponse.data))
 }))
 
+const connectorRefPath = 'pipeline.stages.0.stage.spec.infrastructure.infrastructureDefinition.spec.connectorRef'
+
 const getRuntimeInputsValues = () => ({
   connectorRef: RUNTIME_INPUT_VALUE,
   stage: RUNTIME_INPUT_VALUE
@@ -42,6 +45,22 @@ const getEmptyInitialValues = () => ({
   stage: ''
 })
 
+const getInvalidYaml = () => `p ipe<>line:
+sta ges:
+   - st<>[]age:
+              s pe<> c: <> sad-~`
+
+const getYaml = () => `pipeline:
+    stages:
+        - stage:
+              spec:
+                  infrastructure:
+                      infrastructureDefinition:
+                          type: ServerlessAzure
+                          spec:
+                              connectorRef: account.connectorRef
+                              stage: stage`
+
 const customStepProps = {
   formInfo: {
     formName: 'serverlessAzureInfra',
@@ -54,6 +73,14 @@ const customStepProps = {
     }
   }
 }
+
+const getParams = () => ({
+  accountId: 'accountId',
+  module: 'cd',
+  orgIdentifier: 'default',
+  pipelineIdentifier: '-1',
+  projectIdentifier: 'projectIdentifier'
+})
 
 describe('Test ServerlessAzureSpec snapshot', () => {
   beforeEach(() => {
@@ -196,5 +223,21 @@ describe('Test ServerlessAzureSpec behavior', () => {
     await waitFor(() =>
       expect(onUpdateHandler).toHaveBeenCalledWith({ ...getInitialValues(), ...{ stage: 'stage changed' } })
     )
+  })
+
+  describe('Test GcpInfrastructureSpec autocomplete', () => {
+    test('Test connector autocomplete', async () => {
+      const step = new ServerlessAzureSpec() as any
+      let list: CompletionItemInterface[]
+
+      list = await step.getConnectorsListForYaml(connectorRefPath, getYaml(), getParams())
+      expect(list).toHaveLength(2)
+      expect(list[0].insertText).toBe('Azure')
+
+      list = await step.getConnectorsListForYaml('invalid path', getYaml(), getParams())
+      expect(list).toHaveLength(0)
+      list = await step.getConnectorsListForYaml(connectorRefPath, getInvalidYaml(), getParams())
+      expect(list).toHaveLength(0)
+    })
   })
 })

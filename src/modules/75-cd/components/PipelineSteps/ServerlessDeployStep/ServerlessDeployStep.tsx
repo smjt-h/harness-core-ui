@@ -42,7 +42,7 @@ import stepCss from '@pipeline/components/PipelineSteps/Steps/Steps.module.scss'
 interface ServerlessAwsLambdaDeployProps {
   initialValues: StepElementConfig
   onUpdate?: (data: StepElementConfig) => void
-  stepViewType: StepViewType
+  stepViewType?: StepViewType
   onChange?: (data: StepElementConfig) => void
   allowableTypes: MultiTypeInputType[]
   readonly?: boolean
@@ -239,7 +239,7 @@ export class ServerlessAwsLambdaDeployStep extends PipelineStep<StepElementConfi
         isNewStep={isNewStep}
         allowableTypes={allowableTypes}
         onChange={onChange}
-        stepViewType={stepViewType || StepViewType.Edit}
+        stepViewType={stepViewType}
         ref={formikRef}
         readonly={readonly}
       />

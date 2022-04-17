@@ -22,7 +22,7 @@ interface ServerlessDeployCommandOptionsProps {
     path?: string
     readonly?: boolean
   }
-  stepViewType: StepViewType
+  stepViewType?: StepViewType
 }
 
 interface ServerlessCommandFlagOperationsProps {
@@ -32,7 +32,7 @@ interface ServerlessCommandFlagOperationsProps {
     path?: string
     readonly?: boolean
   }
-  stepViewType: StepViewType
+  stepViewType?: StepViewType
 }
 
 function ServerlessCommandFlagOperations(props: ServerlessCommandFlagOperationsProps): React.ReactElement {
@@ -65,7 +65,7 @@ function ServerlessCommandFlagOperations(props: ServerlessCommandFlagOperationsP
 }
 
 export function ServerlessDeployCommandOptions(props: ServerlessDeployCommandOptionsProps): React.ReactElement {
-  const { isReadonly, stepViewType, inputSetData } = props
+  const { isReadonly, stepViewType = StepViewType.Edit, inputSetData } = props
   const { getString } = useStrings()
 
   return (

@@ -17,7 +17,7 @@ import { isFieldfromTriggerTabDisabled } from '../ManifestSourceUtils'
 import ManifestGitStoreRuntimeFields from './ManifestGitStoreRuntimeFields'
 import css from '../../KubernetesManifests/KubernetesManifests.module.scss'
 
-interface ServerlessAwsLambdaManifestRenderProps extends ManifestSourceRenderProps {
+export interface ServerlessAwsLambdaManifestRenderProps extends ManifestSourceRenderProps {
   pathFieldlabel: StringKeys
 }
 const ServerlessAwsLambdaManifestContent = (props: ServerlessAwsLambdaManifestRenderProps): React.ReactElement => {

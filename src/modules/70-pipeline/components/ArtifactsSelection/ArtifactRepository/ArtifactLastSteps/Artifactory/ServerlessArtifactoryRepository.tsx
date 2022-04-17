@@ -32,7 +32,7 @@ function NoRepositoryResults({ error }: { error: GetDataError<Failure | Error> |
   )
 }
 
-interface ServerlessArtifactoryRepositoryProps {
+export interface ServerlessArtifactoryRepositoryProps {
   expressions: string[]
   isReadonly?: boolean
   allowableTypes: MultiTypeInputType[]
@@ -45,7 +45,6 @@ export default function ServerlessArtifactoryRepository(
   props: ServerlessArtifactoryRepositoryProps
 ): React.ReactElement {
   const { isReadonly, expressions, allowableTypes, formik, connectorRef, fieldName } = props
-
   const { getString } = useStrings()
   const [connectorRepos, setConnectorRepos] = useState<SelectOption[]>([])
   const { accountId, projectIdentifier, orgIdentifier } = useParams<ProjectPathProps>()

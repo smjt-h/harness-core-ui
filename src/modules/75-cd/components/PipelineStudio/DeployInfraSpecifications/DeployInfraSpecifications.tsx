@@ -111,7 +111,7 @@ export default function DeployInfraSpecifications(props: React.PropsWithChildren
       const stageData = produce(stage, draft => {
         if (draft) {
           set(draft, 'stage.spec', {
-            ...stage?.stage?.spec,
+            ...stage.stage?.spec,
             infrastructure: {
               environmentRef: getScopeBasedDefaultEnvironmentRef(),
               infrastructureDefinition: {},
@@ -160,9 +160,7 @@ export default function DeployInfraSpecifications(props: React.PropsWithChildren
   }, [stage, getStageFromPipeline])
 
   React.useEffect(() => {
-    const infrastructureType = selectedDeploymentType
-      ? deploymentTypeInfraTypeMap[selectedDeploymentType]
-      : InfraDeploymentType.KubernetesDirect
+    const infrastructureType = deploymentTypeInfraTypeMap[selectedDeploymentType]
     setselectedInfrastructureType(infrastructureType)
     const initialInfraDefValues = getInfrastructureDefaultValue(stage, infrastructureType)
     setInitialInfrastructureDefinitionValues(initialInfraDefValues)
@@ -253,12 +251,15 @@ export default function DeployInfraSpecifications(props: React.PropsWithChildren
   }
 
   const getClusterConfigurationStep = (type: string): React.ReactElement => {
+    if (!stage?.stage) {
+      return <div>Undefined deployment type</div>
+    }
     switch (type) {
       case 'KubernetesDirect': {
         return (
           <StepWidget<K8SDirectInfrastructure>
             factory={factory}
-            key={stage?.stage?.identifier}
+            key={stage.stage.identifier}
             readonly={isReadonly}
             initialValues={initialInfrastructureDefinitionValues as K8SDirectInfrastructure}
             type={StepType.KubernetesDirect}
@@ -282,7 +283,7 @@ export default function DeployInfraSpecifications(props: React.PropsWithChildren
         return (
           <StepWidget<GcpInfrastructureSpec>
             factory={factory}
-            key={stage?.stage?.identifier}
+            key={stage.stage.identifier}
             readonly={isReadonly}
             initialValues={initialInfrastructureDefinitionValues as GcpInfrastructureSpec}
             type={StepType.KubernetesGcp}
@@ -307,7 +308,7 @@ export default function DeployInfraSpecifications(props: React.PropsWithChildren
         return (
           <StepWidget<ServerlessAwsLambdaSpec>
             factory={factory}
-            key={stage?.stage?.identifier}
+            key={stage.stage.identifier}
             readonly={isReadonly}
             initialValues={initialInfrastructureDefinitionValues as ServerlessAwsLambdaSpec}
             type={StepType.ServerlessAwsInfra}
@@ -332,7 +333,7 @@ export default function DeployInfraSpecifications(props: React.PropsWithChildren
         return (
           <StepWidget<ServerlessGCPSpec>
             factory={factory}
-            key={stage?.stage?.identifier}
+            key={stage.stage.identifier}
             readonly={isReadonly}
             initialValues={initialInfrastructureDefinitionValues as ServerlessGCPSpec}
             type={StepType.ServerlessGCP}
@@ -356,7 +357,7 @@ export default function DeployInfraSpecifications(props: React.PropsWithChildren
         return (
           <StepWidget<ServerlessAzureSpec>
             factory={factory}
-            key={stage?.stage?.identifier}
+            key={stage.stage.identifier}
             readonly={isReadonly}
             initialValues={initialInfrastructureDefinitionValues as ServerlessAzureSpec}
             type={StepType.ServerlessAzure}
@@ -490,15 +491,10 @@ export default function DeployInfraSpecifications(props: React.PropsWithChildren
             />
           </Accordion>
         ) : null}
-
-        {selectedInfrastructureType && (
-          <>
-            <div className={stageCss.tabHeading} id="clusterDetails">
-              {defaultTo(detailsHeaderName[selectedInfrastructureType], getString('cd.steps.common.clusterDetails'))}
-            </div>
-            <Card className={stageCss.sectionCard}>{getClusterConfigurationStep(selectedInfrastructureType)}</Card>
-          </>
-        )}
+        <div className={stageCss.tabHeading} id="clusterDetails">
+          {defaultTo(detailsHeaderName[selectedInfrastructureType || ''], getString('cd.steps.common.clusterDetails'))}
+        </div>
+        <Card className={stageCss.sectionCard}>{getClusterConfigurationStep(selectedInfrastructureType || '')}</Card>
 
         <Container margin={{ top: 'xxlarge' }}>{props.children}</Container>
       </div>

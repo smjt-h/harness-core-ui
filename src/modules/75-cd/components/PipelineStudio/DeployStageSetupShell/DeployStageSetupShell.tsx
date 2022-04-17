@@ -126,7 +126,6 @@ export default function DeployStageSetupShell(): JSX.Element {
     getStageFromPipeline,
     !!data?.stage?.spec?.serviceConfig?.useFromStage?.stage
   )
-
   const { data: stageYamlSnippet, loading, refetch } = useGetFailureStrategiesYaml({ lazy: true })
   React.useEffect(() => {
     // do the following one if it is a new stage

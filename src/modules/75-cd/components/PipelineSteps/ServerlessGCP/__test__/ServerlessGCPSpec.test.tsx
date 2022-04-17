@@ -235,9 +235,6 @@ describe('Test ServerlessGCPSpec behavior', () => {
 
       list = await step.getConnectorsListForYaml('invalid path', getYaml(), getParams())
       expect(list).toHaveLength(0)
-
-      // TODO: create yaml that cause yaml.parse to throw an error
-      // its expected that yaml.parse throw an error but is not happening
       list = await step.getConnectorsListForYaml(connectorRefPath, getInvalidYaml(), getParams())
       expect(list).toHaveLength(0)
     })

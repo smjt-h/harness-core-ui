@@ -241,7 +241,7 @@ export class ServerlessAwsLambdaRollbackStep extends PipelineStep<ServerlessAwsL
         isNewStep={isNewStep}
         allowableTypes={allowableTypes}
         onChange={onChange}
-        stepViewType={stepViewType || StepViewType.Edit}
+        stepViewType={stepViewType}
         readonly={readonly}
         ref={formikRef}
       />

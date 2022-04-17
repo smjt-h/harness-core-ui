@@ -21,7 +21,7 @@ import {
 const ConnectorResponse = getConnectorResponse('ServerlessAwsLambda')
 const MultipleConnectorsResponse = getConnectorsResponseMultiple('Aws')
 
-jest.mock('@common/components/YAMLBuilder/YamlBuilder')
+// jest.mock('@common/components/YAMLBuilder/YamlBuilder')
 
 jest.mock('services/cd-ng', () => ({
   useGetConnector: jest.fn(() => ConnectorResponse),
@@ -31,6 +31,24 @@ jest.mock('services/cd-ng', () => ({
 const getRuntimeInputsValues = () => ({
   connectorRef: RUNTIME_INPUT_VALUE,
   region: RUNTIME_INPUT_VALUE,
+  stage: RUNTIME_INPUT_VALUE
+})
+
+const getConnectorRuntimeInputValue = () => ({
+  connectorRef: RUNTIME_INPUT_VALUE,
+  region: 'region',
+  stage: 'stage'
+})
+
+const getRegionRuntimeInputValue = () => ({
+  connectorRef: 'connectorRef',
+  region: RUNTIME_INPUT_VALUE,
+  stage: 'stage'
+})
+
+const getStageRuntimeInputValue = () => ({
+  connectorRef: 'connectorRef',
+  region: 'region',
   stage: RUNTIME_INPUT_VALUE
 })
 
@@ -204,6 +222,88 @@ describe('Test ServerlessAwsLambdaSpec behavior', () => {
     expect(onUpdateHandler).not.toHaveBeenCalled()
   })
 
+  test('should render configureOptions when connector as runtime', async () => {
+    const onUpdateHandler = jest.fn()
+    const { findByText, container } = render(
+      <TestStepWidget
+        customStepProps={customStepProps}
+        initialValues={getConnectorRuntimeInputValue()}
+        template={getConnectorRuntimeInputValue()}
+        allValues={getConnectorRuntimeInputValue()}
+        type={StepType.ServerlessAwsInfra}
+        stepViewType={StepViewType.Edit}
+        onUpdate={onUpdateHandler}
+      />
+    )
+
+    const settingsIcon = container.querySelector('[data-icon="cog"]')
+    expect(settingsIcon).toBeInTheDocument()
+    if (settingsIcon) {
+      act(() => {
+        fireEvent.click(settingsIcon)
+      })
+    }
+    const cancelButton = await findByText('cancel')
+    expect(cancelButton).toBeTruthy()
+    act(() => {
+      fireEvent.click(cancelButton)
+    })
+  })
+  test('should render configureOptions when stage as runtime', async () => {
+    const onUpdateHandler = jest.fn()
+    const { container, findByText } = render(
+      <TestStepWidget
+        customStepProps={customStepProps}
+        initialValues={getStageRuntimeInputValue()}
+        template={getStageRuntimeInputValue()}
+        allValues={getStageRuntimeInputValue()}
+        type={StepType.ServerlessAwsInfra}
+        stepViewType={StepViewType.Edit}
+        onUpdate={onUpdateHandler}
+      />
+    )
+
+    const settingsIcon = container.querySelector('[data-icon="cog"]')
+    expect(settingsIcon).toBeInTheDocument()
+    if (settingsIcon) {
+      act(() => {
+        fireEvent.click(settingsIcon)
+      })
+    }
+    const cancelButton = await findByText('cancel')
+    expect(cancelButton).toBeTruthy()
+    act(() => {
+      fireEvent.click(cancelButton)
+    })
+  })
+  test('should render configureOptions when region as runtime', async () => {
+    const onUpdateHandler = jest.fn()
+    const { container, findByText } = render(
+      <TestStepWidget
+        customStepProps={customStepProps}
+        initialValues={getRegionRuntimeInputValue()}
+        template={getRegionRuntimeInputValue()}
+        allValues={getRegionRuntimeInputValue()}
+        type={StepType.ServerlessAwsInfra}
+        stepViewType={StepViewType.Edit}
+        onUpdate={onUpdateHandler}
+      />
+    )
+
+    const settingsIcon = container.querySelector('[data-icon="cog"]')
+    expect(settingsIcon).toBeInTheDocument()
+    if (settingsIcon) {
+      act(() => {
+        fireEvent.click(settingsIcon)
+      })
+    }
+    const cancelButton = await findByText('cancel')
+    expect(cancelButton).toBeTruthy()
+    act(() => {
+      fireEvent.click(cancelButton)
+    })
+  })
+
   test('should call yaml onUpdate if valid values entered - edit view', async () => {
     const onUpdateHandler = jest.fn()
     const ref = React.createRef<StepFormikRef<unknown>>()
@@ -223,10 +323,16 @@ describe('Test ServerlessAwsLambdaSpec behavior', () => {
     await act(async () => {
       const stageInput = container.querySelector('[placeholder="cd.steps.serverless.stagePlaceholder"]')
       fireEvent.change(stageInput!, { target: { value: 'stage changed' } })
+
+      const regionInput = container.querySelector('[placeholder="cd.steps.serverless.regionPlaceholder"]')
+      fireEvent.change(regionInput!, { target: { value: 'region changed' } })
     })
 
     await waitFor(() =>
-      expect(onUpdateHandler).toHaveBeenCalledWith({ ...getInitialValues(), ...{ stage: 'stage changed' } })
+      expect(onUpdateHandler).toHaveBeenCalledWith({
+        ...getInitialValues(),
+        ...{ region: 'region changed', stage: 'stage changed' }
+      })
     )
   })
 })
