@@ -1023,7 +1023,3 @@ ACR:
   registryError: 'No registry found with given Subscription'
   repositoryPlaceholder: 'Select or add Repository'
   repositoryError: 'No repository found with given Registry'
-  validation:
-    subscription: '{{ $.common.validation.subscription }}'
-    registry: 'Registry is required'
-    repository: '{{ $.common.validation.repository }}'

@@ -13,6 +13,7 @@ import {
   getMultiTypeFromValue,
   Layout,
   MultiTypeInputType,
+  MultiTypeInputValue,
   SelectOption,
   Text
 } from '@wings-software/uicore'
@@ -87,7 +88,7 @@ const Content = (props: ACRRenderContent): JSX.Element => {
         'content-type': 'application/json'
       }
     },
-    queryParams: {
+    queryParams: /* istanbul ignore next */ {
       accountIdentifier: accountId,
       projectIdentifier,
       orgIdentifier,
@@ -264,7 +265,7 @@ const Content = (props: ACRRenderContent): JSX.Element => {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const getValue = (item: { label?: string; value?: string } | string | any): string => {
+  const getValue = /* istanbul ignore next */ (item: { label?: string; value?: string } | string | any): string => {
     return typeof item === 'string' ? (item as string) : item?.value
   }
 
@@ -290,19 +291,26 @@ const Content = (props: ACRRenderContent): JSX.Element => {
                 allowableTypes,
                 expressions
               }}
-              onChange={value => {
-                resetTags(formik, `${path}.artifacts.${artifactPath}.spec.tag`)
-                const { record } = value as unknown as { record: ConnectorReferenceDTO }
-
-                refetchSubscriptions({
-                  queryParams: {
-                    connectorRef: record?.identifier,
-                    accountIdentifier: accountId,
-                    orgIdentifier,
-                    projectIdentifier
+              onChange={
+                /* istanbul ignore next */ (value, _valueType, type) => {
+                  resetTags(formik, `${path}.artifacts.${artifactPath}.spec.tag`)
+                  const { record } = value as unknown as { record: ConnectorReferenceDTO }
+                  if (record && type === MultiTypeInputType.FIXED) {
+                    refetchSubscriptions({
+                      queryParams: {
+                        connectorRef: record?.identifier,
+                        accountIdentifier: accountId,
+                        orgIdentifier,
+                        projectIdentifier
+                      }
+                    })
+                  } else {
+                    setSubscriptions([])
+                    setRegistries([])
+                    setRepositories([])
                   }
-                })
-              }}
+                }
+              }
               className={css.connectorMargin}
               type={ArtifactToConnectorMap[defaultTo(artifact?.type, '')]}
               gitScope={{
@@ -317,18 +325,26 @@ const Content = (props: ACRRenderContent): JSX.Element => {
               formik={formik}
               disabled={loadingSubscriptions || isFieldDisabled(`artifacts.${artifactPath}.spec.subscription`)}
               multiTypeInputProps={{
-                onChange: (value: SelectOption) => {
+                onChange: /* istanbul ignore next */ (
+                  value: SelectOption,
+                  _typeValue: MultiTypeInputValue,
+                  type: MultiTypeInputType
+                ) => {
                   resetTags(formik, `${path}.artifacts.${artifactPath}.spec.tag`)
-
-                  refetchRegistries({
-                    queryParams: {
-                      connectorRef: get(formik?.values, `${path}.artifacts.${artifactPath}.spec.connectorRef`),
-                      accountIdentifier: accountId,
-                      orgIdentifier,
-                      projectIdentifier,
-                      subscription: getValue(value)
-                    }
-                  })
+                  if (value?.value && type === MultiTypeInputType.FIXED) {
+                    refetchRegistries({
+                      queryParams: {
+                        connectorRef: get(formik?.values, `${path}.artifacts.${artifactPath}.spec.connectorRef`),
+                        accountIdentifier: accountId,
+                        orgIdentifier,
+                        projectIdentifier,
+                        subscription: getValue(value)
+                      }
+                    })
+                  } else {
+                    setRegistries([])
+                    setRepositories([])
+                  }
                 },
                 selectProps: {
                   allowCreatingNewItems: true,
@@ -360,21 +376,29 @@ const Content = (props: ACRRenderContent): JSX.Element => {
               formik={formik}
               disabled={loadingRegistries || isFieldDisabled(`artifacts.${artifactPath}.spec.registry`)}
               multiTypeInputProps={{
-                onChange: (value: SelectOption) => {
+                onChange: /* istanbul ignore next */ (
+                  value: SelectOption,
+                  _typeValue: MultiTypeInputValue,
+                  type: MultiTypeInputType
+                ) => {
                   resetTags(formik.values, `${path}.artifacts.${artifactPath}.spec.tag`)
 
-                  refetchRepositories({
-                    queryParams: {
-                      connectorRef: get(formik.values, `${path}.artifacts.${artifactPath}.spec.connectorRef`),
-                      accountIdentifier: accountId,
-                      orgIdentifier,
-                      projectIdentifier,
-                      subscription: get(formik.values, `${path}.artifacts.${artifactPath}.spec.subscription`)
-                    },
-                    pathParams: {
-                      registry: getValue(value)
-                    }
-                  })
+                  if (value?.value && type === MultiTypeInputType.FIXED) {
+                    refetchRepositories({
+                      queryParams: {
+                        connectorRef: get(formik.values, `${path}.artifacts.${artifactPath}.spec.connectorRef`),
+                        accountIdentifier: accountId,
+                        orgIdentifier,
+                        projectIdentifier,
+                        subscription: get(formik.values, `${path}.artifacts.${artifactPath}.spec.subscription`)
+                      },
+                      pathParams: {
+                        registry: getValue(value)
+                      }
+                    })
+                  } else {
+                    setRepositories([])
+                  }
                 },
                 selectProps: {
                   allowCreatingNewItems: true,
@@ -406,7 +430,8 @@ const Content = (props: ACRRenderContent): JSX.Element => {
               formik={formik}
               disabled={loadingRepositories || isFieldDisabled(`artifacts.${artifactPath}.spec.repository`)}
               multiTypeInputProps={{
-                onChange: () => resetTags(formik, `${path}.artifacts.${artifactPath}.spec.tag`),
+                onChange: /* istanbul ignore next */ () =>
+                  resetTags(formik, `${path}.artifacts.${artifactPath}.spec.tag`),
                 selectProps: {
                   allowCreatingNewItems: true,
                   addClearBtn: !(loadingRepositories || readonly),
@@ -507,6 +532,7 @@ export class ACRArtifactSource extends ArtifactSourceBase<ArtifactSourceRenderPr
   }
 
   renderContent(props: ArtifactSourceRenderProps): JSX.Element | null {
+    /* istanbul ignore next */
     if (!props.isArtifactsRuntime) {
       return null
     }

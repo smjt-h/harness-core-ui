@@ -117,7 +117,6 @@ describe('Acr Artifact tests', () => {
       </TestWrapper>
     )
 
-    fireEvent.click(container.querySelector('input[name="tag"]')!)
     fireEvent.click(container.querySelector('button[type="submit"]')!)
 
     await waitFor(() => {

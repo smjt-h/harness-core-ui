@@ -19,10 +19,10 @@ import {
   ButtonVariation
 } from '@wings-software/uicore'
 import { FontVariation } from '@harness/design-system'
-import { Form, FormikContext } from 'formik'
+import { Form, FormikContext, FormikProps } from 'formik'
 import { useParams } from 'react-router-dom'
 import * as Yup from 'yup'
-import { defaultTo, forIn, get, isNil, merge } from 'lodash-es'
+import { defaultTo, forIn, get, isEmpty, isNil, merge } from 'lodash-es'
 import {
   AcrBuildDetailsDTO,
   ConnectorConfigDTO,
@@ -89,9 +89,55 @@ export function ACRArtifact({
   const formikRef = React.useRef<FormikContext<ACRArtifactType>>()
 
   const schemaObject = {
-    subscription: Yup.string().required(getString('pipeline.ACR.validation.subscription')),
-    registry: Yup.string().required(getString('pipeline.ACR.validation.registry')),
-    repository: Yup.string().required(getString('pipeline.ACR.validation.repository')),
+    subscription: Yup.lazy((value): Yup.Schema<unknown> => {
+      /* istanbul ignore else */ if (typeof value === 'string') {
+        return Yup.string().required(
+          getString('common.validation.fieldIsRequired', { name: getString('pipeline.ACR.subscription') })
+        )
+      }
+      return Yup.object().test({
+        test(valueObj: SelectOption): boolean | Yup.ValidationError {
+          if (isEmpty(valueObj) || isEmpty(valueObj.value)) {
+            return this.createError({
+              message: getString('common.validation.fieldIsRequired', { name: getString('pipeline.ACR.subscription') })
+            })
+          }
+          return true
+        }
+      })
+    }),
+    registry: Yup.lazy((value): Yup.Schema<unknown> => {
+      /* istanbul ignore else */ if (typeof value === 'string') {
+        return Yup.string().required(
+          getString('common.validation.fieldIsRequired', { name: getString('pipeline.ACR.registry') })
+        )
+      }
+      return Yup.object().test({
+        test(valueObj: SelectOption): boolean | Yup.ValidationError {
+          if (isEmpty(valueObj) || isEmpty(valueObj.value)) {
+            return this.createError({
+              message: getString('common.validation.fieldIsRequired', { name: getString('pipeline.ACR.registry') })
+            })
+          }
+          return true
+        }
+      })
+    }),
+    repository: Yup.lazy((value): Yup.Schema<unknown> => {
+      /* istanbul ignore else */ if (typeof value === 'string') {
+        return Yup.string().required(getString('common.validation.fieldIsRequired', { name: getString('repository') }))
+      }
+      return Yup.object().test({
+        test(valueObj: SelectOption): boolean | Yup.ValidationError {
+          if (isEmpty(valueObj) || isEmpty(valueObj.value)) {
+            return this.createError({
+              message: getString('common.validation.fieldIsRequired', { name: getString('repository') })
+            })
+          }
+          return true
+        }
+      })
+    }),
     tagRegex: Yup.string().when('tagType', {
       is: 'regex',
       then: Yup.string().trim().required(getString('pipeline.artifactsSelection.validation.tagRegex'))
@@ -118,6 +164,7 @@ export function ACRArtifact({
 
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const getValue = (item: { label?: string; value?: string } | string | any): string => {
+    /* istanbul ignore next */
     return typeof item === 'string' ? (item as string) : item?.value
   }
 
@@ -170,6 +217,7 @@ export function ACRArtifact({
   })
 
   useEffect(() => {
+    /* istanbul ignore else */
     if (!loadingSubscriptions) {
       const subscriptionValues = [] as SelectOption[]
       forIn(defaultTo(subscriptionsData?.data, {}), (value: string, key: string) => {
@@ -280,6 +328,7 @@ export function ACRArtifact({
         label: repository,
         value: repository
       })) || /* istanbul ignore next */ []
+
     setRepositories(options)
   }, [repositoriesData])
 
@@ -316,6 +365,8 @@ export function ACRArtifact({
         }
       )
     }
+
+    return values?.subscription
   }
 
   const getInitialValues = useCallback((): ACRArtifactType => {
@@ -364,8 +415,7 @@ export function ACRArtifact({
     ? /* istanbul ignore next */ [{ label: 'Loading Tags...', value: 'Loading Tags...' }]
     : getSelectItems()
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  const resetTagList = (formik: any): void => {
+  const resetTagList = (formik: FormikProps<ACRArtifactType>): void => {
     tagList.length && setTagList([])
     resetTag(formik)
   }
@@ -414,16 +464,22 @@ export function ACRArtifact({
                     name="subscription"
                     selectItems={subscriptions}
                     multiTypeInputProps={{
-                      onChange: value => {
-                        refetchRegistries({
-                          queryParams: {
-                            connectorRef: getConnectorRefQueryData(),
-                            accountIdentifier: accountId,
-                            orgIdentifier,
-                            projectIdentifier,
-                            subscription: getValue(value)
-                          }
-                        })
+                      onChange: /* istanbul ignore next */ (value, _typeValue, type) => {
+                        if ((value as SelectOption)?.value && type === MultiTypeInputType.FIXED) {
+                          refetchRegistries({
+                            queryParams: {
+                              connectorRef: getConnectorRefQueryData(),
+                              accountIdentifier: accountId,
+                              orgIdentifier,
+                              projectIdentifier,
+                              subscription: getValue(value)
+                            }
+                          })
+                        } else {
+                          setRegistries([])
+                          setRepositories([])
+                        }
+
                         resetTagList(formik)
                       },
                       selectProps: {
@@ -458,9 +514,11 @@ export function ACRArtifact({
                         showDefaultField={false}
                         showAdvanced={true}
                         isReadonly={isReadonly}
-                        onChange={value => {
-                          formik.setFieldValue('subscription', value)
-                        }}
+                        onChange={
+                          /* istanbul ignore next */ value => {
+                            formik.setFieldValue('subscription', value)
+                          }
+                        }
                       />
                     </div>
                   )}
@@ -478,19 +536,23 @@ export function ACRArtifact({
                     multiTypeInputProps={{
                       expressions,
                       disabled: isReadonly,
-                      onChange: value => {
-                        refetchRepositories({
-                          queryParams: {
-                            connectorRef: getConnectorRefQueryData(),
-                            accountIdentifier: accountId,
-                            orgIdentifier,
-                            projectIdentifier,
-                            subscription: getValue(formik.values.subscription)
-                          },
-                          pathParams: {
-                            registry: getValue(value)
-                          }
-                        })
+                      onChange: /* istanbul ignore next */ (value, _typeValue, type) => {
+                        if ((value as SelectOption)?.value && type === MultiTypeInputType.FIXED) {
+                          refetchRepositories({
+                            queryParams: {
+                              connectorRef: getConnectorRefQueryData(),
+                              accountIdentifier: accountId,
+                              orgIdentifier,
+                              projectIdentifier,
+                              subscription: getValue(formik.values.subscription)
+                            },
+                            pathParams: {
+                              registry: getValue(value)
+                            }
+                          })
+                        } else {
+                          setRepositories([])
+                        }
                         resetTagList(formik)
                       },
                       selectProps: {
@@ -517,9 +579,11 @@ export function ACRArtifact({
                       showDefaultField={false}
                       showAdvanced={true}
                       isReadonly={isReadonly}
-                      onChange={value => {
-                        formik.setFieldValue('registry', value)
-                      }}
+                      onChange={
+                        /* istanbul ignore next */ value => {
+                          formik.setFieldValue('registry', value)
+                        }
+                      }
                     />
                   )}
                 </div>
@@ -536,7 +600,7 @@ export function ACRArtifact({
                     multiTypeInputProps={{
                       expressions,
                       disabled: isReadonly,
-                      onChange: () => resetTagList(formik),
+                      onChange: /* istanbul ignore next */ () => resetTagList(formik),
                       selectProps: {
                         items: repositories,
                         allowCreatingNewItems: true,
@@ -561,9 +625,11 @@ export function ACRArtifact({
                       showDefaultField={false}
                       showAdvanced={true}
                       isReadonly={isReadonly}
-                      onChange={value => {
-                        formik.setFieldValue('repository', value)
-                      }}
+                      onChange={
+                        /* istanbul ignore next */ value => {
+                          formik.setFieldValue('repository', value)
+                        }
+                      }
                     />
                   )}
                 </div>
