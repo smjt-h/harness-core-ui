@@ -79,15 +79,17 @@ export const MultiTypeMapInputSet = (props: MultiTypeMapProps): React.ReactEleme
     if (initialValue === RUNTIME_INPUT_VALUE) {
       initialValue = []
     }
-    const initialValueInCorrectFormat = Object.keys(initialValue || {}).map(key => ({
-      id: uuid('', nameSpace()),
-      key: key,
-      value: initialValue[key]
-    }))
-
-    // Adding a default value
-    if (Array.isArray(initialValueInCorrectFormat) && initialValueInCorrectFormat.length === 0) {
-      initialValueInCorrectFormat.push(generateNewValue())
+    let initialValueInCorrectFormat: {
+      id: string
+      key: string
+      value: any
+    }[] = []
+    if (typeof initialValue === 'object' && !Array.isArray(initialValue) && initialValue !== null) {
+      initialValueInCorrectFormat = Object.keys(initialValue || {}).map(key => ({
+        id: uuid('', nameSpace()),
+        key: key,
+        value: initialValue[key]
+      }))
     }
 
     return initialValueInCorrectFormat as MapUIType
@@ -125,21 +127,23 @@ export const MultiTypeMapInputSet = (props: MultiTypeMapProps): React.ReactEleme
     if (initialValue === RUNTIME_INPUT_VALUE) {
       initialValue = []
     }
-    const valueWithoutEmptyItems = value.filter(item => !!item.value)
 
-    if (isEmpty(valueWithoutEmptyItems) && initialValue) {
-      const initialValueInCorrectFormat = Object.keys(initialValue || {}).map(key => ({
-        id: uuid('', nameSpace()),
-        key: key,
-        value: initialValue[key]
-      }))
+    let initialValueInCorrectFormat: {
+      id: string
+      key: string
+      value: any
+    }[] = []
+    if (typeof initialValue === 'object' && !Array.isArray(initialValue) && initialValue !== null) {
+      const valueWithoutEmptyItems = value.filter(item => !!item.value)
+      if (isEmpty(valueWithoutEmptyItems) && initialValue) {
+        initialValueInCorrectFormat = Object.keys(initialValue || {}).map(key => ({
+          id: uuid('', nameSpace()),
+          key: key,
+          value: initialValue[key]
+        }))
 
-      // Adding a default value
-      if (Array.isArray(initialValueInCorrectFormat) && initialValueInCorrectFormat.length === 0) {
-        initialValueInCorrectFormat.push(generateNewValue())
+        setValue(initialValueInCorrectFormat)
       }
-
-      setValue(initialValueInCorrectFormat)
     }
   }, [formik?.values, name])
 
@@ -168,10 +172,14 @@ export const MultiTypeMapInputSet = (props: MultiTypeMapProps): React.ReactEleme
     <div className={cx(css.group, css.withoutSpacing, appearance === 'minimal' ? css.minimalCard : '')} {...restProps}>
       <MultiTypeFieldSelector
         name={name}
-        defaultValueToReset={[{ id: uuid('', nameSpace()), key: '', value: '' }]}
         style={{ flexGrow: 1, marginBottom: 0 }}
         {...multiTypeFieldSelectorProps}
         disableTypeSelection={multiTypeFieldSelectorProps.disableTypeSelection || disabled}
+        onTypeChange={(type: MultiTypeInputType) => {
+          if (type === MultiTypeInputType.FIXED) {
+            formik?.setFieldValue(name, {})
+          }
+        }}
       >
         <>
           {value.map(({ id, key, value: valueValue }, index: number) => {
