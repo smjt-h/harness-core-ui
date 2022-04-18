@@ -7,6 +7,7 @@ agent: Agent
 agents: Agents
 application: Application
 certificate: Certificate
+subscriptionId: Subscription Id
 repositoryCertificates: Repository Certificates
 notEnabled: 'Not Enabled'
 apiStatus: 'API Status'

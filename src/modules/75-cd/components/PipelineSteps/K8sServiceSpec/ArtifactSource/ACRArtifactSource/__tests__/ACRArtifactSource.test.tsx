@@ -68,7 +68,7 @@ jest.mock('@connectors/components/ConnectorReferenceField/FormMultiTypeConnector
 }))
 
 describe('Acr Artifact Source tests', () => {
-  test('snapshot test for Primary Acr artifact source', () => {
+  test('Should match snapshot for Primary Acr artifact source', () => {
     const { container } = render(
       <TestWrapper>
         <KubernetesPrimaryArtifacts
@@ -87,7 +87,7 @@ describe('Acr Artifact Source tests', () => {
     expect(container).toMatchSnapshot()
   })
 
-  test('snapshot test for Sidecar Acr artifact source from trigger', () => {
+  test('Should match snapshot for Sidecar Acr artifact source from trigger', () => {
     const { container } = render(
       <TestWrapper>
         <KubernetesSidecarArtifacts
@@ -108,7 +108,7 @@ describe('Acr Artifact Source tests', () => {
     expect(container).toMatchSnapshot()
   })
 
-  test('snapshot test for Sidecar Acr artifact source with runtime tag regex', () => {
+  test('Should match snapshot for Sidecar Acr artifact source with runtime tag regex', () => {
     const { container } = render(
       <TestWrapper>
         <KubernetesSidecarArtifacts
@@ -129,8 +129,8 @@ describe('Acr Artifact Source tests', () => {
     expect(container).toMatchSnapshot()
   })
 
-  test('snapshot test for Sidecar Acr artifact source', async () => {
-    const { container, findByText } = render(
+  test('Should trigger artifactSourceUtils checks for Sidecar Acr artifact source', async () => {
+    const { findByText } = render(
       <TestWrapper>
         <Formik
           formName="test-form"
@@ -155,7 +155,6 @@ describe('Acr Artifact Source tests', () => {
       </TestWrapper>
     )
 
-    expect(container).toMatchSnapshot()
     expect(await waitFor(() => findByText('tagLabel'))).toBeInTheDocument()
     expect(await waitFor(() => artifactSourceUtils.fromPipelineInputTriggerTab)).toBeCalled()
     expect(await waitFor(() => artifactSourceUtils.isFieldfromTriggerTabDisabled)).toBeCalled()
@@ -166,12 +165,10 @@ describe('Acr Artifact Source tests', () => {
     })
 
     expect(await waitFor(() => artifactSourceUtils.resetTags)).toBeCalled()
-
-    expect(container).toMatchSnapshot()
   })
 
-  test('snapshot test for Sidecar Acr artifact source for readonly artifact', async () => {
-    const { container } = render(
+  test('Should trigger artifactSourceUtils checks Sidecar Acr artifact source for readonly artifact', async () => {
+    const { findByText } = render(
       <TestWrapper>
         <KubernetesSidecarArtifacts
           initialValues={{ artifacts: artifacts as ArtifactListConfig }}
@@ -187,14 +184,12 @@ describe('Acr Artifact Source tests', () => {
       </TestWrapper>
     )
 
-    expect(container).toMatchSnapshot()
+    expect(await waitFor(() => findByText('tagLabel'))).toBeInTheDocument()
     expect(await waitFor(() => artifactSourceUtils.fromPipelineInputTriggerTab)).toBeCalled()
     expect(await waitFor(() => artifactSourceUtils.isFieldfromTriggerTabDisabled)).toBeCalled()
-
-    expect(container).toMatchSnapshot()
   })
 
-  test('snapshot test for Sidecar Acr artifact source with only tag as runtime input', async () => {
+  test('Should match snapshot for Sidecar Acr artifact source with only tag as runtime input', async () => {
     const { container } = render(
       <TestWrapper>
         <Formik

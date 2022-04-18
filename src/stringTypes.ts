@@ -645,6 +645,7 @@ export interface StringsMap {
   'common.submittingRequest': string
   'common.submittingRequestToGitViaDelegate': string
   'common.subscribed': string
+  'common.subscriptionId': string
   'common.subscriptions.banner.trial': string
   'common.subscriptions.ccm.cloudSpend': string
   'common.subscriptions.cd.serviceInstances': string

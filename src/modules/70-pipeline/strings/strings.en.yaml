@@ -1015,8 +1015,8 @@ cannotAddInputSetInvalidPipeline: Cannot add an input set because pipeline is in
 cannotEditTriggerInvalidPipeline: Cannot edit the trigger because pipeline is invalid, please review the configuration.
 ACR:
   name: ACR
-  subscription: '{{ $.common.plans.subscription }}'
-  subscriptionPlaceholder: 'Select or add Subscription'
+  subscription: '{{ $.common.subscriptionId }}'
+  subscriptionPlaceholder: 'Select or add Subscription Id'
   subscriptionError: 'No subscription found with given Connector'
   registry: 'Registry'
   registryPlaceholder: 'Select or add Registry'

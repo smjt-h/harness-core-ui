@@ -13,7 +13,7 @@ export const artifacts = {
         type: 'Acr',
         spec: {
           connectorRef: '<+input>',
-          subscription: '<+input>',
+          subscriptionId: '<+input>',
           registry: '<+input>',
           repository: '<+input>',
           tag: '<+input>'
@@ -24,7 +24,7 @@ export const artifacts = {
   primary: {
     spec: {
       connectorRef: '<+input>',
-      subscription: '<+input>',
+      subscriptionId: '<+input>',
       registry: '<+input>',
       repository: '<+input>',
       tag: '<+input>'
@@ -42,7 +42,7 @@ export const template = {
           type: 'Acr',
           spec: {
             connectorRef: '<+input>',
-            subscription: '<+input>',
+            subscriptionId: '<+input>',
             registry: '<+input>',
             repository: '<+input>',
             tag: '<+input>'
@@ -53,7 +53,7 @@ export const template = {
     primary: {
       spec: {
         connectorRef: '<+input>',
-        subscription: '<+input>',
+        subscriptionId: '<+input>',
         registry: '<+input>',
         repository: '<+input>',
         tag: '<+input>'
@@ -71,7 +71,7 @@ export const artifactsTagRegex = {
         type: 'Acr',
         spec: {
           connectorRef: '<+input>',
-          subscription: '<+input>',
+          subscriptionId: '<+input>',
           registry: '<+input>',
           repository: '<+input>',
           tagRegex: '<+input>'
@@ -90,7 +90,7 @@ export const templateTagRegex = {
           type: 'Acr',
           spec: {
             connectorRef: '<+input>',
-            subscription: '<+input>',
+            subscriptionId: '<+input>',
             registry: '<+input>',
             repository: '<+input>',
             tagRegex: '<+input>'
@@ -109,7 +109,7 @@ export const artifactsWithValues = {
         type: 'Acr',
         spec: {
           connectorRef: 'connectorRef',
-          subscription: 'subscription',
+          subscriptionId: 'subscription',
           registry: 'registry',
           repository: 'repository',
           tag: '<+input>'
@@ -120,7 +120,7 @@ export const artifactsWithValues = {
   primary: {
     spec: {
       connectorRef: 'connectorRef',
-      subscription: 'subscription',
+      subscriptionId: 'subscription',
       registry: 'registry',
       repository: 'repository',
       tag: '<+input>'
@@ -138,7 +138,7 @@ export const templateWithValues = {
           type: 'Acr',
           spec: {
             connectorRef: 'connectorRef',
-            subscription: 'subscription',
+            subscriptionId: 'subscription',
             registry: 'registry',
             repository: 'repository',
             tag: '<+input>'
@@ -149,7 +149,7 @@ export const templateWithValues = {
     primary: {
       spec: {
         connectorRef: 'connectorRef',
-        subscription: 'subscription',
+        subscriptionId: 'subscription',
         registry: 'registry',
         repository: 'repository',
         tag: '<+input>'
@@ -177,3 +177,37 @@ export const mockRepositories = {
 }
 
 export const path = 'stages[0].stage.spec.serviceConfig.serviceDefinition.spec'
+
+export const mockConnector = {
+  status: 'SUCCESS',
+  data: {
+    connector: {
+      name: 'Azure conn test',
+      identifier: 'Azure_conn_test',
+      description: 'Azure connector test',
+      orgIdentifier: undefined,
+      projectIdentifier: undefined,
+      tags: {},
+      type: 'Azure',
+      spec: {
+        delegateSelectors: ['dummyDelegateSelector'],
+        credential: {
+          type: 'ManualConfig',
+          spec: {
+            auth: {
+              type: 'Secret',
+              spec: {
+                secretRef: 'account.mnfbjfjsecretKey'
+              }
+            },
+            applicationId: 'clientId',
+            tenantId: 'tenantId'
+          }
+        },
+        azureEnvironmentType: 'AZURE'
+      }
+    },
+    status: null,
+    harnessManaged: false
+  }
+}

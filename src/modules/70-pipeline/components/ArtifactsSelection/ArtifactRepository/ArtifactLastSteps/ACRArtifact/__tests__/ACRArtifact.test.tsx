@@ -50,10 +50,10 @@ describe('Acr Artifact tests', () => {
   test('Should match snapshot for primary artifact', () => {
     const initialValues = {
       identifier: '',
-      tag: '',
+      tag: '<+input>',
       tagRegex: '',
       repository: '',
-      subscription: '',
+      subscriptionId: '',
       registry: '',
       tagType: TagTypes.Value
     }
@@ -69,15 +69,22 @@ describe('Acr Artifact tests', () => {
         />
       </TestWrapper>
     )
-    expect(container).toMatchSnapshot()
+
+    expect(container.querySelector('input[name="identifier"]')!).not.toBeInTheDocument()
+    expect(container.querySelector('input[name="subscriptionId"]')!).toBeInTheDocument()
+    expect(container.querySelector('input[name="registry"]')!).toBeInTheDocument()
+    expect(container.querySelector('input[name="repository"]')!).toBeInTheDocument()
+    expect(container.querySelector('input[name="tag"]')!).toBeInTheDocument()
+    expect(container.querySelector('input[name="tagRegex"]')!).not.toBeInTheDocument()
   })
+
   test('Should match snapshot for sidecar artifact', () => {
     const initialValues = {
       identifier: '',
-      tag: '',
+      tag: '<+input>',
       tagRegex: '',
       repository: '',
-      subscription: '',
+      subscriptionId: '',
       registry: '',
       tagType: TagTypes.Value
     }
@@ -92,7 +99,13 @@ describe('Acr Artifact tests', () => {
         />
       </TestWrapper>
     )
-    expect(container).toMatchSnapshot()
+
+    expect(container.querySelector('input[name="identifier"]')!).toBeInTheDocument()
+    expect(container.querySelector('input[name="subscriptionId"]')!).toBeInTheDocument()
+    expect(container.querySelector('input[name="registry"]')!).toBeInTheDocument()
+    expect(container.querySelector('input[name="repository"]')!).toBeInTheDocument()
+    expect(container.querySelector('input[name="tag"]')!).toBeInTheDocument()
+    expect(container.querySelector('input[name="tagRegex"]')!).not.toBeInTheDocument()
   })
 
   test('Should render correctly in edit case', async () => {
@@ -101,7 +114,7 @@ describe('Acr Artifact tests', () => {
       tag: '<+input>',
       tagRegex: '',
       repository: 'rep1',
-      subscription: 'sub2',
+      subscriptionId: 'sub1',
       registry: 'reg1',
       tagType: TagTypes.Value
     }
@@ -132,7 +145,7 @@ describe('Acr Artifact tests', () => {
       tag: '<+input>',
       tagRegex: '',
       repository: '<+input>',
-      subscription: '<+input>',
+      subscriptionId: '<+input>',
       registry: '<+input>',
       tagType: TagTypes.Value
     }
@@ -149,7 +162,10 @@ describe('Acr Artifact tests', () => {
       </TestWrapper>
     )
 
-    expect(container).toMatchSnapshot()
+    expect(container.querySelector('input[name="subscriptionId"]')!).toBeInTheDocument()
+    expect(container.querySelector('input[name="registry"]')!).toBeInTheDocument()
+    expect(container.querySelector('input[name="repository"]')!).toBeInTheDocument()
+    expect(container.querySelector('input[value="value"]')!).toBeChecked()
 
     await act(() => {
       fireEvent.click(getByText('back')!)
@@ -164,7 +180,7 @@ describe('Acr Artifact tests', () => {
       tag: '',
       tagRegex: '<+input>',
       repository: '<+input>',
-      subscription: '<+input>',
+      subscriptionId: '<+input>',
       registry: '<+input>',
       tagType: TagTypes.Regex
     }
@@ -179,7 +195,9 @@ describe('Acr Artifact tests', () => {
         />
       </TestWrapper>
     )
-
-    expect(container).toMatchSnapshot()
+    expect(container.querySelector('input[name="subscriptionId"]')!).toBeInTheDocument()
+    expect(container.querySelector('input[name="registry"]')!).toBeInTheDocument()
+    expect(container.querySelector('input[name="repository"]')!).toBeInTheDocument()
+    expect(container.querySelector('input[value="regex"]')!).toBeChecked()
   })
 })

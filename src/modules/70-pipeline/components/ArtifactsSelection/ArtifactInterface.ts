@@ -157,6 +157,6 @@ export interface ACRArtifactType {
   tagRegex: any
   tagType: TagTypes
   repository?: any
-  subscription?: any
+  subscriptionId?: any
   registry?: any
 }

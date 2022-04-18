@@ -95,23 +95,19 @@ const Content = (props: ACRRenderContent): JSX.Element => {
       repoIdentifier,
       branch,
 
-      /* istanbul ignore next */
       connectorRef:
         getMultiTypeFromValue(artifact?.spec?.connectorRef) !== MultiTypeInputType.RUNTIME
           ? artifact?.spec?.connectorRef
           : get(initialValues?.artifacts, `${artifactPath}.spec.connectorRef`, ''),
 
-      /* istanbul ignore next */
-      subscription:
-        getMultiTypeFromValue(artifact?.spec?.subscription) !== MultiTypeInputType.RUNTIME
-          ? artifact?.spec?.subscription
-          : get(initialValues, `artifacts.${artifactPath}.spec.subscription`, ''),
-      /* istanbul ignore next */
+      subscriptionId:
+        getMultiTypeFromValue(artifact?.spec?.subscriptionId) !== MultiTypeInputType.RUNTIME
+          ? artifact?.spec?.subscriptionId
+          : get(initialValues, `artifacts.${artifactPath}.spec.subscriptionId`, ''),
       registry:
         getMultiTypeFromValue(artifact?.spec?.registry) !== MultiTypeInputType.RUNTIME
           ? artifact?.spec?.registry
           : get(initialValues, `artifacts.${artifactPath}.spec.registry`, ''),
-      /* istanbul ignore next */
       repository:
         getMultiTypeFromValue(artifact?.spec?.repository) !== MultiTypeInputType.RUNTIME
           ? artifact?.spec?.repository
@@ -152,7 +148,7 @@ const Content = (props: ACRRenderContent): JSX.Element => {
       })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [artifact?.spec?.connectorRef, artifact?.spec?.subscription])
+  }, [artifact?.spec?.connectorRef, artifact?.spec?.subscriptionId])
 
   useEffect(() => {
     const subscriptionValues = [] as SelectOption[]
@@ -174,7 +170,7 @@ const Content = (props: ACRRenderContent): JSX.Element => {
       accountIdentifier: accountId,
       orgIdentifier,
       projectIdentifier,
-      subscriptionId: artifact?.spec?.subscription
+      subscriptionId: artifact?.spec?.subscriptionId
     },
     lazy: true,
     debounce: 300
@@ -183,7 +179,7 @@ const Content = (props: ACRRenderContent): JSX.Element => {
   useEffect(() => {
     if (
       getMultiTypeFromValue(artifact?.spec?.connectorRef) === MultiTypeInputType.FIXED &&
-      getMultiTypeFromValue(artifact?.spec?.subscription) === MultiTypeInputType.FIXED
+      getMultiTypeFromValue(artifact?.spec?.subscriptionId) === MultiTypeInputType.FIXED
     ) {
       refetchRegistries({
         queryParams: {
@@ -191,12 +187,12 @@ const Content = (props: ACRRenderContent): JSX.Element => {
           accountIdentifier: accountId,
           orgIdentifier,
           projectIdentifier,
-          subscriptionId: artifact?.spec?.subscription
+          subscriptionId: artifact?.spec?.subscriptionId
         }
       })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [artifact?.spec?.connectorRef, artifact?.spec?.subscription])
+  }, [artifact?.spec?.connectorRef, artifact?.spec?.subscriptionId])
 
   useEffect(() => {
     const options =
@@ -218,7 +214,7 @@ const Content = (props: ACRRenderContent): JSX.Element => {
       accountIdentifier: accountId,
       orgIdentifier,
       projectIdentifier,
-      subscriptionId: artifact?.spec?.subscription
+      subscriptionId: artifact?.spec?.subscriptionId
     },
     registry: artifact?.spec?.registry,
     lazy: true,
@@ -228,7 +224,7 @@ const Content = (props: ACRRenderContent): JSX.Element => {
   useEffect(() => {
     if (
       getMultiTypeFromValue(artifact?.spec?.connectorRef) === MultiTypeInputType.FIXED &&
-      getMultiTypeFromValue(artifact?.spec?.subscription) === MultiTypeInputType.FIXED &&
+      getMultiTypeFromValue(artifact?.spec?.subscriptionId) === MultiTypeInputType.FIXED &&
       getMultiTypeFromValue(artifact?.spec?.registry) === MultiTypeInputType.FIXED
     ) {
       refetchRepositories({
@@ -237,7 +233,7 @@ const Content = (props: ACRRenderContent): JSX.Element => {
           accountIdentifier: accountId,
           orgIdentifier,
           projectIdentifier,
-          subscriptionId: artifact?.spec?.subscription
+          subscriptionId: artifact?.spec?.subscriptionId
         },
         pathParams: {
           registry: artifact?.spec?.registry
@@ -245,7 +241,7 @@ const Content = (props: ACRRenderContent): JSX.Element => {
       })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [artifact?.spec?.connectorRef, artifact?.spec?.subscription, artifact?.spec?.registry])
+  }, [artifact?.spec?.connectorRef, artifact?.spec?.subscriptionId, artifact?.spec?.registry])
 
   useEffect(() => {
     const options =
@@ -264,7 +260,7 @@ const Content = (props: ACRRenderContent): JSX.Element => {
         formik,
         stageIdentifier,
         fromTrigger,
-        isSidecar ? (artifact as SidecarArtifact)?.identifier : /* istanbul ignore next */ undefined
+        /* istanbul ignore next */ isSidecar ? (artifact as SidecarArtifact)?.identifier : undefined
       )
     ) {
       return true
@@ -331,10 +327,10 @@ const Content = (props: ACRRenderContent): JSX.Element => {
               }}
             />
           )}
-          {isFieldRuntime(`artifacts.${artifactPath}.spec.subscription`, template) && (
+          {isFieldRuntime(`artifacts.${artifactPath}.spec.subscriptionId`, template) && (
             <ExperimentalInput
               formik={formik}
-              disabled={loadingSubscriptions || isFieldDisabled(`artifacts.${artifactPath}.spec.subscription`)}
+              disabled={loadingSubscriptions || isFieldDisabled(`artifacts.${artifactPath}.spec.subscriptionId`)}
               multiTypeInputProps={{
                 onChange: /* istanbul ignore next */ (
                   value: SelectOption,
@@ -372,13 +368,13 @@ const Content = (props: ACRRenderContent): JSX.Element => {
               }}
               useValue
               selectItems={subscriptions}
-              label={getString('pipeline.ACR.subscriptionPlaceholder')}
+              label={getString('pipeline.ACR.subscription')}
               placeholder={
                 loadingSubscriptions
                   ? /* istanbul ignore next */ getString('loading')
                   : getString('pipeline.ACR.subscriptionPlaceholder')
               }
-              name={`${path}.artifacts.${artifactPath}.spec.subscription`}
+              name={`${path}.artifacts.${artifactPath}.spec.subscriptionId`}
             />
           )}
 
@@ -401,7 +397,7 @@ const Content = (props: ACRRenderContent): JSX.Element => {
                         accountIdentifier: accountId,
                         orgIdentifier,
                         projectIdentifier,
-                        subscriptionId: get(formik.values, `${path}.artifacts.${artifactPath}.spec.subscription`)
+                        subscriptionId: get(formik.values, `${path}.artifacts.${artifactPath}.spec.subscriptionId`)
                       },
                       pathParams: {
                         registry: getValue(value)
@@ -527,9 +523,9 @@ export class ACRArtifactSource extends ArtifactSourceBase<ArtifactSourceRenderPr
         ? artifact?.spec?.connectorRef
         : get(initialValues?.artifacts, `${artifactPath}.spec.connectorRef`, '')
     const isSubscriptionPresent =
-      getMultiTypeFromValue(artifact?.spec?.subscription) !== MultiTypeInputType.RUNTIME
-        ? artifact?.spec?.subscription
-        : get(initialValues, `artifacts.${artifactPath}.spec.subscription`, '')
+      getMultiTypeFromValue(artifact?.spec?.subscriptionId) !== MultiTypeInputType.RUNTIME
+        ? artifact?.spec?.subscriptionId
+        : get(initialValues, `artifacts.${artifactPath}.spec.subscriptionId`, '')
     const isRegistryPresent =
       getMultiTypeFromValue(artifact?.spec?.registry) !== MultiTypeInputType.RUNTIME
         ? artifact?.spec?.registry
