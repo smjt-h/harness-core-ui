@@ -792,6 +792,7 @@ pdc:
   hostsUpload1: 'Drop JSON file here'
   hostsUpload2: 'or click to upload'
   errorUploading: 'Uploading file error'
+  editHosts: 'Edit hosts'
   testConnection:
     step1: 'Validating the PDC hosts connectivity'
 connectorReferenceText: "can't be deleted as it is being referenced by other entities. To see the list of entities referencing this connector,"

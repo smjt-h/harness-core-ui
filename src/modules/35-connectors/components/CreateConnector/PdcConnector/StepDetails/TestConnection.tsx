@@ -41,7 +41,7 @@ enum Status {
 const TestConnection: React.FC<StepProps<TestConnectionProps> & WizardProps> = props => {
   const { getString } = useStrings()
 
-  const { prevStepData } = props
+  const { prevStepData, gotoStep } = props
   const { accountId, orgIdentifier, projectIdentifier } = useParams<ProjectPathProps>()
   const [currentStatus, setCurrentStatus] = useState<Status>(Status.PROCESS)
   const [currentIntent, setCurrentIntent] = useState<Intent>(Intent.NONE)
@@ -102,9 +102,21 @@ const TestConnection: React.FC<StepProps<TestConnectionProps> & WizardProps> = p
         </Text>
         <StepsProgress steps={steps} intent={currentIntent} current={currentStep} currentStatus={currentStatus} />
         {errors && (
-          <Layout.Vertical>
+          <div>
             <ErrorHandler responseMessages={errors} className={css.errorPanel} />
-          </Layout.Vertical>
+            <Button
+              text={getString('connectors.pdc.editHosts')}
+              variation={ButtonVariation.SECONDARY}
+              className={css.gotoHostsBtn}
+              onClick={() => {
+                gotoStep?.({
+                  stepNumber: 2,
+                  prevStepData
+                })
+              }}
+              withoutBoxShadow
+            />
+          </div>
         )}
       </Layout.Vertical>
       <Layout.Horizontal padding={{ top: 'small' }} spacing="medium">

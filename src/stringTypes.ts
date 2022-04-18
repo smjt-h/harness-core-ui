@@ -1912,6 +1912,7 @@ export interface StringsMap {
   'connectors.nexus.nexusServerUrl': string
   'connectors.pagerDutyConnectorDetails': string
   'connectors.parameters': string
+  'connectors.pdc.editHosts': string
   'connectors.pdc.errorUploading': string
   'connectors.pdc.hosts': string
   'connectors.pdc.hostsRule': string

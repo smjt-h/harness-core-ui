@@ -11,6 +11,7 @@ declare const styles: {
   readonly cardRow: string
   readonly clusterWrapper: string
   readonly errorPanel: string
+  readonly gotoHostsBtn: string
   readonly headingStepTwo: string
   readonly hostContainer: string
   readonly manualHostContainer: string

@@ -13,55 +13,10 @@
     flex-direction: column;
     justify-content: space-between;
   }
-  .headingStepTwo {
-    font-size: var(--font-size-medium);
-    letter-spacing: 0;
-    color: var(--grey-800);
-  }
 
   .clusterWrapper {
     padding: var(--spacing-xsmall) !important;
     overflow: auto;
-
-    .cardRow {
-      display: flex;
-      margin-bottom: var(--spacing-large);
-      .card {
-        display: flex;
-        justify-content: space-between;
-        border-radius: inherit;
-        width: 100%;
-        height: 80px;
-
-        .textInfo {
-          margin: var(--spacing-small) var(--spacing-small) var(--spacing-small) var(--spacing-large);
-        }
-      }
-
-      .selectedCard {
-        background-color: #dceeff;
-      }
-
-      :global {
-        .bp3-card {
-          width: 42%;
-          display: flex;
-          justify-content: space-between;
-          padding: 0;
-          margin-right: 4%;
-          border-radius: 8px;
-          background-color: var(--white);
-        }
-      }
-    }
-
-    :global {
-      .bp3-button,
-      .bp3-checkbox {
-        width: 42%;
-        height: 36px;
-      }
-    }
   }
 
   .hostContainer {
@@ -69,6 +24,7 @@
     min-height: 200px;
     align-items: center;
   }
+
   .manualHostContainer {
     flex: 1;
     flex-direction: column;
@@ -91,5 +47,9 @@
 }
 
 .errorPanel {
+  margin-top: var(--spacing-large) !important;
+}
+
+.gotoHostsBtn {
   margin-top: var(--spacing-large) !important;
 }
