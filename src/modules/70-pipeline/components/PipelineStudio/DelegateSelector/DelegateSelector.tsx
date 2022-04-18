@@ -19,6 +19,7 @@ export interface DelegateSelectorProps {
   tabName?: string
 }
 
+// wrapping delgate selector panel usingformik as MultuTypedelagate selector uses formik
 export function DelegateSelector(props: DelegateSelectorProps): React.ReactElement {
   const { selectedStage, onUpdate, isReadonly, tabName } = props
   // eslint-disable-next-line react-hooks/exhaustive-deps
