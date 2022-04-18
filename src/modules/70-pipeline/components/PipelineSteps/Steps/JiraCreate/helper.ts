@@ -70,13 +70,17 @@ export const getInitialValueForSelectedField = (
   const savedValue = savedFields.find(sf => sf.name === field.name)?.value
   if (typeof savedValue === 'number') {
     return savedValue as number
-  } else if (typeof savedValue === 'string') {
+  } else if (typeof savedValue === 'string' && getMultiTypeFromValue(savedValue) === MultiTypeInputType.FIXED) {
     if (field.allowedValues && field.schema.type === 'option' && field.schema.array) {
       // multiselect
       // return multiselectoption[]
       const splitValues = (savedValue as string).split(',')
       return splitValues.map(splitvalue => ({ label: splitvalue, value: splitvalue })) as MultiSelectOption[]
-    } else if (field.allowedValues && field.schema.type === 'option') {
+    } else if (
+      field.allowedValues &&
+      field.schema.type === 'option' &&
+      getMultiTypeFromValue(savedValue) === MultiTypeInputType.FIXED
+    ) {
       // singleselect
       // return selectoption
       return { label: savedValue, value: savedValue } as SelectOption
