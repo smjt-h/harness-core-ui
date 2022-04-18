@@ -65,7 +65,7 @@ describe('Create GCP connector Wizard', () => {
     expect(container).toMatchSnapshot()
   })
 
-  test('Should render form for edit authtype encryptedKey', async () => {
+  test('Should render form', async () => {
     const { container } = render(
       <TestWrapper path="/account/:accountId/resources/connectors" pathParams={{ accountId: 'dummy' }}>
         <CreatePdcConnector {...commonProps} isEditMode={true} connectorInfo={encryptedKeyMock} mock={mockResponse} />
@@ -111,7 +111,7 @@ describe('Create GCP connector Wizard', () => {
         <CreatePdcConnector {...commonProps} isEditMode={true} connectorInfo={backButtonMock} mock={mockResponse} />
       </TestWrapper>
     ),
-    backButtonSelector: '[data-name="gcpBackButton"]',
+    backButtonSelector: '[data-name="pdcBackButton"]',
     mock: backButtonMock
   })
 })

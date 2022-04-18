@@ -14,10 +14,10 @@ export const encryptedKeyMock: ConnectorInfoDTO = {
   orgIdentifier: undefined,
   projectIdentifier: undefined,
   tags: {},
-  type: 'Gcp',
+  type: 'Pdc',
   spec: {
     delegateSelectors: ['dummyDelegateSelector'],
-    credential: { type: 'ManualConfig', spec: { secretKeyRef: 'account.s15656' } }
+    hosts: ''
   }
 }
 
@@ -54,6 +54,8 @@ export const backButtonMock: ConnectorInfoDTO = {
   orgIdentifier: '',
   projectIdentifier: '',
   tags: {},
-  type: 'Gcp',
-  spec: { credential: { type: 'ManualConfig', spec: { secretKeyRef: 'account.s15656' } } }
+  type: 'Pdc',
+  spec: {
+    hosts: ''
+  }
 }
