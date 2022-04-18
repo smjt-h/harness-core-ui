@@ -75,6 +75,12 @@ const managedResources = [
     providers: ['aws']
   },
   {
+    label: 'ce.co.autoStoppingRule.helpText.step2.description.resourceList.ig',
+    value: RESOURCES.IG,
+    providers: ['gcp'],
+    ffDependencies: [FeatureFlag.CE_AS_GCP_VM_SUPPORT]
+  },
+  {
     label: 'ce.co.autoStoppingRule.helpText.step2.description.resourceList.kubernetes',
     value: RESOURCES.KUBERNETES,
     providers: ['aws', 'azure', 'gcp'],
@@ -246,6 +252,13 @@ const ManageResources: React.FC<ManageResourcesProps> = props => {
         resetSelectedEcsDetails()
         resetSelectedRdsDetails()
       },
+      [RESOURCES.IG]: () => {
+        // set total no. of steps to default (4)
+        props.setTotalStepsCount(CONFIG_TOTAL_STEP_COUNTS.DEFAULT)
+        // remove details related to instances
+        resetSelectedInstancesDetails()
+        resetKubernetesConnectorDetails()
+      },
       [RESOURCES.KUBERNETES]: () => {
         // set total no. of steps to modified (3)
         props.setTotalStepsCount(CONFIG_TOTAL_STEP_COUNTS.MODIFIED)
@@ -314,9 +327,9 @@ const ManageResources: React.FC<ManageResourcesProps> = props => {
     }
   }
 
-  const fetchAndSetAsgItems = async (): Promise<void> => {
+  const fetchAndSetAsgItems = async (text = ''): Promise<void> => {
     try {
-      const result = await fetchAllASGs({ Text: '' })
+      const result = await fetchAllASGs({ Text: text })
       if (result?.response) {
         const filteredAsgs = result.response || []
         setAllAsg(filteredAsgs)
@@ -502,6 +515,7 @@ const ManageResources: React.FC<ManageResourcesProps> = props => {
     const modalCbMap: Record<string, () => void> = {
       [RESOURCES.INSTANCES]: openInstancesModal,
       [RESOURCES.ASG]: openAsgModal,
+      [RESOURCES.IG]: openAsgModal,
       [RESOURCES.KUBERNETES]: openClusterModal,
       [RESOURCES.ECS]: openEcsModal,
       [RESOURCES.RDS]: openRdsModal
@@ -594,6 +608,7 @@ const DisplayResourceInfo: React.FC<DisplayResourceInfoProps> = props => {
     const textMap: Record<string, string> = {
       [RESOURCES.INSTANCES]: getString('ce.co.autoStoppingRule.configuration.step2.additionalResourceInfo.instance'),
       [RESOURCES.ASG]: getString('ce.co.autoStoppingRule.configuration.step2.additionalResourceInfo.asg'),
+      [RESOURCES.IG]: getString('ce.co.autoStoppingRule.configuration.step2.additionalResourceInfo.ig'),
       [RESOURCES.KUBERNETES]: getString('ce.co.autoStoppingRule.configuration.step2.additionalResourceInfo.kubernetes'),
       [RESOURCES.ECS]: getString('ce.co.autoStoppingRule.configuration.step2.additionalResourceInfo.ecs'),
       [RESOURCES.RDS]: getString('ce.co.autoStoppingRule.configuration.step2.additionalResourceInfo.rds')
@@ -605,6 +620,7 @@ const DisplayResourceInfo: React.FC<DisplayResourceInfoProps> = props => {
     const textMap: Record<string, string> = {
       [RESOURCES.INSTANCES]: `+ ${getString('ce.co.autoStoppingRule.configuration.step2.addResourceCta.instance')}`,
       [RESOURCES.ASG]: `+ ${getString('ce.co.autoStoppingRule.configuration.step2.addResourceCta.asg')}`,
+      [RESOURCES.IG]: `+ ${getString('ce.co.autoStoppingRule.configuration.step2.addResourceCta.ig')}`,
       [RESOURCES.KUBERNETES]: `+ ${getString('ce.co.autoStoppingRule.configuration.step2.addResourceCta.kubernetes')}`,
       [RESOURCES.ECS]: `+ ${getString('ce.co.autoStoppingRule.configuration.step2.addResourceCta.ecs')}`,
       [RESOURCES.RDS]: `+ ${getString('ce.co.autoStoppingRule.configuration.step2.addResourceCta.rds')}`

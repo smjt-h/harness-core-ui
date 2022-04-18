@@ -5,11 +5,11 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import { Button, Container, FontVariation, Label, SimpleTagInput, Text } from '@harness/uicore'
+import { Container, FontVariation, Label, SimpleTagInput, Text } from '@harness/uicore'
 import React, { ReactElement } from 'react'
 import { useStrings } from 'framework/strings'
 import type { Segment, Target, TargetMap } from 'services/cf'
-import type { FormVariationMap, TargetGroup } from '../../Types.types'
+import type { FormVariationMap, TargetGroup, VariationColorMap } from '../../Types.types'
 import DisabledFeatureTooltip from '../disabled-feature-tooltip/DisabledFeatureTooltip'
 import css from './SpecificTargetingItem.module.scss'
 
@@ -19,9 +19,9 @@ export interface SpecificTargetingItemProps {
   targets: Target[]
   segments: Segment[]
   formVariationMapItem: FormVariationMap
+  variationColorMap: VariationColorMap
   updateTargetGroups: (index: number, newTargetGroups: TargetGroup[]) => void
   updateTargets: (index: number, newTargets: TargetMap[]) => void
-  removeVariation: () => void
 }
 
 export interface TagInputItem {
@@ -34,34 +34,27 @@ const SpecificTargetingItem = (props: SpecificTargetingItemProps): ReactElement 
     targets,
     segments,
     formVariationMapItem,
+    variationColorMap,
     index,
     disabled,
     updateTargetGroups,
-    updateTargets,
-    removeVariation
+    updateTargets
   } = props
 
   const delimiter = ','
 
   const { getString } = useStrings()
-
   return (
     <>
       <Container flex={{ justifyContent: 'space-between' }}>
-        <Text inline font={{ variation: FontVariation.BODY }} icon="full-circle">
+        <Text
+          inline
+          font={{ variation: FontVariation.BODY }}
+          icon="full-circle"
+          iconProps={{ style: { color: variationColorMap[formVariationMapItem.variationIdentifier] } }}
+        >
           {formVariationMapItem.variationName}
         </Text>
-
-        <DisabledFeatureTooltip>
-          <Button
-            disabled={disabled}
-            data-testid={`remove_variation_${formVariationMapItem.variationIdentifier}`}
-            icon="trash"
-            minimal
-            withoutCurrentColor
-            onClick={removeVariation}
-          />
-        </DisabledFeatureTooltip>
       </Container>
       <div data-testid={`${formVariationMapItem.variationIdentifier}_target_groups`}>
         <DisabledFeatureTooltip fullWidth>
@@ -85,6 +78,7 @@ const SpecificTargetingItem = (props: SpecificTargetingItemProps): ReactElement 
               const newTargetGroups: TargetGroup[] = selectedItems.map(item => {
                 const value = item.toString().split(delimiter)
                 return {
+                  priority: 1,
                   identifier: value[0],
                   ruleId: '',
                   name: value[1]

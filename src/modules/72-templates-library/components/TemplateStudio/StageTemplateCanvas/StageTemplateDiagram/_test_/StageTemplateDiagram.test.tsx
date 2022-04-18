@@ -30,7 +30,6 @@ jest.mock('@wings-software/monaco-yaml/lib/esm/languageservice/yamlLanguageServi
 describe('<StageTemplateDiagram /> tests', () => {
   test('should render plus button when stage is not selected', async () => {
     const context = produce(pipelineContextMock, draft => {
-      delete draft.state.pipeline.stages
       draft.getStageFromPipeline = _stageId => {
         return {}
       }
@@ -76,7 +75,6 @@ describe('<StageTemplateDiagram /> tests', () => {
 
   test('should render stage button when stage is selected', async () => {
     const context = produce(pipelineContextMock, draft => {
-      delete draft.state.pipeline.stages
       set(draft, 'state.pipeline.stages[0].stage', {
         ...stageTemplateMock.spec,
         name: DefaultNewStageName,

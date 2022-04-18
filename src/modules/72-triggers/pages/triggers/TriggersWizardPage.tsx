@@ -138,8 +138,10 @@ const replaceRunTimeVariables = ({
 }
 
 const replaceStageManifests = ({ filteredStage, selectedArtifact }: { filteredStage: any; selectedArtifact: any }) => {
-  const stageArtifacts = filteredStage?.stage?.spec?.serviceConfig?.serviceDefinition?.spec?.manifests
-  const stageArtifactIdx = filteredStage?.stage?.spec?.serviceConfig?.serviceDefinition?.spec?.manifests?.findIndex(
+  const stageArtifacts = filteredStage?.stage?.template
+    ? filteredStage?.stage?.template?.templateInputs?.spec?.serviceConfig?.serviceDefinition?.spec?.manifests
+    : filteredStage?.stage?.spec?.serviceConfig?.serviceDefinition?.spec?.manifests
+  const stageArtifactIdx = stageArtifacts?.findIndex(
     (item: any) => item.manifest?.identifier === selectedArtifact?.identifier
   )
 
@@ -435,6 +437,7 @@ const TriggersWizardPage: React.FC = (): JSX.Element => {
         triggerType: NGTriggerSourceV2['type']
         pipeline?: PipelineInfoConfig | Record<string, never>
         originalPipeline?: PipelineInfoConfig
+        resolvedPipeline?: PipelineInfoConfig
         identifier?: string
         connectorRef?: { identifier?: string; scope?: string }
         inputSetTemplateYamlObj?: {
@@ -485,7 +488,9 @@ const TriggersWizardPage: React.FC = (): JSX.Element => {
     (pipelineResponse?.data?.yamlPipeline as any) || ''
   )?.pipeline
 
-  const resolvedTemplatesPipelineYaml = defaultTo(pipelineResponse?.data?.resolvedTemplatesPipelineYaml, '')
+  const resolvedPipeline: PipelineInfoConfig | undefined = parse(
+    (pipelineResponse?.data?.resolvedTemplatesPipelineYaml as any) || ''
+  )?.pipeline
 
   useEffect(() => {
     if (triggerResponse?.data?.yaml && triggerResponse.data.type === TriggerTypes.WEBHOOK) {
@@ -792,7 +797,7 @@ const TriggersWizardPage: React.FC = (): JSX.Element => {
           // Ensure ordering of variables and their values respectively for UI
           if (pipelineJson?.variables) {
             pipelineJson.variables = getOrderedPipelineVariableValues({
-              originalPipelineVariables: originalPipeline?.variables,
+              originalPipelineVariables: resolvedPipeline?.variables,
               currentPipelineVariables: pipelineJson.variables
             })
           }
@@ -896,7 +901,7 @@ const TriggersWizardPage: React.FC = (): JSX.Element => {
           // Ensure ordering of variables and their values respectively for UI
           if (pipelineJson?.variables) {
             pipelineJson.variables = getOrderedPipelineVariableValues({
-              originalPipelineVariables: originalPipeline?.variables,
+              originalPipelineVariables: resolvedPipeline?.variables,
               currentPipelineVariables: pipelineJson.variables
             })
           }
@@ -960,7 +965,7 @@ const TriggersWizardPage: React.FC = (): JSX.Element => {
         // Ensure ordering of variables and their values respectively for UI
         if (pipelineJson?.variables) {
           pipelineJson.variables = getOrderedPipelineVariableValues({
-            originalPipelineVariables: originalPipeline?.variables,
+            originalPipelineVariables: resolvedPipeline?.variables,
             currentPipelineVariables: pipelineJson.variables
           })
         }
@@ -1046,7 +1051,7 @@ const TriggersWizardPage: React.FC = (): JSX.Element => {
         // Ensure ordering of variables and their values respectively for UI
         if (pipelineJson?.variables) {
           pipelineJson.variables = getOrderedPipelineVariableValues({
-            originalPipelineVariables: originalPipeline?.variables,
+            originalPipelineVariables: resolvedPipeline?.variables,
             currentPipelineVariables: pipelineJson.variables
           })
         }
@@ -1280,6 +1285,7 @@ const TriggersWizardPage: React.FC = (): JSX.Element => {
         tags: {},
         pipeline: newPipeline,
         originalPipeline,
+        resolvedPipeline,
         anyAction: false,
         autoAbortPreviousExecutions: false
       }
@@ -1291,6 +1297,7 @@ const TriggersWizardPage: React.FC = (): JSX.Element => {
         selectedScheduleTab: scheduleTabsId.MINUTES,
         pipeline: currentPipeline?.pipeline,
         originalPipeline,
+        resolvedPipeline,
         ...getDefaultExpressionBreakdownValues(scheduleTabsId.MINUTES)
       }
     } else if (isArtifactOrManifestTrigger(triggerType)) {
@@ -1304,6 +1311,7 @@ const TriggersWizardPage: React.FC = (): JSX.Element => {
         manifestType,
         pipeline: currentPipeline?.pipeline,
         originalPipeline,
+        resolvedPipeline,
         inputSetTemplateYamlObj,
         selectedArtifact: {}
       }
@@ -1321,14 +1329,19 @@ const TriggersWizardPage: React.FC = (): JSX.Element => {
 
   useEffect(() => {
     const yamlPipeline = pipelineResponse?.data?.yamlPipeline
+    const resolvedYamlPipeline = pipelineResponse?.data?.resolvedTemplatesPipelineYaml
 
     if (
       yamlPipeline &&
-      ((initialValues && !initialValues.originalPipeline) ||
-        (onEditInitialValues?.identifier && !onEditInitialValues.originalPipeline))
+      resolvedYamlPipeline &&
+      ((initialValues && !initialValues.originalPipeline && !initialValues.resolvedPipeline) ||
+        (onEditInitialValues?.identifier &&
+          !onEditInitialValues.originalPipeline &&
+          !onEditInitialValues.resolvedPipeline))
     ) {
       try {
         const newOriginalPipeline = parse(yamlPipeline)?.pipeline
+        const newResolvedPipeline = parse(resolvedYamlPipeline)?.pipeline
         const additionalValues: {
           inputSetTemplateYamlObj?: {
             pipeline: PipelineInfoConfig | Record<string, never>
@@ -1345,6 +1358,7 @@ const TriggersWizardPage: React.FC = (): JSX.Element => {
           setOnEditInitialValues({
             ...onEditInitialValues,
             originalPipeline: newOriginalPipeline,
+            resolvedPipeline: newResolvedPipeline,
             pipeline: newPipeline,
             ...additionalValues
           })
@@ -1352,6 +1366,7 @@ const TriggersWizardPage: React.FC = (): JSX.Element => {
           setInitialValues({
             ...initialValues,
             originalPipeline: newOriginalPipeline,
+            resolvedPipeline: newResolvedPipeline,
             ...additionalValues
           })
         }
@@ -1360,7 +1375,13 @@ const TriggersWizardPage: React.FC = (): JSX.Element => {
         setErrorToasterMessage(getString('triggers.cannotParseInputValues'))
       }
     }
-  }, [pipelineResponse?.data?.yamlPipeline, onEditInitialValues?.identifier, initialValues, currentPipeline])
+  }, [
+    pipelineResponse?.data?.yamlPipeline,
+    pipelineResponse?.data?.resolvedTemplatesPipelineYaml,
+    onEditInitialValues?.identifier,
+    initialValues,
+    currentPipeline
+  ])
 
   const { data: connectorData, refetch: getConnectorDetails } = useGetConnector({
     identifier: getIdentifierFromValue(
@@ -1564,7 +1585,7 @@ const TriggersWizardPage: React.FC = (): JSX.Element => {
       | FlatValidWebhookFormikValuesInterface
       | FlatValidScheduleFormikValuesInterface
   ): FormikErrors<Record<string, any>> => {
-    const pipeline = get(formData, 'originalPipeline') as PipelineInfoConfig
+    const pipeline = get(formData, 'resolvedPipeline') as PipelineInfoConfig
     const isCloneCodebaseEnabledAtLeastAtOneStage = pipeline?.stages?.some(stage =>
       get(stage, 'stage.spec.cloneCodebase')
     )
@@ -1711,7 +1732,7 @@ const TriggersWizardPage: React.FC = (): JSX.Element => {
       >
         <WebhookTriggerConfigPanel />
         <WebhookConditionsPanel />
-        <WebhookPipelineInputPanel resolvedTemplatesPipelineYaml={resolvedTemplatesPipelineYaml} />
+        <WebhookPipelineInputPanel />
       </Wizard>
     )
   }
@@ -1761,7 +1782,7 @@ const TriggersWizardPage: React.FC = (): JSX.Element => {
       >
         <ArtifactTriggerConfigPanel />
         <ArtifactConditionsPanel />
-        <WebhookPipelineInputPanel resolvedTemplatesPipelineYaml={resolvedTemplatesPipelineYaml} />
+        <WebhookPipelineInputPanel />
       </Wizard>
     )
   }
@@ -1808,7 +1829,7 @@ const TriggersWizardPage: React.FC = (): JSX.Element => {
       >
         <TriggerOverviewPanel />
         <SchedulePanel />
-        <WebhookPipelineInputPanel resolvedTemplatesPipelineYaml={resolvedTemplatesPipelineYaml} />
+        <WebhookPipelineInputPanel />
       </Wizard>
     )
   }

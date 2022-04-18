@@ -21,11 +21,11 @@ exports[`FlagActivation it should render correctly 1`] = `
             <div
               class="Layout--horizontal Layout--layout-spacing-small StyledProps--main container"
             >
-              <span
-                class="label"
+              <p
+                class="StyledProps--font StyledProps--main StyledProps--font-variation-form-label"
               >
                 environment
-              </span>
+              </p>
               <div />
             </div>
           </div>
@@ -107,7 +107,7 @@ exports[`FlagActivation it should render correctly 1`] = `
                 role="tabpanel"
               >
                 <div
-                  class="Layout--vertical Layout--layout-spacing-medium StyledProps--main StyledProps--padding-left-xxlarge StyledProps--padding-right-large StyledProps--padding-bottom-large StyledProps--padding-top-xlarge"
+                  class="Layout--vertical Layout--layout-spacing-medium StyledProps--main StyledProps--padding-left-xxlarge StyledProps--padding-right-large StyledProps--padding-bottom-large"
                 >
                   <div
                     class="Layout--horizontal StyledProps--main StyledProps--flex StyledProps--flex-alignItems-center"

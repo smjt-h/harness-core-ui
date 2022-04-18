@@ -9,25 +9,29 @@ import React, { useEffect, useState } from 'react'
 import { isEmpty as _isEmpty, defaultTo as _defaultTo } from 'lodash-es'
 import { Switch, Tab } from '@blueprintjs/core'
 import copy from 'copy-to-clipboard'
-import { Layout, Container, Text, Icon, Link, Tabs, Heading } from '@wings-software/uicore'
+import { Layout, Container, Text, Icon, Link, Tabs, Heading, IconName } from '@wings-software/uicore'
 import { Color } from '@harness/design-system'
 import Highcharts from 'highcharts'
 import HighchartsReact from 'highcharts-react-official'
-import { useParams } from 'react-router-dom'
+import { useParams, Link as RouterLink } from 'react-router-dom'
 import moment from 'moment'
 import {
   AllResourcesOfAccountResponse,
   Service,
   ServiceSavings,
   useAllServiceResources,
+  useDescribeServiceInContainerServiceCluster,
   useHealthOfService,
   useSavingsOfService
 } from 'services/lw'
+import routes from '@common/RouteDefinitions'
 import { useStrings } from 'framework/strings'
 import { useToaster } from '@common/exports'
 import useDeleteServiceHook from '@ce/common/useDeleteService'
 import { Utils } from '@ce/common/Utils'
 import type { AccountPathProps } from '@common/interfaces/RouteInterfaces'
+import { useGetConnector } from 'services/cd-ng'
+import { allProviders, ceConnectorTypes } from '@ce/constants'
 import COGatewayLogs from './COGatewayLogs'
 import COGatewayUsageTime from './COGatewayUsageTime'
 import {
@@ -173,6 +177,18 @@ const COGatewayAnalytics: React.FC<COGatewayAnalyticsProps> = props => {
     lazy: isK8sRule || isEcsRule
   })
 
+  const { data: serviceDescribeData } = useDescribeServiceInContainerServiceCluster({
+    account_id: accountId,
+    cluster_name: _defaultTo(props.service?.data.routing?.container_svc?.cluster, ''),
+    service_name: _defaultTo(props.service?.data.routing?.container_svc?.service, ''),
+    lazy: !isEcsRule,
+    queryParams: {
+      accountIdentifier: accountId,
+      cloud_account_id: _defaultTo(props.service?.data.cloud_account_id, ''),
+      region: _defaultTo(props.service?.data.routing?.container_svc?.region, '')
+    }
+  })
+
   const { triggerToggle } = useToggleRuleState({
     accountId,
     serviceData: props.service?.data as Service,
@@ -263,9 +279,9 @@ const COGatewayAnalytics: React.FC<COGatewayAnalyticsProps> = props => {
                         target="_blank"
                         style={{ textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}
                       >
-                        {`${_defaultTo(props.service?.data?.routing?.container_svc?.task_count, 0)} tasks`}
+                        {`${_defaultTo(serviceDescribeData?.response?.task_count, 0)} tasks`}
                       </Link>
-                      {getStateTag(props.service?.data?.routing?.container_svc?.task_count ? 'active' : 'down')}
+                      {getStateTag(serviceDescribeData?.response?.task_count ? 'active' : 'down')}
                     </>
                   ) : (
                     <>
@@ -317,6 +333,7 @@ const COGatewayAnalytics: React.FC<COGatewayAnalyticsProps> = props => {
                 <CopyURL textToCopy={`http://${props.service?.data.host_name}`} />
               </Layout.Horizontal>
             </Container>
+            <ConnectorDetails service={props.service?.data} />
             {(!_isEmpty(props.service?.data.custom_domains) || props.service?.data?.routing?.k8s?.CustomDomain) && (
               <Container className={css.serviceDetailsItemContainer}>
                 <Text className={css.detailItemHeader}>{getString('ce.co.ruleDetailsHeader.customDomain')}</Text>
@@ -523,6 +540,51 @@ const LogsAndUsage = (props: { service?: Service }) => {
         ></Tab>
       </Tabs>
     </>
+  )
+}
+
+const ConnectorDetails = (props: { service?: Service }) => {
+  const { getString } = useStrings()
+  const { accountId } = useParams<AccountPathProps>()
+
+  const { data: connectorData } = useGetConnector({
+    identifier: props.service?.cloud_account_id || '',
+    queryParams: {
+      accountIdentifier: accountId
+    }
+  })
+
+  const providerType = connectorData?.data?.connector?.type && ceConnectorTypes[connectorData?.data?.connector?.type]
+  const providerIcon = providerType ? allProviders.find(provider => provider.value === providerType)?.icon : null
+
+  return (
+    <Container className={css.serviceDetailsItemContainer}>
+      <Text className={css.detailItemHeader}>{getString('connectorsLabel')}</Text>
+      <Layout.Horizontal className={css.detailItemValue}>
+        {props.service?.routing?.k8s?.ConnectorID ? (
+          <Layout.Horizontal spacing={'small'}>
+            <Icon name="app-kubernetes" size={18} />
+            <RouterLink
+              target="_blank"
+              to={routes.toConnectorDetails({ accountId, connectorId: props.service?.routing?.k8s?.ConnectorID })}
+            >
+              {props.service?.routing?.k8s?.ConnectorID}
+            </RouterLink>
+            <Text>{`(${getString('common.cluster')}) / `}</Text>
+          </Layout.Horizontal>
+        ) : null}
+        <Layout.Horizontal spacing={'small'}>
+          {providerIcon && <Icon name={providerIcon as IconName} size={18} />}
+          <RouterLink
+            target="_blank"
+            to={routes.toConnectorDetails({ accountId, connectorId: props.service?.cloud_account_id })}
+          >
+            {props.service?.metadata?.cloud_provider_details?.name}
+          </RouterLink>
+          <Text>{`(${getString('ce.co.accessPoint.cloudAccount')})`}</Text>
+        </Layout.Horizontal>
+      </Layout.Horizontal>
+    </Container>
   )
 }
 

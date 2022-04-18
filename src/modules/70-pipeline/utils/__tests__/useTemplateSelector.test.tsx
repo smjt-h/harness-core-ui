@@ -11,13 +11,13 @@ import { TestWrapper } from '@common/utils/testUtils'
 import pipelineContextMock from '@pipeline/components/PipelineStudio/RightDrawer/__tests__/stateMock'
 import { PipelineContext } from '@pipeline/components/PipelineStudio/PipelineContext/PipelineContext'
 import { useTemplateSelector } from '@pipeline/utils/useTemplateSelector'
+import { TemplateDrawerTypes } from '@pipeline/components/PipelineStudio/PipelineContext/PipelineActions'
 
 function Wrapped(): React.ReactElement {
-  const { openTemplateSelector, closeTemplateSelector } = useTemplateSelector()
+  const { getTemplate } = useTemplateSelector()
   return (
     <>
-      <button onClick={() => openTemplateSelector({ templateType: 'Step' })}>Open Template Selector</button>
-      <button onClick={closeTemplateSelector}>Close Template Selector</button>
+      <button onClick={() => getTemplate({ templateType: 'Step' })}>Get Template</button>
     </>
   )
 }
@@ -32,16 +32,18 @@ describe('useTemplateSelector Test', () => {
       </PipelineContext.Provider>
     )
 
-    const openTemplateSelectorBtn = getByText('Open Template Selector')
+    const getTemplateBtn = getByText('Get Template')
     await act(async () => {
-      fireEvent.click(openTemplateSelectorBtn)
+      fireEvent.click(getTemplateBtn)
     })
-    expect(pipelineContextMock.updateTemplateView).toBeCalled()
-
-    const copyTemplateBtn = getByText('Close Template Selector')
-    await act(async () => {
-      fireEvent.click(copyTemplateBtn!)
+    expect(pipelineContextMock.updateTemplateView).toBeCalledWith({
+      isTemplateDrawerOpened: true,
+      templateDrawerData: {
+        data: {
+          selectorData: { onCancel: expect.any(Function), onSubmit: expect.any(Function), templateType: 'Step' }
+        },
+        type: TemplateDrawerTypes.UseTemplate
+      }
     })
-    expect(pipelineContextMock.updateTemplateView).toBeCalled()
   })
 })

@@ -28,7 +28,7 @@ const useDeleteTargetGroupDialog = (targetGroup: Segment): UseConfirmationDialog
       projectIdentifier,
       orgIdentifier,
       accountIdentifier,
-      environmentIdentifier: targetGroup.environment as string
+      environmentIdentifier: targetGroup?.environment as string
     }
   })
 

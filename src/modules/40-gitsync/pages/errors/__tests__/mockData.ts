@@ -105,6 +105,50 @@ export const commitViewData: { loading: boolean; error: boolean; data: ResponseP
     }
   }
 
+export const fileViewData = {
+  loading: false,
+  error: false,
+  data: {
+    data: {
+      totalPages: 1,
+      totalItems: 1,
+      pageItemCount: 1,
+      pageSize: 10,
+      content: [
+        {
+          accountIdentifier: 'dummyAccountId',
+          repoUrl: 'https://bitbucket.org/harness-dev/gitSyncRepoTest',
+          repoId: 'gitSyncRepoTest',
+          branchName: 'main',
+          scopes: [
+            {
+              accountIdentifier: 'dummyAccountId',
+              orgIdentifier: 'default',
+              projectIdentifier: 'dummyProject'
+            }
+          ],
+          changeType: 'MODIFY',
+          completeFilePath: '/qa/.harness/test.yaml',
+          entityType: 'Connectors',
+          failureReason: 'Invalid request: An entity with the given name and identifier already exists',
+          status: 'ACTIVE',
+          errorType: 'GIT_TO_HARNESS',
+          additionalErrorDetails: {
+            gitCommitId: '1234567890abcdef',
+            yamlContent:
+              'connector:\n  name: test\n  identifier: test\n  description:\n  orgIdentifier: default\n  projectIdentifier: dummyProject\n  type: DockerRegistry\n  spec:\n    dockerRegistryUrl: test\n    providerType: DockerHub\n    auth:\n      type: Anonymous\n',
+            commitMessage: 'test.yaml edited online with Bitbucket',
+            entityUrl: 'https://bitbucket.org/harness-dev/gitSyncRepoTest/src/master/qa/.harness/test.yaml'
+          },
+          createdAt: new Date().getTime() - 24 * 60 * 60 * 1000
+        }
+      ],
+      pageIndex: 0,
+      empty: false
+    }
+  }
+}
+
 export const mockData = {
   loading: false,
   error: null,

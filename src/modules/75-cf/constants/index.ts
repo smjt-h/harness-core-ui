@@ -5,8 +5,7 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import { useStrings } from 'framework/strings'
-import type { StringKeys } from 'framework/strings'
+import { StringKeys, useStrings } from 'framework/strings'
 import SideNav from '@cf/components/SideNav/SideNav'
 import type { SidebarContext } from '@common/navigation/SidebarProvider'
 
@@ -104,3 +103,5 @@ export const CFSideNavProps: SidebarContext = {
 }
 
 export const DEFAULT_FLAG_GIT_REPO_PATH = '/flags.yaml'
+
+export const PERCENTAGE_ROLLOUT_VALUE = 'Percentage Rollout'

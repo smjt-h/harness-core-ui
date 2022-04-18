@@ -48,7 +48,6 @@
 
 .anomaliesWrapper .anomaliesTooltip {
   visibility: hidden;
-  width: 211px;
   background-color: var(--black);
   color: var(--white);
   border-radius: 6px;
@@ -98,7 +97,7 @@
   line-height: 20px;
   display: block;
   color: var(--primary-5);
-  margin-top: var(--spacing-large);
+  margin-top: var(--spacing-small);
 }
 
 .costWrapper {

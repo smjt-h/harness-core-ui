@@ -10,7 +10,7 @@ import { Icon, Text, IconName } from '@wings-software/uicore'
 import cx from 'classnames'
 import { get, mapKeys, omit, defaultTo } from 'lodash-es'
 
-import type { ExecutionNode, InterruptEffect } from 'services/pipeline-ng'
+import type { ExecutionNode, InterruptEffectDTO } from 'services/pipeline-ng'
 import { String, useStrings } from 'framework/strings'
 import type {
   ExecutionPipelineItem,
@@ -28,7 +28,7 @@ import {
 
 import css from './StepsTree.module.scss'
 
-function getRetryInterrupts(step: ExecutionPipelineNode<ExecutionNode>): InterruptEffect[] {
+function getRetryInterrupts(step: ExecutionPipelineNode<ExecutionNode>): InterruptEffectDTO[] {
   return defaultTo(step?.item?.data?.interruptHistories, []).filter(row => row.interruptType === 'RETRY')
 }
 

@@ -80,10 +80,8 @@ export const EditStageView: React.FC<EditStageViewProps> = ({
 }): JSX.Element => {
   const {
     state: {
-      pipeline: { stages = [] },
-      templateTypes
-    },
-    setTemplateTypes
+      pipeline: { stages = [] }
+    }
   } = usePipelineContext()
   const { getString } = useStrings()
   const newStageData: Item[] = [
@@ -159,10 +157,6 @@ export const EditStageView: React.FC<EditStageViewProps> = ({
     /* istanbul ignore else */
     if (data?.stage) {
       if (template) {
-        if (template.identifier && template.childType) {
-          templateTypes[template.identifier] = template.childType
-          setTemplateTypes(templateTypes)
-        }
         onSubmit?.({ stage: createTemplate(values, template) }, values.identifier)
       } else {
         data.stage.identifier = values.identifier

@@ -83,6 +83,7 @@ const COGatewayAccess: React.FC<COGatewayAccessProps> = props => {
   })
 
   const isK8sRule = Utils.isK8sRule(props.gatewayDetails)
+  const isGcpProvider = Utils.isProviderGcp(props.gatewayDetails.provider)
 
   useEffect(() => {
     trackEvent(USER_JOURNEY_EVENTS.RULE_CREATION_STEP_2, {})
@@ -159,7 +160,9 @@ const COGatewayAccess: React.FC<COGatewayAccessProps> = props => {
 
   const tooltipId = Utils.getConditionalResult(isAwsProvider, 'awsSetupAccess', 'azureSetupAccess')
 
-  const shouldShowSshOption = _isEmpty(props.gatewayDetails.routing.container_svc)
+  const shouldShowSshOption = isGcpProvider
+    ? _isEmpty(props.gatewayDetails.routing.instance.scale_group)
+    : _isEmpty(props.gatewayDetails.routing.container_svc)
 
   if (serviceDataLoading) {
     return (

@@ -43,7 +43,8 @@ const getPropsForVariables = (): PipelineInputSetFormProps => ({
         name: 'testvariable',
         type: 'String'
       }
-    ] as AllNGVariables[]
+    ] as AllNGVariables[],
+    stages: []
   },
   template: {
     name: 'TestPipeline',
@@ -54,7 +55,8 @@ const getPropsForVariables = (): PipelineInputSetFormProps => ({
         type: 'String',
         value: RUNTIME_INPUT_VALUE
       }
-    ] as AllNGVariables[]
+    ] as AllNGVariables[],
+    stages: []
   },
   ...getCommonProps()
 })
@@ -86,7 +88,8 @@ const getPropsForCIStage = (): PipelineInputSetFormProps => ({
           build: RUNTIME_INPUT_VALUE as any
         }
       }
-    }
+    },
+    stages: []
   },
   ...getCommonProps()
 })

@@ -74,6 +74,7 @@ AuditTrailFactory.registerResourceHandler(ResourceType.DELEGATE_TOKEN, {
     name: 'delegates-icon'
   },
   moduleLabel: 'common.delegateTokenLabel',
+  resourceLabel: 'common.delegateTokenLabel',
   resourceUrl: (_: ResourceDTO, resourceScope: ResourceScope, module?: Module) => {
     const { accountIdentifier, orgIdentifier, projectIdentifier } = resourceScope
     return routes.toDelegateTokens({

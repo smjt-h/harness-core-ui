@@ -44,7 +44,8 @@ import {
   useSavingsOfService,
   useGetServiceDiagnostics,
   ServiceError,
-  useCumulativeServiceSavings
+  useCumulativeServiceSavings,
+  useDescribeServiceInContainerServiceCluster
 } from 'services/lw'
 import { String, useStrings } from 'framework/strings'
 import useDeleteServiceHook from '@ce/common/useDeleteService'
@@ -191,6 +192,18 @@ function ResourcesCell(tableProps: CellProps<Service>): JSX.Element {
   const isSubmittedRule = tableProps.row.original.status === 'submitted'
   const isEcsRule = !_isEmpty(tableProps.row.original.routing?.container_svc)
 
+  const { data: serviceDescribeData } = useDescribeServiceInContainerServiceCluster({
+    account_id: accountId,
+    cluster_name: _defaultTo(tableProps.row.original.routing?.container_svc?.cluster, ''),
+    service_name: _defaultTo(tableProps.row.original.routing?.container_svc?.service, ''),
+    lazy: !isEcsRule,
+    queryParams: {
+      accountIdentifier: accountId,
+      cloud_account_id: tableProps.row.original.cloud_account_id,
+      region: _defaultTo(tableProps.row.original.routing?.container_svc?.region, '')
+    }
+  })
+
   const getClickableLink = () => {
     return isK8sRule
       ? tableProps.row.original.routing?.k8s?.CustomDomain
@@ -278,12 +291,9 @@ function ResourcesCell(tableProps: CellProps<Service>): JSX.Element {
                   marginRight: 5
                 }}
               >
-                {`${getString('ce.co.noOfTasks')} ${_defaultTo(
-                  tableProps.row.original.routing?.container_svc?.task_count,
-                  0
-                )}`}
+                {`${getString('ce.co.noOfTasks')} ${_defaultTo(serviceDescribeData?.response?.task_count, 0)}`}
               </Text>
-              {getStateTag(tableProps.row.original.routing?.container_svc?.task_count ? 'active' : 'down')}
+              {getStateTag(serviceDescribeData?.response?.task_count ? 'active' : 'down')}
             </>
           )}
         </Layout.Horizontal>

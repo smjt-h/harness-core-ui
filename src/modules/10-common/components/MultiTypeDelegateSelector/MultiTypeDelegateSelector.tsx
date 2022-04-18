@@ -84,6 +84,7 @@ export function MultiTypeDelegateSelector(props: ConnectedMultiTypeDelegateSelec
           defaultValueToReset={['']}
           skipRenderValueInExpressionLabel
           allowedTypes={allowableTypes}
+          supportListOfExpressions={true}
           disableMultiSelectBtn={disabled}
           expressionRender={() => (
             <ExpressionsListInput name={name} value={value} readOnly={disabled} expressions={expressions} />

@@ -63,17 +63,15 @@ describe('AddFlagsToTargetGroupDialog', () => {
 
     userEvent.click(screen.getAllByRole('checkbox')[0])
 
-    await waitFor(() => {
-      const selects = getSelects()
-      expect(selects[0]).toBeEnabled()
-      userEvent.click(selects[0])
-    })
+    await waitFor(() => expect(getSelects()[0]).toBeEnabled())
+
+    userEvent.click(getSelects()[0])
 
     await waitFor(() => {
-      const opt = screen.getByText(mockFeatures[0].variations[0].name as string)
-      expect(opt).toBeInTheDocument()
-      userEvent.click(opt)
+      expect(screen.getByText(mockFeatures[0].variations[0].name as string)).toBeInTheDocument()
     })
+
+    userEvent.click(screen.getByText(mockFeatures[0].variations[0].name as string))
 
     userEvent.click(screen.getByRole('button', { name: 'cf.segmentDetail.addFlags' }))
 

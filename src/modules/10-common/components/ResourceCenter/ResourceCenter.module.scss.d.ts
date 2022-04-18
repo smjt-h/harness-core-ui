@@ -7,14 +7,14 @@
  **/
 // this is an auto-generated file, do not update this manually
 declare const styles: {
-  readonly bottomBorder: string
   readonly bottombutton: string
-  readonly communityPopover: string
   readonly communityTooltip: string
   readonly helpCenterIcon: string
   readonly iconSize: string
   readonly marginTop: string
+  readonly menuItem: string
   readonly middleregion: string
+  readonly onHover: string
   readonly resourceCenter: string
   readonly title: string
   readonly txtAlignCenter: string

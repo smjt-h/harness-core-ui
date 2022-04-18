@@ -21,11 +21,10 @@ import { Color } from '@harness/design-system'
 import { useModalHook } from '@harness/use-modal'
 import cx from 'classnames'
 import { useHistory } from 'react-router-dom'
-import { parse } from 'yaml'
-import { isEmpty, isEqual, defaultTo, keyBy } from 'lodash-es'
+import { isEmpty, defaultTo, keyBy } from 'lodash-es'
 import type { FormikErrors, FormikProps } from 'formik'
 import useRBACError from '@rbac/utils/useRBACError/useRBACError'
-import type { PipelineInfoConfig, ResponseJsonNode } from 'services/cd-ng'
+import type { PipelineConfig, PipelineInfoConfig, ResponseJsonNode } from 'services/cd-ng'
 import {
   useGetPipeline,
   usePostPipelineExecuteWithInputSetYaml,
@@ -55,12 +54,11 @@ import {
   getAllStageData,
   getAllStageItem,
   getFeaturePropsForRunPipelineButton,
-  POLL_INTERVAL,
   SelectedStageData,
   StageSelectionData
 } from '@pipeline/utils/runPipelineUtils'
 import { useQueryParams } from '@common/hooks'
-import { yamlStringify } from '@common/utils/YamlHelperMethods'
+import { yamlStringify, yamlParse } from '@common/utils/YamlHelperMethods'
 import { PipelineActions } from '@common/constants/TrackingConstants'
 import { useTelemetry } from '@common/hooks/useTelemetry'
 import type { InputSetDTO } from '@pipeline/utils/types'
@@ -146,6 +144,7 @@ function RunPipelineFormBasic({
   })
   const { setPipeline: updatePipelineInVaribalesContext } = usePipelineVariables()
   const [existingProvide, setExistingProvide] = useState<'existing' | 'provide'>('existing')
+  const [yamlHandler, setYamlHandler] = useState<YamlBuilderHandlerBinding | undefined>()
 
   const [canEdit] = usePermission(
     {
@@ -211,12 +210,12 @@ function RunPipelineFormBasic({
   })
 
   const pipeline: PipelineInfoConfig | undefined = React.useMemo(
-    () => parse(defaultTo(pipelineResponse?.data?.yamlPipeline, ''))?.pipeline,
+    () => yamlParse<PipelineConfig>(defaultTo(pipelineResponse?.data?.yamlPipeline, ''))?.pipeline,
     [pipelineResponse?.data?.yamlPipeline]
   )
 
   const resolvedPipeline: PipelineInfoConfig | undefined = React.useMemo(
-    () => parse(defaultTo(pipelineResponse?.data?.resolvedTemplatesPipelineYaml, ''))?.pipeline,
+    () => yamlParse<PipelineConfig>(defaultTo(pipelineResponse?.data?.resolvedTemplatesPipelineYaml, ''))?.pipeline,
     [pipelineResponse?.data?.resolvedTemplatesPipelineYaml]
   )
 
@@ -483,8 +482,17 @@ function RunPipelineFormBasic({
     ]
   )
 
-  const [yamlHandler, setYamlHandler] = useState<YamlBuilderHandlerBinding | undefined>()
-  const [lastYaml, setLastYaml] = useState({})
+  function handleModeSwitch(view: SelectedView): void {
+    if (view === SelectedView.VISUAL && yamlHandler && formikRef.current) {
+      const parsedYaml = yamlParse<PipelineConfig>(defaultTo(yamlHandler.getLatestYaml(), ''))
+
+      if (parsedYaml.pipeline) {
+        formikRef.current.setValues(parsedYaml.pipeline)
+        formikRef.current.validateForm(parsedYaml.pipeline)
+      }
+    }
+    setSelectedView(view)
+  }
 
   const blockedStagesSelected = useMemo(() => {
     let areDependentStagesSelected = false
@@ -511,26 +519,6 @@ function RunPipelineFormBasic({
 
     return areDependentStagesSelected
   }, [selectedStageData])
-
-  useEffect(() => {
-    try {
-      if (yamlHandler) {
-        const Interval = window.setInterval(() => {
-          const parsedYaml = parse(defaultTo(yamlHandler.getLatestYaml(), ''))
-          if (!isEqual(lastYaml, parsedYaml) && formikRef.current) {
-            formikRef.current.setValues(parsedYaml.pipeline)
-            formikRef.current.validateForm(parsedYaml.pipeline)
-            setLastYaml(parsedYaml)
-          }
-        }, POLL_INTERVAL)
-        return () => {
-          window.clearInterval(Interval)
-        }
-      }
-    } catch (e) {
-      // Ignore Error
-    }
-  }, [yamlHandler, lastYaml])
 
   useDeepCompareEffect(() => {
     if (inputSet?.pipeline && formikRef.current) {
@@ -616,7 +604,7 @@ function RunPipelineFormBasic({
     const latestPipeline = { pipeline: values as PipelineInfoConfig }
     const runPipelineFormErrors = await getFormErrors(
       latestPipeline,
-      defaultTo(parsedInputSetTemplateYaml?.pipeline, { name: '', identifier: '' }),
+      defaultTo(parsedInputSetTemplateYaml?.pipeline, {} as PipelineInfoConfig),
       pipeline
     )
     // https://github.com/formium/formik/issues/1392
@@ -635,7 +623,7 @@ function RunPipelineFormBasic({
     runPipelineFormContent = (
       <>
         <Formik<PipelineInfoConfig>
-          initialValues={defaultTo(inputSet.pipeline, { name: '', identifier: '' })}
+          initialValues={defaultTo(inputSet.pipeline, {} as PipelineInfoConfig)}
           formName="runPipeline"
           onSubmit={values => {
             handleRunPipeline(values, false)
@@ -643,8 +631,9 @@ function RunPipelineFormBasic({
           validate={handleValidation}
         >
           {formik => {
-            const { submitForm, values, setFormikState } = formik
+            const { submitForm, values, setValues, setFormikState } = formik
             formikRef.current = formik
+            valuesPipelineRef.current = values
 
             return (
               <Layout.Vertical
@@ -657,14 +646,12 @@ function RunPipelineFormBasic({
                   selectedStageData={selectedStageData}
                   setSelectedStageData={setSelectedStageData}
                   setSkipPreFlightCheck={setSkipPreFlightCheck}
-                  setSelectedView={setSelectedView}
-                  setCurrentPipeline={() => void 0}
+                  handleModeSwitch={handleModeSwitch}
                   runClicked={runClicked}
-                  yamlHandler={yamlHandler}
                   selectedView={selectedView}
                   executionView={executionView}
                   pipelineResponse={pipelineResponse}
-                  getTemplateFromPipeline={() => void 0}
+                  getTemplateFromPipeline={getTemplateFromPipeline}
                   template={inputSetYamlResponse}
                   formRefDom={formRefDom}
                   formErrors={formErrors}
@@ -693,7 +680,7 @@ function RunPipelineFormBasic({
                     template={inputSetYamlResponse}
                     pipeline={pipeline}
                     currentPipeline={{ pipeline: values }}
-                    getTemplateError={() => void 0}
+                    getTemplateError={inputSetsError}
                     resolvedPipeline={resolvedPipeline}
                     submitForm={submitForm}
                     setRunClicked={setRunClicked}
@@ -750,7 +737,17 @@ function RunPipelineFormBasic({
                           ) {
                             setExistingProvide('provide')
                           } else {
-                            submitForm()
+                            if (selectedView === SelectedView.YAML) {
+                              const parsedYaml = yamlParse<PipelineConfig>(defaultTo(yamlHandler?.getLatestYaml(), ''))
+                              if (parsedYaml.pipeline) {
+                                setValues(parsedYaml.pipeline)
+                                setTimeout(() => {
+                                  submitForm()
+                                }, 0)
+                              }
+                            } else {
+                              submitForm()
+                            }
                           }
                         }}
                         featuresProps={getFeaturePropsForRunPipelineButton({

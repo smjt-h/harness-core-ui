@@ -11,15 +11,18 @@ import { Connectors, CreateConnectorModalProps } from '@connectors/constants'
 import { getConnectorIconByType, getConnectorTitleIdByType } from '@connectors/pages/connectors/utils/ConnectorHelper'
 import { useStrings } from 'framework/strings'
 import DialogExtention from '@connectors/common/ConnectorExtention/DialogExtention'
+import VerifyOutOfClusterDelegate from '@connectors/common/VerifyOutOfClusterDelegate/VerifyOutOfClusterDelegate'
+import { useTelemetry } from '@common/hooks/useTelemetry'
+import { CCM_CONNECTOR_SAVE_EVENT } from '@connectors/trackingConstants'
 import OverviewStep, { CEAwsConnectorDTO } from './steps/OverviewStep'
 import CostUsageStep from './steps/CostUsageReport'
 import CrossAccountRoleStep1 from './steps/CrossAccountRoleStep1'
 import CrossAccountRoleStep2 from './steps/CrossAccountRoleStep2'
-import TestConnection from './steps/TestConnection'
 import css from './CreateCeAwsConnector.module.scss'
 
 const CreateCeAwsConnector: React.FC<CreateConnectorModalProps> = props => {
   const { getString } = useStrings()
+  const { trackEvent } = useTelemetry()
   return (
     <DialogExtention dialogStyles={{ width: 1190 }}>
       <StepWizard
@@ -36,7 +39,17 @@ const CreateCeAwsConnector: React.FC<CreateConnectorModalProps> = props => {
         <CostUsageStep name={getString('connectors.ceAws.steps.cur')} />
         <CrossAccountRoleStep1 name={getString('connectors.ceAws.steps.req')} />
         <CrossAccountRoleStep2 name={getString('connectors.ceAws.steps.roleARN')} />
-        <TestConnection name={getString('connectors.ceAws.steps.test')} onClose={props.onClose} />
+        <VerifyOutOfClusterDelegate
+          name={getString('connectors.ceAws.testConnection.heading')}
+          connectorInfo={props.connectorInfo}
+          isStep={true}
+          isLastStep={true}
+          type={Connectors.CEAWS}
+          onClose={() => {
+            trackEvent(CCM_CONNECTOR_SAVE_EVENT, { connectorType: Connectors.CEAWS })
+            props.onClose?.()
+          }}
+        />
       </StepWizard>
     </DialogExtention>
   )

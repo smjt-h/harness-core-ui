@@ -78,7 +78,7 @@ describe('ResourceCenter', () => {
     )
     fireEvent.click(getByTestId('question'))
     await waitFor(() => {
-      expect(getByText('common.resourceCenter.ticketmenu.submit')).toBeInTheDocument()
+      expect(getByText('Common.contactsupport')).toBeInTheDocument()
       expect(queryByText('common.resourceCenter.ticketmenu.tickets')).not.toBeInTheDocument()
     })
   })

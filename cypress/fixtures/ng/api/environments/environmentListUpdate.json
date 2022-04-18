@@ -1,0 +1,35 @@
+{
+  "status": "SUCCESS",
+  "data": {
+    "totalPages": 1,
+    "totalItems": 1,
+    "pageItemCount": 1,
+    "pageSize": 10,
+    "content": [
+      {
+        "environment": {
+          "accountId": "accountId",
+          "orgIdentifier": "default",
+          "projectIdentifier": "project1",
+          "identifier": "testEnv",
+          "name": "New testEnv",
+          "description": "Test Environment Description",
+          "color": "#0063F7",
+          "type": "PreProduction",
+          "deleted": false,
+          "tags": {
+            "env": ""
+          },
+          "version": 0,
+          "yaml": "environment:\n  orgIdentifier: \"default\"\n  projectIdentifier: \"project1\"\n  identifier: \"testEnv\"\n  tags:\n    env: \"\"\n  name: \"New testEnv\"\n  description: \"Test Environment Description\"\n  type: \"PreProduction\"\n"
+        },
+        "createdAt": 1641916426164,
+        "lastModifiedAt": 1645722417382
+      }
+    ],
+    "pageIndex": 0,
+    "empty": false
+  },
+  "metaData": null,
+  "correlationId": "6fc156ac-7e43-4c26-bf3e-38b5bb058d3f"
+}

@@ -15,7 +15,6 @@ import { AccessPoint, useCreateAccessPoint, useEditAccessPoint } from 'services/
 import type { AccessPointScreenMode } from '@ce/types'
 import type { AccountPathProps } from '@common/interfaces/RouteInterfaces'
 import { useStrings } from 'framework/strings'
-import useRBACError from '@rbac/utils/useRBACError/useRBACError'
 import GCPDnsMapping, { GcpDnsFormVal } from './GCPDnsMapping'
 import GCPAccessPointForm, { GcpApFormValue } from './GCPAccessPointForm'
 import css from './GCPAccessPoint.module.scss'
@@ -38,7 +37,6 @@ const GCPAccessPointConfig: React.FC<GCPAccessPointConfigProps> = ({
   step
 }) => {
   const { getString } = useStrings()
-  const { getRBACErrorMessage } = useRBACError()
   const { showError, showSuccess } = useToaster()
   const { accountId } = useParams<AccountPathProps>()
 
@@ -72,6 +70,7 @@ const GCPAccessPointConfig: React.FC<GCPAccessPointConfigProps> = ({
     moveForward()
   }
 
+  /* istanbul ignore next */
   const saveLb = async (lbToSave: AccessPoint): Promise<void> => {
     setLbCreationInProgress(true)
     try {
@@ -88,7 +87,7 @@ const GCPAccessPointConfig: React.FC<GCPAccessPointConfigProps> = ({
       }
     } catch (e) {
       setLbCreationInProgress(false)
-      showError(getRBACErrorMessage(e))
+      showError(e.data?.errors?.join('\n '))
     }
   }
 

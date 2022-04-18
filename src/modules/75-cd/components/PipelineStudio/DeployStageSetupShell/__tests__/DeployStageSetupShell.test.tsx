@@ -58,7 +58,14 @@ jest.mock('services/cd-ng', () => ({
   useGetConnector: jest.fn().mockImplementation(() => {
     return { data: {}, refetch: jest.fn(), error: null }
   }),
-  useGetServiceListForProject: jest.fn().mockImplementation(() => ({ loading: false, data: {}, refetch: jest.fn() }))
+  useGetServiceListForProject: jest.fn().mockImplementation(() => ({ loading: false, data: {}, refetch: jest.fn() })),
+  useGetFailureStrategiesYaml: jest.fn().mockReturnValue({
+    data: {
+      data: 'failureStrategies:\n  - onFailure:\n      errors:\n        - AllErrors\n      action:\n        type: StageRollback',
+      status: 'SUCCESS'
+    },
+    loading: false
+  })
 }))
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type

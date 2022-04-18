@@ -9,7 +9,7 @@ import React from 'react'
 import { defaultTo } from 'lodash-es'
 import type { PipelineInfoConfig } from 'services/cd-ng'
 import type { TemplateSummaryResponse } from 'services/template-ng'
-import type { SelectorData } from '@pipeline/components/PipelineStudio/PipelineContext/PipelineActions'
+import type { GetTemplateProps, GetTemplateResponse } from '@pipeline/utils/useTemplateSelector'
 import { AddStageView } from './views/AddStageView'
 import type { PipelineStageProps } from './PipelineStage'
 
@@ -24,10 +24,7 @@ export interface PipelineStagesProps<T = Record<string, unknown>> {
   onSelectStage?: (stageType: string, stage?: T, pipeline?: PipelineInfoConfig) => void
   showSelectMenu?: boolean
   contextType?: string
-  templateTypes: { [key: string]: string }
-  setTemplateTypes: (data: { [key: string]: string }) => void
-  openTemplateSelector: (selectorData: SelectorData) => void
-  closeTemplateSelector: () => void
+  getTemplate?: (data: GetTemplateProps) => Promise<GetTemplateResponse>
 }
 
 interface PipelineStageMap extends Omit<PipelineStageProps, 'minimal'> {
@@ -45,10 +42,7 @@ export function PipelineStages<T = Record<string, unknown>>({
   stageType,
   stageProps,
   minimal = false,
-  templateTypes,
-  setTemplateTypes,
-  openTemplateSelector,
-  closeTemplateSelector
+  getTemplate
 }: PipelineStagesProps<T>): JSX.Element {
   const [stages, setStages] = React.useState<Map<string, PipelineStageMap>>(new Map())
   const [template, setTemplate] = React.useState<TemplateSummaryResponse>()
@@ -82,34 +76,34 @@ export function PipelineStages<T = Record<string, unknown>>({
   }, [showSelectMenu])
   const selected = stages.get(type || '')
 
-  const onUseTemplate = React.useCallback(
-    (templateSummary: TemplateSummaryResponse, isCopied = false) => {
-      closeTemplateSelector?.()
-      if (getNewStageFromType) {
-        setShowMenu(false)
-        setType(templateSummary.childType)
-        if (isCopied) {
-          setStageData(getNewStageFromTemplate?.(templateSummary, true))
-        } else {
-          setStageData(getNewStageFromType?.(templateSummary.childType || '', true))
-          setTemplate(templateSummary)
-        }
-      } else {
-        onSelectStage?.(defaultTo(templateSummary.childType, ''))
-      }
-    },
-    [closeTemplateSelector, onSelectStage]
-  )
+  const childTypes = React.useMemo(() => {
+    return [...stages.values()].filter(item => !item.isDisabled && !!item.isTemplateSupported).map(item => item.type)
+  }, [stages])
 
-  const onOpenTemplateSelector = React.useCallback(() => {
-    openTemplateSelector?.({
-      templateType: 'Stage',
-      allChildTypes: [...stages.values()]
-        .filter(item => !item.isDisabled && !!item.isTemplateSupported)
-        .map(item => item.type),
-      onUseTemplate
-    })
-  }, [openTemplateSelector, stages, onUseTemplate])
+  const onUseTemplate = async () => {
+    if (getTemplate) {
+      try {
+        const { template: newTemplate, isCopied } = await getTemplate({
+          templateType: 'Stage',
+          allChildTypes: childTypes
+        })
+        if (getNewStageFromType) {
+          setShowMenu(false)
+          setType(newTemplate.childType)
+          if (isCopied) {
+            setStageData(getNewStageFromTemplate?.(newTemplate, true))
+          } else {
+            setStageData(getNewStageFromType?.(newTemplate.childType || '', true))
+            setTemplate(newTemplate)
+          }
+        } else {
+          onSelectStage?.(defaultTo(newTemplate.childType, ''))
+        }
+      } catch (_) {
+        // Do nothing.. user cancelled template selection
+      }
+    }
+  }
 
   const selectedStageIndex = selected?.index || 0
   const stage = React.Children.toArray(children)[selectedStageIndex] as React.ReactElement<PipelineStageProps>
@@ -129,7 +123,7 @@ export function PipelineStages<T = Record<string, unknown>>({
               onSelectStage?.(selectedType)
             }
           }}
-          onOpenTemplateSelector={onOpenTemplateSelector}
+          onUseTemplate={onUseTemplate}
         />
       )}
       {!showSelectMenu && selected && stage && (
@@ -150,8 +144,6 @@ export function PipelineStages<T = Record<string, unknown>>({
             stageProps: {
               data: stageData,
               template: template,
-              templateTypes,
-              setTemplateTypes,
               onSubmit: (data: T, _id?: string, pipeline?: PipelineInfoConfig) => {
                 onSelectStage?.(type, data, pipeline)
               }

@@ -15,13 +15,15 @@ import AuditTrailFactory from '@audit-trail/factories/AuditTrailFactory'
 import AuditTrailsListView from '../AuditTrailsListView'
 import { data } from './mockData'
 
-AuditTrailFactory.registerResourceHandler('INPUT_SET', {
+AuditTrailFactory.registerResourceHandler('CONNECTOR', {
   moduleIcon: { name: 'nav-settings' },
-  moduleLabel: 'auditTrail.Platform'
+  moduleLabel: 'auditTrail.Platform',
+  resourceLabel: 'connector'
 })
 
 AuditTrailFactory.registerResourceHandler('PIPELINE', {
-  moduleIcon: { name: 'cd' }
+  moduleIcon: { name: 'cd' },
+  resourceLabel: 'common.pipeline'
 })
 
 describe('Audit trail list view', () => {

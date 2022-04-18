@@ -1,0 +1,17 @@
+{
+  "status": "ERROR",
+  "code": "INVALID_REQUEST",
+  "message": "Invalid request: Field for key [stages] does not exist",
+  "correlationId": "747450c9-ce1f-4981-8021-1c37c56a7437",
+  "detailedMessage": null,
+  "responseMessages": [
+    {
+      "code": "INVALID_REQUEST",
+      "level": "ERROR",
+      "message": "Invalid request: Field for key [stages] does not exist",
+      "exception": null,
+      "failureTypes": []
+    }
+  ],
+  "metadata": null
+}

@@ -20,9 +20,7 @@ jest.mock('framework/strings', () => ({
 
 describe('Render and test InfraProvisioningWizard', () => {
   test('Initial render for SelectBuildLocation', async () => {
-    const { container, getByText } = render(
-      <SelectBuildLocation selectedBuildLocation={HostedByHarnessBuildLocation} />
-    )
+    const { container } = render(<SelectBuildLocation selectedBuildLocation={HostedByHarnessBuildLocation} />)
     expect(container.getElementsByClassName('div[class*="MultiStepProgressIndicator"]'))
 
     // All build infra type cards should be visible
@@ -33,18 +31,7 @@ describe('Render and test InfraProvisioningWizard', () => {
     expect(buildInfraCards[0].className).toContain('Card--selected')
 
     // Docker Runner build infra card should be disabled by default
-    expect(buildInfraCards[3].className).toContain('Card--disabled')
-
-    // Clicking on Kubernetes build infra cards should select it
-    fireEvent.click(getByText('kubernetesText'))
-    expect(buildInfraCards[1].className).toContain('Card--selected')
-    buildInfraCards.map((card, index) => index !== 1 && expect(card.className).not.toContain('Card--selected'))
-
-    // Similarly, clicking on AWS build infra cards should select it
-    fireEvent.click(getByText('common.aws'))
-    expect(buildInfraCards[0].className).not.toContain('Card--selected')
-    expect(buildInfraCards[1].className).not.toContain('Card--selected')
-    expect(buildInfraCards[2].className).toContain('Card--selected')
+    buildInfraCards.map((card, index) => index !== 0 && expect(card.className).toContain('Card--disabled'))
 
     // Only one build infra type card should marked as selected at all times
     expect(container.querySelectorAll('[data-icon="main-tick"]').length).toBe(1)
@@ -66,7 +53,7 @@ describe('Render and test InfraProvisioningWizard', () => {
     expect(dialog).not.toBeTruthy()
 
     await act(async () => {
-      fireEvent.click(getByText('ci.getStartedWithCI.configInfra'))
+      fireEvent.click(getByText('next: ci.getStartedWithCI.configInfra'))
     })
     // Only SelectBuildLocation step should be in progress with green spinner icon
     expect(
@@ -93,27 +80,19 @@ describe('Render and test InfraProvisioningWizard', () => {
     })
 
     // Status reverts to initial
-    expect(container.querySelectorAll('div[class*="MultiStepProgressIndicator--dot"]').length).toBe(2)
+    expect(container.querySelectorAll('div[class*="MultiStepProgressIndicator--dot"]').length).toBe(3)
   })
 
-  test('Test Wizard Navigation with Select VCS Vendor as first step', async () => {
+  test('Test Wizard Navigation with Select Git Provider as first step', async () => {
     const { getByText } = render(
-      <InfraProvisioningWizard lastConfiguredWizardStepId={InfraProvisiongWizardStepId.SelectVCSVendor} />
+      <InfraProvisioningWizard lastConfiguredWizardStepId={InfraProvisiongWizardStepId.SelectGitProvider} />
     )
     expect(getByText('ci.getStartedWithCI.codeRepo')).toBeTruthy()
-    expect(getByText('next')).toBeTruthy()
+    expect(getByText('next: ci.getStartedWithCI.selectRepo')).toBeTruthy()
     // Going back to SelectBuildLocation
     await act(async () => {
       fireEvent.click(getByText('back'))
     })
     expect(getByText('ci.getStartedWithCI.buildLocation')).toBeTruthy()
-  })
-
-  test('Test Wizard for an unregistered step', async () => {
-    const { container } = render(
-      <InfraProvisioningWizard lastConfiguredWizardStepId={InfraProvisiongWizardStepId.SelectCodeRepo} />
-    )
-    // should render empty div for a step not in the wizard
-    expect(container).toMatchInlineSnapshot('<div />')
   })
 })

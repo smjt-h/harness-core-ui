@@ -108,7 +108,8 @@ export interface SelectorData {
   allChildTypes?: string[]
   selectedTemplateRef?: string
   selectedVersionLabel?: string
-  onUseTemplate?: (template: TemplateSummaryResponse, isCopied?: boolean) => void
+  onSubmit?: (template: TemplateSummaryResponse, isCopied: boolean) => void
+  onCancel?: () => void
 }
 
 export interface TemplateDrawerData extends Omit<IDrawerProps, 'isOpen'> {
@@ -164,7 +165,8 @@ export interface PipelineReducerState {
 export const DefaultPipeline: PipelineInfoConfig = {
   name: '',
   identifier: DefaultNewPipelineId,
-  allowStageExecutions: false
+  allowStageExecutions: false,
+  stages: []
 }
 
 export interface ActionResponse {

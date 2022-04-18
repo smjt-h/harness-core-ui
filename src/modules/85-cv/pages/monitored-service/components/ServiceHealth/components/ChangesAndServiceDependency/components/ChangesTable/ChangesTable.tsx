@@ -37,7 +37,8 @@ export default function ChangesTable({
   customCols,
   changeCategories,
   changeSourceTypes,
-  recordsPerPage
+  recordsPerPage,
+  dataTooltipId
 }: ChangesTableInterface): JSX.Element {
   const [page, setPage] = useState(0)
   const { getString } = useStrings()
@@ -236,7 +237,7 @@ export default function ChangesTable({
 
   return (
     <>
-      <Text font={{ weight: 'bold', size: 'normal' }} padding={{ bottom: 'medium' }}>
+      <Text font={{ weight: 'bold', size: 'normal' }} padding={{ bottom: 'medium' }} tooltipProps={{ dataTooltipId }}>
         {getString('changes')}({totalItems})
       </Text>
       {renderContent()}

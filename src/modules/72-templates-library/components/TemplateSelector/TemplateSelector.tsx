@@ -28,7 +28,7 @@ export const TemplateSelector: React.FC = (): JSX.Element => {
       }
     }
   } = usePipelineContext()
-  const { onUseTemplate, selectedTemplateRef, selectedVersionLabel } = data?.selectorData || {}
+  const { onSubmit, selectedTemplateRef, selectedVersionLabel } = data?.selectorData || {}
   const [selectedTemplate, setSelectedTemplate] = useState<TemplateSummaryResponse | undefined>()
   const { getString } = useStrings()
   const { isGitSyncEnabled } = useAppStore()
@@ -59,10 +59,10 @@ export const TemplateSelector: React.FC = (): JSX.Element => {
   const onUseTemplateConfirm = React.useCallback(
     (isCopied = false) => {
       if (selectedTemplate) {
-        onUseTemplate?.(selectedTemplate, isCopied)
+        onSubmit?.(selectedTemplate, isCopied)
       }
     },
-    [selectedTemplate, onUseTemplate]
+    [selectedTemplate, onSubmit]
   )
 
   const { openDialog: openChangeTemplateDialog } = useConfirmationDialog({

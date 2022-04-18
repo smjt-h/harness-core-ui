@@ -53,7 +53,7 @@ const instanceTypeCardData: CardData[] = [
   }
 ]
 
-const allowedResources = [RESOURCES.INSTANCES, RESOURCES.ASG, RESOURCES.ECS]
+const allowedResources = [RESOURCES.INSTANCES, RESOURCES.ASG, RESOURCES.ECS, RESOURCES.IG]
 
 const ResourceFulfilment: React.FC<ResourceFulfilmentProps> = props => {
   const { getString } = useStrings()
@@ -67,65 +67,6 @@ const ResourceFulfilment: React.FC<ResourceFulfilmentProps> = props => {
       null
     )
   )
-
-  const handleODChange = (formik: FormikContext<any>, val: string) => {
-    if (Utils.isNumber(val)) {
-      const numericVal = Number(val)
-      formik.setFieldValue('odInstance', numericVal)
-      props.gatewayDetails.routing?.instance?.scale_group?.mixed_instance &&
-        formik.setFieldValue(
-          'spotInstance',
-          (props.gatewayDetails.routing.instance.scale_group?.max as number) - numericVal
-        )
-      const updatedGatewayDetails = { ...props.gatewayDetails }
-      // eslint-disable-next-line
-      updatedGatewayDetails.routing.instance.scale_group = {
-        ...props.gatewayDetails.routing.instance.scale_group,
-        desired: Utils.getConditionalResult(
-          Boolean(props.gatewayDetails.routing?.instance?.scale_group?.mixed_instance),
-          props.gatewayDetails.routing.instance.scale_group?.max,
-          numericVal
-        ), // desired = od + spot (which is always equal to max capacity)
-        on_demand: numericVal, // eslint-disable-line
-        ...(props.gatewayDetails.routing?.instance?.scale_group?.mixed_instance && {
-          spot: (props.gatewayDetails.routing.instance.scale_group?.max as number) - numericVal // eslint-disable-line
-        })
-      }
-      props.setGatewayDetails(updatedGatewayDetails)
-    }
-  }
-
-  const handleSpotChange = (formik: FormikContext<any>, val: string) => {
-    if (Utils.isNumber(val)) {
-      const numericVal = Number(val)
-      formik.setFieldValue('spotInstance', numericVal)
-      formik.setFieldValue(
-        'odInstance',
-        (props.gatewayDetails.routing.instance.scale_group?.max as number) - numericVal
-      )
-      const updatedGatewayDetails = { ...props.gatewayDetails }
-      // eslint-disable-next-line
-      updatedGatewayDetails.routing.instance.scale_group = {
-        ...props.gatewayDetails.routing.instance.scale_group,
-        desired: props.gatewayDetails.routing.instance.scale_group?.max, // desired = od + spot (which is always equal to max capacity)
-        spot: numericVal,
-        on_demand: (props.gatewayDetails.routing.instance.scale_group?.max as number) - numericVal // eslint-disable-line
-      }
-      props.setGatewayDetails(updatedGatewayDetails)
-    }
-  }
-
-  const handleAsgInstancesChange = (formik: FormikContext<any>, val: string, instanceType: 'OD' | 'SPOT') => {
-    const instanceTypeHandlerMap: Record<string, () => void> = {
-      OD: () => {
-        handleODChange(formik, val)
-      },
-      SPOT: () => {
-        handleSpotChange(formik, val)
-      }
-    }
-    instanceTypeHandlerMap[instanceType]?.()
-  }
 
   const handleEcsTaskCountUpdate = useCallback(
     _debounce((updatedCount: string) => {
@@ -206,94 +147,11 @@ const ResourceFulfilment: React.FC<ResourceFulfilmentProps> = props => {
           </Layout.Horizontal>
         </Layout.Vertical>
       )}
-      {props.selectedResource === RESOURCES.ASG && (
-        <Layout.Horizontal className={css.asgInstanceSelectionContianer}>
-          <div className={css.asgInstanceDetails}>
-            <Text className={css.asgDetailRow}>
-              <span>{`${getString('ce.co.autoStoppingRule.configuration.step3.desiredCapacity')}: `}</span>
-              <span>
-                {props.gatewayDetails.routing?.instance?.scale_group?.desired ||
-                  _defaultTo(props.gatewayDetails.routing.instance.scale_group?.on_demand, 0) +
-                    _defaultTo(props.gatewayDetails.routing.instance.scale_group?.spot, 0)}
-              </span>
-            </Text>
-            <Text className={css.asgDetailRow}>
-              <span>{`${getString('ce.co.autoStoppingRule.configuration.step3.minCapacity')}: `}</span>
-              <span>{props.gatewayDetails.routing?.instance?.scale_group?.min}</span>
-            </Text>
-            <Text className={css.asgDetailRow}>
-              <span>{`${getString('ce.co.autoStoppingRule.configuration.step3.maxCapacity')}: `}</span>
-              <span>{props.gatewayDetails.routing?.instance?.scale_group?.max}</span>
-            </Text>
-          </div>
-          <div className={css.asgInstanceFormContainer}>
-            <Formik
-              initialValues={{
-                odInstance: _defaultTo(
-                  props.gatewayDetails.routing.instance.scale_group?.on_demand,
-                  props.gatewayDetails.routing?.instance?.scale_group?.desired
-                ),
-                spotInstance: _get(props.gatewayDetails.routing.instance.scale_group, 'spot', 0)
-              }}
-              formName="odInstance"
-              onSubmit={_ => {
-                return
-              }} // eslint-disable-line
-              render={formik => (
-                <FormikForm>
-                  <Layout.Horizontal style={{ justifyContent: 'space-between' }}>
-                    <Layout.Vertical className={css.instanceTypeInput}>
-                      <FormInput.Text
-                        name={'odInstance'}
-                        inputGroup={{ type: 'number', pattern: '[0-9]*' }}
-                        label={
-                          <Layout.Horizontal>
-                            <img src={odIcon} />
-                            <Text>On-Demand</Text>
-                          </Layout.Horizontal>
-                        }
-                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                          handleAsgInstancesChange(formik, e.target.value, 'OD')
-                        }
-                      />
-                    </Layout.Vertical>
-                    <Layout.Vertical className={css.instanceTypeInput}>
-                      <FormInput.Text
-                        name={'spotInstance'}
-                        inputGroup={{ type: 'number', pattern: '[0-9]*' }}
-                        disabled={!props.gatewayDetails.routing?.instance?.scale_group?.mixed_instance}
-                        helperText={
-                          !props.gatewayDetails.routing?.instance?.scale_group?.mixed_instance &&
-                          getString('ce.co.autoStoppingRule.configuration.step3.policyNotEnabled')
-                        }
-                        label={
-                          <Layout.Horizontal>
-                            <img src={spotIcon} />
-                            <Text>Spot</Text>
-                          </Layout.Horizontal>
-                        }
-                        onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
-                          handleAsgInstancesChange(formik, e.target.value, 'SPOT')
-                        }
-                      />
-                    </Layout.Vertical>
-                  </Layout.Horizontal>
-                </FormikForm>
-              )}
-              validationSchema={Yup.object().shape({
-                odInstance: Yup.number()
-                  .required()
-                  .positive()
-                  .min(0)
-                  .max(props.gatewayDetails.routing?.instance?.scale_group?.max as number),
-                spotInstance: Yup.number()
-                  .positive()
-                  .min(0)
-                  .max(props.gatewayDetails.routing?.instance?.scale_group?.max as number)
-              })}
-            ></Formik>
-          </div>
-        </Layout.Horizontal>
+      {(props.selectedResource === RESOURCES.ASG || props.selectedResource === RESOURCES.IG) && (
+        <GroupResourceCountUpdateSection
+          gatewayDetails={props.gatewayDetails}
+          setGatewayDetails={props.setGatewayDetails}
+        />
       )}
       {props.selectedResource === RESOURCES.ECS && (
         <Container>
@@ -333,6 +191,184 @@ const ResourceFulfilment: React.FC<ResourceFulfilmentProps> = props => {
         </Container>
       )}
     </COGatewayConfigStep>
+  )
+}
+
+interface GroupResourceCountUpdateSectionProps {
+  gatewayDetails: GatewayDetails
+  setGatewayDetails: (details: GatewayDetails) => void
+}
+
+const GroupResourceCountUpdateSection: React.FC<GroupResourceCountUpdateSectionProps> = ({
+  gatewayDetails,
+  setGatewayDetails
+}) => {
+  const { getString } = useStrings()
+  const isGcpProvider = Utils.isProviderGcp(gatewayDetails.provider)
+
+  const handleODChange = (formik: FormikContext<any>, val: string) => {
+    if (Utils.isNumber(val)) {
+      const numericVal = Number(val)
+      formik.setFieldValue('odInstance', numericVal)
+      gatewayDetails.routing?.instance?.scale_group?.mixed_instance &&
+        formik.setFieldValue('spotInstance', (gatewayDetails.routing.instance.scale_group?.max as number) - numericVal)
+      const updatedGatewayDetails = { ...gatewayDetails }
+      // eslint-disable-next-line
+      updatedGatewayDetails.routing.instance.scale_group = {
+        ...gatewayDetails.routing.instance.scale_group,
+        desired: Utils.getConditionalResult(
+          Boolean(gatewayDetails.routing?.instance?.scale_group?.mixed_instance),
+          gatewayDetails.routing.instance.scale_group?.max,
+          numericVal
+        ), // desired = od + spot (which is always equal to max capacity)
+        on_demand: numericVal, // eslint-disable-line
+        ...(gatewayDetails.routing?.instance?.scale_group?.mixed_instance && {
+          spot: (gatewayDetails.routing.instance.scale_group?.max as number) - numericVal // eslint-disable-line
+        })
+      }
+      setGatewayDetails(updatedGatewayDetails)
+    }
+  }
+
+  const handleSpotChange = (formik: FormikContext<any>, val: string) => {
+    if (Utils.isNumber(val)) {
+      const numericVal = Number(val)
+      formik.setFieldValue('spotInstance', numericVal)
+      formik.setFieldValue('odInstance', (gatewayDetails.routing.instance.scale_group?.max as number) - numericVal)
+      const updatedGatewayDetails = { ...gatewayDetails }
+      // eslint-disable-next-line
+      updatedGatewayDetails.routing.instance.scale_group = {
+        ...gatewayDetails.routing.instance.scale_group,
+        desired: gatewayDetails.routing.instance.scale_group?.max, // desired = od + spot (which is always equal to max capacity)
+        spot: numericVal,
+        on_demand: (gatewayDetails.routing.instance.scale_group?.max as number) - numericVal // eslint-disable-line
+      }
+      setGatewayDetails(updatedGatewayDetails)
+    }
+  }
+
+  const handleAsgInstancesChange = (formik: FormikContext<any>, val: string, instanceType: 'OD' | 'SPOT') => {
+    const instanceTypeHandlerMap: Record<string, () => void> = {
+      OD: () => {
+        handleODChange(formik, val)
+      },
+      SPOT: () => {
+        handleSpotChange(formik, val)
+      }
+    }
+    instanceTypeHandlerMap[instanceType]?.()
+  }
+
+  const getDesiredDisplayValue = () => {
+    if (isGcpProvider) {
+      return gatewayDetails.routing?.instance?.scale_group?.desired || 1
+    } else {
+      return (
+        gatewayDetails.routing?.instance?.scale_group?.desired ||
+        _defaultTo(gatewayDetails.routing.instance.scale_group?.on_demand, 0) +
+          _defaultTo(gatewayDetails.routing.instance.scale_group?.spot, 0)
+      )
+    }
+  }
+
+  const getInitialValues = () => {
+    return {
+      odInstance: isGcpProvider
+        ? gatewayDetails.routing?.instance?.scale_group?.desired || 1
+        : _defaultTo(
+            gatewayDetails.routing.instance.scale_group?.on_demand,
+            gatewayDetails.routing?.instance?.scale_group?.desired
+          ),
+      spotInstance: _get(gatewayDetails.routing.instance.scale_group, 'spot', 0)
+    }
+  }
+
+  return (
+    <Layout.Horizontal className={css.asgInstanceSelectionContianer}>
+      <div className={css.asgInstanceDetails}>
+        <Text className={css.asgDetailRow}>
+          <span>{`${getString('ce.co.autoStoppingRule.configuration.step3.desiredCapacity')}: `}</span>
+          <span>{getDesiredDisplayValue()}</span>
+        </Text>
+        <Text className={css.asgDetailRow}>
+          <span>{`${getString('ce.co.autoStoppingRule.configuration.step3.minCapacity')}: `}</span>
+          <span>{gatewayDetails.routing?.instance?.scale_group?.min}</span>
+        </Text>
+        <Text className={css.asgDetailRow}>
+          <span>{`${getString('ce.co.autoStoppingRule.configuration.step3.maxCapacity')}: `}</span>
+          <span>{gatewayDetails.routing?.instance?.scale_group?.max}</span>
+        </Text>
+      </div>
+      <div className={css.asgInstanceFormContainer}>
+        <Formik
+          initialValues={getInitialValues()}
+          enableReinitialize
+          formName="odInstance"
+          onSubmit={_ => {
+            return
+          }} // eslint-disable-line
+          render={formik => (
+            <FormikForm>
+              <Layout.Horizontal style={{ justifyContent: 'space-between' }}>
+                <Layout.Vertical className={css.instanceTypeInput}>
+                  <FormInput.Text
+                    name={'odInstance'}
+                    inputGroup={{ type: 'number', pattern: '[0-9]*', min: 1 }}
+                    label={
+                      <Layout.Horizontal>
+                        <img src={odIcon} />
+                        <Text>On-Demand</Text>
+                      </Layout.Horizontal>
+                    }
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                      handleAsgInstancesChange(formik, e.target.value, 'OD')
+                    }
+                  />
+                </Layout.Vertical>
+                {!isGcpProvider && (
+                  <Layout.Vertical className={css.instanceTypeInput}>
+                    <FormInput.Text
+                      name={'spotInstance'}
+                      inputGroup={{ type: 'number', pattern: '[0-9]*' }}
+                      disabled={!gatewayDetails.routing?.instance?.scale_group?.mixed_instance}
+                      helperText={
+                        !gatewayDetails.routing?.instance?.scale_group?.mixed_instance &&
+                        getString('ce.co.autoStoppingRule.configuration.step3.policyNotEnabled')
+                      }
+                      label={
+                        <Layout.Horizontal>
+                          <img src={spotIcon} />
+                          <Text>Spot</Text>
+                        </Layout.Horizontal>
+                      }
+                      onChange={(e: React.ChangeEvent<HTMLInputElement>) =>
+                        handleAsgInstancesChange(formik, e.target.value, 'SPOT')
+                      }
+                    />
+                  </Layout.Vertical>
+                )}
+              </Layout.Horizontal>
+            </FormikForm>
+          )}
+          validationSchema={Yup.object().shape({
+            odInstance: Yup.number()
+              .required()
+              .positive()
+              .when(['isGcpProvider'], {
+                is: _ => !isGcpProvider,
+                then: Yup.number()
+                  .min(0)
+                  .max(gatewayDetails.routing?.instance?.scale_group?.max as number),
+                otherwise: Yup.number().min(1)
+              }),
+            spotInstance: Yup.number()
+              .positive()
+              .min(0)
+              .max(gatewayDetails.routing?.instance?.scale_group?.max as number)
+          })}
+        ></Formik>
+      </div>
+    </Layout.Horizontal>
   )
 }
 

@@ -184,9 +184,9 @@ describe('test cases for anomalyUtils', () => {
     namespace: 'Namespace',
     workloadName: 'Workload',
     awsUsageAccountId: 'Account',
-    awsServicecode: 'Service',
+    awsServiceCode: 'Service',
     awsInstancetype: 'Instance Type',
-    awsUsagetype: 'Usage Type',
+    awsUsageType: 'Usage Type',
     workloadType: 'Workload Type',
     awsAccount: 'Account'
   }
@@ -220,9 +220,9 @@ describe('test cases for anomalyUtils', () => {
         namespace: 'Namespace',
         workloadName: 'Workload',
         awsUsageAccountId: 'Account',
-        awsServicecode: 'Service',
+        awsServiceCode: 'Service',
         awsInstancetype: 'Instance Type',
-        awsUsagetype: 'Usage Type',
+        awsUsageType: 'Usage Type',
         workloadType: 'Workload Type',
         awsAccount: 'Account'
       },
@@ -234,9 +234,9 @@ describe('test cases for anomalyUtils', () => {
         namespace: 'Namespace1',
         workloadName: 'Workload1',
         awsUsageAccountId: 'Account1',
-        awsServicecode: 'Service1',
+        awsServiceCode: 'Service1',
         awsInstancetype: 'Instance Type1',
-        awsUsagetype: 'Usage Type1',
+        awsUsageType: 'Usage Type1',
         workloadType: 'Workload Type1',
         awsAccount: 'Account1'
       }
@@ -265,16 +265,28 @@ describe('test cases for anomalyUtils', () => {
 
     expect(getFiltersFromEnityMap(entityMapArray, CloudProvider.AWS)).toEqual([
       {
-        field: { fieldId: 'awsAccount', fieldName: '', identifier: 'AWS', identifierName: 'AWS' },
+        field: { fieldId: 'awsUsageAccountId', fieldName: 'Account', identifier: 'AWS', identifierName: 'AWS' },
         operator: 'IN',
         type: 'VIEW_ID_CONDITION',
         values: ['Account', 'Account1']
+      },
+      {
+        field: { fieldId: 'awsServiceCode', fieldName: 'Service', identifier: 'AWS', identifierName: 'AWS' },
+        operator: 'IN',
+        type: 'VIEW_ID_CONDITION',
+        values: ['Service', 'Service1']
       },
       {
         field: { fieldId: 'awsInstancetype', fieldName: 'Instance Type', identifier: 'AWS', identifierName: 'AWS' },
         operator: 'IN',
         type: 'VIEW_ID_CONDITION',
         values: ['Instance Type', 'Instance Type1']
+      },
+      {
+        field: { fieldId: 'awsUsageType', fieldName: 'Usage Type', identifier: 'AWS', identifierName: 'AWS' },
+        operator: 'IN',
+        type: 'VIEW_ID_CONDITION',
+        values: ['Usage Type', 'Usage Type1']
       }
     ])
   })

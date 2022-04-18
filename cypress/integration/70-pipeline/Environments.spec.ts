@@ -1,4 +1,4 @@
-import { environmentRoute, environmentsCall } from '../../support/70-pipeline/constants'
+import { environmentRoute, environmentsCall, envUpsertCall, envUpdateList } from '../../support/70-pipeline/constants'
 
 describe('Environment for Pipeline', () => {
   beforeEach(() => {
@@ -49,6 +49,59 @@ describe('Environment for Pipeline', () => {
     cy.contains('span', 'Save').click()
     cy.wait(1000)
     cy.contains('span', 'Environment created successfully').should('be.visible')
+  })
+
+  it('Environment Assertion and Edit', () => {
+    cy.intercept('GET', environmentsCall, { fixture: 'ng/api/environments/environmentsList.json' }).as(
+      'environmentsList'
+    )
+    cy.wait(1000)
+    cy.wait('@environmentsList')
+
+    cy.wait(1000)
+    cy.contains('p', 'testEnv').should('be.visible')
+    cy.contains('p', 'Test Environment Description').should('be.visible')
+    cy.contains('p', 'Production').should('be.visible')
+
+    cy.get('span[data-icon="main-tags"]').should('be.visible')
+    cy.get('span[data-icon="main-tags"]').trigger('mouseover')
+    cy.contains('p', 'TAGS').should('be.visible')
+
+    cy.get('span[data-icon="Options"]').should('be.visible')
+    cy.get('span[data-icon="Options"]').click()
+    cy.contains('div', 'Edit').click()
+
+    //Edit values
+    cy.wait(1000)
+    cy.fillName('New testEnv')
+    cy.get('button[data-testid="thumbnail-select-change"]').click()
+    cy.contains('p', 'Pre Production').click()
+
+    // YAML assertion
+    cy.get('[data-name="toggle-option-two"]').click()
+
+    cy.contains('span', 'New testEnv').should('be.visible')
+    cy.contains('span', 'Test Environment Description').should('be.visible')
+    cy.contains('span', 'env').should('be.visible')
+    cy.contains('span', 'PreProduction').should('be.visible')
+
+    //upsert call
+    cy.intercept('GET', envUpsertCall, { fixture: 'ng/api/environments/upsertCall.json' })
+    cy.contains('span', 'Save').click()
+
+    //Updated list
+    cy.intercept('GET', envUpdateList, { fixture: 'ng/api/environments/environmentListUpdate.json' }).as(
+      'environmentListUpdate'
+    )
+    cy.wait(1000)
+    cy.wait('@environmentListUpdate')
+    cy.wait(1000)
+
+    //check if list updated
+    cy.contains('p', 'New testEnv').should('be.visible')
+    cy.contains('p', 'PreProduction').should('be.visible')
+
+    cy.contains('span', 'Environment updated successfully').should('be.visible')
   })
 
   it('Environment Assertion and Deletion', () => {

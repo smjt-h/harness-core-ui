@@ -12,7 +12,7 @@ import { isEqual, omit } from 'lodash-es'
 import { parse } from 'yaml'
 import type { FormikProps } from 'formik'
 import { useQueryParams } from '@common/hooks'
-import { getCVMonitoringServicesSearchParam, getErrorMessage } from '@cv/utils/CommonUtils'
+import { getCVMonitoringServicesSearchParam, getErrorMessage, getSearchString } from '@cv/utils/CommonUtils'
 import { accountPathProps, projectPathProps, modulePathProps } from '@common/utils/routeUtils'
 import routes from '@common/RouteDefinitions'
 import { editParams } from '@cv/utils/routeUtils'
@@ -30,6 +30,7 @@ import { PageSpinner, useToaster, NavigationCheck } from '@common/components'
 import { MonitoredServiceEnum } from '@cv/pages/monitored-service/MonitoredServicePage.constants'
 import { ChangeSourceCategoryName } from '@cv/pages/ChangeSource/ChangeSourceDrawer/ChangeSourceDrawer.constants'
 import { useStrings } from 'framework/strings'
+import { SLODetailsPageTabIds } from '@cv/pages/slos/CVSLODetailsPage/CVSLODetailsPage.types'
 import Service from './components/Service/Service'
 import Dependency from './components/Dependency/Dependency'
 import { getInitFormData } from './components/Service/Service.utils'
@@ -217,14 +218,14 @@ export default function Configurations(): JSX.Element {
 
         if (redirectToSLO && sloIdentifier) {
           history.push({
-            pathname: routes.toCVEditSLOs({
+            pathname: routes.toCVSLODetailsPage({
               accountId,
               orgIdentifier,
               projectIdentifier,
               identifier: sloIdentifier,
               module: 'cv'
             }),
-            search: monitoredServiceIdentifier ? `?monitoredServiceIdentifier=${monitoredServiceIdentifier}` : ''
+            search: getSearchString({ tab: SLODetailsPageTabIds.Configurations, monitoredServiceIdentifier })
           })
         } else if (redirectToSLO) {
           history.push({

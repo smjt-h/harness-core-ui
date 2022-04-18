@@ -174,11 +174,10 @@ const YAMLBuilder: React.FC<YamlBuilderProps> = (props: YamlBuilderProps): JSX.E
     if (sanitizedJSONObj && Object.keys(sanitizedJSONObj).length > 0) {
       const yamlEqOfJSON = yamlStringify(sanitizedJSONObj)
       const sanitizedYAML = yamlEqOfJSON.replace(': null\n', ': \n')
-      const yamlWithoutCarriageReturns = sanitizedYAML.replace(/(?:\\[rn])+/g, '\n')
-      setCurrentYaml(yamlWithoutCarriageReturns)
-      yamlRef.current = yamlWithoutCarriageReturns
+      setCurrentYaml(sanitizedYAML)
+      yamlRef.current = sanitizedYAML
       verifyYAML({
-        updatedYaml: yamlWithoutCarriageReturns,
+        updatedYaml: sanitizedYAML,
         setYamlValidationErrors,
         showError,
         schema,

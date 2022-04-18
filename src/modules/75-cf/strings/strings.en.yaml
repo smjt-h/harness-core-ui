@@ -20,6 +20,8 @@ shared:
   pleaseSelectVariation: Please select a variation first.
   getStarted: '{{ $.getStarted }}'
   quickGuide: Quick Guide
+  true: 'true'
+  false: 'false'
 messages:
   flagCreated: Flag created.
   flagUpdated: Flag updated.
@@ -176,6 +178,7 @@ featureFlags:
   makeSure: Make sure your code is deployed
   rules:
     whenFlagEnabled: When the Flag is Enabled
+    whenFlagDisabled: When the Flag is Disabled
     editRules: Edit Rules
     flagOn: '{{ $.cf.creationModal.flagOn }}'
     flagOff: '{{ $.cf.creationModal.flagOff }}'

@@ -52,7 +52,7 @@ const ComputeType: React.FC<ComputeTypeProps> = ({ data, className }) => {
       ) : isRdsRule ? (
         <Icon name="aws-rds" size={21} />
       ) : (
-        <img src={getIcon()} alt="" aria-hidden />
+        <img src={getIcon()} alt="" aria-hidden width={18} height={18} />
       )}
       <Text lineClamp={3} color={Color.GREY_500}>
         {getDisplayValue()}

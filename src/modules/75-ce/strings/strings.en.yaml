@@ -72,6 +72,7 @@ co:
             ec2Vms: 'EC2 VM(s)'
             ecsService: 'ECS Service'
             rdsInstances: 'RDS Instance'
+            ig: Instance groups
       step3:
         title: 'Choose instance fulfilment'
         description:
@@ -102,12 +103,14 @@ co:
           kubernetes: 'Add a cluster to be managed by the AutoStopping Rule.'
           ecs: 'Add an ECS Service to be managed by the AutoStopping Rule'
           rds: 'Add the RDS instance to be managed by this Autostopping Rule'
+          ig: 'Add an Instance group to be managed by this Autostopping Rule'
         addResourceCta:
           instance: 'Add an instance'
           asg: 'Add a auto-scaling group'
           kubernetes: 'Add a cluster'
           ecs: 'Add an ECS Service'
           rds: 'Add RDS instance'
+          ig: 'Add an Instance group'
       step3:
         title: 'Choose to convert the selected instance(s) to spot or remain on-demand. '
         asgTitle: 'Choose the on-demand vs spot ratio for your Auto Scaling group'
@@ -166,6 +169,11 @@ co:
       rdsModal:
         title: 'Select RDS instance(s)'
         emptyDescription: 'Select a Region to see all the databases.'
+      asgModal:
+        title: 'Select Auto scaling group'
+      igModal:
+        title: 'Select instance group'
+        gcpFiltersNotSelectedDescription: 'Select a region to see all the instance groups.'
     review:
       configDetails: 'Configuration Details'
       cloudAccountDetails: 'Cloud account details'
@@ -908,13 +916,15 @@ anomalyDetection:
     addChannelBtn: add Channel
     selectChannelPlaceholder: Select Channel
     selectMethod: '{{ $.UrlLabel }}'
-    urlInputPlaceholder: Enter webhook url or user groups
+    urlInputPlaceholder: Enter webhook url or email address
     addAlertSuccessMsg: Notification alert added successfully!
     deleteAlertSuccessMsg: Alert notification deleted successfully!
     updateAlertSuccessMsg: Alert notification updated successfully!
     slackChannelLabel: Slack webhook url
     emailChannelLabel: '{{ $.email }}'
     microsoftTeamChannelLabel: '{{ $.notifications.labelMS }}'
+    channelSelectionRequiredMsg: Please select a channel
+    channelUrlRequiredMsg: Please enter a valid webhook url or email address
   perspectiveCreateAnomalyAlertTitle: '{{ $.ce.anomalyDetection.notificationAlerts.heading}}({{ count }})'
   addNewAnomalyAlert: add Anomaly Alert
   addAnoamlyAlertDesc: You can recieve alerts whenever an anomaly occurs in the persepective. This can help you rectify any unfavourable cost spikes at the earliest.
@@ -931,6 +941,7 @@ businessMapping:
   confirmDialogHeading: 'Delete Cost Category'
   confirmDialogBody: 'Are you sure you want to delete the Cost Category {{ name }}?'
   shownAs: 'Shown as {{ value }}'
+  shownAsHidden: 'Hidden'
   form:
     businessMappingPlaceholder: Enter Cost Category Name
     saveText: Save Cost Category
@@ -939,7 +950,7 @@ businessMapping:
   manageUnallocatedCost:
     title: Manage Unallocated Costs
     defaultUnallocatedCostLabel: Show Unallocated Values as
-    ignoreCostLabel: Ignore Unallocated Values (Coming Soon)
+    ignoreCostLabel: Ignore Unallocated Values
     shareCosts: Share Default Costs among Cost Buckets (Coming Soon)
     otherPlaceholder: '{{ $.stepPalette.others }}'
   costBucket:

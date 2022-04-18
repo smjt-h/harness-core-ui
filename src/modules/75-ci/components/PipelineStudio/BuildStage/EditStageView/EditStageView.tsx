@@ -83,10 +83,9 @@ export const EditStageView: React.FC<EditStageView> = ({ data, template, onSubmi
   const repositoryNameLabel = getString('common.repositoryName')
 
   const {
-    state: { pipeline, templateTypes },
+    state: { pipeline },
     contextType,
-    isReadonly,
-    setTemplateTypes
+    isReadonly
   } = usePipelineContext()
 
   const { accountId, projectIdentifier, orgIdentifier } = useParams<{
@@ -200,10 +199,6 @@ export const EditStageView: React.FC<EditStageView> = ({ data, template, onSubmi
       }
 
       if (template) {
-        if (template.identifier && template.childType) {
-          templateTypes[template.identifier] = template.childType
-          setTemplateTypes(templateTypes)
-        }
         onSubmit?.({ stage: createTemplate(values, template) }, values.identifier, pipelineData)
       } else {
         data.stage.identifier = values.identifier

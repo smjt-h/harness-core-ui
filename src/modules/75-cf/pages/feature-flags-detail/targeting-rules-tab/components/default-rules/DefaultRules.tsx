@@ -11,14 +11,18 @@ import type { Variation } from 'services/cf'
 import { CFVariationColors } from '@cf/constants'
 import { useStrings } from 'framework/strings'
 import StringWithTooltip from '@common/components/StringWithTooltip/StringWithTooltip'
+import type { StringsMap } from 'framework/strings/StringsContext'
 import DisabledFeatureTooltip from '../disabled-feature-tooltip/DisabledFeatureTooltip'
 
 export interface DefaultRulesProps {
   featureFlagVariations: Variation[]
+  hideSubheading?: boolean
+  titleStringId: keyof StringsMap
+  inputName: string
 }
 
 const DefaultRules = (props: DefaultRulesProps): ReactElement => {
-  const { featureFlagVariations } = props
+  const { featureFlagVariations, titleStringId, inputName, hideSubheading = false } = props
 
   const { getString } = useStrings()
   const variationItems = featureFlagVariations.map<SelectOption>((variation, index) => ({
@@ -30,17 +34,19 @@ const DefaultRules = (props: DefaultRulesProps): ReactElement => {
   return (
     <>
       <Heading level={3} font={{ variation: FontVariation.H6 }} margin={{ bottom: 'medium' }}>
-        <StringWithTooltip stringId="cf.featureFlags.rules.whenFlagEnabled" tooltipId="ff_ffDefaultRules_heading" />
+        <StringWithTooltip stringId={titleStringId} tooltipId="ff_ffDefaultRules_heading" />
       </Heading>
-      <Heading level={4} font={{ variation: FontVariation.BODY2 }} margin={{ bottom: 'small' }}>
-        {getString('cf.featureFlags.rules.defaultRule')}
-      </Heading>
+      {!hideSubheading && (
+        <Heading level={4} font={{ variation: FontVariation.BODY2 }} margin={{ bottom: 'small' }}>
+          {getString('cf.featureFlags.rules.defaultRule')}
+        </Heading>
+      )}
       <DisabledFeatureTooltip>
         <FormInput.Select
           style={{ marginBottom: '0' }}
           label={getString('cf.featureFlags.serve')}
           inline
-          name="onVariation"
+          name={inputName}
           items={variationItems}
         />
       </DisabledFeatureTooltip>

@@ -582,7 +582,9 @@ function RetryPipeline({
   return (
     <Formik<PipelineInfoConfig>
       initialValues={
-        currentPipeline?.pipeline ? clearRuntimeInput(currentPipeline.pipeline) : { name: '', identifier: '' }
+        currentPipeline?.pipeline
+          ? clearRuntimeInput(currentPipeline.pipeline)
+          : { name: '', identifier: '', stages: [] }
       }
       formName="retryPipeline"
       onSubmit={values => {
@@ -779,6 +781,7 @@ function RetryPipeline({
                     permission: PermissionIdentifier.EXECUTE_PIPELINE
                   }}
                   disabled={getRetryPipelineDisabledState()}
+                  data-testid="retry-failed-pipeline"
                 />
                 <div className={css.secondaryButton}>
                   <Button

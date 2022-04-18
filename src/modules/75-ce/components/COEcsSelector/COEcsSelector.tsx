@@ -61,7 +61,7 @@ const COEcsSelector: React.FC<COEcsSelectorProps> = props => {
   const [allRegions, setAllRegions] = useState<SelectOption[]>([])
   const [selectedRegion, setSelectedRegion] = useState<SelectOption>()
   const [allContainers, setAllContainers] = useState<SelectOption[]>([])
-  const [selectedContainer, setSelectedContainer] = useState<SelectOption>()
+  const [selectedContainer, setSelectedContainer] = useState<SelectOption | null | undefined>()
   const [allServices, setAllServices] = useState<ContainerServiceServiceMinimal[]>([])
   const [servicesToShow, setServicesToShow] = useState<ContainerServiceServiceMinimal[]>([])
   const [pageIndex, setPageIndex] = useState<number>(0)
@@ -253,6 +253,11 @@ const COEcsSelector: React.FC<COEcsSelectorProps> = props => {
     }
   }
 
+  const handleRegionFilterChange = (item: SelectOption) => {
+    setSelectedRegion(item)
+    setSelectedContainer(null)
+  }
+
   const loading = regionsLoading || loadingContainers || loadingServices
 
   const isDisabled = _isEmpty(selectedClusterService)
@@ -290,7 +295,7 @@ const COEcsSelector: React.FC<COEcsSelectorProps> = props => {
           <Layout.Horizontal flex={{ justifyContent: 'flex-start' }} spacing={'large'} style={{ maxWidth: '40%' }}>
             <Select
               items={allRegions}
-              onChange={item => setSelectedRegion(item)}
+              onChange={handleRegionFilterChange}
               disabled={regionsLoading}
               value={selectedRegion}
               inputProps={{

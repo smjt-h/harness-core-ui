@@ -1,0 +1,20 @@
+{
+  "status": "SUCCESS",
+  "data": {
+    "service": {
+      "accountId": "accountId",
+      "identifier": "testService",
+      "orgIdentifier": "harness",
+      "projectIdentifier": "project1",
+      "name": "NewtestService",
+      "description": "Test Service Description",
+      "deleted": false,
+      "tags": {},
+      "yaml": "service:\n  name: \"NewtestService\"\n  identifier: \"testService\"\n  orgIdentifier: \"harness\"\n  projectIdentifier: \"project1\"\n  description: \"Test Service Description\"\n  tags: {}\n"
+    },
+    "createdAt": 1631598821564,
+    "lastModifiedAt": 1649766165650
+  },
+  "metaData": null,
+  "correlationId": "fa940218-70c4-49c6-ba32-9848756d4546"
+}

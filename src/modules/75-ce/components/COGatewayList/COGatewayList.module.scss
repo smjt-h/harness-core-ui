@@ -60,7 +60,7 @@
     margin-right: 10px;
   }
   p {
-    color: #0278d5 !important;
+    color: var(--primary-7) !important;
   }
 }
 
@@ -69,7 +69,7 @@
 }
 
 .gatewayLogView {
-  background: #151823 !important;
+  background: var(--grey-900) !important;
 }
 
 .serviceDetailsItemContainer {
@@ -80,6 +80,7 @@
   }
   .detailItemValue {
     flex: 1;
+    flex-wrap: wrap;
   }
 }
 
@@ -90,7 +91,7 @@
 
 .scheduleAccordion {
   padding: var(--spacing-small) !important;
-  background: white !important;
+  background: var(--white) !important;
   > h4 {
     margin-bottom: var(--spacing-medium) !important;
   }
@@ -108,14 +109,14 @@
       padding: 2px 7px;
       background: var(--red-500);
       border-radius: 5px;
-      color: white;
+      color: var(--white);
       font-size: 11px;
     }
     .upTag {
       padding: 2px 7px;
       background: var(--green-500);
       border-radius: 5px;
-      color: white;
+      color: var(--white);
       font-size: 11px;
     }
   }

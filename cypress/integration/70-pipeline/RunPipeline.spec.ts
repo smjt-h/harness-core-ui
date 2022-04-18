@@ -5,19 +5,14 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
+import { cdFailureStrategiesYaml } from '../../support/70-pipeline/constants'
+import { invalidYAMLErrorMsgOnEmptyStageSave, pipelineSaveCall } from '../../support/70-pipeline/constants'
+
 describe('RUN PIPELINE MODAL', () => {
   const gitSyncCall =
     '/ng/api/git-sync/git-sync-enabled?accountIdentifier=accountId&orgIdentifier=default&projectIdentifier=project1'
-  const pipelineSave =
-    '/pipeline/api/pipelines?accountIdentifier=accountId&projectIdentifier=project1&orgIdentifier=default'
-  const inputSetsTemplateCall =
-    '/pipeline/api/inputSets/template?routingId=accountId&accountIdentifier=accountId&orgIdentifier=default&pipelineIdentifier=testPipeline_Cypress&projectIdentifier=project1'
-  const pipelineDetailsCall =
-    '/pipeline/api/pipelines/testPipeline_Cypress?routingId=accountId&accountIdentifier=accountId&orgIdentifier=default&projectIdentifier=project1'
   const resolvedPipelineDetailsCall =
     '/template/api/templates/applyTemplates?routingId=accountId&accountIdentifier=accountId&orgIdentifier=default&pipelineIdentifier=testPipeline_Cypress&projectIdentifier=project1&getDefaultFromOtherRepo=true'
-  const inputSetsGetCall =
-    '/pipeline/api/inputSets?routingId=accountId&accountIdentifier=accountId&orgIdentifier=default&projectIdentifier=project1&pipelineIdentifier=testPipeline_Cypress'
   const pipelineVariablesCall =
     '/pipeline/api/pipelines/variables?routingId=accountId&accountIdentifier=accountId&orgIdentifier=default&projectIdentifier=project1'
   const servicesCall =
@@ -26,8 +21,6 @@ describe('RUN PIPELINE MODAL', () => {
     '/ng/api/environmentsV2?routingId=accountId&accountIdentifier=accountId&orgIdentifier=default&projectIdentifier=project1'
   const connectorsCall =
     '/ng/api/connectors?accountIdentifier=accountId&type=K8sCluster&searchTerm=&projectIdentifier=project1&orgIdentifier=default'
-  const stagesExecutionListCall =
-    '/pipeline/api/pipeline/execute/stagesExecutionList?routingId=px7xd_BFRCi-pfWPYXVjvw&accountIdentifier=px7xd_BFRCi-pfWPYXVjvw&orgIdentifier=default&projectIdentifier=Kapil&pipelineIdentifier=My_test_pipeline'
   const yamlSnippetCall = '/pipeline/api/approvals/stage-yaml-snippet?routingId=accountId&approvalType=HarnessApproval'
   const userGroupCall = 'ng/api/aggregate/acl/usergroups?accountIdentifier=accountId&orgIdentifier=default&searchTerm='
   const stepsCall = '/pipeline/api/pipelines/v2/steps?routingId=accountId&accountId=accountId'
@@ -68,11 +61,17 @@ describe('RUN PIPELINE MODAL', () => {
 
   describe('For deploy stage', () => {
     beforeEach(() => {
-      cy.get('[icon="plus"]').click()
-      cy.findByTestId('stage-Deployment').click()
+      switch (Cypress.currentTest.title) {
+        case 'error validations on pipeline save from API':
+          break
+        default:
+          cy.createDeploymentStage()
+          break
+      }
 
-      cy.fillName('testStage_Cypress')
-      cy.clickSubmit()
+      cy.intercept('GET', cdFailureStrategiesYaml, { fixture: 'pipeline/api/pipelines/failureStrategiesYaml' }).as(
+        'cdFailureStrategiesYaml'
+      )
     })
 
     it('should display the delete pipeline stage modal', () => {
@@ -86,32 +85,35 @@ describe('RUN PIPELINE MODAL', () => {
       cy.contains('span', 'Pipeline Stage Successfully removed.').should('be.visible')
     })
 
-    it.skip('should display the field errors if form is invalid', () => {
-      cy.intercept('POST', pipelineSave, { fixture: 'pipeline/api/pipelines.postsuccess' })
-      cy.intercept('POST', inputSetsTemplateCall, { fixture: 'pipeline/api/runpipeline/inputsettemplate' })
-      cy.intercept('GET', pipelineDetailsCall, { fixture: 'pipeline/api/runpipeline/getpipeline' })
-      cy.intercept('POST', resolvedPipelineDetailsCall, { fixture: 'template/api/getresolvedpipeline' })
-      cy.intercept('GET', inputSetsGetCall, { fixture: 'pipeline/api/runpipeline/getinputsets' })
-      cy.intercept('GET', stagesExecutionListCall, { fixture: 'pipeline/api/pipeline/execute/stagesExecutionList' })
-
+    it('error validations on pipeline save from API', () => {
+      cy.intercept('POST', pipelineSaveCall, { fixture: 'pipeline/api/pipelines.post.emptyPipeline' }).as(
+        'pipelineSave'
+      )
+      cy.wait(1000)
+      cy.contains('div', 'Unsaved changes').should('be.visible')
       cy.contains('span', 'Save').click({ force: true })
-      cy.contains('span', 'Pipeline published successfully').should('be.visible')
+      cy.wait('@pipelineSave')
 
-      cy.findByTestId('card-run-pipeline').click()
-      cy.contains('span', 'Run').click({ force: true })
+      cy.contains('span', 'Invalid request: Field for key [stages] does not exist').should('be.visible')
+      cy.intercept('POST', pipelineSaveCall, { fixture: 'pipeline/api/pipelines.post.emptyStage' }).as(
+        'pipelineSaveStage'
+      )
+      cy.createDeploymentStage()
+      cy.wait(1000)
+      cy.contains('span', 'Save').click({ force: true })
+      cy.wait('@pipelineSaveStage')
 
-      cy.contains('span', 'Service is required').should('be.visible').should('have.class', 'FormError--error')
-      cy.contains('span', 'ConnectorRef is a required field')
+      cy.contains('span', 'Invalid yaml: $.pipeline.stages[0].stage.spec.execution: is missing but it is required')
         .should('be.visible')
-        .should('have.class', 'FormError--error')
-      cy.contains('span', 'Image Path is a required field')
-        .should('be.visible')
-        .should('have.class', 'FormError--error')
-      cy.contains('span', 'Tag is a required field').should('be.visible').should('have.class', 'FormError--error')
+        .invoke('text')
+        .then(text => {
+          expect(text).equal(invalidYAMLErrorMsgOnEmptyStageSave)
+        })
     })
 
     describe('Checks visual to YAML and visual to variable view parity', () => {
       beforeEach(() => {
+        cy.intercept('GET', cdFailureStrategiesYaml, { fixture: 'pipeline/api/pipelines/failureStrategiesYaml' })
         cy.intercept('GET', servicesCall, { fixture: 'ng/api/servicesV2' })
         cy.intercept('GET', environmentsCall, { fixture: 'ng/api/environmentsV2' })
         cy.intercept('GET', connectorsCall, { fixture: 'ng/api/connectors' })
@@ -281,10 +283,12 @@ describe('RUN PIPELINE MODAL', () => {
       cy.fillName('JiraStageTest')
       cy.contains('p', 'Jira').click({ multiple: true })
       cy.clickSubmit()
-      cy.intercept('GET', jirayamlSnippetCall, { fixture: 'pipeline/api/jiraStage/stageYamlSnippet' })
+      cy.intercept('GET', jirayamlSnippetCall, { fixture: 'pipeline/api/jiraStage/stageYamlSnippet' }).as('stageYaml')
       cy.intercept('POST', stepsCall, { fixture: 'pipeline/api/approvals/steps' })
     })
     it('should display the delete pipeline stage modal', () => {
+      cy.wait('@stageYaml')
+      cy.wait(1000)
       cy.get('[icon="play"]').click({ force: true, multiple: true })
       cy.wait(2000)
       cy.contains('p', 'JiraStageTest').trigger('mouseover')
@@ -296,6 +300,7 @@ describe('RUN PIPELINE MODAL', () => {
 
     describe('Jira Create Form Test', () => {
       it('Submit empty form Validations', () => {
+        cy.wait('@stageYaml')
         cy.contains('span', 'Advanced').click({ force: true })
         cy.wait(1000)
         cy.contains('span', 'Execution').click({ force: true })
@@ -336,6 +341,7 @@ describe('RUN PIPELINE MODAL', () => {
 
     describe('Jira Approval Form Test', () => {
       it('Submit empty form Validations', () => {
+        cy.wait('@stageYaml')
         cy.contains('span', 'Advanced').click({ force: true })
         cy.wait(1000)
         cy.contains('span', 'Execution').click({ force: true })
@@ -373,6 +379,7 @@ describe('RUN PIPELINE MODAL', () => {
 
     describe('Jira Update Form Test', () => {
       it('Submit empty form Validations', () => {
+        cy.wait('@stageYaml')
         cy.contains('span', 'Advanced').click({ force: true })
         cy.wait(1000)
         cy.contains('span', 'Execution').click({ force: true })

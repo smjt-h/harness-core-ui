@@ -349,6 +349,7 @@ exports[`Retry Pipeline tests should not allow submit if form is incomplete 1`] 
         >
           <button
             class="bp3-button bp3-disabled Button--button StyledProps--font StyledProps--main StyledProps--intent-success Button--with-current-color Button--variation Button--variation-primary"
+            data-testid="retry-failed-pipeline"
             disabled=""
             tabindex="-1"
             type="submit"

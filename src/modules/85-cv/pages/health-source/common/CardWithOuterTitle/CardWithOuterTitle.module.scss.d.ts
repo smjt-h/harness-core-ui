@@ -10,5 +10,6 @@ declare const styles: {
   readonly header: string
   readonly sectionCard: string
   readonly shadow: string
+  readonly tooltipStyle: string
 }
 export default styles

@@ -14,10 +14,9 @@ import type { StageElementWrapperConfig } from 'services/cd-ng'
 import { useStrings } from 'framework/strings'
 import FailureStrategyPanel from '@pipeline/components/PipelineSteps/AdvancedSteps/FailureStrategyPanel/FailureStrategyPanel'
 import type { AllFailureStrategyConfig } from '@pipeline/components/PipelineSteps/AdvancedSteps/FailureStrategyPanel/utils'
-import { ErrorType, Strategy } from '@pipeline/utils/FailureStrategyUtils'
 import { getFailureStrategiesValidationSchema } from '@pipeline/components/PipelineSteps/AdvancedSteps/FailureStrategyPanel/validation'
 import { StepMode as Modes } from '@pipeline/utils/stepUtils'
-import { StageType } from '@pipeline/utils/stageHelpers'
+import type { StageType } from '@pipeline/utils/stageHelpers'
 
 import { StageErrorContext } from '@pipeline/context/StageErrorContext'
 import type { StepCommandsRef } from '../StepCommands/StepCommands'
@@ -84,29 +83,14 @@ export function FailureStrategy(props: FailureStrategyProps, ref: StepCommandsRe
   }))
 
   const stageType = selectedStage?.stage?.type as StageType
-  const fallbackValues: AllFailureStrategyConfig[] =
-    stageType === StageType.BUILD
-      ? []
-      : [
-          {
-            onFailure: {
-              errors: [ErrorType.Unknown],
-              action: {
-                type: Strategy.StageRollback
-              }
-            }
-          }
-        ]
+
   return (
     <Formik
       initialValues={{
-        failureStrategies: (selectedStage?.stage?.failureStrategies as AllFailureStrategyConfig[]) || fallbackValues
+        failureStrategies: selectedStage?.stage?.failureStrategies as AllFailureStrategyConfig[]
       }}
       validationSchema={Yup.object().shape({
-        failureStrategies: getFailureStrategiesValidationSchema(getString, {
-          required: stageType === StageType.DEPLOY,
-          minLength: stageType === StageType.DEPLOY ? 1 : 0
-        })
+        failureStrategies: getFailureStrategiesValidationSchema(getString)
       })}
       onSubmit={onUpdate}
       validate={debouncedUpdate}

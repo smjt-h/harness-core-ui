@@ -13,7 +13,13 @@ import type { FeatureIdentifier } from 'framework/featureStore/FeatureIdentifier
 import type { CheckFeatureReturn } from 'framework/featureStore/featureStoreUtil'
 import { TestWrapper } from '@common/utils/testUtils'
 import COGatewayList from '../COGatewayList'
-import { mockedEcsServiceData, mockedInstanceServiceData, mockedK8sServiceData, mockedRdsServiceData } from './data'
+import {
+  mockedEcsClusterServiceData,
+  mockedEcsServiceData,
+  mockedInstanceServiceData,
+  mockedK8sServiceData,
+  mockedRdsServiceData
+} from './data'
 
 const testpath = '/account/:accountId/ce/orgs/:orgIdentifier/projects/:projectIdentifier/autostopping-rules/create'
 const testparams = { accountId: 'accountId', orgIdentifier: 'orgIdentifier', projectIdentifier: 'projectIdentifier' }
@@ -75,6 +81,20 @@ const mockedSavingsData = [
 
 const mockedSavingsOfServiceData = { response: mockedSavingsData }
 
+const mockedConnectorData = {
+  data: {
+    connector: {
+      name: 'harness-qa',
+      identifier: 'harnessqa',
+      description: null,
+      orgIdentifier: null,
+      projectIdentifier: null,
+      tags: {},
+      type: 'CEAws'
+    }
+  }
+}
+
 jest.mock('services/lw', () => ({
   useAllServiceResources: jest.fn().mockImplementation(() => ({
     data: null,
@@ -128,6 +148,17 @@ jest.mock('services/lw', () => ({
   })),
   useDeleteStaticSchedule: jest.fn().mockImplementation(() => ({
     mutate: jest.fn()
+  })),
+  useDescribeServiceInContainerServiceCluster: jest.fn().mockImplementation(() => ({
+    data: { response: mockedEcsClusterServiceData },
+    loading: false
+  }))
+}))
+
+jest.mock('services/cd-ng', () => ({
+  useGetConnector: jest.fn().mockImplementation(() => ({
+    data: mockedConnectorData,
+    loading: false
   }))
 }))
 

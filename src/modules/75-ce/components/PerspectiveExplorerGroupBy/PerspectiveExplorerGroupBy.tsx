@@ -76,7 +76,8 @@ const PerspectiveExplorerGroupBy: React.FC<PerspectiveExplorerGroupByProps> = ({
   const [result, refetch] = useFetchViewFieldsQuery({
     variables: {
       filters: [{ viewMetadataFilter: { viewId: perspectiveId, isPreview: false } } as QlceViewFilterWrapperInput]
-    }
+    },
+    requestPolicy: 'cache-and-network'
   })
   const { data } = result
 

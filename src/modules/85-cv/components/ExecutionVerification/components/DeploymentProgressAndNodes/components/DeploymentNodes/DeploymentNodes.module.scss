@@ -5,12 +5,8 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-.main {
-  height: 100px !important;
-  width: 100% !important;
+.mainContainer {
   position: relative;
-  overflow: auto;
-  margin-bottom: 1em !important;
 
   .hexagonList {
     height: 100% !important;
@@ -56,7 +52,7 @@
     background-color: var(--white) !important;
     box-shadow: var(--card-shadow);
     left: 0px;
-    bottom: 210px;
+    bottom: 120px;
     min-width: 150px;
     max-width: 300px;
     display: flex;
@@ -71,4 +67,12 @@
     min-width: 10px;
     max-width: 10px;
   }
+}
+
+.main {
+  height: 100px !important;
+  width: 100% !important;
+  position: relative;
+  overflow: auto;
+  margin-bottom: 1em !important;
 }

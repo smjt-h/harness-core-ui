@@ -104,6 +104,18 @@ const initialGatewayDetails = {
   deps: []
 }
 
+const mockedRegionsData = { data: { response: [{ name: 'ap-southeast-1', label: 'ap-southeast-1' }] }, loading: false }
+
+const mockedZonesData = { response: ['us-container-1'] }
+
+jest.mock('services/lw', () => ({
+  useAllRegions: jest.fn().mockImplementation(() => mockedRegionsData),
+  useAllZones: jest.fn().mockImplementation(() => ({
+    data: mockedZonesData,
+    loading: false
+  }))
+}))
+
 describe('ASG selection modal component', () => {
   test('should render successfully', () => {
     const { container } = render(

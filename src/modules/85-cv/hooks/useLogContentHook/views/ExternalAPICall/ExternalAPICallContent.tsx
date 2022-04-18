@@ -23,6 +23,7 @@ import { Color } from '@harness/design-system'
 import { useStrings } from 'framework/strings'
 import type { ApiCallLogDTO } from 'services/cv'
 import { CopyText } from '@common/components/CopyText/CopyText'
+import noLogsDataImage from '@cv/assets/genericEmptyState.svg'
 import { formatDate, getStatusColor } from '../../useLogContentHook.utils'
 import type { ExecutionAndAPICallLogProps } from '../../useLogContentHook.types'
 import type { KeyValuePairProps } from './ExternalAPICall.types'
@@ -56,9 +57,15 @@ const ExternalAPICallContent: React.FC<ExecutionAndAPICallLogProps> = ({
   errorMessage,
   refetchLogs,
   resource,
-  setPageNumber
+  setPageNumber,
+  monitoredServiceIdentifier,
+  showTimelineSlider
 }) => {
   const { getString } = useStrings()
+  const TEXT_NO_DATA =
+    Boolean(monitoredServiceIdentifier) && !showTimelineSlider
+      ? getString('cv.monitoredServices.noAvailableLogData')
+      : getString('cv.changeSource.noDataAvaiableForCard')
   const { content = [], pageSize = 0, pageIndex = 0, totalPages = 0, totalItems = 0 } = resource ?? {}
 
   if (loading) {
@@ -70,12 +77,7 @@ const ExternalAPICallContent: React.FC<ExecutionAndAPICallLogProps> = ({
   }
 
   if (!content.length) {
-    return (
-      <NoDataCard
-        message={getString('cv.changeSource.noDataAvaiableForCard')}
-        containerClassName={css.noDataContainer}
-      />
-    )
+    return <NoDataCard message={TEXT_NO_DATA} image={noLogsDataImage} containerClassName={css.noDataContainer} />
   }
 
   return (
@@ -89,7 +91,6 @@ const ExternalAPICallContent: React.FC<ExecutionAndAPICallLogProps> = ({
           const responseBody = responses?.find(_response => _response.name === 'Response Body') ?? {}
 
           let stringifyResponse = ''
-          const TEXT_NO_DATA = getString('cv.changeSource.noDataAvaiableForCard')
 
           try {
             stringifyResponse = responseBody.value

@@ -5,28 +5,35 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import { Card, Container, FontVariation, Heading, Layout } from '@harness/uicore'
+import { Button, Card, Container, FontVariation, Heading, Layout } from '@harness/uicore'
 import React, { ReactElement } from 'react'
 
 import { useStrings } from 'framework/strings'
 import type { Segment, Target, TargetMap, Variation } from 'services/cf'
 import DefaultRules from '../default-rules/DefaultRules'
-import SpecificTargetingItem from '../specific-targeting-item.tsx/SpecificTargetingItem'
-import type { FormVariationMap, VariationPercentageRollout, TargetGroup } from '../../Types.types'
+import SpecificTargetingItem from '../specific-targeting-item/SpecificTargetingItem'
+import {
+  FormVariationMap,
+  VariationPercentageRollout,
+  TargetGroup,
+  TargetingRuleItemType,
+  VariationColorMap
+} from '../../Types.types'
 import PercentageRolloutItem from '../percentage-rollout-item/PercentageRolloutItem'
 import AddTargetingButton from '../add-targeting-button/AddTargetingButton'
+import DisabledFeatureTooltip from '../disabled-feature-tooltip/DisabledFeatureTooltip'
 
 export interface FlagEnabledRulesCardProps {
   targets: Target[]
   segments: Segment[]
-  formVariationMap: FormVariationMap[]
+  targetingRuleItems: (VariationPercentageRollout | FormVariationMap)[]
   featureFlagVariations: Variation[]
-  variationPercentageRollouts: VariationPercentageRollout[]
+  variationColorMap: VariationColorMap
   disabled: boolean
   updateTargetGroups: (index: number, newTargetGroups: TargetGroup[]) => void
   updateTargets: (index: number, newTargetGroups: TargetMap[]) => void
-  addVariation: (newVariation: FormVariationMap) => void
-  removeVariation: (removedVariation: FormVariationMap) => void
+  addVariation: (newVariation: Variation) => void
+  removeVariation: (removedVariationIndex: number) => void
   addPercentageRollout: () => void
   removePercentageRollout: (index: number) => void
 }
@@ -35,9 +42,9 @@ const FlagEnabledRulesCard = (props: FlagEnabledRulesCardProps): ReactElement =>
   const {
     targets,
     segments,
-    formVariationMap,
+    targetingRuleItems,
     featureFlagVariations,
-    variationPercentageRollouts,
+    variationColorMap,
     updateTargetGroups,
     updateTargets,
     addVariation,
@@ -49,56 +56,84 @@ const FlagEnabledRulesCard = (props: FlagEnabledRulesCardProps): ReactElement =>
 
   const { getString } = useStrings()
 
-  const addTargetingDropdownVariations = formVariationMap.filter(variation => !variation.isVisible)
+  const targetingDropdownVariations = featureFlagVariations.filter(
+    variation =>
+      !targetingRuleItems
+        .map(targetingRuleItem => (targetingRuleItem as FormVariationMap).variationIdentifier)
+        .includes(variation.identifier)
+  )
 
   return (
     <Card data-testid="flag-enabled-rules-card">
       <Container border={{ bottom: true }} padding={{ bottom: 'medium' }}>
-        <DefaultRules featureFlagVariations={featureFlagVariations} />
+        <DefaultRules
+          featureFlagVariations={featureFlagVariations}
+          inputName="onVariation"
+          titleStringId="cf.featureFlags.rules.whenFlagEnabled"
+        />
       </Container>
       <Container padding={{ bottom: 'medium' }}>
         <Layout.Vertical spacing="medium">
-          <Heading level={4} font={{ variation: FontVariation.BODY2 }} margin={{ top: 'medium' }}>
-            {getString('cf.featureFlags.rules.specificTargeting')}
-          </Heading>
-          {formVariationMap.map((formVariationMapItem, index) => (
-            <>
-              {formVariationMapItem.isVisible && (
-                <SpecificTargetingItem
-                  key={`${formVariationMapItem.variationIdentifier}_${index}`}
-                  index={index}
+          {targetingRuleItems.map((targetingRuleItem, index) => {
+            if (targetingRuleItem.type === TargetingRuleItemType.VARIATION) {
+              const item = targetingRuleItem as FormVariationMap
+              return (
+                <>
+                  <Container flex={{ justifyContent: 'space-between' }}>
+                    <Heading level={4} font={{ variation: FontVariation.BODY2 }} margin={{ top: 'medium' }}>
+                      {getString('cf.featureFlags.rules.specificTargeting')}
+                    </Heading>
+                    <DisabledFeatureTooltip>
+                      <Button
+                        disabled={disabled}
+                        data-testid={`remove_variation_${item.variationIdentifier}`}
+                        icon="trash"
+                        minimal
+                        withoutCurrentColor
+                        onClick={e => {
+                          e.preventDefault()
+                          removeVariation(index)
+                        }}
+                      />
+                    </DisabledFeatureTooltip>
+                  </Container>
+
+                  <SpecificTargetingItem
+                    key={`${item.variationIdentifier}_${index}`}
+                    index={index}
+                    variationColorMap={variationColorMap}
+                    disabled={disabled}
+                    targets={targets}
+                    segments={segments}
+                    formVariationMapItem={item}
+                    updateTargetGroups={updateTargetGroups}
+                    updateTargets={updateTargets}
+                  />
+                </>
+              )
+            } else {
+              const item = targetingRuleItem as VariationPercentageRollout
+              return (
+                <PercentageRolloutItem
+                  key={item.ruleId}
                   disabled={disabled}
-                  targets={targets}
+                  index={index}
+                  featureFlagVariations={featureFlagVariations}
+                  removePercentageRollout={removePercentageRollout}
                   segments={segments}
-                  formVariationMapItem={formVariationMapItem}
-                  updateTargetGroups={updateTargetGroups}
-                  updateTargets={updateTargets}
-                  removeVariation={() => removeVariation(formVariationMapItem)}
+                  variationPercentageRollout={item}
                 />
-              )}
-            </>
-          ))}
+              )
+            }
+          })}
 
-          {variationPercentageRollouts.map((variationPercentageRollout, index) => (
-            <PercentageRolloutItem
-              key={variationPercentageRollout.ruleId}
-              disabled={disabled}
-              index={index}
-              featureFlagVariations={featureFlagVariations}
-              removePercentageRollout={removePercentageRollout}
-              segments={segments}
-              variationPercentageRollout={variationPercentageRollout}
-            />
-          ))}
-
-          {(addTargetingDropdownVariations.length > 0 || variationPercentageRollouts.length > 0) && (
-            <AddTargetingButton
-              addPercentageRollout={addPercentageRollout}
-              addTargetingDropdownVariations={addTargetingDropdownVariations}
-              addVariation={addVariation}
-              disabled={disabled}
-            />
-          )}
+          <AddTargetingButton
+            addPercentageRollout={addPercentageRollout}
+            targetingDropdownVariations={targetingDropdownVariations}
+            addVariation={addVariation}
+            variationColorMap={variationColorMap}
+            disabled={disabled}
+          />
         </Layout.Vertical>
       </Container>
     </Card>

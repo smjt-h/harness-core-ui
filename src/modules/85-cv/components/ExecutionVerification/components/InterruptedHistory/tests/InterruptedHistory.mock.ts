@@ -12,10 +12,10 @@ export const interruptedHistories = [
     interruptType: 'IGNORE',
     interruptConfig: {
       issuedBy: {
-        issueTime: '2022-02-22T02:21:58.558Z',
+        issueTime: 1645496518558,
         manualIssuer: {
-          emailId: '',
-          userId: '',
+          email_id: '',
+          user_id: '',
           type: 'USER',
           identifier: 'lv0euRhKRCyiXWzS7pOg6g'
         }

@@ -30,3 +30,10 @@
     height: 290px;
   }
 }
+
+.header {
+  display: flex !important;
+  h2 {
+    flex-grow: 2;
+  }
+}

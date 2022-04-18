@@ -41,6 +41,8 @@ import { AddDescriptionAndKVTagsWithIdentifier } from '@common/components/AddDes
 
 import { DelegateSize } from '@delegates/constants'
 import { useCreateTokenModal } from '@delegates/components/DelegateTokens/modals/useCreateTokenModal'
+import { useTelemetry } from '@common/hooks/useTelemetry'
+import { Category, DelegateActions } from '@common/constants/TrackingConstants'
 import DelegateSizes from '../../components/DelegateSizes/DelegateSizes'
 
 import css from './DelegateSetupStep.module.scss'
@@ -172,6 +174,7 @@ const DelegateSetup: React.FC<StepProps<K8sDelegateWizardData> & DelegateSetupSt
   const [selectedPermission, setSelectedPermission] = React.useState<k8sPermissionType>(
     k8sPermissionType[initialValues?.k8sConfigDetails?.k8sPermissionType || k8sPermissionType.CLUSTER_ADMIN]
   )
+  const { trackEvent } = useTelemetry()
 
   const onSubmit = async (values: DelegateSetupDetails, formikActions: FormikActions<DelegateSetupDetails>) => {
     const createParams = { ...values }
@@ -186,6 +189,12 @@ const DelegateSetup: React.FC<StepProps<K8sDelegateWizardData> & DelegateSetupSt
       set(createParams, 'orgIdentifier', orgIdentifier)
     }
     set(createParams, 'delegateType', 'KUBERNETES')
+
+    trackEvent(DelegateActions.SetupDelegate, {
+      category: Category.DELEGATE,
+      data: createParams
+    })
+
     try {
       const response = await createKubernetesYaml({
         ...createParams,
@@ -300,6 +309,9 @@ const DelegateSetup: React.FC<StepProps<K8sDelegateWizardData> & DelegateSetupSt
                           onClick={e => {
                             e.preventDefault()
                             openCreateTokenModal()
+                            trackEvent(DelegateActions.LoadCreateTokenModal, {
+                              category: Category.DELEGATE
+                            })
                           }}
                           text={getString('add')}
                         />
@@ -361,7 +373,13 @@ const DelegateSetup: React.FC<StepProps<K8sDelegateWizardData> & DelegateSetupSt
                     id="delegateSetupBackBtn"
                     className={`${css.backBtn} ${css.footerBtn}`}
                     text={getString('back')}
-                    onClick={props.onBack}
+                    onClick={() => {
+                      props.onBack()
+                      trackEvent(DelegateActions.SetupDelegateBack, {
+                        category: Category.DELEGATE,
+                        data: formikProps.values
+                      })
+                    }}
                     icon="chevron-left"
                     margin={{ right: 'small' }}
                   />

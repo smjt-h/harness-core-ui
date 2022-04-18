@@ -5,7 +5,7 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import React, { FC } from 'react'
+import React, { FC, useCallback } from 'react'
 import { Container, ExpandingSearchInput, Pagination } from '@harness/uicore'
 import type { Feature, Features } from 'services/cf'
 import { useStrings } from 'framework/strings'
@@ -33,6 +33,8 @@ const ListingWithSearchAndPagination: FC<ListingWithSearchAndPaginationProps> = 
 }) => {
   const { getString } = useStrings()
 
+  const disableRowVariations = useCallback(({ identifier }) => !isFlagAdded(identifier), [isFlagAdded])
+
   return (
     <div className={css.layout}>
       <ExpandingSearchInput width="60%" alwaysExpanded onChange={onSearch} />
@@ -50,7 +52,7 @@ const ListingWithSearchAndPagination: FC<ListingWithSearchAndPaginationProps> = 
           <FlagsListing
             flags={flags.features || []}
             includeAddFlagCheckbox
-            disableVariationsCell={({ identifier }) => !isFlagAdded(identifier)}
+            disableRowVariations={disableRowVariations}
           />
         )}
       </div>
