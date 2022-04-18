@@ -13,10 +13,16 @@ import { Text, Container, Layout, Button, Icon, Select, SelectOption } from '@wi
 import { FontVariation } from '@harness/design-system'
 import type { GatewayDetails, InstanceDetails } from '@ce/components/COCreateGateway/models'
 import { useTelemetry } from '@common/hooks/useTelemetry'
-import { ResourceGroup, useAllResourceGroups, useAllZones, useGetInstancesTags } from 'services/lw'
+import {
+  ResourceGroup,
+  useAllResourceGroups,
+  useAllZones,
+  useGetInstancesTags,
+  GetInstancesTagsQueryParams
+} from 'services/lw'
 import type { AccountPathProps } from '@common/interfaces/RouteInterfaces'
 import useRegionsForSelection from '@ce/common/hooks/useRegionsForSelection'
-import type { AWSFiltersProps, GCPFiltersProps, SelectedTagFilter } from '@ce/types'
+import type { AWSFiltersProps, AzureFiltersProps, GCPFiltersProps, SelectedTagFilter } from '@ce/types'
 import { useStrings } from 'framework/strings'
 import { Utils } from '@ce/common/Utils'
 import InstanceSelectorBody from './InstanceSelectorBody'
@@ -40,13 +46,20 @@ const getAwsFilterText = (filters?: AWSFiltersProps) => {
     filterText = `regions=['${filters.region?.label}']`
   }
   if (filters?.tags?.key && filters.tags.value) {
-    filterText += `\n tags={'${filters.tags.key}':'${filters.tags.value}'}`
+    filterText += `\n tags={${filters.tags.key}='${filters.tags.value}'}`
   }
   return filterText
 }
 
-const getAzureFilterText = (filters: SelectOption) => {
-  return `resource_groups=['${_defaultTo(filters.label, '')}']`
+const getAzureFilterText = (filters: AzureFiltersProps) => {
+  let filterText = ''
+  if (filters.resourceGroup) {
+    filterText = `resource_groups=['${_defaultTo(filters.resourceGroup?.label, '')}']`
+  }
+  if (filters?.tags?.key && filters.tags.value) {
+    filterText += `\n tags={${filters.tags.key}='${filters.tags.value}'}`
+  }
+  return filterText
 }
 
 const getGcpFilterText = (filters: GCPFiltersProps) => {
@@ -60,7 +73,7 @@ const COInstanceSelector: React.FC<COInstanceSelectorprops> = props => {
   const [selectedInstances, setSelectedInstances] = useState<InstanceDetails[]>(_defaultTo(props.selectedInstances, []))
   const [pageIndex, setPageIndex] = useState<number>(0)
   const [isLoading, setIsLoading] = useState<boolean>(false)
-  const [selectedResourceGroup, setSelectedResourceGroup] = useState<SelectOption>()
+  const [azureFilters, setAzureFilters] = useState<AzureFiltersProps>()
   const [gcpFilters, setGcpFilters] = useState<GCPFiltersProps>()
   const [awsFilters, setAwsFilters] = useState<AWSFiltersProps>()
 
@@ -71,10 +84,10 @@ const COInstanceSelector: React.FC<COInstanceSelectorprops> = props => {
     setFilteredInstances(props.instances)
   }, [props.instances])
 
-  const onResourceGroupSelect = (selectedRg: SelectOption | null, resourceGroupLoading: boolean) => {
-    if (selectedRg) {
-      setSelectedResourceGroup(selectedRg)
-      props.refresh?.(getAzureFilterText(selectedRg))
+  const onAzureFiltersChange = (filters: AzureFiltersProps, resourceGroupLoading: boolean) => {
+    setAzureFilters(filters)
+    if (filters.resourceGroup) {
+      props.refresh?.(getAzureFilterText(filters))
     }
     setIsLoading(resourceGroupLoading)
   }
@@ -137,8 +150,8 @@ const COInstanceSelector: React.FC<COInstanceSelectorprops> = props => {
 
   const handleRefresh = () => {
     refreshPageParams()
-    if (isAzureProvider && selectedResourceGroup) {
-      props.refresh?.(getAzureFilterText(selectedResourceGroup))
+    if (isAzureProvider && azureFilters?.resourceGroup) {
+      props.refresh?.(getAzureFilterText(azureFilters))
     } else if (isGcpProvider && gcpFilters?.zone) {
       props.refresh?.(getGcpFilterText(gcpFilters))
     } else {
@@ -165,7 +178,7 @@ const COInstanceSelector: React.FC<COInstanceSelectorprops> = props => {
           <Text>{getString('ce.co.autoStoppingRule.configuration.instanceModal.description')}</Text>
           <InstancesFilter
             gatewayDetails={props.gatewayDetails}
-            onResourceGroupSelectCallback={onResourceGroupSelect}
+            onAzureFiltersChangeSelectCallback={onAzureFiltersChange}
             onGcpFiltersChangeCallback={onGcpFiltersChange}
             onAwsFiltersChangeCallback={onAwsFiltersChange}
             selectedInstances={selectedInstances}
@@ -175,7 +188,7 @@ const COInstanceSelector: React.FC<COInstanceSelectorprops> = props => {
         <div className={css.sectionSeparator} />
         <InstanceSelectorBody
           isLoading={_defaultTo(props.loading, isLoading)}
-          selectedResourceGroup={selectedResourceGroup}
+          selectedResourceGroup={azureFilters?.resourceGroup}
           instances={filteredInstances}
           pageProps={{
             index: pageIndex,
@@ -219,7 +232,7 @@ const COInstanceSelector: React.FC<COInstanceSelectorprops> = props => {
 
 interface InstancesFilterProps {
   gatewayDetails: GatewayDetails
-  onResourceGroupSelectCallback: (resourceGroup: SelectOption | null, resourceGroupLoading: boolean) => void
+  onAzureFiltersChangeSelectCallback: (values: AzureFiltersProps, loading: boolean) => void
   onGcpFiltersChangeCallback: (values: GCPFiltersProps, loading: boolean) => void
   onAwsFiltersChangeCallback: (values: AWSFiltersProps, loading: boolean) => void
   selectedInstances: InstanceDetails[]
@@ -228,7 +241,7 @@ interface InstancesFilterProps {
 
 const InstancesFilter: React.FC<InstancesFilterProps> = ({
   gatewayDetails,
-  onResourceGroupSelectCallback,
+  onAzureFiltersChangeSelectCallback,
   onGcpFiltersChangeCallback,
   onAwsFiltersChangeCallback,
   selectedInstances,
@@ -324,7 +337,7 @@ const InstancesFilter: React.FC<InstancesFilterProps> = ({
             placeholder: getString('ce.co.autoStoppingRule.configuration.instanceModal.labels.selectTagKey')
           }}
           value={selectedTagPair?.key ? { label: selectedTagPair.key, value: selectedTagPair.key } : null}
-          disabled={!selectedRegion || tagsLoading}
+          disabled={tagsLoading}
           onChange={item => {
             setSelectedTagPair({ key: item.label })
           }}
@@ -353,7 +366,9 @@ const InstancesFilter: React.FC<InstancesFilterProps> = ({
         tagsFilter={tagsFilter}
         gatewayDetails={gatewayDetails}
         selectedInstances={selectedInstances}
-        onResourceGroupSelectCallback={onResourceGroupSelectCallback}
+        onAzureFiltersChangeSelectCallback={onAzureFiltersChangeSelectCallback}
+        fetchTags={fetchTags}
+        selectedTagPair={selectedTagPair}
       />
     )
   }
@@ -392,14 +407,18 @@ interface InstanceSelectorAzureFiltersProps {
   tagsFilter: React.ReactNode
   gatewayDetails: GatewayDetails
   selectedInstances: InstanceDetails[]
-  onResourceGroupSelectCallback: (resourceGroup: SelectOption | null, resourceGroupLoading: boolean) => void
+  onAzureFiltersChangeSelectCallback: (values: AzureFiltersProps, resourceGroupLoading: boolean) => void
+  fetchTags: (params: { queryParams: GetInstancesTagsQueryParams }) => Promise<void>
+  selectedTagPair?: SelectedTagFilter
 }
 
 const InstanceSelectorAzureFilters: React.FC<InstanceSelectorAzureFiltersProps> = ({
   tagsFilter,
   gatewayDetails,
   selectedInstances,
-  onResourceGroupSelectCallback
+  onAzureFiltersChangeSelectCallback,
+  fetchTags,
+  selectedTagPair
 }) => {
   const { getString } = useStrings()
   const { accountId } = useParams<AccountPathProps>()
@@ -424,8 +443,24 @@ const InstanceSelectorAzureFilters: React.FC<InstanceSelectorAzureFiltersProps> 
   }, [resourceGroupData])
 
   useEffect(() => {
-    onResourceGroupSelectCallback(_defaultTo(selectedResourceGroup, null), resourceGroupsLoading)
+    if (selectedResourceGroup) {
+      fetchTags({
+        queryParams: {
+          cloud_account_id: gatewayDetails.cloudAccount.id,
+          accountIdentifier: accountId,
+          routingId: accountId,
+          filter: selectedResourceGroup.label
+        }
+      })
+    }
+    onAzureFiltersChangeSelectCallback({ resourceGroup: selectedResourceGroup }, resourceGroupsLoading)
   }, [selectedResourceGroup, resourceGroupsLoading])
+
+  useEffect(() => {
+    if (selectedTagPair?.key && selectedTagPair.value) {
+      onAzureFiltersChangeSelectCallback({ resourceGroup: selectedResourceGroup, tags: selectedTagPair }, false)
+    }
+  }, [selectedTagPair])
 
   const setResourceGroupDataFromResponse = (response: ResourceGroup[] = []) => {
     const loaded = response.map(r => ({

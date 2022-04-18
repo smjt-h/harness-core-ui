@@ -171,3 +171,8 @@ export interface AWSFiltersProps {
   region?: SelectOption
   tags?: SelectedTagFilter
 }
+
+export interface AzureFiltersProps {
+  resourceGroup?: SelectOption
+  tags?: SelectedTagFilter
+}
