@@ -175,11 +175,6 @@ export const MultiTypeMapInputSet = (props: MultiTypeMapProps): React.ReactEleme
         style={{ flexGrow: 1, marginBottom: 0 }}
         {...multiTypeFieldSelectorProps}
         disableTypeSelection={multiTypeFieldSelectorProps.disableTypeSelection || disabled}
-        onTypeChange={(type: MultiTypeInputType) => {
-          if (type === MultiTypeInputType.FIXED) {
-            formik?.setFieldValue(name, {})
-          }
-        }}
       >
         <>
           {value.map(({ id, key, value: valueValue }, index: number) => {
