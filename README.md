@@ -45,7 +45,7 @@ $ yarn setup-github-registry
 
 > Note: This is only needed if this is the first UI project you are installing on your machine
 
-5. Install/Update/Refresh dependencies
+5. Install/Update/Refresh dependencies/ bnlah set
 
 ```
 $ yarn
