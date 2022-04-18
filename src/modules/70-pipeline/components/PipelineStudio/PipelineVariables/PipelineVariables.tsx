@@ -107,7 +107,7 @@ export function PipelineVariables(): React.ReactElement {
         <PageError message={(error?.data as Error)?.message || error?.message} />
       ) : (
         <div className={css.content}>
-          <VariablesHeader />
+          <VariablesHeader applyChanges={() => void 0} discardChanges={() => void 0} />
           <div className={css.variableList} ref={pipelineVariablesRef as any}>
             <GitSyncStoreProvider>
               <NestedAccordionPanel
