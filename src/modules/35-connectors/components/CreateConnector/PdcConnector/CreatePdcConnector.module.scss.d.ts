@@ -7,18 +7,13 @@
  **/
 // this is an auto-generated file, do not update this manually
 declare const styles: {
-  readonly card: string
-  readonly cardRow: string
   readonly clusterWrapper: string
   readonly errorPanel: string
   readonly gotoHostsBtn: string
-  readonly headingStepTwo: string
   readonly hostContainer: string
   readonly manualHostContainer: string
   readonly secondStep: string
-  readonly selectedCard: string
   readonly testConnectionContentContainer: string
-  readonly textInfo: string
   readonly textInput: string
 }
 export default styles
