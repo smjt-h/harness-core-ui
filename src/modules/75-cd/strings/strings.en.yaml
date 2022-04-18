@@ -76,7 +76,7 @@ pipelineSteps:
     selectEnvironment: '- Select Environment -'
     plusNewEnvironment: '+ {{$.newEnvironment}}'
     newEnvironment: '{{$.newEnvironment}}'
-    environmentIsRequired: '{{ $.common.validation.environmentIsRequired }}'
+    environmentIsRequired: Environment is required
   serviceTab:
     stageOverrides: Stage Overrides
     overrideChanges: Override artifacts, manifests, service variables for this stage
