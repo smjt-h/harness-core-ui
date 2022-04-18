@@ -265,6 +265,9 @@ const DelegateSetup: React.FC<StepProps<K8sDelegateWizardData> & DelegateSetupSt
                     <Layout.Vertical className={css.leftPanel}>
                       <div className={css.formGroup}>
                         <AddDescriptionAndKVTagsWithIdentifier
+                          tagsProps={{
+                            addOnBlur: true
+                          }}
                           identifierProps={{
                             inputLabel: getString('delegate.delegateName')
                           }}

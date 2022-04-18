@@ -7,7 +7,19 @@
 
 import React, { useMemo, useState, useEffect } from 'react'
 import cx from 'classnames'
-import { Card, Container, Icon, Layout, Select, SelectOption, Text } from '@wings-software/uicore'
+import {
+  Card,
+  Container,
+  Icon,
+  Layout,
+  Select,
+  SelectOption,
+  Text,
+  StackedSummaryInterface,
+  StackedSummaryTable,
+  handleZeroOrInfinityTrend,
+  renderTrend
+} from '@wings-software/uicore'
 import { useParams } from 'react-router-dom'
 import { FontVariation, Color } from '@harness/design-system'
 import { defaultTo } from 'lodash-es'
@@ -25,11 +37,6 @@ import {
   ChartType,
   OverviewChartsWithToggle
 } from '@common/components/OverviewChartsWithToggle/OverviewChartsWithToggle'
-import { handleZeroOrInfinityTrend, renderTrend } from '@common/components/StackedSummaryBar/utils'
-import {
-  StackedSummaryInterface,
-  StackedSummaryTable
-} from '@common/components/StackedSummaryTable/StackedSummaryTable'
 import routes from '@common/RouteDefinitions'
 import {
   DeploymentsOverview,

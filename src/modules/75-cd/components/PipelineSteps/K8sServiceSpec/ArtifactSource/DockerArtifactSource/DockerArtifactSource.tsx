@@ -5,7 +5,7 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import React from 'react'
+import React, { useState } from 'react'
 import { defaultTo, get } from 'lodash-es'
 
 import { FormInput, getMultiTypeFromValue, Layout, MultiTypeInputType } from '@wings-software/uicore'
@@ -19,6 +19,7 @@ import { ArtifactToConnectorMap, ENABLED_ARTIFACT_TYPES } from '@pipeline/compon
 import { TriggerDefaultFieldList } from '@triggers/pages/triggers/utils/TriggersWizardPageUtils'
 import { useStrings } from 'framework/strings'
 import { useVariablesExpression } from '@pipeline/components/PipelineStudio/PiplineHooks/useVariablesExpression'
+import { shouldFetchTagsSource } from '@pipeline/components/ArtifactsSelection/ArtifactUtils'
 import { isFieldRuntime } from '../../K8sServiceSpecHelper'
 import {
   getImagePath,
@@ -60,6 +61,7 @@ const Content = (props: DockerRenderContent): React.ReactElement => {
   const isPropagatedStage = path?.includes('serviceConfig.stageOverrides')
   const { getString } = useStrings()
   const { expressions } = useVariablesExpression()
+  const [lastImagePath, setLastImagePath] = useState('')
   const {
     data: dockerdata,
     loading: fetchingTags,
@@ -93,6 +95,24 @@ const Content = (props: DockerRenderContent): React.ReactElement => {
     },
     lazy: true
   })
+
+  const imagePathValue = getImagePath(
+    artifact?.spec?.imagePath,
+    get(initialValues, `artifacts.${artifactPath}.spec.imagePath`, '')
+  )
+  const connectorRefValue =
+    get(initialValues, `artifacts.${artifactPath}.spec.connectorRef`, '') || artifact?.spec?.connectorRef
+
+  const fetchTagsEnabled = (): void => {
+    if (canFetchTags()) {
+      setLastImagePath(imagePathValue)
+      fetchTags()
+    }
+  }
+
+  const canFetchTags = (): boolean => {
+    return !!(lastImagePath !== imagePathValue && shouldFetchTagsSource(connectorRefValue, [imagePathValue]))
+  }
 
   const isFieldDisabled = (fieldName: string, isTag = false): boolean => {
     /* instanbul ignore else */
@@ -179,7 +199,7 @@ const Content = (props: DockerRenderContent): React.ReactElement => {
               fetchingTags={fetchingTags}
               buildDetailsList={dockerdata?.data?.buildDetailsList}
               fetchTagsError={fetchTagsError}
-              fetchTags={fetchTags}
+              fetchTags={fetchTagsEnabled}
               expressions={expressions}
               stageIdentifier={stageIdentifier}
             />

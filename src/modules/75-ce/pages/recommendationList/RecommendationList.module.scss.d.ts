@@ -9,5 +9,6 @@
 declare const styles: {
   readonly errorContainer: string
   readonly errorText: string
+  readonly listContainer: string
 }
 export default styles
