@@ -25,7 +25,7 @@ import { Color } from '@harness/design-system'
 import { useHistory, useParams } from 'react-router-dom'
 import cx from 'classnames'
 import { parse } from 'yaml'
-import { isEmpty, pick } from 'lodash-es'
+import { defaultTo, isEmpty, pick } from 'lodash-es'
 import type { FormikErrors } from 'formik'
 import { Classes, Dialog, Tooltip } from '@blueprintjs/core'
 import { useStrings } from 'framework/strings'
@@ -584,7 +584,7 @@ function RetryPipeline({
       initialValues={
         currentPipeline?.pipeline
           ? clearRuntimeInput(currentPipeline.pipeline)
-          : { name: '', identifier: '', stages: [] }
+          : { name: '', identifier: defaultTo(pipelineIdentifier, ''), stages: [] }
       }
       formName="retryPipeline"
       onSubmit={values => {
