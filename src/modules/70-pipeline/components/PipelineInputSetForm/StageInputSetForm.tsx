@@ -907,7 +907,7 @@ export function StageInputSetFormInternal({
                   viewType={viewType}
                   allowableTypes={allowableTypes}
                   key={identifier}
-                  onUpdate={data => {
+                  onUpdate={data => /* istanbul ignore next */ {
                     const originalServiceDependency = (deploymentStage as any)?.serviceDependencies?.[index]
                     let initialValues = deploymentStageInputSet?.serviceDependencies?.[index]
 
