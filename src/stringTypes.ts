@@ -571,6 +571,7 @@ export interface StringsMap {
   'common.selectAVersion.title': string
   'common.selectBranch': string
   'common.selectDefaultExperience': string
+  'common.selectType': string
   'common.selectUserGroups': string
   'common.selectVersion': string
   'common.selected': string

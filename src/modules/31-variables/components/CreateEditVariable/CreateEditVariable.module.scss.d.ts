@@ -9,5 +9,7 @@
 declare const styles: {
   readonly crossIcon: string
   readonly variableDialog: string
+  readonly variableForm: string
+  readonly variableFormWrap: string
 }
 export default styles

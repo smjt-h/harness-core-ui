@@ -7,50 +7,84 @@
 
 import React from 'react'
 import * as Yup from 'yup'
+import { noop } from 'lodash-es'
 import { Button, ButtonVariation, Formik, FormikForm, FormInput, Layout } from '@harness/uicore'
 import { useStrings } from 'framework/strings'
 import { NameIdDescription } from '@common/components/NameIdDescriptionTags/NameIdDescriptionTags'
 import { IdentifierSchema, NameSchema } from '@common/utils/Validation'
 
-const CreateEditVariable: React.FC<any> = () => {
+import {
+  convertVariableFormDataToDTO,
+  getVaribaleTypeOptions,
+  VariableFormData,
+  VariableFormDataWithScope
+} from '@variables/utils/VariablesUtils'
+
+import { useCreateVariable, VariableRequestDTO } from 'services/cd-ng'
+import VariableValidation from '../VariableValidation/VariableValidation'
+import css from './CreateEditVariable.module.scss'
+
+interface CreateEditVariableProps {
+  accountId: string
+  isEdit?: boolean
+  orgIdentifier?: string
+  projectIdentifier?: string
+}
+
+const CreateEditVariable: React.FC<CreateEditVariableProps> = props => {
   const { getString } = useStrings()
+  const { mutate: createVariable } = useCreateVariable({ queryParams: { accountIdentifier: props.accountId } })
+
+  const handleCreateUpdate = async (payload: VariableRequestDTO) => {
+    try {
+      const response = await (props.isEdit ? noop : createVariable(payload))
+      if (response) {
+        // console.log('succes')
+      }
+    } catch (e) {}
+  }
 
   return (
-    <Formik
+    <Formik<VariableFormData>
       formName={'variable-form'}
-      initialValues={{}}
+      initialValues={{
+        name: '',
+        identifier: '',
+        defaultValue: '',
+        description: '',
+        type: 'String',
+        fixedValue: '',
+        allowedValue: []
+      }}
       enableReinitialize
       validationSchema={Yup.object().shape({
         name: NameSchema(),
         identifier: IdentifierSchema()
       })}
-      onSubmit={() => {
-        // if (data && selectedVariable) {
-        //   if (selectedVariable.index === -1) {
-        //     addNewVariable(data)
-        //   } else {
-        //     updateVariable(selectedVariable.index, data)
-        //   }
-        //   closeModal()
-        // }
+      onSubmit={data => {
+        const dataWithScope: VariableFormDataWithScope = {
+          ...data,
+          projectIdentifier: props.projectIdentifier,
+          orgIdentifier: props.orgIdentifier
+        }
+        const payload = convertVariableFormDataToDTO(dataWithScope)
+        handleCreateUpdate(payload)
+        // props.closeModal()
       }}
     >
       {formik => (
-        <FormikForm data-testid="add-edit-variable">
-          {/* <FormInput.Text
-            name="name"
-            label={getString('variableNameLabel')}
-            placeholder={getString('pipeline.variable.variableNamePlaceholder')}
-          /> */}
-          <NameIdDescription formikProps={formik} />
-          <FormInput.Select
-            name="type"
-            items={[]}
-            // items={getVaribaleTypeOptions(getString)}
-            label={getString('typeLabel')}
-            // placeholder={'Type'}
-          />
-          <Layout.Horizontal>
+        <FormikForm data-testid="add-edit-variable" className={css.variableFormWrap}>
+          <Layout.Vertical className={css.variableForm}>
+            <NameIdDescription formikProps={formik} />
+            <FormInput.Select
+              name="type"
+              items={getVaribaleTypeOptions(getString)}
+              label={getString('typeLabel')}
+              placeholder={getString('common.selectType')}
+            />
+            <VariableValidation formik={formik} />
+          </Layout.Vertical>
+          <Layout.Horizontal spacing="small" padding={{ top: 'small' }}>
             <Button
               type="submit"
               variation={ButtonVariation.PRIMARY}

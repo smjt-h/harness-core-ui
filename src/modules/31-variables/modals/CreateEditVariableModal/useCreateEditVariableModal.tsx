@@ -8,20 +8,15 @@
 import React, { useState } from 'react'
 import { useModalHook } from '@harness/use-modal'
 import { Dialog } from '@blueprintjs/core'
-
-// import CreateUpdateSecret, {
-//   SecretIdentifiers,
-//   SecretFormData
-// } from '@secrets/components/CreateUpdateSecret/CreateUpdateSecret'
-
+import { useParams } from 'react-router-dom'
 import { useStrings } from 'framework/strings'
 import CreateEditVariable from '@variables/components/CreateEditVariable/CreateEditVariable'
+import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
+import type { VariableDTO, VariableRequestDTO } from 'services/cd-ng'
 import css from '@variables/components/CreateEditVariable/CreateEditVariable.module.scss'
 
 export interface UseCreateUpdateVariableModalProps {
   onSuccess?: ((data: any) => void) | (() => void)
-  // connectorTypeContext?: ConnectorInfoDTO['type']
-  // privateSecret?: boolean
   isEdit?: boolean
 }
 
@@ -31,32 +26,34 @@ export interface UseCreateUpdateVariableModalReturn {
 }
 
 const useCreateEditVariableModal = (props: UseCreateUpdateVariableModalProps): UseCreateUpdateVariableModalReturn => {
-  const [variable, setVariable] = useState<any>()
-  // const handleSuccess = (data: any) => {
-  //   hideModal()
-  //   props.onSuccess?.(data)
-  // }
+  const [variable, setVariable] = useState<VariableDTO>()
+  const { accountId, projectIdentifier, orgIdentifier } = useParams<ProjectPathProps>()
   const { getString } = useStrings()
   const [showModal, hideModal] = useModalHook(
     () => (
       <Dialog
         isOpen={true}
         enforceFocus={false}
+        style={{ minHeight: 550 }}
         onClose={() => {
           hideModal()
         }}
         title={props.isEdit ? getString('common.editVariable') : getString('common.addVariable')}
         className={css.variableDialog}
       >
-        <CreateEditVariable />
+        <CreateEditVariable
+          accountId={accountId}
+          orgIdentifier={(variable ? variable.orgIdentifier : orgIdentifier) as string}
+          projectIdentifier={(variable ? variable.projectIdentifier : projectIdentifier) as string}
+        />
       </Dialog>
     ),
     [variable]
   )
 
   return {
-    openCreateUpdateVariableModal: (_variable: any | undefined) => {
-      setVariable(_variable)
+    openCreateUpdateVariableModal: (_variable: VariableRequestDTO | undefined) => {
+      setVariable(_variable?.variable)
       showModal()
     },
     closeCreateUpdateVariableModal: hideModal

@@ -15,3 +15,9 @@
   right: var(--spacing-large);
   top: var(--spacing-large);
 }
+.variableForm {
+  min-height: 400px;
+}
+.variableFormWrap {
+  padding: var(--spacing-large) var(--spacing-large) 0;
+}
