@@ -89,6 +89,8 @@ export const getConnectorTitleIdByType = (type: string): StringKeys => {
       return 'connectors.title.gitlabConnector'
     case Connectors.BITBUCKET:
       return 'connectors.title.bitbucketConnector'
+    case Connectors.AZURE_REPO:
+      return 'connectors.title.azureRepoConnector'
     case Connectors.VAULT:
       return 'connectors.title.hashicorpVault'
     case Connectors.GCP_KMS:

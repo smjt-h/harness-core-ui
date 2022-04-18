@@ -87,6 +87,7 @@ title:
   githubConnector: 'GitHub Connector'
   gitlabConnector: 'GitLab Connector'
   bitbucketConnector: 'Bitbucket Connector'
+  azureRepoConnector: 'Azure Repos Connector'
   hashicorpVault: 'HashiCorp Vault'
   jira: 'Jira'
   serviceNow: 'ServiceNow'

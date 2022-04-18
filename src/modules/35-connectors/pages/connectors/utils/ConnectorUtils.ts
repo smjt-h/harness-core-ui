@@ -330,6 +330,47 @@ export const buildBitbucketPayload = (formData: FormData) => {
   return { connector: savedData }
 }
 
+export const buildAzureRepoPayload = (formData: FormData) => {
+  const savedData: any = {
+    name: formData.name,
+    description: formData?.description,
+    projectIdentifier: formData?.projectIdentifier,
+    orgIdentifier: formData?.orgIdentifier,
+    identifier: formData.identifier,
+    tags: formData?.tags,
+    type: Connectors.AZURE_REPO,
+    spec: {
+      ...(formData?.delegateSelectors ? { delegateSelectors: formData.delegateSelectors } : {}),
+      type: formData.urlType,
+      url: formData.url,
+      ...(formData.validationRepo ? { validationRepo: formData.validationRepo } : {}),
+      authentication: {
+        type: formData.connectionType,
+        spec:
+          formData.connectionType === GitConnectionType.SSH
+            ? { sshKeyRef: formData.sshKey.referenceString }
+            : {
+                type: formData.authType,
+                spec: getGitAuthSpec(formData)
+              }
+      },
+      apiAccess: { type: formData.apiAuthType, spec: {} }
+    }
+  }
+
+  if (formData.enableAPIAccess) {
+    savedData.spec.apiAccess.spec = {
+      username: formData.apiAccessUsername.type === ValueType.TEXT ? formData.apiAccessUsername.value : undefined,
+      usernameRef:
+        formData.apiAccessUsername.type === ValueType.ENCRYPTED ? formData.apiAccessUsername.value : undefined,
+      tokenRef: formData.accessToken.referenceString
+    }
+  } else {
+    delete savedData.spec.apiAccess
+  }
+  return { connector: savedData }
+}
+
 export const setupGitFormData = async (connectorInfo: ConnectorInfoDTO, accountId: string): Promise<FormData> => {
   const scopeQueryParams: GetSecretV2QueryParams = {
     accountIdentifier: accountId,
