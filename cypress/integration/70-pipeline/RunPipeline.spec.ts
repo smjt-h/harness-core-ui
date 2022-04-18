@@ -88,31 +88,31 @@ describe('RUN PIPELINE MODAL', () => {
       cy.contains('span', 'Pipeline Stage Successfully removed.').should('be.visible')
     })
 
-    it('error validations on pipeline save from API', () => {
-      cy.intercept('POST', pipelineSaveCall, { fixture: 'pipeline/api/pipelines.post.emptyPipeline' }).as(
-        'pipelineSave'
-      )
-      cy.wait(1000)
-      cy.contains('div', 'Unsaved changes').should('be.visible')
-      cy.contains('span', 'Save').click({ force: true })
-      cy.wait('@pipelineSave')
+    // it.only('error validations on pipeline save from API', () => {
+    //   cy.intercept('POST', pipelineSaveCall, { fixture: 'pipeline/api/pipelines.post.emptyPipeline' }).as(
+    //     'pipelineSave'
+    //   )
+    //   cy.wait(1000)
+    //   cy.contains('div', 'Unsaved changes').should('be.visible')
+    //   cy.contains('span', 'Save').click({ force: true })
+    //   cy.wait('@pipelineSave')
 
-      cy.contains('span', 'Invalid request: Field for key [stages] does not exist').should('be.visible')
-      cy.intercept('POST', pipelineSaveCall, { fixture: 'pipeline/api/pipelines.post.emptyStage' }).as(
-        'pipelineSaveStage'
-      )
-      cy.createDeploymentStage()
-      cy.wait(1000)
-      cy.contains('span', 'Save').click({ force: true })
-      cy.wait('@pipelineSaveStage')
+    //   cy.contains('span', 'Invalid request: Field for key [stages] does not exist').should('be.visible')
+    //   cy.intercept('POST', pipelineSaveCall, { fixture: 'pipeline/api/pipelines.post.emptyStage' }).as(
+    //     'pipelineSaveStage'
+    //   )
+    //   cy.createDeploymentStage()
+    //   cy.wait(1000)
+    //   cy.contains('span', 'Save').click({ force: true })
+    //   cy.wait('@pipelineSaveStage')
 
-      cy.contains('span', 'Invalid yaml: $.pipeline.stages[0].stage.spec.execution: is missing but it is required')
-        .should('be.visible')
-        .invoke('text')
-        .then(text => {
-          expect(text).equal(invalidYAMLErrorMsgOnEmptyStageSave)
-        })
-    })
+    //   cy.contains('span', 'Invalid yaml: $.pipeline.stages[0].stage.spec.execution: is missing but it is required')
+    //     .should('be.visible')
+    //     .invoke('text')
+    //     .then(text => {
+    //       expect(text).equal(invalidYAMLErrorMsgOnEmptyStageSave)
+    //     })
+    // })
 
     describe('Checks visual to YAML and visual to variable view parity', () => {
       beforeEach(() => {

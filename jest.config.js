@@ -20,7 +20,8 @@ module.exports = {
   },
   setupFilesAfterEnv: ['<rootDir>/scripts/jest/setup-file.js', 'fake-indexeddb/auto', 'jest-canvas-mock'],
   collectCoverageFrom: [
-    'src/**/*.{ts,tsx}',
+    // 'src/**/*.{ts,tsx}',
+    'src/modules/75-cd/components/PipelineSteps/ServerlessAwsLambdaServiceSpec/**',
     '!src/framework/app/App.tsx',
     '!src/framework/strings/languageLoader.ts',
     '!src/framework/AppStore/AppStoreContext.tsx',

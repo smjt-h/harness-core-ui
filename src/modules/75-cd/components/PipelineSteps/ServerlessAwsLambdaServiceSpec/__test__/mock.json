@@ -1,0 +1,302 @@
+{
+  "state": {
+    "pipeline": {
+      "name": "Pipeline 1",
+      "identifier": "Pipeline_1",
+      "allowStageExecutions": false,
+      "projectIdentifier": "Chetan_Non_Git_Sync",
+      "orgIdentifier": "default",
+      "tags": {},
+      "stages": [
+        {
+          "stage": {
+            "name": "Stage 1",
+            "identifier": "Stage_1",
+            "description": "",
+            "type": "Deployment",
+            "spec": {
+              "serviceConfig": {
+                "serviceRef": "Service_1",
+                "serviceDefinition": {
+                  "type": "ServerlessAwsLambda",
+                  "spec": {
+                    "variables": [],
+                    "manifests": [
+                      {
+                        "manifest": {
+                          "identifier": "vv",
+                          "type": "ServerlessAwsLambda",
+                          "spec": {
+                            "store": {
+                              "type": "Github",
+                              "spec": {
+                                "connectorRef": "Git_Sync_Chetan_Git_Conn",
+                                "gitFetchType": "Branch",
+                                "paths": ["test2"],
+                                "branch": "main"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    ],
+                    "artifacts": {
+                      "primary": {
+                        "spec": {
+                          "connectorRef": "<+input>",
+                          "artifactDirectory": "<+input>",
+                          "artifactPath": "<+input>",
+                          "repository": "<+input>",
+                          "repositoryFormat": "generic"
+                        },
+                        "type": "ArtifactoryRegistry"
+                      }
+                    }
+                  }
+                }
+              },
+              "infrastructure": {
+                "environmentRef": "Env_1",
+                "infrastructureDefinition": {
+                  "type": "ServerlessAwsLambda",
+                  "spec": {
+                    "connectorRef": "account.aws_connector",
+                    "stage": "stage1",
+                    "region": "region1"
+                  }
+                },
+                "allowSimultaneousDeployments": false
+              },
+              "execution": {
+                "steps": [
+                  {
+                    "step": {
+                      "type": "ServerlessAwsLambdaDeploy",
+                      "name": "Serverless Lambda Step 1",
+                      "identifier": "Serverless_Lambda_Step_1",
+                      "spec": {
+                        "commandOptions": ""
+                      },
+                      "timeout": "10m"
+                    }
+                  }
+                ],
+                "rollbackSteps": [
+                  {
+                    "step": {
+                      "name": "Rollback Rollout Deployment",
+                      "identifier": "rollbackRolloutDeployment",
+                      "type": "K8sRollingRollback",
+                      "timeout": "10m",
+                      "spec": {}
+                    }
+                  }
+                ]
+              },
+              "serviceDependencies": []
+            },
+            "tags": {},
+            "failureStrategies": [
+              {
+                "onFailure": {
+                  "errors": ["AllErrors"],
+                  "action": {
+                    "type": "StageRollback"
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "originalPipeline": {
+      "name": "Pipeline 1",
+      "identifier": "Pipeline_1",
+      "allowStageExecutions": false,
+      "projectIdentifier": "Chetan_Non_Git_Sync",
+      "orgIdentifier": "default",
+      "tags": {},
+      "stages": [
+        {
+          "stage": {
+            "name": "Stage 1",
+            "identifier": "Stage_1",
+            "description": "",
+            "type": "Deployment",
+            "spec": {
+              "serviceConfig": {
+                "serviceRef": "Service_1",
+                "serviceDefinition": {
+                  "type": "ServerlessAwsLambda",
+                  "spec": {
+                    "variables": [],
+                    "manifests": [
+                      {
+                        "manifest": {
+                          "identifier": "vv",
+                          "type": "ServerlessAwsLambda",
+                          "spec": {
+                            "store": {
+                              "type": "Github",
+                              "spec": {
+                                "connectorRef": "Git_Sync_Chetan_Git_Conn",
+                                "gitFetchType": "Branch",
+                                "paths": ["test2"],
+                                "branch": "main"
+                              }
+                            }
+                          }
+                        }
+                      }
+                    ],
+                    "artifacts": {
+                      "primary": {
+                        "spec": {
+                          "connectorRef": "<+input>",
+                          "artifactDirectory": "<+input>",
+                          "artifactPath": "<+input>",
+                          "repository": "<+input>",
+                          "repositoryFormat": "generic"
+                        },
+                        "type": "ArtifactoryRegistry"
+                      }
+                    }
+                  }
+                }
+              },
+              "infrastructure": {
+                "environmentRef": "Env_1",
+                "infrastructureDefinition": {
+                  "type": "ServerlessAwsLambda",
+                  "spec": {
+                    "connectorRef": "account.aws_connector",
+                    "stage": "stage1",
+                    "region": "region1"
+                  }
+                },
+                "allowSimultaneousDeployments": false
+              },
+              "execution": {
+                "steps": [
+                  {
+                    "step": {
+                      "type": "ServerlessAwsLambdaDeploy",
+                      "name": "Serverless Lambda Step 1",
+                      "identifier": "Serverless_Lambda_Step_1",
+                      "spec": {
+                        "commandOptions": ""
+                      },
+                      "timeout": "10m"
+                    }
+                  }
+                ],
+                "rollbackSteps": [
+                  {
+                    "step": {
+                      "name": "Rollback Rollout Deployment",
+                      "identifier": "rollbackRolloutDeployment",
+                      "type": "K8sRollingRollback",
+                      "timeout": "10m",
+                      "spec": {}
+                    }
+                  }
+                ]
+              },
+              "serviceDependencies": []
+            },
+            "tags": {},
+            "failureStrategies": [
+              {
+                "onFailure": {
+                  "errors": ["AllErrors"],
+                  "action": {
+                    "type": "StageRollback"
+                  }
+                }
+              }
+            ]
+          }
+        }
+      ]
+    },
+    "pipelineIdentifier": "Pipeline_1",
+    "pipelineView": {
+      "isSplitViewOpen": true,
+      "isDrawerOpened": false,
+      "isYamlEditable": false,
+      "splitViewData": {
+        "type": "StageView"
+      },
+      "drawerData": {
+        "type": "AddCommand"
+      }
+    },
+    "templateView": {
+      "isTemplateDrawerOpened": false,
+      "templateDrawerData": {
+        "type": "UseTemplate"
+      }
+    },
+    "schemaErrors": false,
+    "gitDetails": {},
+    "entityValidityDetails": {
+      "valid": true,
+      "invalidYaml": null
+    },
+    "templateTypes": {},
+    "isLoading": false,
+    "isBEPipelineUpdated": false,
+    "isDBInitialized": true,
+    "isUpdated": false,
+    "isInitialized": true,
+    "selectionState": {
+      "selectedStageId": "Stage_1",
+      "selectedSectionId": "SERVICE"
+    },
+    "error": ""
+  },
+  "stepsFactory": { "invocationMap": {}, "stepBank": {}, "stepIconMap": {}, "type": "pipeline-factory" },
+  "stagesMap": {
+    "Deployment": {
+      "name": "Deploy",
+      "type": "Deployment",
+      "icon": "pipeline-deploy",
+      "iconColor": "var(--pipeline-deploy-stage-color)",
+      "isApproval": false,
+      "openExecutionStrategy": true
+    },
+    "ci": {
+      "name": "Deploy",
+      "type": "ci",
+      "icon": "pipeline-build",
+      "iconColor": "var(--pipeline-build-stage-color)",
+      "isApproval": false,
+      "openExecutionStrategy": false
+    },
+    "Pipeline": {
+      "name": "Deploy",
+      "type": "Pipeline",
+      "icon": "pipeline",
+      "iconColor": "var(--pipeline-blue-color)",
+      "isApproval": false,
+      "openExecutionStrategy": false
+    },
+    "Custom": {
+      "name": "Deploy",
+      "type": "Custom",
+      "icon": "pipeline-custom",
+      "iconColor": "var(--pipeline-custom-stage-color)",
+      "isApproval": false,
+      "openExecutionStrategy": false
+    },
+    "Approval": {
+      "name": "Deploy",
+      "type": "Approval",
+      "icon": "pipeline-approval",
+      "iconColor": "var(--pipeline-approval-stage-color)",
+      "isApproval": false,
+      "openExecutionStrategy": false
+    }
+  }
+}
