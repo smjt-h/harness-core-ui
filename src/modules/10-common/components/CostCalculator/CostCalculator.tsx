@@ -1,16 +1,15 @@
-import React, { useEffect, useState } from 'react'
-import { Color, FontVariation } from '@harness/design-system'
-import { Button, ButtonSize, Layout, PillToggle, Text, TextInput } from '@harness/uicore'
+import React, {useState} from 'react'
+import {Color, FontVariation} from '@harness/design-system'
+import {Button, ButtonSize, Layout, PillToggle, Text} from '@harness/uicore'
 import cx from 'classnames'
-import { Classes, Dialog, IDialogProps, Slider } from '@blueprintjs/core'
-import { useModalHook } from '@harness/use-modal'
-import { ButtonVariation, Container } from '@wings-software/uicore'
-import { parseInt } from 'lodash-es'
-import { Editions } from '@common/constants/SubscriptionTypes'
-import { TIME_TYPE } from '@auth-settings/pages/subscriptions/plans/planUtils'
+import {Classes, Dialog, IDialogProps, NumericInput, Slider} from '@blueprintjs/core'
+import {useModalHook} from '@harness/use-modal'
+import {ButtonVariation, Container} from '@wings-software/uicore'
+import {Editions} from '@common/constants/SubscriptionTypes'
+import {calculateCostTotal, PlanType} from "@common/components/CostCalculator/CostCalculatorUtils";
 import recommendedIcon from './images/recommendedbig.png'
 import usageIcon from './images/usagebig.png'
-import currentIcon from './images/currentbig.png'
+import plannedUsageIcon from './images/currentbig.png'
 import css from './CostCalculator.module.scss'
 
 interface InfoBoxParams {
@@ -19,10 +18,10 @@ interface InfoBoxParams {
   units?: string
   recommended: number
   using: number
-}
+};
 
 const InfoBox = ({ title, units, using, recommended, planned }: InfoBoxParams) => {
-  const newUnits = units ? units : ''
+  const newUnits = units ? units : '';
 
   return (
     <Layout.Vertical
@@ -45,7 +44,7 @@ const InfoBox = ({ title, units, using, recommended, planned }: InfoBoxParams) =
               flex={{ alignItems: 'center', justifyContent: 'flex-start' }}
               className={cx(css.infocardItemIcongap)}
             >
-              <img src={currentIcon} height={'10px'} width={'10px'} />
+              <img src={plannedUsageIcon} height={'10px'} width={'10px'} />
               <Text font={{ variation: FontVariation.H3 }} padding={{ left: '10px' }}>
                 {planned + newUnits}
               </Text>
@@ -65,7 +64,7 @@ const InfoBox = ({ title, units, using, recommended, planned }: InfoBoxParams) =
           </Layout.Horizontal>
         </Layout.Vertical>
         <Layout.Vertical>
-          <Text font={{ variation: FontVariation.SMALL }}>Recommended</Text>
+          <Text font={{ variation: FontVariation.SMALL }} rightIcon={'info'} tooltip={'Aha Yes'} tooltipProps={}  rightIconProps={{tooltip= }}>Recommended</Text>
           <Layout.Horizontal
             flex={{ alignItems: 'center', justifyContent: 'flex-start' }}
             className={cx(css.infocardItemIcongap)}
@@ -78,64 +77,17 @@ const InfoBox = ({ title, units, using, recommended, planned }: InfoBoxParams) =
         </Layout.Vertical>
       </Layout.Horizontal>
     </Layout.Vertical>
-  )
+  );
 }
 
-// const calulateCost = (unitsInUse: number, costSlabs : Array<[number, number]>,startingIndex: number) => {
-//     let totalCost = 0;
-//     for(let index = startingIndex; index < costSlabs.length; index+= 1) {
-//         const [units, price] = costSlabs[index];
-//         if(unitsInUse <= units) {
-//             totalCost += price*unitsInUse;
-//             return [totalCost, index];
-//             //break;
-//         } else {
-//             totalCost += price*units;
-//             unitsInUse -= units;
-//         }
-//     }
-//
-// }
 
-const calculateCostTotal = (unitsInUse: number, costPerUnit: number, unitsInPlan?: number, surcharge?: number) => {
-  if (unitsInPlan && surcharge) {
-    const surChargedUnits = Math.max(unitsInUse - unitsInPlan, 0)
-    const normalCharge = Math.max(unitsInPlan, unitsInUse) * costPerUnit
-    return surChargedUnits * surcharge + normalCharge
-  }
-  return unitsInUse * costPerUnit
-}
-
-const FlexiText = (initialText: string, textFilter: (arg0: string) => boolean, textChange: (arg0: string) => void) => {
-  const [enteredText, setEnteredText] = useState<string>(initialText)
-
-  useEffect(() => {
-    if (textFilter(enteredText)) {
-      textChange(enteredText)
-    }
-  }, [enteredText])
-
-  useEffect(() => {
-    if (initialText !== enteredText) {
-      setEnteredText(initialText)
-    }
-  }, [initialText])
-
-  return (
-    <TextInput
-      className={cx(css.textInputWidth)}
-      value={enteredText}
-      onChange={valueProvided => setEnteredText(valueProvided.target.value)}
-    />
-  )
-}
 
 interface CostSliderParams {
   title: string
   summary: string
   plannedUsage?: number
   currentUsage: number
-  recommneded: number
+  recommended: number
   currentSliderValue: number
   minVal: number
   maxVal: number
@@ -159,7 +111,32 @@ const CostSlider = (costSliderParms: CostSliderParams) => {
           {costSliderParms.summary}
         </Text>
       </Layout.Horizontal>
-      <Layout.Horizontal></Layout.Horizontal>
+      <Layout.Horizontal>
+        <NumericInput
+            className={cx(css.textInputWidth)}
+            value={costSliderParms.currentSliderValue}
+            onValueChange={valueProvided => costSliderParms.onSliderChange(valueProvided)}
+            // intent={errorText !== '' ?  'danger' : 'none'}
+            buttonPosition={'none'}
+            min={costSliderParms.minVal}
+            max={costSliderParms.maxVal}
+            minorStepSize={costSliderParms.tickSize}
+        />
+      </Layout.Horizontal>
+
+      <Container className={css.topSliderDots}>
+        {costSliderParms.plannedUsage &&
+            <Container width={`${costSliderParms.plannedUsage * 100 / costSliderParms.maxVal}`} className={css.sliderDotContainer}>
+          <img src={plannedUsageIcon} height={'10px'} width={'10px'} />
+        </Container>
+        }
+        <Container width={`${costSliderParms.currentUsage * 100 / costSliderParms.maxVal}`} className={css.sliderDotContainer}>
+          <img src={usageIcon} height={'10px'} width={'10px'} />
+        </Container>
+        <Container width={`${costSliderParms.recommended * 100 / costSliderParms.maxVal}`} className={css.sliderDotContainer}>
+          <img src={recommendedIcon} height={'10px'} width={'10px'} />
+        </Container>
+      </Container>
       <Slider
         className={cx(css.bp3SliderHandle, css.bp3SliderLabel)}
         min={costSliderParms.minVal}
@@ -212,10 +189,13 @@ export enum Mode {
   CHECK_USAGE = 'CHECK_USAGE'
 }
 
+
+
+
 export const CostCalculator = ({ edition, mode }: { edition: Editions; mode: Mode }): JSX.Element => {
-  // const currentEdition = Editions.TEAM;
+  // const currentEdition = Editions.TEAM;n
   // const currentPaymentFrequency = TIME_TYPE.MONTHLY;
-  const frequencyString = (time: TIME_TYPE) => (time === TIME_TYPE.MONTHLY ? 'month' : 'year')
+  const frequencyString = (time: PlanType) => (time === PlanType.MONTHLY ? 'month' : 'year')
   const developerUsageSeats = 1
   const developerPlannedSeats = mode == Mode.CHECK_USAGE ? 2 : undefined
   const developerRecommendedSeats = 3
@@ -228,7 +208,7 @@ export const CostCalculator = ({ edition, mode }: { edition: Editions; mode: Mod
   const mauCostYearly = 900
   const mauCostMonthly = Math.round(mauCostYearly / 12 / 0.8)
 
-  const [paymentFrequencySelected, setPaymentFrequencySelected] = useState<TIME_TYPE>(TIME_TYPE.YEARLY)
+  const [paymentFrequencySelected, setPaymentFrequencySelected] = useState<PlanType>(PlanType.YEARLY)
   const [editionSelected, setEditionSelected] = useState<Editions>(Editions.TEAM)
   const [developerSelected, setDeveloperSelected] = useState<number>(developerRecommendedSeats)
   const [mausSelected, setMausSelected] = useState<number>(mauRecommendedSeats)
@@ -241,12 +221,12 @@ export const CostCalculator = ({ edition, mode }: { edition: Editions; mode: Mod
   )
   const currentMauUsageCost = calculateCostTotal(mauUsageSeats, mauCostMonthly, mauPlannedSeats, 0.2)
 
-  const developerRate = paymentFrequencySelected === TIME_TYPE.MONTHLY ? developerCostMonthly : developerCostYearly
-  const mauRate = paymentFrequencySelected === TIME_TYPE.MONTHLY ? mauCostMonthly : mauCostYearly
+  const developerRate = paymentFrequencySelected === PlanType.MONTHLY ? developerCostMonthly : developerCostYearly
+  const mauRate = paymentFrequencySelected === PlanType.MONTHLY ? mauCostMonthly : mauCostYearly
   const totalDeveloperRate = developerRate * developerSelected
   const totalMauRate = mauRate * mausSelected
   const moneySavedYearly =
-    paymentFrequencySelected === TIME_TYPE.MONTHLY
+    paymentFrequencySelected === PlanType.MONTHLY
       ? developerSelected * (developerRate * 12 - developerCostYearly) + mausSelected * (mauRate * 12 - mauCostYearly)
       : 0
   const supportCost = 160
@@ -265,7 +245,7 @@ export const CostCalculator = ({ edition, mode }: { edition: Editions; mode: Mod
         <Text icon={'ff-solid'} font={{ variation: FontVariation.H3 }} className={cx(css.textwrap)}>
           {title}
         </Text>
-        <div style={{ width: '100%' }}></div>
+        <div style={{width: '100%'}}/>
         <Text
           font={{ variation: FontVariation.SMALL }}
           className={cx(css.textwrap, css.linkDecoration)}
@@ -298,7 +278,7 @@ export const CostCalculator = ({ edition, mode }: { edition: Editions; mode: Mod
               title={'Developers'}
               summary={`1 developer = $ ${developerRate}/ ${monthYear}`}
               currentUsage={developerUsageSeats}
-              recommneded={developerRecommendedSeats}
+              recommended={developerRecommendedSeats}
               currentSliderValue={developerSelected}
               minVal={1}
               maxVal={50}
@@ -321,7 +301,7 @@ export const CostCalculator = ({ edition, mode }: { edition: Editions; mode: Mod
               title={'MAUs Usage'}
               summary={`25k MAUs = $ ${mauRate}/ ${monthYear} `}
               currentUsage={mauUsageSeats}
-              recommneded={mauRecommendedSeats}
+              recommended={mauRecommendedSeats}
               currentSliderValue={mausSelected}
               minVal={0}
               maxVal={1000}
@@ -340,13 +320,13 @@ export const CostCalculator = ({ edition, mode }: { edition: Editions; mode: Mod
           options={[
             {
               label: 'Yearly',
-              value: TIME_TYPE.YEARLY
+              value: PlanType.YEARLY
             },
-            { label: 'Monthly', value: TIME_TYPE.MONTHLY }
+            { label: 'Monthly', value: PlanType.MONTHLY }
           ]}
           selectedView={paymentFrequencySelected}
         />
-        {paymentFrequencySelected === TIME_TYPE.MONTHLY && (
+        {paymentFrequencySelected === PlanType.MONTHLY && (
           <Text font={{ variation: FontVariation.SMALL }}>{`Save $ ${moneySavedYearly} paying yearly`}</Text>
         )}
       </Layout.Horizontal>
@@ -357,11 +337,6 @@ export const CostCalculator = ({ edition, mode }: { edition: Editions; mode: Mod
               {'Developer Seats'}
             </Text>
             <Layout.Horizontal flex={{ alignItems: 'baseline' }} padding={{ top: 'small' }}>
-              {FlexiText(
-                `${developerSelected}`,
-                dev => 1 <= parseInt(dev) && parseInt(dev) <= 50,
-                dev => setDeveloperSelected(parseInt(dev))
-              )}
               <Text font={{ size: 'medium' }} padding={{ bottom: 'xsmall' }}>
                 {`⨉ $ ${developerRate}`}
               </Text>
@@ -380,15 +355,7 @@ export const CostCalculator = ({ edition, mode }: { edition: Editions; mode: Mod
               {'MAUs Usage'}
             </Text>
             <Layout.Horizontal flex={{ alignItems: 'baseline' }} padding={{ top: 'small' }}>
-              {FlexiText(
-                `${mausSelected}`,
-                mau => {
-                  const mauVal = parseInt(mau)
-                  return mauVal % 25 === 0
-                },
-                mauval => setMausSelected(parseInt(mauval))
-              )}
-              <Text font={{ size: 'medium' }}>{`k ⨉ $ ${mauRate}`}</Text>
+              <Text font={{ size: 'medium' }}>{`$ ${mauRate}`}</Text>
             </Layout.Horizontal>
           </Layout.Vertical>
           <Layout.Vertical
@@ -429,7 +396,7 @@ export const CostCalculator = ({ edition, mode }: { edition: Editions; mode: Mod
             </Layout.Horizontal>
           </Layout.Vertical>
         </Layout.Horizontal>
-        <div style={{ width: '100%' }}></div>
+        <div style={{width: '100%'}}/>
         <Layout.Horizontal className={cx(css.pricingdisplayItem, css.duetodaybox)}>
           <Layout.Vertical>
             <Text font={{ variation: FontVariation.H5 }} color={Color.GREY_700}>

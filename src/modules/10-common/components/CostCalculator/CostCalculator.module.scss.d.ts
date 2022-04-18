@@ -9,6 +9,13 @@
 declare const styles: {
   readonly bp3SliderHandle: string
   readonly bp3SliderLabel: string
+  readonly changedDevelopers: string
+  readonly changedMaus: string
+  readonly changingText: string
+  readonly currentDeveloperPlan: string
+  readonly currentMauPlan: string
+  readonly currentPlanContainer: string
+  readonly developerUnitPrice: string
   readonly dueTodayPadding: string
   readonly duetodaybox: string
   readonly infocard: string
@@ -16,12 +23,21 @@ declare const styles: {
   readonly infocardItemIcongap: string
   readonly labelItem: string
   readonly linkDecoration: string
+  readonly mauUnitPrice: string
+  readonly newRate: string
   readonly nextPaymentPadding: string
   readonly pillboxgap: string
+  readonly premiumSupport: string
   readonly pricingdisplayItem: string
+  readonly reviewContainer: string
+  readonly reviewItems: string
+  readonly reviewText: string
+  readonly sliderDotContainer: string
   readonly supportInfoBoxText: string
+  readonly tax: string
   readonly textInputWidth: string
   readonly textwrap: string
+  readonly topSliderDots: string
   readonly usageBox: string
 }
 export default styles
