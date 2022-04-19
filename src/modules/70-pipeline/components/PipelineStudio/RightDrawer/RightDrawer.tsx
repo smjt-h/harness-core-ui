@@ -21,7 +21,7 @@ import type {
 } from 'services/cd-ng'
 import { useTelemetry } from '@common/hooks/useTelemetry'
 import { StepActions } from '@common/constants/TrackingConstants'
-import { getSelectedDeploymentType, isServerlessDeploymentType, StageType } from '@pipeline/utils/stageHelpers'
+import type { StageType } from '@pipeline/utils/stageHelpers'
 import type {
   BuildStageElementConfig,
   DeploymentStageElementConfig,
@@ -356,15 +356,7 @@ export function RightDrawer(): React.ReactElement | null {
   const { trackEvent } = useTelemetry()
   const { getTemplate } = useTemplateSelector()
 
-  const { stage: selectedStage } = getStageFromPipeline<DeploymentStageElementConfig>(defaultTo(selectedStageId, ''))
-
-  const selectedDeploymentType = React.useMemo(() => {
-    return getSelectedDeploymentType(
-      selectedStage,
-      getStageFromPipeline,
-      !!selectedStage?.stage?.spec?.serviceConfig?.useFromStage?.stage
-    )
-  }, [selectedStage, getStageFromPipeline])
+  const { stage: selectedStage } = getStageFromPipeline(defaultTo(selectedStageId, ''))
 
   const stageType = selectedStage?.stage?.type
 
@@ -651,10 +643,6 @@ export function RightDrawer(): React.ReactElement | null {
       draft.type = get(templateTypes, getIdentifierFromValue(node.template.templateRef))
     })
     await updateNode(processNode)
-  }
-
-  if (type === DrawerTypes.ExecutionStrategy && isServerlessDeploymentType(selectedDeploymentType)) {
-    return null
   }
 
   return (

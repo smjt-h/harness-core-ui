@@ -25,7 +25,7 @@ import {
   VisualYamlSelectedView as SelectedView
 } from '@wings-software/uicore'
 import { useParams } from 'react-router-dom'
-import { isEmpty, get, set, unset } from 'lodash-es'
+import { isEmpty, get, set, unset, defaultTo } from 'lodash-es'
 import { Classes, Dialog } from '@blueprintjs/core'
 import produce from 'immer'
 import { useStrings } from 'framework/strings'
@@ -61,6 +61,8 @@ import { usePipelineContext } from '../PipelineContext/PipelineContext'
 import { DrawerTypes } from '../PipelineContext/PipelineActions'
 import { RightDrawer } from '../RightDrawer/RightDrawer'
 import css from './RightBar.module.scss'
+import type { DeploymentStageElementConfig } from '@pipeline/utils/pipelineTypes'
+import { getSelectedDeploymentType, isServerlessDeploymentType } from '@pipeline/utils/stageHelpers'
 
 interface CodebaseValues {
   connectorRef?: ConnectorReferenceFieldProps['selected']
@@ -110,12 +112,14 @@ export function RightBar(): JSX.Element {
       pipeline,
       pipelineView,
       isLoading,
+      selectionState: { selectedStageId },
       pipelineView: {
         drawerData: { type }
       }
     },
     isReadonly,
     view,
+    getStageFromPipeline,
     updatePipeline,
     updatePipelineView
   } = usePipelineContext()
@@ -133,6 +137,16 @@ export function RightBar(): JSX.Element {
   >()
 
   const { repoIdentifier, branch } = useQueryParams<GitQueryParams>()
+
+  const { stage: selectedStage } = getStageFromPipeline<DeploymentStageElementConfig>(defaultTo(selectedStageId, ''))
+
+  const selectedDeploymentType = React.useMemo(() => {
+    return getSelectedDeploymentType(
+      selectedStage,
+      getStageFromPipeline,
+      !!selectedStage?.stage?.spec?.serviceConfig?.useFromStage?.stage
+    )
+  }, [selectedStage, getStageFromPipeline])
 
   const [isCodebaseDialogOpen, setIsCodebaseDialogOpen] = React.useState(false)
   const codebaseInitialValues: CodebaseValues = {
@@ -686,7 +700,9 @@ export function RightBar(): JSX.Element {
           </Formik>
         </Dialog>
       )}
-      <RightDrawer />
+      {(type !== DrawerTypes.ExecutionStrategy || !isServerlessDeploymentType(selectedDeploymentType)) && (
+        <RightDrawer />
+      )}
     </div>
   )
 }
