@@ -127,25 +127,7 @@
 <a name='L68'></a><a href='#L68'>68</a>
 <a name='L69'></a><a href='#L69'>69</a>
 <a name='L70'></a><a href='#L70'>70</a>
-<a name='L71'></a><a href='#L71'>71</a>
-<a name='L72'></a><a href='#L72'>72</a>
-<a name='L73'></a><a href='#L73'>73</a>
-<a name='L74'></a><a href='#L74'>74</a>
-<a name='L75'></a><a href='#L75'>75</a>
-<a name='L76'></a><a href='#L76'>76</a>
-<a name='L77'></a><a href='#L77'>77</a>
-<a name='L78'></a><a href='#L78'>78</a>
-<a name='L79'></a><a href='#L79'>79</a>
-<a name='L80'></a><a href='#L80'>80</a>
-<a name='L81'></a><a href='#L81'>81</a>
-<a name='L82'></a><a href='#L82'>82</a>
-<a name='L83'></a><a href='#L83'>83</a>
-<a name='L84'></a><a href='#L84'>84</a>
-<a name='L85'></a><a href='#L85'>85</a>
-<a name='L86'></a><a href='#L86'>86</a>
-<a name='L87'></a><a href='#L87'>87</a>
-<a name='L88'></a><a href='#L88'>88</a>
-<a name='L89'></a><a href='#L89'>89</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L71'></a><a href='#L71'>71</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -181,6 +163,11 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">12x</span>
+<span class="cline-any cline-yes">12x</span>
+<span class="cline-any cline-yes">12x</span>
+<span class="cline-any cline-yes">12x</span>
+<span class="cline-any cline-yes">12x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -199,39 +186,16 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">20x</span>
-<span class="cline-any cline-yes">20x</span>
-<span class="cline-any cline-yes">20x</span>
-<span class="cline-any cline-yes">20x</span>
-<span class="cline-any cline-yes">20x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">20x</span>
-<span class="cline-any cline-yes">20x</span>
-<span class="cline-any cline-yes">20x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">12x</span>
+<span class="cline-any cline-yes">12x</span>
+<span class="cline-any cline-yes">12x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">/*
  * Copyright 2022 Harness Inc. All rights reserved.
@@ -241,45 +205,27 @@
  */
 &nbsp;
 import type { SelectOption } from '@harness/uicore'
-import type { PageCVNGLogDTO } from 'services/cv'
+import type { State, UseActionCreatorReturn } from './views/ExecutionLog/ExecutionLog.types'
 &nbsp;
 export interface UseLogContentHookProps {
   verifyStepExecutionId?: string
   sloIdentifier?: string
   serviceName?: string
   envName?: string
-  monitoredServiceIdentifier?: string
-  monitoredServiceStartTime?: number
-  monitoredServiceEndTime?: number
-  showTimelineSlider?: boolean
 }
 &nbsp;
 export interface UseLogContentHookReturn {
-  openLogContentHook: (logType: LogTypes) =&gt; void
+  openLogContentHook: () =&gt; void
   closeLogContentHook: () =&gt; void
 }
 &nbsp;
-export interface VerifyStepLogContentProps {
-  logType: LogTypes
+export interface VerifyStepLogProps {
   verifyStepExecutionId: string
   isFullScreen: boolean
   setIsFullScreen: (isFullScreen: boolean | ((isFullScreen: boolean) =&gt; boolean)) =&gt; void
 }
 &nbsp;
-export interface MonitoredServiceLogContentProps {
-  logType: LogTypes
-  monitoredServiceIdentifier: string
-  isFullScreen: boolean
-  setIsFullScreen: (isFullScreen: boolean | ((isFullScreen: boolean) =&gt; boolean)) =&gt; void
-  serviceName?: string
-  envName?: string
-  startTime?: number
-  endTime?: number
-  showTimelineSlider?: boolean
-}
-&nbsp;
-export interface SLOLogContentProps {
-  logType: LogTypes
+export interface SLOLogProps {
   identifier: string
   serviceName?: string
   envName?: string
@@ -294,32 +240,32 @@ export enum TimeRangeTypes {
   LAST_24_HOUR = 'LAST_24_HOURS'
 }
 &nbsp;
-export enum LogTypes {
-  ApiCallLog = 'ApiCallLog',
-  ExecutionLog = 'ExecutionLog'
-}
-&nbsp;
-export interface ExecutionAndAPICallLogProps {
-  isFullScreen: boolean
-  setIsFullScreen: (isFullScreen: boolean | ((isFullScreen: boolean) =&gt; boolean)) =&gt; void
+export interface ExecutionLogHeaderProps {
   verifyStepExecutionId?: string
-  monitoredServiceIdentifier?: string
   serviceName?: string
   envName?: string
-  resource?: PageCVNGLogDTO
-  loading: boolean
-  errorMessage?: string
-  refetchLogs: () =&gt; Promise&lt;void&gt;
   healthSource?: SelectOption
   setHealthSource?: (healthSource: SelectOption) =&gt; void
   timeRange?: SelectOption
   setTimeRange?: (timeRange: SelectOption) =&gt; void
   errorLogsOnly: boolean
   setErrorLogsOnly: (errorLogsOnly: boolean) =&gt; void
-  pageNumber: number
-  setPageNumber: (pageNumber: number | ((_pageNumber: number) =&gt; number)) =&gt; void
-  handleDownloadLogs: () =&gt; Promise&lt;void&gt;
-  showTimelineSlider?: boolean
+  actions: UseActionCreatorReturn
+  setPageNumber: (pageNumber: number) =&gt; void
+}
+&nbsp;
+export interface ExecutionLogToolbarProps {
+  state: State
+  actions: UseActionCreatorReturn
+  isFullScreen: boolean
+  setIsFullScreen: (isFullScreen: boolean | ((isFullScreen: boolean) =&gt; boolean)) =&gt; void
+  isVerifyStep: boolean
+  timeRange?: SelectOption
+}
+&nbsp;
+export enum LogTypes {
+  ApiCallLog = 'ApiCallLog',
+  ExecutionLog = 'ExecutionLog'
 }
 &nbsp;</pre></td></tr></table></pre>
 
@@ -328,7 +274,7 @@ export interface ExecutionAndAPICallLogProps {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Tue Apr 19 2022 09:23:36 GMT+0000 (Greenwich Mean Time)
+                at Tue Apr 19 2022 09:26:55 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../prettify.js"></script>

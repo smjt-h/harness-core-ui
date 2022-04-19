@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">95.56% </span>
+                <span class="strong">80% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>43/45</span>
+                <span class='fraction'>44/55</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">83.33% </span>
+                <span class="strong">38.46% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>10/12</span>
+                <span class='fraction'>10/26</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">90% </span>
+                <span class="strong">81.82% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>9/10</span>
+                <span class='fraction'>9/11</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">95.56% </span>
+                <span class="strong">80% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>43/45</span>
+                <span class='fraction'>44/55</span>
             </div>
         
             
@@ -211,8 +211,7 @@
 <a name='L152'></a><a href='#L152'>152</a>
 <a name='L153'></a><a href='#L153'>153</a>
 <a name='L154'></a><a href='#L154'>154</a>
-<a name='L155'></a><a href='#L155'>155</a>
-<a name='L156'></a><a href='#L156'>156</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L155'></a><a href='#L155'>155</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -284,24 +283,23 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">9x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -377,7 +375,7 @@
 import React, { useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { defaultTo as _defaultTo } from 'lodash-es'
-import { Heading, useToaster } from '@harness/uicore'
+import { getErrorInfoFromErrorObject, Heading, useToaster } from '@harness/uicore'
 import { AccessPointFormStep, PROVIDER_TYPES } from '@ce/constants'
 import { Utils } from '@ce/common/Utils'
 import { AccessPoint, useCreateAccessPoint, useEditAccessPoint } from 'services/lw'
@@ -439,24 +437,23 @@ const GCPAccessPointConfig: React.FC&lt;GCPAccessPointConfigProps&gt; = ({
     moveForward()
   }
 &nbsp;
-  /* istanbul ignore next */
-  const saveLb = async (lbToSave: AccessPoint): Promise&lt;void&gt; =&gt; {
-    setLbCreationInProgress(true)
-    try {
-      const result = isEditMode ? await editLoadBalancer(lbToSave) : await createLoadBalancer(lbToSave) // eslint-disable-line
-      if (result.response) {
+  const saveLb = <span class="fstat-no" title="function not covered" >async </span>(lbToSave: AccessPoint): Promise&lt;void&gt; =&gt; {
+<span class="cstat-no" title="statement not covered" >    setLbCreationInProgress(true)</span>
+<span class="cstat-no" title="statement not covered" >    try {</span>
+      const result = <span class="cstat-no" title="statement not covered" >isEditMode ? await editLoadBalancer(lbToSave) : await createLoadBalancer(lbToSave) </span>// eslint-disable-line
+<span class="cstat-no" title="statement not covered" >      if (result.response) {</span>
         // setLoadBalancerId(result.response.id as string)
-        showSuccess(
+<span class="cstat-no" title="statement not covered" >        showSuccess(</span>
           isEditMode
             ? getString('ce.co.accessPoint.successfulEdition', { name: result.response.name })
             : getString('ce.co.accessPoint.successfulCreation')
         )
-        onSave?.(result.response)
-        onClose?.()
+<span class="cstat-no" title="statement not covered" >        onSave?.(result.response)</span>
+<span class="cstat-no" title="statement not covered" >        onClose?.()</span>
       }
     } catch (e) {
-      setLbCreationInProgress(false)
-      showError(e.data?.errors?.join('\n '))
+<span class="cstat-no" title="statement not covered" >      setLbCreationInProgress(false)</span>
+<span class="cstat-no" title="statement not covered" >      showError(getErrorInfoFromErrorObject(e))</span>
     }
   }
 &nbsp;
@@ -529,7 +526,7 @@ export default GCPAccessPointConfig
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Tue Apr 19 2022 09:23:36 GMT+0000 (Greenwich Mean Time)
+                at Tue Apr 19 2022 09:26:55 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../../prettify.js"></script>

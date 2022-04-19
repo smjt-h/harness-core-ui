@@ -30,23 +30,23 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">87.76% </span>
+                <span class="strong">87.78% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>86/98</span>
+                <span class='fraction'>79/90</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">64.29% </span>
+                <span class="strong">61.54% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>9/14</span>
+                <span class='fraction'>8/13</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">83.87% </span>
+                <span class="strong">84.13% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>52/62</span>
+                <span class='fraction'>53/63</span>
             </div>
         
             
@@ -298,10 +298,7 @@
 <a name='L239'></a><a href='#L239'>239</a>
 <a name='L240'></a><a href='#L240'>240</a>
 <a name='L241'></a><a href='#L241'>241</a>
-<a name='L242'></a><a href='#L242'>242</a>
-<a name='L243'></a><a href='#L243'>243</a>
-<a name='L244'></a><a href='#L244'>244</a>
-<a name='L245'></a><a href='#L245'>245</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L242'></a><a href='#L242'>242</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -322,15 +319,13 @@
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -366,7 +361,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">9x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
@@ -399,7 +393,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
@@ -414,7 +407,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">42x</span>
+<span class="cline-any cline-yes">9x</span>
 <span class="cline-any cline-yes">9x</span>
 <span class="cline-any cline-yes">9x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -476,6 +469,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">9x</span>
 <span class="cline-any cline-yes">9x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">9x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -561,21 +555,19 @@ import type { Column } from 'react-table'
 import { useModalHook } from '@harness/use-modal'
 import { Dialog } from '@blueprintjs/core'
 import { useEnvironmentStore, ParamsType } from '@cd/components/Environments/common'
-import { EnvironmentResponseDTO, useDeleteEnvironmentV2, useGetEnvironmentList } from 'services/cd-ng'
+import { EnvironmentResponseDTO, useDeleteEnvironmentV2, useGetEnvironmentListForProject } from 'services/cd-ng'
 import { useToaster } from '@common/exports'
 import RbacButton from '@rbac/components/Button/Button'
 import { PermissionIdentifier } from '@rbac/interfaces/PermissionIdentifier'
-import { useStrings } from 'framework/strings'
-import { NewEditEnvironmentModal } from '@cd/components/PipelineSteps/DeployEnvStep/DeployEnvStep'
 import { ResourceType } from '@rbac/interfaces/ResourceType'
-import EnvironmentListingPageTemplate from './EnvironmentListingPageTemplate'
-import {
-  EnvironmentDescription,
-  EnvironmentMenu,
-  EnvironmentName,
-  EnvironmentTypes
-} from '../EnvironmentsListColumns/EnvironmentsListColumns'
+// eslint-disable-next-line no-restricted-imports
+import ListingPageTemplate from '@cf/components/ListingPageTemplate/ListingPageTemplate'
+// eslint-disable-next-line no-restricted-imports
+import { ModifiedByCell, TypeCell } from '@cf/pages/environments/EnvironmentsPage'
+import { useStrings } from 'framework/strings'
 import EmptyContent from './EmptyContent.svg'
+import { NewEditEnvironmentModalYaml } from './EnvironmentsModal'
+import { EnvironmentDescription, EnvironmentName } from '../EnvironmentsListColumns/EnvironmentsListColumns'
 import css from './EnvironmentsList.module.scss'
 &nbsp;
 export const EnvironmentList: React.FC = () =&gt; {
@@ -588,7 +580,7 @@ export const EnvironmentList: React.FC = () =&gt; {
   const [editable, setEditable] = React.useState(false)
 &nbsp;
   const queryParams = {
-    accountIdentifier: accountId,
+    accountId,
     orgIdentifier,
     projectIdentifier,
     page: page,
@@ -600,7 +592,7 @@ export const EnvironmentList: React.FC = () =&gt; {
     loading,
     error,
     refetch
-  } = useGetEnvironmentList({
+  } = useGetEnvironmentListForProject({
     queryParams
   })
   const { mutate: deleteEnvironment } = useDeleteEnvironmentV2({
@@ -610,7 +602,6 @@ export const EnvironmentList: React.FC = () =&gt; {
       orgIdentifier
     }
   })
-&nbsp;
   const [showModal, hideModal] = useModalHook(
     () =&gt; (
       &lt;Dialog
@@ -627,7 +618,7 @@ export const EnvironmentList: React.FC = () =&gt; {
         className={cx('padded-dialog', css.dialogStylesEnv)}
       &gt;
         &lt;Container&gt;
-          &lt;NewEditEnvironmentModal
+          &lt;NewEditEnvironmentModalYaml
             data={
               rowData &amp;&amp; editable
                 ? {
@@ -642,7 +633,6 @@ export const EnvironmentList: React.FC = () =&gt; {
                 : { name: '', identifier: '', orgIdentifier, projectIdentifier }
             }
             isEdit={editable}
-            isEnvironment={!editable}
             onCreateOrUpdate={<span class="fstat-no" title="function not covered" >() =</span>&gt; {
               ;<span class="cstat-no" title="statement not covered" >(fetchDeploymentList.current as () =&gt; void)?.()</span>
 <span class="cstat-no" title="statement not covered" >              hideModal()</span>
@@ -658,13 +648,13 @@ export const EnvironmentList: React.FC = () =&gt; {
     ),
     [fetchDeploymentList, orgIdentifier, projectIdentifier, rowData, editable]
   )
-  const environments = envData?.data?.content?.map(environmentContent =&gt; environmentContent.environment)
+  const environments = envData?.data?.content
   const hasEnvs = Boolean(!loading &amp;&amp; envData?.data?.content?.length)
   const emptyEnvs = Boolean(!loading &amp;&amp; envData?.data?.content?.length === 0)
 &nbsp;
   const handleEnvEdit = (id: string): void =&gt; {
     const dataRow = environments<span class="branch-0 cbranch-no" title="branch not covered" >?.f</span>ind(temp =&gt; {
-      return temp<span class="branch-0 cbranch-no" title="branch not covered" >?.i</span>dentifier === id
+      return temp.identifier === id
     })
     setEditable(true)
     setRowData(dataRow)
@@ -703,12 +693,12 @@ export const EnvironmentList: React.FC = () =&gt; {
         id: 'type',
         accessor: 'type',
         width: '15%',
-        Cell: EnvironmentTypes
+        Cell: TypeCell
       },
       {
         id: 'modifiedBy',
         width: '10%',
-        Cell: EnvironmentMenu,
+        Cell: ModifiedByCell,
         actions: {
           onEdit: handleEnvEdit,
           onDelete: handleEnvDelete
@@ -721,9 +711,10 @@ export const EnvironmentList: React.FC = () =&gt; {
   useEffect(() =&gt; {
     fetchDeploymentList.current = refetch
   }, [fetchDeploymentList, refetch])
+&nbsp;
   return (
     &lt;&gt;
-      &lt;EnvironmentListingPageTemplate
+      &lt;ListingPageTemplate
         title={getString('environments')}
         titleTooltipId="ff_env_heading"
         toolbar={
@@ -785,7 +776,7 @@ export const EnvironmentList: React.FC = () =&gt; {
             &lt;/Container&gt;
           &lt;/Container&gt;
         )}
-      &lt;/EnvironmentListingPageTemplate&gt;
+      &lt;/ListingPageTemplate&gt;
     &lt;/&gt;
   )
 }
@@ -796,7 +787,7 @@ export const EnvironmentList: React.FC = () =&gt; {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Tue Apr 19 2022 09:23:36 GMT+0000 (Greenwich Mean Time)
+                at Tue Apr 19 2022 09:26:55 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../../prettify.js"></script>

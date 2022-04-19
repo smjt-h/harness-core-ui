@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">97.1% </span>
+                <span class="strong">97.01% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>67/69</span>
+                <span class='fraction'>65/67</span>
             </div>
         
             
@@ -37,16 +37,16 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">92.86% </span>
+                <span class="strong">92.31% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>13/14</span>
+                <span class='fraction'>12/13</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">97.1% </span>
+                <span class="strong">97.01% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>67/69</span>
+                <span class='fraction'>65/67</span>
             </div>
         
             
@@ -417,17 +417,7 @@
 <a name='L358'></a><a href='#L358'>358</a>
 <a name='L359'></a><a href='#L359'>359</a>
 <a name='L360'></a><a href='#L360'>360</a>
-<a name='L361'></a><a href='#L361'>361</a>
-<a name='L362'></a><a href='#L362'>362</a>
-<a name='L363'></a><a href='#L363'>363</a>
-<a name='L364'></a><a href='#L364'>364</a>
-<a name='L365'></a><a href='#L365'>365</a>
-<a name='L366'></a><a href='#L366'>366</a>
-<a name='L367'></a><a href='#L367'>367</a>
-<a name='L368'></a><a href='#L368'>368</a>
-<a name='L369'></a><a href='#L369'>369</a>
-<a name='L370'></a><a href='#L370'>370</a>
-<a name='L371'></a><a href='#L371'>371</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L361'></a><a href='#L361'>361</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -611,7 +601,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
@@ -711,15 +700,6 @@
 <span class="cline-any cline-yes">86x</span>
 <span class="cline-any cline-yes">86x</span>
 <span class="cline-any cline-yes">86x</span>
-<span class="cline-any cline-yes">172x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">86x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -968,12 +948,11 @@ const showAddArtifactManifest = ({
           fontWeight: 'normal',
           marginBottom: 'var(--spacing-small)'
         }}
-        data-tooltip-id={'selectArtifactManifestLabel'}
+        data-tooltip-id="selectArtifactManifestLabel"
       &gt;
-        {artifactOrManifestText}
-        &lt;HarnessDocTooltip tooltipId="selectArtifactManifestLabel" useStandAlone={true} /&gt;
+        {isManifest ? getString('manifestsText') : getString(artifactStr)}
       &lt;/Label&gt;
-&nbsp;
+      &lt;HarnessDocTooltip tooltipId="selectArtifactManifestLabel" useStandAlone={true} /&gt;
       &lt;Text
         data-name="plusAdd"
         style={{
@@ -1010,7 +989,7 @@ const ArtifactTriggerConfigPanel: React.FC&lt;ArtifactTriggerConfigPanelPropsInt
   formikProps,
   isEdit = <span class="branch-0 cbranch-no" title="branch not covered" >false</span>
 }) =&gt; {
-  const { artifactType, manifestType, stageId, inputSetTemplateYamlObj, resolvedPipeline, selectedArtifact } =
+  const { artifactType, manifestType, stageId, inputSetTemplateYamlObj, originalPipeline, selectedArtifact } =
     formikProps.values
   const [modalOpen, setModalOpen] = useState&lt;boolean&gt;(false)
   const [editModalOpen, setEditModalOpen] = useState&lt;boolean&gt;(false)
@@ -1057,7 +1036,7 @@ const ArtifactTriggerConfigPanel: React.FC&lt;ArtifactTriggerConfigPanelPropsInt
     if (!selectedArtifact) {
       setAppliedTableArtifact(undefined)
     }
-    if ((appliedArtifact || data) &amp;&amp; resolvedPipeline) {
+    if ((appliedArtifact || data) &amp;&amp; originalPipeline) {
       const { appliedTableArtifact: newAppliedTableArtifact, artifactTableData: newArtifactTableData } =
         getArtifactTableDataFromData({
           data,
@@ -1066,7 +1045,7 @@ const ArtifactTriggerConfigPanel: React.FC&lt;ArtifactTriggerConfigPanelPropsInt
           stageId,
           getString,
           artifactType,
-          pipeline: resolvedPipeline
+          pipeline: originalPipeline
         })
       if (newAppliedTableArtifact) {
         setAppliedTableArtifact(newAppliedTableArtifact)
@@ -1074,15 +1053,12 @@ const ArtifactTriggerConfigPanel: React.FC&lt;ArtifactTriggerConfigPanelPropsInt
         setArtifactTableData(newArtifactTableData)
       }
     }
-  }, [appliedArtifact, data, resolvedPipeline, selectedArtifact])
+  }, [appliedArtifact, data, originalPipeline, selectedArtifact])
 &nbsp;
   const loading = false
   const allowSelectArtifact = !!data?.length
   const artifactOrManifestText = isManifest ? getString('manifestsText') : getString(artifactStr)
   const { errors } = formikProps
-  const getTooltipIds = (manifestTooltipIds: string, artifactTooltipIds: string): string =&gt; {
-    return isManifest ? manifestTooltipIds : artifactTooltipIds
-  }
   return (
     &lt;Layout.Vertical className={css.artifactTriggerConfigContainer} padding="xxlarge"&gt;
       {loading &amp;&amp; (
@@ -1090,17 +1066,14 @@ const ArtifactTriggerConfigPanel: React.FC&lt;ArtifactTriggerConfigPanelPropsInt
           &lt;PageSpinner /&gt;
         &lt;/div&gt;
       )}
-      &lt;Text
-        className={css.formContentTitle}
-        inline={true}
-        tooltipProps={{ dataTooltipId: getTooltipIds('artifactManifestLabel', 'artifactLabel') }}
-      &gt;
+      &lt;Text className={css.formContentTitle} inline={true} data-tooltip-id="artifactManifestLabel"&gt;
         {getString('triggers.triggerConfigurationLabel')}
         {!isEdit
           ? `: ${getString('triggers.onNewArtifactTitle', {
               artifact: artifactOrManifestText
             })}`
           : ''}
+        &lt;HarnessDocTooltip tooltipId="artifactManifestLabel" useStandAlone={true} /&gt;
       &lt;/Text&gt;
       &lt;div className={css.formContent}&gt;
         &lt;NameIdDescriptionTags
@@ -1114,14 +1087,11 @@ const ArtifactTriggerConfigPanel: React.FC&lt;ArtifactTriggerConfigPanelPropsInt
           }}
         /&gt;
       &lt;/div&gt;
-      &lt;Text
-        className={css.formContentTitle}
-        inline={true}
-        tooltipProps={{ dataTooltipId: getTooltipIds('listenOnNewArtifactManifest', 'listenNewArtifact') }}
-      &gt;
+      &lt;Text className={css.formContentTitle} inline={true} data-tooltip-id="listenOnNewArtifactManifest"&gt;
         {getString('pipeline.artifactTriggerConfigPanel.listenOnNewArtifact', {
           artifact: artifactOrManifestText
         })}
+        &lt;HarnessDocTooltip tooltipId="listenOnNewArtifactManifest" useStandAlone={true} /&gt;
       &lt;/Text&gt;
       &lt;div className={css.formContent}&gt;
         {appliedTableArtifact ? (
@@ -1174,7 +1144,7 @@ export default ArtifactTriggerConfigPanel
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Tue Apr 19 2022 09:23:36 GMT+0000 (Greenwich Mean Time)
+                at Tue Apr 19 2022 09:26:55 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../../prettify.js"></script>

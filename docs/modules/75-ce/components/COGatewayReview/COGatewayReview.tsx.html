@@ -30,9 +30,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">50% </span>
+                <span class="strong">53.41% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>52/104</span>
+                <span class='fraction'>47/88</span>
             </div>
         
             
@@ -516,21 +516,7 @@
 <a name='L457'></a><a href='#L457'>457</a>
 <a name='L458'></a><a href='#L458'>458</a>
 <a name='L459'></a><a href='#L459'>459</a>
-<a name='L460'></a><a href='#L460'>460</a>
-<a name='L461'></a><a href='#L461'>461</a>
-<a name='L462'></a><a href='#L462'>462</a>
-<a name='L463'></a><a href='#L463'>463</a>
-<a name='L464'></a><a href='#L464'>464</a>
-<a name='L465'></a><a href='#L465'>465</a>
-<a name='L466'></a><a href='#L466'>466</a>
-<a name='L467'></a><a href='#L467'>467</a>
-<a name='L468'></a><a href='#L468'>468</a>
-<a name='L469'></a><a href='#L469'>469</a>
-<a name='L470'></a><a href='#L470'>470</a>
-<a name='L471'></a><a href='#L471'>471</a>
-<a name='L472'></a><a href='#L472'>472</a>
-<a name='L473'></a><a href='#L473'>473</a>
-<a name='L474'></a><a href='#L474'>474</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L460'></a><a href='#L460'>460</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -678,20 +664,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1240,14 +1212,11 @@ const COGatewayReview: React.FC&lt;COGatewayReviewProps&gt; = props =&gt; {
           )}
         &lt;/ReviewDetailsSection&gt;
       )}
-      {(isK8sRule ||
-        !_isEmpty(props.gatewayDetails.resourceMeta<span class="branch-1 cbranch-no" title="branch not covered" >?.container_svc)</span> ||
-        !_isEmpty(filteredSchedules) ||
-        !_isEmpty(filteredSchedules)) &amp;&amp; (
-<span class="branch-4 cbranch-no" title="branch not covered" >        &lt;ReviewDetailsSection isEditable onEdit={handleAdvancedConfigEdit}&gt;</span>
+      {(isK8sRule || !_isEmpty(filteredSchedules) || !_isEmpty(filteredSchedules)) &amp;&amp; (
+<span class="branch-3 cbranch-no" title="branch not covered" >        &lt;ReviewDetailsSection isEditable onEdit={handleAdvancedConfigEdit}&gt;</span>
           &lt;Heading level={2}&gt;{getString('ce.co.autoStoppingRule.configuration.step4.advancedConfiguration')}&lt;/Heading&gt;
           &lt;Layout.Vertical style={{ marginTop: 'var(--spacing-large)' }}&gt;
-            {(isK8sRule || !_isEmpty(props.gatewayDetails.resourceMeta?.container_svc)) &amp;&amp; (
+            {isK8sRule &amp;&amp; (
               &lt;Layout.Horizontal
                 spacing={'large'}
                 padding={{ bottom: 'medium' }}
@@ -1290,18 +1259,7 @@ const COGatewayReview: React.FC&lt;COGatewayReviewProps&gt; = props =&gt; {
           /&gt;
         &lt;/Layout.Vertical&gt;
       )}
-      {!_isEmpty(props.gatewayDetails.accessPointData) &amp;&amp; (
-<span class="branch-1 cbranch-no" title="branch not covered" >        &lt;ReviewDetailsSection&gt;</span>
-          &lt;Layout.Horizontal
-            spacing={'large'}
-            padding={{ bottom: 'medium' }}
-            className={cx(css.equalSpacing, css.borderSpacing)}
-          &gt;
-            &lt;Text&gt;{getString('ce.co.accessPoint.ap')}&lt;/Text&gt;
-            &lt;Text&gt;{props.gatewayDetails.accessPointData?.name}&lt;/Text&gt;
-          &lt;/Layout.Horizontal&gt;
-        &lt;/ReviewDetailsSection&gt;
-      )}
+&nbsp;
       {!isK8sRule &amp;&amp; (
         &lt;&gt;
           {!_isEmpty(props.gatewayDetails.routing.ports) &amp;&amp;
@@ -1483,7 +1441,7 @@ export default COGatewayReview
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Tue Apr 19 2022 09:23:36 GMT+0000 (Greenwich Mean Time)
+                at Tue Apr 19 2022 09:26:55 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../prettify.js"></script>

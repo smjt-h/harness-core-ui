@@ -189,29 +189,27 @@
 <a name='L130'></a><a href='#L130'>130</a>
 <a name='L131'></a><a href='#L131'>131</a>
 <a name='L132'></a><a href='#L132'>132</a>
-<a name='L133'></a><a href='#L133'>133</a>
-<a name='L134'></a><a href='#L134'>134</a>
-<a name='L135'></a><a href='#L135'>135</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L133'></a><a href='#L133'>133</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">12x</span>
-<span class="cline-any cline-yes">12x</span>
-<span class="cline-any cline-yes">12x</span>
-<span class="cline-any cline-yes">12x</span>
-<span class="cline-any cline-yes">12x</span>
-<span class="cline-any cline-yes">12x</span>
-<span class="cline-any cline-yes">12x</span>
-<span class="cline-any cline-yes">12x</span>
-<span class="cline-any cline-yes">12x</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-yes">10x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">12x</span>
+<span class="cline-any cline-yes">10x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -250,7 +248,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">12x</span>
+<span class="cline-any cline-yes">10x</span>
 <span class="cline-any cline-yes">25x</span>
 <span class="cline-any cline-yes">25x</span>
 <span class="cline-any cline-yes">25x</span>
@@ -268,7 +266,6 @@
 <span class="cline-any cline-yes">25x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">25x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -295,7 +292,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -402,59 +398,57 @@ export function DeploymentNodes(props: DeploymentNodesProps): JSX.Element {
   const nodes = deploymentNodes || <span class="branch-1 cbranch-no" title="branch not covered" >[]</span>
 &nbsp;
   return (
-    &lt;Container className={cx(css.mainContainer)}&gt;
+    &lt;Container className={cx(css.main, className)}&gt;
       {displayTooltip &amp;&amp; &lt;NodeHealthPopover analysisResult={displayTooltip} /&gt;}
-      &lt;Container className={cx(css.main, className)}&gt;
-        &lt;Container className={css.hexagonList} ref={ref}&gt;
-          {coordinates.map((coordinate, index) =&gt; {
-            const nodeHealthColor = getRiskColorValue(nodes[index]<span class="branch-0 cbranch-no" title="branch not covered" >?.r</span>isk)
-            return (
+      &lt;Container className={css.hexagonList} ref={ref}&gt;
+        {coordinates.map((coordinate, index) =&gt; {
+          const nodeHealthColor = getRiskColorValue(nodes[index]<span class="branch-0 cbranch-no" title="branch not covered" >?.r</span>isk)
+          return (
+            &lt;Container
+              key={index}
+              className={css.hexagonContainer}
+              data-testid={nodeType ? `${nodeType}Node-${index}` : ''}
+              onClick={() =&gt; {
+                onClick?.(nodes<span class="branch-0 cbranch-no" title="branch not covered" >?.[i</span>ndex])
+              }}
+              style={{
+                height: hexagonPartSizes.hexagonContainerSize,
+                width: hexagonPartSizes.hexagonContainerSize,
+                top: coordinate.y,
+                left: coordinate.x
+              }}
+              onMouseOver={() =&gt; {
+                <span class="missing-if-branch" title="else path not taken" >E</span>if (nodes[index] &amp;&amp; nodes[index] !== displayTooltip) {
+                  setDisplayTooltip(nodes[index])
+                }
+              }}
+              onMouseOut={<span class="fstat-no" title="function not covered" >() =</span>&gt; {
+<span class="cstat-no" title="statement not covered" >                setDisplayTooltip(undefined)</span>
+              }}
+            &gt;
+              &lt;Container
+                className={cx(
+                  css.hexagon,
+                  selectedNode &amp;&amp; isEqual(selectedNode, nodes[index]) ? css.selected : undefined
+                )}
+                style={{
+                  height: hexagonPartSizes.hexagonSize,
+                  width: hexagonPartSizes.hexagonSize
+                }}
+              /&gt;
               &lt;Container
                 key={index}
-                className={css.hexagonContainer}
-                data-testid={nodeType ? `${nodeType}Node-${index}` : ''}
-                onClick={() =&gt; {
-                  onClick?.(nodes<span class="branch-0 cbranch-no" title="branch not covered" >?.[i</span>ndex])
-                }}
+                className={css.nodeHealth}
+                data-node-health-color={nodeHealthColor}
                 style={{
-                  height: hexagonPartSizes.hexagonContainerSize,
-                  width: hexagonPartSizes.hexagonContainerSize,
-                  top: coordinate.y,
-                  left: coordinate.x
+                  backgroundColor: nodeHealthColor,
+                  width: hexagonPartSizes.nodeHealthSize,
+                  height: hexagonPartSizes.nodeHealthSize
                 }}
-                onMouseOver={() =&gt; {
-                  <span class="missing-if-branch" title="else path not taken" >E</span>if (nodes[index] &amp;&amp; nodes[index] !== displayTooltip) {
-                    setDisplayTooltip(nodes[index])
-                  }
-                }}
-                onMouseOut={<span class="fstat-no" title="function not covered" >() =</span>&gt; {
-<span class="cstat-no" title="statement not covered" >                  setDisplayTooltip(undefined)</span>
-                }}
-              &gt;
-                &lt;Container
-                  className={cx(
-                    css.hexagon,
-                    selectedNode &amp;&amp; isEqual(selectedNode, nodes[index]) ? css.selected : undefined
-                  )}
-                  style={{
-                    height: hexagonPartSizes.hexagonSize,
-                    width: hexagonPartSizes.hexagonSize
-                  }}
-                /&gt;
-                &lt;Container
-                  key={index}
-                  className={css.nodeHealth}
-                  data-node-health-color={nodeHealthColor}
-                  style={{
-                    backgroundColor: nodeHealthColor,
-                    width: hexagonPartSizes.nodeHealthSize,
-                    height: hexagonPartSizes.nodeHealthSize
-                  }}
-                /&gt;
-              &lt;/Container&gt;
-            )
-          })}
-        &lt;/Container&gt;
+              /&gt;
+            &lt;/Container&gt;
+          )
+        })}
       &lt;/Container&gt;
     &lt;/Container&gt;
   )
@@ -466,7 +460,7 @@ export function DeploymentNodes(props: DeploymentNodesProps): JSX.Element {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Tue Apr 19 2022 09:23:36 GMT+0000 (Greenwich Mean Time)
+                at Tue Apr 19 2022 09:26:55 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../../../../../prettify.js"></script>
