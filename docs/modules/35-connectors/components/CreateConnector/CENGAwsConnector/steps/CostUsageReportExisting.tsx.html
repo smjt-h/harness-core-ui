@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">75% </span>
+                <span class="strong">43.75% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>6/8</span>
+                <span class='fraction'>7/16</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/0</span>
+                <span class='fraction'>0/2</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">0% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>0/1</span>
+                <span class='fraction'>0/3</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">75% </span>
+                <span class="strong">46.67% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>6/8</span>
+                <span class='fraction'>7/15</span>
             </div>
         
             
@@ -55,7 +55,7 @@
             Press <em>n</em> or <em>j</em> to go to the next uncovered block, <em>b</em>, <em>p</em> or <em>k</em> for the previous block.
         </p>
     </div>
-    <div class='status-line high'></div>
+    <div class='status-line low'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -120,13 +120,22 @@
 <a name='L61'></a><a href='#L61'>61</a>
 <a name='L62'></a><a href='#L62'>62</a>
 <a name='L63'></a><a href='#L63'>63</a>
-<a name='L64'></a><a href='#L64'>64</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L64'></a><a href='#L64'>64</a>
+<a name='L65'></a><a href='#L65'>65</a>
+<a name='L66'></a><a href='#L66'>66</a>
+<a name='L67'></a><a href='#L67'>67</a>
+<a name='L68'></a><a href='#L68'>68</a>
+<a name='L69'></a><a href='#L69'>69</a>
+<a name='L70'></a><a href='#L70'>70</a>
+<a name='L71'></a><a href='#L71'>71</a>
+<a name='L72'></a><a href='#L72'>72</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">216x</span>
 <span class="cline-any cline-yes">216x</span>
 <span class="cline-any cline-yes">216x</span>
 <span class="cline-any cline-yes">216x</span>
@@ -139,10 +148,17 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">216x</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -190,8 +206,9 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 &nbsp;
-import React from 'react'
-import { Layout, Table, Text } from '@wings-software/uicore'
+import React, { useState } from 'react'
+import { ExpandingSearchInput, Layout, Table, Text } from '@wings-software/uicore'
+import { FontVariation, Color } from '@harness/design-system'
 import { useStrings } from 'framework/strings'
 import type { ExistingCURDetails } from './OverviewStep'
 import css from '../CreateCeAwsConnector.module.scss'
@@ -202,23 +219,30 @@ interface ExistingCURDetailsProps {
 &nbsp;
 const CostUsageReportExisting: React.FC&lt;ExistingCURDetailsProps&gt; = <span class="fstat-no" title="function not covered" >props </span>=&gt; {
   const { getString } = <span class="cstat-no" title="statement not covered" >useStrings()</span>
+  const [curReports, setCurReports] = <span class="cstat-no" title="statement not covered" >useState(props.existingCurReports)</span>
+&nbsp;
+  const onChange = <span class="cstat-no" title="statement not covered" ><span class="fstat-no" title="function not covered" >(s</span>earchVal: string) =&gt; {</span>
+    let filteredReports = <span class="cstat-no" title="statement not covered" >props.existingCurReports</span>
+<span class="cstat-no" title="statement not covered" >    if (searchVal) {</span>
+<span class="cstat-no" title="statement not covered" >      filteredReports = filteredReports.filter(<span class="fstat-no" title="function not covered" >item </span>=&gt; <span class="cstat-no" title="statement not covered" >item.reportName.includes(searchVal))</span></span>
+    }
+<span class="cstat-no" title="statement not covered" >    setCurReports(filteredReports)</span>
+  }
 &nbsp;
 <span class="cstat-no" title="statement not covered" >  return (</span>
     &lt;div&gt;
       &lt;Layout.Vertical&gt;
-        &lt;Text
-          font="small"
-          className={css.info}
-          color="primary7"
-          inline
-          icon="info-sign"
-          iconProps={{ size: 15, color: 'primary7', margin: { right: 'xsmall' } }}
-        &gt;
-          {getString('connectors.ceAws.curExising.subHeading')}
+        &lt;Text color={Color.GREY_800} font={{ variation: FontVariation.BODY }}&gt;
+          {getString('connectors.ceAws.curExising.subHeading', { reportCount: props.existingCurReports.length })}
         &lt;/Text&gt;
         &lt;div className={css.existingCurTable}&gt;
+          &lt;ExpandingSearchInput
+            onChange={/* istanbul ignore next */ text =&gt; onChange(text.trim())}
+            alwaysExpanded={false}
+            placeholder={getString('connectors.ceAws.curExising.searchCUR')}
+          /&gt;
           &lt;Table
-            data={props.existingCurReports}
+            data={curReports}
             columns={[
               {
                 accessor: 'awsAccountId',
@@ -237,7 +261,7 @@ const CostUsageReportExisting: React.FC&lt;ExistingCURDetailsProps&gt; = <span c
                 width: '37%'
               }
             ]}
-            bpTableProps={{ bordered: false, condensed: true, striped: true }}
+            bpTableProps={{ bordered: true, condensed: true, striped: false }}
           &gt;&lt;/Table&gt;
         &lt;/div&gt;
       &lt;/Layout.Vertical&gt;
@@ -253,7 +277,7 @@ export default CostUsageReportExisting
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Tue Apr 19 2022 05:12:13 GMT+0000 (Greenwich Mean Time)
+                at Tue Apr 19 2022 05:22:42 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../../../prettify.js"></script>

@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">74.6% </span>
+                <span class="strong">75% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>47/63</span>
+                <span class='fraction'>48/64</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">76.27% </span>
+                <span class="strong">76.67% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>45/59</span>
+                <span class='fraction'>46/60</span>
             </div>
         
             
@@ -316,13 +316,18 @@
 <a name='L257'></a><a href='#L257'>257</a>
 <a name='L258'></a><a href='#L258'>258</a>
 <a name='L259'></a><a href='#L259'>259</a>
-<a name='L260'></a><a href='#L260'>260</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L260'></a><a href='#L260'>260</a>
+<a name='L261'></a><a href='#L261'>261</a>
+<a name='L262'></a><a href='#L262'>262</a>
+<a name='L263'></a><a href='#L263'>263</a>
+<a name='L264'></a><a href='#L264'>264</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">216x</span>
 <span class="cline-any cline-yes">216x</span>
 <span class="cline-any cline-yes">216x</span>
 <span class="cline-any cline-yes">216x</span>
@@ -461,6 +466,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -574,6 +581,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">216x</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">/*
  * Copyright 2021 Harness Inc. All rights reserved.
@@ -584,6 +592,7 @@
 &nbsp;
 import React, { useRef, useState } from 'react'
 import { Button, Heading, Layout, StepProps, CardSelect, Icon, IconName, Container, Text } from '@wings-software/uicore'
+import { FontVariation, Color } from '@harness/design-system'
 import { useStrings } from 'framework/strings'
 import { CE_AWS_CONNECTOR_CREATION_EVENTS } from '@connectors/trackingConstants'
 import { useStepLoadTelemetry } from '@connectors/common/useTrackStepLoad/useStepLoadTelemetry'
@@ -723,13 +732,15 @@ const CrossAccountRoleStep1: React.FC&lt;StepProps&lt;CEAwsConnectorDTO&gt;&gt; 
     &lt;Layout.Vertical className={css.stepContainer}&gt;
       &lt;Heading level={2} className={css.header}&gt;
         {getString('connectors.ceAws.crossAccountRoleStep1.heading')}
-        &lt;span&gt;{getString('connectors.ceAws.crossAccountRoleStep1.choosePermissions')}&lt;/span&gt;
       &lt;/Heading&gt;
       &lt;Text color="grey800"&gt;{getString('connectors.ceAws.crossAccountRoleStep1.description')}&lt;/Text&gt;
       &lt;Container&gt;
-        &lt;Text font={{ italic: true }} className={css.mtblarge}&gt;
-          {getString('connectors.ceAws.crossAccountRoleStep1.info')}
-        &lt;/Text&gt;
+        &lt;Layout.Horizontal className={css.infoCard}&gt;
+          &lt;Icon name="info-messaging" size={16} color={Color.PRIMARY_7} /&gt;
+          &lt;Text font={{ variation: FontVariation.BODY }} color={Color.GREY_800}&gt;
+            {getString('connectors.ceAws.crossAccountRoleStep1.info')}
+          &lt;/Text&gt;
+        &lt;/Layout.Horizontal&gt;
         &lt;div style={{ flex: 1 }}&gt;
           &lt;div className={css.cards}&gt;
             &lt;DefaultCard /&gt;
@@ -829,6 +840,7 @@ const DefaultCard = () =&gt; {
       onChange={<span class="fstat-no" title="function not covered" >() =</span>&gt; <span class="cstat-no" title="statement not covered" >void 0}</span>
       cornerSelected={true}
       renderItem={item =&gt; &lt;Card {...item} /&gt;}
+      cardClassName={css.defaultCard}
     /&gt;
   )
 }
@@ -841,7 +853,7 @@ export default CrossAccountRoleStep1
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Tue Apr 19 2022 05:12:13 GMT+0000 (Greenwich Mean Time)
+                at Tue Apr 19 2022 05:22:42 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../../../prettify.js"></script>
