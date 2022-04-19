@@ -173,7 +173,6 @@ const getPropsForCDStage = (
     identifier: 'TestPipeline',
     delegateSelectors: ['random'],
     timeout: RUNTIME_INPUT_VALUE,
-
     stages: [
       {
         stage: {
