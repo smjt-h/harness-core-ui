@@ -29,6 +29,7 @@ import type { Module } from '@common/interfaces/RouteInterfaces'
 import { ModuleName } from 'framework/types/ModuleName'
 import { ModuleLicenseType, Editions } from '@common/constants/SubscriptionTypes'
 import type { FetchPlansQuery } from 'services/common/services'
+import useRBACError from '@rbac/utils/useRBACError/useRBACError'
 import { getBtnProps } from './planUtils'
 import type { TIME_TYPE, PlanData, PlanProp } from './planUtils'
 import Plan from './Plan'
@@ -59,6 +60,7 @@ export interface PlanCalculatedProps {
 }
 
 const PlanContainer: React.FC<PlanProps> = ({ plans, timeType, moduleName }) => {
+  const { getRBACErrorMessage } = useRBACError()
   const { showError } = useToaster()
   const { trackEvent } = useTelemetry()
   const { getString } = useStrings()
@@ -205,7 +207,7 @@ const PlanContainer: React.FC<PlanProps> = ({ plans, timeType, moduleName }) => 
         })
         handleUpdateLicenseStore({ ...licenseInformation }, updateLicenseStore, module, extendTrialData?.data)
       } catch (err) {
-        showError(err.data?.message || err.message)
+        showError(getRBACErrorMessage(err))
       }
     }
 

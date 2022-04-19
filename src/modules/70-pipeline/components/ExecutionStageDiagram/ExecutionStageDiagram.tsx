@@ -25,7 +25,7 @@ import {
   getGroupsFromData,
   getStageFromDiagramEvent,
   GroupState,
-  moveStageToFocus
+  moveStageToFocusDelayed
 } from './ExecutionStageDiagramUtils'
 import { CanvasButtons, CanvasButtonsActions } from '../CanvasButtons/CanvasButtons'
 import * as Diagram from '../Diagram'
@@ -103,6 +103,7 @@ export interface ExecutionStageDiagramProps<T> {
   graphCanvasState?: GraphCanvasState
   setGraphCanvasState?: (state: GraphCanvasState) => void
   disableCollapseButton?: boolean
+  isStepView?: boolean
 }
 
 export default function ExecutionStageDiagram<T>(props: ExecutionStageDiagramProps<T>): React.ReactElement {
@@ -127,7 +128,8 @@ export default function ExecutionStageDiagram<T>(props: ExecutionStageDiagramPro
     canvasBtnsClass = '',
     graphCanvasState,
     setGraphCanvasState,
-    disableCollapseButton
+    disableCollapseButton,
+    isStepView = false
   } = props
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -157,6 +159,14 @@ export default function ExecutionStageDiagram<T>(props: ExecutionStageDiagramPro
       })
     }
   }
+
+  React.useEffect(() => {
+    if (isStepView) {
+      engine.getModel().setZoomLevel(100)
+      engine.zoomToFit()
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedStageId, isStepView])
 
   useDeepCompareEffect(() => {
     const stageData = getGroupsFromData(data.items)
@@ -273,7 +283,7 @@ export default function ExecutionStageDiagram<T>(props: ExecutionStageDiagramPro
   }, [data.identifier])
 
   React.useEffect(() => {
-    moveStageToFocus(engine, selectedIdentifier, true)
+    moveStageToFocusDelayed(engine, selectedIdentifier, true)
   }, [selectedIdentifier])
 
   React.useEffect(() => {

@@ -12,14 +12,39 @@ import { Color, FontVariation } from '@harness/design-system'
 import { Drawer, Position } from '@blueprintjs/core'
 import cx from 'classnames'
 import { useStrings } from 'framework/strings'
-import { getButton, MenuItems } from './ResourceCenterUtil'
+import { getButton } from './ResourceCenterUtil'
+import MenuItems from './MenuItems'
 import resourceImage from './images/resource-center.png'
 import css from './ResourceCenter.module.scss'
+
+const ON_PREM_RELEASE_NODE_LINK = 'https://ngdocs.harness.io/article/556wy85kbo-harness-on-prem-release-notes'
+const SAAS_RELEASE_NODE_LINKE = 'https://ngdocs.harness.io/article/7zkchy5lhj-harness-saa-s-release-notes-2022'
+
+const HARNESS_SEARCH_LINK = 'https://harness.io/search/'
+const HARNESS_UNIVERISITY_LINK = 'https://university.harness.io/'
+const HARNESS_COMMUNITY_LINK = 'https://community.harness.io/'
+const HARNESS_COMMUNITY_SLACK_LINK =
+  'https://join.slack.com/t/harnesscommunity/shared_invite/zt-y4hdqh7p-RVuEQyIl5Hcx4Ck8VCvzBw'
+const HARNESS_DOCS_LINK = 'https://ngdocs.harness.io/'
+const HARNESS_API_DOCS_LINK = 'https://harness.io/docs/api/'
+const SITE_STATUS_LINK = 'https://status.harness.io/'
 
 export const ResourceCenter = (): React.ReactElement => {
   const { getString } = useStrings()
 
   const [show, setShow] = useState<boolean>(false)
+
+  function getReleaseNodeLink(): string {
+    switch (window.deploymentType) {
+      case 'COMMUNITY':
+      case 'ON_PREM': {
+        return ON_PREM_RELEASE_NODE_LINK
+      }
+      default:
+        return SAAS_RELEASE_NODE_LINKE
+    }
+  }
+  const releaseNodeLink = getReleaseNodeLink()
 
   if (!show) {
     return (
@@ -72,28 +97,28 @@ export const ResourceCenter = (): React.ReactElement => {
           </Layout.Horizontal>
           <img src={resourceImage} height={106} alt={'Resource center image'} />
         </Layout.Vertical>
-        <MenuItems />
+        <MenuItems
+          closeResourceCenter={() => {
+            setShow(false)
+          }}
+        />
         <Layout.Vertical padding={'xlarge'}>
           <Text font={{ variation: FontVariation.BODY2 }} padding={{ bottom: 'medium' }} color={Color.WHITE}>
             {getString('common.resourceCenter.bottomlayout.desc')}
           </Text>
           <Layout.Horizontal flex={{ justifyContent: 'space-around' }}>
-            {getButton(getString('search'), 'thinner-search', 'https://harness.io/search/', css.iconSize)}
+            {getButton(getString('search'), 'thinner-search', HARNESS_SEARCH_LINK, css.iconSize)}
             {getButton(
               getString('common.resourceCenter.bottomlayout.university'),
               'university',
-              'https://university.harness.io/',
+              HARNESS_UNIVERISITY_LINK,
               css.university
             )}
-            {getButton(
-              getString('common.community'),
-              'resource-center-community-icon',
-              'https://community.harness.io/'
-            )}
+            {getButton(getString('common.community'), 'resource-center-community-icon', HARNESS_COMMUNITY_LINK)}
             {getButton(
               getString('common.resourceCenter.communitySlack'),
               'service-slack',
-              'https://join.slack.com/t/harnesscommunity/shared_invite/zt-y4hdqh7p-RVuEQyIl5Hcx4Ck8VCvzBw',
+              HARNESS_COMMUNITY_SLACK_LINK,
               cx(css.iconSize, css.marginTop)
             )}
           </Layout.Horizontal>
@@ -101,22 +126,14 @@ export const ResourceCenter = (): React.ReactElement => {
             {getButton(
               getString('common.resourceCenter.bottomlayout.docs'),
               'resource-center-docs-icon',
-              'https://ngdocs.harness.io/'
+              HARNESS_DOCS_LINK
             )}
-            {getButton(
-              getString('common.resourceCenter.bottomlayout.apiDocs'),
-              'api-docs',
-              'https://harness.io/docs/api/'
-            )}
-            {getButton(
-              getString('common.resourceCenter.bottomlayout.changeLog'),
-              'change-log',
-              'https://changelog.harness.io/'
-            )}
+            {getButton(getString('common.resourceCenter.bottomlayout.apiDocs'), 'api-docs', HARNESS_API_DOCS_LINK)}
+            {getButton(getString('common.resourceCenter.bottomlayout.releaseNote'), 'change-log', releaseNodeLink)}
             {getButton(
               getString('common.resourceCenter.bottomlayout.sitestatus'),
               'right-bar-notification',
-              'https://status.harness.io/'
+              SITE_STATUS_LINK
             )}
           </Layout.Horizontal>
         </Layout.Vertical>

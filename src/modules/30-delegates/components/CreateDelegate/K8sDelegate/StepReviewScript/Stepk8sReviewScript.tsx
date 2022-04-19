@@ -13,6 +13,9 @@ import { useStrings } from 'framework/strings'
 import YamlBuilder from '@common/components/YAMLBuilder/YamlBuilder'
 import { useGenerateKubernetesYaml, DelegateSetupDetails, GenerateKubernetesYamlQueryParams } from 'services/portal'
 import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
+import { useTelemetry } from '@common/hooks/useTelemetry'
+import { Category, DelegateActions } from '@common/constants/TrackingConstants'
+
 import type { K8sDelegateWizardData } from '../DelegateSetupStep/DelegateSetupStep'
 
 import css from '../CreateK8sDelegate.module.scss'
@@ -48,6 +51,8 @@ const Stepk8ReviewScript: React.FC<StepProps<K8sDelegateWizardData>> = props => 
     }
   }, [])
 
+  const { trackEvent } = useTelemetry()
+
   const onDownload = (): void => {
     if (linkRef?.current) {
       const content = new Blob([generatedYaml as BlobPart], { type: 'data:text/plain;charset=utf-8' })
@@ -82,6 +87,9 @@ const Stepk8ReviewScript: React.FC<StepProps<K8sDelegateWizardData>> = props => 
               className={css.downloadButton}
               onClick={() => {
                 onDownload()
+                trackEvent(DelegateActions.DownloadYAML, {
+                  category: Category.DELEGATE
+                })
               }}
               outlined
             />
@@ -91,7 +99,12 @@ const Stepk8ReviewScript: React.FC<StepProps<K8sDelegateWizardData>> = props => 
               id="stepReviewScriptBackButton"
               text={getString('back')}
               icon="chevron-left"
-              onClick={() => props.previousStep?.(props?.prevStepData)}
+              onClick={() => {
+                props.previousStep?.(props?.prevStepData)
+                trackEvent(DelegateActions.ReviewScriptBack, {
+                  category: Category.DELEGATE
+                })
+              }}
               margin={{ right: 'small' }}
             />
             <Button
@@ -104,6 +117,10 @@ const Stepk8ReviewScript: React.FC<StepProps<K8sDelegateWizardData>> = props => 
                 const nextData = props?.prevStepData as K8sDelegateWizardData
                 set(nextData, 'generatedYaml', generatedYaml)
                 props.nextStep?.(nextData)
+                trackEvent(DelegateActions.ReviewScriptContinue, {
+                  category: Category.DELEGATE,
+                  data: nextData
+                })
               }}
             />
           </Layout.Horizontal>

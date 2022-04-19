@@ -1,0 +1,296 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`ExternalAPICallContent should render ExternalAPICallContent 1`] = `
+<div>
+  <div
+    class="StyledProps--font StyledProps--main container"
+  >
+    <div
+      class="Collapse--main collapse success"
+    >
+      <div
+        class="StyledProps--font StyledProps--main CollapseHeader--main Collapse--header collapseHeader"
+      >
+        <div
+          class="StyledProps--font StyledProps--main CollapseHeader--leftSection"
+        >
+          <span
+            class="bp3-icon StyledProps--main StyledProps--color StyledProps--color-grey400"
+            data-icon="main-chevron-right"
+          >
+            <svg
+              height="10"
+              viewBox="0 0 8 14"
+              width="10"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M7.7 6.3l-6-6C1.5.1 1.3 0 1 0 .4 0 0 .4 0 1c0 .3.1.5.3.7L5.6 7 .3 12.3c-.2.2-.3.4-.3.7 0 .6.4 1 1 1 .3 0 .5-.1.7-.3l6-6c.2-.2.3-.4.3-.7s-.1-.5-.3-.7z"
+                fill="#4d5969"
+              />
+            </svg>
+          </span>
+          <div
+            class="Layout--horizontal Layout--layout-spacing-small StyledProps--main StyledProps--padding-left-small"
+          >
+            <p
+              class="StyledProps--font StyledProps--main StyledProps--font-variation-body StyledProps--color StyledProps--color-grey400"
+            >
+              03/11/2022, 4:15 PM
+            </p>
+            <p
+              class="StyledProps--font Text--lineclamp StyledProps--main StyledProps--font-variation-body StyledProps--color StyledProps--color-grey900"
+              style="--text-line-clamp: 1;"
+            >
+              cv.fetchingDataFrom https://qva35651.live.dynatrace.com/api/v2/metrics/query
+            </p>
+          </div>
+        </div>
+        <div
+          class="StyledProps--font StyledProps--main"
+        />
+      </div>
+      <div
+        class="Collapse--collapse"
+      >
+        <div
+          class="bp3-collapse"
+          style="height: 0px;"
+        >
+          <div
+            aria-hidden="false"
+            class="bp3-collapse-body"
+            style="transform: translateY(0);"
+          >
+            <div
+              class="StyledProps--font StyledProps--main collapseContent"
+            >
+              <div
+                class="StyledProps--font StyledProps--main StyledProps--border StyledProps--border-bottom StyledProps--padding-top-medium StyledProps--padding-right-large StyledProps--padding-bottom-medium StyledProps--padding-left-large"
+              >
+                <h2
+                  class="StyledProps--font StyledProps--font-h2 StyledProps--main StyledProps--font-variation-body2 StyledProps--color StyledProps--color-grey900"
+                  level="2"
+                >
+                  common.request
+                </h2>
+                <div
+                  class="Layout--horizontal Layout--layout-spacing-small StyledProps--main"
+                >
+                  <p
+                    class="StyledProps--font StyledProps--main StyledProps--font-variation-body StyledProps--color StyledProps--color-grey400"
+                  >
+                    URL
+                    :
+                  </p>
+                  <a
+                    href="https://qva35651.live.dynatrace.com/api/v2/metrics/query?entitySelector=type"
+                    rel="noreferrer"
+                    target="_blank"
+                  >
+                    <p
+                      class="StyledProps--font Text--lineclamp StyledProps--main StyledProps--font-variation-body StyledProps--color StyledProps--color-grey900"
+                      style="--text-line-clamp: 1;"
+                    >
+                      https://qva35651.live.dynatrace.com/api/v2/metrics/query?entitySelector=type
+                    </p>
+                  </a>
+                </div>
+                <div
+                  class="Layout--horizontal Layout--layout-spacing-small StyledProps--main"
+                >
+                  <p
+                    class="StyledProps--font StyledProps--main StyledProps--font-variation-body StyledProps--color StyledProps--color-grey400"
+                  >
+                    Request Timestamp
+                    :
+                  </p>
+                  <p
+                    class="StyledProps--font Text--lineclamp StyledProps--main StyledProps--font-variation-body StyledProps--color StyledProps--color-grey900"
+                    style="--text-line-clamp: 1;"
+                  >
+                    03/11/2022, 4:15 PM
+                  </p>
+                </div>
+              </div>
+              <div
+                class="StyledProps--font StyledProps--main StyledProps--padding-top-medium StyledProps--padding-right-large StyledProps--padding-bottom-medium StyledProps--padding-left-large"
+              >
+                <h2
+                  class="StyledProps--font StyledProps--font-h2 StyledProps--main StyledProps--font-variation-body2 StyledProps--color StyledProps--color-grey900"
+                  level="2"
+                >
+                  cv.response
+                </h2>
+                <div
+                  class="Layout--horizontal Layout--layout-spacing-small StyledProps--main"
+                >
+                  <p
+                    class="StyledProps--font StyledProps--main StyledProps--font-variation-body StyledProps--color StyledProps--color-grey400"
+                  >
+                    Status Code
+                    :
+                  </p>
+                  <p
+                    class="StyledProps--font Text--lineclamp StyledProps--main StyledProps--font-variation-body StyledProps--color StyledProps--color-grey900"
+                    style="--text-line-clamp: 1;"
+                  >
+                    200
+                  </p>
+                </div>
+                <div
+                  class="Layout--horizontal Layout--layout-spacing-small StyledProps--main"
+                >
+                  <p
+                    class="StyledProps--font StyledProps--main StyledProps--font-variation-body StyledProps--color StyledProps--color-grey400"
+                  >
+                    Response Timestamp
+                    :
+                  </p>
+                  <p
+                    class="StyledProps--font Text--lineclamp StyledProps--main StyledProps--font-variation-body StyledProps--color StyledProps--color-grey900"
+                    style="--text-line-clamp: 1;"
+                  >
+                    03/11/2022, 4:15 PM
+                  </p>
+                </div>
+                <div
+                  class="StyledProps--font StyledProps--main StyledProps--flex StyledProps--flex-alignItems-flex-start"
+                >
+                  <p
+                    class="StyledProps--font StyledProps--main StyledProps--font-variation-body StyledProps--color StyledProps--color-grey400"
+                  >
+                    cv.responseBody
+                    :
+                  </p>
+                  <div
+                    class="main copy"
+                  >
+                    <div
+                      class="text"
+                    />
+                  </div>
+                </div>
+                <div
+                  class="StyledProps--font StyledProps--main responseBody StyledProps--padding-small StyledProps--background-white"
+                >
+                  <pre>
+                    {
+    "totalCount": 1,
+    "nextPageKey": null,
+    "resolution": "1m",
+    "data": [
+        {
+            "dimensions": [
+                "SERVICE_METHOD-F3988BEE84FF7388"
+            ]
+        }
+    ]
+}
+                  </pre>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div
+    class="StyledProps--font StyledProps--main StyledProps--border StyledProps--border-top StyledProps--padding-left-medium StyledProps--padding-right-medium"
+  >
+    <div
+      class="Layout--horizontal StyledProps--main Pagination--container StyledProps--padding-top-medium StyledProps--padding-bottom-medium StyledProps--flex StyledProps--flex-align-center-center StyledProps--flex-distribution-space-between"
+    >
+      <span
+        class="StyledProps--font StyledProps--main StyledProps--inline StyledProps--font-variation-small-semi"
+      >
+        1
+         of 
+        1
+      </span>
+      <div
+        class="Layout--horizontal StyledProps--main"
+      >
+        <button
+          class="bp3-button bp3-disabled Button--button StyledProps--font StyledProps--main Pagination--roundedButton Pagination--buttonLeft Button--with-current-color Button--withLeftIcon Button--size Button--small"
+          disabled=""
+          tabindex="-1"
+          type="button"
+        >
+          <span
+            class="bp3-icon bp3-icon-arrow-left StyledProps--main StyledProps--padding-right-xsmall"
+            icon="arrow-left"
+          >
+            <svg
+              data-icon="arrow-left"
+              height="12"
+              viewBox="0 0 16 16"
+              width="12"
+            >
+              <desc>
+                arrow-left
+              </desc>
+              <path
+                d="M13.99 6.99H4.41L7.7 3.7a1.003 1.003 0 00-1.42-1.42l-5 5a1.014 1.014 0 000 1.42l5 5a1.003 1.003 0 001.42-1.42L4.41 8.99H14c.55 0 1-.45 1-1s-.46-1-1.01-1z"
+                fill-rule="evenodd"
+              />
+            </svg>
+          </span>
+          <span
+            class="bp3-button-text"
+          >
+            Prev
+          </span>
+        </button>
+        <button
+          class="bp3-button bp3-disabled Button--button StyledProps--font StyledProps--main Pagination--roundedButton Pagination--selected Button--with-current-color"
+          disabled=""
+          tabindex="-1"
+          type="button"
+        >
+          <span
+            class="bp3-button-text"
+          >
+            1
+          </span>
+        </button>
+        <button
+          class="bp3-button bp3-disabled Button--button StyledProps--font StyledProps--main Pagination--roundedButton Pagination--buttonRight Button--with-current-color Button--withRightIcon Button--size Button--small"
+          disabled=""
+          tabindex="-1"
+          type="button"
+        >
+          <span
+            class="bp3-button-text"
+          >
+            Next
+          </span>
+          <span
+            class="bp3-icon bp3-icon-arrow-right StyledProps--main"
+            icon="arrow-right"
+          >
+            <svg
+              data-icon="arrow-right"
+              height="12"
+              viewBox="0 0 16 16"
+              width="12"
+            >
+              <desc>
+                arrow-right
+              </desc>
+              <path
+                d="M14.7 7.29l-5-5a.965.965 0 00-.71-.3 1.003 1.003 0 00-.71 1.71l3.29 3.29H1.99c-.55 0-1 .45-1 1s.45 1 1 1h9.59l-3.29 3.29a1.003 1.003 0 001.42 1.42l5-5c.18-.18.29-.43.29-.71s-.12-.52-.3-.7z"
+                fill-rule="evenodd"
+              />
+            </svg>
+          </span>
+        </button>
+      </div>
+      <span>
+        Showing 20 per page
+      </span>
+    </div>
+  </div>
+</div>
+`;

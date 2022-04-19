@@ -7,7 +7,7 @@
 
 import React, { useEffect, useState } from 'react'
 import cx from 'classnames'
-import { Container, Text, Page } from '@wings-software/uicore'
+import { Container, Page } from '@wings-software/uicore'
 import {
   CcmMetaData,
   StatsInfo,
@@ -34,6 +34,8 @@ import OverviewAddCluster from '@ce/components/OverviewPage/OverviewAddCluster'
 import { Utils } from '@ce/common/Utils'
 import { useCreateConnectorMinimal } from '@ce/components/CreateConnector/CreateConnector'
 import NoData from '@ce/components/OverviewPage/OverviewNoData'
+import { TitleWithToolTipId } from '@common/components/Title/TitleWithToolTipId'
+import { useStrings } from 'framework/strings'
 import bgImage from './images/CD/overviewBg.png'
 import css from './Overview.module.scss'
 
@@ -78,6 +80,7 @@ const NoDataOverviewPage: React.FC<NoDataOverviewPageProps> = (props: NoDataOver
 }
 
 const OverviewPage: React.FC = () => {
+  const { getString } = useStrings()
   const [timeRange, setTimeRange] = useState<TimeRange>({
     to: DATE_RANGE_SHORTCUTS.LAST_30_DAYS[1].format(CE_DATE_FORMAT_INTERNAL),
     from: DATE_RANGE_SHORTCUTS.LAST_30_DAYS[0].format(CE_DATE_FORMAT_INTERNAL)
@@ -121,15 +124,7 @@ const OverviewPage: React.FC = () => {
   return (
     <Container>
       <Page.Header
-        title={
-          <Text
-            color="grey800"
-            style={{ fontSize: 20, fontWeight: 'bold' }}
-            tooltipProps={{ dataTooltipId: 'ccmOverviewTitle' }}
-          >
-            Overview
-          </Text>
-        }
+        title={<TitleWithToolTipId title={getString('overview')} toolTipId="ccmOverviewTitle" />}
         content={<PerspectiveTimeRangePicker timeRange={timeRange} setTimeRange={setTimeRange} />}
       />
       <Page.Body>

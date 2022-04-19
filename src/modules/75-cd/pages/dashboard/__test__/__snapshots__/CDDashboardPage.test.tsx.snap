@@ -65,12 +65,16 @@ exports[`CDDashboardPage snapshot test should render properly 1`] = `
           </div>
         </div>
       </div>
-      <h2
-        class="StyledProps--font StyledProps--font-h2 StyledProps--main StyledProps--color StyledProps--color-grey800 StyledProps--font-weight-bold"
-        level="2"
+      <div
+        class="Text--withDocsTooltip"
+        data-tooltip-id="cdOverViewTitle"
       >
-        overview
-      </h2>
+        <p
+          class="StyledProps--font StyledProps--main StyledProps--font-variation-h4"
+        >
+          overview
+        </p>
+      </div>
     </div>
     <span
       class="bp3-popover-wrapper timeRangeSelector"

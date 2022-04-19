@@ -16,7 +16,7 @@ import { String } from 'framework/strings'
 import { ErrorHandler } from '@common/components/ErrorHandler/ErrorHandler'
 import { LogsContentWithErrorBoundary as LogsContent } from '@pipeline/components/LogsContent/LogsContent'
 import { isExecutionSkipped, isExecutionCompletedWithBadState } from '@pipeline/utils/statusHelpers'
-import { StepDetails } from '@pipeline/components/execution/StepDetails/common/StepDetails/StepDetails'
+import { StepDetails, StepLabels } from '@pipeline/components/execution/StepDetails/common/StepDetails/StepDetails'
 import { useQueryParams } from '@common/hooks'
 import type { ExecutionQueryParams } from '@pipeline/utils/executionUtils'
 
@@ -24,10 +24,11 @@ import css from './StepDetailsTab.module.scss'
 
 export interface ExecutionStepDetailsTabProps {
   step: ExecutionNode
+  labels?: StepLabels[]
 }
 
 export function StepDetailsTab(props: ExecutionStepDetailsTabProps): React.ReactElement {
-  const { step } = props
+  const { step, labels } = props
   const { pathname } = useLocation()
   const queryParams = useQueryParams<ExecutionQueryParams>()
 
@@ -47,7 +48,7 @@ export function StepDetailsTab(props: ExecutionStepDetailsTabProps): React.React
           <p>{errorMessage}</p>
         </div>
       ) : null}
-      <StepDetails step={step} />
+      <StepDetails step={step} labels={labels} />
       <LogsContent mode="step-details" toConsoleView={logUrl} />
     </div>
   )

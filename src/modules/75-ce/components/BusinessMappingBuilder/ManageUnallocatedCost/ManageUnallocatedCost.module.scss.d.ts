@@ -9,5 +9,6 @@
 declare const styles: {
   readonly defaultValInputBox: string
   readonly hContainer: string
+  readonly radioContainer: string
 }
 export default styles

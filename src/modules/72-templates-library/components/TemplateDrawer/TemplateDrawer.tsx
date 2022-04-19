@@ -9,7 +9,6 @@ import React, { useCallback } from 'react'
 import { Drawer, Position } from '@blueprintjs/core'
 import { Button } from '@wings-software/uicore'
 import { usePipelineContext } from '@pipeline/components/PipelineStudio/PipelineContext/PipelineContext'
-import { TemplateDrawerTypes } from '@pipeline/components/PipelineStudio/PipelineContext/PipelineActions'
 import { TemplateSelector } from '@templates-library/components/TemplateSelector/TemplateSelector'
 import css from './TemplateDrawer.module.scss'
 
@@ -19,18 +18,15 @@ export const TemplateDrawer: React.FC = (): JSX.Element => {
       isLoading,
       templateView: {
         isTemplateDrawerOpened,
-        templateDrawerData: { type }
+        templateDrawerData: { type, data }
       }
-    },
-    updateTemplateView
+    }
   } = usePipelineContext()
+  const { onCancel } = data?.selectorData || {}
 
   const closeTemplateView = useCallback(() => {
-    updateTemplateView({
-      isTemplateDrawerOpened: false,
-      templateDrawerData: { type: TemplateDrawerTypes.UseTemplate }
-    })
-  }, [updateTemplateView])
+    onCancel?.()
+  }, [onCancel])
 
   if (isLoading || !isTemplateDrawerOpened) {
     return <></>

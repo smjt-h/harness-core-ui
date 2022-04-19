@@ -42,4 +42,36 @@ describe('FlagsListing', () => {
       expect(screen.queryAllByRole('checkbox')).toHaveLength(mockFeatures.length)
     })
   })
+
+  describe('disableRowVariations', () => {
+    test('it should not disable rows when disableRowVariations returns false', async () => {
+      renderComponent({ disableRowVariations: jest.fn().mockReturnValue(false) })
+
+      for (const input of document.querySelectorAll('input')) {
+        expect(input).toBeEnabled()
+      }
+    })
+
+    test('it should disable rows when disableRowVariations returns true', async () => {
+      renderComponent({ disableRowVariations: jest.fn().mockReturnValue(true) })
+
+      for (const input of document.querySelectorAll('input')) {
+        expect(input).toBeDisabled()
+      }
+    })
+  })
+
+  describe('onRowDelete', () => {
+    test('it should not show the delete icon when onRowDelete is not passed', async () => {
+      renderComponent()
+
+      expect(screen.queryAllByRole('button', { name: 'cf.segmentDetail.removeRule' })).toHaveLength(0)
+    })
+
+    test('it should show the delete icon when onRowDelete not passed', async () => {
+      renderComponent({ onRowDelete: jest.fn() })
+
+      expect(screen.getAllByRole('button', { name: 'cf.segmentDetail.removeRule' })).toHaveLength(mockFeatures.length)
+    })
+  })
 })

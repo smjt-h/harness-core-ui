@@ -40,12 +40,14 @@ const AdvancedConfiguration: React.FC<AdvancedConfigurationProps> = props => {
   )
 
   const isK8sSelected = props.selectedResource === RESOURCES.KUBERNETES
+  const isEcsSelected = props.selectedResource === RESOURCES.ECS
   const isAwsProvider = Utils.isProviderAws(props.gatewayDetails.provider)
 
   const handleTabChange = (id: string) => {
     setSelectedTab(id as AdvancedConfigTabs)
   }
 
+  /* istanbul ignore next */
   const handledFixedSchedulesAddition = (schedules: FixedScheduleClient[]) => {
     props.setGatewayDetails({ ...props.gatewayDetails, schedules })
   }
@@ -59,10 +61,12 @@ const AdvancedConfiguration: React.FC<AdvancedConfigurationProps> = props => {
       subTitle={getString('ce.co.gatewayConfig.advancedConfigDescription')}
       totalStepsCount={props.totalStepsCount}
       id={CONFIG_STEP_IDS[3]}
-      dataTooltip={{ titleId: isAwsProvider ? 'awsSetupAdvancedConfig' : 'azureSetupAdvancedConfig' }}
+      dataTooltip={{
+        titleId: isAwsProvider ? 'awsSetupAdvancedConfig' : /* istanbul ignore next */ 'azureSetupAdvancedConfig'
+      }}
     >
       <Layout.Vertical spacing="medium">
-        {isK8sSelected && (
+        {(isK8sSelected || isEcsSelected) && (
           <Toggle
             label={'Hide Progress Page'}
             checked={props.gatewayDetails.opts.hide_progress_page}

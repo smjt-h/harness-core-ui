@@ -12,16 +12,19 @@ import DialogExtention from '@connectors/common/ConnectorExtention/DialogExtenti
 import { getConnectorIconByType } from '@connectors/pages/connectors/utils/ConnectorHelper'
 import { useStrings } from 'framework/strings'
 import { useFeatureFlags } from '@common/hooks/useFeatureFlag'
+import VerifyOutOfClusterDelegate from '@connectors/common/VerifyOutOfClusterDelegate/VerifyOutOfClusterDelegate'
+import { useTelemetry } from '@common/hooks/useTelemetry'
+import { CCM_CONNECTOR_SAVE_EVENT } from '@connectors/trackingConstants'
 import OverviewStep, { CEGcpConnectorDTO } from './steps/OverviewStep'
 import BillingExport from './steps/BillingExport'
 import GrantPermission from './steps/GrantPermission'
-import TestConnection from './steps/TestConnection'
 import ChooseRequirements from './steps/ChooseRequirements'
 import css from './CreateCeGcpConnector.module.scss'
 
 const CreateCeGcpConnector: React.FC<CreateConnectorModalProps> = props => {
   const { getString } = useStrings()
   const { CE_AS_GCP_VM_SUPPORT } = useFeatureFlags()
+  const { trackEvent } = useTelemetry()
   return (
     <DialogExtention>
       <StepWizard
@@ -40,7 +43,17 @@ const CreateCeGcpConnector: React.FC<CreateConnectorModalProps> = props => {
           <ChooseRequirements name={getString('connectors.ceGcp.chooseRequirements.name')} />
         ) : null}
         <GrantPermission name={getString('connectors.ceGcp.grantPermission.heading')}></GrantPermission>
-        <TestConnection name={getString('connectors.ceGcp.testConnection.heading')} onClose={props.onClose} />
+        <VerifyOutOfClusterDelegate
+          name={getString('connectors.ceGcp.testConnection.heading')}
+          connectorInfo={props.connectorInfo}
+          isStep={true}
+          isLastStep={true}
+          type={Connectors.CE_GCP}
+          onClose={() => {
+            trackEvent(CCM_CONNECTOR_SAVE_EVENT, { type: Connectors.CE_GCP })
+            props.onClose?.()
+          }}
+        />
       </StepWizard>
     </DialogExtention>
   )

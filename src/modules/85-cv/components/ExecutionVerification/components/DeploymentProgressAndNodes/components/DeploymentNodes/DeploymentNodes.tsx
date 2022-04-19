@@ -75,57 +75,59 @@ export function DeploymentNodes(props: DeploymentNodesProps): JSX.Element {
   const nodes = deploymentNodes || []
 
   return (
-    <Container className={cx(css.main, className)}>
+    <Container className={cx(css.mainContainer)}>
       {displayTooltip && <NodeHealthPopover analysisResult={displayTooltip} />}
-      <Container className={css.hexagonList} ref={ref}>
-        {coordinates.map((coordinate, index) => {
-          const nodeHealthColor = getRiskColorValue(nodes[index]?.risk)
-          return (
-            <Container
-              key={index}
-              className={css.hexagonContainer}
-              data-testid={nodeType ? `${nodeType}Node-${index}` : ''}
-              onClick={() => {
-                onClick?.(nodes?.[index])
-              }}
-              style={{
-                height: hexagonPartSizes.hexagonContainerSize,
-                width: hexagonPartSizes.hexagonContainerSize,
-                top: coordinate.y,
-                left: coordinate.x
-              }}
-              onMouseOver={() => {
-                if (nodes[index] && nodes[index] !== displayTooltip) {
-                  setDisplayTooltip(nodes[index])
-                }
-              }}
-              onMouseOut={() => {
-                setDisplayTooltip(undefined)
-              }}
-            >
-              <Container
-                className={cx(
-                  css.hexagon,
-                  selectedNode && isEqual(selectedNode, nodes[index]) ? css.selected : undefined
-                )}
-                style={{
-                  height: hexagonPartSizes.hexagonSize,
-                  width: hexagonPartSizes.hexagonSize
-                }}
-              />
+      <Container className={cx(css.main, className)}>
+        <Container className={css.hexagonList} ref={ref}>
+          {coordinates.map((coordinate, index) => {
+            const nodeHealthColor = getRiskColorValue(nodes[index]?.risk)
+            return (
               <Container
                 key={index}
-                className={css.nodeHealth}
-                data-node-health-color={nodeHealthColor}
-                style={{
-                  backgroundColor: nodeHealthColor,
-                  width: hexagonPartSizes.nodeHealthSize,
-                  height: hexagonPartSizes.nodeHealthSize
+                className={css.hexagonContainer}
+                data-testid={nodeType ? `${nodeType}Node-${index}` : ''}
+                onClick={() => {
+                  onClick?.(nodes?.[index])
                 }}
-              />
-            </Container>
-          )
-        })}
+                style={{
+                  height: hexagonPartSizes.hexagonContainerSize,
+                  width: hexagonPartSizes.hexagonContainerSize,
+                  top: coordinate.y,
+                  left: coordinate.x
+                }}
+                onMouseOver={() => {
+                  if (nodes[index] && nodes[index] !== displayTooltip) {
+                    setDisplayTooltip(nodes[index])
+                  }
+                }}
+                onMouseOut={() => {
+                  setDisplayTooltip(undefined)
+                }}
+              >
+                <Container
+                  className={cx(
+                    css.hexagon,
+                    selectedNode && isEqual(selectedNode, nodes[index]) ? css.selected : undefined
+                  )}
+                  style={{
+                    height: hexagonPartSizes.hexagonSize,
+                    width: hexagonPartSizes.hexagonSize
+                  }}
+                />
+                <Container
+                  key={index}
+                  className={css.nodeHealth}
+                  data-node-health-color={nodeHealthColor}
+                  style={{
+                    backgroundColor: nodeHealthColor,
+                    width: hexagonPartSizes.nodeHealthSize,
+                    height: hexagonPartSizes.nodeHealthSize
+                  }}
+                />
+              </Container>
+            )
+          })}
+        </Container>
       </Container>
     </Container>
   )

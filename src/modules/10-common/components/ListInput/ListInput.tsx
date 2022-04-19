@@ -18,7 +18,7 @@ export interface ListInputProps {
   readOnly?: boolean
   defaultValueToReset?: string[]
   addBtnLabel?: string
-  deleteIconProps?: IconProps
+  deleteIconProps?: Partial<IconProps>
   deleteBtnClassName?: string
   addBtnClassName?: string
   listItemRenderer(value: string, index: number): React.ReactNode
@@ -51,12 +51,13 @@ export function ListInput(props: ListInputProps) {
               {listItemRenderer(value, index)}
               <Button
                 icon="main-trash"
-                iconProps={{ ...deleteIconProps, size: 22 }}
+                iconProps={{ size: 22, ...deleteIconProps }}
                 minimal
                 onClick={() => handleItemRemove(index, remove)}
                 data-testid={`remove-${name}-[${index}]`}
                 disabled={readOnly}
                 className={deleteBtnClassName}
+                style={{ alignSelf: 'flex-start' }}
               />
             </Layout.Horizontal>
           ))}

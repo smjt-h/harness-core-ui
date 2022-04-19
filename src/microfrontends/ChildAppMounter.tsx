@@ -21,7 +21,6 @@ import { NGBreadcrumbs } from '@common/components/NGBreadcrumbs/NGBreadcrumbs'
 import MonacoEditor from '@common/components/MonacoEditor/MonacoEditor'
 import MonacoDiffEditor from '@common/components/MonacoDiffEditor/MonacoDiffEditor'
 import YAMLBuilder from '@common/components/YAMLBuilder/YamlBuilder'
-import AppStorage from 'framework/utils/AppStorage'
 import ChildAppError from './ChildAppError'
 import type { ChildAppProps, Scope } from './index'
 
@@ -72,7 +71,6 @@ export class ChildAppMounter<T = never> extends React.Component<
           renderUrl={url}
           matchPath={path}
           scope={params}
-          token={AppStorage.get('token')}
           parentContextObj={{
             appStoreContext: AppStoreContext,
             permissionsContext: PermissionsContext,

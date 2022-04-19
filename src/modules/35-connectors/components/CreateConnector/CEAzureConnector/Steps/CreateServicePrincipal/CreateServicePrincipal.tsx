@@ -24,6 +24,7 @@ import { useAzureappclientid } from 'services/ce/index'
 import CopyToClipboard from '@common/components/CopyToClipBoard/CopyToClipBoard'
 import { CE_AZURE_CONNECTOR_CREATION_EVENTS } from '@connectors/trackingConstants'
 import { useStepLoadTelemetry } from '@connectors/common/useTrackStepLoad/useStepLoadTelemetry'
+import useRBACError from '@rbac/utils/useRBACError/useRBACError'
 import type { CEAzureDTO } from '../Overview/AzureConnectorOverview'
 import css from '../../CreateCeAzureConnector_new.module.scss'
 
@@ -35,6 +36,7 @@ interface CommandsProps {
 
 const CreateServicePrincipal: React.FC<StepProps<CEAzureDTO>> = (props): JSX.Element => {
   const { getString } = useStrings()
+  const { getRBACErrorMessage } = useRBACError()
   const [appId, setAppId] = useState('')
   const [isSaving, setIsSaving] = useState(false)
   const [modalErrorHandler, setModalErrorHandler] = useState<ModalErrorHandlerBinding | undefined>()
@@ -74,7 +76,7 @@ const CreateServicePrincipal: React.FC<StepProps<CEAzureDTO>> = (props): JSX.Ele
         nextStep?.(prevStepData)
       }
     } catch (e) {
-      modalErrorHandler?.showDanger(e.data?.message || e.message)
+      modalErrorHandler?.showDanger(getRBACErrorMessage(e))
       setIsSaving(false)
     }
   }

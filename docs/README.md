@@ -10,3 +10,4 @@
 - [Dev setup for multiple UI microservices](./architectures/LocalSetupMicroservices.md)
 - [Hotfix process](https://github.com/wings-software/nextgenui#hotfix-process)
 - [Audit Trail](./architectures/AuditTrails.md)
+- [NG Tooltips](./architectures/Tooltip.md)

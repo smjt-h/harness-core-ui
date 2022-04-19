@@ -17,10 +17,10 @@ function getString(key: StringKeys): StringKeys {
 describe('Unit tests for LogAnalysis utils', () => {
   test('Verify if getClusterTypes gives correct results', async () => {
     expect(getClusterTypes(getString)).toEqual([
-      { label: 'pipeline.verification.logs.allEvents', value: '' },
-      { label: 'pipeline.verification.logs.knownEvent', value: LogEvents.KNOWN },
-      { label: 'pipeline.verification.logs.unknownEvent', value: LogEvents.UNKNOWN },
-      { label: 'pipeline.verification.logs.unexpectedFrequency', value: LogEvents.UNEXPECTED }
+      { label: 'auditTrail.allEvents', value: '' },
+      { label: 'cv.known', value: LogEvents.KNOWN },
+      { label: 'cv.unknown', value: LogEvents.UNKNOWN },
+      { label: 'cv.unexpected', value: LogEvents.UNEXPECTED }
     ])
   })
 

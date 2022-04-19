@@ -9,13 +9,16 @@
   margin-bottom: 0 !important;
 }
 
+.targetGroupContainer {
+  padding-bottom: var(--layout-spacing);
+  border-bottom: 1px solid var(--grey-200);
+}
+
 .distribution {
   display: grid;
   grid-template-columns: 1fr minmax(max-content, 4.5ch);
   grid-gap: var(--layout-spacing);
-  padding-top: var(--layout-spacing);
   align-items: center;
-  border-top: 1px solid var(--grey-200);
 }
 
 .bucketBy {
@@ -24,7 +27,6 @@
 }
 
 .variationRow {
-  --variationColor: hotpink;
   grid-column: 1;
 
   :global(.bp3-label) {

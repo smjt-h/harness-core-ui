@@ -95,6 +95,13 @@ export const DEFAULT_GROUP_BY = {
   identifierName: ViewFieldIdentifier.Common
 }
 
+export const GROUP_BY_CLUSTER_NAME = {
+  fieldId: 'clusterName',
+  fieldName: 'Cluster Name',
+  identifier: ViewFieldIdentifier.Cluster,
+  identifierName: ViewFieldIdentifier.Cluster
+}
+
 export const GROUP_BY_POD = {
   fieldId: 'instanceId',
   fieldName: 'Pod',

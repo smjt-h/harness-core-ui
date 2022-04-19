@@ -784,3 +784,5 @@ ceGcp:
     heading: '{{ $.common.labelTestConnection }}'
     step1: 'Verifying GCP connector setup'
     error: 'Could not verify connectivity'
+connectorReferenceText: "can't be deleted as it is being referenced by other entities. To see the list of entities referencing this connector,"
+cantDeleteConnector: "Can't Delete Connector"

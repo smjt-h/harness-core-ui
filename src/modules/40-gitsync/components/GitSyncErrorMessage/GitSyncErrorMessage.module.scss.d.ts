@@ -7,10 +7,13 @@
  **/
 // this is an auto-generated file, do not update this manually
 declare const styles: {
+  readonly defaultErrorText: string
   readonly errorItemErrorFixed: string
   readonly errorItemTitle: string
   readonly errorItemViewContent: string
+  readonly fixedError: string
   readonly gitSyncErrorMessage: string
+  readonly hasDetails: string
   readonly section: string
   readonly seeMore: string
   readonly timestamp: string

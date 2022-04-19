@@ -19,6 +19,7 @@ export interface ResourceScope extends ResourceScopeDTO {
 interface ResourceHandler {
   moduleIcon: IconProps
   moduleLabel?: StringKeys
+  resourceLabel: StringKeys
   resourceUrl?: (resource: ResourceDTO, resourceScope: ResourceScope, module?: Module) => string | undefined
 }
 
@@ -35,6 +36,14 @@ class AuditTrailFactory {
 
   getResourceHandler(resourceType: ResourceType): ResourceHandler | undefined {
     return this.map.get(resourceType)
+  }
+
+  getResourceTypeTolabelMap(): Record<ResourceType, StringKeys> {
+    const obj = {} as Record<ResourceType, StringKeys>
+    this.map.forEach((value, key) => {
+      obj[key] = value.resourceLabel
+    })
+    return obj
   }
 }
 

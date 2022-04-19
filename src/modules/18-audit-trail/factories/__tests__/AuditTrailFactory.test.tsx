@@ -13,7 +13,8 @@ describe('Audit trail factory tests', () => {
     moduleIcon: { name: 'nav-settings' },
     resourceUrl: (_resource: ResourceDTO, _resourceScopeDTO: ResourceScopeDTO) => {
       return 'dummy_url'
-    }
+    },
+    resourceLabel: 'connector'
   })
 
   test('test with registered resource', () => {

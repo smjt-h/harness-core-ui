@@ -40,6 +40,7 @@ import {
   buildAzureKeyVaultPayload,
   setupAzureKeyVaultNameFormData
 } from '@connectors/pages/connectors/utils/ConnectorUtils'
+import useRBACError from '@rbac/utils/useRBACError/useRBACError'
 
 export interface SetupVaultFormData {
   vaultName?: string
@@ -59,6 +60,7 @@ const SetupVault: React.FC<StepProps<StepDetailsProps> & ConnectorDetailsProps> 
   onConnectorCreated
 }) => {
   const { getString } = useStrings()
+  const { getRBACErrorMessage } = useRBACError()
   const { showSuccess } = useToaster()
   const [initialValues, setInitialValues] = useState(defaultInitialFormData)
   const [vaultNameOptions, setVaultNameOptions] = useState<SelectOption[]>([])
@@ -111,7 +113,7 @@ const SetupVault: React.FC<StepProps<StepDetailsProps> & ConnectorDetailsProps> 
       )
     } catch (err) {
       if (shouldShowError(err)) {
-        modalErrorHandler?.showDanger(err.data?.message || err.message)
+        modalErrorHandler?.showDanger(getRBACErrorMessage(err))
       }
     }
   }

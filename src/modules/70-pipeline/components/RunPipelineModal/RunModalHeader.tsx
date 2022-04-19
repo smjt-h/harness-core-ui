@@ -5,9 +5,8 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import React, { Dispatch, SetStateAction, useCallback, useRef } from 'react'
+import React, { Dispatch, SetStateAction, useRef } from 'react'
 import cx from 'classnames'
-import { parse } from 'yaml'
 import {
   Heading,
   Color,
@@ -17,7 +16,7 @@ import {
   VisualYamlToggle,
   SelectOption
 } from '@harness/uicore'
-import { defaultTo, isEmpty } from 'lodash-es'
+import { isEmpty } from 'lodash-es'
 
 import type { FormikErrors } from 'formik'
 import { GitSyncStoreProvider } from 'framework/GitRepoStore/GitSyncStoreContext'
@@ -35,8 +34,6 @@ import {
   SelectedStageData,
   StageSelectionData
 } from '@pipeline/utils/runPipelineUtils'
-import type { PipelineInfoConfig } from 'services/cd-ng'
-import type { YamlBuilderHandlerBinding } from '@common/interfaces/YAMLBuilderProps'
 import type { InputSetDTO } from '@pipeline/utils/types'
 
 import GitPopover from '../GitPopover/GitPopover'
@@ -50,17 +47,8 @@ export interface RunModalHeaderProps {
   setSelectedStageData: Dispatch<SetStateAction<StageSelectionData>>
   setSkipPreFlightCheck: Dispatch<SetStateAction<boolean>>
   selectedView: SelectedView
-  setSelectedView: Dispatch<SetStateAction<SelectedView>>
-  setCurrentPipeline: Dispatch<
-    SetStateAction<
-      | {
-          pipeline?: PipelineInfoConfig
-        }
-      | undefined
-    >
-  >
+  handleModeSwitch(view: SelectedView): void
   runClicked: boolean
-  yamlHandler?: YamlBuilderHandlerBinding
   executionView?: boolean
   pipelineResponse: ResponsePMSPipelineResponseDTO | null
   getTemplateFromPipeline(): Promise<void> | undefined
@@ -77,10 +65,8 @@ export default function RunModalHeader(props: RunModalHeaderProps): React.ReactE
     selectedStageData,
     setSelectedStageData,
     setSkipPreFlightCheck,
-    setSelectedView,
+    handleModeSwitch,
     runClicked,
-    setCurrentPipeline,
-    yamlHandler,
     executionView,
     selectedView,
     pipelineResponse,
@@ -94,17 +80,6 @@ export default function RunModalHeader(props: RunModalHeaderProps): React.ReactE
   const { isGitSyncEnabled } = useAppStore()
   const { getString } = useStrings()
   const stageSelectionRef = useRef(false)
-
-  const handleModeSwitch = useCallback(
-    (view: SelectedView) => {
-      if (view === SelectedView.VISUAL) {
-        const presentPipeline = parse(defaultTo(yamlHandler?.getLatestYaml(), '')) as { pipeline: PipelineInfoConfig }
-        setCurrentPipeline(presentPipeline)
-      }
-      setSelectedView(view)
-    },
-    [yamlHandler?.getLatestYaml]
-  )
 
   const isStageExecutionDisabled = (): boolean => {
     //stageExecutionData?.data is empty array when allowStageExecution is set to false in advanced tab
@@ -202,9 +177,7 @@ export default function RunModalHeader(props: RunModalHeaderProps): React.ReactE
         <div className={css.optionBtns}>
           <VisualYamlToggle
             selectedView={selectedView}
-            onChange={nextMode => {
-              handleModeSwitch(nextMode)
-            }}
+            onChange={handleModeSwitch}
             disableToggle={!template?.data?.inputSetTemplateYaml}
           />
         </div>

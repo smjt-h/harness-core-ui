@@ -14,7 +14,6 @@ import {
   ButtonVariation,
   useToaster,
   Page,
-  getErrorInfoFromErrorObject,
   Card,
   Button,
   DropDown
@@ -44,6 +43,7 @@ import RbacButton from '@rbac/components/Button/Button'
 import { PermissionIdentifier } from '@rbac/interfaces/PermissionIdentifier'
 import { usePermission } from '@rbac/hooks/usePermission'
 import { SelectionType } from '@rbac/utils/utils'
+import useRBACError from '@rbac/utils/useRBACError/useRBACError'
 import { getScopeFromDTO } from '@common/components/EntityReference/EntityReference'
 import {
   cleanUpResourcesMap,
@@ -67,6 +67,7 @@ const ResourceGroupDetails: React.FC = () => {
   >()
   const { getString } = useStrings()
   const { showError, showSuccess } = useToaster()
+  const { getRBACErrorMessage } = useRBACError()
   const [isUpdated, setIsUpdated] = useState<boolean>(false)
   const [selectedScope, setSelectedScope] = useState<SelectorScope>(SelectorScope.CURRENT)
   const [selectionType, setSelectionType] = useState<SelectionType>(SelectionType.SPECIFIED)
@@ -158,7 +159,7 @@ const ResourceGroupDetails: React.FC = () => {
         refetch()
       }
     } /* istanbul ignore next */ catch (err) {
-      showError(getErrorInfoFromErrorObject(err))
+      showError(getRBACErrorMessage(err))
     }
   }
 

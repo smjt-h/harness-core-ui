@@ -71,6 +71,7 @@ import { CVChanges } from '@cv/pages/changes/CVChanges'
 import CVTrialHomePage from './pages/home/CVTrialHomePage'
 import { editParams, isVerifyStepPresent } from './utils/routeUtils'
 import CVSLOsListingPage from './pages/slos/CVSLOsListingPage'
+import CVSLODetailsPage from './pages/slos/CVSLODetailsPage/CVSLODetailsPage'
 import CVCreateSLO from './pages/slos/components/CVCreateSLO/CVCreateSLO'
 import ChildAppMounter from '../../microfrontends/ChildAppMounter'
 
@@ -201,17 +202,22 @@ export default (
     <RouteWithLayout
       exact
       sidebarProps={CVSideNavProps}
-      path={[
-        routes.toCVCreateSLOs({ ...accountPathProps, ...projectPathProps, module: ':module(cv)' }),
-        routes.toCVEditSLOs({
-          ...accountPathProps,
-          ...projectPathProps,
-          ...editParams,
-          ...cvModuleParams
-        })
-      ]}
+      path={routes.toCVCreateSLOs({ ...accountPathProps, ...projectPathProps, ...cvModuleParams })}
     >
       <CVCreateSLO />
+    </RouteWithLayout>
+
+    <RouteWithLayout
+      exact
+      sidebarProps={CVSideNavProps}
+      path={routes.toCVSLODetailsPage({
+        ...accountPathProps,
+        ...projectPathProps,
+        ...editParams,
+        ...cvModuleParams
+      })}
+    >
+      <CVSLODetailsPage />
     </RouteWithLayout>
 
     <RouteWithLayout

@@ -25,9 +25,10 @@ interface TagsRenderContent extends ArtifactSourceRenderProps {
   buildDetailsList?: BuildDetailsDTO
   isFieldDisabled: (fieldName: string, isTag?: boolean) => boolean
   fetchingTags: boolean
-  fetchTags: () => Promise<void> | undefined
+  fetchTags: () => void
   fetchTagsError: GetDataError<Failure | Error> | null
   expressions: string[]
+  isArtifactPath?: boolean
 }
 const ArtifactTagRuntimeField = (props: TagsRenderContent): JSX.Element => {
   const {
@@ -45,6 +46,7 @@ const ArtifactTagRuntimeField = (props: TagsRenderContent): JSX.Element => {
     fetchTagsError,
     stageIdentifier
   } = props
+
   const { getString } = useStrings()
   const loadingTags = getString('pipeline.artifactsSelection.loadingTags')
   const { showError } = useToaster()

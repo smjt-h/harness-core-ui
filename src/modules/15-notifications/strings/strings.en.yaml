@@ -45,3 +45,4 @@ eventRequired: Event is required
 invalidPagerDutyKey: Invalid pagerduty key
 invalidWebhookURL: Invalid Webhook URL
 stageRequired: Select one of the stages
+enterMicrosoftTeamsUrl: Enter Microsoft Teams URL

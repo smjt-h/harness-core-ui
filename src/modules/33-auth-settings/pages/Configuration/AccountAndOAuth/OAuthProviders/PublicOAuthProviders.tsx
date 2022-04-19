@@ -19,6 +19,7 @@ import { OAuthProviders, Providers } from '@common/constants/OAuthProviders'
 import { useFeature } from '@common/hooks/useFeatures'
 import { FeatureIdentifier } from 'framework/featureStore/FeatureIdentifier'
 import FeatureSwitch from '@rbac/components/Switch/Switch'
+import useRBACError from '@rbac/utils/useRBACError/useRBACError'
 import css from './PublicOAuthProviders.module.scss'
 import cssConfiguration from '@auth-settings/pages/Configuration/Configuration.module.scss'
 
@@ -31,6 +32,7 @@ interface Props {
 
 const PublicOAuthProviders: React.FC<Props> = ({ authSettings, refetchAuthSettings, canEdit, setUpdating }) => {
   const { accountId } = useParams<AccountPathProps>()
+  const { getRBACErrorMessage } = useRBACError()
   const { getString } = useStrings()
   const { showError, showSuccess, showWarning } = useToaster()
 
@@ -96,11 +98,11 @@ const PublicOAuthProviders: React.FC<Props> = ({ authSettings, refetchAuthSettin
                 showSuccess(getString('authSettings.publicOAuthLoginDisabled'), 5000)
               }
             } catch (e) {
-              /* istanbul ignore next */ showError(e.data?.message || e.message, 5000)
+              /* istanbul ignore next */ showError(getRBACErrorMessage(e), 5000)
             }
           }
         } catch (e) {
-          /* istanbul ignore next */ showError(e.data?.message || e.message, 5000)
+          /* istanbul ignore next */ showError(getRBACErrorMessage(e), 5000)
         }
       }
     }
@@ -134,11 +136,11 @@ const PublicOAuthProviders: React.FC<Props> = ({ authSettings, refetchAuthSettin
               showSuccess(getString('authSettings.publicOAuthLoginEnabled'), 5000)
             }
           } catch (err) {
-            /* istanbul ignore next */ showError(err.data?.message || err.message, 5000)
+            /* istanbul ignore next */ showError(getRBACErrorMessage(err), 5000)
           }
         }
       } catch (err) {
-        /* istanbul ignore next */ showError(err.data?.message || err.message, 5000)
+        /* istanbul ignore next */ showError(getRBACErrorMessage(err), 5000)
       }
     } /* istanbul ignore else */ else if (oauthEnabled && !enable) {
       confirmOAuthDisable()
@@ -172,7 +174,7 @@ const PublicOAuthProviders: React.FC<Props> = ({ authSettings, refetchAuthSettin
         showSuccess(getString('authSettings.oauthSettingsHaveBeenUpdated'), 5000)
       }
     } catch (err) {
-      /* istanbul ignore next */ showError(err.data?.message || err.message, 5000)
+      /* istanbul ignore next */ showError(getRBACErrorMessage(err), 5000)
     }
   }
 

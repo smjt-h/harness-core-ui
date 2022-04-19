@@ -17,7 +17,6 @@ import {
   TableV2,
   useConfirmationDialog,
   ButtonVariation,
-  getErrorInfoFromErrorObject,
   Card
 } from '@wings-software/uicore'
 import { Color, FontVariation, Intent } from '@harness/design-system'
@@ -42,6 +41,7 @@ import useSelectUserGroupsModal from '@common/modals/SelectUserGroups/useSelectU
 import { getScopeFromDTO } from '@common/components/EntityReference/EntityReference'
 import { ContainerSpinner } from '@common/components/ContainerSpinner/ContainerSpinner'
 import type { ScopeAndIdentifier } from '@common/components/MultiSelectEntityReference/MultiSelectEntityReference'
+import useRBACError from '@rbac/utils/useRBACError/useRBACError'
 import css from '@rbac/pages/UserDetails/UserDetails.module.scss'
 
 const RenderColumnDetails: Renderer<CellProps<UserGroupDTO>> = ({ row }) => {
@@ -59,6 +59,7 @@ const ResourceGroupColumnMenu: Renderer<CellProps<UserGroupDTO>> = ({ row, colum
   const data = row.original
   const [menuOpen, setMenuOpen] = useState(false)
   const { showSuccess, showError } = useToaster()
+  const { getRBACErrorMessage } = useRBACError()
   const { accountId, projectIdentifier, orgIdentifier } = useParams<ProjectPathProps>()
   const { getString } = useStrings()
   const { mutate: deleteUserGroup } = useRemoveMember({
@@ -90,7 +91,7 @@ const ResourceGroupColumnMenu: Renderer<CellProps<UserGroupDTO>> = ({ row, colum
             )
           ;(column as any).reload?.()
         } catch (err) {
-          showError(err.data?.message || err.message)
+          showError(getRBACErrorMessage(err))
         }
       }
     }
@@ -159,6 +160,7 @@ const UserGroupTable: React.FC<UserGroupTableProps> = ({ user }) => {
   const { accountId, orgIdentifier, projectIdentifier, userIdentifier } =
     useParams<PipelineType<ProjectPathProps & UserPathProps>>()
   const { getString } = useStrings()
+  const { getRBACErrorMessage } = useRBACError()
   const { showSuccess, showError } = useToaster()
   const {
     data: userGroupData,
@@ -209,7 +211,7 @@ const UserGroupTable: React.FC<UserGroupTableProps> = ({ user }) => {
       )
       refetch()
     } catch (e) {
-      showError(getErrorInfoFromErrorObject(e))
+      showError(getRBACErrorMessage(e))
       openSelectUserGroupsModal(getUserGroupScopeAndID(userGroupData))
     }
   }

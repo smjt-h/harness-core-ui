@@ -8,9 +8,9 @@
 import React from 'react'
 import { Container } from '@wings-software/uicore'
 import { Color } from '@harness/design-system'
-import { noop } from 'lodash-es'
 import type { TemplateFormRef } from '@templates-library/components/TemplateStudio/TemplateStudio'
 import { usePipelineContext } from '@pipeline/components/PipelineStudio/PipelineContext/PipelineContext'
+import { TemplateContext } from '@templates-library/components/TemplateStudio/TemplateContext/TemplateContext'
 
 export const DefaultNewStageName = 'Stage Name'
 export const DefaultNewStageId = 'stage_name'
@@ -18,27 +18,27 @@ export const DefaultNewStageId = 'stage_name'
 const StageTemplateForm = (_props: unknown, _formikRef: TemplateFormRef) => {
   const {
     state: {
-      selectionState: { selectedStageId },
-      templateTypes
+      selectionState: { selectedStageId }
     },
     contextType,
-    setTemplateTypes,
     renderPipelineStage,
     getStageFromPipeline
   } = usePipelineContext()
+  const {
+    state: {
+      templateView: { isDrawerOpened }
+    }
+  } = React.useContext(TemplateContext)
   const selectedStage = getStageFromPipeline(selectedStageId || '')
 
   return (
     <Container background={Color.FORM_BG} height={'100%'}>
-      {renderPipelineStage({
-        stageType: selectedStage?.stage?.stage?.type,
-        minimal: false,
-        contextType,
-        templateTypes,
-        setTemplateTypes,
-        openTemplateSelector: noop,
-        closeTemplateSelector: noop
-      })}
+      {!isDrawerOpened &&
+        renderPipelineStage({
+          stageType: selectedStage?.stage?.stage?.type,
+          minimal: false,
+          contextType
+        })}
     </Container>
   )
 }

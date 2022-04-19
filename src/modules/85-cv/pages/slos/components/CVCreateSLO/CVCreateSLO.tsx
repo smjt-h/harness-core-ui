@@ -7,7 +7,18 @@
 
 import React, { useEffect, useRef } from 'react'
 import { useHistory, useParams } from 'react-router-dom'
-import { Formik, Page, useToaster, Container, Layout, Button, Heading, Dialog, Text } from '@wings-software/uicore'
+import {
+  Formik,
+  Page,
+  useToaster,
+  Container,
+  Layout,
+  Button,
+  Heading,
+  Dialog,
+  Text,
+  HarnessDocTooltip
+} from '@wings-software/uicore'
 import { FontVariation, Color } from '@harness/design-system'
 import { useModalHook } from '@harness/use-modal'
 import { NGBreadcrumbs } from '@common/components/NGBreadcrumbs/NGBreadcrumbs'
@@ -180,8 +191,6 @@ const CVCreateSLO: React.FC = () => {
     }
   }
 
-  const sloName = SLODataResponse?.resource?.serviceLevelObjective.name
-  const title = identifier ? getString('cv.slos.editSLO', { name: sloName }) : getString('cv.slos.createSLO')
   const links = [
     {
       url: routes.toCVSLOs({ accountId, orgIdentifier, projectIdentifier, module: 'cv' }),
@@ -191,14 +200,17 @@ const CVCreateSLO: React.FC = () => {
 
   return (
     <>
-      <Page.Header
-        breadcrumbs={<NGBreadcrumbs links={links} />}
-        title={
-          <Heading level={3} font={{ variation: FontVariation.H4 }} data-tooltip-id={'createSLO'}>
-            {title}
-          </Heading>
-        }
-      />
+      {!identifier && (
+        <Page.Header
+          breadcrumbs={<NGBreadcrumbs links={links} />}
+          title={
+            <Heading level={3} font={{ variation: FontVariation.H4 }}>
+              {getString('cv.slos.createSLO')}
+              <HarnessDocTooltip tooltipId={'createSLO'} useStandAlone />
+            </Heading>
+          }
+        />
+      )}
       <Formik<SLOForm>
         initialValues={getSLOInitialFormData(
           SLODataResponse?.resource?.serviceLevelObjective,

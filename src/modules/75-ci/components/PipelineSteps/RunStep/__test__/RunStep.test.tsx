@@ -72,7 +72,7 @@ describe('Run Step', () => {
       expect(getByText('pipelineSteps.limitCPULabel')).toBeTruthy()
       expect(getByText('pipelineSteps.limitCPULabel')).toBeTruthy()
       expect(getByText('pipeline.stepCommonFields.runAsUser')).toBeTruthy()
-      expect(getByText('ci.privileged (Common Optional Label)')).toBeTruthy()
+      expect(getByText('pipeline.buildInfra.privileged (Common Optional Label)')).toBeTruthy()
       expect(getByText('common.shell')).toBeTruthy()
       const shellOptionsDropdownSelect = container.querySelector('[data-id="spec.shell-4"] [icon="chevron-down"]')!
       expect(shellOptionsDropdownSelect).toBeTruthy()

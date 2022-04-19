@@ -60,7 +60,6 @@ export interface ChildAppProps {
   scope: Scope
   components: CommonComponents
   hooks: Hooks
-  token: string
 }
 
 /**

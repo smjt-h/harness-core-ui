@@ -5,8 +5,9 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
+import type { ExpandingSearchInputHandle } from '@harness/uicore'
 import type { LogLineData } from '@pipeline/components/LogsContent/LogsState/types'
-import type { LogLineData as ExecutionLog } from './ExecutionLog.types'
+import type { LogLineData as ExecutionLog, UseActionCreatorReturn } from './ExecutionLog.types'
 
 function convertSearchIndices(searchIndices: ExecutionLog['searchIndices']): LogLineData['searchIndices'] | undefined {
   if (searchIndices) {
@@ -49,5 +50,40 @@ export function convertLogDataToLogLineData(data: ExecutionLog): LogLineData {
         },
         searchIndices: convertSearchIndices(searchIndices)
       }
+  }
+}
+
+export function handleSearchChange(actions: UseActionCreatorReturn) {
+  return (term: string): void => {
+    if (term) {
+      actions.search(term)
+    } else {
+      actions.resetSearch()
+    }
+  }
+}
+
+/* istanbul ignore next */
+export function handleKeyDown(actions: UseActionCreatorReturn) {
+  return (e: React.KeyboardEvent<HTMLElement>): void => {
+    if (e.key === 'ArrowUp') {
+      e.preventDefault()
+      actions.goToPrevSearchResult()
+    } else if (e.key === 'ArrowDown') {
+      e.preventDefault()
+      actions.goToNextSearchResult()
+    }
+  }
+}
+
+export function getKeyDownListener(searchRef: React.MutableRefObject<ExpandingSearchInputHandle | undefined>) {
+  return (e: KeyboardEvent): void => {
+    const isMetaKey = navigator.userAgent.includes('Mac') ? e.metaKey : e.ctrlKey
+
+    /* istanbul ignore next */
+    if (e.key === 'f' && isMetaKey && searchRef.current) {
+      e.preventDefault()
+      searchRef.current.focus()
+    }
   }
 }

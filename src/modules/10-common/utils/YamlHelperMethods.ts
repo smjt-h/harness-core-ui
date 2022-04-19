@@ -5,7 +5,9 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import { Document, Options } from 'yaml'
+import { Document } from 'yaml'
+import type { Options } from 'yaml'
+import { load } from 'js-yaml'
 
 // https://github.com/eemeli/yaml/issues/211
 export const yamlStringify = (obj: any, options: Options = {}): string => {
@@ -13,4 +15,8 @@ export const yamlStringify = (obj: any, options: Options = {}): string => {
   doc.setSchema()
   doc.contents = doc.schema?.createNode(obj)
   return String(doc)
+}
+
+export function yamlParse<T = unknown>(input: string): T {
+  return load(input) as T
 }

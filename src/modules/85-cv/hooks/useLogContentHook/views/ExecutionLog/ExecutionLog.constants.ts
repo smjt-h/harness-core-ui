@@ -7,8 +7,6 @@
 
 import type { State } from './ExecutionLog.types'
 
-export const PAGE_SIZE = 20
-
 export const defaultReducerState: State = {
   data: [],
   searchData: {

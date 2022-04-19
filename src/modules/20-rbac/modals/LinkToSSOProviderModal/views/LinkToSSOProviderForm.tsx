@@ -26,7 +26,7 @@ import * as Yup from 'yup'
 import { useParams } from 'react-router-dom'
 import type { StringsMap } from 'framework/strings/StringsContext'
 import { useToaster } from '@common/components'
-import { regexName } from '@common/utils/StringUtils'
+import useRBACError from '@rbac/utils/useRBACError/useRBACError'
 import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
 import { useStrings } from 'framework/strings'
 import { UserGroupDTO, SAMLSettings, useGetAuthenticationSettings, useLinkToSamlGroup } from 'services/cd-ng'
@@ -54,6 +54,7 @@ const getSelectPlaceholder = (
 
 const LinkToSSOProviderForm: React.FC<LinkToSSOProviderModalData> = props => {
   const { onSubmit, userGroupData } = props
+  const { getRBACErrorMessage } = useRBACError()
   const { accountId, orgIdentifier, projectIdentifier } = useParams<ProjectPathProps>()
   const { getString } = useStrings()
   const { showSuccess } = useToaster()
@@ -107,7 +108,7 @@ const LinkToSSOProviderForm: React.FC<LinkToSSOProviderModalData> = props => {
       }
     } catch (err) {
       if (shouldShowError(err)) {
-        modalErrorHandler?.showDanger(err.data?.message || err.message)
+        modalErrorHandler?.showDanger(getRBACErrorMessage(err))
       }
     }
   }
@@ -127,8 +128,7 @@ const LinkToSSOProviderForm: React.FC<LinkToSSOProviderModalData> = props => {
             validationSchema={Yup.object().shape({
               groupName: Yup.string()
                 .trim()
-                .required(getString('rbac.userDetails.linkToSSOProviderModal.validation.groupNameRequired'))
-                .matches(regexName, getString('common.validation.namePatternIsNotValid')),
+                .required(getString('rbac.userDetails.linkToSSOProviderModal.validation.groupNameRequired')),
               sso: Yup.string().required(getString('rbac.userDetails.linkToSSOProviderModal.validation.ssoIdRequired'))
             })}
             onSubmit={values => {

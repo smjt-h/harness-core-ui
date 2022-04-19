@@ -5,12 +5,62 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import React, { FC } from 'react'
-import '@pipeline/components/CommonPipelineStages/PipelineStage'
+import React from 'react'
+import { Redirect, useParams } from 'react-router-dom'
+import type { SidebarContext } from '@common/navigation/SidebarProvider'
+import routes from '@common/RouteDefinitions'
+import { RouteWithLayout } from '@common/router'
+import { accountPathProps, projectPathProps } from '@common/utils/routeUtils'
+import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
+import { useAppStore } from 'framework/AppStore/AppStoreContext'
+import OverviewPage from '@sto-steps/pages/OverviewPage/OverviewPage'
+import STOSideNav from '@sto-steps/components/STOSideNav/STOSideNav'
 import '@sto-steps/components/PipelineStages/SecurityStage'
 
-const STORoutes: FC = () => {
-  return <></>
+const STOSideNavProps: SidebarContext = {
+  navComponent: STOSideNav,
+  title: 'Security Tests',
+  icon: 'sto-color-filled'
 }
 
-export default STORoutes
+const RedirectToProjectOverviewPage = (): React.ReactElement => {
+  const { accountId } = useParams<ProjectPathProps>()
+  const { selectedProject } = useAppStore()
+
+  if (selectedProject) {
+    return (
+      <Redirect
+        to={routes.toSTOProjectOverview({
+          accountId,
+          orgIdentifier: selectedProject.orgIdentifier || '',
+          projectIdentifier: selectedProject.identifier
+        })}
+      />
+    )
+  } else {
+    return <Redirect to={routes.toSTOOverview({ accountId })} />
+  }
+}
+
+export default (
+  <>
+    <RouteWithLayout
+      // licenseRedirectData={licenseRedirectData}
+      path={routes.toSTO({ ...accountPathProps })}
+      exact
+    >
+      <RedirectToProjectOverviewPage />
+    </RouteWithLayout>
+
+    <RouteWithLayout
+      // licenseRedirectData={licenseRedirectData}
+      sidebarProps={STOSideNavProps}
+      path={[
+        routes.toSTOOverview({ ...accountPathProps }),
+        routes.toSTOProjectOverview({ ...accountPathProps, ...projectPathProps })
+      ]}
+    >
+      <OverviewPage />
+    </RouteWithLayout>
+  </>
+)

@@ -7,10 +7,12 @@
  **/
 // this is an auto-generated file, do not update this manually
 declare const styles: {
+  readonly alignCenter: string
   readonly copy: string
   readonly createTokenForm: string
   readonly crossIcon: string
   readonly form: string
+  readonly modal: string
   readonly tokenValue: string
 }
 export default styles

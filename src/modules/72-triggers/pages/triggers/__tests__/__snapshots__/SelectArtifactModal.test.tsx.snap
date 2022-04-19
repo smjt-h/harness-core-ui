@@ -135,7 +135,16 @@ exports[`Select Artifact Modal tests on click of select button 1`] = `
         <p
           class="StyledProps--font StyledProps--main StyledProps--font-variation-table-headers"
         >
-          MANIFESTSTEXT
+          <div
+            class="Text--withDocsTooltip"
+            data-tooltip-id="manifestName"
+          >
+            <span
+              class="StyledProps--font StyledProps--main textHeading StyledProps--inline"
+            >
+              MANIFESTSTEXT
+            </span>
+          </div>
         </p>
       </div>
       <div
@@ -147,7 +156,16 @@ exports[`Select Artifact Modal tests on click of select button 1`] = `
         <p
           class="StyledProps--font StyledProps--main StyledProps--font-variation-table-headers"
         >
-          PIPELINE.ARTIFACTTRIGGERCONFIGPANEL.ARTIFACTREPOSITORY
+          <div
+            class="Text--withDocsTooltip"
+            data-tooltip-id="manifestRepository"
+          >
+            <span
+              class="StyledProps--font StyledProps--main textHeading StyledProps--inline"
+            >
+              PIPELINE.ARTIFACTTRIGGERCONFIGPANEL.ARTIFACTREPOSITORY
+            </span>
+          </div>
         </p>
       </div>
       <div
@@ -159,7 +177,16 @@ exports[`Select Artifact Modal tests on click of select button 1`] = `
         <p
           class="StyledProps--font StyledProps--main StyledProps--font-variation-table-headers"
         >
-          COMMON.LOCATION
+          <div
+            class="Text--withDocsTooltip"
+            data-tooltip-id="artifactManifestLocation"
+          >
+            <span
+              class="StyledProps--font StyledProps--main textHeading StyledProps--inline"
+            >
+              COMMON.LOCATION
+            </span>
+          </div>
         </p>
       </div>
       <div
@@ -171,19 +198,37 @@ exports[`Select Artifact Modal tests on click of select button 1`] = `
         <p
           class="StyledProps--font StyledProps--main StyledProps--font-variation-table-headers"
         >
-          VERSION
+          <div
+            class="Text--withDocsTooltip"
+            data-tooltip-id="manifestHasVersion"
+          >
+            <span
+              class="StyledProps--font StyledProps--main textHeading StyledProps--inline"
+            >
+              VERSION
+            </span>
+          </div>
         </p>
       </div>
       <div
         class="TableV2--cell"
         colspan="1"
         role="columnheader"
-        style="width: 14%;"
+        style="width: 18%;"
       >
         <p
           class="StyledProps--font StyledProps--main StyledProps--font-variation-table-headers"
         >
-          PIPELINE.ARTIFACTTRIGGERCONFIGPANEL.HASRUNTIMEINPUTS
+          <div
+            class="Text--withDocsTooltip"
+            data-tooltip-id="artifactManifestRuntimeInputs"
+          >
+            <span
+              class="StyledProps--font StyledProps--main textHeading StyledProps--inline"
+            >
+              PIPELINE.ARTIFACTTRIGGERCONFIGPANEL.HASRUNTIMEINPUTS
+            </span>
+          </div>
         </p>
       </div>
     </div>
@@ -283,7 +328,7 @@ exports[`Select Artifact Modal tests on click of select button 1`] = `
         <div
           class="TableV2--cell"
           role="cell"
-          style="width: 14%;"
+          style="width: 18%;"
         >
           <div
             class="Layout--horizontal Layout--layout-spacing-small StyledProps--main"
@@ -395,7 +440,16 @@ exports[`Select Artifact Modal tests when selected manifest-chart is not runtime
         <p
           class="StyledProps--font StyledProps--main StyledProps--font-variation-table-headers"
         >
-          MANIFESTSTEXT
+          <div
+            class="Text--withDocsTooltip"
+            data-tooltip-id="manifestName"
+          >
+            <span
+              class="StyledProps--font StyledProps--main textHeading StyledProps--inline"
+            >
+              MANIFESTSTEXT
+            </span>
+          </div>
         </p>
       </div>
       <div
@@ -407,7 +461,16 @@ exports[`Select Artifact Modal tests when selected manifest-chart is not runtime
         <p
           class="StyledProps--font StyledProps--main StyledProps--font-variation-table-headers"
         >
-          PIPELINE.ARTIFACTTRIGGERCONFIGPANEL.ARTIFACTREPOSITORY
+          <div
+            class="Text--withDocsTooltip"
+            data-tooltip-id="manifestRepository"
+          >
+            <span
+              class="StyledProps--font StyledProps--main textHeading StyledProps--inline"
+            >
+              PIPELINE.ARTIFACTTRIGGERCONFIGPANEL.ARTIFACTREPOSITORY
+            </span>
+          </div>
         </p>
       </div>
       <div
@@ -419,7 +482,16 @@ exports[`Select Artifact Modal tests when selected manifest-chart is not runtime
         <p
           class="StyledProps--font StyledProps--main StyledProps--font-variation-table-headers"
         >
-          COMMON.LOCATION
+          <div
+            class="Text--withDocsTooltip"
+            data-tooltip-id="artifactManifestLocation"
+          >
+            <span
+              class="StyledProps--font StyledProps--main textHeading StyledProps--inline"
+            >
+              COMMON.LOCATION
+            </span>
+          </div>
         </p>
       </div>
       <div
@@ -431,19 +503,37 @@ exports[`Select Artifact Modal tests when selected manifest-chart is not runtime
         <p
           class="StyledProps--font StyledProps--main StyledProps--font-variation-table-headers"
         >
-          VERSION
+          <div
+            class="Text--withDocsTooltip"
+            data-tooltip-id="manifestHasVersion"
+          >
+            <span
+              class="StyledProps--font StyledProps--main textHeading StyledProps--inline"
+            >
+              VERSION
+            </span>
+          </div>
         </p>
       </div>
       <div
         class="TableV2--cell"
         colspan="1"
         role="columnheader"
-        style="width: 14%;"
+        style="width: 18%;"
       >
         <p
           class="StyledProps--font StyledProps--main StyledProps--font-variation-table-headers"
         >
-          PIPELINE.ARTIFACTTRIGGERCONFIGPANEL.HASRUNTIMEINPUTS
+          <div
+            class="Text--withDocsTooltip"
+            data-tooltip-id="artifactManifestRuntimeInputs"
+          >
+            <span
+              class="StyledProps--font StyledProps--main textHeading StyledProps--inline"
+            >
+              PIPELINE.ARTIFACTTRIGGERCONFIGPANEL.HASRUNTIMEINPUTS
+            </span>
+          </div>
         </p>
       </div>
     </div>
@@ -550,7 +640,7 @@ exports[`Select Artifact Modal tests when selected manifest-chart is not runtime
         <div
           class="TableV2--cell"
           role="cell"
-          style="width: 14%;"
+          style="width: 18%;"
         >
           <div
             class="Layout--horizontal Layout--layout-spacing-small StyledProps--main disabledRow"

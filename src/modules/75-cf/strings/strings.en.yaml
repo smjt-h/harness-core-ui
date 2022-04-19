@@ -20,6 +20,8 @@ shared:
   pleaseSelectVariation: Please select a variation first.
   getStarted: '{{ $.getStarted }}'
   quickGuide: Quick Guide
+  true: 'true'
+  false: 'false'
 messages:
   flagCreated: Flag created.
   flagUpdated: Flag updated.
@@ -176,6 +178,7 @@ featureFlags:
   makeSure: Make sure your code is deployed
   rules:
     whenFlagEnabled: When the Flag is Enabled
+    whenFlagDisabled: When the Flag is Disabled
     editRules: Edit Rules
     flagOn: '{{ $.cf.creationModal.flagOn }}'
     flagOff: '{{ $.cf.creationModal.flagOff }}'
@@ -188,10 +191,15 @@ featureFlags:
     following: to following
     serveToFollowing: 'serve to following:'
     onRequest: On Request
-    onRequestVariation: 'On Request, check for condition and serve variation'
-    specificTargeting: 'Specific Targeting'
-    toTargetGroups: 'to Target Groups'
-    toTargets: 'to Targets'
+    onRequestVariation: On Request, check for condition and serve variation
+    addTargeting: Add Targeting
+    specificTargeting: Specific Targeting
+    toTargetGroups: To Target Groups
+    toTargets: To Targets
+    validation:
+      selectTargetGroup: Please select a Target Group
+      valueRequired: Please enter a value
+      valueMustAddTo100: Values must add up to 100
   flagFilters:
     environment: '{{ $.environment }}'
     envDefault: Production (Default)
@@ -311,7 +319,7 @@ environments:
   adminEnvironments: 'Admin: Environments'
   delete:
     message: 'Are you sure you want to delete environment <strong>{{name}}</strong>?'
-    title: 'Delete Environment'
+    title: '{{ $.common.deleteEnvironment.title }}'
   create:
     title: 'Create an Environment'
     description: 'An environment is the representation of your production or non-production infrastructure'

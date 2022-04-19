@@ -48,6 +48,7 @@ import {
   VaultK8sCredentialDTO
 } from 'services/cd-ng'
 import { useToaster } from '@common/exports'
+import useRBACError from '@rbac/utils/useRBACError/useRBACError'
 
 const defaultInitialFormData: SetupEngineFormData = {
   secretEngine: '',
@@ -66,6 +67,7 @@ const SetupEngine: React.FC<StepProps<StepDetailsProps> & ConnectorDetailsProps>
   accountId
 }) => {
   const { getString } = useStrings()
+  const { getRBACErrorMessage } = useRBACError()
   const { showSuccess, showError } = useToaster()
   const [initialValues, setInitialValues] = useState(defaultInitialFormData)
   const [loadingFormData, setLoadingFormData] = useState(isEditMode)
@@ -152,7 +154,7 @@ const SetupEngine: React.FC<StepProps<StepDetailsProps> & ConnectorDetailsProps>
       /* istanbul ignore else */
       //added condition to don't show the toaster if it's an abort error
       if (shouldShowError(err)) {
-        showError(err.data?.message || err.message)
+        showError(getRBACErrorMessage(err))
       }
     }
   }

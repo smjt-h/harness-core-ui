@@ -5,19 +5,14 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
+import { cdFailureStrategiesYaml } from '../../support/70-pipeline/constants'
+import { invalidYAMLErrorMsgOnEmptyStageSave, pipelineSaveCall } from '../../support/70-pipeline/constants'
+
 describe('RUN PIPELINE MODAL', () => {
   const gitSyncCall =
     '/ng/api/git-sync/git-sync-enabled?accountIdentifier=accountId&orgIdentifier=default&projectIdentifier=project1'
-  const pipelineSave =
-    '/pipeline/api/pipelines?accountIdentifier=accountId&projectIdentifier=project1&orgIdentifier=default'
-  const inputSetsTemplateCall =
-    '/pipeline/api/inputSets/template?routingId=accountId&accountIdentifier=accountId&orgIdentifier=default&pipelineIdentifier=testPipeline_Cypress&projectIdentifier=project1'
-  const pipelineDetailsCall =
-    '/pipeline/api/pipelines/testPipeline_Cypress?routingId=accountId&accountIdentifier=accountId&orgIdentifier=default&projectIdentifier=project1'
   const resolvedPipelineDetailsCall =
     '/template/api/templates/applyTemplates?routingId=accountId&accountIdentifier=accountId&orgIdentifier=default&pipelineIdentifier=testPipeline_Cypress&projectIdentifier=project1&getDefaultFromOtherRepo=true'
-  const inputSetsGetCall =
-    '/pipeline/api/inputSets?routingId=accountId&accountIdentifier=accountId&orgIdentifier=default&projectIdentifier=project1&pipelineIdentifier=testPipeline_Cypress'
   const pipelineVariablesCall =
     '/pipeline/api/pipelines/variables?routingId=accountId&accountIdentifier=accountId&orgIdentifier=default&projectIdentifier=project1'
   const servicesCall =
@@ -26,8 +21,18 @@ describe('RUN PIPELINE MODAL', () => {
     '/ng/api/environmentsV2?routingId=accountId&accountIdentifier=accountId&orgIdentifier=default&projectIdentifier=project1'
   const connectorsCall =
     '/ng/api/connectors?accountIdentifier=accountId&type=K8sCluster&searchTerm=&projectIdentifier=project1&orgIdentifier=default'
-  const stagesExecutionListCall =
-    '/pipeline/api/pipeline/execute/stagesExecutionList?routingId=px7xd_BFRCi-pfWPYXVjvw&accountIdentifier=px7xd_BFRCi-pfWPYXVjvw&orgIdentifier=default&projectIdentifier=Kapil&pipelineIdentifier=My_test_pipeline'
+  const yamlSnippetCall = '/pipeline/api/approvals/stage-yaml-snippet?routingId=accountId&approvalType=HarnessApproval'
+  const userGroupCall = 'ng/api/aggregate/acl/usergroups?accountIdentifier=accountId&orgIdentifier=default&searchTerm='
+  const stepsCall = '/pipeline/api/pipelines/v2/steps?routingId=accountId&accountId=accountId'
+  const jirayamlSnippetCall = '/pipeline/api/approvals/stage-yaml-snippet?routingId=accountId&approvalType=JiraApproval'
+  const jiraConnectorsCall =
+    '/ng/api/connectors?accountIdentifier=accountId&type=Jira&searchTerm=&pageIndex=0&pageSize=10&projectIdentifier=project1&orgIdentifier=default'
+  const jiraProjectsCall =
+    '/ng/api/jira/projects?routingId=accountId&accountIdentifier=accountId&projectIdentifier=project1&orgIdentifier=default&connectorRef=Jira_cloud'
+  const jiraIssueTypesCall =
+    'ng/api/jira/createMetadata?routingId=accountId&accountIdentifier=accountId&projectIdentifier=project1&orgIdentifier=default&connectorRef=Jira_cloud&projectKey=ART'
+  const jiraStatusesCall =
+    '/ng/api/jira/statuses?routingId=accountId&accountIdentifier=accountId&projectIdentifier=project1&orgIdentifier=default&connectorRef=Jira_cloud'
   beforeEach(() => {
     cy.on('uncaught:exception', () => {
       // returning false here prevents Cypress from
@@ -56,11 +61,17 @@ describe('RUN PIPELINE MODAL', () => {
 
   describe('For deploy stage', () => {
     beforeEach(() => {
-      cy.get('[icon="plus"]').click()
-      cy.findByTestId('stage-Deployment').click()
+      switch (Cypress.currentTest.title) {
+        case 'error validations on pipeline save from API':
+          break
+        default:
+          cy.createDeploymentStage()
+          break
+      }
 
-      cy.fillName('testStage_Cypress')
-      cy.clickSubmit()
+      cy.intercept('GET', cdFailureStrategiesYaml, { fixture: 'pipeline/api/pipelines/failureStrategiesYaml' }).as(
+        'cdFailureStrategiesYaml'
+      )
     })
 
     it('should display the delete pipeline stage modal', () => {
@@ -74,32 +85,35 @@ describe('RUN PIPELINE MODAL', () => {
       cy.contains('span', 'Pipeline Stage Successfully removed.').should('be.visible')
     })
 
-    it.skip('should display the field errors if form is invalid', () => {
-      cy.intercept('POST', pipelineSave, { fixture: 'pipeline/api/pipelines.postsuccess' })
-      cy.intercept('POST', inputSetsTemplateCall, { fixture: 'pipeline/api/runpipeline/inputsettemplate' })
-      cy.intercept('GET', pipelineDetailsCall, { fixture: 'pipeline/api/runpipeline/getpipeline' })
-      cy.intercept('POST', resolvedPipelineDetailsCall, { fixture: 'template/api/getresolvedpipeline' })
-      cy.intercept('GET', inputSetsGetCall, { fixture: 'pipeline/api/runpipeline/getinputsets' })
-      cy.intercept('GET', stagesExecutionListCall, { fixture: 'pipeline/api/pipeline/execute/stagesExecutionList' })
-
+    it('error validations on pipeline save from API', () => {
+      cy.intercept('POST', pipelineSaveCall, { fixture: 'pipeline/api/pipelines.post.emptyPipeline' }).as(
+        'pipelineSave'
+      )
+      cy.wait(1000)
+      cy.contains('div', 'Unsaved changes').should('be.visible')
       cy.contains('span', 'Save').click({ force: true })
-      cy.contains('span', 'Pipeline published successfully').should('be.visible')
+      cy.wait('@pipelineSave')
 
-      cy.findByTestId('card-run-pipeline').click()
-      cy.contains('span', 'Run Pipeline').click()
+      cy.contains('span', 'Invalid request: Field for key [stages] does not exist').should('be.visible')
+      cy.intercept('POST', pipelineSaveCall, { fixture: 'pipeline/api/pipelines.post.emptyStage' }).as(
+        'pipelineSaveStage'
+      )
+      cy.createDeploymentStage()
+      cy.wait(1000)
+      cy.contains('span', 'Save').click({ force: true })
+      cy.wait('@pipelineSaveStage')
 
-      cy.contains('span', 'Service is required').should('be.visible').should('have.class', 'FormError--error')
-      cy.contains('span', 'ConnectorRef is a required field')
+      cy.contains('span', 'Invalid yaml: $.pipeline.stages[0].stage.spec.execution: is missing but it is required')
         .should('be.visible')
-        .should('have.class', 'FormError--error')
-      cy.contains('span', 'Image Path is a required field')
-        .should('be.visible')
-        .should('have.class', 'FormError--error')
-      cy.contains('span', 'Tag is a required field').should('be.visible').should('have.class', 'FormError--error')
+        .invoke('text')
+        .then(text => {
+          expect(text).equal(invalidYAMLErrorMsgOnEmptyStageSave)
+        })
     })
 
     describe('Checks visual to YAML and visual to variable view parity', () => {
       beforeEach(() => {
+        cy.intercept('GET', cdFailureStrategiesYaml, { fixture: 'pipeline/api/pipelines/failureStrategiesYaml' })
         cy.intercept('GET', servicesCall, { fixture: 'ng/api/servicesV2' })
         cy.intercept('GET', environmentsCall, { fixture: 'ng/api/environmentsV2' })
         cy.intercept('GET', connectorsCall, { fixture: 'ng/api/connectors' })
@@ -183,6 +197,216 @@ describe('RUN PIPELINE MODAL', () => {
 
         cy.get('#pipeline-panel').contains('span', 'namespace').should('be.visible')
         cy.get('#pipeline-panel').contains('span', 'cypress').should('be.visible')
+      })
+    })
+  })
+  describe('For approval stage', () => {
+    beforeEach(() => {
+      cy.get('[icon="plus"]').click()
+      cy.findByTestId('stage-Approval').click()
+      cy.fillName('testStage')
+      cy.contains('p', 'Harness Approval').click({ multiple: true })
+      cy.clickSubmit()
+      cy.intercept('GET', yamlSnippetCall, { fixture: 'pipeline/api/approvals/stageYamlSnippet' })
+      cy.intercept('GET', userGroupCall, { fixture: 'pipeline/api/approvals/userGroup' })
+      cy.intercept('POST', stepsCall, { fixture: 'pipeline/api/approvals/steps' })
+    })
+
+    it('should display the delete pipeline stage modal', () => {
+      cy.intercept('GET', yamlSnippetCall, { fixture: 'pipeline/api/approvals/stageYamlSnippet' })
+      cy.wait(2000)
+      cy.get('[icon="play"]').click({ force: true, multiple: true })
+      cy.wait(2000)
+      cy.contains('p', 'testStage').trigger('mouseover')
+      cy.get('[icon="cross"]').click({ force: true })
+      cy.contains('p', 'Delete Pipeline Stage').should('be.visible')
+      cy.contains('span', 'Delete').click({ force: true })
+      cy.contains('span', 'Pipeline Stage Successfully removed.').should('be.visible')
+    })
+
+    it('adding step information ,apply changes without adding user groups', () => {
+      // Toggle to variable view
+      cy.intercept('GET', yamlSnippetCall, { fixture: 'pipeline/api/approvals/stageYamlSnippet' })
+      cy.wait(2000)
+      cy.contains('span', 'Advanced').click({ force: true })
+      cy.wait(1000)
+      cy.contains('span', 'Execution').click({ force: true })
+      cy.wait(4000)
+      cy.contains('p', 'Approval').click()
+      cy.wait(4000)
+      cy.contains('p', 'Select User Group(s)').should('be.visible')
+      cy.contains('span', 'Apply Changes').click({ force: true })
+      cy.contains('span', 'Atleast one user group is required').should('be.visible')
+    })
+    it('adding step information ,apply changes after adding groups', () => {
+      // Toggle to variable view
+      cy.intercept('GET', yamlSnippetCall, { fixture: 'pipeline/api/approvals/stageYamlSnippet' })
+      cy.intercept('GET', userGroupCall, { fixture: 'pipeline/api/approvals/userGroup' })
+      cy.wait(2000)
+      cy.contains('span', 'Advanced').click({ force: true })
+      cy.wait(1000)
+      cy.contains('span', 'Execution').click({ force: true })
+      cy.wait(4000)
+      cy.contains('p', 'Approval').click()
+      cy.wait(4000)
+      cy.contains('p', 'Select User Group(s)').should('be.visible')
+      cy.contains('p', 'Select User Group(s)').click()
+      cy.wait(2000)
+      cy.contains('div', 'Organization').click()
+      cy.findByTestId('Checkbox-test').click({ force: true })
+      cy.contains('span', 'Apply Selected').click()
+      cy.contains('span', 'Apply Changes').click({ force: true })
+    })
+
+    it('visual to variable view for stage configuration', () => {
+      // Toggle to variable view
+      cy.intercept('POST', pipelineVariablesCall, { fixture: 'pipeline/api/runpipeline/pipelines.variables' })
+      cy.intercept('POST', resolvedPipelineDetailsCall, { fixture: 'pipeline/api/approvals/getresolvedpipeline' })
+      cy.wait(2000)
+      cy.contains('span', 'Advanced').click({ force: true })
+      cy.wait(1000)
+      cy.contains('span', 'Execution').click({ force: true })
+      cy.wait(2000)
+      cy.contains('span', 'Variables').click()
+      cy.wait(4000)
+
+      cy.get('#pipeline-panel').contains('span', 'testPipeline_Cypress').should('be.visible')
+      cy.get('#pipeline-panel').contains('span', 'testStage').should('be.visible')
+    })
+  })
+
+  //After adding Approval stage, add Jira
+  describe('For Approval Stage-Jira', () => {
+    beforeEach(() => {
+      cy.get('[icon="plus"]').click()
+      cy.findByTestId('stage-Approval').click()
+      cy.fillName('JiraStageTest')
+      cy.contains('p', 'Jira').click({ multiple: true })
+      cy.clickSubmit()
+      cy.intercept('GET', jirayamlSnippetCall, { fixture: 'pipeline/api/jiraStage/stageYamlSnippet' }).as('stageYaml')
+      cy.intercept('POST', stepsCall, { fixture: 'pipeline/api/approvals/steps' })
+    })
+    it('should display the delete pipeline stage modal', () => {
+      cy.wait('@stageYaml')
+      cy.wait(1000)
+      cy.get('[icon="play"]').click({ force: true, multiple: true })
+      cy.wait(2000)
+      cy.contains('p', 'JiraStageTest').trigger('mouseover')
+      cy.get('[icon="cross"]').click({ force: true })
+      cy.contains('p', 'Delete Pipeline Stage').should('be.visible')
+      cy.contains('span', 'Delete').click({ force: true })
+      cy.contains('span', 'Pipeline Stage Successfully removed.').should('be.visible')
+    })
+
+    describe('Jira Create Form Test', () => {
+      it('Submit empty form Validations', () => {
+        cy.wait('@stageYaml')
+        cy.contains('span', 'Advanced').click({ force: true })
+        cy.wait(1000)
+        cy.contains('span', 'Execution').click({ force: true })
+        cy.wait(4000)
+        cy.contains('p', 'Jira Create').click()
+        cy.wait(4000)
+        cy.contains('span', 'Apply Changes').click({ force: true })
+        cy.contains('span', 'Jira Connector is required').should('be.visible').should('have.class', 'FormError--error')
+        cy.contains('span', 'Project is required').should('be.visible').should('have.class', 'FormError--error')
+        cy.contains('span', 'Issue Type is required').should('be.visible').should('have.class', 'FormError--error')
+        cy.contains('span', 'Summary is required').should('be.visible').should('have.class', 'FormError--error')
+      })
+
+      it('Submit form after filling details', () => {
+        cy.intercept('GET', jiraConnectorsCall, { fixture: 'ng/api/jiraConnectors' })
+        cy.intercept('GET', jiraProjectsCall, { fixture: 'ng/api/jiraProjects' })
+        cy.intercept('GET', jiraIssueTypesCall, { fixture: 'ng/api/jiraIssueTypes' })
+        cy.wait(2000)
+        cy.contains('span', 'Execution').click({ force: true })
+        cy.wait(4000)
+        cy.contains('p', 'Jira Create').click()
+        cy.wait(4000)
+        cy.contains('span', 'Select Connector').click({ force: true })
+        cy.contains('p', 'Jira cloudJira cloudJira cloudJira cloudJira cloudJira cloud').click({ force: true })
+        cy.contains('span', 'Apply Selected').click({ force: true })
+        cy.wait(1000)
+        cy.get('input[name="spec.projectKey"]').click({ force: true })
+        cy.contains('p', 'ART').click({ force: true })
+        cy.wait(1000)
+        cy.get('input[name="spec.issueType"]').click({ force: true })
+        cy.contains('p', 'Bug').click({ force: true })
+        cy.wait(1000)
+        cy.fillField('spec.summary', 'Test_Summary')
+        cy.wait(1000)
+        cy.contains('span', 'Apply Changes').click({ force: true })
+      })
+    })
+
+    describe('Jira Approval Form Test', () => {
+      it('Submit empty form Validations', () => {
+        cy.wait('@stageYaml')
+        cy.contains('span', 'Advanced').click({ force: true })
+        cy.wait(1000)
+        cy.contains('span', 'Execution').click({ force: true })
+        cy.wait(4000)
+        cy.contains('p', 'Jira Approval').click()
+        cy.wait(4000)
+        cy.contains('span', 'Apply Changes').click({ force: true })
+        cy.contains('span', 'Jira Connector is required').should('be.visible').should('have.class', 'FormError--error')
+        cy.contains('span', 'Issue Key is required').should('be.visible').should('have.class', 'FormError--error')
+        cy.contains('p', 'At least one condition is required').should('be.visible')
+      })
+
+      it('Submit form after filling details', () => {
+        cy.intercept('GET', jiraConnectorsCall, { fixture: 'ng/api/jiraConnectors' })
+        cy.intercept('GET', jiraProjectsCall, { fixture: 'ng/api/jiraProjects' })
+        cy.intercept('GET', jiraIssueTypesCall, { fixture: 'ng/api/jiraIssueTypes' })
+        cy.wait(2000)
+        cy.contains('span', 'Execution').click({ force: true })
+        cy.wait(4000)
+        cy.contains('p', 'Jira Approval').click()
+        cy.wait(4000)
+        cy.get('button[data-testid="cr-field-spec.connectorRef"]').click({ force: true })
+        cy.contains('p', 'Jira cloudJira cloudJira cloudJira cloudJira cloudJira cloud').click({ force: true })
+        cy.contains('span', 'Apply Selected').click({ force: true })
+        cy.wait(1000)
+        cy.fillField('spec.issueKey', 'TK101')
+        cy.wait(1000)
+        cy.contains('span', 'Add').click({ force: true })
+        cy.wait(1000)
+        cy.fillField('spec.approvalCriteria.spec.conditions[0].value', 'To Do')
+        cy.wait(1000)
+        cy.contains('span', 'Apply Changes').click({ force: true })
+      })
+    })
+
+    describe('Jira Update Form Test', () => {
+      it('Submit empty form Validations', () => {
+        cy.wait('@stageYaml')
+        cy.contains('span', 'Advanced').click({ force: true })
+        cy.wait(1000)
+        cy.contains('span', 'Execution').click({ force: true })
+        cy.wait(4000)
+        cy.contains('p', 'Jira Update').click()
+        cy.wait(4000)
+        cy.contains('span', 'Apply Changes').click({ force: true })
+        cy.contains('span', 'Jira Connector is required').should('be.visible').should('have.class', 'FormError--error')
+        cy.contains('span', 'Issue Key is required').should('be.visible').should('have.class', 'FormError--error')
+      })
+
+      it('Submit form after filling details', () => {
+        cy.intercept('GET', jiraConnectorsCall, { fixture: 'ng/api/jiraConnectors' })
+        cy.intercept('GET', jiraProjectsCall, { fixture: 'ng/api/jiraProjects' })
+        cy.intercept('GET', jiraStatusesCall, { fixture: 'ng/api/jiraStatuses' })
+        cy.wait(2000)
+        cy.contains('span', 'Execution').click({ force: true })
+        cy.wait(4000)
+        cy.contains('p', 'Jira Update').click()
+        cy.wait(4000)
+        cy.contains('span', 'Select Connector').click({ force: true })
+        cy.contains('p', 'Jira cloudJira cloudJira cloudJira cloudJira cloudJira cloud').click({ force: true })
+        cy.contains('span', 'Apply Selected').click({ force: true })
+        cy.wait(1000)
+        cy.fillField('spec.issueKey', 'TP102')
+        cy.wait(1000)
+        cy.contains('span', 'Apply Changes').click({ force: true })
       })
     })
   })

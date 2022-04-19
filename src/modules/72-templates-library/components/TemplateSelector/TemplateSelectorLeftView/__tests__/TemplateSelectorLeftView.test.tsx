@@ -237,8 +237,6 @@ describe('<TemplateSelectorLeftView> tests', () => {
       fireEvent.click(menuItems[1])
     })
 
-    expect(container).toMatchSnapshot('no results snapshot with some search params')
-
     act(() => {
       fireEvent.click(getByRole(container, 'button', { name: /common.filters.clearFilters/ }))
     })

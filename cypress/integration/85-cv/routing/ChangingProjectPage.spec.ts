@@ -14,7 +14,9 @@ import {
   getUserJourneysCallForNewerProject,
   listMonitoredServicesForNewerProject,
   getServiceLevelObjectiveForNewerProject,
-  getServiceLevelObjectiveResponseForNewerProject
+  getServiceLevelObjectiveResponseForNewerProject,
+  getSLODetails,
+  responseSLODashboardDetail
 } from '../../../support/85-cv/slos/constants'
 
 describe('Changing Project Page', () => {
@@ -34,6 +36,7 @@ describe('Changing Project Page', () => {
     cy.intercept('GET', getSLORiskCount, listRiskCountDataEmptyResponse)
     cy.intercept('GET', getUserJourneysCall, listUserJourneysCallResponse)
     cy.intercept('GET', listSLOsCall, updatedListSLOsCallResponse).as('updatedListSLOsCallResponse')
+    cy.intercept('GET', getSLODetails, responseSLODashboardDetail)
     cy.intercept('GET', getServiceLevelObjective, getServiceLevelObjectiveResponse).as('getSLO')
 
     cy.intercept('GET', listMonitoredServicesForNewerProject, listMonitoredServicesCallResponse)

@@ -1,0 +1,68 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`GCOErrorAndLoading should render when loadingDashBoardData false 1`] = `
+<div>
+  <div
+    class="StyledProps--font StyledProps--main NoDataCard--noDataCard StyledProps--flex StyledProps--flex-align-center-center"
+  >
+    <div
+      class="Layout--vertical Layout--layout-spacing-medium StyledProps--main"
+      style="align-items: center; margin-top: -48px; width: 470px;"
+    >
+      <p
+        class="StyledProps--font StyledProps--main NoDataCard--message StyledProps--font-align-center StyledProps--color StyledProps--color-grey600"
+      >
+        cv.monitoringSources.gco.noMetricData
+      </p>
+      <div
+        class="NoDataCard--buttonContainer"
+      />
+    </div>
+  </div>
+</div>
+`;
+
+exports[`GCOErrorAndLoading should render when loadingDashBoardData true 1`] = `
+<div>
+  <div
+    class="StyledProps--font StyledProps--main NoDataCard--noDataCard StyledProps--flex StyledProps--flex-align-center-center"
+  >
+    <div
+      class="Layout--vertical Layout--layout-spacing-medium StyledProps--main"
+      style="align-items: center; margin-top: -48px; width: 470px;"
+    >
+      <span
+        class="bp3-icon StyledProps--main StyledProps--color StyledProps--color-grey600"
+        data-icon="spinner"
+      >
+        <svg
+          fill="none"
+          height="48"
+          viewBox="0 0 36 36"
+          width="48"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <path
+            d="M18 2.084a15.915 15.915 0 010 31.831 15.915 15.915 0 010-31.83"
+            stroke="currentColor"
+            stroke-dasharray="75,100"
+            stroke-linecap="round"
+            stroke-width="2.8"
+            style="animation: 1s linear infinite spinner-rotation; transform-origin: 50% 50%; transform-box: fill-box;"
+          />
+        </svg>
+      </span>
+      <p
+        class="StyledProps--font StyledProps--main NoDataCard--message StyledProps--font-align-center StyledProps--color StyledProps--color-grey600"
+      >
+        loading
+      </p>
+      <div
+        class="NoDataCard--buttonContainer"
+      />
+    </div>
+  </div>
+</div>
+`;
+
+exports[`GCOErrorAndLoading should render when loadingDashBoardData true 2`] = `<div />`;

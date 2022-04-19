@@ -69,6 +69,7 @@ import { PermissionIdentifier } from '@rbac/interfaces/PermissionIdentifier'
 import { ResourceType } from '@rbac/interfaces/ResourceType'
 import { usePermission } from '@rbac/hooks/usePermission'
 
+import useRBACError from '@rbac/utils/useRBACError/useRBACError'
 import css from './DelegatesPage.module.scss'
 
 const formatProfileList = (data: any) => {
@@ -129,6 +130,7 @@ interface DelegatesListProps {
 }
 
 export const DelegateConfigurations: React.FC<DelegatesListProps> = ({ filtersMockData }): JSX.Element => {
+  const { getRBACErrorMessage } = useRBACError()
   const { getString } = useStrings()
   const [appliedFilter, setAppliedFilter] = useState<FilterDTO | null>()
   const [filters, setFilters] = useState<FilterDTO[]>()
@@ -237,7 +239,7 @@ export const DelegateConfigurations: React.FC<DelegatesListProps> = ({ filtersMo
         setDelegateProfiles(delProfiles)
       } catch (e) {
         if (shouldShowError(e)) {
-          showError(e.data?.message || e.message)
+          showError(getRBACErrorMessage(e))
         }
       }
     },

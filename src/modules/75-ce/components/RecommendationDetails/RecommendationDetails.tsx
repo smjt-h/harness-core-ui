@@ -227,208 +227,210 @@ const RecommendationDetails: React.FC<RecommendationDetailsProps> = ({
         totalContainers={totalContainers}
         toggleContainerVisble={() => setContainerVisible(prevState => !prevState)}
       />
-      {containerVisible ? (
-        <Container className={css.mainContainer} padding="large" background="white">
-          <Layout.Horizontal padding={{ top: 'large' }}>
-            <Container width="100%">
-              <RecommendationDetailsSpendCard
-                withRecommendationAmount={formatCost(
-                  recommendationStats?.totalMonthlyCost - recommendationStats?.totalMonthlySaving
-                )}
-                withoutRecommendationAmount={formatCost(recommendationStats?.totalMonthlyCost)}
-                title={
-                  totalContainers > 1
-                    ? getString('ce.recommendation.detailsPage.workloadMonthlyPotentialCostText')
-                    : getString('ce.recommendation.listPage.monthlyPotentialCostText')
-                }
-                spentBy={getTimePeriodString(timeRangeFilter[1], 'MMM DD')}
-              />
-            </Container>
-            <Container width="100%">
-              <RecommendationDetailsSavingsCard
-                amount={formatCost(recommendationStats?.totalMonthlySaving)}
-                title={
-                  totalContainers > 1
-                    ? getString('ce.recommendation.detailsPage.workloadMonthlySavingsText')
-                    : getString('ce.recommendation.listPage.monthlySavingsText')
-                }
-                amountSubTitle={calculateSavingsPercentage(
-                  recommendationStats?.totalMonthlySaving,
-                  recommendationStats?.totalMonthlyCost
-                )}
-                subTitle={`${getTimePeriodString(timeRangeFilter[0], 'MMM DD')} - ${getTimePeriodString(
-                  timeRangeFilter[1],
-                  'MMM DD'
-                )}`}
-              />
-            </Container>
-          </Layout.Horizontal>
-          <RecommendationTabs
-            costOptimizedSavings={costOptimizedSavings}
-            performanceOptimizedSavings={performanceOptimizedSavings}
-            currentSavings={currentSavings}
-            selectedRecommendation={selectedRecommendation}
-            setSelectedRecommendation={setSelectedRecommendation}
-            setCPUReqVal={setCPUReqVal}
-            setMemReqVal={setMemReqVal}
-            setMemLimitVal={setMemLimitVal}
-            isPerfOptimizedCustomized={isPerfOptimizedCustomized}
-            isCostOptimizedCustomized={isCostOptimizedCustomized}
-          />
-          <section className={css.diffContainer}>
-            <Text
-              padding="xsmall"
-              color={Color.GREY_700}
-              font={{ variation: FontVariation.TABLE_HEADERS, align: 'center' }}
-              background={Color.GREY_100}
-            >
-              {getString('ce.recommendation.detailsPage.resourceChanges')}
-            </Text>
-            <section className={css.diffHeader}>
-              <Layout.Horizontal className={css.heading} spacing="xsmall">
-                <Text font={{ variation: FontVariation.SMALL_SEMI }}>{getString('common.current')}</Text>
-                <Text font={{ variation: FontVariation.SMALL }}>
-                  {getString('ce.recommendation.detailsPage.recommendedResources')}
-                </Text>
-              </Layout.Horizontal>
-              <Layout.Horizontal className={cx(css.optimizedHeader, css.heading)} spacing="xsmall">
-                <Text font={{ variation: FontVariation.SMALL_SEMI }}>{selectedRecommendation}</Text>
-                <Text font={{ variation: FontVariation.SMALL }}>
-                  {getString('ce.recommendation.detailsPage.recommendedResources')}
-                </Text>
-                <Icon
-                  name="duplicate"
-                  color="primary5"
-                  onClick={() => {
-                    const yamlVal = getRecommendationYaml(
-                      addBufferToValue(cpuReqValue, cpuAndMemoryValueBuffer),
-                      addBufferToValue(memReqValue, cpuAndMemoryValueBuffer),
-                      addBufferToValue(memLimitValue, cpuAndMemoryValueBuffer),
-                      qualityOfService
-                    )
-                    copy(yamlVal)
-                  }}
-                  className={css.copyIcon}
-                  size={13}
-                />
-              </Layout.Horizontal>
-            </section>
-            <RecommendationDiffViewer
-              recommendedResources={{
-                limits: {
-                  memory: getMemValueInReadableForm(
-                    addBufferToValue(histogramData?.memoryHistogram.precomputed[memLimitVal], cpuAndMemoryValueBuffer)
-                  )
-                },
-                requests: {
-                  memory: getMemValueInReadableForm(
-                    addBufferToValue(histogramData?.memoryHistogram.precomputed[memReqVal], cpuAndMemoryValueBuffer)
-                  ),
-                  cpu: getCPUValueInReadableForm(
-                    addBufferToValue(histogramData?.cpuHistogram.precomputed[cpuReqVal], cpuAndMemoryValueBuffer)
-                  )
-                }
-              }}
-              currentResources={currentResources}
-              qualityOfService={qualityOfService}
+      <Container
+        className={cx(css.mainContainer, { [css.containerHidden]: !containerVisible })}
+        padding="large"
+        background="white"
+      >
+        <Layout.Horizontal padding={{ top: 'large' }}>
+          <Container width="100%">
+            <RecommendationDetailsSpendCard
+              withRecommendationAmount={formatCost(
+                recommendationStats?.totalMonthlyCost - recommendationStats?.totalMonthlySaving
+              )}
+              withoutRecommendationAmount={formatCost(recommendationStats?.totalMonthlyCost)}
+              title={
+                totalContainers > 1
+                  ? getString('ce.recommendation.detailsPage.workloadMonthlyPotentialCostText')
+                  : getString('ce.recommendation.listPage.monthlyPotentialCostText')
+              }
+              spentBy={getTimePeriodString(timeRangeFilter[1], 'MMM DD')}
             />
-          </section>
-          <Container className={css.timeframeContainer}>
-            <Layout.Horizontal
-              background={Color.GREY_100}
-              padding="xsmall"
-              style={{
-                alignItems: 'baseline',
-                justifyContent: 'center'
-              }}
-              spacing="xsmall"
-            >
-              <Text color={Color.GREY_700} font={{ variation: FontVariation.TABLE_HEADERS }}>
-                {selectedRecommendation === RecommendationType.CostOptimized
-                  ? getString('ce.recommendation.detailsPage.costOptimizedCaps')
-                  : getString('ce.recommendation.detailsPage.performanceOptimizedCaps')}
-              </Text>
-              <Popover
-                interactionKind={PopoverInteractionKind.HOVER}
-                position={Position.BOTTOM_LEFT}
-                usePortal={false}
-                modifiers={{
-                  arrow: { enabled: false },
-                  flip: { enabled: true },
-                  keepTogether: { enabled: true },
-                  preventOverflow: { enabled: true }
-                }}
-                content={
-                  <Container padding="medium" className={css.histogram}>
-                    <Layout.Horizontal spacing="medium">
-                      <img width="235" src={histogramImg} />
-                      <Text>{getString('ce.recommendation.detailsPage.histogramTextDetails1')}</Text>
-                    </Layout.Horizontal>
-                    <Text padding={{ top: 'small' }}>
-                      {getString('ce.recommendation.detailsPage.histogramTextDetails2')}
-                    </Text>
-                  </Container>
-                }
-              >
-                <Text
-                  color={Color.PRIMARY_5}
-                  className={css.actionText}
-                  font={{ variation: FontVariation.TABLE_HEADERS }}
-                >
-                  {getString('ce.recommendation.detailsPage.histogramText')}
-                </Text>
-              </Popover>
-              <Text color={Color.GREY_700} font={{ variation: FontVariation.TABLE_HEADERS, align: 'center' }}>
-                {getString('ce.recommendation.detailsPage.timeChangeText')}
-              </Text>
-              <Text color={Color.GREY_700} font={{ variation: FontVariation.TABLE_HEADERS }} className={css.actionText}>
-                {timeRange?.label}
+          </Container>
+          <Container width="100%">
+            <RecommendationDetailsSavingsCard
+              amount={formatCost(recommendationStats?.totalMonthlySaving)}
+              title={
+                totalContainers > 1
+                  ? getString('ce.recommendation.detailsPage.workloadMonthlySavingsText')
+                  : getString('ce.recommendation.listPage.monthlySavingsText')
+              }
+              amountSubTitle={calculateSavingsPercentage(
+                recommendationStats?.totalMonthlySaving,
+                recommendationStats?.totalMonthlyCost
+              )}
+              subTitle={`${getTimePeriodString(timeRangeFilter[0], 'MMM DD')} - ${getTimePeriodString(
+                timeRangeFilter[1],
+                'MMM DD'
+              )}`}
+            />
+          </Container>
+        </Layout.Horizontal>
+        <RecommendationTabs
+          costOptimizedSavings={costOptimizedSavings}
+          performanceOptimizedSavings={performanceOptimizedSavings}
+          currentSavings={currentSavings}
+          selectedRecommendation={selectedRecommendation}
+          setSelectedRecommendation={setSelectedRecommendation}
+          setCPUReqVal={setCPUReqVal}
+          setMemReqVal={setMemReqVal}
+          setMemLimitVal={setMemLimitVal}
+          isPerfOptimizedCustomized={isPerfOptimizedCustomized}
+          isCostOptimizedCustomized={isCostOptimizedCustomized}
+        />
+        <section className={css.diffContainer}>
+          <Text
+            padding="xsmall"
+            color={Color.GREY_700}
+            font={{ variation: FontVariation.TABLE_HEADERS, align: 'center' }}
+            background={Color.GREY_100}
+          >
+            {getString('ce.recommendation.detailsPage.resourceChanges')}
+          </Text>
+          <section className={css.diffHeader}>
+            <Layout.Horizontal className={css.heading} spacing="xsmall">
+              <Text font={{ variation: FontVariation.SMALL_SEMI }}>{getString('common.current')}</Text>
+              <Text font={{ variation: FontVariation.SMALL }}>
+                {getString('ce.recommendation.detailsPage.recommendedResources')}
               </Text>
             </Layout.Horizontal>
-          </Container>
-          <Container className={css.histogramContainer}>
-            <RecommendationHistogram
-              reRenderChart={reRenderChart}
-              updateMemoryChart={updateMemoryChart}
-              updateCPUChart={updateCPUChart}
-              histogramData={histogramData}
-              selectedRecommendation={selectedRecommendation}
-              cpuReqVal={cpuReqVal}
-              memReqVal={memReqVal}
-              memLimitVal={memLimitVal}
-              onCPUChartLoad={setCPUChartRef}
-              onMemoryChartLoad={setMemoryChartRef}
-            />
-          </Container>
-          <Container className={css.legendContainer}>
-            <Container>
-              {isPerfOptimizedCustomized || isCostOptimizedCustomized ? (
-                <Button
-                  onClick={() => {
-                    resetToDefaultRecommendation(selectedRecommendation)
-                  }}
-                  icon="reset-icon"
-                  withoutBoxShadow={true}
-                  intent="none"
-                  className={css.resetButton}
-                >
-                  {getString('ce.recommendation.detailsPage.resetRecommendationText', {
-                    recommendationType: selectedRecommendation
-                  })}
-                </Button>
-              ) : null}
-            </Container>
-            <img src={requestLegend} />
-            <Text color={Color.GREY_500} font={{ variation: FontVariation.TINY_SEMI }}>
-              {getString('ce.recommendation.detailsPage.reqPercentileLegendText')}
+            <Layout.Horizontal className={cx(css.optimizedHeader, css.heading)} spacing="xsmall">
+              <Text font={{ variation: FontVariation.SMALL_SEMI }}>{selectedRecommendation}</Text>
+              <Text font={{ variation: FontVariation.SMALL }}>
+                {getString('ce.recommendation.detailsPage.recommendedResources')}
+              </Text>
+              <Icon
+                name="duplicate"
+                color="primary5"
+                onClick={() => {
+                  const yamlVal = getRecommendationYaml(
+                    addBufferToValue(cpuReqValue, cpuAndMemoryValueBuffer),
+                    addBufferToValue(memReqValue, cpuAndMemoryValueBuffer),
+                    addBufferToValue(memLimitValue, cpuAndMemoryValueBuffer),
+                    qualityOfService
+                  )
+                  copy(yamlVal)
+                }}
+                className={css.copyIcon}
+                size={13}
+              />
+            </Layout.Horizontal>
+          </section>
+          <RecommendationDiffViewer
+            recommendedResources={{
+              limits: {
+                memory: getMemValueInReadableForm(
+                  addBufferToValue(histogramData?.memoryHistogram.precomputed[memLimitVal], cpuAndMemoryValueBuffer)
+                )
+              },
+              requests: {
+                memory: getMemValueInReadableForm(
+                  addBufferToValue(histogramData?.memoryHistogram.precomputed[memReqVal], cpuAndMemoryValueBuffer)
+                ),
+                cpu: getCPUValueInReadableForm(
+                  addBufferToValue(histogramData?.cpuHistogram.precomputed[cpuReqVal], cpuAndMemoryValueBuffer)
+                )
+              }
+            }}
+            currentResources={currentResources}
+            qualityOfService={qualityOfService}
+          />
+        </section>
+        <Container className={css.timeframeContainer}>
+          <Layout.Horizontal
+            background={Color.GREY_100}
+            padding="xsmall"
+            style={{
+              alignItems: 'baseline',
+              justifyContent: 'center'
+            }}
+            spacing="xsmall"
+          >
+            <Text color={Color.GREY_700} font={{ variation: FontVariation.TABLE_HEADERS }}>
+              {selectedRecommendation === RecommendationType.CostOptimized
+                ? getString('ce.recommendation.detailsPage.costOptimizedCaps')
+                : getString('ce.recommendation.detailsPage.performanceOptimizedCaps')}
             </Text>
-            <img src={limitLegend} />
-            <Text color={Color.GREY_500} font={{ variation: FontVariation.TINY_SEMI }}>
-              {getString('ce.recommendation.detailsPage.limitPercentileLegendText')}
+            <Popover
+              interactionKind={PopoverInteractionKind.HOVER}
+              position={Position.BOTTOM_LEFT}
+              usePortal={false}
+              modifiers={{
+                arrow: { enabled: false },
+                flip: { enabled: true },
+                keepTogether: { enabled: true },
+                preventOverflow: { enabled: true }
+              }}
+              content={
+                <Container padding="medium" className={css.histogram}>
+                  <Layout.Horizontal spacing="medium">
+                    <img width="235" src={histogramImg} />
+                    <Text>{getString('ce.recommendation.detailsPage.histogramTextDetails1')}</Text>
+                  </Layout.Horizontal>
+                  <Text padding={{ top: 'small' }}>
+                    {getString('ce.recommendation.detailsPage.histogramTextDetails2')}
+                  </Text>
+                </Container>
+              }
+            >
+              <Text
+                color={Color.PRIMARY_5}
+                className={css.actionText}
+                font={{ variation: FontVariation.TABLE_HEADERS }}
+              >
+                {getString('ce.recommendation.detailsPage.histogramText')}
+              </Text>
+            </Popover>
+            <Text color={Color.GREY_700} font={{ variation: FontVariation.TABLE_HEADERS, align: 'center' }}>
+              {getString('ce.recommendation.detailsPage.timeChangeText')}
             </Text>
-          </Container>
+            <Text color={Color.GREY_700} font={{ variation: FontVariation.TABLE_HEADERS }} className={css.actionText}>
+              {timeRange?.label}
+            </Text>
+          </Layout.Horizontal>
         </Container>
-      ) : null}
+        <Container className={css.histogramContainer}>
+          <RecommendationHistogram
+            reRenderChart={reRenderChart}
+            updateMemoryChart={updateMemoryChart}
+            updateCPUChart={updateCPUChart}
+            histogramData={histogramData}
+            selectedRecommendation={selectedRecommendation}
+            cpuReqVal={cpuReqVal}
+            memReqVal={memReqVal}
+            memLimitVal={memLimitVal}
+            onCPUChartLoad={setCPUChartRef}
+            onMemoryChartLoad={setMemoryChartRef}
+          />
+        </Container>
+        <Container className={css.legendContainer}>
+          <Container>
+            {isPerfOptimizedCustomized || isCostOptimizedCustomized ? (
+              <Button
+                onClick={() => {
+                  resetToDefaultRecommendation(selectedRecommendation)
+                }}
+                icon="reset-icon"
+                withoutBoxShadow={true}
+                intent="none"
+                className={css.resetButton}
+              >
+                {getString('ce.recommendation.detailsPage.resetRecommendationText', {
+                  recommendationType: selectedRecommendation
+                })}
+              </Button>
+            ) : null}
+          </Container>
+          <img src={requestLegend} />
+          <Text color={Color.GREY_500} font={{ variation: FontVariation.TINY_SEMI }}>
+            {getString('ce.recommendation.detailsPage.reqPercentileLegendText')}
+          </Text>
+          <img src={limitLegend} />
+          <Text color={Color.GREY_500} font={{ variation: FontVariation.TINY_SEMI }}>
+            {getString('ce.recommendation.detailsPage.limitPercentileLegendText')}
+          </Text>
+        </Container>
+      </Container>
     </Container>
   )
 }

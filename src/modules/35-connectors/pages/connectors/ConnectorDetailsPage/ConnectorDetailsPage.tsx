@@ -9,7 +9,7 @@ import React, { useEffect, useMemo } from 'react'
 import { Layout, Container, Icon, Text, SelectOption, PageSpinner, PageError } from '@wings-software/uicore'
 import { Tag } from '@blueprintjs/core'
 import cx from 'classnames'
-import { useParams } from 'react-router-dom'
+import { useParams, useHistory } from 'react-router-dom'
 import { Color } from '@harness/design-system'
 import { Page } from '@common/exports'
 import {
@@ -32,11 +32,8 @@ import ScopedTitle from '@common/components/Title/ScopedTitle'
 import { getIconByType } from '../utils/ConnectorUtils'
 import ConnectorPageGitDetails from './ConnectorDetailsPageGitDetails/ConnectorPageGitDetails'
 import RenderConnectorDetailsActiveTab from '../views/RenderConnectorDetailsActiveTab/RenderConnectorDetailsActiveTab'
+import { ConnectorDetailsView } from '../utils/ConnectorHelper'
 import css from './ConnectorDetailsPage.module.scss'
-
-interface Categories {
-  [key: string]: string
-}
 
 interface MockData {
   data: ResponseConnectorResponse
@@ -46,21 +43,32 @@ interface ConnectorDetailsPageProps {
   mockData?: MockData
 }
 
+interface ConnectorDetailsQueryParams extends EntityGitDetails {
+  view: ConnectorDetailsView
+}
+
 const ConnectorDetailsPage: React.FC<ConnectorDetailsPageProps> = props => {
   const { getString } = useStrings()
   const [data, setData] = React.useState<ConnectorResponse>({})
-  const [activeCategory, setActiveCategory] = React.useState(0)
+  const [activeCategory, setActiveCategory] = React.useState(ConnectorDetailsView.overview)
   const [selectedBranch, setSelectedBranch] = React.useState<string>('')
   const [branchSelectOptions, setBranchSelectOptions] = React.useState<SelectOption[]>([])
   const [searchTerm, setSearchTerm] = React.useState<string>('')
   const { connectorId, accountId, orgIdentifier, projectIdentifier, module } =
     useParams<PipelineType<ProjectPathProps & ConnectorPathProps>>()
-  const { repoIdentifier, branch } = useQueryParams<EntityGitDetails>()
+  const { repoIdentifier, branch, view } = useQueryParams<ConnectorDetailsQueryParams>()
+  const history = useHistory()
 
   const defaultQueryParam = {
     accountIdentifier: accountId,
     orgIdentifier: orgIdentifier as string,
     projectIdentifier: projectIdentifier as string
+  }
+
+  const viewToLabelMap: Record<ConnectorDetailsView, string> = {
+    [ConnectorDetailsView.overview]: getString('overview'),
+    [ConnectorDetailsView.referencedBy]: getString('refrencedBy'),
+    [ConnectorDetailsView.activityHistory]: getString('activityHistoryLabel')
   }
 
   const {
@@ -83,6 +91,12 @@ const ConnectorDetailsPage: React.FC<ConnectorDetailsPageProps> = props => {
       setSelectedBranch(connectorData?.data?.gitDetails?.branch as string)
     }
   }, [connectorData, loading])
+
+  useEffect(() => {
+    if (view) {
+      setActiveCategory(view)
+    }
+  }, [view])
 
   const {
     data: branchList,
@@ -128,12 +142,6 @@ const ConnectorDetailsPage: React.FC<ConnectorDetailsPageProps> = props => {
   }, [loadingBranchList])
 
   useDocumentTitle([connectorName || connectorData?.data?.connector?.name || '', getString('connectorsLabel')])
-
-  const categories: Categories = {
-    connection: getString('overview'),
-    refrencedBy: getString('refrencedBy'),
-    activityHistory: getString('activityHistoryLabel')
-  }
 
   const RenderBreadCrumb: React.FC = () => {
     const breadCrumbs = [
@@ -188,7 +196,7 @@ const ConnectorDetailsPage: React.FC<ConnectorDetailsPageProps> = props => {
               <Text color={Color.GREY_400}>
                 {connectorData?.data?.connector?.identifier || data?.connector?.identifier}
               </Text>
-              {activeCategory === 0 && gitDetails?.objectId ? (
+              {activeCategory === ConnectorDetailsView.overview && gitDetails?.objectId ? (
                 <ConnectorPageGitDetails
                   handleBranchClick={handleBranchClick}
                   gitDetails={gitDetails}
@@ -240,14 +248,25 @@ const ConnectorDetailsPage: React.FC<ConnectorDetailsPageProps> = props => {
         toolbar={
           <Container>
             <Layout.Horizontal spacing="medium">
-              {Object.keys(categories).map((item, index) => {
+              {Object.keys(viewToLabelMap).map((item, index) => {
                 return (
                   <Tag
-                    className={cx(css.tags, css.small, { [css.active]: activeCategory === index })}
-                    onClick={() => setActiveCategory(index)}
+                    className={cx(css.tags, css.small, { [css.active]: activeCategory === item })}
+                    onClick={() => {
+                      history.push({
+                        pathname: routes.toConnectorDetails({
+                          accountId,
+                          orgIdentifier,
+                          projectIdentifier,
+                          module,
+                          connectorId
+                        }),
+                        search: `?view=${item}`
+                      })
+                    }}
                     key={item + index}
                   >
-                    {categories[item]}
+                    {viewToLabelMap[item as ConnectorDetailsView]}
                   </Tag>
                 )
               })}

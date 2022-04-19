@@ -1,5 +1,11 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`Test K8sBlueGreenDeployStep Minimum time cannot be less than 10s 1`] = `
+Object {
+  "timeout": "Value must be greater than or equal to \\"10s\\"",
+}
+`;
+
 exports[`Test K8sBlueGreenDeployStep should render Variable view 1`] = `<div />`;
 
 exports[`Test K8sBlueGreenDeployStep should render edit view  1`] = `

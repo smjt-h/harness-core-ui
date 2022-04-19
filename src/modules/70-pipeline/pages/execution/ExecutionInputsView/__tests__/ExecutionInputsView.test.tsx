@@ -6,13 +6,12 @@
  */
 
 import React from 'react'
-import { render } from '@testing-library/react'
+import { render, waitFor } from '@testing-library/react'
 
 import { TestWrapper } from '@common/utils/testUtils'
 import routes from '@common/RouteDefinitions'
 import { accountPathProps, executionPathProps, pipelineModuleParams } from '@common/utils/routeUtils'
-import type { PipelineType } from '@common/interfaces/RouteInterfaces'
-import type { ExecutionPathParams } from '@pipeline/utils/executionUtils'
+import type { PipelineType, ExecutionPathProps } from '@common/interfaces/RouteInterfaces'
 
 import mock from './mocks/schema.json'
 
@@ -20,19 +19,22 @@ import ExecutionInputsView from '../ExecutionInputsView'
 
 jest.mock('@common/components/YAMLBuilder/YamlBuilder')
 jest.mock('@common/utils/YamlUtils', () => ({}))
-jest.mock('@common/hooks', () => ({
-  ...(jest.requireActual('@common/hooks') as any),
-  useMutateAsGet: jest.fn().mockImplementation(() => ({ data: null, refetch: jest.fn() }))
-}))
 jest.mock('services/pipeline-ng', () => ({
   useGetInputsetYaml: jest.fn(() => ({ data: null })),
-  useGetTemplateFromPipeline: jest.fn(() => ({ data: null })),
+  useGetTemplateFromPipeline: jest.fn(() => ({
+    mutate: jest.fn().mockResolvedValue({ data: {} })
+  })),
   useGetStagesExecutionList: jest.fn(() => ({})),
   useGetPipeline: jest.fn(() => ({ data: null })),
+  useCreateVariables: jest.fn(() => ({
+    mutate: jest.fn().mockResolvedValue({ data: {} })
+  })),
   usePostPipelineExecuteWithInputSetYaml: jest.fn(() => ({ data: null })),
   useRePostPipelineExecuteWithInputSetYaml: jest.fn(() => ({ data: null })),
   useRerunStagesWithRuntimeInputYaml: jest.fn(() => ({ data: null })),
-  useGetMergeInputSetFromPipelineTemplateWithListInput: jest.fn(() => ({ data: null })),
+  useGetMergeInputSetFromPipelineTemplateWithListInput: jest.fn(() => ({
+    mutate: jest.fn().mockResolvedValue({ data: {} })
+  })),
   useGetInputSetsListForPipeline: jest.fn(() => ({ data: null, refetch: jest.fn() })),
   useGetYamlSchema: jest.fn(() => ({ data: null })),
   useCreateInputSetForPipeline: jest.fn(() => ({ data: null })),
@@ -46,7 +48,7 @@ const TEST_PATH = routes.toExecutionInputsView({
   ...pipelineModuleParams
 })
 
-const pathParams: PipelineType<ExecutionPathParams> = {
+const pathParams: PipelineType<ExecutionPathProps> = {
   accountId: 'TEST_ACCOUNT_ID',
   orgIdentifier: 'TEST_ORG',
   projectIdentifier: 'TEST_PROJECT',
@@ -56,12 +58,14 @@ const pathParams: PipelineType<ExecutionPathParams> = {
 }
 
 describe('<ExecutionInputsView /> tests', () => {
-  test('snapshot test', () => {
-    const { container } = render(
+  test('snapshot test', async () => {
+    const { container, findByText } = render(
       <TestWrapper path={TEST_PATH} pathParams={pathParams as any}>
         <ExecutionInputsView mockData={mock as any} />
       </TestWrapper>
     )
+
+    await waitFor(() => findByText('pipeline.inputSets.noRuntimeInputsWhileExecution'))
     expect(container).toMatchSnapshot()
   })
 })

@@ -44,11 +44,13 @@ import type { SaveToGitFormInterface, GitResourceInterface } from '@common/compo
 import { Entities } from '@common/interfaces/GitSyncInterface'
 import type { PipelineType, ProjectPathProps } from '@common/interfaces/RouteInterfaces'
 import { IdentifierSchema, NameSchema } from '@common/utils/Validation'
+import useRBACError from '@rbac/utils/useRBACError/useRBACError'
 import { isSMConnector } from '../connectors/utils/ConnectorUtils'
 import css from './CreateConnectorFromYamlPage.module.scss'
 
 const CreateConnectorFromYamlPage: React.FC = () => {
   const { accountId, projectIdentifier, orgIdentifier, module } = useParams<PipelineType<ProjectPathProps>>()
+  const { getRBACErrorMessage } = useRBACError()
   const [yamlHandler, setYamlHandler] = useState<YamlBuilderHandlerBinding | undefined>()
   const history = useHistory()
   const { showError, showSuccess } = useToaster()
@@ -312,7 +314,7 @@ const CreateConnectorFromYamlPage: React.FC = () => {
                         })
                         .catch(e => {
                           if (shouldShowError(e)) {
-                            showError(e.data?.message || e.message)
+                            showError(getRBACErrorMessage(e))
                           }
                         })
                 }

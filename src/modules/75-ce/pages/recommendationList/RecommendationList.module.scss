@@ -5,6 +5,11 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
+.listContainer {
+  height: 100%;
+  padding: var(--spacing-medium) var(--spacing-xxxlarge) !important;
+}
+
 .errorContainer {
   height: calc(100vh - 262px);
   display: flex !important;

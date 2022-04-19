@@ -1,13 +1,23 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import { cloneDeep, omit, pick } from 'lodash-es'
+import { PERCENTAGE_ROLLOUT_VALUE } from '@cf/constants'
 import {
   getAddFlagsInstruction,
   getFlagSettingsInstructions,
   getRemovedFlagIdentifiers,
   getRemoveFlagsInstruction,
   getUpdatedFlags,
-  getUpdateFlagsInstruction
+  getUpdateFlagsInstruction,
+  getVariationOrServe
 } from '../flagSettingsInstructions'
 import { mockFlagSettingsFormDataValues, mockSegmentFlags, mockTargetGroupFlagsMap } from '../../../__tests__/mocks'
+import type { FlagSettingsFormRow } from '../../../TargetGroupDetailPage.types'
 
 describe('flagSettingsInstructions', () => {
   describe('getFlagSettingsInstructions', () => {
@@ -198,6 +208,42 @@ describe('flagSettingsInstructions', () => {
           ]
         }
       })
+    })
+  })
+
+  describe('getVariationOrServe', () => {
+    test('it should return a serve object if the variation is Percentage Rollout', async () => {
+      const rowValues: FlagSettingsFormRow = {
+        identifier: 'abc',
+        variation: PERCENTAGE_ROLLOUT_VALUE,
+        percentageRollout: {
+          variations: [
+            { variation: 'var1', weight: 60 },
+            { variation: 'var2', weight: 40 }
+          ]
+        }
+      }
+
+      expect(getVariationOrServe(rowValues)).toEqual({
+        serve: {
+          distribution: {
+            bucketBy: 'identifier',
+            variations: [
+              { variation: 'var1', weight: 60 },
+              { variation: 'var2', weight: 40 }
+            ]
+          }
+        }
+      })
+    })
+
+    test('it should return variation object if the variation is not Percentage Rollout', async () => {
+      const rowValues: FlagSettingsFormRow = {
+        identifier: 'abc',
+        variation: 'var1'
+      }
+
+      expect(getVariationOrServe(rowValues)).toEqual({ variation: 'var1' })
     })
   })
 })

@@ -6,27 +6,45 @@
  */
 
 import type { SelectOption } from '@harness/uicore'
-import type { State, UseActionCreatorReturn } from './views/ExecutionLog/ExecutionLog.types'
+import type { PageCVNGLogDTO } from 'services/cv'
 
 export interface UseLogContentHookProps {
   verifyStepExecutionId?: string
   sloIdentifier?: string
   serviceName?: string
   envName?: string
+  monitoredServiceIdentifier?: string
+  monitoredServiceStartTime?: number
+  monitoredServiceEndTime?: number
+  showTimelineSlider?: boolean
 }
 
 export interface UseLogContentHookReturn {
-  openLogContentHook: () => void
+  openLogContentHook: (logType: LogTypes) => void
   closeLogContentHook: () => void
 }
 
-export interface VerifyStepLogProps {
+export interface VerifyStepLogContentProps {
+  logType: LogTypes
   verifyStepExecutionId: string
   isFullScreen: boolean
   setIsFullScreen: (isFullScreen: boolean | ((isFullScreen: boolean) => boolean)) => void
 }
 
-export interface SLOLogProps {
+export interface MonitoredServiceLogContentProps {
+  logType: LogTypes
+  monitoredServiceIdentifier: string
+  isFullScreen: boolean
+  setIsFullScreen: (isFullScreen: boolean | ((isFullScreen: boolean) => boolean)) => void
+  serviceName?: string
+  envName?: string
+  startTime?: number
+  endTime?: number
+  showTimelineSlider?: boolean
+}
+
+export interface SLOLogContentProps {
+  logType: LogTypes
   identifier: string
   serviceName?: string
   envName?: string
@@ -41,30 +59,30 @@ export enum TimeRangeTypes {
   LAST_24_HOUR = 'LAST_24_HOURS'
 }
 
-export interface ExecutionLogHeaderProps {
+export enum LogTypes {
+  ApiCallLog = 'ApiCallLog',
+  ExecutionLog = 'ExecutionLog'
+}
+
+export interface ExecutionAndAPICallLogProps {
+  isFullScreen: boolean
+  setIsFullScreen: (isFullScreen: boolean | ((isFullScreen: boolean) => boolean)) => void
   verifyStepExecutionId?: string
+  monitoredServiceIdentifier?: string
   serviceName?: string
   envName?: string
+  resource?: PageCVNGLogDTO
+  loading: boolean
+  errorMessage?: string
+  refetchLogs: () => Promise<void>
   healthSource?: SelectOption
   setHealthSource?: (healthSource: SelectOption) => void
   timeRange?: SelectOption
   setTimeRange?: (timeRange: SelectOption) => void
   errorLogsOnly: boolean
   setErrorLogsOnly: (errorLogsOnly: boolean) => void
-  actions: UseActionCreatorReturn
-  setPageNumber: (pageNumber: number) => void
-}
-
-export interface ExecutionLogToolbarProps {
-  state: State
-  actions: UseActionCreatorReturn
-  isFullScreen: boolean
-  setIsFullScreen: (isFullScreen: boolean | ((isFullScreen: boolean) => boolean)) => void
-  isVerifyStep: boolean
-  timeRange?: SelectOption
-}
-
-export enum LogTypes {
-  ApiCallLog = 'ApiCallLog',
-  ExecutionLog = 'ExecutionLog'
+  pageNumber: number
+  setPageNumber: (pageNumber: number | ((_pageNumber: number) => number)) => void
+  handleDownloadLogs: () => Promise<void>
+  showTimelineSlider?: boolean
 }

@@ -30,6 +30,7 @@ import { useTelemetry } from '@common/hooks/useTelemetry'
 import { CE_K8S_CONNECTOR_CREATION_EVENTS } from '@connectors/trackingConstants'
 import { useStepLoadTelemetry } from '@connectors/common/useTrackStepLoad/useStepLoadTelemetry'
 import { useMutateAsGet } from '@common/hooks'
+import useRBACError from '@rbac/utils/useRBACError/useRBACError'
 import CopyCodeSection from './components/CopyCodeSection'
 import PermissionYAMLPreview from './PermissionYAMLPreview'
 import css from './CEK8sConnector.module.scss'
@@ -48,6 +49,7 @@ const yamlFileName = 'ccm-kubernetes.yaml'
 
 const ProvidePermissions: React.FC<StepProps<StepSecretManagerProps> & ProvidePermissionsProps> = props => {
   const { getString } = useStrings()
+  const { getRBACErrorMessage } = useRBACError()
   const { accountId } = useParams<AccountPathProps>()
   const [isDownloadComplete, setIsDownloadComplete] = useState<boolean>(false)
   const [isDelegateDone, setIsDelegateDone] = useState<boolean>(false)
@@ -100,7 +102,7 @@ const ProvidePermissions: React.FC<StepProps<StepSecretManagerProps> & ProvidePe
       props.onSuccess?.(response?.data as ConnectorRequestBody)
       props.nextStep?.({ ...props.prevStepData } as ConnectorInfoDTO)
     } catch (e) {
-      modalErrorHandler?.showDanger(e.data?.message || e.message)
+      modalErrorHandler?.showDanger(getRBACErrorMessage(e))
     } finally {
       setIsSaving(false)
     }

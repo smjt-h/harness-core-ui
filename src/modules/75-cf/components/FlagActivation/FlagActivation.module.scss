@@ -9,9 +9,13 @@
   width: 200px !important;
 }
 
-.tabContainer {
+// this will be deprecated once FFM-1513 is complete
+.tabContainerHeight {
   height: calc(100% - 140px);
-  overflow-y: scroll;
+  overflow-y: auto;
+}
+
+.tabContainer {
   :global {
     .bp3-tab-list {
       border-bottom: 1px solid var(--grey-200) !important;

@@ -5,12 +5,12 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import React, { FC, useMemo } from 'react'
+import React, { FC } from 'react'
 import { useParams } from 'react-router-dom'
 import { Tab, Tabs, Page, Container, Layout } from '@wings-software/uicore'
 import { useStrings } from 'framework/strings'
 import { useGetSegment, Segment, Feature } from 'services/cf'
-import { useGetEnvironment, EnvironmentResponseDTO } from 'services/cd-ng'
+import { useGetEnvironment } from 'services/cd-ng'
 import { ContainerSpinner } from '@common/components/ContainerSpinner/ContainerSpinner'
 import StringWithTooltip from '@common/components/StringWithTooltip/StringWithTooltip'
 import { useDocumentTitle } from '@common/hooks/useDocumentTitle'
@@ -20,10 +20,12 @@ import useActiveEnvironment from '@cf/hooks/useActiveEnvironment'
 import { useGitSync } from '@cf/hooks/useGitSync'
 import TargetManagementToolbar from '@cf/components/TargetManagementToolbar/TargetManagementToolbar'
 import { AuditLogs } from '@cf/components/AuditLogs/AuditLogs'
-import { DetailPageTemplate, DetailPageTemplateProps } from '@cf/components/DetailPageTemplate/DetailPageTemplate'
-import TargetGroupHeader from './components/TargetGroupHeader'
+import { DetailPageTemplate } from '@cf/components/DetailPageTemplate/DetailPageTemplate'
+import { ResourceType } from '@rbac/interfaces/ResourceType'
+import { PermissionIdentifier } from '@rbac/interfaces/PermissionIdentifier'
 import TargetGroupCriteria from './components/TargetGroupCriteria'
 import FlagSettingsPanel from './components/FlagSettingsPanel/FlagSettingsPanel'
+import useDeleteTargetGroupDialog from './hooks/useDeleteTargetGroupDialog'
 
 import css from './TargetGroupDetailPage.module.scss'
 
@@ -70,32 +72,20 @@ const TargetGroupDetailPage: FC = () => {
     }
   })
 
-  const breadcrumbs = useMemo<DetailPageTemplateProps['breadcrumbs']>(
-    () => [
-      {
-        title: `${getString('cf.shared.targetManagement')}: ${getString('cf.shared.segments')}`,
-        url: withActiveEnvironment(
-          routes.toCFSegments({
-            accountId: accountIdentifier,
-            orgIdentifier,
-            projectIdentifier
-          })
-        )
-      }
-    ],
-    [accountIdentifier, orgIdentifier, projectIdentifier, withActiveEnvironment]
-  )
+  const deleteTargetGroupDialog = useDeleteTargetGroupDialog(targetGroup as Segment)
 
-  const createdDate = useMemo<string | undefined>(
-    () =>
-      targetGroup?.createdAt
-        ? getString('cf.targetDetail.createdOnDate', {
-            date: formatDate(targetGroup.createdAt as number),
-            time: formatTime(targetGroup.createdAt as number)
-          })
-        : undefined,
-    [targetGroup?.createdAt]
-  )
+  const breadcrumbs = [
+    {
+      label: `${getString('cf.shared.targetManagement')}: ${getString('cf.shared.segments')}`,
+      url: withActiveEnvironment(
+        routes.toCFSegments({
+          accountId: accountIdentifier,
+          orgIdentifier,
+          projectIdentifier
+        })
+      )
+    }
+  ]
 
   if (targetGroupLoading || envLoading) {
     return <ContainerSpinner flex={{ align: 'center-center' }} />
@@ -116,11 +106,23 @@ const TargetGroupDetailPage: FC = () => {
     <DetailPageTemplate
       breadcrumbs={breadcrumbs}
       title={targetGroup?.name}
-      subTitle={createdDate}
+      subTitle={getString('cf.targetDetail.createdOnDate', {
+        date: formatDate(targetGroup?.createdAt as number),
+        time: formatTime(targetGroup?.createdAt as number)
+      })}
       identifier={targetGroup?.identifier}
-      headerExtras={
-        <TargetGroupHeader targetGroup={targetGroup as Segment} env={envData?.data as EnvironmentResponseDTO} />
-      }
+      menuItems={[
+        {
+          icon: 'cross',
+          text: getString('delete'),
+          onClick: deleteTargetGroupDialog,
+          permission: {
+            resource: { resourceType: ResourceType.ENVIRONMENT, resourceIdentifier: targetGroup?.identifier },
+            permission: PermissionIdentifier.DELETE_FF_TARGETGROUP
+          }
+        }
+      ]}
+      metaData={{ environment: envData?.data?.name as string }}
     >
       <Layout.Vertical height="100%">
         {gitSync.isGitSyncActionsEnabled && <TargetManagementToolbar gitSync={gitSync} />}

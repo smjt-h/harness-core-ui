@@ -34,6 +34,7 @@ import { PermissionIdentifier } from '@rbac/interfaces/PermissionIdentifier'
 import RbacMenuItem from '@rbac/components/MenuItem/MenuItem'
 import { setPageNumber } from '@common/utils/utils'
 import { isCDCommunity, useLicenseStore } from 'framework/LicenseStore/LicenseStoreContext'
+import useRBACError from '@rbac/utils/useRBACError/useRBACError'
 import css from './UserListView.module.scss'
 
 interface PendingUserListViewProps {
@@ -95,6 +96,7 @@ const RenderColumnEmail: Renderer<CellProps<Invite>> = ({ row }) => {
 const RenderColumnMenu: Renderer<CellProps<Invite>> = ({ row, column }) => {
   const data = row.original
   const { accountId } = useParams<AccountPathProps>()
+  const { getRBACErrorMessage } = useRBACError()
   const [menuOpen, setMenuOpen] = useState(false)
   const { mutate: updateInvite } = useUpdateInvite({ inviteId: data.id, queryParams: { accountIdentifier: accountId } })
   const { showSuccess, showError } = useToaster()
@@ -115,7 +117,7 @@ const RenderColumnMenu: Renderer<CellProps<Invite>> = ({ row, column }) => {
           deleted && showSuccess(getString('rbac.usersPage.deleteSuccessMessage', { name: data?.name || data?.email }))
           ;(column as any).refetchPendingUsers?.()
         } catch (err) {
-          showError(err?.data?.message || err?.message)
+          showError(getRBACErrorMessage(err))
         }
       }
     }
@@ -131,7 +133,7 @@ const RenderColumnMenu: Renderer<CellProps<Invite>> = ({ row, column }) => {
         showSuccess(getString('rbac.usersPage.resendInviteSuccess', { name: data.email }))
       }
     } catch (err) {
-      showError(err.data?.message || err.message)
+      showError(getRBACErrorMessage(err))
     }
   }
 

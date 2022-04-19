@@ -7,35 +7,27 @@
 
 import React from 'react'
 import { useHistory, useParams } from 'react-router-dom'
-import { Avatar, Container, Layout, Text, PageError } from '@wings-software/uicore'
+import { Container, Layout, PageError } from '@wings-software/uicore'
 import { Intent } from '@harness/design-system'
-import { useStrings } from 'framework/strings'
-import { DeleteTargetQueryParams, GetTargetQueryParams, useDeleteTarget, useGetTarget } from 'services/cf'
+import { String, useStrings } from 'framework/strings'
+import { DeleteTargetQueryParams, GetTargetQueryParams, Target, useDeleteTarget, useGetTarget } from 'services/cf'
 import routes from '@common/RouteDefinitions'
 import { ContainerSpinner } from '@common/components/ContainerSpinner/ContainerSpinner'
 import { PageSpinner, useToaster } from '@common/components'
-import { DISABLE_AVATAR_PROPS, formatDate, formatTime, getErrorMessage, showToaster } from '@cf/utils/CFUtils'
+import { formatDate, formatTime, getErrorMessage, showToaster } from '@cf/utils/CFUtils'
 import { useConfirmAction } from '@common/hooks'
 import { useDocumentTitle } from '@common/hooks/useDocumentTitle'
 import { useGetEnvironment } from 'services/cd-ng'
 import { DetailPageTemplate } from '@cf/components/DetailPageTemplate/DetailPageTemplate'
 import useActiveEnvironment from '@cf/hooks/useActiveEnvironment'
-import RbacOptionsMenuButton from '@rbac/components/RbacOptionsMenuButton/RbacOptionsMenuButton'
 import { ResourceType } from '@rbac/interfaces/ResourceType'
 import { PermissionIdentifier } from '@rbac/interfaces/PermissionIdentifier'
 import TargetManagementToolbar from '@cf/components/TargetManagementToolbar/TargetManagementToolbar'
 import { useGitSync } from '@cf/hooks/useGitSync'
 import { TargetSettings } from './target-settings/TargetSettings'
 import { FlagSettings } from './flag-settings/FlagSettings'
-import css from './TargetDetailPage.module.scss'
 
-export const fullSizeContentStyle: React.CSSProperties = {
-  position: 'fixed',
-  top: '135px',
-  left: '290px',
-  width: 'calc(100% - 290px)',
-  height: 'calc(100% - 135px)'
-}
+import css from './TargetDetailPage.module.scss'
 
 export const TargetDetailPage: React.FC = () => {
   const { getString } = useStrings()
@@ -61,18 +53,11 @@ export const TargetDetailPage: React.FC = () => {
       environmentIdentifier
     } as GetTargetQueryParams
   })
-  const { data: environment } = useGetEnvironment({
-    environmentIdentifier,
-    queryParams: {
-      accountId: accountIdentifier,
-      projectIdentifier,
-      orgIdentifier
-    }
-  })
-  const title = `${getString('cf.shared.targetManagement')}: ${getString('pipeline.targets.title')}`
+
+  const label = `${getString('cf.shared.targetManagement')}: ${getString('pipeline.targets.title')}`
   const breadcrumbs = [
     {
-      title,
+      label,
       url: withActiveEnvironment(
         routes.toCFTargets({
           accountId: accountIdentifier,
@@ -91,17 +76,19 @@ export const TargetDetailPage: React.FC = () => {
       orgIdentifier
     } as DeleteTargetQueryParams
   })
+
+  const { data: environment } = useGetEnvironment({
+    environmentIdentifier,
+    queryParams: {
+      accountId: accountIdentifier,
+      projectIdentifier,
+      orgIdentifier
+    }
+  })
+
   const deleteTargetConfirm = useConfirmAction({
     title: getString('cf.targets.deleteTarget'),
-    message: (
-      <Text>
-        <span
-          dangerouslySetInnerHTML={{
-            __html: getString('cf.targets.deleteTargetMessage', { name: target?.name })
-          }}
-        />
-      </Text>
-    ),
+    message: <String stringID="cf.targets.deleteTargetMessage" vars={{ name: target?.name }} />,
     intent: Intent.DANGER,
     action: async () => {
       clear()
@@ -131,7 +118,7 @@ export const TargetDetailPage: React.FC = () => {
 
   const gitSync = useGitSync()
 
-  useDocumentTitle(title)
+  useDocumentTitle(label)
 
   if (loading) {
     if (!target) {
@@ -139,7 +126,7 @@ export const TargetDetailPage: React.FC = () => {
     }
 
     return (
-      <Container style={fullSizeContentStyle}>
+      <Container className={css.fullSizeContentStyle}>
         <ContainerSpinner />
       </Container>
     )
@@ -159,52 +146,35 @@ export const TargetDetailPage: React.FC = () => {
       return ErrorComponent
     }
 
-    return <Container style={fullSizeContentStyle}>{ErrorComponent}</Container>
+    return <Container className={css.fullSizeContentStyle}>{ErrorComponent}</Container>
   }
 
   return (
     <DetailPageTemplate
+      menuItems={[
+        {
+          icon: 'cross',
+          text: getString('delete'),
+          onClick: deleteTargetConfirm,
+          permission: {
+            resource: { resourceType: ResourceType.ENVIRONMENT, resourceIdentifier: environmentIdentifier },
+            permission: PermissionIdentifier.DELETE_FF_TARGETGROUP
+          }
+        }
+      ]}
       breadcrumbs={breadcrumbs}
       title={target?.name}
-      titleIcon={<Avatar name={target?.name} size="medium" {...DISABLE_AVATAR_PROPS} className={css.avatar} />}
       subTitle={getString('cf.targetDetail.createdOnDate', {
         date: formatDate(target?.createdAt as number),
         time: formatTime(target?.createdAt as number)
       })}
       identifier={target?.identifier}
-      headerExtras={
-        <>
-          <Container style={{ position: 'absolute', top: '15px', right: '25px' }}>
-            <RbacOptionsMenuButton
-              items={[
-                {
-                  icon: 'cross',
-                  text: getString('delete'),
-                  onClick: deleteTargetConfirm,
-                  permission: {
-                    resource: { resourceType: ResourceType.ENVIRONMENT, resourceIdentifier: environmentIdentifier },
-                    permission: PermissionIdentifier.DELETE_FF_TARGETGROUP
-                  }
-                }
-              ]}
-            />
-          </Container>
-          <Text style={{ position: 'absolute', top: '76px', right: '30px' }}>
-            <span
-              dangerouslySetInnerHTML={{
-                __html: getString('cf.targetDetail.environmentLine', {
-                  name: environment?.data?.name || target?.environment
-                })
-              }}
-            />
-          </Text>
-        </>
-      }
+      metaData={{ environment: environment?.data?.name as string }}
     >
-      <Layout.Vertical height="100%" style={{ flexGrow: 1, background: 'var(--white)' }}>
+      <Layout.Vertical height="100%" className={css.gitSyncContainer}>
         {gitSync.isGitSyncActionsEnabled && <TargetManagementToolbar gitSync={gitSync} />}
         <Layout.Horizontal height="100%">
-          <TargetSettings target={target} />
+          <TargetSettings target={target as Target} />
           <FlagSettings target={target} gitSync={gitSync} />
         </Layout.Horizontal>
       </Layout.Vertical>

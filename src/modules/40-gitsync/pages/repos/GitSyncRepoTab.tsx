@@ -56,6 +56,7 @@ import { Scope } from '@common/interfaces/SecretsInterface'
 import CopyToClipboard from '@common/components/CopyToClipBoard/CopyToClipBoard'
 import { StringUtils } from '@common/exports'
 import { useAppStore } from 'framework/AppStore/AppStoreContext'
+import useRBACError from '@rbac/utils/useRBACError/useRBACError'
 import css from './GitSyncRepoTab.module.scss'
 
 enum RepoState {
@@ -184,6 +185,7 @@ const GitSyncRepoTab: React.FC = () => {
   const RenderColumnRootFolder: Renderer<CellProps<GitSyncConfig>> = ({ row }) => {
     const { accountId, orgIdentifier, projectIdentifier } = useParams<ProjectPathProps>()
     const { showSuccess, showError } = useToaster()
+    const { getRBACErrorMessage } = useRBACError()
     const [repoState, setRepoState] = React.useState<RepoState>(RepoState.VIEW)
     const [repoData, setRepoData] = React.useState<GitSyncConfig>(row.original)
     const { mutate: updateGitSyncRepo, loading } = usePutGitSync({
@@ -220,9 +222,9 @@ const GitSyncRepoTab: React.FC = () => {
         hideModal()
       } catch (e) {
         if (whileAddingNewFolder) {
-          modalErrorHandler?.showDanger(e.data?.message || e.message)
+          modalErrorHandler?.showDanger(getRBACErrorMessage(e))
         } else {
-          showError(e.data?.message || e.message)
+          showError(getRBACErrorMessage(e))
         }
       }
     }

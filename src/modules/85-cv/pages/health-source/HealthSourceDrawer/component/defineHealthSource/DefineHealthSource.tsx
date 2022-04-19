@@ -80,6 +80,12 @@ function DefineHealthSource(props: DefineHealthSourceProps): JSX.Element {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
+  // useEffect(() => {
+  //   if (sourceData.selectedDashboards) {
+  //     sourceData.selectedDashboards = new Map()
+  //   }
+  // }, [sourceData?.connectorRef])
+
   return (
     <BGColorWrapper>
       <Formik
@@ -94,7 +100,11 @@ function DefineHealthSource(props: DefineHealthSourceProps): JSX.Element {
         validationSchema={validate(getString)}
         onSubmit={values => {
           onSubmit?.(values)
-          onNext(values, { tabStatus: 'SUCCESS' })
+          let formValues = values
+          if (sourceData.selectedDashboards && values?.connectorRef !== sourceData?.connectorRef) {
+            formValues = { ...values, selectedDashboards: new Map() }
+          }
+          onNext(formValues, { tabStatus: 'SUCCESS' })
         }}
       >
         {formik => {

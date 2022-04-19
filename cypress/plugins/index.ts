@@ -25,9 +25,12 @@
 // eslint-disable-next-line no-unused-vars
 const fs = require('fs')
 const _ = require('lodash')
+const { addMatchImageSnapshotPlugin } = require('cypress-image-snapshot/plugin')
 
 const cypressTypeScriptPreprocessor = require('./cy-ts-preprocessor')
 module.exports = (on: Cypress.PluginEvents, config: Cypress.PluginConfigOptions) => {
+  // we register our plugin using its register method:
+  addMatchImageSnapshotPlugin(on, config)
   // Deleting retried screenshots if test passes eventually
   on('after:spec', (spec, results) => {
     const deleteScrenshots = []

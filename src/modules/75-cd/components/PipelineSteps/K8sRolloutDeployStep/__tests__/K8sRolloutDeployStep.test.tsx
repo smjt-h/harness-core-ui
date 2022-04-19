@@ -8,7 +8,7 @@
 import React from 'react'
 import { render } from '@testing-library/react'
 import { RUNTIME_INPUT_VALUE } from '@wings-software/uicore'
-import { StepViewType } from '@pipeline/components/AbstractSteps/Step'
+import { StepFormikRef, StepViewType } from '@pipeline/components/AbstractSteps/Step'
 import { StepType } from '@pipeline/components/PipelineSteps/PipelineStepInterface'
 import { factory, TestStepWidget } from '@pipeline/components/PipelineSteps/Steps/__tests__/StepTestUtil'
 import { K8RolloutDeployStep } from '../K8sRolloutDeployStep'
@@ -92,17 +92,100 @@ describe('Test K8sRolloutDeployStep', () => {
     const { container } = render(
       <TestStepWidget
         initialValues={{ identifier: 'Test_A', type: 'K8sRollingDeploy', spec: { skipDryRun: false } }}
-        template={{ identifier: 'Test_A', type: 'K8sRollingDeploy', spec: { skipDryRun: RUNTIME_INPUT_VALUE } }}
+        template={{
+          identifier: 'Test_A',
+          type: 'K8sRollingDeploy',
+          timeout: RUNTIME_INPUT_VALUE,
+          spec: { skipDryRun: RUNTIME_INPUT_VALUE }
+        }}
         allValues={{
           type: 'K8sRollingDeploy',
           name: 'Test A',
           identifier: 'Test_A',
           spec: { skipDryRun: RUNTIME_INPUT_VALUE, timeout: '10m' }
         }}
+        path=""
         type={StepType.K8sRollingDeploy}
         stepViewType={StepViewType.InputSet}
       />
     )
+    expect(container).toMatchSnapshot()
+  })
+  test('Validate timeout is min 10s with runtime', () => {
+    const response = new K8RolloutDeployStep().validateInputSet({
+      data: {
+        name: 'Test A',
+        identifier: 'Test A',
+        timeout: '5s',
+        type: StepType.K8sRollingDeploy,
+        spec: {
+          skipDryRun: false
+        }
+      },
+      template: {
+        name: 'Test A',
+        identifier: 'Test A',
+        timeout: '<+input>',
+        type: StepType.K8sRollingDeploy,
+        spec: {
+          skipDryRun: false
+        }
+      },
+      viewType: StepViewType.TriggerForm
+    })
+    expect(response).toMatchSnapshot()
+  })
+  test('inputSet', async () => {
+    const ref = React.createRef<StepFormikRef<unknown>>()
+    const { container } = render(
+      <TestStepWidget
+        initialValues={{ identifier: 'Test_A', type: 'K8sRollingDeploy', spec: { skipDryRun: false } }}
+        template={{
+          identifier: 'Test_A',
+          type: 'K8sRollingDeploy',
+          timeout: RUNTIME_INPUT_VALUE,
+          spec: { skipDryRun: RUNTIME_INPUT_VALUE }
+        }}
+        allValues={{
+          type: 'K8sRollingDeploy',
+          name: 'Test A',
+          identifier: 'Test_A',
+          spec: { skipDryRun: RUNTIME_INPUT_VALUE, timeout: '<+input>' }
+        }}
+        type={StepType.K8sRollingDeploy}
+        stepViewType={StepViewType.InputSet}
+        formikRef={ref}
+        path={'/abc'}
+      />
+    )
+    expect(container).toMatchSnapshot()
+  })
+
+  test('on edit view update', async () => {
+    const onUpdate = jest.fn()
+    const onChange = jest.fn()
+    const ref = React.createRef<StepFormikRef<unknown>>()
+
+    const { container } = render(
+      <TestStepWidget
+        initialValues={{
+          name: 'Test A',
+          identifier: 'Test A',
+          timeout: '5s',
+          type: StepType.K8sRollingDeploy,
+          spec: {
+            skipDryRun: false,
+            timeout: '10m'
+          }
+        }}
+        type={StepType.K8sRollingDeploy}
+        stepViewType={StepViewType.Edit}
+        onUpdate={onUpdate}
+        onChange={onChange}
+        ref={ref}
+      />
+    )
+    await ref.current?.submitForm()
     expect(container).toMatchSnapshot()
   })
 })

@@ -1,0 +1,451 @@
+{
+  "status": "SUCCESS",
+  "data": {
+    "pipelineExecutionSummary": {
+      "pipelineIdentifier": "testPipeline_Cypressss",
+      "planExecutionId": "K9L24j6ISg62r3R7gOlglQ",
+      "name": "testPipeline_Cypressss",
+      "status": "Success",
+      "tags": [],
+      "executionTriggerInfo": {
+        "triggerType": "MANUAL",
+        "triggeredBy": {
+          "uuid": "qUaLKpHcTOS3ThJVG2bwIw",
+          "identifier": "Pratyush Garg",
+          "extraInfo": {
+            "email": "pratyush.garg@harness.io"
+          }
+        },
+        "isRerun": false
+      },
+      "governanceMetadata": {
+        "id": "",
+        "deny": false,
+        "details": [],
+        "message": "FF: [OPA_PIPELINE_GOVERNANCE] is disabled for account: [px7xd_BFRCi-pfWPYXVjvw]",
+        "timestamp": "0",
+        "status": "",
+        "accountId": "",
+        "orgId": "",
+        "projectId": "",
+        "entity": "",
+        "type": "",
+        "action": "",
+        "created": "0"
+      },
+      "moduleInfo": {
+        "cd": {
+          "__recast": "io.harness.cdng.pipeline.executions.beans.CDPipelineModuleInfo",
+          "envIdentifiers": ["re"],
+          "environmentTypes": ["Production"],
+          "infrastructureTypes": ["KubernetesDirect"],
+          "serviceDefinitionTypes": ["Kubernetes"],
+          "serviceIdentifiers": ["testService"]
+        }
+      },
+      "layoutNodeMap": {
+        "nodeId": {
+          "nodeType": "Deployment",
+          "nodeGroup": "STAGE",
+          "nodeIdentifier": "testStage_Cypress",
+          "name": "testStage_Cypress",
+          "nodeUuid": "nodeId",
+          "status": "Success",
+          "module": "cd",
+          "moduleInfo": {
+            "cd": {
+              "__recast": "io.harness.cdng.pipeline.executions.beans.CDStageModuleInfo",
+              "serviceInfo": {
+                "__recast": "io.harness.cdng.pipeline.executions.beans.ServiceExecutionSummary",
+                "identifier": "testService",
+                "displayName": "testService",
+                "deploymentType": "Kubernetes",
+                "artifacts": {
+                  "__recast": "io.harness.cdng.pipeline.executions.beans.ServiceExecutionSummary$ArtifactsSummary",
+                  "sidecars": []
+                }
+              },
+              "infraExecutionSummary": {
+                "__recast": "io.harness.cdng.pipeline.executions.beans.InfraExecutionSummary",
+                "identifier": "re",
+                "name": "testEnv",
+                "type": "Production"
+              }
+            }
+          },
+          "startTs": 1648625645470,
+          "endTs": 1648625660602,
+          "edgeLayoutList": { "currentNodeChildren": [], "nextIds": [] },
+          "nodeRunInfo": {
+            "whenCondition": "\u003c+OnPipelineSuccess\u003e",
+            "evaluatedCondition": true,
+            "expressions": [
+              {
+                "expression": "OnPipelineSuccess",
+                "expressionValue": "true",
+                "count": 1
+              }
+            ]
+          },
+          "failureInfo": {
+            "message": ""
+          },
+          "failureInfoDTO": { "message": "", "failureTypeList": [], "responseMessages": [] }
+        }
+      },
+      "modules": ["cd"],
+      "startingNodeId": "nodeId",
+      "startTs": 1648625645309,
+      "endTs": 1648625662702,
+      "createdAt": 1648625645348,
+      "canRetry": true,
+      "showRetryHistory": false,
+      "runSequence": 7,
+      "successfulStagesCount": 1,
+      "runningStagesCount": 0,
+      "failedStagesCount": 0,
+      "totalStagesCount": 1,
+      "allowStageExecutions": false,
+      "stagesExecution": false
+    },
+    "executionGraph": {
+      "rootNodeId": "WHV_b-CeTSuO6xNfbr0pnQ",
+      "nodeMap": {
+        "KIIXcj5lSC6Km3UAueEXmw": {
+          "uuid": "KIIXcj5lSC6Km3UAueEXmw",
+          "setupId": "jJGnNubHQeOowLLKMQhFZA",
+          "name": "Shell",
+          "identifier": "Shell",
+          "baseFqn": "pipeline.stages.testStage_Cypress.spec.execution.steps.Shell",
+          "outcomes": { "output": { "outputVariables": {} } },
+          "stepParameters": {
+            "uuid": null,
+            "identifier": "Shell",
+            "name": "Shell",
+            "description": null,
+            "timeout": "10m",
+            "failureStrategies": null,
+            "skipCondition": null,
+            "type": "ShellScript",
+            "spec": {
+              "outputVariables": {},
+              "environmentVariables": {},
+              "shell": "Bash",
+              "source": { "type": "Inline", "spec": { "script": "echo 12" } },
+              "executionTarget": { "host": "", "connectorRef": "", "workingDirectory": "" },
+              "onDelegate": true,
+              "delegateSelectors": null
+            },
+            "delegateSelectors": null
+          },
+          "startTs": 1648625653050,
+          "endTs": 1648625657771,
+          "stepType": "ShellScript",
+          "status": "Success",
+          "failureInfo": { "message": "", "failureTypeList": [], "responseMessages": [] },
+          "skipInfo": null,
+          "nodeRunInfo": {
+            "whenCondition": "\u003c+OnStageSuccess\u003e",
+            "evaluatedCondition": true,
+            "expressions": [
+              {
+                "expression": "OnStageSuccess",
+                "expressionValue": "true",
+                "count": 1
+              }
+            ]
+          },
+          "executableResponses": [
+            {
+              "task": {
+                "taskId": "y6CnUEjCQcWb_jUNJ6UW2Q",
+                "taskCategory": "DELEGATE_TASK_V2",
+                "logKeys": [
+                  "accountId:px7xd_BFRCi-pfWPYXVjvw/orgId:default/projectId:project1/pipelineId:testPipeline_Cypressss/runSequence:7/level0:pipeline/level1:stages/level2:testStage_Cypress/level3:spec/level4:execution/level5:steps/level6:Shell-commandUnit:Execute"
+                ],
+                "units": ["Execute"],
+                "taskName": "Shell Script Task"
+              }
+            }
+          ],
+          "unitProgresses": [
+            {
+              "unitName": "Execute",
+              "status": "SUCCESS",
+              "startTime": "1648625654305",
+              "endTime": "1648625654495"
+            }
+          ],
+          "progressData": {
+            "unitProgresses": [
+              { "unitName": "Execute", "status": "SUCCESS", "startTime": "1648625654305", "endTime": "1648625654495" }
+            ]
+          },
+          "delegateInfoList": [
+            { "id": null, "name": null, "taskId": "y6CnUEjCQcWb_jUNJ6UW2Q", "taskName": "Shell Script Task" }
+          ],
+          "interruptHistories": [],
+          "stepDetails": null
+        },
+        "WHV_b-CeTSuO6xNfbr0pnQ": {
+          "uuid": "WHV_b-CeTSuO6xNfbr0pnQ",
+          "setupId": "nodeId",
+          "name": "testStage_Cypress",
+          "identifier": "testStage_Cypress",
+          "baseFqn": "pipeline.stages.testStage_Cypress",
+          "outcomes": {},
+          "stepParameters": {
+            "uuid": "nodeId",
+            "identifier": "testStage_Cypress",
+            "name": "testStage_Cypress",
+            "description": "",
+            "skipCondition": null,
+            "when": { "pipelineStatus": "SUCCESS", "condition": null },
+            "failureStrategies": [
+              { "onFailure": { "errors": ["ALL_ERRORS"], "action": { "type": "STAGE_ROLLBACK" } } }
+            ],
+            "variables": { "__recast": "java.util.LinkedHashMap" },
+            "tags": {},
+            "type": "Deployment",
+            "specConfig": { "childNodeID": null }
+          },
+          "startTs": 1648625645470,
+          "endTs": 1648625660602,
+          "stepType": "DEPLOYMENT_STAGE_STEP",
+          "status": "Success",
+          "failureInfo": { "message": "", "failureTypeList": [], "responseMessages": [] },
+          "skipInfo": null,
+          "nodeRunInfo": {
+            "whenCondition": "\u003c+OnPipelineSuccess\u003e",
+            "evaluatedCondition": true,
+            "expressions": [
+              {
+                "expression": "OnPipelineSuccess",
+                "expressionValue": "true",
+                "count": 1
+              }
+            ]
+          },
+          "executableResponses": [
+            {
+              "child": {
+                "childNodeId": "rtrv_9ZpQY2HtY3eI7-X6w",
+                "logKeys": [],
+                "units": []
+              }
+            }
+          ],
+          "unitProgresses": [],
+          "progressData": null,
+          "delegateInfoList": [],
+          "interruptHistories": [],
+          "stepDetails": null
+        },
+        "Jhvy0cSLRRmofrjhgXmhHA": {
+          "uuid": "Jhvy0cSLRRmofrjhgXmhHA",
+          "setupId": "xZQfKzoGQ2WaYBD-XNqaSQ",
+          "name": "Infrastructure",
+          "identifier": "spec",
+          "baseFqn": "pipeline.stages.testStage_Cypress.spec.infrastructure.infrastructureDefinition.spec",
+          "outcomes": {
+            "output": {
+              "connectorRef": "test1111",
+              "namespace": "name",
+              "releaseName": "release-<+INFRA_KEY>",
+              "environment": {
+                "name": "testEnv",
+                "identifier": "re",
+                "description": "",
+                "type": "Production",
+                "tags": {}
+              },
+              "infrastructureKey": "f84efef3a4307270267c2748898a69d542b3d405"
+            }
+          },
+          "stepParameters": {
+            "connectorRef": "test1111",
+            "namespace": "name",
+            "releaseName": "release-<+INFRA_KEY>",
+            "metadata": null
+          },
+          "startTs": 1648625649937,
+          "endTs": 1648625651353,
+          "stepType": "INFRASTRUCTURE",
+          "status": "Success",
+          "failureInfo": { "message": "", "failureTypeList": [], "responseMessages": [] },
+          "skipInfo": null,
+          "nodeRunInfo": null,
+          "executableResponses": [
+            {
+              "sync": {
+                "logKeys": [],
+                "units": []
+              }
+            }
+          ],
+          "unitProgresses": [
+            {
+              "unitName": "Execute",
+              "status": "SUCCESS",
+              "startTime": "1648625650024",
+              "endTime": "1648625651327"
+            }
+          ],
+          "progressData": null,
+          "delegateInfoList": [],
+          "interruptHistories": [],
+          "stepDetails": null
+        },
+        "ch99nv2gQM2D3i9L13iSCQ": {
+          "uuid": "ch99nv2gQM2D3i9L13iSCQ",
+          "setupId": "OJnrCejDTxe67qd1KNh3zg",
+          "name": "Service",
+          "identifier": "serviceConfig",
+          "baseFqn": "pipeline.stages.testStage_Cypress.spec.serviceConfig",
+          "outcomes": {
+            "output": {
+              "serviceResult": {
+                "identifier": "testService",
+                "name": "testService",
+                "description": "testService",
+                "type": "Kubernetes",
+                "tags": {}
+              },
+              "variablesResult": {},
+              "manifestResults": null
+            }
+          },
+          "stepParameters": { "serviceRef": "testService", "childNodeId": null },
+          "startTs": 1648625645645,
+          "endTs": 1648625649742,
+          "stepType": "SERVICE_CONFIG",
+          "status": "Success",
+          "failureInfo": { "message": "", "failureTypeList": [], "responseMessages": [] },
+          "skipInfo": null,
+          "nodeRunInfo": null,
+          "executableResponses": [
+            {
+              "child": {
+                "childNodeId": "service-OJnrCejDTxe67qd1KNh3zg",
+                "logKeys": [
+                  "accountId:px7xd_BFRCi-pfWPYXVjvw/orgId:default/projectId:project1/pipelineId:testPipeline_Cypressss/runSequence:7/level0:pipeline/level1:stages/level2:testStage_Cypress/level3:spec/level4:serviceConfig"
+                ],
+                "units": []
+              }
+            }
+          ],
+          "unitProgresses": [],
+          "progressData": null,
+          "delegateInfoList": [],
+          "interruptHistories": [],
+          "stepDetails": null
+        },
+        "0B85E9VZRSm_CkpkUEIcrQ": {
+          "uuid": "0B85E9VZRSm_CkpkUEIcrQ",
+          "setupId": "HLxgr4ktS5WZgAoFCLR9bQ",
+          "name": "Resource Constraint",
+          "identifier": "rc-Bsn6pR_5Sju-B2ljaVR1-g",
+          "baseFqn": "pipeline.stages.testStage_Cypress.spec.rc-Bsn6pR_5Sju-B2ljaVR1-g",
+          "outcomes": {
+            "ResourceConstraint": {
+              "name": "Queuing",
+              "capacity": 1,
+              "resourceUnit": "f84efef3a4307270267c2748898a69d542b3d405",
+              "usage": 1,
+              "alreadyAcquiredPermits": 1
+            }
+          },
+          "stepParameters": {
+            "uuid": null,
+            "identifier": "rc-Bsn6pR_5Sju-B2ljaVR1-g",
+            "name": "Resource Constraint",
+            "description": null,
+            "timeout": "1w",
+            "failureStrategies": null,
+            "skipCondition": null,
+            "type": "ResourceConstraint",
+            "spec": {
+              "name": "Queuing",
+              "resourceUnit": "f84efef3a4307270267c2748898a69d542b3d405",
+              "acquireMode": "ENSURE",
+              "permits": 1,
+              "holdingScope": { "scope": "PLAN", "nodeSetupId": null }
+            },
+            "delegateSelectors": null
+          },
+          "startTs": 1648625652467,
+          "endTs": 1648625652681,
+          "stepType": "ResourceConstraint",
+          "status": "Success",
+          "failureInfo": { "message": "", "failureTypeList": [], "responseMessages": [] },
+          "skipInfo": null,
+          "nodeRunInfo": {
+            "whenCondition": "\u003c+OnStageSuccess\u003e",
+            "evaluatedCondition": true,
+            "expressions": [
+              {
+                "expression": "OnStageSuccess",
+                "expressionValue": "true",
+                "count": 1
+              }
+            ]
+          },
+          "executableResponses": [
+            {
+              "sync": {
+                "logKeys": [],
+                "units": []
+              }
+            }
+          ],
+          "unitProgresses": [],
+          "progressData": null,
+          "delegateInfoList": [],
+          "interruptHistories": [],
+          "stepDetails": null
+        },
+        "wNzbvVqIRDehfwCtzaDZUg": {
+          "uuid": "wNzbvVqIRDehfwCtzaDZUg",
+          "setupId": "WXSQk3OIQQuiH4SfekvSdQ",
+          "name": "Execution",
+          "identifier": "execution",
+          "baseFqn": "pipeline.stages.testStage_Cypress.spec.execution",
+          "outcomes": {},
+          "stepParameters": { "childNodeId": "WXSQk3OIQQuiH4SfekvSdQsteps", "logMessage": "Execution Element" },
+          "startTs": 1648625652688,
+          "endTs": 1648625657901,
+          "stepType": "NG_SECTION_WITH_ROLLBACK_INFO",
+          "status": "Success",
+          "failureInfo": { "message": "", "failureTypeList": [], "responseMessages": [] },
+          "skipInfo": null,
+          "nodeRunInfo": null,
+          "executableResponses": [
+            {
+              "child": {
+                "childNodeId": "WXSQk3OIQQuiH4SfekvSdQsteps",
+                "logKeys": [],
+                "units": []
+              }
+            }
+          ],
+          "unitProgresses": [],
+          "progressData": null,
+          "delegateInfoList": [],
+          "interruptHistories": [],
+          "stepDetails": null
+        }
+      },
+      "nodeAdjacencyListMap": {
+        "KIIXcj5lSC6Km3UAueEXmw": { "children": [], "nextIds": [] },
+        "WHV_b-CeTSuO6xNfbr0pnQ": { "children": ["ch99nv2gQM2D3i9L13iSCQ"], "nextIds": [] },
+        "Jhvy0cSLRRmofrjhgXmhHA": { "children": [], "nextIds": ["0B85E9VZRSm_CkpkUEIcrQ"] },
+        "ch99nv2gQM2D3i9L13iSCQ": { "children": [], "nextIds": ["Jhvy0cSLRRmofrjhgXmhHA"] },
+        "0B85E9VZRSm_CkpkUEIcrQ": { "children": [], "nextIds": ["wNzbvVqIRDehfwCtzaDZUg"] },
+        "wNzbvVqIRDehfwCtzaDZUg": { "children": ["KIIXcj5lSC6Km3UAueEXmw"], "nextIds": [] }
+      },
+      "representationStrategy": "camelCase"
+    }
+  },
+  "metaData": null,
+  "correlationId": "72bfcbfc-91d2-449b-b57a-c4256cb09f61"
+}

@@ -24,7 +24,8 @@ import { usePostRoleAssignments, RoleAssignment as RBACRoleAssignment } from 'se
 import { useStrings } from 'framework/strings'
 import type { RoleAssignmentMetadataDTO, ServiceAccountDTO, UserGroupDTO } from 'services/cd-ng'
 import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
-import { getAssignments, getRBACErrorMessage, isNewRoleAssignment, PrincipalType } from '@rbac/utils/utils'
+import { getAssignments, isNewRoleAssignment, PrincipalType } from '@rbac/utils/utils'
+import useRBACError from '@rbac/utils/useRBACError/useRBACError'
 import { isCDCommunity, useLicenseStore } from 'framework/LicenseStore/LicenseStoreContext'
 import RoleAssignmentForm from './RoleAssignmentForm'
 import type { Assignment } from './UserRoleAssigment'
@@ -52,6 +53,7 @@ const RoleAssignment: React.FC<RoleAssignmentData> = ({
   type
 }) => {
   const { accountId, orgIdentifier, projectIdentifier } = useParams<ProjectPathProps>()
+  const { getRBACErrorMessage } = useRBACError()
   const [modalErrorHandler, setModalErrorHandler] = useState<ModalErrorHandlerBinding>()
   const { getString } = useStrings()
   const { licenseInformation } = useLicenseStore()

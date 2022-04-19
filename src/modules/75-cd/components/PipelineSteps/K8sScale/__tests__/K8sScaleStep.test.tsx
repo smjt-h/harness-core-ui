@@ -448,9 +448,9 @@ describe('Test K8sBlueGreenDeployStep', () => {
       spec: {
         instanceSelection: {
           spec: {
-            count: '<+input>'
+            percentage: '<+input>'
           },
-          type: 'Count'
+          type: 'Percentage'
         },
         workload: 'test'
       },
@@ -460,15 +460,16 @@ describe('Test K8sBlueGreenDeployStep', () => {
     const { container, getByText } = render(
       <TestStepWidget
         initialValues={{}}
+        path={'/abc'}
         allValues={{
           identifier: 'Test_A',
           name: 'Test A',
           spec: {
             instanceSelection: {
               spec: {
-                count: '<+input>'
+                percentage: '<+input>'
               },
-              type: 'Count'
+              type: 'Percentage'
             },
             workload: 'test'
           },
@@ -521,5 +522,11 @@ describe('Test K8sBlueGreenDeployStep', () => {
       viewType: StepViewType.TriggerForm
     })
     expect(response).toMatchSnapshot()
+  })
+  test('should render null for StepviewType.template', () => {
+    const { container } = render(
+      <TestStepWidget initialValues={{}} type={StepType.K8sScale} stepViewType={StepViewType.Template} />
+    )
+    expect(container).toMatchSnapshot()
   })
 })

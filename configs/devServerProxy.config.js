@@ -6,7 +6,8 @@
  */
 
 const baseUrl = process.env.BASE_URL ?? 'https://qa.harness.io/gateway'
-const targetLocalHost = (process.env.TARGET_LOCALHOST && JSON.parse(process.env.TARGET_LOCALHOST)) ?? false // set to false to target baseUrl environment instead of localhost
+const targetLocalHost = (process.env.TARGET_LOCALHOST && JSON.parse(process.env.TARGET_LOCALHOST)) ?? true // set to false to target baseUrl environment instead of localhost
+
 console.table({ baseUrl, targetLocalHost })
 
 module.exports = {
@@ -65,11 +66,18 @@ module.exports = {
   '/dashboard': {
     target: targetLocalHost ? 'http://localhost:5000' : baseUrl
   },
+  '/gateway/dashboard': {
+    pathRewrite: { '^/gateway/dashboard': '/dashboard' },
+    target: targetLocalHost ? 'http://localhost:5000' : baseUrl
+  },
   '/ng-dashboard/api': {
     target: targetLocalHost ? 'http://localhost:7100' : `${baseUrl}/ng-dashboard/api`,
     pathRewrite: { '^/ng-dashboard/api': '' }
   },
   '/ccm/api': {
+    target: targetLocalHost ? 'http://localhost:5000' : baseUrl
+  },
+  '/ccm/public-pricing/api': {
     target: targetLocalHost ? 'http://localhost:5000' : baseUrl
   },
   '/ccm/recommendations/api': {

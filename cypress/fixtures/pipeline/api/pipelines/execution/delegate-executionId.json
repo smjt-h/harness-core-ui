@@ -1,0 +1,878 @@
+{
+  "status": "SUCCESS",
+  "data": {
+    "pipelineExecutionSummary": {
+      "pipelineIdentifier": "Nextgen_UI",
+      "planExecutionId": "a0lrzPRMQcqYr_bUWx4mlQ",
+      "name": "Nextgen UI",
+      "status": "Success",
+      "tags": [],
+      "executionTriggerInfo": {
+        "triggerType": "WEBHOOK_CUSTOM",
+        "triggeredBy": {
+          "uuid": "systemUser",
+          "identifier": "trigger_qafree",
+          "extraInfo": {
+            "execution_trigger_tag_needed_for_abort": "wFHXHD0RRQWoO8tIZT5YVw:Harness:Operations:Nextgen_UI",
+            "triggerRef": "wFHXHD0RRQWoO8tIZT5YVw/Harness/Operations/trigger_qafree",
+            "eventCorrelationId": "62565223e5d16a169b20e12d"
+          }
+        },
+        "isRerun": false
+      },
+      "governanceMetadata": {
+        "id": "",
+        "deny": false,
+        "details": [],
+        "message": "FF: [OPA_PIPELINE_GOVERNANCE] is disabled for account: [wFHXHD0RRQWoO8tIZT5YVw]",
+        "timestamp": "0",
+        "status": "",
+        "accountId": "",
+        "orgId": "",
+        "projectId": "",
+        "entity": "",
+        "type": "",
+        "action": "",
+        "created": "0"
+      },
+      "moduleInfo": {
+        "pms": {
+          "__recast": "io.harness.pms.plan.execution.PmsPipelineModuleInfo",
+          "approvalStageNames": ["JiraCreateApprove", "JiraClosure"],
+          "hasApprovalStage": true
+        },
+        "cd": {
+          "__recast": "io.harness.cdng.pipeline.executions.beans.CDPipelineModuleInfo",
+          "envIdentifiers": ["qafree"],
+          "environmentTypes": ["PreProduction"],
+          "infrastructureTypes": ["KubernetesDirect"],
+          "serviceDefinitionTypes": ["Kubernetes"],
+          "serviceIdentifiers": ["nextgenui"]
+        }
+      },
+      "layoutNodeMap": {
+        "tBpgocJST36iThsoyjX6DA": {
+          "nodeType": "Approval",
+          "nodeGroup": "STAGE",
+          "nodeIdentifier": "JiraClosure",
+          "name": "JiraClosure",
+          "nodeUuid": "tBpgocJST36iThsoyjX6DA",
+          "status": "Skipped",
+          "module": "pms",
+          "moduleInfo": {
+            "pms": { "__recast": "io.harness.pms.plan.execution.PmsExecutionServiceInfoProvider$PmsNoopModuleInfo" }
+          },
+          "startTs": 1649824342347,
+          "endTs": 1649824342447,
+          "edgeLayoutList": { "currentNodeChildren": [], "nextIds": [] },
+          "nodeRunInfo": {
+            "whenCondition": "\u003c+OnPipelineSuccess\u003e \u0026\u0026 (false)",
+            "evaluatedCondition": false,
+            "expressions": [
+              {
+                "expression": "OnPipelineSuccess",
+                "expressionValue": "true",
+                "count": 1
+              }
+            ]
+          },
+          "failureInfo": {
+            "message": ""
+          },
+          "failureInfoDTO": { "message": "", "failureTypeList": [], "responseMessages": [] }
+        },
+        "Dswl1Ln8T8aBx-8BEbunpQ": {
+          "nodeType": "Deployment",
+          "nodeGroup": "STAGE",
+          "nodeIdentifier": "nextgenui",
+          "name": "nextgen-ui",
+          "nodeUuid": "Dswl1Ln8T8aBx-8BEbunpQ",
+          "status": "Success",
+          "module": "cd",
+          "moduleInfo": {
+            "cd": {
+              "__recast": "io.harness.cdng.pipeline.executions.beans.CDStageModuleInfo",
+              "serviceInfo": {
+                "__recast": "io.harness.cdng.pipeline.executions.beans.ServiceExecutionSummary",
+                "identifier": "nextgenui",
+                "displayName": "nextgen-ui",
+                "deploymentType": "Kubernetes",
+                "artifacts": {
+                  "__recast": "io.harness.cdng.pipeline.executions.beans.ServiceExecutionSummary$ArtifactsSummary",
+                  "primary": {
+                    "__recast": "io.harness.cdng.artifact.GcrArtifactSummary",
+                    "imagePath": "platform-205701/harness/nextgenui-release",
+                    "tag": "0.295.11"
+                  },
+                  "sidecars": []
+                }
+              },
+              "infraExecutionSummary": {
+                "__recast": "io.harness.cdng.pipeline.executions.beans.InfraExecutionSummary",
+                "identifier": "qafree",
+                "name": "qa-free",
+                "type": "PreProduction"
+              }
+            }
+          },
+          "startTs": 1649824294773,
+          "endTs": 1649824342344,
+          "edgeLayoutList": { "currentNodeChildren": [], "nextIds": ["tBpgocJST36iThsoyjX6DA"] },
+          "nodeRunInfo": {
+            "whenCondition": "\u003c+OnPipelineSuccess\u003e",
+            "evaluatedCondition": true,
+            "expressions": [
+              {
+                "expression": "OnPipelineSuccess",
+                "expressionValue": "true",
+                "count": 1
+              }
+            ]
+          },
+          "failureInfo": {
+            "message": ""
+          },
+          "failureInfoDTO": { "message": "", "failureTypeList": [], "responseMessages": [] }
+        },
+        "KYZMaNuiTeuw1EP6JWHghQ": {
+          "nodeType": "Approval",
+          "nodeGroup": "STAGE",
+          "nodeIdentifier": "JiraCreateApprove",
+          "name": "JiraCreateApprove",
+          "nodeUuid": "KYZMaNuiTeuw1EP6JWHghQ",
+          "status": "Skipped",
+          "module": "pms",
+          "moduleInfo": {
+            "pms": { "__recast": "io.harness.pms.plan.execution.PmsExecutionServiceInfoProvider$PmsNoopModuleInfo" }
+          },
+          "startTs": 1649824294644,
+          "endTs": 1649824294770,
+          "edgeLayoutList": { "currentNodeChildren": [], "nextIds": ["Dswl1Ln8T8aBx-8BEbunpQ"] },
+          "nodeRunInfo": {
+            "whenCondition": "\u003c+OnPipelineSuccess\u003e \u0026\u0026 (false)",
+            "evaluatedCondition": false,
+            "expressions": [
+              {
+                "expression": "OnPipelineSuccess",
+                "expressionValue": "true",
+                "count": 1
+              }
+            ]
+          },
+          "failureInfo": {
+            "message": ""
+          },
+          "failureInfoDTO": { "message": "", "failureTypeList": [], "responseMessages": [] }
+        }
+      },
+      "modules": ["pms", "cd"],
+      "startingNodeId": "KYZMaNuiTeuw1EP6JWHghQ",
+      "startTs": 1649824294472,
+      "endTs": 1649824342549,
+      "createdAt": 1649824294512,
+      "canRetry": true,
+      "showRetryHistory": false,
+      "runSequence": 361,
+      "successfulStagesCount": 1,
+      "runningStagesCount": 0,
+      "failedStagesCount": 0,
+      "totalStagesCount": 3,
+      "allowStageExecutions": false,
+      "stagesExecution": false
+    },
+    "executionGraph": {
+      "rootNodeId": "_btG4XuXReC_zxi--3U4xw",
+      "nodeMap": {
+        "z0TczEgVSLOMDBKgGatUwg": {
+          "uuid": "z0TczEgVSLOMDBKgGatUwg",
+          "setupId": "ZAIasWoFRcmfRhcSTkkOUQ",
+          "name": "Resource Constraint",
+          "identifier": "rc-WLRCDCdfTWCa4S7PiLV26A",
+          "baseFqn": "pipeline.stages.nextgenui.spec.rc-WLRCDCdfTWCa4S7PiLV26A",
+          "outcomes": {
+            "ResourceConstraint": {
+              "name": "Queuing",
+              "capacity": 1,
+              "resourceUnit": "b0032438de2636ce4342798d2cbcece5e45e791a",
+              "usage": 1,
+              "alreadyAcquiredPermits": 1
+            }
+          },
+          "stepParameters": {
+            "uuid": null,
+            "identifier": "rc-WLRCDCdfTWCa4S7PiLV26A",
+            "name": "Resource Constraint",
+            "description": null,
+            "timeout": "1w",
+            "failureStrategies": null,
+            "skipCondition": null,
+            "type": "ResourceConstraint",
+            "spec": {
+              "name": "Queuing",
+              "resourceUnit": "b0032438de2636ce4342798d2cbcece5e45e791a",
+              "acquireMode": "ENSURE",
+              "permits": 1,
+              "holdingScope": { "scope": "PLAN", "nodeSetupId": null }
+            },
+            "delegateSelectors": null
+          },
+          "startTs": 1649824298830,
+          "endTs": 1649824299086,
+          "stepType": "ResourceConstraint",
+          "status": "Success",
+          "failureInfo": { "message": "", "failureTypeList": [], "responseMessages": [] },
+          "skipInfo": null,
+          "nodeRunInfo": {
+            "whenCondition": "\u003c+OnStageSuccess\u003e",
+            "evaluatedCondition": true,
+            "expressions": [
+              {
+                "expression": "OnStageSuccess",
+                "expressionValue": "true",
+                "count": 1
+              }
+            ]
+          },
+          "executableResponses": [
+            {
+              "sync": {
+                "logKeys": [],
+                "units": []
+              }
+            }
+          ],
+          "unitProgresses": [],
+          "progressData": null,
+          "delegateInfoList": [],
+          "interruptHistories": [],
+          "stepDetails": null
+        },
+        "_btG4XuXReC_zxi--3U4xw": {
+          "uuid": "_btG4XuXReC_zxi--3U4xw",
+          "setupId": "H68Ik5qNQCOqrWfPkwQv7Q",
+          "name": "Nextgen UI",
+          "identifier": "pipeline",
+          "baseFqn": "pipeline",
+          "outcomes": {},
+          "stepParameters": {
+            "childNodeID": "H68Ik5qNQCOqrWfPkwQv7Qstages",
+            "name": "Nextgen UI",
+            "identifier": "Nextgen_UI",
+            "description": "",
+            "tags": {},
+            "properties": { "__recast": "java.util.LinkedHashMap" },
+            "variables": {
+              "__recast": "java.util.LinkedHashMap",
+              "Connector": {
+                "__recast": "parameterField",
+                "__encodedValue": {
+                  "__recast": "io.harness.pms.yaml.ParameterDocumentField",
+                  "expressionValue": null,
+                  "expression": false,
+                  "valueDoc": { "__recast": "io.harness.pms.yaml.ParameterFieldValueWrapper", "value": "qaprivate" },
+                  "valueClass": null,
+                  "typeString": true,
+                  "skipAutoEvaluation": false,
+                  "inputSetValidator": {
+                    "__recast": "io.harness.pms.yaml.validation.InputSetValidator",
+                    "validatorType": "ALLOWED_VALUES",
+                    "parameters": "uatprivate,uatfailoverprivate,prodprivateprimary,prodprivatefailover,freeprivateprimary,freeprivatefailover,qaprivate"
+                  },
+                  "jsonResponseField": false,
+                  "responseField": null
+                }
+              },
+              "availabilityType": {
+                "__recast": "parameterField",
+                "__encodedValue": {
+                  "__recast": "io.harness.pms.yaml.ParameterDocumentField",
+                  "expressionValue": null,
+                  "expression": false,
+                  "valueDoc": { "__recast": "io.harness.pms.yaml.ParameterFieldValueWrapper", "value": "primary" },
+                  "valueClass": null,
+                  "typeString": true,
+                  "skipAutoEvaluation": false,
+                  "inputSetValidator": {
+                    "__recast": "io.harness.pms.yaml.validation.InputSetValidator",
+                    "validatorType": "ALLOWED_VALUES",
+                    "parameters": "primary,failover"
+                  },
+                  "jsonResponseField": false,
+                  "responseField": null
+                }
+              },
+              "envType": {
+                "__recast": "parameterField",
+                "__encodedValue": {
+                  "__recast": "io.harness.pms.yaml.ParameterDocumentField",
+                  "expressionValue": null,
+                  "expression": false,
+                  "valueDoc": { "__recast": "io.harness.pms.yaml.ParameterFieldValueWrapper", "value": "qafree" },
+                  "valueClass": null,
+                  "typeString": true,
+                  "skipAutoEvaluation": false,
+                  "inputSetValidator": {
+                    "__recast": "io.harness.pms.yaml.validation.InputSetValidator",
+                    "validatorType": "ALLOWED_VALUES",
+                    "parameters": "uat,prod,free,qa,qafree"
+                  },
+                  "jsonResponseField": false,
+                  "responseField": null
+                }
+              },
+              "namespace": {
+                "__recast": "parameterField",
+                "__encodedValue": {
+                  "__recast": "io.harness.pms.yaml.ParameterDocumentField",
+                  "expressionValue": null,
+                  "expression": false,
+                  "valueDoc": {
+                    "__recast": "io.harness.pms.yaml.ParameterFieldValueWrapper",
+                    "value": "harness-nextgen-free"
+                  },
+                  "valueClass": null,
+                  "typeString": true,
+                  "skipAutoEvaluation": false,
+                  "inputSetValidator": {
+                    "__recast": "io.harness.pms.yaml.validation.InputSetValidator",
+                    "validatorType": "ALLOWED_VALUES",
+                    "parameters": "harness-nextgen,harness-nextgen-free"
+                  },
+                  "jsonResponseField": false,
+                  "responseField": null
+                }
+              }
+            },
+            "executionId": "a0lrzPRMQcqYr_bUWx4mlQ",
+            "sequenceId": 361
+          },
+          "startTs": 1649824294515,
+          "endTs": 1649824342549,
+          "stepType": "PIPELINE_SECTION",
+          "status": "Success",
+          "failureInfo": { "message": "", "failureTypeList": [], "responseMessages": [] },
+          "skipInfo": null,
+          "nodeRunInfo": null,
+          "executableResponses": [
+            {
+              "child": {
+                "childNodeId": "H68Ik5qNQCOqrWfPkwQv7Qstages",
+                "logKeys": [],
+                "units": []
+              }
+            }
+          ],
+          "unitProgresses": [],
+          "progressData": null,
+          "delegateInfoList": [],
+          "interruptHistories": [],
+          "stepDetails": null
+        },
+        "L5K_gkB1RbqRSHeCcHAC3A": {
+          "uuid": "L5K_gkB1RbqRSHeCcHAC3A",
+          "setupId": "hoRVpOskTFSTPZ2BKrLv4w",
+          "name": "Execution",
+          "identifier": "execution",
+          "baseFqn": "pipeline.stages.nextgenui.spec.execution",
+          "outcomes": {},
+          "stepParameters": { "childNodeId": "hoRVpOskTFSTPZ2BKrLv4wsteps", "logMessage": "Execution Element" },
+          "startTs": 1649824299089,
+          "endTs": 1649824342239,
+          "stepType": "NG_SECTION_WITH_ROLLBACK_INFO",
+          "status": "Success",
+          "failureInfo": { "message": "", "failureTypeList": [], "responseMessages": [] },
+          "skipInfo": null,
+          "nodeRunInfo": null,
+          "executableResponses": [
+            {
+              "child": {
+                "childNodeId": "hoRVpOskTFSTPZ2BKrLv4wsteps",
+                "logKeys": [],
+                "units": []
+              }
+            }
+          ],
+          "unitProgresses": [],
+          "progressData": null,
+          "delegateInfoList": [],
+          "interruptHistories": [],
+          "stepDetails": null
+        },
+        "W5LNwi4nQROom2T89cByiw": {
+          "uuid": "W5LNwi4nQROom2T89cByiw",
+          "setupId": "KYZMaNuiTeuw1EP6JWHghQ",
+          "name": "JiraCreateApprove",
+          "identifier": "JiraCreateApprove",
+          "baseFqn": "pipeline.stages.JiraCreateApprove",
+          "outcomes": {},
+          "stepParameters": null,
+          "startTs": 1649824294644,
+          "endTs": 1649824294770,
+          "stepType": "APPROVAL_STAGE",
+          "status": "Skipped",
+          "failureInfo": { "message": "", "failureTypeList": [], "responseMessages": [] },
+          "skipInfo": null,
+          "nodeRunInfo": {
+            "whenCondition": "\u003c+OnPipelineSuccess\u003e \u0026\u0026 (false)",
+            "evaluatedCondition": false,
+            "expressions": [
+              {
+                "expression": "OnPipelineSuccess",
+                "expressionValue": "true",
+                "count": 1
+              }
+            ]
+          },
+          "executableResponses": [],
+          "unitProgresses": [],
+          "progressData": null,
+          "delegateInfoList": [],
+          "interruptHistories": [],
+          "stepDetails": null
+        },
+        "gUo8AYRORP29hWThYISKTw": {
+          "uuid": "gUo8AYRORP29hWThYISKTw",
+          "setupId": "aZxed8FgRNCxXQBoDOQJeQ",
+          "name": "Service",
+          "identifier": "serviceConfig",
+          "baseFqn": "pipeline.stages.nextgenui.spec.serviceConfig",
+          "outcomes": {
+            "output": {
+              "serviceResult": {
+                "identifier": "nextgenui",
+                "name": "nextgen-ui",
+                "description": "nextgen-ui",
+                "type": "Kubernetes",
+                "tags": {}
+              },
+              "variablesResult": {},
+              "artifactResults": {
+                "primary": {
+                  "connectorRef": "Platform_Viewer",
+                  "imagePath": "platform-205701/harness/nextgenui-release",
+                  "tag": "0.295.11",
+                  "tagRegex": null,
+                  "registryHostname": "us.gcr.io",
+                  "identifier": "primary",
+                  "type": "Gcr",
+                  "primaryArtifact": true,
+                  "image": "us.gcr.io/platform-205701/harness/nextgenui-release:0.295.11",
+                  "imagePullSecret": "<+imagePullSecret.primary>"
+                },
+                "sidecars": null
+              },
+              "manifestResults": {
+                "all_values_nextgen_ui": {
+                  "identifier": "all_values_nextgen_ui",
+                  "type": "Values",
+                  "store": {
+                    "connectorRef": "QA_NG_Manifest_Repo",
+                    "gitFetchType": "BRANCH",
+                    "branch": "quality-assurance",
+                    "commitId": null,
+                    "paths": [
+                      "nextgen-ui/values.yaml",
+                      "environments/<+pipeline.variables.envType>/all-services.yaml",
+                      "environments/<+pipeline.variables.envType>/nextgen-ui/values.yaml",
+                      "environments/<+pipeline.variables.envType>/nextgen-ui/<+pipeline.variables.availabilityType>/values.yaml"
+                    ],
+                    "folderPath": null,
+                    "repoName": "ng-prod-manifests",
+                    "metadata": null
+                  },
+                  "order": 1
+                },
+                "nextgen_ui_manifests": {
+                  "identifier": "nextgen_ui_manifests",
+                  "type": "K8sManifest",
+                  "store": {
+                    "connectorRef": "QA_NG_Manifest_Repo",
+                    "gitFetchType": "BRANCH",
+                    "branch": "quality-assurance",
+                    "commitId": null,
+                    "paths": ["nextgen-ui"],
+                    "folderPath": null,
+                    "repoName": "ng-prod-manifests",
+                    "metadata": null
+                  },
+                  "skipResourceVersioning": false
+                }
+              }
+            }
+          },
+          "stepParameters": { "serviceRef": "nextgenui", "childNodeId": null },
+          "startTs": 1649824294866,
+          "endTs": 1649824298215,
+          "stepType": "SERVICE_CONFIG",
+          "status": "Success",
+          "failureInfo": { "message": "", "failureTypeList": [], "responseMessages": [] },
+          "skipInfo": null,
+          "nodeRunInfo": null,
+          "executableResponses": [
+            {
+              "child": {
+                "childNodeId": "service-aZxed8FgRNCxXQBoDOQJeQ",
+                "logKeys": [
+                  "accountId:wFHXHD0RRQWoO8tIZT5YVw/orgId:Harness/projectId:Operations/pipelineId:Nextgen_UI/runSequence:361/level0:pipeline/level1:stages/level2:nextgenui/level3:spec/level4:serviceConfig"
+                ],
+                "units": []
+              }
+            }
+          ],
+          "unitProgresses": [],
+          "progressData": null,
+          "delegateInfoList": [],
+          "interruptHistories": [],
+          "stepDetails": null
+        },
+        "vBFvNH9UQFWVBrDGg9vZ8A": {
+          "uuid": "vBFvNH9UQFWVBrDGg9vZ8A",
+          "setupId": "tBpgocJST36iThsoyjX6DA",
+          "name": "JiraClosure",
+          "identifier": "JiraClosure",
+          "baseFqn": "pipeline.stages.JiraClosure",
+          "outcomes": {},
+          "stepParameters": null,
+          "startTs": 1649824342347,
+          "endTs": 1649824342447,
+          "stepType": "APPROVAL_STAGE",
+          "status": "Skipped",
+          "failureInfo": { "message": "", "failureTypeList": [], "responseMessages": [] },
+          "skipInfo": null,
+          "nodeRunInfo": {
+            "whenCondition": "\u003c+OnPipelineSuccess\u003e \u0026\u0026 (false)",
+            "evaluatedCondition": false,
+            "expressions": [
+              {
+                "expression": "OnPipelineSuccess",
+                "expressionValue": "true",
+                "count": 1
+              }
+            ]
+          },
+          "executableResponses": [],
+          "unitProgresses": [],
+          "progressData": null,
+          "delegateInfoList": [],
+          "interruptHistories": [],
+          "stepDetails": null
+        },
+        "5TpTznERQEiYRvkwUhdgFw": {
+          "uuid": "5TpTznERQEiYRvkwUhdgFw",
+          "setupId": "Dswl1Ln8T8aBx-8BEbunpQ",
+          "name": "nextgen-ui",
+          "identifier": "nextgenui",
+          "baseFqn": "pipeline.stages.nextgenui",
+          "outcomes": {},
+          "stepParameters": {
+            "uuid": "Dswl1Ln8T8aBx-8BEbunpQ",
+            "identifier": "nextgenui",
+            "name": "nextgen-ui",
+            "description": "",
+            "skipCondition": null,
+            "failureStrategies": [
+              { "onFailure": { "errors": ["ALL_ERRORS"], "action": { "type": "STAGE_ROLLBACK" } } }
+            ],
+            "variables": { "__recast": "java.util.LinkedHashMap" },
+            "tags": {},
+            "type": "Deployment",
+            "specConfig": { "childNodeID": null }
+          },
+          "startTs": 1649824294773,
+          "endTs": 1649824342344,
+          "stepType": "DEPLOYMENT_STAGE_STEP",
+          "status": "Success",
+          "failureInfo": { "message": "", "failureTypeList": [], "responseMessages": [] },
+          "skipInfo": null,
+          "nodeRunInfo": {
+            "whenCondition": "\u003c+OnPipelineSuccess\u003e",
+            "evaluatedCondition": true,
+            "expressions": [
+              {
+                "expression": "OnPipelineSuccess",
+                "expressionValue": "true",
+                "count": 1
+              }
+            ]
+          },
+          "executableResponses": [
+            {
+              "child": {
+                "childNodeId": "ebAtjw2_TmyIrV2nEp-EFg",
+                "logKeys": [],
+                "units": []
+              }
+            }
+          ],
+          "unitProgresses": [],
+          "progressData": null,
+          "delegateInfoList": [],
+          "interruptHistories": [],
+          "stepDetails": null
+        },
+        "8ukKwiCZRXCVLTokdevUvQ": {
+          "uuid": "8ukKwiCZRXCVLTokdevUvQ",
+          "setupId": "QDvJY_YYS42YyYmBlKr40w",
+          "name": "Rollout Deployment",
+          "identifier": "rolloutDeployment",
+          "baseFqn": "pipeline.stages.nextgenui.spec.execution.steps.rolloutDeployment",
+          "outcomes": {
+            "output": { "releaseName": "release-b0032438de2636ce4342798d2cbcece5e45e791a", "releaseNumber": 99 },
+            "deploymentInfoOutcome": {
+              "serverInstanceInfoList": [
+                {
+                  "name": "next-gen-ui-79f659f4b-dl9px",
+                  "namespace": "harness-nextgen-free",
+                  "releaseName": "release-b0032438de2636ce4342798d2cbcece5e45e791a",
+                  "podIP": "10.24.13.78",
+                  "blueGreenColor": null,
+                  "containerList": [
+                    {
+                      "containerId": "docker://68963eef118b9b8eb4c4e172fb031f3567b2f039efbff3232cb56e7388bfeab2",
+                      "name": "next-gen-ui",
+                      "image": "us.gcr.io/platform-205701/harness/nextgenui-release:0.295.11"
+                    }
+                  ]
+                }
+              ]
+            }
+          },
+          "stepParameters": {
+            "uuid": null,
+            "identifier": "rolloutDeployment",
+            "name": "Rollout Deployment",
+            "description": null,
+            "timeout": "10m",
+            "failureStrategies": [],
+            "skipCondition": null,
+            "type": "K8sRollingDeploy",
+            "spec": {
+              "skipDryRun": false,
+              "delegateSelectors": [{ "delegateSelectors": "stage-delegate-qa" }],
+              "canaryStepFqn": null
+            },
+            "delegateSelectors": null
+          },
+          "startTs": 1649824299150,
+          "endTs": 1649824342127,
+          "stepType": "K8sRollingDeploy",
+          "status": "Success",
+          "failureInfo": { "message": "", "failureTypeList": [], "responseMessages": [] },
+          "skipInfo": null,
+          "nodeRunInfo": {
+            "whenCondition": "\u003c+OnStageSuccess\u003e",
+            "evaluatedCondition": true,
+            "expressions": [
+              {
+                "expression": "OnStageSuccess",
+                "expressionValue": "true",
+                "count": 1
+              }
+            ]
+          },
+          "executableResponses": [
+            {
+              "taskChain": {
+                "taskId": "68hQYjDrTq2HQiNV13tkOg",
+                "taskCategory": "DELEGATE_TASK_V2",
+                "chainEnd": false,
+                "passThroughData": "eyJfX3JlY2FzdCI6ImlvLmhhcm5lc3MuY2RuZy5rOHMuSzhzU3RlcFBhc3NUaHJvdWdoRGF0YSIsIms4c01hbmlmZXN0T3V0Y29tZSI6eyJfX3JlY2FzdCI6ImlvLmhhcm5lc3MuY2RuZy5tYW5pZmVzdC55YW1sLks4c01hbmlmZXN0T3V0Y29tZSIsImlkZW50aWZpZXIiOiJuZXh0Z2VuX3VpX21hbmlmZXN0cyIsInR5cGUiOiJLOHNNYW5pZmVzdCIsInN0b3JlIjp7Il9fcmVjYXN0IjoiaW8uaGFybmVzcy5jZG5nLm1hbmlmZXN0LnlhbWwuR2l0U3RvcmUiLCJjb25uZWN0b3JSZWYiOnsiX19yZWNhc3QiOiJwYXJhbWV0ZXJGaWVsZCIsIl9fZW5jb2RlZFZhbHVlIjp7Il9fcmVjYXN0IjoiaW8uaGFybmVzcy5wbXMueWFtbC5QYXJhbWV0ZXJEb2N1bWVudEZpZWxkIiwiZXhwcmVzc2lvblZhbHVlIjpudWxsLCJleHByZXNzaW9uIjpmYWxzZSwidmFsdWVEb2MiOnsiX19yZWNhc3QiOiJpby5oYXJuZXNzLnBtcy55YW1sLlBhcmFtZXRlckZpZWxkVmFsdWVXcmFwcGVyIiwidmFsdWUiOiJRQV9OR19NYW5pZmVzdF9SZXBvIn0sInZhbHVlQ2xhc3MiOiJqYXZhLmxhbmcuU3RyaW5nIiwidHlwZVN0cmluZyI6dHJ1ZSwic2tpcEF1dG9FdmFsdWF0aW9uIjpmYWxzZSwianNvblJlc3BvbnNlRmllbGQiOmZhbHNlLCJyZXNwb25zZUZpZWxkIjpudWxsfX0sImdpdEZldGNoVHlwZSI6IkJSQU5DSCIsImJyYW5jaCI6eyJfX3JlY2FzdCI6InBhcmFtZXRlckZpZWxkIiwiX19lbmNvZGVkVmFsdWUiOnsiX19yZWNhc3QiOiJpby5oYXJuZXNzLnBtcy55YW1sLlBhcmFtZXRlckRvY3VtZW50RmllbGQiLCJleHByZXNzaW9uVmFsdWUiOm51bGwsImV4cHJlc3Npb24iOmZhbHNlLCJ2YWx1ZURvYyI6eyJfX3JlY2FzdCI6ImlvLmhhcm5lc3MucG1zLnlhbWwuUGFyYW1ldGVyRmllbGRWYWx1ZVdyYXBwZXIiLCJ2YWx1ZSI6InF1YWxpdHktYXNzdXJhbmNlIn0sInZhbHVlQ2xhc3MiOiJqYXZhLmxhbmcuU3RyaW5nIiwidHlwZVN0cmluZyI6dHJ1ZSwic2tpcEF1dG9FdmFsdWF0aW9uIjpmYWxzZSwianNvblJlc3BvbnNlRmllbGQiOmZhbHNlLCJyZXNwb25zZUZpZWxkIjpudWxsfX0sImNvbW1pdElkIjp7Il9fcmVjYXN0IjoicGFyYW1ldGVyRmllbGQiLCJfX2VuY29kZWRWYWx1ZSI6eyJfX3JlY2FzdCI6ImlvLmhhcm5lc3MucG1zLnlhbWwuUGFyYW1ldGVyRG9jdW1lbnRGaWVsZCIsImV4cHJlc3Npb25WYWx1ZSI6bnVsbCwiZXhwcmVzc2lvbiI6ZmFsc2UsInZhbHVlRG9jIjp7Il9fcmVjYXN0IjoiaW8uaGFybmVzcy5wbXMueWFtbC5QYXJhbWV0ZXJGaWVsZFZhbHVlV3JhcHBlciJ9LCJ2YWx1ZUNsYXNzIjoiamF2YS5sYW5nLlN0cmluZyIsInR5cGVTdHJpbmciOmZhbHNlLCJza2lwQXV0b0V2YWx1YXRpb24iOmZhbHNlLCJqc29uUmVzcG9uc2VGaWVsZCI6ZmFsc2UsInJlc3BvbnNlRmllbGQiOm51bGx9fSwicGF0aHMiOnsiX19yZWNhc3QiOiJwYXJhbWV0ZXJGaWVsZCIsIl9fZW5jb2RlZFZhbHVlIjp7Il9fcmVjYXN0IjoiaW8uaGFybmVzcy5wbXMueWFtbC5QYXJhbWV0ZXJEb2N1bWVudEZpZWxkIiwiZXhwcmVzc2lvblZhbHVlIjpudWxsLCJleHByZXNzaW9uIjpmYWxzZSwidmFsdWVEb2MiOnsiX19yZWNhc3QiOiJpby5oYXJuZXNzLnBtcy55YW1sLlBhcmFtZXRlckZpZWxkVmFsdWVXcmFwcGVyIiwidmFsdWUiOlsibmV4dGdlbi11aSJdfSwidmFsdWVDbGFzcyI6ImphdmEudXRpbC5MaXN0IiwidHlwZVN0cmluZyI6ZmFsc2UsInNraXBBdXRvRXZhbHVhdGlvbiI6ZmFsc2UsImpzb25SZXNwb25zZUZpZWxkIjpmYWxzZSwicmVzcG9uc2VGaWVsZCI6bnVsbH19LCJmb2xkZXJQYXRoIjp7Il9fcmVjYXN0IjoicGFyYW1ldGVyRmllbGQiLCJfX2VuY29kZWRWYWx1ZSI6eyJfX3JlY2FzdCI6ImlvLmhhcm5lc3MucG1zLnlhbWwuUGFyYW1ldGVyRG9jdW1lbnRGaWVsZCIsImV4cHJlc3Npb25WYWx1ZSI6bnVsbCwiZXhwcmVzc2lvbiI6ZmFsc2UsInZhbHVlRG9jIjp7Il9fcmVjYXN0IjoiaW8uaGFybmVzcy5wbXMueWFtbC5QYXJhbWV0ZXJGaWVsZFZhbHVlV3JhcHBlciJ9LCJ2YWx1ZUNsYXNzIjoiamF2YS5sYW5nLlN0cmluZyIsInR5cGVTdHJpbmciOmZhbHNlLCJza2lwQXV0b0V2YWx1YXRpb24iOmZhbHNlLCJqc29uUmVzcG9uc2VGaWVsZCI6ZmFsc2UsInJlc3BvbnNlRmllbGQiOm51bGx9fSwicmVwb05hbWUiOnsiX19yZWNhc3QiOiJwYXJhbWV0ZXJGaWVsZCIsIl9fZW5jb2RlZFZhbHVlIjp7Il9fcmVjYXN0IjoiaW8uaGFybmVzcy5wbXMueWFtbC5QYXJhbWV0ZXJEb2N1bWVudEZpZWxkIiwiZXhwcmVzc2lvblZhbHVlIjpudWxsLCJleHByZXNzaW9uIjpmYWxzZSwidmFsdWVEb2MiOnsiX19yZWNhc3QiOiJpby5oYXJuZXNzLnBtcy55YW1sLlBhcmFtZXRlckZpZWxkVmFsdWVXcmFwcGVyIiwidmFsdWUiOiJuZy1wcm9kLW1hbmlmZXN0cyJ9LCJ2YWx1ZUNsYXNzIjoiamF2YS5sYW5nLlN0cmluZyIsInR5cGVTdHJpbmciOnRydWUsInNraXBBdXRvRXZhbHVhdGlvbiI6ZmFsc2UsImpzb25SZXNwb25zZUZpZWxkIjpmYWxzZSwicmVzcG9uc2VGaWVsZCI6bnVsbH19LCJtZXRhZGF0YSI6bnVsbH0sInNraXBSZXNvdXJjZVZlcnNpb25pbmciOnsiX19yZWNhc3QiOiJwYXJhbWV0ZXJGaWVsZCIsIl9fZW5jb2RlZFZhbHVlIjp7Il9fcmVjYXN0IjoiaW8uaGFybmVzcy5wbXMueWFtbC5QYXJhbWV0ZXJEb2N1bWVudEZpZWxkIiwiZXhwcmVzc2lvblZhbHVlIjpudWxsLCJleHByZXNzaW9uIjpmYWxzZSwidmFsdWVEb2MiOnsiX19yZWNhc3QiOiJpby5oYXJuZXNzLnBtcy55YW1sLlBhcmFtZXRlckZpZWxkVmFsdWVXcmFwcGVyIiwidmFsdWUiOmZhbHNlfSwidmFsdWVDbGFzcyI6ImphdmEubGFuZy5Cb29sZWFuIiwidHlwZVN0cmluZyI6ZmFsc2UsInNraXBBdXRvRXZhbHVhdGlvbiI6ZmFsc2UsImpzb25SZXNwb25zZUZpZWxkIjpmYWxzZSwicmVzcG9uc2VGaWVsZCI6bnVsbH19fSwidmFsdWVzTWFuaWZlc3RPdXRjb21lcyI6W3siX19yZWNhc3QiOiJpby5oYXJuZXNzLmNkbmcubWFuaWZlc3QueWFtbC5WYWx1ZXNNYW5pZmVzdE91dGNvbWUiLCJpZGVudGlmaWVyIjoibmV4dGdlbl91aV9tYW5pZmVzdHMiLCJ0eXBlIjoiVmFsdWVzIiwic3RvcmUiOnsiX19yZWNhc3QiOiJpby5oYXJuZXNzLmNkbmcubWFuaWZlc3QueWFtbC5HaXRTdG9yZSIsImNvbm5lY3RvclJlZiI6eyJfX3JlY2FzdCI6InBhcmFtZXRlckZpZWxkIiwiX19lbmNvZGVkVmFsdWUiOnsiX19yZWNhc3QiOiJpby5oYXJuZXNzLnBtcy55YW1sLlBhcmFtZXRlckRvY3VtZW50RmllbGQiLCJleHByZXNzaW9uVmFsdWUiOm51bGwsImV4cHJlc3Npb24iOmZhbHNlLCJ2YWx1ZURvYyI6eyJfX3JlY2FzdCI6ImlvLmhhcm5lc3MucG1zLnlhbWwuUGFyYW1ldGVyRmllbGRWYWx1ZVdyYXBwZXIiLCJ2YWx1ZSI6IlFBX05HX01hbmlmZXN0X1JlcG8ifSwidmFsdWVDbGFzcyI6ImphdmEubGFuZy5TdHJpbmciLCJ0eXBlU3RyaW5nIjp0cnVlLCJza2lwQXV0b0V2YWx1YXRpb24iOmZhbHNlLCJqc29uUmVzcG9uc2VGaWVsZCI6ZmFsc2UsInJlc3BvbnNlRmllbGQiOm51bGx9fSwiZ2l0RmV0Y2hUeXBlIjoiQlJBTkNIIiwiYnJhbmNoIjp7Il9fcmVjYXN0IjoicGFyYW1ldGVyRmllbGQiLCJfX2VuY29kZWRWYWx1ZSI6eyJfX3JlY2FzdCI6ImlvLmhhcm5lc3MucG1zLnlhbWwuUGFyYW1ldGVyRG9jdW1lbnRGaWVsZCIsImV4cHJlc3Npb25WYWx1ZSI6bnVsbCwiZXhwcmVzc2lvbiI6ZmFsc2UsInZhbHVlRG9jIjp7Il9fcmVjYXN0IjoiaW8uaGFybmVzcy5wbXMueWFtbC5QYXJhbWV0ZXJGaWVsZFZhbHVlV3JhcHBlciIsInZhbHVlIjoicXVhbGl0eS1hc3N1cmFuY2UifSwidmFsdWVDbGFzcyI6ImphdmEubGFuZy5TdHJpbmciLCJ0eXBlU3RyaW5nIjp0cnVlLCJza2lwQXV0b0V2YWx1YXRpb24iOmZhbHNlLCJqc29uUmVzcG9uc2VGaWVsZCI6ZmFsc2UsInJlc3BvbnNlRmllbGQiOm51bGx9fSwiY29tbWl0SWQiOnsiX19yZWNhc3QiOiJwYXJhbWV0ZXJGaWVsZCIsIl9fZW5jb2RlZFZhbHVlIjp7Il9fcmVjYXN0IjoiaW8uaGFybmVzcy5wbXMueWFtbC5QYXJhbWV0ZXJEb2N1bWVudEZpZWxkIiwiZXhwcmVzc2lvblZhbHVlIjpudWxsLCJleHByZXNzaW9uIjpmYWxzZSwidmFsdWVEb2MiOnsiX19yZWNhc3QiOiJpby5oYXJuZXNzLnBtcy55YW1sLlBhcmFtZXRlckZpZWxkVmFsdWVXcmFwcGVyIn0sInZhbHVlQ2xhc3MiOiJqYXZhLmxhbmcuU3RyaW5nIiwidHlwZVN0cmluZyI6ZmFsc2UsInNraXBBdXRvRXZhbHVhdGlvbiI6ZmFsc2UsImpzb25SZXNwb25zZUZpZWxkIjpmYWxzZSwicmVzcG9uc2VGaWVsZCI6bnVsbH19LCJwYXRocyI6eyJfX3JlY2FzdCI6InBhcmFtZXRlckZpZWxkIiwiX19lbmNvZGVkVmFsdWUiOnsiX19yZWNhc3QiOiJpby5oYXJuZXNzLnBtcy55YW1sLlBhcmFtZXRlckRvY3VtZW50RmllbGQiLCJleHByZXNzaW9uVmFsdWUiOm51bGwsImV4cHJlc3Npb24iOmZhbHNlLCJ2YWx1ZURvYyI6eyJfX3JlY2FzdCI6ImlvLmhhcm5lc3MucG1zLnlhbWwuUGFyYW1ldGVyRmllbGRWYWx1ZVdyYXBwZXIiLCJ2YWx1ZSI6WyJuZXh0Z2VuLXVpIl19LCJ2YWx1ZUNsYXNzIjoiamF2YS51dGlsLkxpc3QiLCJ0eXBlU3RyaW5nIjpmYWxzZSwic2tpcEF1dG9FdmFsdWF0aW9uIjpmYWxzZSwianNvblJlc3BvbnNlRmllbGQiOmZhbHNlLCJyZXNwb25zZUZpZWxkIjpudWxsfX0sImZvbGRlclBhdGgiOnsiX19yZWNhc3QiOiJwYXJhbWV0ZXJGaWVsZCIsIl9fZW5jb2RlZFZhbHVlIjp7Il9fcmVjYXN0IjoiaW8uaGFybmVzcy5wbXMueWFtbC5QYXJhbWV0ZXJEb2N1bWVudEZpZWxkIiwiZXhwcmVzc2lvblZhbHVlIjpudWxsLCJleHByZXNzaW9uIjpmYWxzZSwidmFsdWVEb2MiOnsiX19yZWNhc3QiOiJpby5oYXJuZXNzLnBtcy55YW1sLlBhcmFtZXRlckZpZWxkVmFsdWVXcmFwcGVyIn0sInZhbHVlQ2xhc3MiOiJqYXZhLmxhbmcuU3RyaW5nIiwidHlwZVN0cmluZyI6ZmFsc2UsInNraXBBdXRvRXZhbHVhdGlvbiI6ZmFsc2UsImpzb25SZXNwb25zZUZpZWxkIjpmYWxzZSwicmVzcG9uc2VGaWVsZCI6bnVsbH19LCJyZXBvTmFtZSI6eyJfX3JlY2FzdCI6InBhcmFtZXRlckZpZWxkIiwiX19lbmNvZGVkVmFsdWUiOnsiX19yZWNhc3QiOiJpby5oYXJuZXNzLnBtcy55YW1sLlBhcmFtZXRlckRvY3VtZW50RmllbGQiLCJleHByZXNzaW9uVmFsdWUiOm51bGwsImV4cHJlc3Npb24iOmZhbHNlLCJ2YWx1ZURvYyI6eyJfX3JlY2FzdCI6ImlvLmhhcm5lc3MucG1zLnlhbWwuUGFyYW1ldGVyRmllbGRWYWx1ZVdyYXBwZXIiLCJ2YWx1ZSI6Im5nLXByb2QtbWFuaWZlc3RzIn0sInZhbHVlQ2xhc3MiOiJqYXZhLmxhbmcuU3RyaW5nIiwidHlwZVN0cmluZyI6dHJ1ZSwic2tpcEF1dG9FdmFsdWF0aW9uIjpmYWxzZSwianNvblJlc3BvbnNlRmllbGQiOmZhbHNlLCJyZXNwb25zZUZpZWxkIjpudWxsfX0sIm1ldGFkYXRhIjpudWxsfSwib3JkZXIiOjB9LHsiX19yZWNhc3QiOiJpby5oYXJuZXNzLmNkbmcubWFuaWZlc3QueWFtbC5WYWx1ZXNNYW5pZmVzdE91dGNvbWUiLCJpZGVudGlmaWVyIjoiYWxsX3ZhbHVlc19uZXh0Z2VuX3VpIiwidHlwZSI6IlZhbHVlcyIsInN0b3JlIjp7Il9fcmVjYXN0IjoiaW8uaGFybmVzcy5jZG5nLm1hbmlmZXN0LnlhbWwuR2l0U3RvcmUiLCJjb25uZWN0b3JSZWYiOnsiX19yZWNhc3QiOiJwYXJhbWV0ZXJGaWVsZCIsIl9fZW5jb2RlZFZhbHVlIjp7Il9fcmVjYXN0IjoiaW8uaGFybmVzcy5wbXMueWFtbC5QYXJhbWV0ZXJEb2N1bWVudEZpZWxkIiwiZXhwcmVzc2lvblZhbHVlIjpudWxsLCJleHByZXNzaW9uIjpmYWxzZSwidmFsdWVEb2MiOnsiX19yZWNhc3QiOiJpby5oYXJuZXNzLnBtcy55YW1sLlBhcmFtZXRlckZpZWxkVmFsdWVXcmFwcGVyIiwidmFsdWUiOiJRQV9OR19NYW5pZmVzdF9SZXBvIn0sInZhbHVlQ2xhc3MiOiJqYXZhLmxhbmcuU3RyaW5nIiwidHlwZVN0cmluZyI6dHJ1ZSwic2tpcEF1dG9FdmFsdWF0aW9uIjpmYWxzZSwianNvblJlc3BvbnNlRmllbGQiOmZhbHNlLCJyZXNwb25zZUZpZWxkIjpudWxsfX0sImdpdEZldGNoVHlwZSI6IkJSQU5DSCIsImJyYW5jaCI6eyJfX3JlY2FzdCI6InBhcmFtZXRlckZpZWxkIiwiX19lbmNvZGVkVmFsdWUiOnsiX19yZWNhc3QiOiJpby5oYXJuZXNzLnBtcy55YW1sLlBhcmFtZXRlckRvY3VtZW50RmllbGQiLCJleHByZXNzaW9uVmFsdWUiOm51bGwsImV4cHJlc3Npb24iOmZhbHNlLCJ2YWx1ZURvYyI6eyJfX3JlY2FzdCI6ImlvLmhhcm5lc3MucG1zLnlhbWwuUGFyYW1ldGVyRmllbGRWYWx1ZVdyYXBwZXIiLCJ2YWx1ZSI6InF1YWxpdHktYXNzdXJhbmNlIn0sInZhbHVlQ2xhc3MiOiJqYXZhLmxhbmcuU3RyaW5nIiwidHlwZVN0cmluZyI6dHJ1ZSwic2tpcEF1dG9FdmFsdWF0aW9uIjpmYWxzZSwianNvblJlc3BvbnNlRmllbGQiOmZhbHNlLCJyZXNwb25zZUZpZWxkIjpudWxsfX0sImNvbW1pdElkIjp7Il9fcmVjYXN0IjoicGFyYW1ldGVyRmllbGQiLCJfX2VuY29kZWRWYWx1ZSI6eyJfX3JlY2FzdCI6ImlvLmhhcm5lc3MucG1zLnlhbWwuUGFyYW1ldGVyRG9jdW1lbnRGaWVsZCIsImV4cHJlc3Npb25WYWx1ZSI6bnVsbCwiZXhwcmVzc2lvbiI6ZmFsc2UsInZhbHVlRG9jIjp7Il9fcmVjYXN0IjoiaW8uaGFybmVzcy5wbXMueWFtbC5QYXJhbWV0ZXJGaWVsZFZhbHVlV3JhcHBlciJ9LCJ2YWx1ZUNsYXNzIjoiamF2YS5sYW5nLlN0cmluZyIsInR5cGVTdHJpbmciOmZhbHNlLCJza2lwQXV0b0V2YWx1YXRpb24iOmZhbHNlLCJqc29uUmVzcG9uc2VGaWVsZCI6ZmFsc2UsInJlc3BvbnNlRmllbGQiOm51bGx9fSwicGF0aHMiOnsiX19yZWNhc3QiOiJwYXJhbWV0ZXJGaWVsZCIsIl9fZW5jb2RlZFZhbHVlIjp7Il9fcmVjYXN0IjoiaW8uaGFybmVzcy5wbXMueWFtbC5QYXJhbWV0ZXJEb2N1bWVudEZpZWxkIiwiZXhwcmVzc2lvblZhbHVlIjpudWxsLCJleHByZXNzaW9uIjpmYWxzZSwidmFsdWVEb2MiOnsiX19yZWNhc3QiOiJpby5oYXJuZXNzLnBtcy55YW1sLlBhcmFtZXRlckZpZWxkVmFsdWVXcmFwcGVyIiwidmFsdWUiOlsibmV4dGdlbi11aS92YWx1ZXMueWFtbCIsImVudmlyb25tZW50cy9xYWZyZWUvYWxsLXNlcnZpY2VzLnlhbWwiLCJlbnZpcm9ubWVudHMvcWFmcmVlL25leHRnZW4tdWkvdmFsdWVzLnlhbWwiLCJlbnZpcm9ubWVudHMvcWFmcmVlL25leHRnZW4tdWkvcHJpbWFyeS92YWx1ZXMueWFtbCJdfSwidmFsdWVDbGFzcyI6ImphdmEudXRpbC5MaXN0IiwidHlwZVN0cmluZyI6ZmFsc2UsInNraXBBdXRvRXZhbHVhdGlvbiI6ZmFsc2UsImpzb25SZXNwb25zZUZpZWxkIjpmYWxzZSwicmVzcG9uc2VGaWVsZCI6bnVsbH19LCJmb2xkZXJQYXRoIjp7Il9fcmVjYXN0IjoicGFyYW1ldGVyRmllbGQiLCJfX2VuY29kZWRWYWx1ZSI6eyJfX3JlY2FzdCI6ImlvLmhhcm5lc3MucG1zLnlhbWwuUGFyYW1ldGVyRG9jdW1lbnRGaWVsZCIsImV4cHJlc3Npb25WYWx1ZSI6bnVsbCwiZXhwcmVzc2lvbiI6ZmFsc2UsInZhbHVlRG9jIjp7Il9fcmVjYXN0IjoiaW8uaGFybmVzcy5wbXMueWFtbC5QYXJhbWV0ZXJGaWVsZFZhbHVlV3JhcHBlciJ9LCJ2YWx1ZUNsYXNzIjoiamF2YS5sYW5nLlN0cmluZyIsInR5cGVTdHJpbmciOmZhbHNlLCJza2lwQXV0b0V2YWx1YXRpb24iOmZhbHNlLCJqc29uUmVzcG9uc2VGaWVsZCI6ZmFsc2UsInJlc3BvbnNlRmllbGQiOm51bGx9fSwicmVwb05hbWUiOnsiX19yZWNhc3QiOiJwYXJhbWV0ZXJGaWVsZCIsIl9fZW5jb2RlZFZhbHVlIjp7Il9fcmVjYXN0IjoiaW8uaGFybmVzcy5wbXMueWFtbC5QYXJhbWV0ZXJEb2N1bWVudEZpZWxkIiwiZXhwcmVzc2lvblZhbHVlIjpudWxsLCJleHByZXNzaW9uIjpmYWxzZSwidmFsdWVEb2MiOnsiX19yZWNhc3QiOiJpby5oYXJuZXNzLnBtcy55YW1sLlBhcmFtZXRlckZpZWxkVmFsdWVXcmFwcGVyIiwidmFsdWUiOiJuZy1wcm9kLW1hbmlmZXN0cyJ9LCJ2YWx1ZUNsYXNzIjoiamF2YS5sYW5nLlN0cmluZyIsInR5cGVTdHJpbmciOnRydWUsInNraXBBdXRvRXZhbHVhdGlvbiI6ZmFsc2UsImpzb25SZXNwb25zZUZpZWxkIjpmYWxzZSwicmVzcG9uc2VGaWVsZCI6bnVsbH19LCJtZXRhZGF0YSI6bnVsbH0sIm9yZGVyIjoxfV0sIm9wZW5zaGlmdFBhcmFtTWFuaWZlc3RPdXRjb21lcyI6W10sImt1c3RvbWl6ZVBhdGNoZXNNYW5pZmVzdE91dGNvbWVzIjpudWxsLCJpbmZyYXN0cnVjdHVyZSI6eyJfX3JlY2FzdCI6ImlvLmhhcm5lc3MuY2RuZy5pbmZyYS5iZWFucy5LOHNEaXJlY3RJbmZyYXN0cnVjdHVyZU91dGNvbWUiLCJjb25uZWN0b3JSZWYiOiJxYXByaXZhdGUiLCJuYW1lc3BhY2UiOiJoYXJuZXNzLW5leHRnZW4tZnJlZSIsInJlbGVhc2VOYW1lIjoicmVsZWFzZS08K0lORlJBX0tFWT4iLCJlbnZpcm9ubWVudCI6eyJfX3JlY2FzdCI6ImlvLmhhcm5lc3Muc3RlcHMuZW52aXJvbm1lbnQuRW52aXJvbm1lbnRPdXRjb21lIiwibmFtZSI6InFhLWZyZWUiLCJpZGVudGlmaWVyIjoicWFmcmVlIiwiZGVzY3JpcHRpb24iOiIiLCJ0eXBlIjoiUHJlUHJvZHVjdGlvbiIsInRhZ3MiOnt9fSwiaW5mcmFzdHJ1Y3R1cmVLZXkiOiJiMDAzMjQzOGRlMjYzNmNlNDM0Mjc5OGQyY2JjZWNlNWU0NWU3OTFhIn0sImhlbG1WYWx1ZXNGaWxlQ29udGVudCI6bnVsbH0=",
+                "logKeys": [
+                  "accountId:wFHXHD0RRQWoO8tIZT5YVw/orgId:Harness/projectId:Operations/pipelineId:Nextgen_UI/runSequence:361/level0:pipeline/level1:stages/level2:nextgenui/level3:spec/level4:execution/level5:steps/level6:rolloutDeployment-commandUnit:Fetch Files",
+                  "accountId:wFHXHD0RRQWoO8tIZT5YVw/orgId:Harness/projectId:Operations/pipelineId:Nextgen_UI/runSequence:361/level0:pipeline/level1:stages/level2:nextgenui/level3:spec/level4:execution/level5:steps/level6:rolloutDeployment-commandUnit:Initialize",
+                  "accountId:wFHXHD0RRQWoO8tIZT5YVw/orgId:Harness/projectId:Operations/pipelineId:Nextgen_UI/runSequence:361/level0:pipeline/level1:stages/level2:nextgenui/level3:spec/level4:execution/level5:steps/level6:rolloutDeployment-commandUnit:Prepare",
+                  "accountId:wFHXHD0RRQWoO8tIZT5YVw/orgId:Harness/projectId:Operations/pipelineId:Nextgen_UI/runSequence:361/level0:pipeline/level1:stages/level2:nextgenui/level3:spec/level4:execution/level5:steps/level6:rolloutDeployment-commandUnit:Apply",
+                  "accountId:wFHXHD0RRQWoO8tIZT5YVw/orgId:Harness/projectId:Operations/pipelineId:Nextgen_UI/runSequence:361/level0:pipeline/level1:stages/level2:nextgenui/level3:spec/level4:execution/level5:steps/level6:rolloutDeployment-commandUnit:Wait for Steady State",
+                  "accountId:wFHXHD0RRQWoO8tIZT5YVw/orgId:Harness/projectId:Operations/pipelineId:Nextgen_UI/runSequence:361/level0:pipeline/level1:stages/level2:nextgenui/level3:spec/level4:execution/level5:steps/level6:rolloutDeployment-commandUnit:Wrap Up"
+                ],
+                "units": ["Fetch Files", "Initialize", "Prepare", "Apply", "Wait for Steady State", "Wrap Up"],
+                "taskName": "Git Fetch Files Task"
+              }
+            },
+            {
+              "taskChain": {
+                "taskId": "6xrsbx5cTA-EZwQ5k7Bj4A",
+                "taskCategory": "DELEGATE_TASK_V2",
+                "chainEnd": true,
+                "passThroughData": "eyJfX3JlY2FzdCI6ImlvLmhhcm5lc3MuY2RuZy5rOHMuYmVhbnMuSzhzRXhlY3V0aW9uUGFzc1Rocm91Z2hEYXRhIiwiaW5mcmFzdHJ1Y3R1cmUiOnsiX19yZWNhc3QiOiJpby5oYXJuZXNzLmNkbmcuaW5mcmEuYmVhbnMuSzhzRGlyZWN0SW5mcmFzdHJ1Y3R1cmVPdXRjb21lIiwiY29ubmVjdG9yUmVmIjoicWFwcml2YXRlIiwibmFtZXNwYWNlIjoiaGFybmVzcy1uZXh0Z2VuLWZyZWUiLCJyZWxlYXNlTmFtZSI6InJlbGVhc2UtPCtJTkZSQV9LRVk+IiwiZW52aXJvbm1lbnQiOnsiX19yZWNhc3QiOiJpby5oYXJuZXNzLnN0ZXBzLmVudmlyb25tZW50LkVudmlyb25tZW50T3V0Y29tZSIsIm5hbWUiOiJxYS1mcmVlIiwiaWRlbnRpZmllciI6InFhZnJlZSIsImRlc2NyaXB0aW9uIjoiIiwidHlwZSI6IlByZVByb2R1Y3Rpb24iLCJ0YWdzIjp7fX0sImluZnJhc3RydWN0dXJlS2V5IjoiYjAwMzI0MzhkZTI2MzZjZTQzNDI3OThkMmNiY2VjZTVlNDVlNzkxYSJ9LCJsYXN0QWN0aXZlVW5pdFByb2dyZXNzRGF0YSI6eyJfX3JlY2FzdCI6ImlvLmhhcm5lc3MuZGVsZWdhdGUuYmVhbnMubG9nc3RyZWFtaW5nLlVuaXRQcm9ncmVzc0RhdGEiLCJ1bml0UHJvZ3Jlc3NlcyI6W3siX19yZWNhc3QiOiJpby5oYXJuZXNzLmxvZ2dpbmcuVW5pdFByb2dyZXNzIiwiX19lbmNvZGVkVmFsdWUiOiJ7XG4gIFwidW5pdE5hbWVcIjogXCJGZXRjaCBGaWxlc1wiLFxuICBcInN0YXR1c1wiOiBcIlJVTk5JTkdcIixcbiAgXCJzdGFydFRpbWVcIjogXCIxNjQ5ODI0MzAwNjg1XCJcbn0ifV19fQ==",
+                "logKeys": [
+                  "accountId:wFHXHD0RRQWoO8tIZT5YVw/orgId:Harness/projectId:Operations/pipelineId:Nextgen_UI/runSequence:361/level0:pipeline/level1:stages/level2:nextgenui/level3:spec/level4:execution/level5:steps/level6:rolloutDeployment-commandUnit:Fetch Files",
+                  "accountId:wFHXHD0RRQWoO8tIZT5YVw/orgId:Harness/projectId:Operations/pipelineId:Nextgen_UI/runSequence:361/level0:pipeline/level1:stages/level2:nextgenui/level3:spec/level4:execution/level5:steps/level6:rolloutDeployment-commandUnit:Initialize",
+                  "accountId:wFHXHD0RRQWoO8tIZT5YVw/orgId:Harness/projectId:Operations/pipelineId:Nextgen_UI/runSequence:361/level0:pipeline/level1:stages/level2:nextgenui/level3:spec/level4:execution/level5:steps/level6:rolloutDeployment-commandUnit:Prepare",
+                  "accountId:wFHXHD0RRQWoO8tIZT5YVw/orgId:Harness/projectId:Operations/pipelineId:Nextgen_UI/runSequence:361/level0:pipeline/level1:stages/level2:nextgenui/level3:spec/level4:execution/level5:steps/level6:rolloutDeployment-commandUnit:Apply",
+                  "accountId:wFHXHD0RRQWoO8tIZT5YVw/orgId:Harness/projectId:Operations/pipelineId:Nextgen_UI/runSequence:361/level0:pipeline/level1:stages/level2:nextgenui/level3:spec/level4:execution/level5:steps/level6:rolloutDeployment-commandUnit:Wait for Steady State",
+                  "accountId:wFHXHD0RRQWoO8tIZT5YVw/orgId:Harness/projectId:Operations/pipelineId:Nextgen_UI/runSequence:361/level0:pipeline/level1:stages/level2:nextgenui/level3:spec/level4:execution/level5:steps/level6:rolloutDeployment-commandUnit:Wrap Up"
+                ],
+                "units": ["Fetch Files", "Initialize", "Prepare", "Apply", "Wait for Steady State", "Wrap Up"],
+                "taskName": "K8s Task : Rolling Deploy"
+              }
+            }
+          ],
+          "unitProgresses": [
+            {
+              "unitName": "Fetch Files",
+              "status": "SUCCESS",
+              "startTime": "1649824300685",
+              "endTime": "1649824306296"
+            },
+            {
+              "unitName": "Initialize",
+              "status": "SUCCESS",
+              "startTime": "1649824306553",
+              "endTime": "1649824308953"
+            },
+            {
+              "unitName": "Prepare",
+              "status": "SUCCESS",
+              "startTime": "1649824309279",
+              "endTime": "1649824310083"
+            },
+            {
+              "unitName": "Apply",
+              "status": "SUCCESS",
+              "startTime": "1649824310359",
+              "endTime": "1649824311084"
+            },
+            {
+              "unitName": "Wait for Steady State",
+              "status": "SUCCESS",
+              "startTime": "1649824311678",
+              "endTime": "1649824340331"
+            },
+            {
+              "unitName": "Wrap Up",
+              "status": "SUCCESS",
+              "startTime": "1649824340872",
+              "endTime": "1649824341419"
+            }
+          ],
+          "progressData": {
+            "unitProgresses": [
+              {
+                "unitName": "Fetch Files",
+                "status": "SUCCESS",
+                "startTime": "1649824300685",
+                "endTime": "1649824306296"
+              },
+              {
+                "unitName": "Initialize",
+                "status": "SUCCESS",
+                "startTime": "1649824306553",
+                "endTime": "1649824308953"
+              },
+              { "unitName": "Prepare", "status": "SUCCESS", "startTime": "1649824309279", "endTime": "1649824310083" },
+              { "unitName": "Apply", "status": "SUCCESS", "startTime": "1649824310359", "endTime": "1649824311084" },
+              { "unitName": "Wait for Steady State", "status": "RUNNING", "startTime": "1649824311678" }
+            ]
+          },
+          "delegateInfoList": [
+            { "id": null, "name": null, "taskId": "68hQYjDrTq2HQiNV13tkOg", "taskName": "Git Fetch Files Task" },
+            { "id": null, "name": null, "taskId": "6xrsbx5cTA-EZwQ5k7Bj4A", "taskName": "K8s Task : Rolling Deploy" }
+          ],
+          "interruptHistories": [],
+          "stepDetails": { "Release Name": { "releaseName": "release-b0032438de2636ce4342798d2cbcece5e45e791a" } }
+        },
+        "4GVieLYtSrmFTOpQkHpuhg": {
+          "uuid": "4GVieLYtSrmFTOpQkHpuhg",
+          "setupId": "H68Ik5qNQCOqrWfPkwQv7Qstages",
+          "name": "stages",
+          "identifier": "stages",
+          "baseFqn": "pipeline.stages",
+          "outcomes": {},
+          "stepParameters": { "childNodeId": "KYZMaNuiTeuw1EP6JWHghQ", "logMessage": "Stages" },
+          "startTs": 1649824294607,
+          "endTs": 1649824342522,
+          "stepType": "STAGES_STEP",
+          "status": "Success",
+          "failureInfo": { "message": "", "failureTypeList": [], "responseMessages": [] },
+          "skipInfo": null,
+          "nodeRunInfo": null,
+          "executableResponses": [
+            {
+              "child": {
+                "childNodeId": "KYZMaNuiTeuw1EP6JWHghQ",
+                "logKeys": [],
+                "units": []
+              }
+            }
+          ],
+          "unitProgresses": [],
+          "progressData": null,
+          "delegateInfoList": [],
+          "interruptHistories": [],
+          "stepDetails": null
+        },
+        "HpBxPOI_TiaWzP-6SBKkuw": {
+          "uuid": "HpBxPOI_TiaWzP-6SBKkuw",
+          "setupId": "HBGAwcFlRZ-Q8XItgldxXg",
+          "name": "Infrastructure",
+          "identifier": "spec",
+          "baseFqn": "pipeline.stages.nextgenui.spec.infrastructure.infrastructureDefinition.spec",
+          "outcomes": {
+            "output": {
+              "connectorRef": "qaprivate",
+              "namespace": "harness-nextgen-free",
+              "releaseName": "release-<+INFRA_KEY>",
+              "environment": {
+                "name": "qa-free",
+                "identifier": "qafree",
+                "description": "",
+                "type": "PreProduction",
+                "tags": {}
+              },
+              "infrastructureKey": "b0032438de2636ce4342798d2cbcece5e45e791a"
+            }
+          },
+          "stepParameters": {
+            "connectorRef": "qaprivate",
+            "namespace": "harness-nextgen-free",
+            "releaseName": "release-<+INFRA_KEY>",
+            "metadata": null
+          },
+          "startTs": 1649824298362,
+          "endTs": 1649824298734,
+          "stepType": "INFRASTRUCTURE",
+          "status": "Success",
+          "failureInfo": { "message": "", "failureTypeList": [], "responseMessages": [] },
+          "skipInfo": null,
+          "nodeRunInfo": null,
+          "executableResponses": [
+            {
+              "sync": {
+                "logKeys": [],
+                "units": []
+              }
+            }
+          ],
+          "unitProgresses": [
+            {
+              "unitName": "Execute",
+              "status": "SUCCESS",
+              "startTime": "1649824298467",
+              "endTime": "1649824298717"
+            }
+          ],
+          "progressData": null,
+          "delegateInfoList": [],
+          "interruptHistories": [],
+          "stepDetails": null
+        }
+      },
+      "nodeAdjacencyListMap": {
+        "z0TczEgVSLOMDBKgGatUwg": { "children": [], "nextIds": ["L5K_gkB1RbqRSHeCcHAC3A"] },
+        "_btG4XuXReC_zxi--3U4xw": { "children": ["4GVieLYtSrmFTOpQkHpuhg"], "nextIds": [] },
+        "L5K_gkB1RbqRSHeCcHAC3A": { "children": ["8ukKwiCZRXCVLTokdevUvQ"], "nextIds": [] },
+        "W5LNwi4nQROom2T89cByiw": { "children": [], "nextIds": ["5TpTznERQEiYRvkwUhdgFw"] },
+        "gUo8AYRORP29hWThYISKTw": { "children": [], "nextIds": ["HpBxPOI_TiaWzP-6SBKkuw"] },
+        "vBFvNH9UQFWVBrDGg9vZ8A": { "children": [], "nextIds": [] },
+        "5TpTznERQEiYRvkwUhdgFw": { "children": ["gUo8AYRORP29hWThYISKTw"], "nextIds": ["vBFvNH9UQFWVBrDGg9vZ8A"] },
+        "8ukKwiCZRXCVLTokdevUvQ": { "children": [], "nextIds": [] },
+        "4GVieLYtSrmFTOpQkHpuhg": { "children": ["W5LNwi4nQROom2T89cByiw"], "nextIds": [] },
+        "HpBxPOI_TiaWzP-6SBKkuw": { "children": [], "nextIds": ["z0TczEgVSLOMDBKgGatUwg"] }
+      },
+      "representationStrategy": "camelCase"
+    }
+  },
+  "metaData": null,
+  "correlationId": "ca689711-628b-4ee7-b1c5-4938dd8b2597"
+}

@@ -498,10 +498,7 @@ gradle.projectsEvaluated {
                       }}
                     />
                     <StepCommonFields
-                      enableFields={[
-                        ...(buildInfrastructureType === 'VM' ? ['spec.shell'] : []),
-                        'spec.imagePullPolicy'
-                      ]}
+                      enableFields={['spec.shell', 'spec.imagePullPolicy']}
                       disabled={readonly}
                       buildInfrastructureType={buildInfrastructureType}
                     />

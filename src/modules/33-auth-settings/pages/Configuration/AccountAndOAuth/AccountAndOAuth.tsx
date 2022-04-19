@@ -19,6 +19,7 @@ import { useToaster } from '@common/components'
 import HarnessAccount from '@auth-settings/pages/Configuration/AccountAndOAuth/HarnessAccount/HarnessAccount'
 import PublicOAuthProviders from '@auth-settings/pages/Configuration/AccountAndOAuth/OAuthProviders/PublicOAuthProviders'
 import { getForgotPasswordURL } from 'framework/utils/SessionUtils'
+import useRBACError from '@rbac/utils/useRBACError/useRBACError'
 import cssConfiguration from '@auth-settings/pages/Configuration/Configuration.module.scss'
 
 interface Props {
@@ -29,6 +30,7 @@ interface Props {
 }
 
 const AccountAndOAuth: React.FC<Props> = ({ authSettings, refetchAuthSettings, canEdit, setUpdating }) => {
+  const { getRBACErrorMessage } = useRBACError()
   const { getString } = useStrings()
   const { accountId } = useParams<AccountPathProps>()
   const { showSuccess, showError } = useToaster()
@@ -59,7 +61,7 @@ const AccountAndOAuth: React.FC<Props> = ({ authSettings, refetchAuthSettings, c
         showSuccess(message, 5000)
       }
     } catch (e) {
-      /* istanbul ignore next */ showError(e.data?.message || e.message, 5000)
+      /* istanbul ignore next */ showError(getRBACErrorMessage(e), 5000)
     }
   }
 

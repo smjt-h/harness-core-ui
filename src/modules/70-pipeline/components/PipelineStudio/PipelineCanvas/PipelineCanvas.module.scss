@@ -48,7 +48,7 @@
         line-height: 30px;
         text-transform: uppercase;
         font-weight: bold;
-        color: #004ba4;
+        color: var(--primary-8);
       }
     }
     .rectangle:after {
@@ -60,7 +60,7 @@
       height: 0;
       border-style: solid;
       border-width: 0 0 var(--spacing-xxlarge) var(--spacing-xlarge);
-      border-color: transparent transparent #fff transparent;
+      border-color: transparent transparent var(--grey-0) transparent;
     }
 
     .rectangle::before {
@@ -72,7 +72,7 @@
       height: 0;
       border-style: solid;
       border-width: 0 var(--spacing-xlarge) var(--spacing-xxlarge) 0;
-      border-color: transparent transparent #fff transparent;
+      border-color: transparent transparent var(--grey-0) transparent;
     }
   }
 }

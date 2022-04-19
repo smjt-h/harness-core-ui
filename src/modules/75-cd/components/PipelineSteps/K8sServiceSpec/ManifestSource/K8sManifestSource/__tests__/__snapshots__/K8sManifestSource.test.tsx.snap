@@ -13,7 +13,7 @@ exports[`K8sManifestSource tests Should match snapshot 1`] = `
     </div>
     <div>
       <p
-        class="StyledProps--font StyledProps--main inputheader StyledProps--margin-top-medium StyledProps--margin-bottom-small"
+        class="StyledProps--font StyledProps--main inputheader StyledProps--margin-top-medium"
       >
         ident
       </p>
@@ -259,7 +259,7 @@ exports[`K8sManifestSource tests Should match snapshot with fromTrigger 1`] = `
   >
     <div>
       <p
-        class="StyledProps--font StyledProps--main inputheader StyledProps--margin-top-medium StyledProps--margin-bottom-small"
+        class="StyledProps--font StyledProps--main inputheader StyledProps--margin-top-medium"
       />
       <div
         class="Layout--vertical StyledProps--main inputWidth layoutVerticalSpacing"

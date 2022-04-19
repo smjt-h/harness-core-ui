@@ -24,7 +24,7 @@ $headerHeight: 146px;
 
     .sloCard {
       margin-bottom: none;
-      background-color: #fcfeff;
+      background-color: var(--primary-light-hover);
     }
   }
 
@@ -61,6 +61,10 @@ $headerHeight: 146px;
 }
 
 // SLOCardHeader
+
+.menuIcon {
+  margin-left: -2px !important;
+}
 
 .sloTags {
   background-color: var(--grey-100) !important;

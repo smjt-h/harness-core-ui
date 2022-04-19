@@ -32,6 +32,7 @@ import { useToaster } from '@common/exports'
 import { TestMSTeamsNotifications } from '@notifications/modals/ConfigureNotificationsModal/views/ConfigureMSTeamsNotifications/ConfigureMSTeamsNotifications'
 import { getNotificationByConfig } from '@notifications/Utils/Utils'
 import { EmailSchema, URLValidationSchema } from '@common/utils/Validation'
+import useRBACError from '@rbac/utils/useRBACError/useRBACError'
 import css from './NotificationList.module.scss'
 
 interface NotificationListProps {
@@ -67,6 +68,7 @@ interface ChannelRow {
 
 const ChannelRow: React.FC<ChannelRow> = ({ data, userGroup, onSubmit, notificationItems, options, onRowDelete }) => {
   const { accountId, projectIdentifier, orgIdentifier } = useParams<ProjectPathProps>()
+  const { getRBACErrorMessage } = useRBACError()
   const [isCreate, setIsCreate] = useState<boolean>(data ? false : true)
   const { getString } = useStrings()
   const [edit, setEdit] = useState<boolean>(false)
@@ -134,7 +136,7 @@ const ChannelRow: React.FC<ChannelRow> = ({ data, userGroup, onSubmit, notificat
       }
     } catch (e) {
       /* istanbul ignore next */
-      showError(e.data?.message || e.message)
+      showError(getRBACErrorMessage(e))
     }
   }
 
@@ -158,7 +160,7 @@ const ChannelRow: React.FC<ChannelRow> = ({ data, userGroup, onSubmit, notificat
       }
     } catch (e) {
       /* istanbul ignore next */
-      showError(e.data?.message || e.message)
+      showError(getRBACErrorMessage(e))
     }
   }
 

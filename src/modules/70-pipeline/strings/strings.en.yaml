@@ -620,14 +620,15 @@ artifactsSelection:
   artifactTyperequired: Artifact Type is required
   loadingTags: Loading Tags...
   artifactNamePlaceholder: Enter Artifact Path
+  versionPlaceholder: Enter Version
   existingDocker:
     sidecarId: Sidecar Identifier
     sidecarIdPlaceholder: Enter Artifact Identifier
     imageNamePlaceholder: Enter Image Path
     enterTagRegex: Enter Tag Regex
   validation:
-    imagePath: Image Path is a required
-    artifactPath: Artifact Path is a required
+    imagePath: Image Path is required
+    artifactPath: Artifact Path is required
     region: '{{$.validation.regionRequired}}'
     tag: Tag is required
     tagRegex: Tag Regex is required
@@ -685,10 +686,6 @@ verification:
   logs:
     logCluster: Log cluster
     filterByClusterType: Filter by cluster type
-    knownEvent: Known Event
-    unknownEvent: Unknown Event
-    unexpectedFrequency: Unexpected Frequency
-    allEvents: All Events
     noAnalysis: No analysis
     clusterType: CLUSTER TYPE
     sampleMessage: MESSAGE
@@ -701,6 +698,18 @@ verification:
     share: share
     sampleEvent: Sample event
     trend: trend
+    eventType: Event Type
+    countPerMin: Count per min
+    eventCountPerMin: Event count per minute
+    eventDetails: Event Details
+    updateEventPreference: Update Event Preference
+    eventPreference: Event Preference
+    lastKnownOccurrence: Last Known Occurrence
+    firstOccurrence: First Occurrence
+    notARiskLabel: Mark as Not a Risk
+    eventPriorityLabel: Update the Event Priority
+    reasonRequired: Reason field is required
+    totalClusters: Total Clusters
 stepCommonFields:
   runAsUser: Run as User
   ifNotPresent: 'If Not Present'
@@ -754,7 +763,7 @@ stepDescription:
   TerraformPlan: Run a Terraform script as a Terraform plan.
   TerraformApply: Apply a Terraform plan or script.
   ResourceConstraint: Queue the number of resources Harness requests during a deployment by placing capacity limits on the requests.
-  FlagConfiguration: Create a Boolean or Multivariate Feature Flag.
+  FlagConfiguration: Add or update Feature Flag configuration.
   HelmDeploy: Performs native Helm deployments. Requires Helm and Tiller and supports basic deployments. Helm charts are also supported in Harness Kubernetes deployments without requiring Helm or Tiller and using all deployment strategies.
   HelmRollback: Rolls back all the deployed objects to the previous version.
   ServiceNowApproval: Use ServiceNow issues to approve steps and stages.
@@ -888,6 +897,15 @@ runPipeline:
   ciCodebaseConfig: CI Codebase Configuration is missing. Codebase is required when the pipeline contains a CI stage that is set to clone codebase.
 buildInfra:
   poolId: Pool Id
+  automountServiceAccountToken: Automount Service Account Token
+  priorityClassName: Priority Class
+  containerSecurityContext: Container Security Context
+  allowPrivilegeEscalation: Allow Privilege Escalation
+  addCapabilities: ADD Capabilities
+  dropCapabilities: DROP Capabilities
+  runAsNonRoot: Run as Non Root
+  readOnlyRootFilesystem: Read-only Root Filesystem
+  privileged: Privileged
 ci:
   validations:
     port: Port can only contain digits
@@ -905,3 +923,20 @@ serviceDeploymentTypes:
   pcf: TAS
   ssh: Secure Shell
   deployDifferentLabel: Deploy different service
+errorFramework:
+  pipelineErrorsTitle: 'Pipeline cannot be saved because {{fields}} further configuration.'
+  fixErrors: Fix Errors
+  fixStep: Fix Step
+  fixStage: Fix Stage
+  header1: ', stage and steps'
+  header2: ', some stages and steps'
+  header3: ' and stage'
+  header4: ' and some stages'
+  header5: ' and steps'
+  header6: 'pipeline{{stringToAppend}} need'
+  header7: 'stage and steps need'
+  header8: 'some stages and steps need'
+  header9: 'stage needs'
+  header10: 'some stages need'
+  header11: 'some steps need'
+  header12: 'it needs'

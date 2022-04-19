@@ -6,7 +6,7 @@
  */
 
 import React from 'react'
-import { isEmpty, debounce } from 'lodash-es'
+import { isEmpty, debounce, defaultTo } from 'lodash-es'
 import { useParams } from 'react-router-dom'
 import {
   ExecutionNode,
@@ -29,7 +29,7 @@ import type { ExecutionPathProps } from '@common/interfaces/RouteInterfaces'
 import { StepMode as Modes } from '@pipeline/utils/stepUtils'
 import type { ExecutionLayoutState } from '@pipeline/components/ExecutionLayout/ExecutionLayoutContext'
 import ConditionalExecutionTooltipWrapper from '@pipeline/components/ConditionalExecutionToolTip/ConditionalExecutionTooltipWrapper'
-import BarrierStepTooltip from './components/BarrierStepTooltip'
+import BarrierStepTooltip from './components/BarrierStepTooltip/BarrierStepTooltip'
 import ResourceConstraintTooltip from './components/ResourceConstraints/ResourceConstraints'
 import VerifyStepTooltip from './components/VerifyStepTooltip/VerifyStepTooltip'
 import type { FailureInfo } from './components/VerifyStepTooltip/VerifyStepTooltip.types'
@@ -89,7 +89,7 @@ export default function ExecutionStageDetails(props: ExecutionStageDetailsProps)
     if (barrierSetupId) {
       refetchBarrierInfoRef({
         queryParams: {
-          barrierSetupId: barrierSetupId || '',
+          barrierSetupId: defaultTo(barrierSetupId, ''),
           planExecutionId: executionIdentifier
         }
       })
@@ -214,6 +214,7 @@ export default function ExecutionStageDetails(props: ExecutionStageDetailsProps)
             dynamicPopoverHandler?.hide()
           }}
           canvasBtnsClass={css.canvasBtns}
+          isStepView={true}
           setGraphCanvasState={state => setStepsGraphCanvasState?.(state)}
           graphCanvasState={stepsGraphCanvasState}
         />

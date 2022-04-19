@@ -17,7 +17,7 @@
   .createBtn {
     box-shadow: 0px 0px 1px rgba(40, 41, 61, 0.04), 0px 2px 4px rgba(96, 97, 112, 0.16) !important;
     border-radius: 8px;
-    border: 1px solid #0278d5 !important;
+    border: 1px solid var(--primary-7) !important;
   }
 
   .loader {
@@ -35,7 +35,7 @@
 .tableCtn {
   margin-bottom: var(--spacing-large);
   box-shadow: 0px 0px 1px rgba(40, 41, 61, 0.04), 0px 2px 4px rgba(96, 97, 112, 0.16);
-  background-color: white;
+  background-color: var(--white);
 
   table {
     width: 100%;
@@ -81,4 +81,18 @@
     list-style: none;
     padding-left: 0;
   }
+}
+
+.anomalyAlertsWrapper {
+  position: relative;
+}
+
+.anomalyAlertsActionBtn {
+  position: absolute;
+  top: var(--spacing-medium);
+  right: var(--spacing-xlarge);
+}
+
+.subtext {
+  font-size: 13px;
 }

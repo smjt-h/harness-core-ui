@@ -75,6 +75,18 @@ const COGatewayConfig: React.FC<COGatewayConfigProps> = props => {
     }
   }, [])
 
+  const groupsValidation = (): boolean => {
+    if (isGcpProvider) {
+      return (props.gatewayDetails.routing.instance.scale_group?.desired as number) > 0
+    } else {
+      return (
+        (props.gatewayDetails.routing.instance.scale_group?.on_demand as number) <=
+          (props.gatewayDetails.routing.instance.scale_group?.max as number) &&
+        (props.gatewayDetails.routing.instance.scale_group?.spot as number) >= 0
+      )
+    }
+  }
+
   function isValid(): boolean {
     return (
       (props.gatewayDetails.selectedInstances.length > 0 ||
@@ -89,12 +101,7 @@ const COGatewayConfig: React.FC<COGatewayConfigProps> = props => {
       (!_isEmpty(props.gatewayDetails.deps)
         ? props.gatewayDetails.deps.every(_dep => !isNaN(_dep.dep_id as number) && !isNaN(_dep.delay_secs as number))
         : true) &&
-      (props.gatewayDetails.routing.instance.scale_group
-        ? (props.gatewayDetails.routing.instance.scale_group?.on_demand as number) > 0 &&
-          (props.gatewayDetails.routing.instance.scale_group?.on_demand as number) <=
-            (props.gatewayDetails.routing.instance.scale_group.max as number) &&
-          (props.gatewayDetails.routing.instance.scale_group?.spot as number) >= 0
-        : true) &&
+      (!_isEmpty(props.gatewayDetails.routing.instance.scale_group) ? groupsValidation() : true) &&
       (selectedResource === RESOURCES.ECS
         ? _defaultTo(props.gatewayDetails.routing.container_svc?.task_count, 0) > -1
         : true)

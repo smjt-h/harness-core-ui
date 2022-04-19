@@ -195,11 +195,16 @@ exports[`Run Step view Edit View should render properly for AWS VMs build infra 
           class="StyledProps--font StyledProps--main formGroup lg bottomMargin5"
         >
           <div>
-            <p
-              class="StyledProps--font StyledProps--main inpLabel StyledProps--color StyledProps--color-grey600 StyledProps--font-size-small StyledProps--font-weight-semi-bold"
+            <div
+              class="Text--withDocsTooltip"
+              data-tooltip-id="run_shell"
             >
-              common.shell
-            </p>
+              <p
+                class="StyledProps--font StyledProps--main inpLabel StyledProps--color StyledProps--color-grey600 StyledProps--font-size-small StyledProps--font-weight-semi-bold"
+              >
+                common.shell
+              </p>
+            </div>
             <div
               style="display: flex; align-items: center;"
             >

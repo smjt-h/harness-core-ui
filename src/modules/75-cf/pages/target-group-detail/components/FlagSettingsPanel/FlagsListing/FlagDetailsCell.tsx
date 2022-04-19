@@ -10,15 +10,19 @@ import { FontVariation, Text } from '@harness/uicore'
 import type { Feature } from 'services/cf'
 
 export interface FlagDetailsCellProps {
-  flag: Feature
+  row: { original: Feature }
 }
 
-const FlagDetailsCell: FC<FlagDetailsCellProps> = ({ flag }) => (
+export const FlagDetailsCell: FC<FlagDetailsCellProps> = ({
+  row: {
+    original: { name, description }
+  }
+}) => (
   <>
     <Text lineClamp={1} font={{ variation: FontVariation.BODY2 }}>
-      {flag.name}
+      {name}
     </Text>
-    {flag.description && <Text lineClamp={2}>{flag.description}</Text>}
+    {description && <Text lineClamp={2}>{description}</Text>}
   </>
 )
 

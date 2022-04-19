@@ -1,0 +1,78 @@
+{
+  "status": "SUCCESS",
+  "data": {
+    "planExecution": {
+      "uuid": "executionId",
+      "createdAt": 1648539257063,
+      "planId": "FC6vuhk9Q9Wa5iYk6QO--w",
+      "setupAbstractions": {
+        "accountId": "zEaak-FLS425IEO7OLzMUg",
+        "orgIdentifier": "default",
+        "projectIdentifier": "Pratyush"
+      },
+      "validUntil": 1664436857059,
+      "status": "RUNNING",
+      "startTs": 1648539257059,
+      "endTs": null,
+      "metadata": {
+        "runSequence": 4,
+        "triggerInfo": {
+          "triggerType": "MANUAL",
+          "triggeredBy": {
+            "uuid": "qUaLKpHcTOS3ThJVG2bwIw",
+            "identifier": "Pratyush Garg",
+            "extraInfo": {
+              "email": "pratyush.garg@harness.io"
+            }
+          },
+          "isRerun": false
+        },
+        "pipelineIdentifier": "testPipeline_Cypressss",
+        "executionUuid": "executionId",
+        "principalInfo": {
+          "principal": "qUaLKpHcTOS3ThJVG2bwIw",
+          "principalType": "USER",
+          "shouldValidateRbac": true
+        },
+        "gitSyncBranchContext": "eJxtkEFuwjAQRWPIEq7CBdg1JSiLlqocIDLOBKaa2JU9FHIQuujlukEqG8SildhiQJVI8OLL0ps/st5svoZCjJGntVYPVmq1SIxmWPNgjnwFmS4P+86nL/Z9caQZufbMDGbSwaWya/EAU6aqkLNtiD65nyYukeBF8q5NdfEIpVwSp9ZUE16AfYV389uqGSrA3q+jS5dEZ8+UzLE9e4ZVSAXdZcF/N8a/5oik48nsDdSdlQVn6AMKf8mSUHESdK9lRZ6cSzjPtj2R58XVLv/uRiL2iW7eUOL/iCg6AdaGpMY=",
+        "moduleType": "cd",
+        "retryInfo": {
+          "isRetry": false,
+          "rootExecutionId": "",
+          "parentRetryId": ""
+        },
+        "isNotificationConfigured": false
+      },
+      "governanceMetadata": {
+        "id": "0",
+        "deny": false,
+        "details": [],
+        "message": "",
+        "timestamp": "1648539257059",
+        "status": "pass",
+        "accountId": "zEaak-FLS425IEO7OLzMUg",
+        "orgId": "default",
+        "projectId": "Pratyush",
+        "entity": "accountIdentifier%3AzEaak-FLS425IEO7OLzMUg%2ForgIdentifier%3Adefault%2FprojectIdentifier%3APratyush%2FpipelineIdentifier%3AtestPipeline_Cypressss",
+        "type": "pipeline",
+        "action": "onrun",
+        "created": "1648539257047"
+      },
+      "lastUpdatedAt": 1648539257063,
+      "version": 0,
+      "nextIteration": null,
+      "nodeType": "PLAN",
+      "nodeId": "FC6vuhk9Q9Wa5iYk6QO--w"
+    },
+    "gitDetails": {
+      "objectId": null,
+      "branch": null,
+      "repoIdentifier": null,
+      "rootFolder": null,
+      "filePath": null,
+      "repoName": null
+    }
+  },
+  "metaData": null,
+  "correlationId": "c0a7df19-eac9-4f95-b15b-13da1100cced"
+}

@@ -64,6 +64,9 @@ import { PipelineVariablesContextProvider } from '@pipeline/components/PipelineV
 import { useTelemetry } from '@common/hooks/useTelemetry'
 import { PipelineActions } from '@common/constants/TrackingConstants'
 import { useFeatureFlags } from '@common/hooks/useFeatureFlag'
+import GenericErrorHandler from '@common/pages/GenericErrorHandler/GenericErrorHandler'
+import useRBACError from '@rbac/utils/useRBACError/useRBACError'
+import NoEntityFound from '@pipeline/pages/utils/NoEntityFound/NoEntityFound'
 import { getFeaturePropsForRunPipelineButton } from '@pipeline/utils/runPipelineUtils'
 import { RunPipelineForm } from '@pipeline/components/RunPipelineModal/RunPipelineForm'
 import { EvaluationModal } from '@governance/EvaluationModal'
@@ -71,9 +74,11 @@ import { createTemplate } from '@pipeline/utils/templateUtils'
 import { getStepFromStage, validateCICodebaseConfiguration } from '@pipeline/components/PipelineStudio/StepUtil'
 import { updateStepWithinStage } from '@pipeline/components/PipelineStudio/RightDrawer/RightDrawer'
 import type { TemplateSummaryResponse } from 'services/template-ng'
+import type { AccessControlCheckError } from 'services/rbac'
 import { savePipeline, usePipelineContext } from '../PipelineContext/PipelineContext'
 import CreatePipelines from '../CreateModal/PipelineCreate'
-import { DefaultNewPipelineId, DrawerTypes } from '../PipelineContext/PipelineActions'
+import PipelineErrors from './PipelineErrors/PipelineErrors'
+import { DefaultNewPipelineId, DrawerTypes, SplitViewTypes } from '../PipelineContext/PipelineActions'
 import PipelineYamlView from '../PipelineYamlView/PipelineYamlView'
 import { RightBar } from '../RightBar/RightBar'
 import StageBuilder from '../StageBuilder/StageBuilder'
@@ -150,7 +155,8 @@ export function PipelineCanvas({
     setSelectedStageId,
     setSelectedSectionId,
     getStageFromPipeline,
-    setTemplateTypes
+    setTemplateTypes,
+    setSelection
   } = usePipelineContext()
   const {
     repoIdentifier,
@@ -166,7 +172,7 @@ export function PipelineCanvas({
   } = useQueryParams<GitQueryParams & RunPipelineQueryParams>()
   const { updateQueryParams, replaceQueryParams } = useUpdateQueryParams<PipelineStudioQueryParams>()
   const { trackEvent } = useTelemetry()
-
+  const [updatePipelineAPIResponse, setUpdatePipelineAPIResponse] = React.useState<any>()
   const {
     pipeline,
     isUpdated,
@@ -178,7 +184,8 @@ export function PipelineCanvas({
     yamlHandler,
     isBEPipelineUpdated,
     gitDetails,
-    entityValidityDetails
+    entityValidityDetails,
+    templateError
   } = state
 
   const { getString } = useStrings()
@@ -206,9 +213,9 @@ export function PipelineCanvas({
   })
 
   const { showSuccess, showError, clear } = useToaster()
+  const { getRBACErrorMessage } = useRBACError()
 
   useDocumentTitle([parse(pipeline?.name || getString('pipelines'))])
-
   const [discardBEUpdateDialog, setDiscardBEUpdate] = React.useState(false)
   const { openDialog: openConfirmBEUpdateError } = useConfirmationDialog({
     cancelButtonText: getString('cancel'),
@@ -372,6 +379,34 @@ export function PipelineCanvas({
     }
   }
 
+  const gotoViewWithDetails = React.useCallback(
+    ({ stageId, stepId }: { stageId?: string; stepId?: string } = {}): void => {
+      hideErrorModal()
+      // If Yaml mode, or if pipeline error - stay on yaml mode
+      if (isYaml || (!stageId && !stepId)) {
+        return
+      }
+      setSelection({ stageId, stepId })
+      updatePipelineView({
+        ...pipelineView,
+        isSplitViewOpen: true,
+        splitViewData: { type: SplitViewTypes.StageView }
+      })
+    },
+    [isYaml, pipelineView]
+  )
+
+  const [showErrorModal, hideErrorModal] = useModalHook(
+    () => (
+      <PipelineErrors
+        errors={updatePipelineAPIResponse?.metadata?.schemaErrors}
+        gotoViewWithDetails={gotoViewWithDetails}
+        onClose={hideErrorModal}
+      />
+    ),
+    [updatePipelineAPIResponse]
+  )
+
   const saveAndPublishPipeline = async (
     latestPipeline: PipelineInfoConfig,
     updatedGitDetails?: SaveToGitFormInterface,
@@ -427,9 +462,22 @@ export function PipelineCanvas({
       setSchemaErrorView(true)
       // This is done because when git sync is enabled, errors are displayed in a modal
       if (!isGitSyncEnabled) {
-        showError(response?.message || getString('errorWhileSaving'), undefined, 'pipeline.save.pipeline.error')
+        // eslint-disable-next-line
+        // @ts-ignore
+        if (response?.metadata?.schemaErrors?.length) {
+          setUpdatePipelineAPIResponse(response)
+          showErrorModal()
+        } else {
+          showError(
+            getRBACErrorMessage({ data: response as AccessControlCheckError }) || getString('errorWhileSaving'),
+            undefined,
+            'pipeline.save.pipeline.error'
+          )
+        }
+      } else {
+        // isGitSyncEnabled true
+        throw response
       }
-      throw response
     }
     return { status: response?.status }
   }
@@ -685,7 +733,6 @@ export function PipelineCanvas({
         })
       }
       hideModal()
-      trackEvent(PipelineActions.StartedPipelineCreation, { module, data })
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [hideModal, pipeline, updatePipeline]
@@ -870,6 +917,19 @@ export function PipelineCanvas({
     return 400
   }
 
+  if (templateError?.data && !isGitSyncEnabled) {
+    return (
+      <GenericErrorHandler
+        errStatusCode={templateError?.status}
+        errorMessage={(templateError?.data as Error)?.message}
+      />
+    )
+  }
+
+  if (templateError?.data && isEmpty(pipeline) && isGitSyncEnabled) {
+    return <NoEntityFound identifier={pipelineIdentifier} entityType={'pipeline'} />
+  }
+
   return (
     <PipelineVariablesContextProvider pipeline={pipeline}>
       <div
@@ -992,6 +1052,7 @@ export function PipelineCanvas({
                       onClick={saveAndPublish}
                       icon="send-data"
                       className={css.saveButton}
+                      disabled={!isUpdated}
                     />
                   )}
                   {pipelineIdentifier !== DefaultNewPipelineId && !isReadonly && (

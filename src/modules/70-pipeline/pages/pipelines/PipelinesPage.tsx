@@ -80,6 +80,7 @@ import { useTelemetry } from '@common/hooks/useTelemetry'
 import { GitSyncStoreProvider } from 'framework/GitRepoStore/GitSyncStoreContext'
 import { NGBreadcrumbs } from '@common/components/NGBreadcrumbs/NGBreadcrumbs'
 import { useFeatureFlags } from '@common/hooks/useFeatureFlag'
+import useRBACError from '@rbac/utils/useRBACError/useRBACError'
 import { PipelineGridView } from './views/PipelineGridView'
 import { PipelineListView } from './views/PipelineListView'
 import PipelineFilterForm from '../pipeline-deployment-list/PipelineFilterForm/PipelineFilterForm'
@@ -146,6 +147,7 @@ function PipelinesPage({ mockData }: CDPipelinesPageProps): React.ReactElement {
 
   const { trackEvent } = useTelemetry()
   const history = useHistory()
+  const { getRBACErrorMessage } = useRBACError()
   const { showSuccess, showError } = useToaster()
   const { selectedProject, isGitSyncEnabled } = useAppStore()
   const [isLoading, setIsLoading] = useState<boolean>(false)
@@ -254,7 +256,7 @@ function PipelinesPage({ mockData }: CDPipelinesPageProps): React.ReactElement {
         }
       } catch (e) {
         if (shouldShowError(e)) {
-          showError(e.data?.message || e.message, undefined, 'pipeline.fetch.pipeline.error')
+          showError(getRBACErrorMessage(e), undefined, 'pipeline.fetch.pipeline.error')
           setError(e)
         }
       }

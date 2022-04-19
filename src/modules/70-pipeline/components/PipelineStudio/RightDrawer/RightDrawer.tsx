@@ -21,7 +21,7 @@ import type {
 } from 'services/cd-ng'
 import { useTelemetry } from '@common/hooks/useTelemetry'
 import { StepActions } from '@common/constants/TrackingConstants'
-import { StageType } from '@pipeline/utils/stageHelpers'
+import type { StageType } from '@pipeline/utils/stageHelpers'
 import type {
   BuildStageElementConfig,
   DeploymentStageElementConfig,
@@ -29,7 +29,6 @@ import type {
 } from '@pipeline/utils/pipelineTypes'
 import type { DependencyElement } from 'services/ci'
 import { usePipelineVariables } from '@pipeline/components/PipelineVariablesContext/PipelineVariablesContext'
-import type { TemplateSummaryResponse } from 'services/template-ng'
 import { PipelineGovernanceView } from '@governance/PipelineGovernanceView'
 import { getStepPaletteModuleInfosFromStage } from '@pipeline/utils/stepUtils'
 import { getIdentifierFromValue } from '@common/components/EntityReference/EntityReference'
@@ -244,8 +243,6 @@ const onSubmitStep = async (
   selectedStage: StageElementWrapper<StageElementConfig> | undefined,
   updatePipelineView: (data: PipelineViewData) => void,
   updateStage: (stage: StageElementConfig) => Promise<void>,
-  stageType: string | undefined,
-  setSelectedStepId: (selectedStepId: string | undefined) => void,
   pipelineView: PipelineViewData
 ): Promise<void> => {
   if (data?.stepConfig?.node) {
@@ -262,17 +259,6 @@ const onSubmitStep = async (
         pipelineView
       )
     }
-  }
-
-  // TODO: temporary fix for FF
-  // can be removed once the unified solution across modules is implemented
-  if (stageType === StageType.FEATURE) {
-    updatePipelineView({
-      ...pipelineView,
-      isDrawerOpened: false,
-      drawerData: { type: DrawerTypes.StepConfig }
-    })
-    setSelectedStepId(undefined)
   }
 }
 
@@ -351,12 +337,11 @@ export function RightDrawer(): React.ReactElement {
     updatePipelineView,
     getStageFromPipeline,
     stepsFactory,
-    setSelectedStepId,
-    setTemplateTypes
+    setSelectedStepId
   } = usePipelineContext()
   const { type, data, ...restDrawerProps } = drawerData
   const { trackEvent } = useTelemetry()
-  const { openTemplateSelector, closeTemplateSelector } = useTemplateSelector()
+  const { getTemplate } = useTemplateSelector()
 
   const { stage: selectedStage } = getStageFromPipeline(defaultTo(selectedStageId, ''))
   const stageType = selectedStage?.stage?.type
@@ -601,43 +586,42 @@ export function RightDrawer(): React.ReactElement {
     drawerData.data?.stepConfig?.onUpdate?.(processNode)
   }
 
-  const onUseTemplate = () => {
-    const stepType =
-      (data?.stepConfig?.node as StepElementConfig)?.type ||
-      get(templateTypes, getIdentifierFromValue((data?.stepConfig?.node as TemplateStepNode).template.templateRef))
-    openTemplateSelector({
-      templateType: 'Step',
-      selectedChildType: stepType,
-      selectedTemplateRef: getIdentifierFromValue(
-        defaultTo((data?.stepConfig?.node as TemplateStepNode)?.template?.templateRef, '')
-      ),
-      selectedVersionLabel: (data?.stepConfig?.node as TemplateStepNode)?.template?.versionLabel,
-      onUseTemplate: async (template: TemplateSummaryResponse, isCopied = false) => {
-        closeTemplateSelector()
-        const node = drawerData.data?.stepConfig?.node as StepOrStepGroupOrTemplateStepData
-        if (
-          !isCopied &&
-          isEqual((node as TemplateStepNode)?.template?.templateRef, template.identifier) &&
-          isEqual((node as TemplateStepNode)?.template?.versionLabel, template.versionLabel)
-        ) {
-          return
-        }
-        const processNode = isCopied
-          ? produce(defaultTo(parse(defaultTo(template?.yaml, '')).template.spec, {}) as StepElementConfig, draft => {
-              draft.name = defaultTo(node?.name, '')
-              draft.identifier = defaultTo(node?.identifier, '')
-            })
-          : createTemplate<TemplateStepNode>(node as unknown as TemplateStepNode, template)
-        await updateNode(processNode)
-        if (!isCopied && template?.identifier && template?.childType) {
-          templateTypes[template.identifier] = template.childType
-          setTemplateTypes(templateTypes)
-        }
+  const addOrUpdateTemplate = async () => {
+    try {
+      const stepType =
+        (data?.stepConfig?.node as StepElementConfig)?.type ||
+        get(templateTypes, getIdentifierFromValue((data?.stepConfig?.node as TemplateStepNode).template.templateRef))
+      const { template, isCopied } = await getTemplate({
+        templateType: 'Step',
+        selectedChildType: stepType,
+        ...((data?.stepConfig?.node as TemplateStepNode)?.template && {
+          selectedTemplateRef: getIdentifierFromValue(
+            (data?.stepConfig?.node as TemplateStepNode).template.templateRef
+          ),
+          selectedVersionLabel: (data?.stepConfig?.node as TemplateStepNode).template.versionLabel
+        })
+      })
+      const node = drawerData.data?.stepConfig?.node as StepOrStepGroupOrTemplateStepData
+      if (
+        !isCopied &&
+        isEqual((node as TemplateStepNode)?.template?.templateRef, template.identifier) &&
+        isEqual((node as TemplateStepNode)?.template?.versionLabel, template.versionLabel)
+      ) {
+        return
       }
-    })
+      const processNode = isCopied
+        ? produce(defaultTo(parse(defaultTo(template?.yaml, '')).template.spec, {}) as StepElementConfig, draft => {
+            draft.name = defaultTo(node?.name, '')
+            draft.identifier = defaultTo(node?.identifier, '')
+          })
+        : createTemplate<TemplateStepNode>(node as unknown as TemplateStepNode, template)
+      await updateNode(processNode)
+    } catch (_) {
+      // Do nothing.. user cancelled template selection
+    }
   }
 
-  const onRemoveTemplate = async () => {
+  const removeTemplate = async () => {
     const node = drawerData.data?.stepConfig?.node as TemplateStepNode
     const processNode = produce({} as StepElementConfig, draft => {
       draft.name = node.name
@@ -720,15 +704,13 @@ export function RightDrawer(): React.ReactElement {
               selectedStage,
               updatePipelineView,
               updateStage,
-              stageType,
-              setSelectedStepId,
               pipelineView
             )
           }
           viewType={StepCommandsViews.Pipeline}
           allowableTypes={allowableTypes}
-          onUseTemplate={onUseTemplate}
-          onRemoveTemplate={onRemoveTemplate}
+          onUseTemplate={addOrUpdateTemplate}
+          onRemoveTemplate={removeTemplate}
           isStepGroup={data.stepConfig.isStepGroup}
           hiddenPanels={data.stepConfig.hiddenAdvancedPanels}
           stageType={stageType as StageType}
@@ -743,7 +725,7 @@ export function RightDrawer(): React.ReactElement {
         />
       )}
       {/* TODO */}
-      {type === DrawerTypes.PipelineVariables && <PipelineVariables />}
+      {type === DrawerTypes.PipelineVariables && <PipelineVariables pipeline={pipeline} />}
       {type === DrawerTypes.Templates && <PipelineTemplates />}
       {type === DrawerTypes.ExecutionStrategy && (
         <ExecutionStrategy selectedStage={defaultTo(selectedStage, {})} ref={executionStrategyRef} />
@@ -882,8 +864,6 @@ export function RightDrawer(): React.ReactElement {
               selectedStage,
               updatePipelineView,
               updateStage,
-              stageType,
-              setSelectedStepId,
               pipelineView
             )
           }

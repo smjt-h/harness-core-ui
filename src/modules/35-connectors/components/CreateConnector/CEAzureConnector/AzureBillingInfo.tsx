@@ -26,6 +26,7 @@ import {
   useCreateConnector,
   useUpdateConnector
 } from 'services/cd-ng'
+import useRBACError from '@rbac/utils/useRBACError/useRBACError'
 import css from './CreateCeAzureConnector.module.scss'
 
 interface OverviewDetails {
@@ -45,6 +46,7 @@ interface StepSecretManagerProps extends ConnectorInfoDTO {
 }
 
 const AzureBillingInfo: React.FC<StepProps<StepSecretManagerProps> & AzureBillingInfoProps> = props => {
+  const { getRBACErrorMessage } = useRBACError()
   const { getString } = useStrings()
   const { accountId } = useParams<{
     accountId: string
@@ -83,7 +85,7 @@ const AzureBillingInfo: React.FC<StepProps<StepSecretManagerProps> & AzureBillin
         props.nextStep?.({ ...connectorDetails })
       }
     } catch (e) {
-      modalErrorHandler?.showDanger(e.data?.message || e.message)
+      modalErrorHandler?.showDanger(getRBACErrorMessage(e))
     } finally {
       setIsSaving(false)
     }

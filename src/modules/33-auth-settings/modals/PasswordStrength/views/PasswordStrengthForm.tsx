@@ -27,6 +27,7 @@ import { usePutLoginSettings } from 'services/cd-ng'
 import type { AccountPathProps } from '@common/interfaces/RouteInterfaces'
 import { useStrings } from 'framework/strings'
 import { MIN_NUMBER_OF_CHARACTERS, MAX_NUMBER_OF_CHARACTERS } from '@common/constants/Utils'
+import useRBACError from '@rbac/utils/useRBACError/useRBACError'
 
 interface Props {
   onSubmit?: () => void
@@ -44,6 +45,7 @@ interface FormValues {
 }
 
 const PasswordStrengthForm: React.FC<Props> = ({ onSubmit, onCancel, loginSettings, editing }) => {
+  const { getRBACErrorMessage } = useRBACError()
   const { getString } = useStrings()
   const { accountId } = useParams<AccountPathProps>()
   const { showSuccess } = useToaster()
@@ -80,7 +82,7 @@ const PasswordStrengthForm: React.FC<Props> = ({ onSubmit, onCancel, loginSettin
         onSubmit?.()
       }
     } catch (e) {
-      /* istanbul ignore next */ modalErrorHandler?.showDanger(e.data?.message || e.message)
+      /* istanbul ignore next */ modalErrorHandler?.showDanger(getRBACErrorMessage(e))
     }
   }
 

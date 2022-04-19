@@ -14,7 +14,7 @@ import { useStrings } from 'framework/strings'
 import type { AuditEventDTO } from 'services/audit'
 import { getReadableDateTime } from '@common/utils/dateUtils'
 import AuditTrailFactory from '@audit-trail/factories/AuditTrailFactory'
-import { actionToLabelMap, getStringFromSubtitleMap, resourceTypeToLabelMapping } from '@audit-trail/utils/RequestUtil'
+import { actionToLabelMap, getStringFromSubtitleMap } from '@audit-trail/utils/RequestUtil'
 import YamlDiffButton from './YamlDiffButton'
 import css from './EventSummary.module.scss'
 
@@ -88,9 +88,11 @@ const EventSummary: React.FC<EventSummaryProps> = ({ onClose, auditEvent }) => {
   }
 
   const renderResourceType: Renderer<CellProps<AuditEventDTO>> = ({ row }) => {
+    const label = AuditTrailFactory.getResourceHandler(row.original.resource.type)?.resourceLabel
+
     return (
       <Layout.Horizontal padding={{ right: 'xlarge' }}>
-        <Text lineClamp={1}>{getString(resourceTypeToLabelMapping[row.original.resource.type])}</Text>
+        <Text lineClamp={1}>{label ? getString(label) : row.original.resource.type}</Text>
       </Layout.Horizontal>
     )
   }

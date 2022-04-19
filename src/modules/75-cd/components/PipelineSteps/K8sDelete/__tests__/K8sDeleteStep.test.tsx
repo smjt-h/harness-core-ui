@@ -19,13 +19,39 @@ describe('Test K8sDeleteStep', () => {
   beforeEach(() => {
     factory.registerStep(new K8sDeleteStep())
   })
-  test('should render edit view as new step', () => {
-    const { container } = render(
+  test('should render edit view as new step', async () => {
+    const { container, getByText } = render(
       <TestStepWidget initialValues={{}} type={StepType.K8sDelete} stepViewType={StepViewType.Edit} />
+    )
+    // change radio group
+    fireEvent.click(getByText('pipelineSteps.releaseNameLabel'))
+    fireEvent.click(getByText('pipelineSteps.deleteNamespace'))
+
+    // change radio group
+    fireEvent.click(getByText('auditTrail.resourceNameLabel'))
+    fireEvent.click(container.querySelector('[data-icon="main-trash"]') as HTMLElement)
+    await fireEvent.click(getByText('plusAdd'))
+
+    // change radio group again
+    fireEvent.click(getByText('pipelineSteps.manifestPathLabel'))
+
+    fireEvent.change(
+      container.querySelector('input[name="spec.deleteResources.spec.manifestPaths[0].value"]') as HTMLElement,
+      { target: { value: 'test' } }
+    )
+
+    //now delete this
+    fireEvent.click(container.querySelector('[data-icon="main-trash"]') as HTMLElement)
+
+    //Add new
+    await fireEvent.click(getByText('addFileText'))
+    fireEvent.change(
+      container.querySelector('input[name="spec.deleteResources.spec.manifestPaths[0].value"]') as HTMLElement,
+      { target: { value: 'test2' } }
     )
     expect(container).toMatchSnapshot()
   })
-  test('should render edit view -with ManifestPaths selected', () => {
+  test('should render edit view -with ManifestPaths selected', async () => {
     const { container } = render(
       <TestStepWidget
         initialValues={{
@@ -134,7 +160,7 @@ describe('Test K8sDeleteStep', () => {
     const onUpdate = jest.fn()
     // (JSX attribute) RefAttributes<Pick<FormikProps<unknown>, "errors" | "submitForm">>.ref?: ((instance: Pick<FormikProps<unknown>, "errors" | "submitForm"> | null) => void) | React.RefObject<Pick<FormikProps<unknown>, "errors" | "submitForm">> | null | undefined
     const ref = React.createRef<StepFormikRef<unknown>>()
-    render(
+    const { container, queryByText } = render(
       <TestStepWidget
         initialValues={{
           type: 'K8sDelete',
@@ -168,6 +194,12 @@ describe('Test K8sDeleteStep', () => {
         }
       }
     })
+
+    //timeout validation on submit
+    fireEvent.change(container.querySelector('input[value="12m"]') as HTMLElement, { target: { value: '' } })
+
+    await act(() => ref.current?.submitForm())
+    expect(queryByText('validation.timeout10SecMinimum')).toBeTruthy()
   })
 
   test('should render variable view', () => {
@@ -222,6 +254,161 @@ describe('Test K8sDeleteStep', () => {
         type={StepType.K8sDelete}
         stepViewType={StepViewType.InputVariable}
       />
+    )
+    expect(container).toMatchSnapshot()
+  })
+  test('Validate timeout is min 10s with resourceNames', () => {
+    const data = {
+      data: {
+        identifier: 'K8sDeleteStepID',
+        name: 'K8sDeleteStep',
+        spec: {
+          deleteResources: {
+            type: 'ResourceName',
+            spec: {
+              resourceNames: ['test1', 'test2']
+            }
+          }
+        },
+        type: 'K8sDelete',
+        timeout: '1s'
+      },
+      template: {
+        identifier: 'K8sDeleteStepID',
+        name: 'K8sDeleteStep',
+        type: 'K8sDelete',
+        timeout: '1s',
+        spec: {
+          deleteResources: {
+            type: 'ResourceName',
+            spec: {
+              resourceNames: ['test1', 'test2']
+            }
+          }
+        }
+      },
+      viewType: StepViewType.DeploymentForm
+    }
+    const response = new K8sDeleteStep().validateInputSet(data)
+    const processFormResponse = new K8sDeleteStep().processFormData(data.data)
+    expect(processFormResponse).toMatchSnapshot()
+    expect(response).toMatchSnapshot()
+  })
+  test('Validate timeout is min 10s with manifestPaths', () => {
+    const data = {
+      data: {
+        identifier: 'K8sDeleteStepID',
+        name: 'K8sDeleteStep',
+        spec: {
+          deleteResources: {
+            type: 'ManifestPath',
+            spec: {
+              manifestPaths: ['test1', 'test2']
+            }
+          }
+        },
+        type: 'K8sDelete',
+        timeout: '1s'
+      },
+      template: {
+        identifier: 'K8sDeleteStepID',
+        name: 'K8sDeleteStep',
+        type: 'K8sDelete',
+        timeout: '1s',
+        spec: {
+          deleteResources: {
+            type: 'ManifestPath',
+            spec: {
+              manifestPaths: ['test1', 'test2']
+            }
+          }
+        }
+      },
+      viewType: StepViewType.DeploymentForm
+    }
+    const response = new K8sDeleteStep().validateInputSet(data)
+    const processFormResponse = new K8sDeleteStep().processFormData(data.data)
+    expect(processFormResponse).toMatchSnapshot()
+    expect(response).toMatchSnapshot()
+  })
+  test('Validate timeout is min 10s with manifestPaths runtime', () => {
+    const data = {
+      data: {
+        identifier: 'K8sDeleteStepID',
+        name: 'K8sDeleteStep',
+        spec: {
+          deleteResources: {
+            type: 'ManifestPath',
+            spec: {
+              manifestPaths: null
+            }
+          }
+        },
+        type: StepType.K8sDelete,
+        timeout: '5s'
+      },
+      template: {
+        identifier: 'K8sDeleteStepID',
+        name: 'K8sDeleteStep',
+        type: StepType.K8sDelete,
+        timeout: '<+input>',
+        spec: {
+          deleteResources: {
+            type: 'ManifestPath',
+            spec: {
+              manifestPaths: '<+input>' as unknown as string[]
+            }
+          }
+        }
+      },
+      viewType: StepViewType.DeploymentForm
+    } as any
+    const response = new K8sDeleteStep().validateInputSet(data)
+    const processFormResponse = new K8sDeleteStep().processFormData(data.template)
+    expect(processFormResponse).toMatchSnapshot()
+    expect(response).toMatchSnapshot()
+  })
+  test('Validate timeout is min 10s with resourceNames as runtime', () => {
+    const data = {
+      data: {
+        identifier: 'K8sDeleteStepID',
+        name: 'K8sDeleteStep',
+        spec: {
+          deleteResources: {
+            type: 'ResourceName',
+            spec: {
+              resourceNames: null
+            }
+          }
+        },
+        type: 'K8sDelete',
+        timeout: '5s'
+      },
+      template: {
+        identifier: 'K8sDeleteStepID',
+        name: 'K8sDeleteStep',
+        type: 'K8sDelete',
+        timeout: '<+input>',
+        spec: {
+          deleteResources: {
+            type: 'ResourceName',
+            spec: {
+              resourceNames: '<+input>' as unknown as string[],
+              skipDryRun: false
+            }
+          }
+        }
+      },
+      viewType: StepViewType.TriggerForm
+    } as any
+    const response = new K8sDeleteStep().validateInputSet(data)
+    const processFormResponse = new K8sDeleteStep().processFormData(data.template)
+    expect(processFormResponse).toMatchSnapshot()
+    expect(response).toMatchSnapshot()
+  })
+  test('should render null for StepviewType.template', () => {
+    const { container } = render(
+      <TestStepWidget initialValues={{}} type={StepType.K8sDelete} stepViewType={StepViewType.Template} />
     )
     expect(container).toMatchSnapshot()
   })

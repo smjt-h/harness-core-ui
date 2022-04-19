@@ -18,6 +18,7 @@ exports[`ListInput tests Should render properly 1`] = `
           <button
             class="bp3-button bp3-minimal Button--button StyledProps--font StyledProps--main Button--with-current-color Button--iconOnly Button--without-shadow Button--withLeftIcon"
             data-testid="remove-test-[0]"
+            style="align-self: flex-start;"
             type="button"
           >
             <span
@@ -56,6 +57,7 @@ exports[`ListInput tests Should render properly 1`] = `
           <button
             class="bp3-button bp3-minimal Button--button StyledProps--font StyledProps--main Button--with-current-color Button--iconOnly Button--without-shadow Button--withLeftIcon"
             data-testid="remove-test-[1]"
+            style="align-self: flex-start;"
             type="button"
           >
             <span

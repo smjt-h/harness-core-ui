@@ -6,7 +6,7 @@
  */
 
 import React from 'react'
-import { get } from 'lodash-es'
+import { get, isEmpty } from 'lodash-es'
 import { Container, Icon, Text, Layout } from '@wings-software/uicore'
 import { Color } from '@harness/design-system'
 import { useStrings } from 'framework/strings'
@@ -24,11 +24,12 @@ export default function CDInfo(props: CDInfoProps): React.ReactElement {
   const { getString } = useStrings()
   const { data, barrier } = props
   const artifacts = get(data, 'data.moduleInfo.cd.serviceInfo.artifacts.sidecars', []).map(
-    (artifact: any) => artifact.imagePath
+    (artifact: any) => artifact.imagePath ?? artifact.version
   )
-  const primaryArtifact = get(data, 'data.moduleInfo.cd.serviceInfo.artifacts.primary.imagePath', '')
-  if (primaryArtifact.length > 0) {
-    artifacts.push(primaryArtifact)
+
+  const primaryArtifactPath = get(data, 'data.moduleInfo.cd.serviceInfo.artifacts.primary', {})
+  if (!isEmpty(primaryArtifactPath)) {
+    artifacts.push(primaryArtifactPath.imagePath ?? primaryArtifactPath.version)
   }
   const serviceName = get(data, 'data.moduleInfo.cd.serviceInfo.displayName', null)
   const environment = get(data, 'data.moduleInfo.cd.infraExecutionSummary.name', null)

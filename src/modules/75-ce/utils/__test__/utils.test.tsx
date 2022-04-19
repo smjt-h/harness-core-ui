@@ -19,6 +19,7 @@ import { convertNumberToFixedDecimalPlaces } from '../convertNumberToFixedDecima
 import formatCost from '../formatCost'
 import { clusterInfoUtil, DEFAULT_GROUP_BY } from '../perspectiveUtils'
 import { generateGroupBy, getCloudProviderFromFields, getFiltersFromEnityMap } from '../anomaliesUtils'
+import { addBufferToValue, calculateNodes, isResourceConsistent } from '../recommendationUtils'
 
 describe('test cases for recommendation utils', () => {
   test('test cases for CPU value formatter', () => {
@@ -51,6 +52,22 @@ describe('test cases for recommendation utils', () => {
   test('get mem in readable format for chart', () => {
     expect(getMemValueInReadableFormForChart(100000000)).toBe('100.00Mi')
     expect(getMemValueInReadableFormForChart(1000000)).toBe('1.00Mi')
+  })
+
+  test('add buffer to resource values', () => {
+    expect(addBufferToValue(100, 100)).toBe(200)
+    expect(addBufferToValue(0.1, 50)).toBe(0.15)
+  })
+
+  test('check if resource values are consistent', () => {
+    expect(isResourceConsistent(1, 1, 2, 2, 0)).toBe(false)
+    expect(isResourceConsistent(0, 0, 1, 2, 0)).toBe(false)
+    expect(isResourceConsistent(2, 2, 1, 1, 0)).toBe(true)
+  })
+
+  test('test cases to calculate nodes', () => {
+    expect(calculateNodes(10, 10, 20, 20, 6)).toMatchObject({ minimumNodes: 1, maximumNodes: 1 })
+    expect(calculateNodes(32, 16, 4, 2, 7)).toMatchObject({ minimumNodes: 7, maximumNodes: 8 })
   })
 })
 
@@ -167,9 +184,9 @@ describe('test cases for anomalyUtils', () => {
     namespace: 'Namespace',
     workloadName: 'Workload',
     awsUsageAccountId: 'Account',
-    awsServicecode: 'Service',
+    awsServiceCode: 'Service',
     awsInstancetype: 'Instance Type',
-    awsUsagetype: 'Usage Type',
+    awsUsageType: 'Usage Type',
     workloadType: 'Workload Type',
     awsAccount: 'Account'
   }
@@ -203,9 +220,9 @@ describe('test cases for anomalyUtils', () => {
         namespace: 'Namespace',
         workloadName: 'Workload',
         awsUsageAccountId: 'Account',
-        awsServicecode: 'Service',
+        awsServiceCode: 'Service',
         awsInstancetype: 'Instance Type',
-        awsUsagetype: 'Usage Type',
+        awsUsageType: 'Usage Type',
         workloadType: 'Workload Type',
         awsAccount: 'Account'
       },
@@ -217,9 +234,9 @@ describe('test cases for anomalyUtils', () => {
         namespace: 'Namespace1',
         workloadName: 'Workload1',
         awsUsageAccountId: 'Account1',
-        awsServicecode: 'Service1',
+        awsServiceCode: 'Service1',
         awsInstancetype: 'Instance Type1',
-        awsUsagetype: 'Usage Type1',
+        awsUsageType: 'Usage Type1',
         workloadType: 'Workload Type1',
         awsAccount: 'Account1'
       }
@@ -248,16 +265,28 @@ describe('test cases for anomalyUtils', () => {
 
     expect(getFiltersFromEnityMap(entityMapArray, CloudProvider.AWS)).toEqual([
       {
-        field: { fieldId: 'awsAccount', fieldName: '', identifier: 'AWS', identifierName: 'AWS' },
+        field: { fieldId: 'awsUsageAccountId', fieldName: 'Account', identifier: 'AWS', identifierName: 'AWS' },
         operator: 'IN',
         type: 'VIEW_ID_CONDITION',
         values: ['Account', 'Account1']
+      },
+      {
+        field: { fieldId: 'awsServiceCode', fieldName: 'Service', identifier: 'AWS', identifierName: 'AWS' },
+        operator: 'IN',
+        type: 'VIEW_ID_CONDITION',
+        values: ['Service', 'Service1']
       },
       {
         field: { fieldId: 'awsInstancetype', fieldName: 'Instance Type', identifier: 'AWS', identifierName: 'AWS' },
         operator: 'IN',
         type: 'VIEW_ID_CONDITION',
         values: ['Instance Type', 'Instance Type1']
+      },
+      {
+        field: { fieldId: 'awsUsageType', fieldName: 'Usage Type', identifier: 'AWS', identifierName: 'AWS' },
+        operator: 'IN',
+        type: 'VIEW_ID_CONDITION',
+        values: ['Usage Type', 'Usage Type1']
       }
     ])
   })

@@ -37,7 +37,7 @@ import { buildAWSCodeCommitPayload } from '@connectors/pages/connectors/utils/Co
 import type { ProjectPathProps, AccountPathProps } from '@common/interfaces/RouteInterfaces'
 import { useToaster } from '@common/exports'
 import { setSecretField } from '@secrets/utils/SecretField'
-
+import useRBACError from '@rbac/utils/useRBACError/useRBACError'
 import css from '../commonSteps/ConnectorCommonStyles.module.scss'
 
 interface AWSCCAuthStepProps extends StepProps<ConnectorConfigDTO> {
@@ -49,6 +49,7 @@ interface AWSCCAuthStepProps extends StepProps<ConnectorConfigDTO> {
 
 export default function AWSCCAuthStep(props: AWSCCAuthStepProps) {
   const { showSuccess } = useToaster()
+  const { getRBACErrorMessage } = useRBACError()
   const { getString } = useStrings()
   const [modalErrorHandler, setModalErrorHandler] = useState<ModalErrorHandlerBinding | undefined>()
   const { accountId, projectIdentifier, orgIdentifier } = useParams<ProjectPathProps & AccountPathProps>()
@@ -100,7 +101,7 @@ export default function AWSCCAuthStep(props: AWSCCAuthStepProps) {
       props.onSuccess?.(response.data)
       props.nextStep?.({ ...props.prevStepData, ...formData })
     } catch (e) {
-      modalErrorHandler?.showDanger(e.data?.message || e.message)
+      modalErrorHandler?.showDanger(getRBACErrorMessage(e))
     } finally {
       setIsSaving(false)
     }

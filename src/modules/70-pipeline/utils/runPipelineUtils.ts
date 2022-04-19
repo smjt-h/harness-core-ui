@@ -5,14 +5,35 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
+import { cloneDeep, defaultTo } from 'lodash-es'
 import type { SelectOption } from '@wings-software/uicore'
+
 import { getStageFromPipeline } from '@pipeline/components/PipelineStudio/PipelineContext/helpers'
 import type { AllNGVariables } from '@pipeline/utils/types'
 import { FeatureIdentifier } from 'framework/featureStore/FeatureIdentifier'
 import type { FeaturesProps } from 'framework/featureStore/featureStoreUtil'
 import type { UseStringsReturn } from 'framework/strings'
-import type { PipelineInfoConfig } from 'services/cd-ng'
+import type { PipelineInfoConfig, StageElementWrapperConfig } from 'services/cd-ng'
 import type { InputSetErrorResponse } from 'services/pipeline-ng'
+
+function mergeStage(stage: StageElementWrapperConfig, inputSetPortion: NgPipelineTemplate): StageElementWrapperConfig {
+  const stageIdToBeMatched = defaultTo(stage.stage?.identifier, '')
+  const matchedStageInInputSet = getStageFromPipeline(stageIdToBeMatched, inputSetPortion.pipeline)
+
+  if (matchedStageInInputSet.stage) {
+    let updatedStageVars = []
+    if (stage?.stage?.variables && matchedStageInInputSet?.stage?.stage?.variables) {
+      updatedStageVars = getMergedVariables(
+        stage?.stage?.variables as AllNGVariables[],
+        matchedStageInInputSet.stage.stage?.variables as AllNGVariables[]
+      )
+      matchedStageInInputSet.stage.stage.variables = updatedStageVars
+    }
+    return matchedStageInInputSet.stage
+  }
+
+  return stage
+}
 
 interface NgPipelineTemplate {
   pipeline: PipelineInfoConfig
@@ -30,17 +51,7 @@ export const mergeTemplateWithInputSetData = (
       We update all the parallel stages with the ones matching in the input set portion
       and then finally return the new 'updatedParallelStages' object
       */
-      const updatedParallelStages = stage.parallel.map(parallelStage => {
-        // looping over each parallel stage
-        const parallelStageId = parallelStage.stage?.identifier || ''
-        // if the ID of any parallel stage matches in input set portion, replace the original stage with the matched
-        const matchedStageInInputSet = getStageFromPipeline(parallelStageId, inputSetPortion.pipeline)
-        if (matchedStageInInputSet.stage) {
-          return matchedStageInInputSet.stage
-        }
-        // if doesn't match in input set portion, innocently return the same stage object
-        return parallelStage
-      })
+      const updatedParallelStages = stage.parallel.map(parallelStage => mergeStage(parallelStage, inputSetPortion))
       // Finally setting the updatedParallelStages in the original object, so that the 'mergedStages' will have the updated values
       stage.parallel = updatedParallelStages
       return stage
@@ -50,23 +61,10 @@ export const mergeTemplateWithInputSetData = (
     This block will be executed if there are no parallel stages.
     Simply loop over the stages and keep matching and replacing
     */
-    const stageIdToBeMatched = stage.stage?.identifier || ''
-    const matchedStageInInputSet = getStageFromPipeline(stageIdToBeMatched, inputSetPortion.pipeline)
-    if (matchedStageInInputSet.stage) {
-      let updatedStageVars = []
-      if (stage?.stage?.variables && matchedStageInInputSet?.stage?.stage?.variables) {
-        updatedStageVars = getMergedVariables(
-          stage?.stage?.variables as AllNGVariables[],
-          matchedStageInInputSet.stage.stage?.variables as AllNGVariables[]
-        )
-        matchedStageInInputSet.stage.stage.variables = updatedStageVars
-      }
-      return matchedStageInInputSet.stage
-    }
-
-    return stage
+    return mergeStage(stage, inputSetPortion)
   })
-  const toBeUpdated = templatePipeline
+
+  const toBeUpdated = cloneDeep(templatePipeline)
   toBeUpdated.pipeline.stages = mergedStages
   if (inputSetPortion.pipeline?.properties?.ci) {
     if (!toBeUpdated.pipeline.properties) {
@@ -126,17 +124,40 @@ export const getMergedVariables = (
   variables: AllNGVariables[],
   inputSetVariables: AllNGVariables[]
 ): AllNGVariables[] => {
-  const finalVariables = variables?.map((variable: AllNGVariables) => {
-    const variableInInputSetPortion = inputSetVariables?.find(currVar => currVar.name === variable.name)
-    if (variableInInputSetPortion) {
+  // create a map of input set variables values for easier lookup
+  // we use "name" of the varibale as the key
+  const inputSetVariablesMap: Record<string, AllNGVariables> = inputSetVariables.reduce(
+    (acc, curr) => ({ ...acc, [defaultTo(curr.name, '')]: curr }),
+    {}
+  )
+
+  // loop over existing variables and update their values from input sets
+  const finalVariables: AllNGVariables[] = variables.map((variable): AllNGVariables => {
+    const { name = '', type } = variable
+
+    // if a variable with same name exists in input set variables
+    if (name in inputSetVariablesMap) {
+      // copy the variable data
+      const newVar: AllNGVariables = { ...inputSetVariablesMap[name] }
+
+      // remove the variable from input set variables
+      delete inputSetVariablesMap[name]
+
       return {
         ...variable,
-        value: variableInInputSetPortion?.value || ''
-      }
+        // use new value if the type of varibale is same else use the current value
+        value: newVar.type === type ? newVar.value : variable.value
+      } as AllNGVariables
     }
+
+    // else return original varibale
     return variable
   })
-  return finalVariables as AllNGVariables[]
+
+  const remainingVariables = Object.values(inputSetVariablesMap)
+
+  // append the remaining input set variables to existing variables
+  return finalVariables.concat(...remainingVariables)
 }
 
 export const getRbacButtonModules = (module?: string): string[] => {
@@ -205,3 +226,9 @@ export const getAllStageItem = (getString: UseStringsReturn['getString']): Selec
   label: getString('pipeline.allStages'),
   value: ALL_STAGE_VALUE
 })
+
+export function getStageIdentifierFromStageData(selectedStageData: StageSelectionData): string[] {
+  return selectedStageData.allStagesSelected
+    ? []
+    : selectedStageData.selectedStageItems.map(stageData => stageData.value as string)
+}

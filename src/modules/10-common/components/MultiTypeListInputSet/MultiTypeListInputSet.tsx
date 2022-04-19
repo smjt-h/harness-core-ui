@@ -74,9 +74,6 @@ export const MultiTypeListInputSet = (props: MultiTypeListProps): React.ReactEle
   const { getString } = useStrings()
 
   const getStageFormikValues = React.useCallback(() => {
-    if (formik?.values && Object.prototype.hasOwnProperty.call(formik?.values, 'pipeline')) {
-      return get(formik?.values?.pipeline, name, '')
-    }
     return get(formik?.values, name, '')
   }, [formik?.values, name])
 

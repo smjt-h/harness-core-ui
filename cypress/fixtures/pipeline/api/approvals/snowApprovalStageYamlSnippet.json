@@ -1,0 +1,6 @@
+{
+  "status": "SUCCESS",
+  "data": "spec:\n  execution:\n    steps:\n    - step:\n        name: \"ServiceNow Approval\"\n        identifier: serviceNowApproval\n        type: ServiceNowApproval\n        timeout: 1d\n        spec:\n          approvalCriteria:\n            type: KeyValues\n            spec:\n              matchAnyCondition: false\n              conditions: []\n          rejectionCriteria:\n            type: KeyValues\n            spec:\n              matchAnyCondition: false\n              conditions: []\n",
+  "metaData": null,
+  "correlationId": "466d30b5-703e-433f-84e3-b8ad25ee443a"
+}

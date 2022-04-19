@@ -44,7 +44,9 @@ import {
   useSavingsOfService,
   useGetServiceDiagnostics,
   ServiceError,
-  useCumulativeServiceSavings
+  useCumulativeServiceSavings,
+  useDescribeServiceInContainerServiceCluster,
+  useRouteDetails
 } from 'services/lw'
 import { String, useStrings } from 'framework/strings'
 import useDeleteServiceHook from '@ce/common/useDeleteService'
@@ -191,6 +193,18 @@ function ResourcesCell(tableProps: CellProps<Service>): JSX.Element {
   const isSubmittedRule = tableProps.row.original.status === 'submitted'
   const isEcsRule = !_isEmpty(tableProps.row.original.routing?.container_svc)
 
+  const { data: serviceDescribeData } = useDescribeServiceInContainerServiceCluster({
+    account_id: accountId,
+    cluster_name: _defaultTo(tableProps.row.original.routing?.container_svc?.cluster, ''),
+    service_name: _defaultTo(tableProps.row.original.routing?.container_svc?.service, ''),
+    lazy: !isEcsRule,
+    queryParams: {
+      accountIdentifier: accountId,
+      cloud_account_id: tableProps.row.original.cloud_account_id,
+      region: _defaultTo(tableProps.row.original.routing?.container_svc?.region, '')
+    }
+  })
+
   const getClickableLink = () => {
     return isK8sRule
       ? tableProps.row.original.routing?.k8s?.CustomDomain
@@ -278,12 +292,9 @@ function ResourcesCell(tableProps: CellProps<Service>): JSX.Element {
                   marginRight: 5
                 }}
               >
-                {`${getString('ce.co.noOfTasks')} ${_defaultTo(
-                  tableProps.row.original.routing?.container_svc?.task_count,
-                  0
-                )}`}
+                {`${getString('ce.co.noOfTasks')} ${_defaultTo(serviceDescribeData?.response?.task_count, 0)}`}
               </Text>
-              {getStateTag(tableProps.row.original.routing?.container_svc?.task_count ? 'active' : 'down')}
+              {getStateTag(serviceDescribeData?.response?.task_count ? 'active' : 'down')}
             </>
           )}
         </Layout.Horizontal>
@@ -453,6 +464,7 @@ const TOTAL_ITEMS_PER_PAGE = 5
 
 interface RulesTableContainerProps {
   rules: Service[]
+  setRules: (services: Service[]) => void
   loading: boolean
   rowMenuProps: TableRowMenuProps
   pageProps: { index: number; setIndex: (index: number) => void }
@@ -462,8 +474,63 @@ interface RulesTableContainerProps {
   searchParams: SearchParams
 }
 
+const POLL_TIMER = 1000 * 60 * 1
+
+const useSubmittedRulesStatusUpdate = ({
+  rules,
+  onRuleUpdate
+}: {
+  rules: Service[]
+  onRuleUpdate?: (params: { updatedService: Service; index: number }) => void
+}) => {
+  const { accountId } = useParams<AccountPathProps>()
+  const { data, refetch, loading } = useRouteDetails({ account_id: accountId, rule_id: 0, lazy: true })
+  const rulesToFetch = useRef<{ index: number; rule: Service }[]>([])
+  const timer = useRef<NodeJS.Timer | null>(null)
+
+  const clearTimer = () => {
+    clearTimeout(timer.current as NodeJS.Timer)
+    timer.current = null
+  }
+
+  useEffect(() => {
+    rulesToFetch.current = []
+    clearTimer()
+    rules.forEach((r, i) => {
+      if (r.status === 'submitted') {
+        rulesToFetch.current.push({ index: i, rule: r })
+      }
+    })
+  }, [rules])
+
+  const triggerRuleFetching = () => {
+    timer.current = setTimeout(() => {
+      refetch({ pathParams: { account_id: accountId, rule_id: rulesToFetch.current[0].rule.id } })
+      clearTimer()
+    }, POLL_TIMER)
+  }
+
+  useEffect(() => {
+    if (!_isEmpty(rulesToFetch.current) && !loading && timer.current === null) {
+      triggerRuleFetching()
+    }
+  }, [rulesToFetch.current, timer.current])
+
+  useEffect(() => {
+    if (!_isEmpty(data?.response) && data?.response?.service?.status !== 'submitted') {
+      onRuleUpdate?.({ updatedService: data?.response?.service as Service, index: rulesToFetch.current[0].index })
+      rulesToFetch.current.shift()
+      clearTimer()
+    }
+    if (timer.current) {
+      return () => clearTimeout(timer.current as NodeJS.Timer)
+    }
+  }, [data?.response])
+}
+
 const RulesTableContainer: React.FC<RulesTableContainerProps> = ({
   rules,
+  setRules,
   loading,
   rowMenuProps: { onDelete, onEdit, onStateToggle },
   pageProps,
@@ -474,6 +541,20 @@ const RulesTableContainer: React.FC<RulesTableContainerProps> = ({
   const { getString } = useStrings()
   const history = useHistory()
   const location = useLocation()
+  const tableData = rules.slice(
+    pageProps.index * TOTAL_ITEMS_PER_PAGE,
+    pageProps.index * TOTAL_ITEMS_PER_PAGE + TOTAL_ITEMS_PER_PAGE
+  )
+
+  useSubmittedRulesStatusUpdate({
+    rules: tableData,
+    onRuleUpdate: ({ updatedService, index }) => {
+      const updatedRules = [...rules]
+      const updatedIndex = pageProps.index * TOTAL_ITEMS_PER_PAGE + index
+      updatedRules.splice(updatedIndex, 1, updatedService)
+      setRules(updatedRules)
+    }
+  })
 
   /* istanbul ignore next */
   const onSearchChange = async (val: string) => {
@@ -539,10 +620,7 @@ const RulesTableContainer: React.FC<RulesTableContainerProps> = ({
               <Text>Refresh</Text>
             </Layout.Horizontal>
             <TableV2<Service>
-              data={rules.slice(
-                pageProps.index * TOTAL_ITEMS_PER_PAGE,
-                pageProps.index * TOTAL_ITEMS_PER_PAGE + TOTAL_ITEMS_PER_PAGE
-              )}
+              data={tableData}
               pagination={{
                 pageSize: TOTAL_ITEMS_PER_PAGE,
                 pageIndex: pageProps.index,
@@ -809,6 +887,7 @@ const COGatewayList: React.FC = () => {
         <COGatewayCumulativeAnalytics data={graphData?.response} loadingData={graphLoading} />
         <RulesTableContainer
           rules={tableData}
+          setRules={setTableData}
           loading={loading}
           onRowClick={(e, index) => {
             setSelectedService({ data: e, index })
