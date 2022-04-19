@@ -505,6 +505,8 @@ recommendation:
     monthlyForcastedCostText: FORECASTED MONTHLY SPEND
     forecatedCostSubText: without applying recommendations
     monthlyPotentialCostText: Potential Monthly Spend
+    recommendationCount: 'by {{ count }} recommendations'
+    byEOM: by end of month
     uptoText: upto
     recommnedationBreakdown: 'Recommendations Breakdown'
     filterHereText: 'Filter here'

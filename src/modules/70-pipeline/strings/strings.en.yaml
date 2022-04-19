@@ -686,9 +686,6 @@ verification:
   logs:
     logCluster: Log cluster
     filterByClusterType: Filter by cluster type
-    knownEvent: Known Event
-    unknownEvent: Unknown Event
-    unexpectedFrequency: Unexpected Frequency
     noAnalysis: No analysis
     clusterType: CLUSTER TYPE
     sampleMessage: MESSAGE
@@ -701,6 +698,18 @@ verification:
     share: share
     sampleEvent: Sample event
     trend: trend
+    eventType: Event Type
+    countPerMin: Count per min
+    eventCountPerMin: Event count per minute
+    eventDetails: Event Details
+    updateEventPreference: Update Event Preference
+    eventPreference: Event Preference
+    lastKnownOccurrence: Last Known Occurrence
+    firstOccurrence: First Occurrence
+    notARiskLabel: Mark as Not a Risk
+    eventPriorityLabel: Update the Event Priority
+    reasonRequired: Reason field is required
+    totalClusters: Total Clusters
 stepCommonFields:
   runAsUser: Run as User
   ifNotPresent: 'If Not Present'
@@ -933,3 +942,6 @@ errorFramework:
   header12: 'it needs'
 delegate:
   DelegateSelectorOptional: 'Delegate Selector (optional)'
+ACR:
+  name: Acr
+

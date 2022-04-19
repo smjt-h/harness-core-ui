@@ -5,7 +5,7 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import React from 'react'
+import React, { useState } from 'react'
 import { defaultTo, get } from 'lodash-es'
 
 import { FormInput, getMultiTypeFromValue, Layout, MultiTypeInputType } from '@wings-software/uicore'
@@ -19,6 +19,7 @@ import { ArtifactToConnectorMap, ENABLED_ARTIFACT_TYPES } from '@pipeline/compon
 import { TriggerDefaultFieldList } from '@triggers/pages/triggers/utils/TriggersWizardPageUtils'
 import { useStrings } from 'framework/strings'
 import { useVariablesExpression } from '@pipeline/components/PipelineStudio/PiplineHooks/useVariablesExpression'
+import { shouldFetchTagsSource } from '@pipeline/components/ArtifactsSelection/ArtifactUtils'
 import ExperimentalInput from '../../K8sServiceSpecForms/ExperimentalInput'
 import { isFieldRuntime } from '../../K8sServiceSpecHelper'
 import {
@@ -61,11 +62,11 @@ const Content = (props: GCRRenderContent): JSX.Element => {
   const { getString } = useStrings()
   const isPropagatedStage = path?.includes('serviceConfig.stageOverrides')
   const { expressions } = useVariablesExpression()
-
+  const [lastQueryData, setLastQueryData] = useState({ imagePath: '', registryHostname: '' })
   const {
     data: gcrTagsData,
     loading: fetchingTags,
-    refetch: fetchTags,
+    refetch,
     error: fetchTagsError
   } = useMutateAsGet(useGetBuildDetailsForGcrWithYaml, {
     body: yamlStringify(getYamlData(formik?.values)),
@@ -99,6 +100,28 @@ const Content = (props: GCRRenderContent): JSX.Element => {
     },
     lazy: true
   })
+  const imagePathValue = getImagePath(
+    artifact?.spec?.imagePath,
+    get(initialValues, `artifacts.${artifactPath}.spec.imagePath`, '')
+  )
+  const connectorRefValue =
+    get(initialValues, `artifacts.${artifactPath}.spec.connectorRef`, '') || artifact?.spec?.connectorRef
+  const registryHostnameValue =
+    get(initialValues, `artifacts.${artifactPath}.spec.registryHostname`, '') || artifact?.spec?.registryHostname
+
+  const fetchTags = (): void => {
+    if (canFetchTags()) {
+      setLastQueryData({ imagePath: imagePathValue, registryHostname: registryHostnameValue })
+      refetch()
+    }
+  }
+
+  const canFetchTags = (): boolean => {
+    return !!(
+      (lastQueryData.imagePath !== imagePathValue || lastQueryData.registryHostname !== registryHostnameValue) &&
+      shouldFetchTagsSource(connectorRefValue, [imagePathValue, registryHostnameValue])
+    )
+  }
 
   const isFieldDisabled = (fieldName: string, isTag = false): boolean => {
     /* instanbul ignore else */

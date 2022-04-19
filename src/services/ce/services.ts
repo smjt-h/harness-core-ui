@@ -80,6 +80,13 @@ export const RecommendationsDocument = gql`
         resourceName
         monthlyCost
         monthlySaving
+        recommendationDetails {
+          ... on NodeRecommendationDTO {
+            recommended {
+              provider
+            }
+          }
+        }
       }
     }
   }
@@ -1218,6 +1225,13 @@ export type RecommendationsQuery = {
       resourceName: string | null
       monthlyCost: number | null
       monthlySaving: number | null
+      recommendationDetails:
+        | {
+            __typename?: 'NodeRecommendationDTO'
+            recommended: { __typename?: 'RecommendationResponse'; provider: string | null } | null
+          }
+        | { __typename?: 'WorkloadRecommendationDTO' }
+        | null
     } | null> | null
   } | null
 }

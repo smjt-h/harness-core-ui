@@ -30,6 +30,7 @@ trend: Trend
 known: Known
 unknown: Unknown
 unexpected: Unexpected
+unexpectedFrequency: Unexpected Frequency
 copyURL: Copy URL
 urlCopied: URL Copied
 unit: Unit
@@ -834,6 +835,13 @@ download: Download
 lastOneHour: Last 1 hour
 last12Hours: Last 12 hours
 showingLogsFor: Showing logs for
+logs:
+  priorityOrRiskSelectionRequired: 'Priority or Risk selection is required'
+  eventMarkedAs: This event was marked as
+  eventPriorityUpdate: This event was marked with priority
+  notARisk: Not a Risk
+  reportedBy: Reported by
+  radarChartInfo: The 360° on the circular chart represents the attribute. Use the slider below to narrow down the clusters view on the radar chart. You can click on a cluster to explore more details.
 externalAPICalls: External API Calls
 somethingWentWrongWhileParsingTheData: Something went wrong while parsing the data
 fetchingDataFrom: Fetching data from

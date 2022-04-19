@@ -75,7 +75,7 @@ exports[`DOCKER renders the tag component if other values are fixed: fetch tags 
                   class="bp3-popover-wrapper MultiTypeInput--select MultiTypeInput--fixedValueInput Select--main bp3-fill"
                 >
                   <div
-                    class="bp3-popover-target bp3-popover-open"
+                    class="bp3-popover-target"
                   >
                     <div
                       class="bp3-input-group"
@@ -232,7 +232,7 @@ exports[`ECR renders the tag component if other values are fixed: fetch tags ecr
                   class="bp3-popover-wrapper MultiTypeInput--select MultiTypeInput--fixedValueInput Select--main bp3-fill"
                 >
                   <div
-                    class="bp3-popover-target bp3-popover-open"
+                    class="bp3-popover-target"
                   >
                     <div
                       class="bp3-input-group"
@@ -389,7 +389,7 @@ exports[`GCR renders the tag component if other values are fixed: fetch tags gcr
                   class="bp3-popover-wrapper MultiTypeInput--select MultiTypeInput--fixedValueInput Select--main bp3-fill"
                 >
                   <div
-                    class="bp3-popover-target bp3-popover-open"
+                    class="bp3-popover-target"
                   >
                     <div
                       class="bp3-input-group"

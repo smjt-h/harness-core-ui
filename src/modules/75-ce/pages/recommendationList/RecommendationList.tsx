@@ -6,10 +6,12 @@
  */
 
 import React, { useEffect, useMemo, useState } from 'react'
-import { Card, Text, Layout, Container, Icon, Button, ButtonVariation, TableV2 } from '@wings-software/uicore'
-import { useHistory, useParams } from 'react-router-dom'
+import { Card, Text, Layout, Container, Icon, Button, ButtonVariation, TableV2, IconName } from '@wings-software/uicore'
+import { useHistory, useParams, Link } from 'react-router-dom'
 import type { CellProps, Renderer } from 'react-table'
-import { Color } from '@harness/design-system'
+import qs from 'qs'
+import { Color, FontVariation } from '@harness/design-system'
+import { defaultTo, get } from 'lodash-es'
 import { useStrings } from 'framework/strings'
 import {
   RecommendationItemDto,
@@ -26,13 +28,15 @@ import routes from '@common/RouteDefinitions'
 import { Page } from '@common/exports'
 import { useQueryParams } from '@common/hooks'
 import formatCost from '@ce/utils/formatCost'
-import { getViewFilterForId } from '@ce/utils/perspectiveUtils'
+import { getViewFilterForId, GROUP_BY_CLUSTER_NAME } from '@ce/utils/perspectiveUtils'
 import EmptyView from '@ce/images/empty-state.svg'
 import OverviewAddCluster from '@ce/components/OverviewPage/OverviewAddCluster'
 import { PAGE_NAMES, USER_JOURNEY_EVENTS } from '@ce/TrackingEventsConstants'
 import { useTelemetry } from '@common/hooks/useTelemetry'
 import { NGBreadcrumbs } from '@common/components/NGBreadcrumbs/NGBreadcrumbs'
-import { CCM_PAGE_TYPE } from '@ce/types'
+import { CCM_PAGE_TYPE, CloudProvider } from '@ce/types'
+import { calculateSavingsPercentage } from '@ce/utils/recommendationUtils'
+import { generateFilters } from '@ce/utils/anomaliesUtils'
 import RecommendationSavingsCard from '../../components/RecommendationSavingsCard/RecommendationSavingsCard'
 import RecommendationFilters from '../../components/RecommendationFilters'
 import css from './RecommendationList.module.scss'
@@ -48,10 +52,6 @@ type RouteFn = (
 
 interface RecommendationListProps {
   data: Array<RecommendationItemDto>
-  setFilters: React.Dispatch<React.SetStateAction<Record<string, string[]>>>
-  filters: Record<string, string[]>
-  setCostFilters: React.Dispatch<React.SetStateAction<Record<string, number>>>
-  costFilters: Record<string, number>
   fetching: boolean
   ccmData: Maybe<CcmMetaData> | undefined
   pagination: {
@@ -66,10 +66,6 @@ interface RecommendationListProps {
 
 const RecommendationsList: React.FC<RecommendationListProps> = ({
   data,
-  filters,
-  setFilters,
-  setCostFilters,
-  costFilters,
   pagination,
   fetching,
   ccmData,
@@ -86,6 +82,14 @@ const RecommendationsList: React.FC<RecommendationListProps> = ({
       [ResourceType.NodePool]: routes.toCENodeRecommendationDetails
     }
   }, [])
+
+  const resourceTypeMap: Record<string, string> = useMemo(
+    () => ({
+      [ResourceType.Workload]: getString('ce.overview.workload'),
+      [ResourceType.NodePool]: getString('ce.overview.nodepool')
+    }),
+    []
+  )
 
   if (fetching) {
     return (
@@ -117,17 +121,114 @@ const RecommendationsList: React.FC<RecommendationListProps> = ({
 
   const NameCell: Renderer<CellProps<RecommendationItemDto>> = cell => {
     const originalRowData = cell.row.original
-    const { clusterName, namespace } = originalRowData
+    const { clusterName, namespace, resourceType } = originalRowData
+
+    const provider = get(originalRowData, 'recommendationDetails.recommended.provider', '')
+
+    const iconMapping: Record<string, IconName> = {
+      google: 'gcp',
+      azure: 'service-azure',
+      amazon: 'service-aws'
+    }
+
+    const iconName = provider ? iconMapping[provider] : 'app-kubernetes'
+    const perspectiveKey = 'defaultClusterPerspectiveId'
+    const cloudProvider = 'CLUSTER'
+
+    const clusterLink = useMemo(
+      () => ({
+        pathname: routes.toPerspectiveDetails({
+          accountId: accountId,
+          perspectiveId: (defaultTo(ccmData, {}) as CcmMetaData)[perspectiveKey] as string,
+          perspectiveName: (defaultTo(ccmData, {}) as CcmMetaData)[perspectiveKey] as string
+        }),
+        search: `?${qs.stringify({
+          filters: JSON.stringify(
+            generateFilters({ clusterName } as Record<string, string>, cloudProvider as CloudProvider)
+          ),
+          groupBy: JSON.stringify(GROUP_BY_CLUSTER_NAME)
+        })}`
+      }),
+      []
+    )
+
+    const namespaceLink = useMemo(
+      () => ({
+        pathname: routes.toPerspectiveDetails({
+          accountId: accountId,
+          perspectiveId: (defaultTo(ccmData, {}) as CcmMetaData)[perspectiveKey] as string,
+          perspectiveName: (defaultTo(ccmData, {}) as CcmMetaData)[perspectiveKey] as string
+        }),
+        search: `?${qs.stringify({
+          filters: JSON.stringify(
+            generateFilters({ clusterName, namespace } as Record<string, string>, cloudProvider as CloudProvider)
+          ),
+          groupBy: JSON.stringify(GROUP_BY_CLUSTER_NAME)
+        })}`
+      }),
+      []
+    )
+
+    const resourceDetailsLink = useMemo(
+      () => ({
+        pathname: routes.toCEPerspectiveWorkloadDetails({
+          accountId,
+          clusterName: defaultTo(clusterName, ''),
+          namespace: defaultTo(namespace, ''),
+          perspectiveId: (defaultTo(ccmData, {}) as CcmMetaData)[perspectiveKey] as string,
+          perspectiveName: (defaultTo(ccmData, {}) as CcmMetaData)[perspectiveKey] as string,
+          workloadName: cell.value
+        })
+      }),
+      []
+    )
+
     return (
-      <Layout.Vertical
-        margin={{
-          right: 'medium'
-        }}
-      >
-        <Text>{clusterName}</Text>
-        {namespace && <Text>{`/ ${namespace}`}</Text>}
-        <Text>{`/ ${cell.value}`}</Text>
-      </Layout.Vertical>
+      <Layout.Horizontal style={{ alignItems: 'center' }}>
+        <Icon name={iconName} size={28} padding={{ right: 'medium' }} />
+        <Layout.Vertical>
+          <Container>
+            <Text inline color={Color.GREY_500} font={{ variation: FontVariation.SMALL }}>
+              {`${getString('common.cluster')}: `}
+            </Text>
+            <Link to={clusterLink} onClick={e => e.stopPropagation()}>
+              <Text inline color={Color.PRIMARY_7} font={{ variation: FontVariation.BODY2 }}>
+                {clusterName}
+              </Text>
+            </Link>
+          </Container>
+          {namespace ? (
+            <Container>
+              <Text inline color={Color.GREY_500} font={{ variation: FontVariation.SMALL }}>
+                {`${getString('ce.recommendation.listPage.filters.namespace')}: `}
+              </Text>
+              <Link to={namespaceLink} onClick={e => e.stopPropagation()}>
+                <Text inline color={Color.PRIMARY_7} font={{ variation: FontVariation.BODY2 }}>
+                  {namespace}
+                </Text>
+              </Link>
+            </Container>
+          ) : null}
+          <Container>
+            <Text inline color={Color.GREY_500} font={{ variation: FontVariation.SMALL_BOLD }}>
+              {`${getString(
+                ResourceType.Workload === resourceType ? 'pipelineSteps.workload' : 'ce.nodeRecommendation.nodepool'
+              )}: `}
+            </Text>
+            {resourceType === ResourceType.Workload ? (
+              <Link to={resourceDetailsLink} onClick={e => e.stopPropagation()}>
+                <Text inline color={Color.PRIMARY_7} font={{ variation: FontVariation.BODY2 }}>
+                  {cell.value}
+                </Text>
+              </Link>
+            ) : (
+              <Text inline color={Color.GREY_700} font={{ variation: FontVariation.BODY2 }}>
+                {cell.value}
+              </Text>
+            )}
+          </Container>
+        </Layout.Vertical>
+      </Layout.Horizontal>
     )
   }
 
@@ -135,55 +236,36 @@ const RecommendationsList: React.FC<RecommendationListProps> = ({
     const rowData = row.original
     const { resourceType } = rowData
     return (
-      <Text>
-        {resourceType === 'WORKLOAD'
-          ? getString('ce.recommendation.listPage.recommendationTypes.resizing')
-          : getString('ce.recommendation.listPage.recommendationTypes.rightSizing')}
+      <Text color={Color.GREY_600} font={{ variation: FontVariation.SMALL }}>
+        {resourceTypeMap[resourceType]}
       </Text>
     )
   }
 
-  // const RecommendationDetailsCell: Renderer<CellProps<RecommendationItemDto>> = ({ row }) => {
-  //   const rowData = row.original
-  //   const { resourceType } = rowData
-  //   return (
-  //     <Text>
-  //       {resourceType === 'WORKLOAD' ? getString('ce.recommendation.listPage.recommendationDetails.resize') : ''}
-  //     </Text>
-  //   )
-  // }
-
-  const ResourceTypeCell: Renderer<CellProps<RecommendationItemDto>> = cell => {
-    return <Text>{cell.value === 'WORKLOAD' ? getString('pipelineSteps.workload') : 'Nodepool'}</Text>
-  }
-
   const CostCell: Renderer<CellProps<RecommendationItemDto>> = cell => {
-    return cell.value ? <Text>{formatCost(cell.value)}</Text> : null
-  }
-
-  const SavingCell: Renderer<CellProps<RecommendationItemDto>> = cell => {
-    return !isNaN(cell.value) ? (
-      <Text color="green500" icon="money-icon" iconProps={{ size: 28 }}>
+    return cell.value ? (
+      <Text color={Color.GREY_600} font={{ variation: FontVariation.H6 }}>
         {formatCost(cell.value)}
       </Text>
     ) : null
   }
 
-  return data ? (
-    <Card elevation={1}>
-      <Layout.Vertical spacing="large">
-        <Layout.Horizontal>
-          <Text style={{ flex: 1 }} color={Color.GREY_400}>
-            {getString('ce.recommendation.listPage.recommnedationBreakdown')}
-          </Text>
-          <RecommendationFilters
-            costFilters={costFilters}
-            setCostFilters={setCostFilters}
-            setFilters={setFilters}
-            filters={filters}
-          />
-        </Layout.Horizontal>
+  const SavingCell: Renderer<CellProps<RecommendationItemDto>> = cell => {
+    return !isNaN(cell.value) ? (
+      <Container>
+        <Text inline color={Color.GREEN_700} font={{ variation: FontVariation.H5 }}>
+          {formatCost(cell.value)}
+        </Text>
+        <Text inline color={Color.GREEN_700} font={{ variation: FontVariation.BODY2 }} margin={{ left: 'small' }}>
+          {calculateSavingsPercentage(cell.value, defaultTo(cell.row.original.monthlyCost, 0))}
+        </Text>
+      </Container>
+    ) : null
+  }
 
+  return data ? (
+    <>
+      <Layout.Vertical spacing="large">
         {data.length ? (
           <TableV2<RecommendationItemDto>
             onRowClick={({ id, resourceType, resourceName }) => {
@@ -199,21 +281,15 @@ const RecommendationsList: React.FC<RecommendationListProps> = ({
             data={data}
             columns={[
               {
-                accessor: 'monthlySaving',
-                Header: getString('ce.recommendation.listPage.listTableHeaders.monthlySavings'),
-                Cell: SavingCell,
-                width: '18%'
-              },
-              {
                 accessor: 'resourceName',
                 Header: getString('ce.recommendation.listPage.listTableHeaders.resourceName'),
                 Cell: NameCell,
-                width: '23%'
+                width: '36%'
               },
               {
-                accessor: 'resourceType',
-                Header: getString('ce.recommendation.listPage.listTableHeaders.resourceType'),
-                Cell: ResourceTypeCell,
+                accessor: 'monthlySaving',
+                Header: getString('ce.recommendation.listPage.listTableHeaders.monthlySavings'),
+                Cell: SavingCell,
                 width: '18%'
               },
               {
@@ -227,11 +303,6 @@ const RecommendationsList: React.FC<RecommendationListProps> = ({
                 Cell: RecommendationTypeCell,
                 width: '18%'
               }
-              // {
-              //   Header: getString('ce.recommendation.listPage.listTableHeaders.details'),
-              //   Cell: RecommendationDetailsCell,
-              //   width: '15%'
-              // }
             ]}
             pagination={pagination}
           ></TableV2>
@@ -242,7 +313,7 @@ const RecommendationsList: React.FC<RecommendationListProps> = ({
           </Container>
         )}
       </Layout.Vertical>
-    </Card>
+    </>
   ) : null
 }
 
@@ -363,7 +434,7 @@ const RecommendationList: React.FC = () => {
             style={{ fontSize: 20, fontWeight: 'bold' }}
             tooltipProps={{ dataTooltipId: 'ccmRecommendations' }}
           >
-            Recommendations
+            {getString('ce.recommendation.sideNavText')}
           </Text>
         }
         breadcrumbs={<NGBreadcrumbs />}
@@ -381,17 +452,31 @@ const RecommendationList: React.FC = () => {
         }
       />
       <Page.Body loading={fetching || fetchingCCMMetaData}>
-        <Container padding="xlarge" height="100%">
+        <Card style={{ width: '100%' }}>
+          <Layout.Horizontal flex={{ justifyContent: 'flex-end' }}>
+            <RecommendationFilters
+              costFilters={costFilters}
+              setCostFilters={setCostFilters}
+              setFilters={setFilters}
+              filters={filters}
+            />
+          </Layout.Horizontal>
+        </Card>
+        <Container className={css.listContainer}>
           <Layout.Vertical spacing="large">
             <Layout.Horizontal spacing="medium">
               <RecommendationSavingsCard
                 title={getString('ce.recommendation.listPage.monthlySavingsText')}
                 amount={isEmptyView ? '$-' : formatCost(totalSavings)}
                 iconName="money-icon"
+                subTitle={getString('ce.recommendation.listPage.recommendationCount', {
+                  count: summaryData?.recommendationStatsV2?.count
+                })}
               />
               <RecommendationSavingsCard
-                title={getString('ce.recommendation.listPage.monthlyForcastedCostText')}
+                title={getString('ce.recommendation.listPage.monthlyPotentialCostText')}
                 amount={isEmptyView ? '$-' : formatCost(totalMonthlyCost)}
+                amountSubTitle={getString('ce.recommendation.listPage.byEOM')}
                 subTitle={getString('ce.recommendation.listPage.forecatedCostSubText')}
               />
             </Layout.Horizontal>
@@ -401,10 +486,6 @@ const RecommendationList: React.FC = () => {
               }}
               ccmData={ccmData?.ccmMetaData}
               pagination={pagination}
-              setFilters={setFilters}
-              filters={filters}
-              setCostFilters={setCostFilters}
-              costFilters={costFilters}
               fetching={fetching || fetchingCCMMetaData}
               data={recommendationItems as Array<RecommendationItemDto>}
             />

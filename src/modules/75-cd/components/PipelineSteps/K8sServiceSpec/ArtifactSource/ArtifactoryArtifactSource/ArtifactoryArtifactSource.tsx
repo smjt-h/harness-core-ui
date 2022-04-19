@@ -5,7 +5,7 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import React from 'react'
+import React, { useState } from 'react'
 import { defaultTo, get } from 'lodash-es'
 
 import { FormInput, getMultiTypeFromValue, Layout, MultiTypeInputType } from '@wings-software/uicore'
@@ -16,7 +16,7 @@ import { FormMultiTypeConnectorField } from '@connectors/components/ConnectorRef
 import { SidecarArtifact, useGetBuildDetailsForArtifactoryArtifactWithYaml } from 'services/cd-ng'
 
 import { ArtifactToConnectorMap, ENABLED_ARTIFACT_TYPES } from '@pipeline/components/ArtifactsSelection/ArtifactHelper'
-import { repositoryFormat } from '@pipeline/components/ArtifactsSelection/ArtifactUtils'
+import { repositoryFormat, shouldFetchTagsSource } from '@pipeline/components/ArtifactsSelection/ArtifactUtils'
 import { TriggerDefaultFieldList } from '@triggers/pages/triggers/utils/TriggersWizardPageUtils'
 import { useStrings } from 'framework/strings'
 import { useVariablesExpression } from '@pipeline/components/PipelineStudio/PiplineHooks/useVariablesExpression'
@@ -62,11 +62,11 @@ const Content = (props: ArtifactoryRenderContent): JSX.Element => {
   const { getString } = useStrings()
   const { expressions } = useVariablesExpression()
   const isPropagatedStage = path?.includes('serviceConfig.stageOverrides')
-
+  const [lastQueryData, setLastQueryData] = useState({ artifactPaths: '', repository: '' })
   const {
     data: artifactoryTagsData,
     loading: fetchingTags,
-    refetch: fetchTags,
+    refetch,
     error: fetchTagsError
   } = useMutateAsGet(useGetBuildDetailsForArtifactoryArtifactWithYaml, {
     body: yamlStringify(getYamlData(formik?.values)),
@@ -101,6 +101,29 @@ const Content = (props: ArtifactoryRenderContent): JSX.Element => {
     },
     lazy: true
   })
+
+  const artifactPathValue = getImagePath(
+    props.artifact?.spec?.artifactPath,
+    get(props.initialValues, `artifacts.${artifactPath}.spec.artifactPath`, '')
+  )
+  const connectorRefValue =
+    get(initialValues, `artifacts.${artifactPath}.spec.connectorRef`, '') || artifact?.spec?.connectorRef
+  const repositoryValue =
+    get(initialValues?.artifacts, `${artifactPath}.spec.repository`, '') || artifact?.spec?.repository
+
+  const canFetchTags = (): boolean => {
+    return !!(
+      (lastQueryData.artifactPaths !== artifactPathValue || lastQueryData.repository !== repositoryValue) &&
+      shouldFetchTagsSource(connectorRefValue, [artifactPathValue, repositoryValue])
+    )
+  }
+
+  const fetchTags = (): void => {
+    if (canFetchTags()) {
+      setLastQueryData({ artifactPaths: artifactPathValue, repository: repositoryValue })
+      refetch()
+    }
+  }
 
   const isFieldDisabled = (fieldName: string, isTag = false): boolean => {
     /* instanbul ignore else */

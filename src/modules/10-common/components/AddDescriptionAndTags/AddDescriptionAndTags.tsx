@@ -7,6 +7,7 @@
 
 import React, { useState } from 'react'
 import { Container, FormInput, Layout, TagInputProps, Text, tagsType } from '@wings-software/uicore'
+import type { ITagInputProps } from '@blueprintjs/core'
 import { Color } from '@harness/design-system'
 import type { InputWithIdentifierProps } from '@wings-software/uicore/dist/components/InputWithIdentifier/InputWithIdentifier'
 import cx from 'classnames'
@@ -34,6 +35,7 @@ export interface DescriptionAndKVTagsInputProps {
   formikProps?: FormikProps<FormikForAddDescriptionandKVTags>
   className?: string
   forceOpenTags?: boolean
+  tagsProps?: Partial<ITagInputProps>
 }
 
 export interface AddDescriptionAndTagsWithIdentifier {
@@ -53,6 +55,7 @@ export interface AddDescriptionAndKVTagsWithIdentifier {
   className?: string
   formikProps?: FormikProps<FormikForAddDescriptionandKVTags>
   forceOpenTags?: boolean
+  tagsProps?: Partial<ITagInputProps>
 }
 
 interface FieldLabelWithHideOptionProps {
@@ -157,7 +160,7 @@ export function AddDescriptionAndTags<T>(props: DescriptionAndTagsInputProps<T>)
 }
 
 export function AddDescriptionAndKVTags(props: DescriptionAndKVTagsInputProps): JSX.Element {
-  const { formComponent, className, formikProps, forceOpenTags = false } = props
+  const { formComponent, className, formikProps, tagsProps = {}, forceOpenTags = false } = props
   const [isDescriptionOpen, setIsDescriptionOpen] = useState(
     formikProps?.values.description && formikProps.values.description.length > 0
   )
@@ -205,6 +208,7 @@ export function AddDescriptionAndKVTags(props: DescriptionAndKVTagsInputProps): 
         )}
         {isTagsOpen && (
           <FormInput.KVTagInput
+            tagsProps={tagsProps}
             name="tags"
             label={
               <FieldLabelWithRemoveOption

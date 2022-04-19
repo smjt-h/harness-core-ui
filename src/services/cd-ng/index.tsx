@@ -1055,6 +1055,10 @@ export type AzureDevOpsSCMDTO = SourceCodeManagerDTO & {
   authentication?: GithubAuthentication
 }
 
+export type AzureInheritFromDelegateDetails = AzureCredentialSpec & {
+  auth: AzureMSIAuth
+}
+
 export type AzureKeyVaultConnectorDTO = ConnectorConfigDTO & {
   azureEnvironmentType?: 'AZURE' | 'AZURE_US_GOVERNMENT'
   clientId: string
@@ -1077,6 +1081,10 @@ export type AzureKeyVaultMetadataRequestSpecDTO = SecretManagerMetadataRequestSp
 
 export type AzureKeyVaultMetadataSpecDTO = SecretManagerMetadataSpecDTO & {
   vaultNames?: string[]
+}
+
+export interface AzureMSIAuth {
+  [key: string]: any
 }
 
 export type AzureManualDetails = AzureCredentialSpec & {
@@ -1133,6 +1141,12 @@ export type AzureRepoUsernameToken = AzureRepoHttpCredentialsSpecDTO & {
   tokenRef: string
   username?: string
   usernameRef?: string
+}
+
+export type AzureSystemAssignedMSIAuth = AzureAuthCredentialDTO & { [key: string]: any }
+
+export type AzureUserAssignedMSIAuth = AzureAuthCredentialDTO & {
+  clientId: string
 }
 
 export interface BarrierInfoConfig {
@@ -14713,6 +14727,217 @@ export const updateWhitelistedDomainsPromise = (
     UpdateWhitelistedDomainsBodyRequestBody,
     void
   >('PUT', getConfig('ng/api'), `/authentication-settings/whitelisted-domains`, props, signal)
+
+export interface GetAzureSubscriptionsQueryParams {
+  connectorRef: string
+  accountIdentifier: string
+  orgIdentifier: string
+  projectIdentifier: string
+}
+
+export type GetAzureSubscriptionsProps = Omit<
+  GetProps<ResponseMapStringString, Failure | Error, GetAzureSubscriptionsQueryParams, void>,
+  'path'
+>
+
+/**
+ * Gets azure subscriptions
+ */
+export const GetAzureSubscriptions = (props: GetAzureSubscriptionsProps) => (
+  <Get<ResponseMapStringString, Failure | Error, GetAzureSubscriptionsQueryParams, void>
+    path={`/azure/subscriptions`}
+    base={getConfig('ng/api')}
+    {...props}
+  />
+)
+
+export type UseGetAzureSubscriptionsProps = Omit<
+  UseGetProps<ResponseMapStringString, Failure | Error, GetAzureSubscriptionsQueryParams, void>,
+  'path'
+>
+
+/**
+ * Gets azure subscriptions
+ */
+export const useGetAzureSubscriptions = (props: UseGetAzureSubscriptionsProps) =>
+  useGet<ResponseMapStringString, Failure | Error, GetAzureSubscriptionsQueryParams, void>(`/azure/subscriptions`, {
+    base: getConfig('ng/api'),
+    ...props
+  })
+
+/**
+ * Gets azure subscriptions
+ */
+export const getAzureSubscriptionsPromise = (
+  props: GetUsingFetchProps<ResponseMapStringString, Failure | Error, GetAzureSubscriptionsQueryParams, void>,
+  signal?: RequestInit['signal']
+) =>
+  getUsingFetch<ResponseMapStringString, Failure | Error, GetAzureSubscriptionsQueryParams, void>(
+    getConfig('ng/api'),
+    `/azure/subscriptions`,
+    props,
+    signal
+  )
+
+export interface GetAzureResourceGroupsBySubscriptionQueryParams {
+  connectorRef: string
+  accountIdentifier: string
+  orgIdentifier: string
+  projectIdentifier: string
+}
+
+export interface GetAzureResourceGroupsBySubscriptionPathParams {
+  subscription: string
+}
+
+export type GetAzureResourceGroupsBySubscriptionProps = Omit<
+  GetProps<
+    ResponseListString,
+    Failure | Error,
+    GetAzureResourceGroupsBySubscriptionQueryParams,
+    GetAzureResourceGroupsBySubscriptionPathParams
+  >,
+  'path'
+> &
+  GetAzureResourceGroupsBySubscriptionPathParams
+
+/**
+ * Gets azure resource groups by subscription
+ */
+export const GetAzureResourceGroupsBySubscription = ({
+  subscription,
+  ...props
+}: GetAzureResourceGroupsBySubscriptionProps) => (
+  <Get<
+    ResponseListString,
+    Failure | Error,
+    GetAzureResourceGroupsBySubscriptionQueryParams,
+    GetAzureResourceGroupsBySubscriptionPathParams
+  >
+    path={`/azure/subscriptions/${subscription}/resourceGroups`}
+    base={getConfig('ng/api')}
+    {...props}
+  />
+)
+
+export type UseGetAzureResourceGroupsBySubscriptionProps = Omit<
+  UseGetProps<
+    ResponseListString,
+    Failure | Error,
+    GetAzureResourceGroupsBySubscriptionQueryParams,
+    GetAzureResourceGroupsBySubscriptionPathParams
+  >,
+  'path'
+> &
+  GetAzureResourceGroupsBySubscriptionPathParams
+
+/**
+ * Gets azure resource groups by subscription
+ */
+export const useGetAzureResourceGroupsBySubscription = ({
+  subscription,
+  ...props
+}: UseGetAzureResourceGroupsBySubscriptionProps) =>
+  useGet<
+    ResponseListString,
+    Failure | Error,
+    GetAzureResourceGroupsBySubscriptionQueryParams,
+    GetAzureResourceGroupsBySubscriptionPathParams
+  >(
+    (paramsInPath: GetAzureResourceGroupsBySubscriptionPathParams) =>
+      `/azure/subscriptions/${paramsInPath.subscription}/resourceGroups`,
+    { base: getConfig('ng/api'), pathParams: { subscription }, ...props }
+  )
+
+/**
+ * Gets azure resource groups by subscription
+ */
+export const getAzureResourceGroupsBySubscriptionPromise = (
+  {
+    subscription,
+    ...props
+  }: GetUsingFetchProps<
+    ResponseListString,
+    Failure | Error,
+    GetAzureResourceGroupsBySubscriptionQueryParams,
+    GetAzureResourceGroupsBySubscriptionPathParams
+  > & { subscription: string },
+  signal?: RequestInit['signal']
+) =>
+  getUsingFetch<
+    ResponseListString,
+    Failure | Error,
+    GetAzureResourceGroupsBySubscriptionQueryParams,
+    GetAzureResourceGroupsBySubscriptionPathParams
+  >(getConfig('ng/api'), `/azure/subscriptions/${subscription}/resourceGroups`, props, signal)
+
+export interface GetAzureClustersQueryParams {
+  connectorRef: string
+  accountIdentifier: string
+  orgIdentifier: string
+  projectIdentifier: string
+}
+
+export interface GetAzureClustersPathParams {
+  subscription: string
+  resourceGroup: string
+}
+
+export type GetAzureClustersProps = Omit<
+  GetProps<ResponseListString, Failure | Error, GetAzureClustersQueryParams, GetAzureClustersPathParams>,
+  'path'
+> &
+  GetAzureClustersPathParams
+
+/**
+ * Gets azure k8s clusters by subscription
+ */
+export const GetAzureClusters = ({ subscription, resourceGroup, ...props }: GetAzureClustersProps) => (
+  <Get<ResponseListString, Failure | Error, GetAzureClustersQueryParams, GetAzureClustersPathParams>
+    path={`/azure/subscriptions/${subscription}/resourceGroups/${resourceGroup}/clusters`}
+    base={getConfig('ng/api')}
+    {...props}
+  />
+)
+
+export type UseGetAzureClustersProps = Omit<
+  UseGetProps<ResponseListString, Failure | Error, GetAzureClustersQueryParams, GetAzureClustersPathParams>,
+  'path'
+> &
+  GetAzureClustersPathParams
+
+/**
+ * Gets azure k8s clusters by subscription
+ */
+export const useGetAzureClusters = ({ subscription, resourceGroup, ...props }: UseGetAzureClustersProps) =>
+  useGet<ResponseListString, Failure | Error, GetAzureClustersQueryParams, GetAzureClustersPathParams>(
+    (paramsInPath: GetAzureClustersPathParams) =>
+      `/azure/subscriptions/${paramsInPath.subscription}/resourceGroups/${paramsInPath.resourceGroup}/clusters`,
+    { base: getConfig('ng/api'), pathParams: { subscription, resourceGroup }, ...props }
+  )
+
+/**
+ * Gets azure k8s clusters by subscription
+ */
+export const getAzureClustersPromise = (
+  {
+    subscription,
+    resourceGroup,
+    ...props
+  }: GetUsingFetchProps<
+    ResponseListString,
+    Failure | Error,
+    GetAzureClustersQueryParams,
+    GetAzureClustersPathParams
+  > & { subscription: string; resourceGroup: string },
+  signal?: RequestInit['signal']
+) =>
+  getUsingFetch<ResponseListString, Failure | Error, GetAzureClustersQueryParams, GetAzureClustersPathParams>(
+    getConfig('ng/api'),
+    `/azure/subscriptions/${subscription}/resourceGroups/${resourceGroup}/clusters`,
+    props,
+    signal
+  )
 
 export interface GetGCSBucketListQueryParams {
   connectorRef?: string
