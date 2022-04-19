@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">77.91% </span>
+                <span class="strong">72.16% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>67/86</span>
+                <span class='fraction'>70/97</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">51.37% </span>
+                <span class="strong">49.51% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>150/292</span>
+                <span class='fraction'>153/309</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">60% </span>
+                <span class="strong">62.5% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>9/15</span>
+                <span class='fraction'>10/16</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">77.91% </span>
+                <span class="strong">72.16% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>67/86</span>
+                <span class='fraction'>70/97</span>
             </div>
         
             
@@ -587,35 +587,34 @@
 <span class="cline-any cline-yes">255x</span>
 <span class="cline-any cline-yes">29x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">29x</span>
+<span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">29x</span>
@@ -689,7 +688,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">29x</span>
-<span class="cline-any cline-yes">29x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">29x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1050,35 +1050,34 @@ export const StepIndex = new Map([[STEP.TEST_CONNECTION, 1]])
 const RenderUrlInfo: React.FC&lt;StepProps&lt;VerifyOutOfClusterStepProps&gt; &amp; RenderUrlInfo&gt; = props =&gt; {
   const { getString } = useStrings()
 &nbsp;
-  /* istanbul ignore next */
   const getLabel = (): string =&gt; {
     switch (props.type) {
       case Connectors.KUBERNETES_CLUSTER:
         return getString('connectors.testConnectionStep.url.k8s')
-      case Connectors.DOCKER:
-        return getString('connectors.testConnectionStep.url.docker')
-      case Connectors.NEXUS:
-        return getString('connectors.testConnectionStep.url.nexus')
-      case Connectors.ARTIFACTORY:
-        return getString('connectors.testConnectionStep.url.artifactory')
+<span class="branch-1 cbranch-no" title="branch not covered" >      case Connectors.DOCKER:</span>
+<span class="cstat-no" title="statement not covered" >        return getString('connectors.testConnectionStep.url.docker')</span>
+<span class="branch-2 cbranch-no" title="branch not covered" >      case Connectors.NEXUS:</span>
+<span class="cstat-no" title="statement not covered" >        return getString('connectors.testConnectionStep.url.nexus')</span>
+<span class="branch-3 cbranch-no" title="branch not covered" >      case Connectors.ARTIFACTORY:</span>
+<span class="cstat-no" title="statement not covered" >        return getString('connectors.testConnectionStep.url.artifactory')</span>
 &nbsp;
-      case Connectors.APP_DYNAMICS:
-        return getString('connectors.testConnectionStep.url.appD')
+<span class="branch-4 cbranch-no" title="branch not covered" >      case Connectors.APP_DYNAMICS:</span>
+<span class="cstat-no" title="statement not covered" >        return getString('connectors.testConnectionStep.url.appD')</span>
 &nbsp;
-      case Connectors.SPLUNK:
-        return getString('connectors.testConnectionStep.url.splunk')
+<span class="branch-5 cbranch-no" title="branch not covered" >      case Connectors.SPLUNK:</span>
+<span class="cstat-no" title="statement not covered" >        return getString('connectors.testConnectionStep.url.splunk')</span>
 &nbsp;
       case Connectors.VAULT:
         return getString('connectors.testConnectionStep.url.vault')
-      case 'Gcr':
-        return getString('connectors.testConnectionStep.url.gcr')
-      case Connectors.BITBUCKET:
-      case Connectors.GITLAB:
-      case Connectors.GITHUB:
-      case Connectors.GIT:
-        return getString('connectors.testConnectionStep.url.bitbucket')
-      default:
-        return ''
+<span class="branch-7 cbranch-no" title="branch not covered" >      case 'Gcr':</span>
+<span class="cstat-no" title="statement not covered" >        return getString('connectors.testConnectionStep.url.gcr')</span>
+<span class="branch-8 cbranch-no" title="branch not covered" >      case Connectors.BITBUCKET:</span>
+<span class="branch-9 cbranch-no" title="branch not covered" >      case Connectors.GITLAB:</span>
+<span class="branch-10 cbranch-no" title="branch not covered" >      case Connectors.GITHUB:</span>
+<span class="branch-11 cbranch-no" title="branch not covered" >      case Connectors.GIT:</span>
+<span class="cstat-no" title="statement not covered" >        return getString('connectors.testConnectionStep.url.bitbucket')</span>
+<span class="branch-12 cbranch-no" title="branch not covered" >      default:</span>
+<span class="cstat-no" title="statement not covered" >        return ''</span>
     }
   }
   const getValue = () =&gt; {
@@ -1151,8 +1150,9 @@ const VerifyOutOfClusterDelegate: React.FC&lt;StepProps&lt;VerifyOutOfClusterSte
       status: 'PROCESS'
     })
 &nbsp;
-    const ceConnectors: string[] = [Connectors.CE_KUBERNETES, Connectors.CEAWS, Connectors.CE_AZURE, Connectors.CE_GCP]
-    const isCeConnector = ceConnectors.includes(props.type)
+    const isCeConnector = Boolean(
+      Connectors.CE_KUBERNETES || <span class="branch-1 cbranch-no" title="branch not covered" >Connectors.CEAWS </span>|| <span class="branch-2 cbranch-no" title="branch not covered" >Connectors.CE_AZURE </span>|| <span class="branch-3 cbranch-no" title="branch not covered" >Connectors.CE_GCP</span>
+    )
 &nbsp;
     const { trackEvent } = useTelemetry()
 &nbsp;
@@ -1453,7 +1453,7 @@ export default VerifyOutOfClusterDelegate
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Tue Apr 19 2022 17:21:46 GMT+0000 (Greenwich Mean Time)
+                at Tue Apr 19 2022 17:31:48 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../prettify.js"></script>
