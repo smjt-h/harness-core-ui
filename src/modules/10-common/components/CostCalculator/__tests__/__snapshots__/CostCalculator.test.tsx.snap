@@ -1,0 +1,968 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Cost Calculator Test Check CostCalc 1`] = `
+<div>
+  <div>
+    <div
+      style="margin: 0px 68px 44px 68px;"
+    >
+      <div
+        class="Layout--horizontal StyledProps--main StyledProps--flex StyledProps--flex-justifyContent-space-around StyledProps--padding-bottom-xxlarge"
+        id="title"
+      >
+        <p
+          class="StyledProps--font StyledProps--main textwrap StyledProps--font-variation-h3"
+          style="display: flex; align-items: center;"
+        >
+          <span
+            class="bp3-icon StyledProps--main Text--icon StyledProps--padding-right-xsmall"
+            data-icon="ff-solid"
+          >
+            <svg
+              fill="none"
+              height="24"
+              viewBox="0 0 32 32"
+              width="24"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <lineargradient
+                gradientUnits="userSpaceOnUse"
+                id="ff-solid_svg__a"
+                x1="6.837"
+                x2="23.78"
+                y1="2"
+                y2="28.227"
+              >
+                <stop
+                  offset="0"
+                  stop-color="#ffc100"
+                />
+                <stop
+                  offset="1"
+                  stop-color="#e66b35"
+                />
+              </lineargradient>
+              <g
+                fill="url(#ff-solid_svg__a)"
+              >
+                <path
+                  d="M10.632 2.08A5.19 5.19 0 004.62 6.29L2.08 20.697a5.19 5.19 0 004.21 6.012l7.463 1.316a.2.2 0 00.208-.298L6.882 15.656c-.296-.469-.292-1.382.05-1.6.08-.05.313-.259.313-.259l.398-.436.066-.072c.37-.406.704-.773 1.76-1.302l.227-.079c1.548-.484 2.41-.449 3.27-.414.862.035 1.724.07 3.274-.414 1.272-.398 2.43-1.178 3.074-1.667a.622.622 0 01.9.15l4.596 7.362a.53.53 0 01-.101.696 8.694 8.694 0 01-2.834 1.538c-1.549.484-2.432.463-3.316.442-.884-.021-1.768-.042-3.318.442-1.314.41-1.868.948-2.07 1.204-.048.061-.07.21-.032.279.4.724 2.295 4.06 3.794 6.693a.998.998 0 00.695.49l3.07.541a5.19 5.19 0 006.012-4.21l2.54-14.408a5.19 5.19 0 00-4.21-6.012z"
+                />
+                <path
+                  d="M16.646 13.074c-1.303.34-2.093.316-2.882.29-.79-.024-1.58-.049-2.881.291-.744.216-1.178.592-1.587 1.072a.197.197 0 00-.018.23l2.482 4.069c.064.106.209.13.307.055.374-.283 1.28-.9 2.42-1.198 1.469-.383 2.348-.375 3.273-.366.717.007 1.462.014 2.53-.16a4.454 4.454 0 001.629-.635.347.347 0 00.094-.488L19.472 12.3a.421.421 0 00-.56-.128 9.57 9.57 0 01-2.265.902z"
+                />
+              </g>
+            </svg>
+          </span>
+          Feature Flag Team Subscription
+        </p>
+        <div
+          style="width: 100%;"
+        />
+        <p
+          class="StyledProps--font StyledProps--main textwrap linkDecoration StyledProps--font-variation-small StyledProps--padding-right-large"
+        >
+          <a>
+            Compare features
+          </a>
+        </p>
+        <div
+          class="PillToggle--optionBtns"
+        >
+          <div
+            class="PillToggle--item PillToggle--selected"
+            data-name="toggle-option-one"
+            role="button"
+            tabindex="0"
+          >
+            Team
+          </div>
+          <div
+            class="PillToggle--item"
+            data-name="toggle-option-two"
+            role="button"
+            tabindex="0"
+          >
+            Enterprise
+          </div>
+        </div>
+      </div>
+      <div
+        class="StyledProps--font StyledProps--main"
+      >
+        <div
+          class="Layout--horizontal StyledProps--main StyledProps--flex StyledProps--flex-justifyContent-space-between StyledProps--padding-top-xsmall StyledProps--padding-bottom-xxlarge"
+        >
+          <div
+            class="Layout--vertical StyledProps--main"
+          >
+            <div
+              class="Layout--vertical StyledProps--main infocard StyledProps--padding-top-medium StyledProps--padding-bottom-medium StyledProps--padding-left-xlarge StyledProps--padding-right-xlarge"
+            >
+              <p
+                class="StyledProps--font StyledProps--main textwrap StyledProps--font-variation-h4 StyledProps--padding-bottom-medium StyledProps--color StyledProps--color-grey600"
+              >
+                Developer Seats
+              </p>
+              <div
+                class="Layout--horizontal StyledProps--main StyledProps--flex StyledProps--flex-justifyContent-space-around StyledProps--padding-bottom-xxlarge"
+              >
+                <div
+                  class="Layout--vertical StyledProps--main"
+                >
+                  <p
+                    class="StyledProps--font StyledProps--main StyledProps--font-variation-small"
+                  >
+                    Current
+                  </p>
+                  <div
+                    class="Layout--horizontal StyledProps--main infocardItemIcongap StyledProps--flex StyledProps--flex-alignItems-center StyledProps--flex-justifyContent-flex-start"
+                  >
+                    <img
+                      height="10px"
+                      src="test-file-stub"
+                      width="10px"
+                    />
+                    <p
+                      class="StyledProps--font StyledProps--main StyledProps--font-variation-h3"
+                    >
+                      2
+                    </p>
+                  </div>
+                </div>
+                <div
+                  class="Layout--vertical StyledProps--main"
+                >
+                  <p
+                    class="StyledProps--font StyledProps--main StyledProps--font-variation-small"
+                  >
+                    Usage
+                  </p>
+                  <div
+                    class="Layout--horizontal StyledProps--main infocardItemIcongap StyledProps--flex StyledProps--flex-alignItems-center StyledProps--flex-justifyContent-flex-start"
+                  >
+                    <img
+                      height="10px"
+                      src="test-file-stub"
+                      width="10px"
+                    />
+                    <p
+                      class="StyledProps--font StyledProps--main StyledProps--font-variation-h3"
+                    >
+                      1
+                    </p>
+                  </div>
+                </div>
+                <div
+                  class="Layout--vertical StyledProps--main"
+                >
+                  <p
+                    class="StyledProps--font StyledProps--main StyledProps--font-variation-small"
+                    style="display: flex; align-items: center;"
+                  >
+                    Recommended
+                    <span
+                      class="bp3-icon StyledProps--main Text--icon StyledProps--padding-left-xsmall"
+                      data-icon="info"
+                    >
+                      <svg
+                        height="16"
+                        viewBox="0 0 12 12"
+                        width="16"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          clip-rule="evenodd"
+                          d="M0 6a6 6 0 1012 0A6 6 0 000 6zm.75 0a5.25 5.25 0 1010.5 0A5.25 5.25 0 00.75 6zm4.206 3.104v.646h2.682v-.646l-.836-.144V4.203H4.956v.65l.836.144V8.96l-.836.144zm1.846-7.352v1.03h-1.01v-1.03h1.01z"
+                          fill-rule="evenodd"
+                        />
+                      </svg>
+                    </span>
+                  </p>
+                  <div
+                    class="Layout--horizontal StyledProps--main infocardItemIcongap StyledProps--flex StyledProps--flex-alignItems-center StyledProps--flex-justifyContent-flex-start"
+                  >
+                    <img
+                      height="15px"
+                      src="test-file-stub"
+                      width="12px"
+                    />
+                    <p
+                      class="StyledProps--font StyledProps--main StyledProps--font-variation-h3"
+                    >
+                      3
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              class="Layout--vertical StyledProps--main StyledProps--padding-top-xlarge"
+            >
+              <div
+                class="Layout--horizontal StyledProps--main StyledProps--flex StyledProps--flex-alignItems-center StyledProps--padding-bottom-xxlarge"
+              >
+                <p
+                  class="StyledProps--font StyledProps--main StyledProps--font-size-normal StyledProps--color StyledProps--color-grey600"
+                >
+                  Developers
+                </p>
+                <p
+                  class="StyledProps--font StyledProps--main StyledProps--font-size-small StyledProps--color StyledProps--color-grey700"
+                >
+                  1 developer = $ 180/ year
+                </p>
+              </div>
+              <div
+                class="Layout--horizontal StyledProps--main"
+              >
+                <div
+                  class="bp3-control-group bp3-numeric-input textInputWidth"
+                >
+                  <div
+                    class="bp3-input-group"
+                  >
+                    <input
+                      autocomplete="off"
+                      class="bp3-input"
+                      max="50"
+                      min="1"
+                      type="text"
+                      value="3"
+                      width="75"
+                    />
+                  </div>
+                </div>
+              </div>
+              <div
+                class="StyledProps--font StyledProps--main topSliderDots"
+              >
+                <div
+                  class="StyledProps--font StyledProps--main sliderDotContainer"
+                  style="width: 2%;"
+                >
+                  <img
+                    height="10px"
+                    src="test-file-stub"
+                    width="10px"
+                  />
+                </div>
+                <div
+                  class="StyledProps--font StyledProps--main sliderDotContainer"
+                  style="width: 6%;"
+                >
+                  <img
+                    height="10px"
+                    src="test-file-stub"
+                    width="10px"
+                  />
+                </div>
+              </div>
+              <div
+                class="bp3-slider bp3SliderHandle bp3SliderLabel"
+              >
+                <div
+                  class="bp3-slider-track"
+                >
+                  <div
+                    class="bp3-slider-progress"
+                    style="left: 0.00%; right: 100.00%; top: 0px;"
+                  />
+                  <div
+                    class="bp3-slider-progress bp3-intent-primary"
+                    style="left: 0.00%; right: 95.92%; top: 0px;"
+                  />
+                  <div
+                    class="bp3-slider-progress"
+                    style="left: 4.08%; right: 0.00%; top: 0px;"
+                  />
+                </div>
+                <div
+                  class="bp3-slider-axis"
+                >
+                  <div
+                    class="bp3-slider-label"
+                    style="left: 0.00%;"
+                  >
+                    1
+                  </div>
+                  <div
+                    class="bp3-slider-label"
+                    style="left: 100.00%;"
+                  >
+                    50
+                  </div>
+                </div>
+                <span
+                  class="bp3-slider-handle"
+                  style="left: calc(4.08% - 0px);"
+                  tabindex="0"
+                >
+                  <span
+                    class="bp3-slider-label"
+                  >
+                    3
+                  </span>
+                </span>
+              </div>
+            </div>
+          </div>
+          <div
+            class="Layout--vertical StyledProps--main"
+          >
+            <div
+              class="Layout--vertical StyledProps--main infocard StyledProps--padding-top-medium StyledProps--padding-bottom-medium StyledProps--padding-left-xlarge StyledProps--padding-right-xlarge"
+            >
+              <p
+                class="StyledProps--font StyledProps--main textwrap StyledProps--font-variation-h4 StyledProps--padding-bottom-medium StyledProps--color StyledProps--color-grey600"
+              >
+                MAUs Usage
+              </p>
+              <div
+                class="Layout--horizontal StyledProps--main StyledProps--flex StyledProps--flex-justifyContent-space-around StyledProps--padding-bottom-xxlarge"
+              >
+                <div
+                  class="Layout--vertical StyledProps--main"
+                >
+                  <p
+                    class="StyledProps--font StyledProps--main StyledProps--font-variation-small"
+                  >
+                    Current
+                  </p>
+                  <div
+                    class="Layout--horizontal StyledProps--main infocardItemIcongap StyledProps--flex StyledProps--flex-alignItems-center StyledProps--flex-justifyContent-flex-start"
+                  >
+                    <img
+                      height="10px"
+                      src="test-file-stub"
+                      width="10px"
+                    />
+                    <p
+                      class="StyledProps--font StyledProps--main StyledProps--font-variation-h3"
+                    >
+                      50k
+                    </p>
+                  </div>
+                </div>
+                <div
+                  class="Layout--vertical StyledProps--main"
+                >
+                  <p
+                    class="StyledProps--font StyledProps--main StyledProps--font-variation-small"
+                  >
+                    Usage
+                  </p>
+                  <div
+                    class="Layout--horizontal StyledProps--main infocardItemIcongap StyledProps--flex StyledProps--flex-alignItems-center StyledProps--flex-justifyContent-flex-start"
+                  >
+                    <img
+                      height="10px"
+                      src="test-file-stub"
+                      width="10px"
+                    />
+                    <p
+                      class="StyledProps--font StyledProps--main StyledProps--font-variation-h3"
+                    >
+                      25k
+                    </p>
+                  </div>
+                </div>
+                <div
+                  class="Layout--vertical StyledProps--main"
+                >
+                  <p
+                    class="StyledProps--font StyledProps--main StyledProps--font-variation-small"
+                    style="display: flex; align-items: center;"
+                  >
+                    Recommended
+                    <span
+                      class="bp3-icon StyledProps--main Text--icon StyledProps--padding-left-xsmall"
+                      data-icon="info"
+                    >
+                      <svg
+                        height="16"
+                        viewBox="0 0 12 12"
+                        width="16"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          clip-rule="evenodd"
+                          d="M0 6a6 6 0 1012 0A6 6 0 000 6zm.75 0a5.25 5.25 0 1010.5 0A5.25 5.25 0 00.75 6zm4.206 3.104v.646h2.682v-.646l-.836-.144V4.203H4.956v.65l.836.144V8.96l-.836.144zm1.846-7.352v1.03h-1.01v-1.03h1.01z"
+                          fill-rule="evenodd"
+                        />
+                      </svg>
+                    </span>
+                  </p>
+                  <div
+                    class="Layout--horizontal StyledProps--main infocardItemIcongap StyledProps--flex StyledProps--flex-alignItems-center StyledProps--flex-justifyContent-flex-start"
+                  >
+                    <img
+                      height="15px"
+                      src="test-file-stub"
+                      width="12px"
+                    />
+                    <p
+                      class="StyledProps--font StyledProps--main StyledProps--font-variation-h3"
+                    >
+                      75k
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div
+              class="Layout--vertical StyledProps--main StyledProps--padding-top-xlarge"
+            >
+              <div
+                class="Layout--horizontal StyledProps--main StyledProps--flex StyledProps--flex-alignItems-center StyledProps--padding-bottom-xxlarge"
+              >
+                <p
+                  class="StyledProps--font StyledProps--main StyledProps--font-size-normal StyledProps--color StyledProps--color-grey600"
+                >
+                  MAUs Usage
+                </p>
+                <p
+                  class="StyledProps--font StyledProps--main StyledProps--font-size-small StyledProps--color StyledProps--color-grey700"
+                >
+                  25k MAUs = $ 900/ year 
+                </p>
+              </div>
+              <div
+                class="Layout--horizontal StyledProps--main"
+              >
+                <div
+                  class="bp3-control-group bp3-numeric-input textInputWidth"
+                >
+                  <div
+                    class="bp3-input-group"
+                  >
+                    <input
+                      autocomplete="off"
+                      class="bp3-input"
+                      max="1000"
+                      min="0"
+                      type="text"
+                      value="75"
+                      width="75"
+                    />
+                  </div>
+                </div>
+              </div>
+              <div
+                class="StyledProps--font StyledProps--main topSliderDots"
+              >
+                <div
+                  class="StyledProps--font StyledProps--main sliderDotContainer"
+                  style="width: 2.5%;"
+                >
+                  <img
+                    height="10px"
+                    src="test-file-stub"
+                    width="10px"
+                  />
+                </div>
+                <div
+                  class="StyledProps--font StyledProps--main sliderDotContainer"
+                  style="width: 7.5%;"
+                >
+                  <img
+                    height="10px"
+                    src="test-file-stub"
+                    width="10px"
+                  />
+                </div>
+              </div>
+              <div
+                class="bp3-slider bp3SliderHandle bp3SliderLabel"
+              >
+                <div
+                  class="bp3-slider-track"
+                >
+                  <div
+                    class="bp3-slider-progress"
+                    style="left: 0.00%; right: 100.00%; top: 0px;"
+                  />
+                  <div
+                    class="bp3-slider-progress bp3-intent-primary"
+                    style="left: 0.00%; right: 92.50%; top: 0px;"
+                  />
+                  <div
+                    class="bp3-slider-progress"
+                    style="left: 7.50%; right: 0.00%; top: 0px;"
+                  />
+                </div>
+                <div
+                  class="bp3-slider-axis"
+                >
+                  <div
+                    class="bp3-slider-label"
+                    style="left: 0.00%;"
+                  >
+                    0
+                  </div>
+                  <div
+                    class="bp3-slider-label"
+                    style="left: 25.00%;"
+                  >
+                    250
+                  </div>
+                  <div
+                    class="bp3-slider-label"
+                    style="left: 50.00%;"
+                  >
+                    500
+                  </div>
+                  <div
+                    class="bp3-slider-label"
+                    style="left: 75.00%;"
+                  >
+                    750
+                  </div>
+                  <div
+                    class="bp3-slider-label"
+                    style="left: 100.00%;"
+                  >
+                    1000
+                  </div>
+                </div>
+                <span
+                  class="bp3-slider-handle"
+                  style="left: calc(7.50% - 0px);"
+                  tabindex="0"
+                >
+                  <span
+                    class="bp3-slider-label"
+                  >
+                    75
+                  </span>
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="Layout--horizontal StyledProps--main pillboxgap StyledProps--padding-top-xxxlarge StyledProps--padding-bottom-xxxlarge"
+      >
+        <div
+          class="PillToggle--optionBtns"
+        >
+          <div
+            class="PillToggle--item PillToggle--selected"
+            data-name="toggle-option-one"
+            role="button"
+            tabindex="0"
+          >
+            Yearly
+          </div>
+          <div
+            class="PillToggle--item"
+            data-name="toggle-option-two"
+            role="button"
+            tabindex="0"
+          >
+            Monthly
+          </div>
+        </div>
+      </div>
+      <div
+        class="Layout--horizontal StyledProps--main"
+      >
+        <div
+          class="Layout--horizontal StyledProps--main pricingdisplayItem"
+        >
+          <div
+            class="Layout--vertical StyledProps--main"
+          >
+            <p
+              class="StyledProps--font StyledProps--main StyledProps--font-variation-h5 StyledProps--color StyledProps--color-grey700"
+            >
+              Developer Seats
+            </p>
+            <div
+              class="Layout--horizontal StyledProps--main StyledProps--flex StyledProps--flex-alignItems-baseline StyledProps--padding-top-small"
+            >
+              <p
+                class="StyledProps--font StyledProps--main StyledProps--font-size-medium StyledProps--padding-bottom-xsmall"
+              >
+                $ 540
+              </p>
+            </div>
+          </div>
+          <div
+            class="Layout--vertical StyledProps--main StyledProps--flex StyledProps--flex-justifyContent-center StyledProps--padding-left-small StyledProps--padding-right-small StyledProps--padding-top-small"
+          >
+            <p
+              class="StyledProps--font StyledProps--main StyledProps--font-size-medium"
+            >
+              +
+            </p>
+          </div>
+        </div>
+        <div
+          class="Layout--horizontal StyledProps--main pricingdisplayItem"
+        >
+          <div
+            class="Layout--vertical StyledProps--main"
+          >
+            <p
+              class="StyledProps--font StyledProps--main StyledProps--font-variation-h5 StyledProps--color StyledProps--color-grey700"
+            >
+              MAUs Usage
+            </p>
+            <div
+              class="Layout--horizontal StyledProps--main StyledProps--flex StyledProps--flex-alignItems-baseline StyledProps--padding-top-small"
+            >
+              <p
+                class="StyledProps--font StyledProps--main StyledProps--font-size-medium"
+              >
+                $ 67500
+              </p>
+            </div>
+          </div>
+          <div
+            class="Layout--vertical StyledProps--main StyledProps--flex StyledProps--flex-justifyContent-center StyledProps--padding-left-small StyledProps--padding-right-small StyledProps--padding-top-small"
+          >
+            <p
+              class="StyledProps--font StyledProps--main StyledProps--font-size-medium"
+            >
+              +
+            </p>
+          </div>
+        </div>
+        <div
+          class="Layout--horizontal StyledProps--main pricingdisplayItem"
+        >
+          <div
+            class="Layout--vertical StyledProps--main"
+          >
+            <p
+              class="StyledProps--font StyledProps--main StyledProps--font-variation-h5 StyledProps--color StyledProps--color-grey700"
+            >
+              Support
+            </p>
+            <div
+              class="Layout--horizontal StyledProps--main supportInfoBoxText StyledProps--flex StyledProps--flex-alignItems-baseline"
+            >
+              <p
+                class="StyledProps--font StyledProps--main StyledProps--font-size-medium"
+              >
+                $ 160
+              </p>
+            </div>
+            <p
+              class="StyledProps--font StyledProps--main StyledProps--font-variation-small StyledProps--padding-top-small"
+            >
+              Premium 24x7
+            </p>
+          </div>
+          <div
+            class="Layout--vertical StyledProps--main StyledProps--flex StyledProps--flex-justifyContent-center StyledProps--padding-left-small StyledProps--padding-right-small StyledProps--padding-top-small"
+          >
+            <p
+              class="StyledProps--font StyledProps--main StyledProps--font-size-medium"
+            >
+              =
+            </p>
+          </div>
+        </div>
+        <div
+          class="Layout--horizontal StyledProps--main pricingdisplayItem"
+        >
+          <div
+            class="Layout--vertical StyledProps--main"
+          >
+            <p
+              class="StyledProps--font StyledProps--main StyledProps--font-variation-h5 StyledProps--color StyledProps--color-grey700"
+            >
+              Next Payment
+            </p>
+            <div
+              class="Layout--horizontal StyledProps--main nextPaymentPadding StyledProps--flex StyledProps--flex-alignItems-baseline"
+            >
+              <p
+                class="StyledProps--font StyledProps--main StyledProps--font-size-medium"
+              >
+                $ 68200 per year 
+              </p>
+            </div>
+          </div>
+        </div>
+        <div
+          style="width: 100%;"
+        />
+        <div
+          class="Layout--horizontal StyledProps--main pricingdisplayItem duetodaybox"
+        >
+          <div
+            class="Layout--vertical StyledProps--main"
+          >
+            <p
+              class="StyledProps--font StyledProps--main StyledProps--font-variation-h5 StyledProps--color StyledProps--color-grey700"
+            >
+              Due Today
+            </p>
+            <div
+              class="Layout--horizontal StyledProps--main dueTodayPadding"
+            >
+              <p
+                class="StyledProps--font StyledProps--main StyledProps--font-size-medium StyledProps--font-weight-bold StyledProps--color StyledProps--color-black"
+              >
+                $ 357.25
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div
+        class="Layout--horizontal StyledProps--main StyledProps--padding-top-xxlarge StyledProps--flex StyledProps--flex-alignItems-center StyledProps--flex-justifyContent-flex-start"
+      >
+        <button
+          class="bp3-button Button--button StyledProps--font StyledProps--main Button--with-current-color Button--variation Button--variation-primary Button--size Button--large"
+          type="button"
+        >
+          <span
+            class="bp3-button-text"
+          >
+            Review Changes
+          </span>
+        </button>
+        <div
+          class="Layout--horizontal StyledProps--main StyledProps--padding-left-xlarge"
+        >
+          <p
+            class="StyledProps--font StyledProps--main"
+          >
+            Or
+          </p>
+          <p
+            class="StyledProps--font StyledProps--main linkDecoration StyledProps--padding-left-small"
+          >
+            <a>
+              Contact Sales
+            </a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`Cost Calculator Test Payment Page 1`] = `
+<div>
+  <div
+    class="Layout--vertical StyledProps--main StyledProps--padding-left-huge StyledProps--padding-right-huge"
+  >
+    <p
+      class="StyledProps--font StyledProps--main textwrap StyledProps--font-variation-h3"
+      style="display: flex; align-items: center;"
+    >
+      <span
+        class="bp3-icon StyledProps--main Text--icon StyledProps--padding-right-xsmall"
+        data-icon="ff-solid"
+      >
+        <svg
+          fill="none"
+          height="24"
+          viewBox="0 0 32 32"
+          width="24"
+          xmlns="http://www.w3.org/2000/svg"
+        >
+          <lineargradient
+            gradientUnits="userSpaceOnUse"
+            id="ff-solid_svg__a"
+            x1="6.837"
+            x2="23.78"
+            y1="2"
+            y2="28.227"
+          >
+            <stop
+              offset="0"
+              stop-color="#ffc100"
+            />
+            <stop
+              offset="1"
+              stop-color="#e66b35"
+            />
+          </lineargradient>
+          <g
+            fill="url(#ff-solid_svg__a)"
+          >
+            <path
+              d="M10.632 2.08A5.19 5.19 0 004.62 6.29L2.08 20.697a5.19 5.19 0 004.21 6.012l7.463 1.316a.2.2 0 00.208-.298L6.882 15.656c-.296-.469-.292-1.382.05-1.6.08-.05.313-.259.313-.259l.398-.436.066-.072c.37-.406.704-.773 1.76-1.302l.227-.079c1.548-.484 2.41-.449 3.27-.414.862.035 1.724.07 3.274-.414 1.272-.398 2.43-1.178 3.074-1.667a.622.622 0 01.9.15l4.596 7.362a.53.53 0 01-.101.696 8.694 8.694 0 01-2.834 1.538c-1.549.484-2.432.463-3.316.442-.884-.021-1.768-.042-3.318.442-1.314.41-1.868.948-2.07 1.204-.048.061-.07.21-.032.279.4.724 2.295 4.06 3.794 6.693a.998.998 0 00.695.49l3.07.541a5.19 5.19 0 006.012-4.21l2.54-14.408a5.19 5.19 0 00-4.21-6.012z"
+            />
+            <path
+              d="M16.646 13.074c-1.303.34-2.093.316-2.882.29-.79-.024-1.58-.049-2.881.291-.744.216-1.178.592-1.587 1.072a.197.197 0 00-.018.23l2.482 4.069c.064.106.209.13.307.055.374-.283 1.28-.9 2.42-1.198 1.469-.383 2.348-.375 3.273-.366.717.007 1.462.014 2.53-.16a4.454 4.454 0 001.629-.635.347.347 0 00.094-.488L19.472 12.3a.421.421 0 00-.56-.128 9.57 9.57 0 01-2.265.902z"
+            />
+          </g>
+        </svg>
+      </span>
+      Feature Flag ENTERPRISE Subscription
+    </p>
+    <div
+      class="Layout--horizontal StyledProps--main"
+    >
+      <div
+        class="Layout--vertical StyledProps--main"
+      >
+        <div
+          class="StyledProps--font StyledProps--main reviewContainer"
+        >
+          <p
+            class="StyledProps--font StyledProps--main currentPlanContainer StyledProps--font-variation-h4"
+          >
+            Current Plan (TEAM,undefined)
+          </p>
+          <p
+            class="StyledProps--font StyledProps--main currentDeveloperPlan reviewText StyledProps--font-size-medium"
+          >
+            Developers
+          </p>
+          <p
+            class="StyledProps--font StyledProps--main currentDeveloperPlan reviewItems StyledProps--font-size-medium"
+          >
+            2
+          </p>
+          <p
+            class="StyledProps--font StyledProps--main currentMauPlan reviewText StyledProps--font-size-medium"
+          >
+            MAUs
+          </p>
+          <p
+            class="StyledProps--font StyledProps--main currentMauPlan reviewItems StyledProps--font-size-medium"
+          >
+            2
+          </p>
+          <p
+            class="StyledProps--font StyledProps--main changingText StyledProps--font-variation-h4"
+          >
+            Changing to ENTERPRISE,yearly
+          </p>
+          <p
+            class="StyledProps--font StyledProps--main changedDevelopers reviewText StyledProps--font-size-medium"
+          >
+            Developers
+          </p>
+          <p
+            class="StyledProps--font StyledProps--main changedDevelopers reviewItems StyledProps--font-size-medium"
+          >
+            3
+          </p>
+          <p
+            class="StyledProps--font StyledProps--main developerUnitPrice reviewText StyledProps--font-size-medium"
+          >
+            Unit price
+          </p>
+          <p
+            class="StyledProps--font StyledProps--main developerUnitPrice reviewItems StyledProps--font-size-medium"
+          >
+            133.33333333333334
+          </p>
+          <p
+            class="StyledProps--font StyledProps--main changedMaus reviewText StyledProps--font-size-medium"
+          >
+            MAUs
+          </p>
+          <p
+            class="StyledProps--font StyledProps--main changedMaus reviewItems StyledProps--font-size-medium"
+          >
+            232
+          </p>
+          <p
+            class="StyledProps--font StyledProps--main mauUnitPrice reviewText StyledProps--font-size-medium"
+          >
+            Unit price
+          </p>
+          <p
+            class="StyledProps--font StyledProps--main mauUnitPrice reviewItems StyledProps--font-size-medium"
+          >
+            2.1551724137931036
+          </p>
+          <p
+            class="StyledProps--font StyledProps--main premiumSupport reviewText StyledProps--font-size-medium"
+          >
+            Support
+          </p>
+          <p
+            class="StyledProps--font StyledProps--main premiumSupport reviewItems StyledProps--font-size-medium"
+          >
+            100
+          </p>
+          <p
+            class="StyledProps--font StyledProps--main tax reviewText StyledProps--font-size-medium"
+          >
+            Tax
+          </p>
+          <p
+            class="StyledProps--font StyledProps--main tax reviewItems StyledProps--font-size-medium"
+          >
+            100
+          </p>
+          <p
+            class="StyledProps--font StyledProps--main newRate reviewText StyledProps--font-size-medium StyledProps--font-weight-bold"
+          >
+            New total
+          </p>
+          <p
+            class="StyledProps--font StyledProps--main newRate reviewItems StyledProps--font-size-medium StyledProps--font-weight-bold"
+          >
+            2233
+          </p>
+        </div>
+        <button
+          class="bp3-button Button--button StyledProps--font StyledProps--main Button--with-current-color Button--iconOnly Button--variation Button--variation-secondary"
+          type="button"
+        >
+          <span
+            class="bp3-button-text"
+          >
+            Back
+          </span>
+        </button>
+      </div>
+      <div
+        class="Layout--vertical StyledProps--main"
+      >
+        <p
+          class="StyledProps--font StyledProps--main textwrap StyledProps--font-variation-h4"
+        >
+          Payment Methods
+        </p>
+        <p
+          class="StyledProps--font StyledProps--main StyledProps--font-size-medium"
+        >
+          Charge the credit card on file
+        </p>
+        <div
+          class="Layout--horizontal StyledProps--main"
+        >
+          <p
+            class="StyledProps--font StyledProps--main StyledProps--font-variation-blockquote StyledProps--background-primary6 StyledProps--color StyledProps--color-white"
+          >
+            visa
+          </p>
+          <p
+            class="StyledProps--font StyledProps--main StyledProps--font-size-medium"
+          >
+            ****1423
+          </p>
+        </div>
+        <div
+          style="height: 100%;"
+        />
+        <button
+          class="bp3-button Button--button StyledProps--font StyledProps--main Button--with-current-color Button--iconOnly Button--variation Button--variation-primary"
+          type="button"
+        >
+          <span
+            class="bp3-button-text"
+          >
+            Make a Payment
+          </span>
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+`;
