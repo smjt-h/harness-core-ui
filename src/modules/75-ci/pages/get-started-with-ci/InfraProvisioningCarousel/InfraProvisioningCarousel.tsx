@@ -6,12 +6,15 @@
  */
 
 import React, { useEffect, useState } from 'react'
+import Lottie from 'react-lottie-player'
 
 import { Dialog, Layout, Icon, Text, FontVariation, Color, Container, Button, ButtonVariation } from '@harness/uicore'
 import { String, useStrings } from 'framework/strings'
 import type { StringsMap } from 'stringTypes'
 
 import samplePipelineImg from '../../../assets/images/sample-pipeline.svg'
+import provisioningInit from './assets/provisioning_init.json'
+import provisioningInProgress from './assets/provisioning_in_progress.json'
 
 import css from './InfraProvisioningCarousel.module.scss'
 
@@ -64,6 +67,12 @@ export const InfraProvisioningCarousel: React.FC<InfraProvisioningCarouselProps>
   const { getString } = useStrings()
   const [activeSlide, setActiveSlide] = useState<number>(0)
   const [enableTransition, setEnableTransition] = useState<boolean>(true)
+  const [animationData, setAnimationData] = useState<Record<string, any>>(provisioningInit)
+
+  useEffect(() => {
+    const timerId = setInterval(() => setAnimationData(provisioningInProgress), AUTO_TRANSITION_DELAY)
+    return () => clearInterval(timerId)
+  }, [])
 
   useEffect(() => {
     if (enableTransition) {
@@ -119,11 +128,8 @@ export const InfraProvisioningCarousel: React.FC<InfraProvisioningCarouselProps>
               <Text font={{ variation: FontVariation.H4 }} style={{ textAlign: 'center' }}>
                 {getString('ci.getStartedWithCI.provisionSecureEnv')}
               </Text>
-              <Container padding={{ top: 'xxlarge' }}>
-                <Container
-                  style={{ background: `transparent url(${samplePipelineImg}) no-repeat` }}
-                  className={css.samplePipeline}
-                />
+              <Container padding={{ bottom: 'large' }}>
+                <Lottie animationData={animationData} play />
               </Container>
               <Text font={{ variation: FontVariation.SMALL }}>
                 {getString('ci.getStartedWithCI.duration', {
