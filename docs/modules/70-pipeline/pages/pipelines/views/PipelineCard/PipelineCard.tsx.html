@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">81.82% </span>
+                <span class="strong">82.28% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>63/77</span>
+                <span class='fraction'>65/79</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">52.96% </span>
+                <span class="strong">54.28% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>134/253</span>
+                <span class='fraction'>146/269</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">81.58% </span>
+                <span class="strong">82.05% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>62/76</span>
+                <span class='fraction'>64/78</span>
             </div>
         
             
@@ -609,7 +609,13 @@
 <a name='L550'></a><a href='#L550'>550</a>
 <a name='L551'></a><a href='#L551'>551</a>
 <a name='L552'></a><a href='#L552'>552</a>
-<a name='L553'></a><a href='#L553'>553</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L553'></a><a href='#L553'>553</a>
+<a name='L554'></a><a href='#L554'>554</a>
+<a name='L555'></a><a href='#L555'>555</a>
+<a name='L556'></a><a href='#L556'>556</a>
+<a name='L557'></a><a href='#L557'>557</a>
+<a name='L558'></a><a href='#L558'>558</a>
+<a name='L559'></a><a href='#L559'>559</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -720,6 +726,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">10x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">10x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -882,6 +890,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">117x</span>
 <span class="cline-any cline-yes">117x</span>
+<span class="cline-any cline-yes">117x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">117x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1150,6 +1160,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1273,12 +1285,14 @@ function ContextMenu({
     branch: pipeline<span class="branch-0 cbranch-no" title="branch not covered" >?.g</span>itDetails<span class="branch-1 cbranch-no" title="branch not covered" >?.branch</span>
   })
 &nbsp;
+  const isPipelineInvalid = pipeline<span class="branch-0 cbranch-no" title="branch not covered" >?.e</span>ntityValidityDetails<span class="branch-1 cbranch-no" title="branch not covered" >?.valid </span>=== false
+&nbsp;
   return (
     &lt;Menu style={{ minWidth: 'unset' }} onClick={e =&gt; e.stopPropagation()}&gt;
       &lt;Menu.Item
         icon="play"
         text={getString('runPipelineText')}
-        disabled={!canRun}
+        disabled={!canRun || isPipelineInvalid}
         onClick={(e: React.MouseEvent) =&gt; {
           e.stopPropagation()
           runPipeline()
@@ -1434,6 +1448,8 @@ export function PipelineCard({
 &nbsp;
   const pipelineIcons = getIconsForPipeline(pipeline)
   const status = pipeline.executionSummaryInfo<span class="branch-0 cbranch-no" title="branch not covered" >?.l</span>astExecutionStatus
+  const isPipelineInvalid = pipeline<span class="branch-0 cbranch-no" title="branch not covered" >?.e</span>ntityValidityDetails<span class="branch-1 cbranch-no" title="branch not covered" >?.valid </span>=== false
+&nbsp;
   return (
     &lt;Card className={css.pipelineCard} interactive onClick={() =&gt; goToPipelineStudio(pipeline)}&gt;
       &lt;Container padding={'xlarge'} border={{ bottom: true }}&gt;
@@ -1462,7 +1478,7 @@ export function PipelineCard({
               {!isEmpty(pipelineIcons) &amp;&amp;
                 pipelineIcons.map(iconObj =&gt; &lt;Icon key={iconObj.icon} name={iconObj.icon} size={16} /&gt;)}
             &lt;/Container&gt;
-            {pipeline.entityValidityDetails<span class="branch-1 cbranch-no" title="branch not covered" >?.valid </span>=== false &amp;&amp; (
+            {isPipelineInvalid &amp;&amp; (
 <span class="branch-1 cbranch-no" title="branch not covered" >              &lt;Badge</span>
                 text={'common.invalid'}
                 iconName="error-outline"
@@ -1694,6 +1710,8 @@ export function PipelineCard({
                 e.stopPropagation()
                 runPipeline()
               }}
+              disabled={isPipelineInvalid}
+              tooltip={isPipelineInvalid ? <span class="branch-0 cbranch-no" title="branch not covered" >getString('pipeline.cannotRunInvalidPipeline') </span>: ''}
             /&gt;
             {pipeline.executionSummaryInfo<span class="branch-0 cbranch-no" title="branch not covered" >?.l</span>astExecutionTs &amp;&amp; (
               &lt;Button
@@ -1720,7 +1738,7 @@ export function PipelineCard({
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Tue Apr 19 2022 12:20:38 GMT+0000 (Greenwich Mean Time)
+                at Tue Apr 19 2022 14:09:22 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../../../prettify.js"></script>

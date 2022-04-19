@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">82.02% </span>
+                <span class="strong">82.22% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>73/89</span>
+                <span class='fraction'>74/90</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">56.94% </span>
+                <span class="strong">57.72% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>201/353</span>
+                <span class='fraction'>213/369</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">81.82% </span>
+                <span class="strong">82.02% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>72/88</span>
+                <span class='fraction'>73/89</span>
             </div>
         
             
@@ -595,7 +595,11 @@
 <a name='L536'></a><a href='#L536'>536</a>
 <a name='L537'></a><a href='#L537'>537</a>
 <a name='L538'></a><a href='#L538'>538</a>
-<a name='L539'></a><a href='#L539'>539</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L539'></a><a href='#L539'>539</a>
+<a name='L540'></a><a href='#L540'>540</a>
+<a name='L541'></a><a href='#L541'>541</a>
+<a name='L542'></a><a href='#L542'>542</a>
+<a name='L543'></a><a href='#L543'>543</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -892,8 +896,6 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -971,6 +973,10 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1026,6 +1032,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1427,8 +1435,6 @@ export default function TriggersDetailPage(): JSX.Element {
     [projectIdentifier, orgIdentifier, accountId, pipelineIdentifier]
   )
 &nbsp;
-  const isTriggerRbacDisabled = !isExecutable
-&nbsp;
   const history = useHistory()
 &nbsp;
   const goToEditWizard = <span class="fstat-no" title="function not covered" >(): void =</span>&gt; {
@@ -1507,6 +1513,10 @@ export default function TriggersDetailPage(): JSX.Element {
     triggerResponse<span class="branch-0 cbranch-no" title="branch not covered" >?.d</span>ata<span class="branch-0 cbranch-no" title="branch not covered" >?.n</span>ame || <span class="branch-1 cbranch-no" title="branch not covered" >getString('common.triggersLabel')</span>
   ])
 &nbsp;
+  const isPipelineInvalid = pipeline<span class="branch-0 cbranch-no" title="branch not covered" >?.d</span>ata<span class="branch-0 cbranch-no" title="branch not covered" >?.e</span>ntityValidityDetails<span class="branch-1 cbranch-no" title="branch not covered" >?.valid </span>=== false
+&nbsp;
+  const isTriggerRbacDisabled = !isExecutable || isPipelineInvalid
+&nbsp;
   return (
     &lt;&gt;
       &lt;Container
@@ -1572,6 +1582,7 @@ export default function TriggersDetailPage(): JSX.Element {
                 onClick={goToEditWizard}
                 minimal
                 disabled={isTriggerRbacDisabled}
+                tooltip={isPipelineInvalid ? <span class="branch-0 cbranch-no" title="branch not covered" >getString('pipeline.cannotEditTriggerInvalidPipeline') </span>: ''}
                 text={getString('edit')}
               &gt;&lt;/Button&gt;
             &lt;/Layout.Horizontal&gt;
@@ -1611,6 +1622,7 @@ export default function TriggersDetailPage(): JSX.Element {
                     showSnippetSection={false}
                     schema={pipelineSchema?.data}
                     onEnableEditMode={goToEditWizard}
+                    isEditModeSupported={!isPipelineInvalid}
                     // isEditModeSupported={!isTriggerRbacDisabled}
                   /&gt;
                 )}
@@ -1678,7 +1690,7 @@ export default function TriggersDetailPage(): JSX.Element {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Tue Apr 19 2022 12:20:38 GMT+0000 (Greenwich Mean Time)
+                at Tue Apr 19 2022 14:09:22 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../prettify.js"></script>
