@@ -13,9 +13,12 @@
   :global {
     span[data-icon='service-azure'] {
       svg > g {
-        fill: white;
+        fill: var(--white);
       }
     }
+  }
+  [class*='StepWizard--stepDetails'] {
+    overflow-y: auto;
   }
   :global(.bp3-popover-target) {
     padding-bottom: 2px;

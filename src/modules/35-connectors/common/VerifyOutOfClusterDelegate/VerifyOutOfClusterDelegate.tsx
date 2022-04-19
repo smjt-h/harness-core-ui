@@ -65,6 +65,7 @@ export const StepIndex = new Map([[STEP.TEST_CONNECTION, 1]])
 const RenderUrlInfo: React.FC<StepProps<VerifyOutOfClusterStepProps> & RenderUrlInfo> = props => {
   const { getString } = useStrings()
 
+  /* istanbul ignore next */
   const getLabel = (): string => {
     switch (props.type) {
       case Connectors.KUBERNETES_CLUSTER:
@@ -165,9 +166,8 @@ const VerifyOutOfClusterDelegate: React.FC<StepProps<VerifyOutOfClusterStepProps
       status: 'PROCESS'
     })
 
-    const isCeConnector = Boolean(
-      Connectors.CE_KUBERNETES || Connectors.CEAWS || Connectors.CE_AZURE || Connectors.CE_GCP
-    )
+    const ceConnectors: string[] = [Connectors.CE_KUBERNETES, Connectors.CEAWS, Connectors.CE_AZURE, Connectors.CE_GCP]
+    const isCeConnector = ceConnectors.includes(props.type)
 
     const { trackEvent } = useTelemetry()
 
