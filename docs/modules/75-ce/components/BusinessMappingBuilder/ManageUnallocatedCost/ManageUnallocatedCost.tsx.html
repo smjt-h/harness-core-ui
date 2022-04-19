@@ -30,9 +30,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">50% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>0/0</span>
+                <span class='fraction'>1/2</span>
             </div>
         
             
@@ -99,24 +99,7 @@
 <a name='L40'></a><a href='#L40'>40</a>
 <a name='L41'></a><a href='#L41'>41</a>
 <a name='L42'></a><a href='#L42'>42</a>
-<a name='L43'></a><a href='#L43'>43</a>
-<a name='L44'></a><a href='#L44'>44</a>
-<a name='L45'></a><a href='#L45'>45</a>
-<a name='L46'></a><a href='#L46'>46</a>
-<a name='L47'></a><a href='#L47'>47</a>
-<a name='L48'></a><a href='#L48'>48</a>
-<a name='L49'></a><a href='#L49'>49</a>
-<a name='L50'></a><a href='#L50'>50</a>
-<a name='L51'></a><a href='#L51'>51</a>
-<a name='L52'></a><a href='#L52'>52</a>
-<a name='L53'></a><a href='#L53'>53</a>
-<a name='L54'></a><a href='#L54'>54</a>
-<a name='L55'></a><a href='#L55'>55</a>
-<a name='L56'></a><a href='#L56'>56</a>
-<a name='L57'></a><a href='#L57'>57</a>
-<a name='L58'></a><a href='#L58'>58</a>
-<a name='L59'></a><a href='#L59'>59</a>
-<a name='L60'></a><a href='#L60'>60</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L43'></a><a href='#L43'>43</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -135,25 +118,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">8x</span>
 <span class="cline-any cline-yes">8x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">8x</span>
 <span class="cline-any cline-yes">8x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -183,7 +149,7 @@
  */
 &nbsp;
 import React from 'react'
-import { Container, FontVariation, FormInput, Layout, Text } from '@harness/uicore'
+import { Container, FormInput, Layout, RadioButton } from '@harness/uicore'
 import { useStrings } from 'framework/strings'
 import type { UnallocatedCost } from 'services/ce'
 import css from './ManageUnallocatedCost.module.scss'
@@ -193,42 +159,25 @@ interface ManageUnallocatedCostProps {
 }
 &nbsp;
 const ManageUnallocatedCost: (props: ManageUnallocatedCostProps) =&gt; React.ReactElement = ({ data }) =&gt; {
-  const strategy = data.strategy
-&nbsp;
+  const isLabelPresent = data.label ? true : <span class="branch-1 cbranch-no" title="branch not covered" >false</span>
   const { getString } = useStrings()
   return (
     &lt;Container&gt;
-      &lt;FormInput.RadioGroup
-        className={css.radioContainer}
-        name="unallocatedCost.strategy"
-        items={[
-          {
-            label: (
-              &lt;Layout.Horizontal className={css.hContainer} spacing="small"&gt;
-                &lt;Text font={{ variation: FontVariation.FORM_LABEL }}&gt;
-                  {getString('ce.businessMapping.manageUnallocatedCost.defaultUnallocatedCostLabel')}
-                &lt;/Text&gt;
-                &lt;FormInput.Text
-                  name="unallocatedCost.label"
-                  placeholder={getString('ce.businessMapping.manageUnallocatedCost.otherPlaceholder')}
-                  className={css.defaultValInputBox}
-                  disabled={strategy !== 'DISPLAY_NAME'}
-                /&gt;
-              &lt;/Layout.Horizontal&gt;
-            ),
-            value: 'DISPLAY_NAME'
-          },
-          {
-            label: (
-              &lt;Text font={{ variation: FontVariation.FORM_LABEL }}&gt;
-                {getString('ce.businessMapping.manageUnallocatedCost.ignoreCostLabel')}
-              &lt;/Text&gt;
-            ),
-            value: 'HIDE'
-          },
-          { label: getString('ce.businessMapping.manageUnallocatedCost.shareCosts'), value: 'SHARE', disabled: true }
-        ]}
-      /&gt;
+      &lt;Layout.Horizontal spacing="small" className={css.hContainer}&gt;
+        &lt;RadioButton
+          label={getString('ce.businessMapping.manageUnallocatedCost.defaultUnallocatedCostLabel')}
+          value="default"
+          checked={isLabelPresent}
+        /&gt;
+        &lt;FormInput.Text
+          name="unallocatedCost.label"
+          placeholder={getString('ce.businessMapping.manageUnallocatedCost.otherPlaceholder')}
+          className={css.defaultValInputBox}
+          disabled={!isLabelPresent}
+        /&gt;
+      &lt;/Layout.Horizontal&gt;
+      &lt;RadioButton label={getString('ce.businessMapping.manageUnallocatedCost.ignoreCostLabel')} value={'-'} disabled /&gt;
+      &lt;RadioButton label={getString('ce.businessMapping.manageUnallocatedCost.shareCosts')} value={'-'} disabled /&gt;
     &lt;/Container&gt;
   )
 }
@@ -241,7 +190,7 @@ export default ManageUnallocatedCost
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Mon Apr 18 2022 19:29:57 GMT+0000 (Greenwich Mean Time)
+                at Tue Apr 19 2022 02:10:52 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../../prettify.js"></script>
