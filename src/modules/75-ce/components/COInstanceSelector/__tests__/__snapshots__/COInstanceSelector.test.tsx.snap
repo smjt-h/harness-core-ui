@@ -99,12 +99,11 @@ exports[`AWS instance selection should render AWS instances selection modal with
                   class="bp3-popover-target"
                 >
                   <div
-                    class="bp3-input-group bp3-disabled"
+                    class="bp3-input-group"
                   >
                     <input
                       autocomplete="off"
                       class="bp3-input"
-                      disabled=""
                       placeholder="ce.co.autoStoppingRule.configuration.instanceModal.labels.selectTagKey"
                       style="padding-right: 0px;"
                       type="text"
@@ -905,12 +904,11 @@ exports[`Instance Selector Modal modal should retain the selected resource group
                   class="bp3-popover-target"
                 >
                   <div
-                    class="bp3-input-group bp3-disabled"
+                    class="bp3-input-group"
                   >
                     <input
                       autocomplete="off"
                       class="bp3-input"
-                      disabled=""
                       placeholder="ce.co.autoStoppingRule.configuration.instanceModal.labels.selectTagKey"
                       style="padding-right: 0px;"
                       type="text"
@@ -1483,12 +1481,11 @@ exports[`Instance Selector Modal search and select/unselect instances successful
                   class="bp3-popover-target"
                 >
                   <div
-                    class="bp3-input-group bp3-disabled"
+                    class="bp3-input-group"
                   >
                     <input
                       autocomplete="off"
                       class="bp3-input"
-                      disabled=""
                       placeholder="ce.co.autoStoppingRule.configuration.instanceModal.labels.selectTagKey"
                       style="padding-right: 0px;"
                       type="text"
@@ -2093,12 +2090,11 @@ exports[`Instance Selector Modal should show data 1`] = `
                   class="bp3-popover-target"
                 >
                   <div
-                    class="bp3-input-group bp3-disabled"
+                    class="bp3-input-group"
                   >
                     <input
                       autocomplete="off"
                       class="bp3-input"
-                      disabled=""
                       placeholder="ce.co.autoStoppingRule.configuration.instanceModal.labels.selectTagKey"
                       style="padding-right: 0px;"
                       type="text"
@@ -2638,12 +2634,11 @@ exports[`Instance Selector Modal should show loader while loading data 1`] = `
                   class="bp3-popover-target"
                 >
                   <div
-                    class="bp3-input-group bp3-disabled"
+                    class="bp3-input-group"
                   >
                     <input
                       autocomplete="off"
                       class="bp3-input"
-                      disabled=""
                       placeholder="ce.co.autoStoppingRule.configuration.instanceModal.labels.selectTagKey"
                       style="padding-right: 0px;"
                       type="text"
@@ -2942,12 +2937,11 @@ exports[`Instance Selector Modal should show message when data is empty for sele
                   class="bp3-popover-target"
                 >
                   <div
-                    class="bp3-input-group bp3-disabled"
+                    class="bp3-input-group"
                   >
                     <input
                       autocomplete="off"
                       class="bp3-input"
-                      disabled=""
                       placeholder="ce.co.autoStoppingRule.configuration.instanceModal.labels.selectTagKey"
                       style="padding-right: 0px;"
                       type="text"
