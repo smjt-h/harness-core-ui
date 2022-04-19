@@ -173,10 +173,9 @@ function PipelineStepNode(props: PipelineStepNodeProps): JSX.Element {
         {stepIcon && (
           <Icon
             size={28}
-            color={isSelectedNode() ? Color.WHITE : stepIconColor}
+            {...(isSelectedNode() ? { color: Color.WHITE, className: defaultCss.primaryIcon } : {})}
             name={defaultTo(stepIcon, 'cross') as IconName}
             inverse={isSelectedNode() || (stepStatus as string) === ExecutionStatusEnum.Failed}
-            className={defaultCss.primaryIcon}
           />
         )}
         {secondaryIcon && (
