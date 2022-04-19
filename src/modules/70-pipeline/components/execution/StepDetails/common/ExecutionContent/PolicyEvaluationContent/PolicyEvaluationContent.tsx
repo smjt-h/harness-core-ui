@@ -14,6 +14,7 @@ import { useStrings } from 'framework/strings'
 import type { ExecutionNode } from 'services/pipeline-ng'
 
 import { useDeepCompareEffect } from '@common/hooks'
+import { useModuleInfo } from '@common/hooks/useModuleInfo'
 import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
 import routes from '@common/RouteDefinitions'
 
@@ -89,6 +90,7 @@ export function PolicyEvaluationContent({ step }: { step: ExecutionNode }) {
 function PolicySetInfo({ policySet }: { policySet: { [key: string]: any } }) {
   const { accountId, orgIdentifier, projectIdentifier } = useParams<ProjectPathProps>()
   const { getString } = useStrings()
+  const { module } = useModuleInfo()
 
   const { name, identifier, status, policyDetails: policies } = policySet
 
@@ -121,9 +123,9 @@ function PolicySetInfo({ policySet }: { policySet: { [key: string]: any } }) {
                 <Link
                   to={routes.toGovernancePolicySetDetail({
                     accountId,
+                    policySetIdentifier: defaultTo(identifier, ''),
                     ...(scope === getString('orgLabel') && { orgIdentifier }),
-                    ...(scope === getString('projectLabel') && { projectIdentifier }),
-                    policySetIdentifier: defaultTo(policySet.identifier, '')
+                    ...(scope === getString('projectLabel') && { module, orgIdentifier, projectIdentifier })
                   })}
                 >
                   {getString('pipeline.policyEvaluations.policySetName', { name })}
@@ -138,7 +140,7 @@ function PolicySetInfo({ policySet }: { policySet: { [key: string]: any } }) {
         >
           <Container margin={{ top: 'large' }} border={{ top: true }}>
             {policyIds.map((id, index) => {
-              return <PolicyInfo key={id} policy={policies[id]} scope={scope} numberInList={index + 1} />
+              return <PolicyInfo key={id} policy={policies[id]} numberInList={index + 1} />
             })}
           </Container>
         </Collapse>
@@ -147,21 +149,20 @@ function PolicySetInfo({ policySet }: { policySet: { [key: string]: any } }) {
   }
 }
 
-export function PolicyInfo({
-  policy,
-  scope,
-  numberInList
-}: {
-  policy: EvaluatedPolicy
-  scope: string
-  numberInList: number
-}) {
+export function PolicyInfo({ policy, numberInList }: { policy: EvaluatedPolicy; numberInList: number }) {
   const { accountId, orgIdentifier, projectIdentifier } = useParams<ProjectPathProps>()
   const { getString } = useStrings()
+  const { module } = useModuleInfo()
 
-  const { name: policyName, status, denyMessages, error: errorMessage } = policy
+  const { name: policyName, identifier, status, denyMessages, error: errorMessage } = policy
   const statusColor =
     status === EvaluationStatus.PASS ? Color.SUCCESS : status === EvaluationStatus.ERROR ? Color.ERROR : Color.WARNING
+
+  const scope = identifier?.includes('account.')
+    ? getString('account')
+    : identifier?.includes('org.')
+    ? getString('orgLabel')
+    : getString('projectLabel')
 
   return (
     <Layout.Horizontal flex={{ justifyContent: 'flex-start', alignItems: 'flex-start' }} padding={{ top: 'large' }}>
@@ -171,9 +172,9 @@ export function PolicyInfo({
             to={{
               pathname: routes.toGovernanceViewPolicy({
                 accountId,
+                policyIdentifier: defaultTo(identifier, ''),
                 ...(scope === getString('orgLabel') && { orgIdentifier }),
-                ...(scope === getString('projectLabel') && { projectIdentifier }),
-                policyIdentifier: defaultTo(policy.identifier, '')
+                ...(scope === getString('projectLabel') && { module, orgIdentifier, projectIdentifier })
               })
             }}
           >
@@ -193,7 +194,7 @@ export function PolicyInfo({
           )}
           {errorMessage && (
             <FailureInfo label={getString('error')}>
-              <Text key={errorMessage} color={statusColor}>
+              <Text key={errorMessage} color={statusColor} lineClamp={2}>
                 {errorMessage}
               </Text>
             </FailureInfo>
@@ -213,7 +214,9 @@ function FailureInfo({ label, children }: { label: string; children: React.React
       flex={{ alignItems: 'flex-start', justifyContent: 'flex-start' }}
     >
       <Text color={Color.BLACK}>{label.toUpperCase()}</Text>
-      <Container padding={{ left: 'small' }}>{children}</Container>
+      <Container padding={{ left: 'small' }} width={300}>
+        {children}
+      </Container>
     </Layout.Horizontal>
   )
 }

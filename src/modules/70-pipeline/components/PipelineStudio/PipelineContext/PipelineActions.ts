@@ -7,7 +7,8 @@
 
 import { clone } from 'lodash-es'
 import type { IDrawerProps } from '@blueprintjs/core'
-import type { YamlSnippetMetaData, PipelineInfoConfig } from 'services/cd-ng'
+import type { GetDataError } from 'restful-react'
+import type { YamlSnippetMetaData, PipelineInfoConfig, Failure } from 'services/cd-ng'
 import type { YamlBuilderHandlerBinding } from '@common/interfaces/YAMLBuilderProps'
 import type * as Diagram from '@pipeline/components/Diagram'
 import type { EntityGitDetails, EntityValidityDetails } from 'services/pipeline-ng'
@@ -107,7 +108,8 @@ export interface SelectorData {
   allChildTypes?: string[]
   selectedTemplateRef?: string
   selectedVersionLabel?: string
-  onUseTemplate?: (template: TemplateSummaryResponse, isCopied?: boolean) => void
+  onSubmit?: (template: TemplateSummaryResponse, isCopied: boolean) => void
+  onCancel?: () => void
 }
 
 export interface TemplateDrawerData extends Omit<IDrawerProps, 'isOpen'> {
@@ -157,12 +159,14 @@ export interface PipelineReducerState {
   isUpdated: boolean
   snippets?: YamlSnippetMetaData[]
   selectionState: SelectionState
+  templateError?: GetDataError<Failure | Error> | null
 }
 
 export const DefaultPipeline: PipelineInfoConfig = {
   name: '',
   identifier: DefaultNewPipelineId,
-  allowStageExecutions: false
+  allowStageExecutions: false,
+  stages: []
 }
 
 export interface ActionResponse {
@@ -180,6 +184,7 @@ export interface ActionResponse {
   pipelineView?: PipelineViewData
   templateView?: TemplateViewData
   selectionState?: SelectionState
+  templateError?: GetDataError<Failure | Error> | null
 }
 
 export interface ActionReturnType {

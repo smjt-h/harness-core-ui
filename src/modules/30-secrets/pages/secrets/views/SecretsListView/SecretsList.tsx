@@ -34,6 +34,7 @@ import type { SecretIdentifiers } from '@secrets/components/CreateUpdateSecret/C
 import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
 import { ResourceType } from '@rbac/interfaces/ResourceType'
 import RbacMenuItem from '@rbac/components/MenuItem/MenuItem'
+import useRBACError from '@rbac/utils/useRBACError/useRBACError'
 import css from './SecretsList.module.scss'
 
 interface SecretsListProps {
@@ -123,6 +124,7 @@ const RenderColumnStatus: Renderer<CellProps<SecretResponseWrapper>> = ({ row })
 const RenderColumnAction: Renderer<CellProps<SecretResponseWrapper>> = ({ row, column }) => {
   const data = row.original.secret
   const { accountId, projectIdentifier, orgIdentifier } = useParams<ProjectPathProps>()
+  const { getRBACErrorMessage } = useRBACError()
   const { showSuccess, showError } = useToaster()
   const [menuOpen, setMenuOpen] = useState(false)
   const { mutate: deleteSecret } = useDeleteSecretV2({
@@ -154,7 +156,7 @@ const RenderColumnAction: Renderer<CellProps<SecretResponseWrapper>> = ({ row, c
           showSuccess(`Secret ${data.name} deleted`)
           ;(column as any).refreshSecrets?.()
         } catch (err) {
-          showError(err.data?.message || err.message)
+          showError(getRBACErrorMessage(err))
         }
       }
     }

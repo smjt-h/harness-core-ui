@@ -36,6 +36,8 @@ import {
   FeedbackFormValues
 } from '@common/modals/ExtendTrial/useExtendTrialOrFeedbackModal'
 import { Editions } from '@common/constants/SubscriptionTypes'
+import { useTelemetry } from '@common/hooks/useTelemetry'
+import { Category, LicenseActions } from '@common/constants/TrackingConstants'
 import css from './layouts.module.scss'
 
 export const BANNER_KEY = 'license_banner_dismissed'
@@ -176,8 +178,14 @@ export const TrialLicenseBanner = (): React.ReactElement => {
     loading: sendingFeedback
   })
 
+  const { trackEvent } = useTelemetry()
+
   const handleExtendTrial = async (): Promise<void> => {
     try {
+      trackEvent(LicenseActions.ExtendTrial, {
+        category: Category.LICENSE
+      })
+
       const extendedData = await extendTrial({
         moduleType: module as StartTrialDTO['moduleType'],
         edition: Editions.ENTERPRISE

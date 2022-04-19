@@ -10,7 +10,17 @@ import cx from 'classnames'
 import * as Yup from 'yup'
 import { useParams } from 'react-router-dom'
 import { Classes, Dialog, IDialogProps } from '@blueprintjs/core'
-import { Container, Layout, Label, Button, Formik, FormInput, FormikForm } from '@wings-software/uicore'
+import {
+  Container,
+  Layout,
+  Label,
+  Button,
+  Formik,
+  FormInput,
+  FormikForm,
+  useToaster,
+  getErrorInfoFromErrorObject
+} from '@wings-software/uicore'
 import { useModalHook } from '@harness/use-modal'
 
 import { CEReportSchedule, useCreateReportSetting, useUpdateReportSetting } from 'services/ce'
@@ -39,6 +49,7 @@ interface CreateReportModalProps {
 
 const useCreateReportModal = ({ onSuccess, onError }: CreateReportModalProps) => {
   const { getString } = useStrings()
+  const { showError } = useToaster()
   const [isEditMode, setIsEditMode] = useState(false)
   const [report, setReport] = useState<CEReportSchedule>()
   const { perspectiveId, accountId } = useParams<{ perspectiveId: string; accountId: string }>()
@@ -67,6 +78,7 @@ const useCreateReportModal = ({ onSuccess, onError }: CreateReportModalProps) =>
       await (isEditMode ? updateReport({ ...report, ...payload }) : createReport(payload))
       onSuccess?.()
     } catch (e) {
+      showError(getErrorInfoFromErrorObject(e))
       onError?.()
     }
   }

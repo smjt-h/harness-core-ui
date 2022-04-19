@@ -13,10 +13,10 @@ import { LogAnalysisRowData, LogEvents } from './LogAnalysis.types'
 
 export const getClusterTypes = (getString: UseStringsReturn['getString']): SelectOption[] => {
   return [
-    { label: getString('pipeline.verification.logs.allEvents'), value: '' },
-    { label: getString('pipeline.verification.logs.knownEvent'), value: LogEvents.KNOWN },
-    { label: getString('pipeline.verification.logs.unknownEvent'), value: LogEvents.UNKNOWN },
-    { label: getString('pipeline.verification.logs.unexpectedFrequency'), value: LogEvents.UNEXPECTED }
+    { label: getString('auditTrail.allEvents'), value: '' },
+    { label: getString('cv.known'), value: LogEvents.KNOWN },
+    { label: getString('cv.unknown'), value: LogEvents.UNKNOWN },
+    { label: getString('cv.unexpected'), value: LogEvents.UNEXPECTED }
   ]
 }
 
@@ -29,7 +29,7 @@ export function getLogAnalysisTableData(logsData: AnalyzedLogDataDTO[]): LogAnal
       messageFrequency: [
         {
           name: 'trendData',
-          type: 'line',
+          type: 'column',
           color: getRiskColorValue(log.logData?.riskStatus),
           data: log.logData?.trend?.map(t => t.count ?? 0)
         }

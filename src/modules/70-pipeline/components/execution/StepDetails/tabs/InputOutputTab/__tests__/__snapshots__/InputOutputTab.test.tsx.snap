@@ -877,3 +877,14 @@ exports[`<ExecutionStepInputOutputTab /> tests output snapshot test 1`] = `
   </div>
 </div>
 `;
+
+exports[`<ExecutionStepInputOutputTab /> tests output snapshot with no data 1`] = `
+<div>
+  <div
+    class="ioTab"
+    data-empty="true"
+  >
+    pipeline.execution.iotab.noOutputText
+  </div>
+</div>
+`;

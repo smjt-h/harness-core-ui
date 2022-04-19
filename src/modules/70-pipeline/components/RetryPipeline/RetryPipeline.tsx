@@ -25,7 +25,7 @@ import { Color } from '@harness/design-system'
 import { useHistory, useParams } from 'react-router-dom'
 import cx from 'classnames'
 import { parse } from 'yaml'
-import { isEmpty, pick } from 'lodash-es'
+import { defaultTo, isEmpty, pick } from 'lodash-es'
 import type { FormikErrors } from 'formik'
 import { Classes, Dialog, Tooltip } from '@blueprintjs/core'
 import { useStrings } from 'framework/strings'
@@ -61,10 +61,9 @@ import { usePermission } from '@rbac/hooks/usePermission'
 import { yamlStringify } from '@common/utils/YamlHelperMethods'
 import { useToaster } from '@common/exports'
 import routes from '@common/RouteDefinitions'
-import { useMutateAsGet, useQueryParams } from '@common/hooks'
+import { useQueryParams } from '@common/hooks'
 import { getFeaturePropsForRunPipelineButton, mergeTemplateWithInputSetData } from '@pipeline/utils/runPipelineUtils'
 import type { InputSetDTO } from '@pipeline/utils/types'
-import { useGetYamlWithTemplateRefsResolved } from 'services/template-ng'
 import { ErrorsStrip } from '../ErrorsStrip/ErrorsStrip'
 import GitPopover from '../GitPopover/GitPopover'
 import SelectStagetoRetry from './SelectStagetoRetry'
@@ -79,7 +78,6 @@ import SaveAsInputSet from '../RunPipelineModal/SaveAsInputSet'
 import { InputSetSelector, InputSetSelectorProps } from '../InputSetSelector/InputSetSelector'
 import SelectExistingInputsOrProvideNew from '../RunPipelineModal/SelectExistingOrProvide'
 import { PreFlightCheckModal } from '../PreFlightCheckModal/PreFlightCheckModal'
-import type { Values } from '../PipelineStudio/StepCommands/StepCommandTypes'
 import type { InputSetValue } from '../InputSetSelector/utils'
 import css from './RetryPipeline.module.scss'
 
@@ -168,27 +166,10 @@ function RetryPipeline({
       orgIdentifier,
       projectIdentifier,
       repoIdentifier,
-      branch
+      branch,
+      getTemplatesResolvedPipeline: true
     }
   })
-
-  const { data: templateRefsResolvedPipeline, loading: loadingResolvedPipeline } = useMutateAsGet(
-    useGetYamlWithTemplateRefsResolved,
-    {
-      queryParams: {
-        accountIdentifier: accountId,
-        orgIdentifier,
-        pipelineIdentifier,
-        projectIdentifier,
-        repoIdentifier,
-        branch,
-        getDefaultFromOtherRepo: true
-      },
-      body: {
-        originalEntityYaml: yamlStringify(parse(pipelineResponse?.data?.yamlPipeline || '')?.pipeline)
-      }
-    }
-  )
 
   const { data: inputSetData, loading: loadingTemplate } = useGetInputsetYamlV2({
     planExecutionId: planExecutionIdentifier,
@@ -310,11 +291,11 @@ function RetryPipeline({
   const inputSets = inputSetResponse?.data?.content
 
   React.useEffect(() => {
-    const mergedPipelineYaml = templateRefsResolvedPipeline?.data?.mergedPipelineYaml
+    const mergedPipelineYaml = pipelineResponse?.data?.resolvedTemplatesPipelineYaml
     if (mergedPipelineYaml) {
-      setResolvedPipeline(parse(mergedPipelineYaml))
+      setResolvedPipeline(parse(mergedPipelineYaml)?.pipeline)
     }
-  }, [templateRefsResolvedPipeline?.data?.mergedPipelineYaml])
+  }, [pipelineResponse?.data?.resolvedTemplatesPipelineYaml])
 
   useEffect(() => {
     // Won't actually render out RunPipelineForm
@@ -595,15 +576,19 @@ function RetryPipeline({
 
   const formRefDom = React.useRef<HTMLElement | undefined>()
 
-  if (loadingPipeline || loadingResolvedPipeline || loadingTemplate || inputSetLoading || loadingRetry) {
+  if (loadingPipeline || loadingTemplate || inputSetLoading || loadingRetry) {
     return <PageSpinner />
   }
   return (
-    <Formik
-      initialValues={(currentPipeline?.pipeline ? clearRuntimeInput(currentPipeline.pipeline) : {}) as Values}
+    <Formik<PipelineInfoConfig>
+      initialValues={
+        currentPipeline?.pipeline
+          ? clearRuntimeInput(currentPipeline.pipeline)
+          : { name: '', identifier: defaultTo(pipelineIdentifier, ''), stages: [] }
+      }
       formName="retryPipeline"
       onSubmit={values => {
-        handleRetryPipeline(values as any)
+        handleRetryPipeline(values, false)
       }}
       enableReinitialize
       validate={async values => {
@@ -796,6 +781,7 @@ function RetryPipeline({
                     permission: PermissionIdentifier.EXECUTE_PIPELINE
                   }}
                   disabled={getRetryPipelineDisabledState()}
+                  data-testid="retry-failed-pipeline"
                 />
                 <div className={css.secondaryButton}>
                   <Button

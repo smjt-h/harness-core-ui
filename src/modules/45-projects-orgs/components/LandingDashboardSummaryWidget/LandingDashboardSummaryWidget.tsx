@@ -6,7 +6,17 @@
  */
 
 import React, { useEffect, useState } from 'react'
-import { Card, Container, Icon, IconName, Layout, Text } from '@wings-software/uicore'
+import {
+  Card,
+  Container,
+  Icon,
+  IconName,
+  Layout,
+  Text,
+  StackedSummaryInterface,
+  StackedSummaryTable,
+  getStackedSummaryBarCount
+} from '@wings-software/uicore'
 import { useParams } from 'react-router-dom'
 import { FontVariation, Color } from '@harness/design-system'
 import cx from 'classnames'
@@ -15,16 +25,11 @@ import { useStrings } from 'framework/strings'
 import { ModuleName } from 'framework/types/ModuleName'
 import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
 import {
-  StackedSummaryInterface,
-  StackedSummaryTable
-} from '@common/components/StackedSummaryTable/StackedSummaryTable'
-import {
   ResponseExecutionResponseCountOverview,
   TopProjectsDashboardInfoCountWithSuccessFailureDetails,
   TopProjectsPanel,
   useGetTopProjects
 } from 'services/dashboard-service'
-import { getStackedSummaryBarCount } from '@common/components/StackedSummaryBar/StackedSummaryBar'
 import type { StringsMap } from 'stringTypes'
 import routes from '@common/RouteDefinitions'
 import DashboardNoDataWidget from '@projects-orgs/components/DashboardNoDataWidget/DashboardNoDataWidget'

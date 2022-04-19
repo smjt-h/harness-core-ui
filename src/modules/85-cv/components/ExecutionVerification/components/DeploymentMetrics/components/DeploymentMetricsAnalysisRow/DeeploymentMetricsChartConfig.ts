@@ -68,10 +68,10 @@ export function chartsConfig(
       formatter: function tooltipFormatter(): string {
         // eslint-disable-next-line
         // @ts-ignore
-        const baseDataValue = this.points[0]?.y
+        const baseDataValue = controlData?.points[this.points[0]?.point.index]?.y
         // eslint-disable-next-line
         // @ts-ignore
-        const testDataValue = this.points[1]?.y
+        const testDataValue = testData?.points[this.points[0]?.point.index]?.y
 
         // to show "No data" text when the y axis value is null
         const baseDataDisplayValue = baseDataValue?.toFixed(2) ?? getString('noData')

@@ -1,0 +1,6 @@
+{
+  "status": "SUCCESS",
+  "data": "spec:\n  execution:\n    steps:\n      - step:\n          name: \"Jira Create\"\n          identifier: jiraCreate\n          type: JiraCreate\n          timeout: 5m\n          spec:\n            fields: []\n      - step:\n          name: \"Jira Approval\"\n          identifier: jiraApproval\n          type: JiraApproval\n          timeout: 1d\n          spec:\n            approvalCriteria:\n              type: KeyValues\n              spec:\n                matchAnyCondition: false\n                conditions: []\n            rejectionCriteria:\n              type: KeyValues\n              spec:\n                matchAnyCondition: false\n                conditions: []\n      - step:\n          name: \"Jira Update\"\n          identifier: jiraUpdate\n          type: JiraUpdate\n          timeout: 5m\n          spec:\n            fields: []\n",
+  "metaData": null,
+  "correlationId": "e41c52dc-aced-4df8-9fe6-fbb962ef1a43"
+}

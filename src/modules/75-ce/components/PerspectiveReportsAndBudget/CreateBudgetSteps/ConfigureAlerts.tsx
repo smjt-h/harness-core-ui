@@ -21,6 +21,7 @@ import {
   ModalErrorHandler,
   FlexExpander
 } from '@wings-software/uicore'
+import * as Yup from 'yup'
 import { TagInput } from '@blueprintjs/core'
 import { FontVariation } from '@harness/design-system'
 import moment from 'moment'
@@ -28,6 +29,7 @@ import { useStrings } from 'framework/strings'
 import formatCost from '@ce/utils/formatCost'
 import { getGMTStartDateTime, CE_DATE_FORMAT_INTERNAL } from '@ce/utils/momentUtils'
 import { useCreateBudget, Budget, AlertThreshold, useUpdateBudget } from 'services/ce'
+import { EmailSchema } from '@common/utils/Validation'
 import type { BudgetStepData } from '../types'
 import css from '../PerspectiveCreateBudget.module.scss'
 interface Props {
@@ -128,6 +130,13 @@ const ConfigureAlerts: React.FC<StepProps<BudgetStepData> & Props> = props => {
       <Formik<ThresholdForm>
         formName="alertThresholds"
         initialValues={getInitialValues()}
+        validationSchema={Yup.object().shape({
+          alertThresholds: Yup.array(
+            Yup.object({
+              emailAddresses: EmailSchema()
+            })
+          )
+        })}
         onSubmit={data => {
           handleSubmit(data)
         }}
@@ -224,6 +233,7 @@ const Thresholds = (props: ThresholdsProps): JSX.Element => {
           key={idx}
           index={idx}
           value={at}
+          formikProps={formikProps}
           handleEmailChange={values => {
             formikProps.setFieldValue(`alertThresholds.${idx}.emailAddresses`, values)
           }}
@@ -282,10 +292,11 @@ interface ThresholdProps {
   value: AlertThreshold
   onDelete: () => void
   index: number
+  formikProps: FormikProps<ThresholdForm>
 }
 
 const Threshold = (props: ThresholdProps): JSX.Element => {
-  const { value, index: idx, onDelete, handleEmailChange } = props
+  const { value, index: idx, onDelete, handleEmailChange, formikProps } = props
   const { getString } = useStrings()
   const BASED_ON_OPTIONS = useMemo(() => {
     return [
@@ -309,15 +320,20 @@ const Threshold = (props: ThresholdProps): JSX.Element => {
       />
       <Text className={css.pushdown7}>exceeds</Text>
       <FormInput.Text name={`alertThresholds.${idx}.percentage`} inputGroup={{ type: 'number' }} />
-      <TagInput
-        addOnBlur
-        className={css.tagInput}
-        tagProps={{ className: css.tag }}
-        placeholder={getString('ce.perspectives.reports.emailPlaceholder')}
-        onChange={values => handleEmailChange(values)}
-        // onAdd={values => {}}
-        values={value.emailAddresses || []}
-      />
+      <Container>
+        <TagInput
+          addOnBlur
+          className={css.tagInput}
+          tagProps={{ className: css.tag }}
+          placeholder={getString('ce.perspectives.reports.emailPlaceholder')}
+          onChange={values => handleEmailChange(values)}
+          // onAdd={values => {}}
+          values={value.emailAddresses || []}
+        />
+        <Text font={{ variation: FontVariation.FORM_MESSAGE_DANGER }}>
+          {(formikProps.errors.alertThresholds || [])[idx]?.emailAddresses}
+        </Text>
+      </Container>
       <Icon
         color="grey200"
         size={18}

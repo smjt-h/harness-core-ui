@@ -23,6 +23,7 @@ import { Role, usePostRole, usePutRole } from 'services/rbac'
 import { useStrings } from 'framework/strings'
 import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
 import { NameSchema, IdentifierSchema } from '@common/utils/Validation'
+import useRBACError from '@rbac/utils/useRBACError/useRBACError'
 import css from '@rbac/modals/RoleModal/useRoleModal.module.scss'
 
 interface RoleModalData {
@@ -35,6 +36,7 @@ interface RoleModalData {
 const RoleForm: React.FC<RoleModalData> = props => {
   const { data: roleData, onSubmit, isEdit, onCancel } = props
   const { accountId, orgIdentifier, projectIdentifier } = useParams<ProjectPathProps>()
+  const { getRBACErrorMessage } = useRBACError()
   const { getString } = useStrings()
   const { showSuccess } = useToaster()
   const [modalErrorHandler, setModalErrorHandler] = useState<ModalErrorHandlerBinding>()
@@ -72,7 +74,7 @@ const RoleForm: React.FC<RoleModalData> = props => {
       }
     } catch (e) {
       /* istanbul ignore next */
-      modalErrorHandler?.showDanger(e.data?.message || e.message)
+      modalErrorHandler?.showDanger(getRBACErrorMessage(e))
     }
   }
   return (

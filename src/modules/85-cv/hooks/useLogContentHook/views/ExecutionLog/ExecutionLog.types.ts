@@ -5,8 +5,7 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import type { SelectOption } from '@harness/uicore'
-import type { ExecutionLogDTO, PageCVNGLogDTO } from 'services/cv'
+import type { ExecutionLogDTO } from 'services/cv'
 
 export enum ActionType {
   SetExecutionLogs = 'SetExecutionLogs',
@@ -49,22 +48,7 @@ export interface UseActionCreatorReturn {
   goToPrevSearchResult(): void
 }
 
-export interface ExecutionLogProps {
-  isFullScreen: boolean
-  setIsFullScreen: (isFullScreen: boolean | ((isFullScreen: boolean) => boolean)) => void
-  verifyStepExecutionId?: string
-  serviceName?: string
-  envName?: string
-  resource?: PageCVNGLogDTO
-  loading: boolean
-  errorMessage?: string
-  refetchLogs: () => Promise<void>
-  healthSource?: SelectOption
-  setHealthSource?: (healthSource: SelectOption) => void
-  timeRange?: SelectOption
-  setTimeRange?: (timeRange: SelectOption) => void
-  errorLogsOnly: boolean
-  setErrorLogsOnly: (errorLogsOnly: boolean) => void
-  pageNumber: number
-  setPageNumber: (pageNumber: number | ((_pageNumber: number) => number)) => void
+export interface ExecutionLogSearchProps {
+  state: State
+  actions: UseActionCreatorReturn
 }

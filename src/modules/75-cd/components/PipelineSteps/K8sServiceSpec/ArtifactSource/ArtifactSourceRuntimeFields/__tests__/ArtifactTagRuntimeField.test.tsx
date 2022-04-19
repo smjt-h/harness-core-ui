@@ -33,4 +33,23 @@ describe('Artifact Tag Runtime Field tests', () => {
     )
     expect(container).toMatchSnapshot()
   })
+  test('Should match snapshot with error and buildDetailsList', async () => {
+    const { container } = render(
+      <TestWrapper>
+        <ArtifactTagRuntimeField
+          {...props}
+          artifactSourceBaseFactory={new ArtifactSourceBaseFactory()}
+          isFieldDisabled={jest.fn()}
+          fetchingTags={false}
+          fetchTagsError={'DEFAULT_ERROR_CODE' as any}
+          fetchTags={jest.fn()}
+          buildDetailsList={[]}
+          isTagsSelectionDisabled={jest.fn()}
+          allowableTypes={[MultiTypeInputType.FIXED, MultiTypeInputType.RUNTIME, MultiTypeInputType.EXPRESSION]}
+          expressions={[]}
+        />
+      </TestWrapper>
+    )
+    expect(container).toMatchSnapshot()
+  })
 })

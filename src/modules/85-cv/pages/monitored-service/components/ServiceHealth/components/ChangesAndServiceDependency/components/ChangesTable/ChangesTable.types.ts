@@ -19,4 +19,5 @@ export interface ChangesTableInterface {
   changeCategories?: ('Deployment' | 'Infrastructure' | 'Alert')[]
   changeSourceTypes?: ChangeSourceTypes[]
   recordsPerPage?: number
+  dataTooltipId?: string
 }

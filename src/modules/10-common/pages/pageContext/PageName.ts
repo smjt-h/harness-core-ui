@@ -55,5 +55,17 @@ export enum PAGE_NAME {
   BuildCommits = 'BuildCommits',
   CIPipelineDeploymentList = 'CIPipelineDeploymentList',
   TemplatesPage = 'TemplatesPage',
-  TemplateStudioWrapper = 'TemplateStudioWrapper'
+  TemplateStudioWrapper = 'TemplateStudioWrapper',
+  CDHomePage = 'CDHomePage',
+  CDTrialHomePage = 'CDTrialHomePage',
+  ServiceDetailPage = 'ServiceDetailPage',
+  ServiceDetails = 'ServiceDetails',
+  Environments = 'Environments',
+  CDPipelineStudio = 'CDPipelineStudio',
+  CDPipelineDeploymentList = 'CDPipelineDeploymentList',
+  GitOpsPage = 'GitOpsPage',
+  AccountConfiguration = 'AccountConfiguration',
+  AccountOverview = 'AccountOverview',
+  SubscriptionsPage = 'SubscriptionsPage',
+  PlanPage = 'PlanPage'
 }

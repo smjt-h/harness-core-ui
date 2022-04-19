@@ -25,7 +25,7 @@ const commonProps = {
   orgIdentifier: '',
   projectIdentifier: '',
   setIsEditMode: noop,
-  onClose: noop,
+  onClose: jest.fn(),
   onSuccess: noop
 }
 
@@ -90,7 +90,7 @@ describe('Create Secret Manager Wizard', () => {
     jest.spyOn(FeatureFlag, 'useFeatureFlags').mockReturnValue({
       CE_AS_GCP_VM_SUPPORT: true
     })
-    const { container } = render(
+    const { container, getByText } = render(
       <TestWrapper path="/account/:accountId/resources/connectors" pathParams={{ accountId: 'dummy' }}>
         <CreateCeGcpConnector {...commonProps} isEditMode={false} connectorInfo={undefined} />
       </TestWrapper>
@@ -161,7 +161,14 @@ describe('Create Secret Manager Wizard', () => {
     })
 
     //Test Connection Step
-    expect(getAllByText(container, 'connectors.ceGcp.testConnection.heading')[1]).toBeDefined()
+    expect(getAllByText(container, 'connectors.ceGcp.testConnection.heading')).toBeDefined()
+    const finishBtn = getByText('finish')
+    expect(finishBtn).toBeDefined()
+    act(() => {
+      fireEvent.click(finishBtn!)
+    })
+    expect(commonProps.onClose).toBeCalled()
+
     expect(container).toMatchSnapshot()
   })
 

@@ -48,6 +48,7 @@ export default function MetricsDashboardList<T>(props: MetricsDashboardListProps
   const { sourceData } = useContext(SetupSourceTabsContext)
   const { accountId, projectIdentifier, orgIdentifier } = useParams<ProjectPathProps>()
   const { onNext, onPrevious, sourceData: propsData } = useContext(SetupSourceTabsContext)
+
   const [tableData, setTableData] = useState<TableData[]>([])
   const [isModalOpen, setIsModalOpen] = useState(false)
   const [selectedDashboards, setSelectedDashboards] = useState(
@@ -67,21 +68,6 @@ export default function MetricsDashboardList<T>(props: MetricsDashboardListProps
       }) || []
     )
   }, [dashboardList?.data?.content, tableItemMapper])
-
-  useEffect(() => {
-    if (dashboardList) {
-      const dashboardNames = dashboardList.data?.content.map((dashboard: { name: string }) => {
-        return dashboard.name
-      })
-      const selectedDashboardsToArray = Array.from(selectedDashboards.keys())
-      selectedDashboardsToArray.forEach((dashboard: string) => {
-        if (!dashboardNames.includes(dashboard)) {
-          selectedDashboards.delete(dashboard)
-        }
-      })
-      setSelectedDashboards(selectedDashboards)
-    }
-  }, [dashboardList])
 
   const queryParams = useMemo(() => {
     return {

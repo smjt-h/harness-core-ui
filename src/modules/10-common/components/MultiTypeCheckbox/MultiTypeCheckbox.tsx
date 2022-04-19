@@ -78,6 +78,7 @@ export interface FormMultiTypeTextboxProps extends Omit<IFormGroupProps, 'label'
   onChange?: MultiTypeCheckboxProps['onChange']
   setToFalseWhenEmpty?: boolean
   tooltipProps?: DataTooltipInterface
+  defaultTrue?: boolean
 }
 
 export const FormMultiTypeCheckbox: React.FC<FormMultiTypeTextboxProps> = props => {
@@ -88,6 +89,7 @@ export const FormMultiTypeCheckbox: React.FC<FormMultiTypeTextboxProps> = props 
     name,
     onChange,
     setToFalseWhenEmpty = false,
+    defaultTrue = false,
     className = '',
     ...restProps
   } = props
@@ -110,6 +112,12 @@ export const FormMultiTypeCheckbox: React.FC<FormMultiTypeTextboxProps> = props 
       formik?.setFieldValue(name, false)
     }
   }, [setToFalseWhenEmpty])
+
+  React.useEffect(() => {
+    if (defaultTrue) {
+      formik?.setFieldValue(name, true)
+    }
+  }, [defaultTrue])
 
   const isFixedValue = type === MultiTypeInputType.FIXED
   const labelToBePassed = !isFixedValue ? label : undefined

@@ -21,6 +21,7 @@ import {
 } from '@wings-software/uicore'
 import { Color } from '@harness/design-system'
 import { useParams } from 'react-router-dom'
+import useRBACError from '@rbac/utils/useRBACError/useRBACError'
 import { useToaster } from '@common/components'
 import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
 import { useStrings } from 'framework/strings'
@@ -38,6 +39,7 @@ export interface UnlinkSSOProviderFormData {
 
 const UnlinkSSOProviderForm: React.FC<UnlinkSSOProviderModalData> = props => {
   const { onSubmit, userGroupData } = props
+  const { getRBACErrorMessage } = useRBACError()
   const { accountId, projectIdentifier, orgIdentifier } = useParams<ProjectPathProps>()
   const { getString } = useStrings()
   const { showSuccess } = useToaster()
@@ -64,7 +66,7 @@ const UnlinkSSOProviderForm: React.FC<UnlinkSSOProviderModalData> = props => {
       }
     } catch (err) {
       if (shouldShowError(err)) {
-        modalErrorHandler?.showDanger(err.data?.message || err.message)
+        modalErrorHandler?.showDanger(getRBACErrorMessage(err))
       }
     }
   }

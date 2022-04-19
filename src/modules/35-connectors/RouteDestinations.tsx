@@ -42,6 +42,7 @@ AuditTrailFactory.registerResourceHandler('CONNECTOR', {
     name: 'nav-settings'
   },
   moduleLabel: platformLabel,
+  resourceLabel: 'connector',
   resourceUrl: (resource: ResourceDTO, resourceScope: ResourceScope) => {
     const { accountIdentifier, orgIdentifier, projectIdentifier } = resourceScope
 

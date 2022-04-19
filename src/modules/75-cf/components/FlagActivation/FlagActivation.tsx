@@ -23,6 +23,7 @@ import {
   Text
 } from '@wings-software/uicore'
 import * as yup from 'yup'
+import cx from 'classnames'
 import {
   Clause,
   Feature,
@@ -46,7 +47,6 @@ import { FFDetailPageTab, getErrorMessage, rewriteCurrentLocationWithActiveEnvir
 import routes from '@common/RouteDefinitions'
 import useActiveEnvironment from '@cf/hooks/useActiveEnvironment'
 import type { FeatureFlagPathProps, ProjectPathProps } from '@common/interfaces/RouteInterfaces'
-
 import { AUTO_COMMIT_MESSAGES } from '@cf/constants/GitSyncConstants'
 import { GIT_SYNC_ERROR_CODE, UseGitSync } from '@cf/hooks/useGitSync'
 import { useFeatureFlag } from '@common/hooks/useFeatureFlag'
@@ -492,7 +492,7 @@ const FlagActivation: React.FC<FlagActivationProps> = props => {
                 <CFEnvironmentSelect component={<EnvironmentSelect />} />
               </Layout.Horizontal>
 
-              <Container className={css.tabContainer}>
+              <Container className={FFM_1513 ? css.tabContainer : cx(css.tabContainer, css.tabContainerHeight)}>
                 {flagData && (
                   <>
                     <Tabs

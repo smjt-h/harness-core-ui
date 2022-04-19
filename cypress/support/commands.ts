@@ -31,6 +31,7 @@
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 import '@testing-library/cypress/add-commands'
+import { addMatchImageSnapshotCommand } from '../../node_modules/cypress-image-snapshot/command'
 import { getConnectorIconByType } from '../utils/connctors-utils'
 import {
   servicesCall,
@@ -60,8 +61,10 @@ declare global {
     /* eslint-disable @typescript-eslint/no-unused-vars  */
     interface Chainable<Subject> {
       login(username: string, pass: string): void
+      createDeploymentStage(): void
       visitCreatePipeline(): void
       visitPipelinesList(): void
+      visitExecutionsList(): void
       visitChangeIntelligence(): void
       fillName(name: string): void
       initializeRoute(): void
@@ -78,9 +81,29 @@ declare global {
       verifyStepSelectConnector(): void
       verifyStepChooseRuntimeInput(): void
       verifyStepSelectStrategyAndVerifyStep(): void
+      // https://github.com/jaredpalmer/cypress-image-snapshot
+      matchImageSnapshot(snapshotName?: string, options?: unknown): void
     }
   }
 }
+
+// We set up the settings
+addMatchImageSnapshotCommand({
+  customSnapshotsDir: 'cypress/snapshots',
+  failureThreshold: 2, // threshold for entire image
+  failureThresholdType: 'percent', // percent of image or number of pixels
+  customDiffConfig: { threshold: 0.1 }, // threshold for each pixel
+  capture: 'viewport' // capture viewport in screenshot
+})
+
+// We also overwrite the command, so it does not take a screenshot if we run the tests inside the test runner (cypress:open)
+Cypress.Commands.overwrite('matchImageSnapshot', (originalFn, snapshotName, options) => {
+  if (Cypress.env('ALLOW_SCREENSHOT')) {
+    originalFn(snapshotName, options)
+  } else {
+    cy.log(`Screenshot comparison is disabled`)
+  }
+})
 
 Cypress.Commands.add('clickSubmit', () => {
   cy.get('[type="submit"]').click()
@@ -97,11 +120,26 @@ Cypress.Commands.add('login', (emailValue: string, password: string) => {
   cy.clickSubmit()
 })
 
+Cypress.Commands.add('createDeploymentStage', () => {
+  cy.get('[icon="plus"]').click()
+  cy.findByTestId('stage-Deployment').click()
+
+  cy.fillName('testStage_Cypress')
+  cy.clickSubmit()
+})
+
 Cypress.Commands.add('visitPipelinesList', () => {
   cy.contains('p', 'Projects').click()
   cy.contains('p', 'Project 1').click()
   cy.contains('p', 'Delivery').click()
   cy.contains('p', 'Pipelines').click()
+})
+
+Cypress.Commands.add('visitExecutionsList', () => {
+  cy.contains('p', 'Projects').click()
+  cy.contains('p', 'Project 1').click()
+  cy.contains('p', 'Delivery').click()
+  cy.contains('p', 'Deployments').click()
 })
 
 Cypress.Commands.add('visitCreatePipeline', () => {

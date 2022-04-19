@@ -229,3 +229,128 @@ export const mockDockerTagsCallResponse = {
   error: null,
   cancel: jest.fn()
 }
+
+export const getYaml = () => `
+pipeline:
+    name: testK8s
+    identifier: testK8s
+    allowStageExecutions: false
+    projectIdentifier: Kapil
+    orgIdentifier: default
+    tags: {}
+    stages:
+        - stage:
+              name: K8sTest
+              identifier: K8sTest
+              description: ""
+              type: Deployment
+              spec:
+                  serviceConfig:
+                      serviceRef: dascxzcsad
+                      serviceDefinition:
+                          type: Kubernetes
+                          spec:
+                              variables: []
+                              manifests:
+                                  - manifest:
+                                        identifier: qcq
+                                        type: K8sManifest
+                                        spec:
+                                            store:
+                                                type: Git
+                                                spec:
+                                                    connectorRef: sdf
+                                                    gitFetchType: Branch
+                                                    paths:
+                                                        - wce
+                                                    repoName: wce
+                                                    branch: wc
+                                            skipResourceVersioning: false
+                              artifacts:
+                                  primary:
+                                      spec:
+                                          connectorRef: harnessImage
+                                          imagePath: ew
+                                          tag: tag
+                                      type: DockerRegistry
+                                  sidecars:
+                                      - sidecar:
+                                            spec:
+                                                connectorRef: asdasd
+                                                imagePath: " fqew"
+                                                tag: latestTag
+                                                registryHostname: gcr.io
+                                            identifier: asc
+                                            type: Gcr
+                                            sidecars:
+                                      - sidecar:
+                                            spec:
+                                                connectorRef: AWS_IRSA
+                                                imagePath: ev
+                                                tag: latestTag
+                                                region: us-gov-west-1
+                                            identifier: vc3rv
+                                            type: Ecr
+                                      - sidecar:
+                                            spec:
+                                                connectorRef: harnessImage
+                                                imagePath: erv
+                                                tag: latestTag
+                                            identifier: verv
+                                            type: DockerRegistry
+                  infrastructure: {}
+              tags: {}`
+
+export const getParams = () => ({
+  accountId: 'accountId',
+  module: 'cd',
+  orgIdentifier: 'default',
+  pipelineIdentifier: '-1',
+  projectIdentifier: 'projectIdentifier'
+})
+export const mockManifestConnector = {
+  status: 'SUCCESS',
+  data: {
+    content: [
+      {
+        connector: {
+          name: 'git9march',
+          identifier: 'git9march',
+          description: '',
+          orgIdentifier: null,
+          projectIdentifier: null,
+          tags: {},
+          type: 'Git',
+          spec: {
+            url: 'https://github.com/wings-software/CG-gitSync',
+            validationRepo: null,
+            branchName: null,
+            delegateSelectors: ['nofartest'],
+            executeOnDelegate: true,
+            type: 'Http',
+            connectionType: 'Repo',
+            spec: {
+              username: 'harness',
+              usernameRef: null,
+              passwordRef: 'account.GitToken'
+            }
+          }
+        }
+      }
+    ]
+  }
+}
+
+export const mockBuildList = {
+  status: 'SUCCESS',
+  data: {
+    buildDetailsList: [
+      {
+        tag: 'latesttag'
+      },
+      {
+        tag: 'tagNew'
+      }
+    ]
+  }
+}

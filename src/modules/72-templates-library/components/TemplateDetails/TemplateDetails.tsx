@@ -129,6 +129,10 @@ export const TemplateDetails: React.FC<TemplateDetailsProps> = props => {
       } as SelectOption
     })
     setVersionOptions(newVersionOptions)
+    const selectedVersionLabel = allowStableSelection
+      ? defaultVersionLabel
+      : defaultTo(defaultVersionLabel, template.versionLabel)
+    setSelectedTemplate(templates.find(item => item.versionLabel === selectedVersionLabel))
   }, [templates])
 
   React.useEffect(() => {
@@ -140,10 +144,6 @@ export const TemplateDetails: React.FC<TemplateDetailsProps> = props => {
         allVersions.unshift(stableVersion)
       }
       setTemplates(allVersions)
-      const selectedVersionLabel = allowStableSelection
-        ? defaultVersionLabel
-        : defaultTo(defaultVersionLabel, template.versionLabel)
-      setSelectedTemplate(allVersions.find(item => item.versionLabel === selectedVersionLabel))
     }
   }, [templateData])
 
@@ -180,6 +180,8 @@ export const TemplateDetails: React.FC<TemplateDetailsProps> = props => {
     () => !loading && !templatesError && isEmpty(selectedTemplate),
     [loading, templatesError, selectedTemplate]
   )
+
+  const templateIcon = React.useMemo(() => getIconForTemplate(getString, selectedTemplate), [selectedTemplate])
 
   return (
     <Container height={'100%'} className={css.container} data-template-id={template.identifier}>
@@ -255,7 +257,7 @@ export const TemplateDetails: React.FC<TemplateDetailsProps> = props => {
                                     spacing={'small'}
                                     flex={{ alignItems: 'center', justifyContent: 'flex-start' }}
                                   >
-                                    <Icon name={getIconForTemplate(selectedTemplate, getString)} size={20} />
+                                    {templateIcon && <Icon name={templateIcon} size={20} />}
                                     <Text color={Color.GREY_900}>
                                       {getTypeForTemplate(selectedTemplate, getString)}
                                     </Text>
@@ -268,7 +270,7 @@ export const TemplateDetails: React.FC<TemplateDetailsProps> = props => {
                                 <Text font={{ weight: 'semi-bold' }} color={Color.BLACK}>
                                   {getString('description')}
                                 </Text>
-                                <Text color={Color.GREY_900}>{selectedTemplate.description || '-'}</Text>
+                                <Text color={Color.GREY_900}>{defaultTo(selectedTemplate.description, '-')}</Text>
                               </Layout.Vertical>
                             </Container>
                             <Container>

@@ -142,17 +142,12 @@ const routes = {
       })
   ),
   toGovernanceViewPolicy: withAccountId(
-    ({
-      orgIdentifier,
-      projectIdentifier,
-      policyIdentifier
-    }: Partial<ProjectPathProps> & {
-      policyIdentifier: string
-    }) =>
+    ({ orgIdentifier, projectIdentifier, policyIdentifier, module }: GovernancePathProps) =>
       getScopeBasedRoute({
         scope: {
           orgIdentifier,
-          projectIdentifier
+          projectIdentifier,
+          module
         },
         path: `governance/policies/view/${policyIdentifier}`
       })
@@ -1203,6 +1198,15 @@ const routes = {
       return `/${module}/orgs/${orgIdentifier}/projects/${projectIdentifier}/slos`
     }
   ),
+  toCVSLODetailsPage: withAccountId(
+    ({
+      module = 'cv',
+      identifier,
+      orgIdentifier,
+      projectIdentifier
+    }: Partial<ProjectPathProps & { identifier: string; module: string }>) =>
+      `/${module}/orgs/${orgIdentifier}/projects/${projectIdentifier}/slos/${identifier}`
+  ),
   toErrorTracking: withAccountId(
     ({ orgIdentifier, projectIdentifier, module = 'cv' }: Partial<ProjectPathProps & { module?: string }>) => {
       return `/${module}/orgs/${orgIdentifier}/projects/${projectIdentifier}/et`
@@ -1218,15 +1222,6 @@ const routes = {
       return `/${module}/orgs/${orgIdentifier}/projects/${projectIdentifier}/slos/create`
     }
   ),
-  toCVEditSLOs: withAccountId(
-    ({
-      projectIdentifier,
-      orgIdentifier,
-      identifier,
-      module
-    }: Partial<ProjectPathProps & { identifier: string; module: string }>) =>
-      `/${module}/orgs/${orgIdentifier}/projects/${projectIdentifier}/slos/edit/${identifier}`
-  ),
   toCVAddMonitoringServicesSetup: withAccountId(
     ({ projectIdentifier, orgIdentifier }: Partial<ProjectPathProps & { identifier: string }>) =>
       `/cv/orgs/${orgIdentifier}/projects/${projectIdentifier}/monitoringservices/setup`
@@ -1236,7 +1231,7 @@ const routes = {
       projectIdentifier,
       orgIdentifier,
       identifier,
-      module
+      module = 'cv'
     }: Partial<ProjectPathProps & { identifier: string; module: string }>) =>
       `/${module}/orgs/${orgIdentifier}/projects/${projectIdentifier}/monitoringservices/edit/${identifier}`
   ),
@@ -1420,7 +1415,15 @@ const routes = {
   toCEOverview: withAccountId(() => '/ce/overview'),
   toCEPerspectiveDashboard: withAccountId(() => `/ce/perspective`),
   toCEAnomalyDetection: withAccountId(() => `/ce/anomaly-detection`),
-  toBusinessMapping: withAccountId(() => `/ce/business-mapping/`),
+  toBusinessMapping: withAccountId(() => `/ce/cost-categories/`),
+  /********************************************************************************************************************/
+  toSTO: withAccountId(() => `/sto`),
+  toSTOHome: withAccountId(() => `/sto/home`),
+  toSTOOverview: withAccountId(() => '/sto/overview'),
+  toSTOProjectOverview: withAccountId(
+    ({ orgIdentifier, projectIdentifier }: ProjectPathProps) =>
+      `/sto/orgs/${orgIdentifier}/projects/${projectIdentifier}/overview`
+  ),
   /********************************************************************************************************************/
   toOldCustomDashboard: withAccountId(() => '/home/dashboards*'),
   toCustomDashboard: withAccountId(() => '/dashboards'),

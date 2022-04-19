@@ -32,6 +32,7 @@ import routes from '@common/RouteDefinitions'
 import type { Module } from '@common/interfaces/RouteInterfaces'
 import PipelineResourceRenderer from './components/RbacResourceModals/PipelineResourceRenderer/PipelineResourceRenderer'
 import { ModuleName } from '../../framework/types/ModuleName'
+import { JiraCreateUpdateView } from './components/execution/StepDetails/views/JiraCreateUpdateView/JiraCreateUpdateView'
 /**
  * Register RBAC resources
  */
@@ -83,6 +84,14 @@ ExecFactory.registerStepDetails(StepType.HarnessApproval, {
   component: HarnessApprovalView
 })
 
+ExecFactory.registerStepDetails(StepType.JiraCreate, {
+  component: JiraCreateUpdateView
+})
+
+ExecFactory.registerStepDetails(StepType.JiraUpdate, {
+  component: JiraCreateUpdateView
+})
+
 ExecFactory.registerStepDetails(StepType.JiraApproval, {
   component: JiraApprovalView
 })
@@ -115,6 +124,7 @@ AuditTrailFactory.registerResourceHandler(ResourceType.PIPELINE, {
     name: 'cd-main'
   },
   moduleLabel: cdLabel,
+  resourceLabel: 'common.pipeline',
   resourceUrl: (_: ResourceDTO, resourceScope: ResourceScope, module?: Module) => {
     const { accountIdentifier, orgIdentifier, projectIdentifier } = resourceScope
     if (module && orgIdentifier && projectIdentifier) {
@@ -134,6 +144,7 @@ AuditTrailFactory.registerResourceHandler(ResourceType.SERVICE, {
     name: 'cd-main'
   },
   moduleLabel: cdLabel,
+  resourceLabel: 'service',
   resourceUrl: (_: ResourceDTO, resourceScope: ResourceScope, module?: Module) => {
     const { accountIdentifier, orgIdentifier, projectIdentifier } = resourceScope
     if (module && orgIdentifier && projectIdentifier) {
@@ -152,5 +163,6 @@ AuditTrailFactory.registerResourceHandler(ResourceType.ENVIRONMENT, {
   moduleIcon: {
     name: 'cd-main'
   },
-  moduleLabel: cdLabel
+  moduleLabel: cdLabel,
+  resourceLabel: 'environment'
 })

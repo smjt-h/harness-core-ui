@@ -1,0 +1,53 @@
+{
+  "metaData": {},
+  "resource": {
+    "delegateSelectionLogs": [
+      {
+        "delegateId": null,
+        "delegateType": null,
+        "delegateName": null,
+        "delegateHostName": null,
+        "delegateProfileName": null,
+        "conclusion": "Selected",
+        "message": "Delegate(s) eligible to execute task : [stage-delegate-qa-wfhxhd-1, stage-delegate-qa-wfhxhd-0]",
+        "eventTimestamp": 1649824299535,
+        "profileScopingRulesDetails": null
+      },
+      {
+        "delegateId": null,
+        "delegateType": null,
+        "delegateName": null,
+        "delegateHostName": null,
+        "delegateProfileName": null,
+        "conclusion": "Non Selected",
+        "message": "No matching selector(s) : harnessci-platform-ng-stage-wfhxhd-0,harnessci-platform-ng-stage-wfhxhd-1,stage-delegate-prod-wfhxhd-1,stage-delegate-prod-wfhxhd-0,harnessci-platform-ng-stage-wfhxhd-2",
+        "eventTimestamp": 1649824299534,
+        "profileScopingRulesDetails": null
+      },
+      {
+        "delegateId": null,
+        "delegateType": null,
+        "delegateName": null,
+        "delegateHostName": null,
+        "delegateProfileName": null,
+        "conclusion": "Broadcast",
+        "message": "Broadcasting to delegate(s) : [stage-delegate-qa-wfhxhd-0]",
+        "eventTimestamp": 1649824299540,
+        "profileScopingRulesDetails": null
+      },
+      {
+        "delegateId": null,
+        "delegateType": null,
+        "delegateName": null,
+        "delegateHostName": null,
+        "delegateProfileName": null,
+        "conclusion": "Assigned",
+        "message": "Delegate assigned for task execution : [stage-delegate-qa-wfhxhd-0]",
+        "eventTimestamp": 1649824300673,
+        "profileScopingRulesDetails": null
+      }
+    ],
+    "taskSetupAbstractions": {}
+  },
+  "responseMessages": []
+}

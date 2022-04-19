@@ -34,7 +34,9 @@ const SmtpDetails: React.FC = () => {
   const history = useHistory()
   const { accountId } = useParams<OrgPathProps>()
   const { loading, data, refetch } = useGetSmtpConfig({ queryParams: { accountId } })
-  const { loading: deleteProcessing, mutate: deleteSmtp } = useDeleteSmtpConfig({})
+  const { loading: deleteProcessing, mutate: deleteSmtp } = useDeleteSmtpConfig({
+    queryParams: { accountIdentifier: accountId }
+  })
   const [errorOnPage, setErrorOnPage] = useState<string>('')
   const refetchData = (): void => {
     refetch()
@@ -46,7 +48,9 @@ const SmtpDetails: React.FC = () => {
   }
   const handleDelete = (): void => {
     if (data?.data?.uuid) {
-      deleteSmtp(data?.data?.uuid, { headers: { 'content-type': 'application/json' } })
+      deleteSmtp(data?.data?.uuid, {
+        headers: { 'content-type': 'application/json' }
+      })
         .then(val => {
           if (val.status === 'SUCCESS') {
             history.push(routes.toAccountResources({ accountId }))

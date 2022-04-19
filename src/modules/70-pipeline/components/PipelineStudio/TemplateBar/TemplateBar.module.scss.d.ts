@@ -15,5 +15,7 @@ declare const styles: {
   readonly menuItem: string
   readonly popover: string
   readonly templateYamlPreviewContainer: string
+  readonly templateYamlPreviewDialog: string
+  readonly templateYamlPreviewDialogBackdrop: string
 }
 export default styles

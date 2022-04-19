@@ -65,3 +65,10 @@ export const formatCount = (num: number): string => {
 export const isCommunityPlan = (): boolean => window.deploymentType === 'COMMUNITY'
 
 export const isOnPrem = (): boolean => window.deploymentType === 'ON_PREM'
+
+export const focusOnNode = (node: HTMLElement): void => {
+  const oldTabIndex = node.tabIndex
+  node.tabIndex = -1
+  node.focus()
+  node.tabIndex = oldTabIndex
+}

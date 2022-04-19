@@ -49,7 +49,7 @@ exports[`Unit tests for NewRelic health source Test NewRelic healthSource contai
           >
             <div>
               <div
-                class="Layout--vertical StyledProps--main StyledProps--margin-xxlarge"
+                class="Layout--vertical StyledProps--main tooltipStyle StyledProps--margin-xxlarge"
               >
                 <p
                   class="StyledProps--font StyledProps--main header StyledProps--color StyledProps--color-black"
@@ -180,7 +180,7 @@ exports[`Unit tests for NewRelic health source Test NewRelic healthSource contai
                 </div>
               </div>
               <div
-                class="Layout--vertical StyledProps--main StyledProps--margin-xxlarge"
+                class="Layout--vertical StyledProps--main tooltipStyle StyledProps--margin-xxlarge"
               >
                 <p
                   class="StyledProps--font StyledProps--main header StyledProps--color StyledProps--color-black"
@@ -246,13 +246,18 @@ exports[`Unit tests for NewRelic health source Test NewRelic healthSource contai
                 </div>
               </div>
               <div
-                class="Layout--vertical StyledProps--main StyledProps--margin-xxlarge"
+                class="Layout--vertical StyledProps--main tooltipStyle StyledProps--margin-xxlarge"
               >
-                <p
-                  class="StyledProps--font StyledProps--main header StyledProps--color StyledProps--color-black"
+                <div
+                  class="Text--withDocsTooltip"
+                  data-tooltip-id="customMetricsTitle"
                 >
-                  cv.healthSource.connectors.customMetrics
-                </p>
+                  <p
+                    class="StyledProps--font StyledProps--main header StyledProps--color StyledProps--color-black"
+                  >
+                    cv.healthSource.connectors.customMetrics
+                  </p>
+                </div>
                 <div
                   class="bp3-card bp3-elevation-0 Card--card sectionCard shadow"
                 >
@@ -416,7 +421,7 @@ exports[`Unit tests for NewRelic health source Validation in create mode 1`] = `
           >
             <div>
               <div
-                class="Layout--vertical StyledProps--main StyledProps--margin-xxlarge"
+                class="Layout--vertical StyledProps--main tooltipStyle StyledProps--margin-xxlarge"
               >
                 <p
                   class="StyledProps--font StyledProps--main header StyledProps--color StyledProps--color-black"
@@ -574,7 +579,7 @@ exports[`Unit tests for NewRelic health source Validation in create mode 1`] = `
                 </div>
               </div>
               <div
-                class="Layout--vertical StyledProps--main StyledProps--margin-xxlarge"
+                class="Layout--vertical StyledProps--main tooltipStyle StyledProps--margin-xxlarge"
               >
                 <p
                   class="StyledProps--font StyledProps--main header StyledProps--color StyledProps--color-black"
@@ -670,13 +675,18 @@ exports[`Unit tests for NewRelic health source Validation in create mode 1`] = `
                 </div>
               </div>
               <div
-                class="Layout--vertical StyledProps--main StyledProps--margin-xxlarge"
+                class="Layout--vertical StyledProps--main tooltipStyle StyledProps--margin-xxlarge"
               >
-                <p
-                  class="StyledProps--font StyledProps--main header StyledProps--color StyledProps--color-black"
+                <div
+                  class="Text--withDocsTooltip"
+                  data-tooltip-id="customMetricsTitle"
                 >
-                  cv.healthSource.connectors.customMetrics
-                </p>
+                  <p
+                    class="StyledProps--font StyledProps--main header StyledProps--color StyledProps--color-black"
+                  >
+                    cv.healthSource.connectors.customMetrics
+                  </p>
+                </div>
                 <div
                   class="bp3-card bp3-elevation-0 Card--card sectionCard shadow"
                 >

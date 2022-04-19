@@ -7,8 +7,18 @@
 
 .wrapper {
   position: relative;
-  width: 50%;
-  max-width: 50%;
+  flex-shrink: 1 !important;
+  margin-right: var(--spacing-small);
+
+  .delegateInput {
+    input,
+    :global(.bp3-tag) {
+      margin-bottom: 0 !important;
+      & :global(.bp3-tag-input-values) {
+        width: 100%;
+      }
+    }
+  }
 
   :global(.bp3-input.bp3-tag-input.bp3-multi-select) {
     max-height: 116px !important;

@@ -1,0 +1,59 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Error Suggestions CE tests should render suggestions component 1`] = `
+<div>
+  <div
+    class="Layout--horizontal StyledProps--main StyledProps--margin-bottom-xlarge"
+  >
+    <span
+      class="bp3-icon bp3-icon- StyledProps--main StyledProps--margin-right-small"
+      icon=""
+    >
+      <svg
+        data-icon=""
+        height="16"
+        viewBox="0 0 16 16"
+        width="16"
+      >
+        
+      </svg>
+    </span>
+    <div
+      class="Layout--vertical StyledProps--main errorListTextContainer shrink"
+    >
+      <p
+        class="StyledProps--font StyledProps--main StyledProps--font-variation-small-semi StyledProps--color StyledProps--color-black StyledProps--margin-bottom-xsmall"
+      >
+        
+      </p>
+      <div
+        class="StyledProps--font StyledProps--main StyledProps--margin-bottom-xsmall"
+      >
+        <p
+          class="StyledProps--font StyledProps--main text StyledProps--color StyledProps--color-black StyledProps--font-variation-small"
+        >
+          No connector found with identifier test35
+        </p>
+        <p
+          class="StyledProps--font StyledProps--main StyledProps--font-variation-small-semi StyledProps--color StyledProps--color-black StyledProps--margin-bottom-xsmall"
+        >
+          common.errorHandler.contactLabel
+          <a
+            href="mailto:support@harness.io"
+          >
+            common.errorHandler.contactSupport
+          </a>
+          or
+          <a
+            href="https://community.harness.io/"
+            rel="noreferrer"
+            target="_blank"
+          >
+            common.errorHandler.communityForum
+          </a>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+`;

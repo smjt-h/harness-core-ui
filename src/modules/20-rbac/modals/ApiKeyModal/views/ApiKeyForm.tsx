@@ -20,6 +20,7 @@ import {
 import { Color } from '@harness/design-system'
 import { Form } from 'formik'
 import { useParams } from 'react-router-dom'
+import useRBACError from '@rbac/utils/useRBACError/useRBACError'
 import { useStrings } from 'framework/strings'
 import { ApiKeyDTO, TokenDTO, useCreateApiKey, useUpdateApiKey } from 'services/cd-ng'
 import type { ProjectPathProps, ServiceAccountPathProps } from '@common/interfaces/RouteInterfaces'
@@ -39,12 +40,13 @@ interface ApiKeyModalData {
 
 const ApiKeyForm: React.FC<ApiKeyModalData> = ({ data, isEdit, onSubmit, apiKeyType, parentIdentifier, onClose }) => {
   const { getString } = useStrings()
+  const { getRBACErrorMessage } = useRBACError()
   const [modalErrorHandler, setModalErrorHandler] = useState<ModalErrorHandlerBinding>()
   const { accountId, projectIdentifier, orgIdentifier, serviceAccountIdentifier } = useParams<
     ProjectPathProps & ServiceAccountPathProps
   >()
   const { showSuccess } = useToaster()
-  const { mutate: createApiKey, loading: saving } = useCreateApiKey({})
+  const { mutate: createApiKey, loading: saving } = useCreateApiKey({ queryParams: { accountIdentifier: accountId } })
   const { mutate: editApiKey, loading: updating } = useUpdateApiKey({
     identifier: data?.identifier || /* istanbul ignore next */ ''
   })
@@ -52,13 +54,13 @@ const ApiKeyForm: React.FC<ApiKeyModalData> = ({ data, isEdit, onSubmit, apiKeyT
   const handleSubmit = async (values: ApiKeyDTO): Promise<void> => {
     try {
       if (isEdit) {
-        const updated = await editApiKey(values)
+        const updated = await editApiKey({ ...values, accountIdentifier: accountId })
         /* istanbul ignore else */ if (updated) {
           showSuccess(getString('rbac.apiKey.form.editSuccess', { name: values.name }))
           onSubmit?.(values)
         }
       } else {
-        const created = await createApiKey(values)
+        const created = await createApiKey({ ...values })
         /* istanbul ignore else */ if (created) {
           showSuccess(getString('rbac.apiKey.form.createSuccess', { name: values.name }))
           onSubmit?.(values)
@@ -66,7 +68,7 @@ const ApiKeyForm: React.FC<ApiKeyModalData> = ({ data, isEdit, onSubmit, apiKeyT
       }
     } catch (e) {
       /* istanbul ignore next */
-      modalErrorHandler?.showDanger(e.data?.message || e.message)
+      modalErrorHandler?.showDanger(getRBACErrorMessage(e))
     }
   }
   return (

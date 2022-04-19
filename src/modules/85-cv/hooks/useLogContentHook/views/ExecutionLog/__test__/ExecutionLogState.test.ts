@@ -15,6 +15,10 @@ import { reducer, useActionCreator } from '../ExecutionLogState'
 import { defaultReducerState } from '../ExecutionLog.constants'
 import { ActionType } from '../ExecutionLog.types'
 
+jest.mock('@common/utils/dateUtils', () => ({
+  formatDatetoLocale: (x: number) => x.toString()
+}))
+
 describe('Execution Log State', () => {
   test('useActionCreator', () => {
     const dispatch = jest.fn()

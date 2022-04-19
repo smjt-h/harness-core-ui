@@ -76,7 +76,8 @@ export enum GatewayKindType {
   INSTANCE = 'instance',
   KUBERNETES = 'k8s',
   DATABASE = 'database',
-  CONTAINERS = 'containers'
+  CONTAINERS = 'containers',
+  CLUSTERS = 'clusters'
 }
 
 export enum CCM_CHART_TYPES {
@@ -116,7 +117,8 @@ export enum RESOURCES {
   ASG = 'ASG',
   KUBERNETES = 'KUBERNETES',
   ECS = 'ECS',
-  RDS = 'RDS'
+  RDS = 'RDS',
+  IG = 'IG'
 }
 
 export const CONFIG_TOTAL_STEP_COUNTS = {
@@ -164,3 +166,37 @@ export const allCloudProvidersList = [
     value: 'gcp'
   }
 ]
+
+export const notificationChannelsList = [
+  {
+    label: 'ce.anomalyDetection.notificationAlerts.slackChannelLabel',
+    value: 'SLACK',
+    icon: { name: 'service-slack' }
+  },
+  {
+    label: 'ce.anomalyDetection.notificationAlerts.emailChannelLabel',
+    value: 'EMAIL',
+    icon: { name: 'email-inline' }
+  },
+  {
+    label: 'ce.anomalyDetection.notificationAlerts.microsoftTeamChannelLabel',
+    value: 'MSTEAMS',
+    icon: { name: 'service-msteams' }
+  }
+]
+
+export type channels = 'EMAIL' | 'SLACK' | 'PAGERDUTY' | 'MSTEAMS'
+
+export const channelNameUrlMapping = {
+  SLACK: 'slackWebHookUrl',
+  EMAIL: 'emails',
+  MSTEAMS: 'microsoftTeamsUrl'
+}
+
+export const channelImgMap = {
+  SLACK: 'service-slack',
+  EMAIL: 'email-inline',
+  MSTEAMS: 'service-msteams',
+  DEFAULT: '',
+  PAGERDUTY: 'service-pagerduty'
+}

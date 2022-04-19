@@ -47,7 +47,7 @@ export const testWrapperProps: TestWrapperProps = {
 }
 
 export const testWrapperPropsForEdit: TestWrapperProps = {
-  path: routes.toCVEditSLOs({ ...projectPathProps, ...cvModuleParams, ...editParams }),
+  path: routes.toCVSLODetailsPage({ ...projectPathProps, ...cvModuleParams, ...editParams }),
   pathParams: { ...pathParams, identifier: 'SLO5' }
 }
 

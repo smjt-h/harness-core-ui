@@ -11,7 +11,6 @@ import type { CellProps, Renderer, Column } from 'react-table'
 import { Color } from '@harness/design-system'
 import type { GitSyncEntityListDTO, GitSyncEntityDTO } from 'services/cd-ng'
 import { Entities } from '@common/interfaces/GitSyncInterface'
-import { getEntityUrl } from '@gitsync/common/gitSyncUtils'
 
 export const getEntityIconName = (entityType: string | undefined): IconName => {
   switch (entityType) {
@@ -53,12 +52,11 @@ const RenderEntityId: Renderer<CellProps<GitSyncEntityDTO>> = ({ row }) => {
 
 const RenderYamlPath: Renderer<CellProps<GitSyncEntityDTO>> = ({ row }) => {
   const data = row.original
-  const entityLocation = getEntityUrl(data)
 
   return (
-    <a href={entityLocation} target="_blank" rel="noopener noreferrer">
+    <a href={data?.entityUrl} target="_blank" rel="noopener noreferrer">
       <Text color={Color.PRIMARY_7} lineClamp={1}>
-        {entityLocation}
+        {data?.entityUrl}
       </Text>
     </a>
   )

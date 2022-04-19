@@ -3,14 +3,14 @@
 exports[`Test ChangeSourceTable should render 1`] = `
 <div>
   <div
-    class="Layout--vertical StyledProps--main StyledProps--margin-xxlarge"
+    class="Layout--vertical StyledProps--main tooltipStyle StyledProps--margin-xxlarge"
   >
     <div
       class="bp3-card bp3-elevation-0 Card--card sectionCard shadow"
     >
       <div
         class="Text--withDocsTooltip"
-        data-tooltip-id="changeSourceTbale"
+        data-tooltip-id="changeSourceTable"
       >
         <p
           class="StyledProps--font StyledProps--main tableTitle"
@@ -221,14 +221,14 @@ exports[`Test ChangeSourceTable should render 1`] = `
 exports[`Test ChangeSourceTable should render 2`] = `
 <div>
   <div
-    class="Layout--vertical StyledProps--main StyledProps--margin-xxlarge"
+    class="Layout--vertical StyledProps--main tooltipStyle StyledProps--margin-xxlarge"
   >
     <div
       class="bp3-card bp3-elevation-0 Card--card sectionCard shadow"
     >
       <div
         class="Text--withDocsTooltip"
-        data-tooltip-id="changeSourceTbale"
+        data-tooltip-id="changeSourceTable"
       >
         <p
           class="StyledProps--font StyledProps--main tableTitle"

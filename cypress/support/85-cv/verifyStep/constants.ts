@@ -30,6 +30,26 @@ export const serviceEnvironmentTest1Call = `/cv/api/monitored-service/service-en
 export const serviceEnvironmentTest2Call = `/cv/api/monitored-service/service-environment?routingId=${accountId}&accountId=${accountId}&orgIdentifier=${org}&projectIdentifier=${project}&environmentIdentifier=${ENV}&serviceIdentifier=testService2`
 export const serviceEnvironmentTest3Call = `/cv/api/monitored-service/service-environment?routingId=${accountId}&accountId=${accountId}&orgIdentifier=${org}&projectIdentifier=${project}&environmentIdentifier=${ENV}&serviceIdentifier=testService3`
 
+// git sync call
+export const gitSyncCall = `/ng/api/git-sync?routingId=${accountId}&accountIdentifier=${accountId}&orgIdentifier=${org}&projectIdentifier=${project}`
+export const aggregateProjectsCall = `/ng/api/aggregate/projects?routingId=${accountId}&accountIdentifier=${accountId}&pageIndex=0&pageSize=50`
+export const sourceCodeManagerCall = `/ng/api/source-code-manager?routingId=${accountId}&accountIdentifier=${accountId}`
+
+// logs initial call
+export const logsListCall = `cv/api/verify-step/GZNwefkdR2aBhc7owmJ1-w/deployment-log-analysis-radar-chart-data?routingId=${accountId}&accountId=${accountId}&pageNumber=0&pageSize=10&minAngle=0&maxAngle=360&clusterTypes=KNOWN_EVENT&clusterTypes=UNKNOWN_EVENT&clusterTypes=UNEXPECTED_FREQUENCY`
+export const logsRadarChartDataCall = `/cv/api/verify-step/GZNwefkdR2aBhc7owmJ1-w/deployment-log-analysis-radar-chart-clusters?routingId=${accountId}&accountId=${accountId}&clusterTypes=KNOWN_EVENT&clusterTypes=UNKNOWN_EVENT&clusterTypes=UNEXPECTED_FREQUENCY`
+
+// logs node filter call
+export const logsListNodeFilterCall = `cv/api/verify-step/GZNwefkdR2aBhc7owmJ1-w/deployment-log-analysis-radar-chart-data?routingId=${accountId}&accountId=${accountId}&pageNumber=0&pageSize=10&hostNames=harness-deployment-canary-7445f86dbf-ml857&minAngle=0&maxAngle=360&clusterTypes=KNOWN_EVENT&clusterTypes=UNKNOWN_EVENT&clusterTypes=UNEXPECTED_FREQUENCY`
+export const logsRadarChartDataNodeFilterCall = `/cv/api/verify-step/GZNwefkdR2aBhc7owmJ1-w/deployment-log-analysis-radar-chart-clusters?routingId=${accountId}&accountId=${accountId}&hostNames=harness-deployment-canary-7445f86dbf-ml857&clusterTypes=KNOWN_EVENT&clusterTypes=UNKNOWN_EVENT&clusterTypes=UNEXPECTED_FREQUENCY`
+
+// logs cluster type filter call
+export const logsListCLusterFilterCall = `cv/api/verify-step/GZNwefkdR2aBhc7owmJ1-w/deployment-log-analysis-radar-chart-data?routingId=${accountId}&accountId=${accountId}&pageNumber=0&pageSize=10&minAngle=0&maxAngle=360&clusterTypes=UNKNOWN_EVENT&clusterTypes=UNEXPECTED_FREQUENCY`
+export const logsRadarChartDataCLusterFilterCall = `/cv/api/verify-step/GZNwefkdR2aBhc7owmJ1-w/deployment-log-analysis-radar-chart-clusters?routingId=${accountId}&accountId=${accountId}&clusterTypes=UNKNOWN_EVENT&clusterTypes=UNEXPECTED_FREQUENCY`
+
+// logs min slider filter
+export const logsListMinSliderFilterCall = `cv/api/verify-step/GZNwefkdR2aBhc7owmJ1-w/deployment-log-analysis-radar-chart-data?routingId=${accountId}&accountId=${accountId}&pageNumber=0&pageSize=10&minAngle=30&maxAngle=360&clusterTypes=UNKNOWN_EVENT&clusterTypes=UNEXPECTED_FREQUENCY`
+
 export const strategiesResponse = {
   status: 'SUCCESS',
   data: { Kubernetes: ['Rolling', 'BlueGreen', 'Canary', 'Default'], NativeHelm: ['Rolling', 'Default'] },
@@ -615,4 +635,412 @@ export const inputSetTemplateRuntimeServiceResponse = {
   },
   metaData: null,
   correlationId: 'e289518b-4c94-4510-b789-a50ca8820819'
+}
+
+export const logsListCallResponse = {
+  metaData: {},
+  resource: {
+    totalClusters: 29,
+    eventCounts: [
+      { clusterType: 'KNOWN_EVENT', count: 24, displayName: 'Known' },
+      { clusterType: 'UNKNOWN_EVENT', count: 4, displayName: 'Unknown' },
+      { clusterType: 'UNEXPECTED_FREQUENCY', count: 1, displayName: 'Unexpected Frequency' }
+    ],
+    logAnalysisRadarCharts: {
+      totalPages: 3,
+      totalItems: 29,
+      pageItemCount: 10,
+      pageSize: 10,
+      content: [
+        {
+          message: 'Test Message',
+          label: 0,
+          risk: 'UNHEALTHY',
+          clusterType: 'UNEXPECTED_FREQUENCY',
+          count: 258,
+          frequencyData: [45.0, 74.0, 44.0, 43.0, 52.0],
+          baseline: {
+            message: '< Transfer-Encoding: chunked\r\n',
+            label: 0,
+            risk: 'NO_ANALYSIS',
+            clusterType: 'BASELINE',
+            count: 0,
+            frequencyData: [2.0],
+            baseline: null,
+            hasControlData: false
+          },
+          hasControlData: true,
+          cluterId: 1
+        },
+        {
+          message:
+            '2022-02-10 07:22:59 UTC | TRACE | INFO | (pkg/trace/info/stats.go:104 in LogStats) | No data received\n',
+          label: 30003,
+          risk: 'UNHEALTHY',
+          clusterType: 'UNKNOWN_EVENT',
+          count: 1,
+          frequencyData: [1.0],
+          baseline: null,
+          hasControlData: false,
+          cluterId: 2
+        },
+        {
+          message:
+            '  A v e r a g e   S p e e d       T i m  e         T i m e        D lToiamde    UCpuload   Trorteanlt \n',
+          label: 30001,
+          risk: 'UNHEALTHY',
+          clusterType: 'UNKNOWN_EVENT',
+          count: 1,
+          frequencyData: [1.0],
+          baseline: null,
+          hasControlData: false,
+          cluterId: 3
+        },
+        {
+          message:
+            '  % Total    % Received % Xferd  Average Spee d   %  TTimoet a  l  T i m e%   R e c eTiivmeed   %C uXrfreerndt \n',
+          label: 30002,
+          risk: 'UNHEALTHY',
+          clusterType: 'UNKNOWN_EVENT',
+          count: 1,
+          frequencyData: [1.0],
+          baseline: null,
+          hasControlData: false,
+          cluterId: 4
+        },
+        {
+          message:
+            '    \r     0          D0l o a d   Up0l o a d    0  T   o0 t a l    S p0e n t     L   e0f t       0S p-e-e:d-\n',
+          label: 30000,
+          risk: 'UNHEALTHY',
+          clusterType: 'UNKNOWN_EVENT',
+          count: 1,
+          frequencyData: [1.0],
+          baseline: null,
+          hasControlData: false,
+          cluterId: 5
+        },
+        {
+          message: '{ [2938 bytes data]\n',
+          label: 11,
+          risk: 'HEALTHY',
+          clusterType: 'KNOWN_EVENT',
+          count: 21,
+          frequencyData: [3.0, 6.0, 4.0, 4.0, 4.0],
+          baseline: {
+            message: '{ [2938 bytes data]\n',
+            label: 11,
+            risk: 'NO_ANALYSIS',
+            clusterType: 'BASELINE',
+            count: 0,
+            frequencyData: [38.0],
+            baseline: null,
+            hasControlData: false
+          },
+          hasControlData: true,
+          cluterId: 6
+        },
+        {
+          message:
+            '</pre><p><b>Note</b> The full stack trace of the root cause is available in the server logs.</p><hr class="line" /><h3>Apache Tomcat/8.5.41</h3></body></html><!doctype html><html lang="en"><head><title>HTTP Status 500 – Internal Server Error</title><style type="text/css">h1 {font-family:Tahoma,Arial,sans-serif;color:white;background-color:#525D76;font-size:22px;} h2 {font-family:Tahoma,Arial,sans-serif;color:white;background-color:#525D76;font-size:16px;} h3 {font-family:Tahoma,Arial,sans-serif;color:white;background-color:#525D76;font-size:14px;} body {font-family:Tahoma,Arial,sans-serif;color:black;background-color:white;} b {font-family:Tahoma,Arial,sans-serif;color:white;background-color:#525D76;} p {font-family:Tahoma,Arial,sans-serif;background:white;color:black;font-size:12px;} a {color:black;} a.name {color:black;} .line {height:1px;background-color:#525D76;border:none;}</style></head><body><h1>HTTP Status 500 – Internal Server Error</h1><hr class="line" /><p><b>Type</b> Exception Report</p><p><b>Description</b> The server encountered an unexpected condition that prevented it from fulfilling the request.</p><p><b>Exception</b></p><pre>java.lang.NullPointerException\n',
+          label: 98,
+          risk: 'HEALTHY',
+          clusterType: 'KNOWN_EVENT',
+          count: 4,
+          frequencyData: [1.0, 1.0, 1.0, 1.0],
+          baseline: {
+            message:
+              '</pre><p><b>Note</b> The full stack trace of the root cause is available in the server logs.</p><hr class="line" /><h3>Apache Tomcat/8.5.41</h3></body></html><!doctype html><html lang="en"><head><title>HTTP Status 500 – Internal Server Error</title><style type="text/css">h1 {font-family:Tahoma,Arial,sans-serif;color:white;background-color:#525D76;font-size:22px;} h2 {font-family:Tahoma,Arial,sans-serif;color:white;background-color:#525D76;font-size:16px;} h3 {font-family:Tahoma,Arial,sans-serif;color:white;background-color:#525D76;font-size:14px;} body {font-family:Tahoma,Arial,sans-serif;color:black;background-color:white;} b {font-family:Tahoma,Arial,sans-serif;color:white;background-color:#525D76;} p {font-family:Tahoma,Arial,sans-serif;background:white;color:black;font-size:12px;} a {color:black;} a.name {color:black;} .line {height:1px;background-color:#525D76;border:none;}</style></head><body><h1>HTTP Status 500 – Internal Server Error</h1><hr class="line" /><p><b>Type</b> Exception Report</p><p><b>Description</b> The server encountered an unexpected condition that prevented it from fulfilling the request.</p><p><b>Exception</b></p><pre>java.lang.NullPointerException\n',
+            label: 98,
+            risk: 'NO_ANALYSIS',
+            clusterType: 'BASELINE',
+            count: 0,
+            frequencyData: [8.0],
+            baseline: null,
+            hasControlData: false
+          },
+          hasControlData: true,
+          cluterId: 7
+        },
+        {
+          message: '< Location: display.jsp\r\n',
+          label: 112,
+          risk: 'HEALTHY',
+          clusterType: 'KNOWN_EVENT',
+          count: 3,
+          frequencyData: [1.0, 1.0, 1.0],
+          baseline: {
+            message: '< Location: display.jsp\r\n',
+            label: 112,
+            risk: 'NO_ANALYSIS',
+            clusterType: 'BASELINE',
+            count: 0,
+            frequencyData: [4.0],
+            baseline: null,
+            hasControlData: false
+          },
+          hasControlData: true,
+          cluterId: 8
+        },
+        {
+          message: '< Date: Thu, 10 Feb 2022 07:22:58 GMT\r\n',
+          label: 80,
+          risk: 'HEALTHY',
+          clusterType: 'KNOWN_EVENT',
+          count: 25,
+          frequencyData: [5.0, 7.0, 4.0, 4.0, 5.0],
+          baseline: {
+            message: '< Date: Thu, 10 Feb 2022 07:22:58 GMT\r\n',
+            label: 80,
+            risk: 'NO_ANALYSIS',
+            clusterType: 'BASELINE',
+            count: 0,
+            frequencyData: [41.0],
+            baseline: null,
+            hasControlData: false
+          },
+          hasControlData: true,
+          cluterId: 9
+        },
+        {
+          message: '* upload completely sent off: 47 out of 47 bytes\n',
+          label: 89,
+          risk: 'HEALTHY',
+          clusterType: 'KNOWN_EVENT',
+          count: 10,
+          frequencyData: [2.0, 3.0, 2.0, 2.0, 1.0],
+          baseline: {
+            message: '* upload completely sent off: 47 out of 47 bytes\n',
+            label: 89,
+            risk: 'NO_ANALYSIS',
+            clusterType: 'BASELINE',
+            count: 0,
+            frequencyData: [16.0],
+            baseline: null,
+            hasControlData: false
+          },
+          hasControlData: true,
+          cluterId: 10
+        }
+      ],
+      pageIndex: 0,
+      empty: false
+    }
+  },
+  responseMessages: []
+}
+
+export const logsRadarChartDataCallResponse = {
+  metaData: {},
+  resource: [
+    {
+      label: 0,
+      message: 'Test Message',
+      risk: 'UNHEALTHY',
+      radius: 1.664038103272266,
+      angle: 0.0,
+      baseline: {
+        label: 0,
+        message: '< Transfer-Encoding: chunked\r\n',
+        risk: 'NO_ANALYSIS',
+        radius: 0.7284758929526032,
+        angle: 0.0,
+        baseline: null,
+        clusterType: 'BASELINE',
+        hasControlData: false
+      },
+      clusterType: 'UNEXPECTED_FREQUENCY',
+      hasControlData: true,
+      cluterId: 1
+    },
+    {
+      label: 30003,
+      message:
+        '2022-02-10 07:22:59 UTC | TRACE | INFO | (pkg/trace/info/stats.go:104 in LogStats) | No data received\n',
+      risk: 'UNHEALTHY',
+      radius: 2.390506479391404,
+      angle: 12.413793103448276,
+      baseline: null,
+      clusterType: 'UNKNOWN_EVENT',
+      hasControlData: false
+    },
+    {
+      label: 30001,
+      message:
+        '  A v e r a g e   S p e e d       T i m  e         T i m e        D lToiamde    UCpuload   Trorteanlt \n',
+      risk: 'UNHEALTHY',
+      radius: 2.893341160200387,
+      angle: 24.82758620689655,
+      baseline: null,
+      clusterType: 'UNKNOWN_EVENT',
+      hasControlData: false,
+      cluterId: 2
+    },
+    {
+      label: 30002,
+      message:
+        '  % Total    % Received % Xferd  Average Spee d   %  TTimoet a  l  T i m e%   R e c eTiivmeed   %C uXrfreerndt \n',
+      risk: 'UNHEALTHY',
+      radius: 2.749641708001546,
+      angle: 37.241379310344826,
+      baseline: null,
+      clusterType: 'UNKNOWN_EVENT',
+      hasControlData: false
+    },
+    {
+      label: 30000,
+      message:
+        '    \r     0          D0l o a d   Up0l o a d    0  T   o0 t a l    S p0e n t     L   e0f t       0S p-e-e:d-\n',
+      risk: 'UNHEALTHY',
+      radius: 2.3594828023066827,
+      angle: 49.6551724137931,
+      baseline: null,
+      clusterType: 'UNKNOWN_EVENT',
+      hasControlData: false,
+      cluterId: 3
+    },
+    {
+      label: 11,
+      message: '{ [2938 bytes data]\n',
+      risk: 'HEALTHY',
+      radius: 1.4753724935052714,
+      angle: 62.06896551724138,
+      baseline: {
+        label: 11,
+        message: '{ [2938 bytes data]\n',
+        risk: 'NO_ANALYSIS',
+        radius: 0.7435991129150041,
+        angle: 62.06896551724138,
+        baseline: null,
+        clusterType: 'BASELINE',
+        hasControlData: false
+      },
+      clusterType: 'KNOWN_EVENT',
+      hasControlData: true,
+      cluterId: 4
+    },
+    {
+      label: 98,
+      message:
+        '</pre><p><b>Note</b> The full stack trace of the root cause is available in the server logs.</p><hr class="line" /><h3>Apache Tomcat/8.5.41</h3></body></html><!doctype html><html lang="en"><head><title>HTTP Status 500 – Internal Server Error</title><style type="text/css">h1 {font-family:Tahoma,Arial,sans-serif;color:white;background-color:#525D76;font-size:22px;} h2 {font-family:Tahoma,Arial,sans-serif;color:white;background-color:#525D76;font-size:16px;} h3 {font-family:Tahoma,Arial,sans-serif;color:white;background-color:#525D76;font-size:14px;} body {font-family:Tahoma,Arial,sans-serif;color:black;background-color:white;} b {font-family:Tahoma,Arial,sans-serif;color:white;background-color:#525D76;} p {font-family:Tahoma,Arial,sans-serif;background:white;color:black;font-size:12px;} a {color:black;} a.name {color:black;} .line {height:1px;background-color:#525D76;border:none;}</style></head><body><h1>HTTP Status 500 – Internal Server Error</h1><hr class="line" /><p><b>Type</b> Exception Report</p><p><b>Description</b> The server encountered an unexpected condition that prevented it from fulfilling the request.</p><p><b>Exception</b></p><pre>java.lang.NullPointerException\n',
+      risk: 'HEALTHY',
+      radius: 1.114701392021402,
+      angle: 74.48275862068965,
+      baseline: {
+        label: 98,
+        message:
+          '</pre><p><b>Note</b> The full stack trace of the root cause is available in the server logs.</p><hr class="line" /><h3>Apache Tomcat/8.5.41</h3></body></html><!doctype html><html lang="en"><head><title>HTTP Status 500 – Internal Server Error</title><style type="text/css">h1 {font-family:Tahoma,Arial,sans-serif;color:white;background-color:#525D76;font-size:22px;} h2 {font-family:Tahoma,Arial,sans-serif;color:white;background-color:#525D76;font-size:16px;} h3 {font-family:Tahoma,Arial,sans-serif;color:white;background-color:#525D76;font-size:14px;} body {font-family:Tahoma,Arial,sans-serif;color:black;background-color:white;} b {font-family:Tahoma,Arial,sans-serif;color:white;background-color:#525D76;} p {font-family:Tahoma,Arial,sans-serif;background:white;color:black;font-size:12px;} a {color:black;} a.name {color:black;} .line {height:1px;background-color:#525D76;border:none;}</style></head><body><h1>HTTP Status 500 – Internal Server Error</h1><hr class="line" /><p><b>Type</b> Exception Report</p><p><b>Description</b> The server encountered an unexpected condition that prevented it from fulfilling the request.</p><p><b>Exception</b></p><pre>java.lang.NullPointerException\n',
+        risk: 'NO_ANALYSIS',
+        radius: 0.624414806316096,
+        angle: 74.48275862068965,
+        baseline: null,
+        clusterType: 'BASELINE',
+        hasControlData: false
+      },
+      clusterType: 'KNOWN_EVENT',
+      hasControlData: true,
+      cluterId: 5
+    },
+    {
+      label: 112,
+      message: '< Location: display.jsp\r\n',
+      risk: 'HEALTHY',
+      radius: 1.2743624821383874,
+      angle: 86.89655172413792,
+      baseline: {
+        label: 112,
+        message: '< Location: display.jsp\r\n',
+        risk: 'NO_ANALYSIS',
+        radius: 0.7819754958788627,
+        angle: 86.89655172413792,
+        baseline: null,
+        clusterType: 'BASELINE',
+        hasControlData: false
+      },
+      clusterType: 'KNOWN_EVENT',
+      hasControlData: true,
+      cluterId: 6
+    },
+    {
+      label: 80,
+      message: '< Date: Thu, 10 Feb 2022 07:22:58 GMT\r\n',
+      risk: 'HEALTHY',
+      radius: 1.191633119402034,
+      angle: 99.31034482758619,
+      baseline: {
+        label: 80,
+        message: '< Date: Thu, 10 Feb 2022 07:22:58 GMT\r\n',
+        risk: 'NO_ANALYSIS',
+        radius: 0.747427073093925,
+        angle: 99.31034482758619,
+        baseline: null,
+        clusterType: 'BASELINE',
+        hasControlData: false
+      },
+      clusterType: 'KNOWN_EVENT',
+      hasControlData: true,
+      cluterId: 7
+    },
+    {
+      label: 89,
+      message: '* upload completely sent off: 47 out of 47 bytes\n',
+      risk: 'HEALTHY',
+      radius: 1.858619157500502,
+      angle: 111.72413793103446,
+      baseline: {
+        label: 89,
+        message: '* upload completely sent off: 47 out of 47 bytes\n',
+        risk: 'NO_ANALYSIS',
+        radius: 0.8340526408266267,
+        angle: 111.72413793103446,
+        baseline: null,
+        clusterType: 'BASELINE',
+        hasControlData: false
+      },
+      clusterType: 'KNOWN_EVENT',
+      hasControlData: true,
+      cluterId: 8
+    },
+    {
+      label: 92,
+      message: '* TCP_NODELAY set\n',
+      risk: 'HEALTHY',
+      radius: 1.593751154844217,
+      angle: 124.13793103448273,
+      baseline: {
+        label: 92,
+        message: '* TCP_NODELAY set\n',
+        risk: 'NO_ANALYSIS',
+        radius: 0.6157422250847977,
+        angle: 124.13793103448273,
+        baseline: null,
+        clusterType: 'BASELINE',
+        hasControlData: false
+      },
+      clusterType: 'KNOWN_EVENT',
+      hasControlData: true,
+      cluterId: 9
+    },
+    {
+      label: 5,
+      message: '* Re-using existing connection! (#0) with host localhost\n',
+      risk: 'HEALTHY',
+      radius: 1.8772513437726532,
+      angle: 136.55172413793102,
+      baseline: {
+        label: 5,
+        message: '* Re-using existing connection! (#0) with host localhost\n',
+        risk: 'NO_ANALYSIS',
+        radius: 0.7562558045246719,
+        angle: 136.55172413793102,
+        baseline: null,
+        clusterType: 'BASELINE',
+        hasControlData: false
+      },
+      clusterType: 'KNOWN_EVENT',
+      hasControlData: true,
+      cluterId: 10
+    }
+  ],
+  responseMessages: []
 }

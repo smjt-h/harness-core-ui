@@ -48,7 +48,7 @@ describe('Unit tests for ErrorTrackingAnalysisContainer', () => {
       return { data: mockedHealthSourcesData, error: null, loading: false }
     })
 
-    jest.spyOn(cvServices, 'useGetAllLogsClusterData').mockImplementation((): any => {
+    jest.spyOn(cvServices, 'useGetAllErrorTrackingClusterData').mockImplementation((): any => {
       return { data: mockedClustersData, error: null, loading: false, refetch: fetchClusterData }
     })
 
@@ -65,7 +65,7 @@ describe('Unit tests for ErrorTrackingAnalysisContainer', () => {
       return { data: mockedHealthSourcesData, error: null, loading: false }
     })
 
-    jest.spyOn(cvServices, 'useGetAllLogsClusterData').mockImplementation((): any => {
+    jest.spyOn(cvServices, 'useGetAllErrorTrackingClusterData').mockImplementation((): any => {
       return { data: mockedClustersData, error: null, loading: false, refetch: fetchClusterData }
     })
 
@@ -88,7 +88,7 @@ describe('Unit tests for ErrorTrackingAnalysisContainer', () => {
       return { data: mockedHealthSourcesData, error: null, loading: false }
     })
 
-    jest.spyOn(cvServices, 'useGetAllLogsClusterData').mockImplementation((): any => {
+    jest.spyOn(cvServices, 'useGetAllErrorTrackingClusterData').mockImplementation((): any => {
       return { data: mockedClustersData, error: null, loading: false, refetch: fetchClusterData }
     })
     const { container, getByText, getAllByText } = render(<WrapperComponent {...mockProps} />)
@@ -100,7 +100,7 @@ describe('Unit tests for ErrorTrackingAnalysisContainer', () => {
     expect(clusterTypeFilterDropdown).toBeTruthy()
 
     // verify default filter is unknownEvent
-    expect(clusterTypeFilterDropdown.value).toBe('pipeline.verification.logs.unknownEvent')
+    expect(clusterTypeFilterDropdown.value).toBe('cv.unknown')
 
     // Clicking the filter dropdown
     const selectCaret = container
@@ -111,11 +111,11 @@ describe('Unit tests for ErrorTrackingAnalysisContainer', () => {
     })
 
     // Selecting Known event cluster type
-    const typeToSelect = await getByText('pipeline.verification.logs.knownEvent')
+    const typeToSelect = await getByText('cv.known')
     act(() => {
       fireEvent.click(typeToSelect)
     })
-    expect(clusterTypeFilterDropdown.value).toBe('pipeline.verification.logs.knownEvent')
+    expect(clusterTypeFilterDropdown.value).toBe('cv.known')
 
     // Verifying if correct number of records are shown for Known event type.
     const knownClusterTypeMockedData = mockedErrorTrackingAnalysisData.resource.content.filter(
@@ -124,11 +124,11 @@ describe('Unit tests for ErrorTrackingAnalysisContainer', () => {
     await waitFor(() => expect(getAllByText('Known')).toHaveLength(knownClusterTypeMockedData.length))
 
     // Selecting UnKnown event cluster type
-    const unknownEventTypeSelected = await getByText('pipeline.verification.logs.unknownEvent')
+    const unknownEventTypeSelected = await getByText('cv.unknown')
     act(() => {
       fireEvent.click(unknownEventTypeSelected)
     })
-    expect(clusterTypeFilterDropdown.value).toBe('pipeline.verification.logs.unknownEvent')
+    expect(clusterTypeFilterDropdown.value).toBe('cv.unknown')
 
     // Verifying if correct number of records are shown for unKnown event type.
     const unknownClusterTypeMockedData = mockedErrorTrackingAnalysisData.resource.content.filter(
@@ -153,7 +153,7 @@ describe('Unit tests for ErrorTrackingAnalysisContainer', () => {
     })
 
     jest
-      .spyOn(cvServices, 'useGetAllLogsClusterData')
+      .spyOn(cvServices, 'useGetAllErrorTrackingClusterData')
       .mockImplementation((props: cvServices.UseGetAllLogsClusterDataProps): any => {
         useGetAllLogsClusterDataQueryParams = props.queryParams
         return { data: mockedClustersData, error: null, loading: false, refetch: fetchClusterData }
@@ -165,14 +165,14 @@ describe('Unit tests for ErrorTrackingAnalysisContainer', () => {
       'pipeline.verification.logs.filterByClusterType'
     ) as HTMLInputElement
 
-    expect(clusterTypeFilterDropdown.value).toBe('pipeline.verification.logs.unknownEvent')
+    expect(clusterTypeFilterDropdown.value).toBe('cv.unknown')
     expect(useGetAllLogsClusterDataQueryParams?.clusterTypes).toEqual([ErrorTrackingEvents.UNKNOWN])
     expect(useGetAllLogsDataQueryParams?.clusterTypes).toEqual([ErrorTrackingEvents.UNKNOWN])
 
     userEvent.click(clusterTypeFilterDropdown)
-    userEvent.click(screen.getByText('pipeline.verification.logs.allEvents'))
+    userEvent.click(screen.getByText('auditTrail.allEvents'))
 
-    expect(clusterTypeFilterDropdown.value).toBe('pipeline.verification.logs.allEvents')
+    expect(clusterTypeFilterDropdown.value).toBe('auditTrail.allEvents')
     expect(useGetAllLogsClusterDataQueryParams).not.toHaveProperty('clusterTypes')
     expect(useGetAllLogsDataQueryParams).not.toHaveProperty('clusterTypes')
   })
@@ -186,7 +186,7 @@ describe('Unit tests for ErrorTrackingAnalysisContainer', () => {
       return { data: mockedHealthSourcesData, error: null, loading: false }
     })
 
-    jest.spyOn(cvServices, 'useGetAllLogsClusterData').mockImplementation((): any => {
+    jest.spyOn(cvServices, 'useGetAllErrorTrackingClusterData').mockImplementation((): any => {
       return { data: mockedClustersData, error: null, loading: false, refetch: fetchClusterData }
     })
 
@@ -204,7 +204,7 @@ describe('Unit tests for ErrorTrackingAnalysisContainer', () => {
       return { data: mockedHealthSourcesData, error: null, loading: false }
     })
 
-    jest.spyOn(cvServices, 'useGetAllLogsClusterData').mockImplementation((): any => {
+    jest.spyOn(cvServices, 'useGetAllErrorTrackingClusterData').mockImplementation((): any => {
       return { data: mockedClustersData, error: null, loading: false, refetch: fetchClusterData }
     })
 
@@ -231,7 +231,7 @@ describe('Unit tests for ErrorTrackingAnalysisContainer', () => {
       return { data: mockedHealthSourcesData, error: null, loading: false }
     })
 
-    jest.spyOn(cvServices, 'useGetAllLogsClusterData').mockImplementation((): any => {
+    jest.spyOn(cvServices, 'useGetAllErrorTrackingClusterData').mockImplementation((): any => {
       return { data: undefined, error: null, loading: false, refetch: fetchClusterData }
     })
 
@@ -249,7 +249,7 @@ describe('Unit tests for ErrorTrackingAnalysisContainer', () => {
       return { data: mockedHealthSourcesData, error: null, loading: false }
     })
 
-    jest.spyOn(cvServices, 'useGetAllLogsClusterData').mockImplementation((): any => {
+    jest.spyOn(cvServices, 'useGetAllErrorTrackingClusterData').mockImplementation((): any => {
       return {
         data: undefined,
         error: { message: 'a new problem has occurred' },

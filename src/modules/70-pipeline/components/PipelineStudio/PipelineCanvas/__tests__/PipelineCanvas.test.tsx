@@ -96,6 +96,24 @@ describe('Pipeline Canvas - new pipeline', () => {
       return mockPipelineTemplateYaml
     })
   })
+
+  test('pipeline save button disabled till updation', () => {
+    const props = getProps()
+    const contextValue = getDummyPipelineCanvasContextValue({ isLoading: false })
+    const { getByText } = render(
+      <TestWrapper>
+        <PipelineContext.Provider value={contextValue}>
+          <PipelineCanvas {...props} />
+        </PipelineContext.Provider>
+      </TestWrapper>
+    )
+    act(() => {
+      fireEvent.click(getByText('save'))
+    })
+    // isUpdated - false disables save button
+    expect(createPipelinePromise).not.toBeCalled()
+  })
+
   test('function calls on switch to YAML mode and back to VISUAL', async () => {
     // eslint-disable-next-line
     // @ts-ignore
@@ -105,7 +123,7 @@ describe('Pipeline Canvas - new pipeline', () => {
     createPipelinePromise.mockResolvedValue(mockApiDataEmpty)
 
     const props = getProps()
-    const contextValue = getDummyPipelineCanvasContextValue({ isLoading: false })
+    const contextValue = getDummyPipelineCanvasContextValue({ isLoading: false, isUpdated: true })
     const { getByText, queryByText } = render(
       <TestWrapper>
         <PipelineContext.Provider value={contextValue}>
@@ -162,6 +180,29 @@ describe('Pipeline Canvas - new pipeline', () => {
       </TestWrapper>
     )
     expect(queryByText(/Loading, please wait\.\.\./)).toBeTruthy()
+  })
+
+  test('pipeline call fail error screen', () => {
+    const props = getProps()
+    const contextValue = getDummyPipelineCanvasContextValue({ isLoading: false })
+    contextValue.state.templateError = {
+      status: 404,
+      data: {
+        message:
+          'Invalid request: Pipeline with the given ID: testPipeline_Cypressss does not exist or has been deleted'
+      },
+      message: 'INVALID_REQUEST'
+    }
+    const { queryByText, container } = render(
+      <TestWrapper>
+        <PipelineContext.Provider value={contextValue}>
+          <PipelineCanvas {...props} />
+        </PipelineContext.Provider>
+      </TestWrapper>
+    )
+    expect(queryByText('Invalid request:'))
+    expect(queryByText('Pipeline with the given ID: testPipeline_Cypressss does not exist or has been deleted'))
+    expect(container).toMatchSnapshot()
   })
 
   test('with git sync enabled - new pipeline', async () => {

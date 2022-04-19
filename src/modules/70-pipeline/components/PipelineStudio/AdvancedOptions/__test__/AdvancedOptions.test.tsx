@@ -16,7 +16,8 @@ describe('<AdvancedOptions/> tests', () => {
       name: 'Some Pipeline',
       identifier: 'Some_Pipeline',
       allowStageExecutions: false,
-      timeout: '20m'
+      timeout: '20m',
+      stages: []
     },
     onApplyChanges: jest.fn(),
     onDiscard: jest.fn()
@@ -56,7 +57,8 @@ describe('<AdvancedOptions/> tests', () => {
       allowStageExecutions: true,
       identifier: 'Some_Pipeline',
       name: 'Some Pipeline',
-      timeout: '30m'
+      timeout: '30m',
+      stages: []
     })
   })
 
@@ -75,7 +77,8 @@ describe('<AdvancedOptions/> tests', () => {
     expect(baseProps.onApplyChanges).toBeCalledWith({
       allowStageExecutions: false,
       identifier: 'Some_Pipeline',
-      name: 'Some Pipeline'
+      name: 'Some Pipeline',
+      stages: []
     })
   })
 })

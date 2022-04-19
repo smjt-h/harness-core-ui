@@ -17,7 +17,8 @@ import {
   ConnectorConfigDTO,
   Error,
   ConnectorInfoDTO,
-  EntityGitDetails
+  EntityGitDetails,
+  ResponseMessage
 } from 'services/cd-ng'
 
 import type { StepDetails } from '@connectors/interfaces/ConnectorInterface'
@@ -31,7 +32,8 @@ import {
 import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
 import { ErrorHandler } from '@common/components/ErrorHandler/ErrorHandler'
 import { useTelemetry } from '@common/hooks/useTelemetry'
-import { CE_K8S_CONNECTOR_CREATION_EVENTS } from '@connectors/trackingConstants'
+import { connectorsTrackEventMap } from '@connectors/utils/connectorEvents'
+import Suggestions from '../ErrorSuggestions/ErrorSuggestionsCe'
 import css from './VerifyOutOfClusterDelegate.module.scss'
 
 interface RenderUrlInfo {
@@ -163,16 +165,20 @@ const VerifyOutOfClusterDelegate: React.FC<StepProps<VerifyOutOfClusterStepProps
       status: 'PROCESS'
     })
 
+    const isCeConnector = Boolean(
+      Connectors.CE_KUBERNETES || Connectors.CEAWS || Connectors.CE_AZURE || Connectors.CE_GCP
+    )
+
     const { trackEvent } = useTelemetry()
 
     useEffect(() => {
-      if (props.type === Connectors.CE_KUBERNETES) {
-        trackEvent(CE_K8S_CONNECTOR_CREATION_EVENTS.LOAD_CONNECTION_TEST, {})
-      }
+      const eventName = connectorsTrackEventMap[props.type]
+      eventName && trackEvent(eventName, {})
     }, [])
 
     const { getString } = useStrings()
 
+    /* istanbul ignore next */
     const getPermissionsLink = (): string => {
       switch (props.type) {
         case Connectors.KUBERNETES_CLUSTER:
@@ -268,40 +274,58 @@ const VerifyOutOfClusterDelegate: React.FC<StepProps<VerifyOutOfClusterStepProps
           ) : null}
         </Layout.Vertical>
       )
+
       return (
         <Layout.Vertical className={css.stepError}>
           {responseMessages ? (
-            <ErrorHandler responseMessages={responseMessages} className={css.errorHandler} />
+            <ErrorHandler
+              responseMessages={responseMessages}
+              className={css.errorHandler}
+              errorHintsRenderer={
+                isCeConnector
+                  ? hints => (
+                      <Suggestions
+                        items={hints as ResponseMessage[]}
+                        header={getString('common.errorHandler.tryTheseSuggestions')}
+                        icon={'lightbulb'}
+                        connectorType={props.type}
+                      />
+                    )
+                  : undefined
+              }
+            />
           ) : (
             genericHandler
           )}
           {/* TODO: when install delegate behaviour is known {testConnectionResponse?.data?.delegateId ? ( */}
-          <Layout.Horizontal spacing="small">
-            {props.isStep ? (
-              <Button
-                text={getString('editCredentials')}
-                variation={ButtonVariation.SECONDARY}
-                onClick={() => {
-                  const isTransitionToCredentialsStepSuccessful = props.gotoStep?.({
-                    stepIdentifier: CONNECTOR_CREDENTIALS_STEP_IDENTIFIER,
-                    prevStepData
-                  })
-                  if (!isTransitionToCredentialsStepSuccessful) {
-                    props.previousStep?.({ ...prevStepData })
-                  }
-                  props.setIsEditMode?.(true) // Remove after all usages
-                }}
-                withoutBoxShadow
-              />
-            ) : null}
-            <Text
-              onClick={() => window.open(getPermissionsLink(), '_blank')}
-              className={cx(css.veiwPermission, { [css.marginAuto]: props.isStep })}
-              intent="primary"
-            >
-              {getString('connectors.testConnectionStep.viewPermissions')}
-            </Text>
-          </Layout.Horizontal>
+          {!isCeConnector ? (
+            <Layout.Horizontal spacing="small">
+              {props.isStep ? (
+                <Button
+                  text={getString('editCredentials')}
+                  variation={ButtonVariation.SECONDARY}
+                  onClick={() => {
+                    const isTransitionToCredentialsStepSuccessful = props.gotoStep?.({
+                      stepIdentifier: CONNECTOR_CREDENTIALS_STEP_IDENTIFIER,
+                      prevStepData
+                    })
+                    if (!isTransitionToCredentialsStepSuccessful) {
+                      props.previousStep?.({ ...prevStepData })
+                    }
+                    props.setIsEditMode?.(true) // Remove after all usages
+                  }}
+                  withoutBoxShadow
+                />
+              ) : null}
+              <Text
+                onClick={() => window.open(getPermissionsLink(), '_blank')}
+                className={cx(css.veiwPermission, { [css.marginAuto]: props.isStep })}
+                intent="primary"
+              >
+                {getString('connectors.testConnectionStep.viewPermissions')}
+              </Text>
+            </Layout.Horizontal>
+          ) : null}
           {/* ) : (
           <Button text={getString('connectors.testConnectionStep.installNewDelegate')} disabled width="160px" />
         )} */}

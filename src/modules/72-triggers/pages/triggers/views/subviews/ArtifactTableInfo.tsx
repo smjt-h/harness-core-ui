@@ -203,6 +203,10 @@ const ArtifactTableInfo = (props: ArtifactTableInfoInterface): JSX.Element => {
     ? getString('manifestsText')
     : getString('pipeline.artifactTriggerConfigPanel.artifact')
 
+  const getTooltipIds = (manifestTooltipIds: string, artifactTooltipIds: string): string => {
+    return isManifest ? manifestTooltipIds : artifactTooltipIds
+  }
+
   let newData = appliedArtifact || artifactTableData
   let showUniqueReferenceWarning = ''
   if (artifactTableData) {
@@ -231,7 +235,15 @@ const ArtifactTableInfo = (props: ArtifactTableInfoInterface): JSX.Element => {
   const columns: any = React.useMemo(
     () => [
       {
-        Header: artifactOrManifestText?.toUpperCase(),
+        Header: (
+          <Text
+            inline={true}
+            className={css.textHeading}
+            tooltipProps={{ dataTooltipId: getTooltipIds('manifestName', 'artifactName') }}
+          >
+            {artifactOrManifestText?.toUpperCase()}
+          </Text>
+        ),
         accessor: 'artifactLabel',
         width: appliedArtifact ? '45%' : '25%',
         Cell: RenderColumnArtifactLabel,
@@ -241,9 +253,17 @@ const ArtifactTableInfo = (props: ArtifactTableInfoInterface): JSX.Element => {
         appliedArtifact
       },
       {
-        Header: getString?.('pipeline.artifactTriggerConfigPanel.artifactRepository', {
-          artifact: artifactOrManifestText
-        }).toUpperCase(),
+        Header: (
+          <Text
+            inline={true}
+            className={css.textHeading}
+            tooltipProps={{ dataTooltipId: getTooltipIds('manifestRepository', 'artifactRepository') }}
+          >
+            {getString?.('pipeline.artifactTriggerConfigPanel.artifactRepository', {
+              artifact: artifactOrManifestText
+            }).toUpperCase()}
+          </Text>
+        ),
         accessor: 'activity',
         width: '25%',
         Cell: RenderColumnArtifactRepository,
@@ -251,7 +271,11 @@ const ArtifactTableInfo = (props: ArtifactTableInfoInterface): JSX.Element => {
         getString
       },
       {
-        Header: getString?.('common.location').toUpperCase(),
+        Header: (
+          <Text inline={true} className={css.textHeading} tooltipProps={{ dataTooltipId: 'artifactManifestLocation' }}>
+            {getString?.('common.location').toUpperCase()}
+          </Text>
+        ),
         accessor: 'lastExecutionTime',
         width: '18%',
         Cell: RenderColumnLocation,
@@ -279,7 +303,11 @@ const ArtifactTableInfo = (props: ArtifactTableInfoInterface): JSX.Element => {
     // Insert Location when available
     if (isManifest) {
       columns.push({
-        Header: getString?.('version').toUpperCase(),
+        Header: (
+          <Text inline={true} className={css.textHeading} tooltipProps={{ dataTooltipId: 'manifestHasVersion' }}>
+            {getString?.('version').toUpperCase()}
+          </Text>
+        ),
         accessor: 'version',
         width: '13%',
         Cell: RenderColumnVersion,
@@ -287,7 +315,11 @@ const ArtifactTableInfo = (props: ArtifactTableInfoInterface): JSX.Element => {
       })
     } else {
       columns.push({
-        Header: getString?.('pipeline.artifactTriggerConfigPanel.buildTag').toUpperCase(),
+        Header: (
+          <Text inline={true} className={css.textHeading} tooltipProps={{ dataTooltipId: 'artifactBuildTag' }}>
+            {getString?.('pipeline.artifactTriggerConfigPanel.buildTag').toUpperCase()}
+          </Text>
+        ),
         accessor: 'buildTag',
         width: '13%',
         Cell: RenderColumnBuildTag,
@@ -296,9 +328,17 @@ const ArtifactTableInfo = (props: ArtifactTableInfoInterface): JSX.Element => {
     }
 
     columns.push({
-      Header: getString?.('pipeline.artifactTriggerConfigPanel.hasRuntimeInputs').toUpperCase(),
+      Header: (
+        <Text
+          inline={true}
+          className={css.textHeading}
+          tooltipProps={{ dataTooltipId: 'artifactManifestRuntimeInputs' }}
+        >
+          {getString?.('pipeline.artifactTriggerConfigPanel.hasRuntimeInputs').toUpperCase()}
+        </Text>
+      ),
       accessor: 'hasRuntimeInputs',
-      width: '14%',
+      width: '18%',
       Cell: RenderColumnHasRuntimeInputs,
       disableSortBy: true
     })

@@ -97,7 +97,7 @@ const SwitchAccount: React.FC<SwitchAccountProps> = ({ searchString = '', mock }
         } else if (response.resource) {
           AppStorage.set('acctId', account.uuid)
           // this needs to be a server-redirect to support cluster isolation
-          window.location.href = `${window.location.pathname}#${routes.toHome({ accountId: account.uuid })}`
+          window.location.href = window.location.pathname
         } else {
           showError(getString('common.switchAccountError'))
         }

@@ -9,6 +9,10 @@
   text-align: center;
 }
 
+.textHeading {
+  font-size: var(--font-size-small) !important;
+  color: var(--grey-800) !important;
+}
 .selectArtifactTable {
   > div:not(:first-child) {
     [role*='row'] {
@@ -24,7 +28,7 @@
   }
 
   [role*='columnheader'] {
-    color: #9293ab !important;
+    color: var(--grey-400) !important;
   }
 
   [class*='header'] {

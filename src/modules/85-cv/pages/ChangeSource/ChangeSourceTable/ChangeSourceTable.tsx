@@ -86,7 +86,7 @@ export default function ChangeSourceTable({ value, onSuccess, onEdit }: ChangeSo
 
   return (
     <>
-      <Text className={css.tableTitle} tooltipProps={{ dataTooltipId: 'changeSourceTbale' }}>
+      <Text className={css.tableTitle} tooltipProps={{ dataTooltipId: 'changeSourceTable' }}>
         {getString('cv.navLinks.adminSideNavLinks.activitySources')}
       </Text>
       {tableData?.length ? (

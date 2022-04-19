@@ -35,6 +35,7 @@ import type { PermissionRequest } from '@auth-settings/pages/Configuration/Confi
 import { useFeature } from '@common/hooks/useFeatures'
 import { FeatureIdentifier } from 'framework/featureStore/FeatureIdentifier'
 import { FeatureWarningTooltip } from '@common/components/FeatureWarning/FeatureWarningWithTooltip'
+import useRBACError from '@rbac/utils/useRBACError/useRBACError'
 import css from './SAMLProvider.module.scss'
 import cssConfiguration from '@auth-settings/pages/Configuration/Configuration.module.scss'
 
@@ -53,6 +54,7 @@ const SAMLProvider: React.FC<Props> = ({
   canEdit,
   setUpdating
 }) => {
+  const { getRBACErrorMessage } = useRBACError()
   const { getString } = useStrings()
   const { showSuccess, showError } = useToaster()
   const { accountId } = useParams<AccountPathProps>()
@@ -124,7 +126,7 @@ const SAMLProvider: React.FC<Props> = ({
             showSuccess(getString('authSettings.samlProviderDeleted'), 5000)
           }
         } catch (e) {
-          /* istanbul ignore next */ showError(e.data?.message || e.message, 5000)
+          /* istanbul ignore next */ showError(getRBACErrorMessage(e), 5000)
         }
       }
     }
@@ -191,7 +193,7 @@ const SAMLProvider: React.FC<Props> = ({
             showSuccess(getString('authSettings.samlLoginEnabled'), 5000)
           }
         } catch (e) {
-          /* istanbul ignore next */ showError(e.data?.message || e.message, 5000)
+          /* istanbul ignore next */ showError(getRBACErrorMessage(e), 5000)
         }
       }
     }

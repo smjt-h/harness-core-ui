@@ -8,9 +8,18 @@
 import React, { FC, useCallback } from 'react'
 import { useParams } from 'react-router-dom'
 import { Spinner } from '@blueprintjs/core'
-import { Button, Dialog, Formik, FormikForm, Layout, SelectOption, useToaster } from '@wings-software/uicore'
+import {
+  Button,
+  ButtonVariation,
+  Dialog,
+  Formik,
+  FormikForm,
+  Layout,
+  SelectOption,
+  useToaster
+} from '@wings-software/uicore'
 import { useStrings } from 'framework/strings'
-import { usePatchSegment, Clause, Segment } from 'services/cf'
+import { Clause, Segment, usePatchSegment } from 'services/cf'
 import targetToSelectOption from '@cf/utils/targetToSelectOption'
 import patch, { Instruction } from '@cf/utils/instructions'
 import { getErrorMessage } from '@cf/utils/CFUtils'
@@ -118,10 +127,12 @@ const EditTargetGroupCriteriaDialog: FC<EditTargetGroupCriteriaDialogProps> = ({
           onClose={hideModal}
           footer={
             <Layout.Horizontal spacing="small">
-              <Button type="submit" intent="primary" onClick={submitForm}>
+              <Button variation={ButtonVariation.PRIMARY} type="submit" intent="primary" onClick={submitForm}>
                 {getString('save')}
               </Button>
-              <Button onClick={hideModal}>{getString('cancel')}</Button>
+              <Button variation={ButtonVariation.SECONDARY} onClick={hideModal}>
+                {getString('cancel')}
+              </Button>
               {loading && (
                 <span data-testid="saving-spinner">
                   <Spinner size={24} />

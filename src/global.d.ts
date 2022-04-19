@@ -63,6 +63,8 @@ declare interface Window {
   resourceBasePath: string
   refinerProjectToken: string
   refinerFeedbackToken: string
+  saberToken: string
+  Saber: any
 }
 
 declare interface WindowEventMap {

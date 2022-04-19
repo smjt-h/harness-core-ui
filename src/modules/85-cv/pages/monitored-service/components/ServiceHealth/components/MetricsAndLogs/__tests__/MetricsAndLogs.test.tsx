@@ -6,8 +6,10 @@
  */
 
 import React from 'react'
-import { render } from '@testing-library/react'
-import { TestWrapper } from '@common/utils/testUtils'
+import { render, screen, waitFor } from '@testing-library/react'
+import userEvent from '@testing-library/user-event'
+import { findDialogContainer, TestWrapper } from '@common/utils/testUtils'
+import { LogTypes, MonitoredServiceLogContentProps } from '@cv/hooks/useLogContentHook/useLogContentHook.types'
 import MetricsAndLogs from '../MetricsAndLogs'
 import type { MetricsAndLogsProps } from '../MetricsAndLogs.types'
 import { mockedClustersData, mockedHealthSourcesData } from './MetricsAndLogs.mock'
@@ -40,6 +42,11 @@ jest.mock('services/cv', () => ({
   })
 }))
 
+jest.mock('@cv/hooks/useLogContentHook/views/MonitoredServiceLogContent', () => ({
+  __esModule: true,
+  default: (props: MonitoredServiceLogContentProps) => <div>{props.logType}</div>
+}))
+
 describe('Unit tests for MetricsAndLogs', () => {
   test('Verify if Metrics and Logs View is rendered when required params are defined', async () => {
     const props = {
@@ -63,5 +70,32 @@ describe('Unit tests for MetricsAndLogs', () => {
     }
     const { getByTestId } = render(<WrapperComponent {...props} />)
     expect(getByTestId('analysis-image-view')).toBeTruthy()
+  })
+
+  test('should open the LogContent modal and render MonitoredServiceLog with type ApiCallLog by clicking the External Api call link', async () => {
+    render(
+      <TestWrapper>
+        <MetricsAndLogs
+          monitoredServiceIdentifier={'1234'}
+          serviceIdentifier={'service 1'}
+          environmentIdentifier={'env 1'}
+          startTime={0}
+          endTime={0}
+        />
+      </TestWrapper>
+    )
+
+    expect(screen.getByText('cv.externalAPICalls')).toBeInTheDocument()
+
+    userEvent.click(screen.getByText('cv.externalAPICalls'))
+
+    const dialog = findDialogContainer()
+
+    await waitFor(() => {
+      expect(screen.getByText(LogTypes.ApiCallLog)).toBeInTheDocument()
+      expect(screen.queryByText(LogTypes.ExecutionLog)).not.toBeInTheDocument()
+    })
+
+    userEvent.click(dialog?.querySelector('[data-icon="Stroke"]')!)
   })
 })

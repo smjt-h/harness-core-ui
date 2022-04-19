@@ -399,35 +399,9 @@ exports[`Manifest Trigger Tests Check chartVersion to be disabled and default va
                                         </div>
                                         <div>
                                           <p
-                                            class="StyledProps--font StyledProps--main inputheader StyledProps--margin-top-medium StyledProps--margin-bottom-small"
+                                            class="StyledProps--font StyledProps--main inputheader StyledProps--margin-top-medium"
                                           >
                                             sdfds
-                                            <span
-                                              class="bp3-popover-wrapper manifestInfoTooltip"
-                                            >
-                                              <span
-                                                class="bp3-popover-target"
-                                              >
-                                                <span
-                                                  class="bp3-icon StyledProps--main"
-                                                  data-icon="info"
-                                                  tabindex="0"
-                                                >
-                                                  <svg
-                                                    height="16"
-                                                    viewBox="0 0 12 12"
-                                                    width="16"
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                  >
-                                                    <path
-                                                      clip-rule="evenodd"
-                                                      d="M0 6a6 6 0 1012 0A6 6 0 000 6zm.75 0a5.25 5.25 0 1010.5 0A5.25 5.25 0 00.75 6zm4.206 3.104v.646h2.682v-.646l-.836-.144V4.203H4.956v.65l.836.144V8.96l-.836.144zm1.846-7.352v1.03h-1.01v-1.03h1.01z"
-                                                      fill-rule="evenodd"
-                                                    />
-                                                  </svg>
-                                                </span>
-                                              </span>
-                                            </span>
                                           </p>
                                           <div
                                             class="Layout--vertical StyledProps--main inputWidth layoutVerticalSpacing"
@@ -750,35 +724,9 @@ exports[`Manifest Trigger Tests Check chartVersion to be disabled and default va
                                         </div>
                                         <div>
                                           <p
-                                            class="StyledProps--font StyledProps--main inputheader StyledProps--margin-top-medium StyledProps--margin-bottom-small"
+                                            class="StyledProps--font StyledProps--main inputheader StyledProps--margin-top-medium"
                                           >
                                             testhelmmanifest
-                                            <span
-                                              class="bp3-popover-wrapper manifestInfoTooltip"
-                                            >
-                                              <span
-                                                class="bp3-popover-target"
-                                              >
-                                                <span
-                                                  class="bp3-icon StyledProps--main"
-                                                  data-icon="info"
-                                                  tabindex="0"
-                                                >
-                                                  <svg
-                                                    height="16"
-                                                    viewBox="0 0 12 12"
-                                                    width="16"
-                                                    xmlns="http://www.w3.org/2000/svg"
-                                                  >
-                                                    <path
-                                                      clip-rule="evenodd"
-                                                      d="M0 6a6 6 0 1012 0A6 6 0 000 6zm.75 0a5.25 5.25 0 1010.5 0A5.25 5.25 0 00.75 6zm4.206 3.104v.646h2.682v-.646l-.836-.144V4.203H4.956v.65l.836.144V8.96l-.836.144zm1.846-7.352v1.03h-1.01v-1.03h1.01z"
-                                                      fill-rule="evenodd"
-                                                    />
-                                                  </svg>
-                                                </span>
-                                              </span>
-                                            </span>
                                           </p>
                                           <div
                                             class="Layout--vertical StyledProps--main inputWidth layoutVerticalSpacing"
@@ -1546,13 +1494,17 @@ exports[`Manifest Trigger Tests function getArtifactSpecObj by displaying select
                   <div
                     class="Layout--vertical StyledProps--main artifactTriggerConfigContainer StyledProps--padding-xxlarge"
                   >
-                    <span
-                      class="StyledProps--font StyledProps--main formContentTitle StyledProps--inline"
+                    <div
+                      class="Text--withDocsTooltip"
                       data-tooltip-id="artifactManifestLabel"
                     >
-                      triggers.triggerConfigurationLabel
-                      
-                    </span>
+                      <span
+                        class="StyledProps--font StyledProps--main formContentTitle StyledProps--inline"
+                      >
+                        triggers.triggerConfigurationLabel
+                        
+                      </span>
+                    </div>
                     <div
                       class="formContent"
                     >
@@ -1712,12 +1664,16 @@ exports[`Manifest Trigger Tests function getArtifactSpecObj by displaying select
                         </div>
                       </div>
                     </div>
-                    <span
-                      class="StyledProps--font StyledProps--main formContentTitle StyledProps--inline"
+                    <div
+                      class="Text--withDocsTooltip"
                       data-tooltip-id="listenOnNewArtifactManifest"
                     >
-                      pipeline.artifactTriggerConfigPanel.listenOnNewArtifact
-                    </span>
+                      <span
+                        class="StyledProps--font StyledProps--main formContentTitle StyledProps--inline"
+                      >
+                        pipeline.artifactTriggerConfigPanel.listenOnNewArtifact
+                      </span>
+                    </div>
                     <div
                       class="formContent"
                     >
@@ -1741,7 +1697,16 @@ exports[`Manifest Trigger Tests function getArtifactSpecObj by displaying select
                               <p
                                 class="StyledProps--font StyledProps--main StyledProps--font-variation-table-headers"
                               >
-                                MANIFESTSTEXT
+                                <div
+                                  class="Text--withDocsTooltip"
+                                  data-tooltip-id="manifestName"
+                                >
+                                  <span
+                                    class="StyledProps--font StyledProps--main textHeading StyledProps--inline"
+                                  >
+                                    MANIFESTSTEXT
+                                  </span>
+                                </div>
                               </p>
                             </div>
                             <div
@@ -1753,7 +1718,16 @@ exports[`Manifest Trigger Tests function getArtifactSpecObj by displaying select
                               <p
                                 class="StyledProps--font StyledProps--main StyledProps--font-variation-table-headers"
                               >
-                                PIPELINE.ARTIFACTTRIGGERCONFIGPANEL.ARTIFACTREPOSITORY
+                                <div
+                                  class="Text--withDocsTooltip"
+                                  data-tooltip-id="manifestRepository"
+                                >
+                                  <span
+                                    class="StyledProps--font StyledProps--main textHeading StyledProps--inline"
+                                  >
+                                    PIPELINE.ARTIFACTTRIGGERCONFIGPANEL.ARTIFACTREPOSITORY
+                                  </span>
+                                </div>
                               </p>
                             </div>
                             <div
@@ -1765,7 +1739,16 @@ exports[`Manifest Trigger Tests function getArtifactSpecObj by displaying select
                               <p
                                 class="StyledProps--font StyledProps--main StyledProps--font-variation-table-headers"
                               >
-                                COMMON.LOCATION
+                                <div
+                                  class="Text--withDocsTooltip"
+                                  data-tooltip-id="artifactManifestLocation"
+                                >
+                                  <span
+                                    class="StyledProps--font StyledProps--main textHeading StyledProps--inline"
+                                  >
+                                    COMMON.LOCATION
+                                  </span>
+                                </div>
                               </p>
                             </div>
                             <div
@@ -2220,13 +2203,17 @@ exports[`Manifest Trigger Tests on click of edit - submits thru the right payloa
                   <div
                     class="Layout--vertical StyledProps--main artifactTriggerConfigContainer StyledProps--padding-xxlarge"
                   >
-                    <span
-                      class="StyledProps--font StyledProps--main formContentTitle StyledProps--inline"
+                    <div
+                      class="Text--withDocsTooltip"
                       data-tooltip-id="artifactManifestLabel"
                     >
-                      triggers.triggerConfigurationLabel
-                      
-                    </span>
+                      <span
+                        class="StyledProps--font StyledProps--main formContentTitle StyledProps--inline"
+                      >
+                        triggers.triggerConfigurationLabel
+                        
+                      </span>
+                    </div>
                     <div
                       class="formContent"
                     >
@@ -2386,12 +2373,16 @@ exports[`Manifest Trigger Tests on click of edit - submits thru the right payloa
                         </div>
                       </div>
                     </div>
-                    <span
-                      class="StyledProps--font StyledProps--main formContentTitle StyledProps--inline"
+                    <div
+                      class="Text--withDocsTooltip"
                       data-tooltip-id="listenOnNewArtifactManifest"
                     >
-                      pipeline.artifactTriggerConfigPanel.listenOnNewArtifact
-                    </span>
+                      <span
+                        class="StyledProps--font StyledProps--main formContentTitle StyledProps--inline"
+                      >
+                        pipeline.artifactTriggerConfigPanel.listenOnNewArtifact
+                      </span>
+                    </div>
                     <div
                       class="formContent"
                     >
@@ -2415,7 +2406,16 @@ exports[`Manifest Trigger Tests on click of edit - submits thru the right payloa
                               <p
                                 class="StyledProps--font StyledProps--main StyledProps--font-variation-table-headers"
                               >
-                                MANIFESTSTEXT
+                                <div
+                                  class="Text--withDocsTooltip"
+                                  data-tooltip-id="manifestName"
+                                >
+                                  <span
+                                    class="StyledProps--font StyledProps--main textHeading StyledProps--inline"
+                                  >
+                                    MANIFESTSTEXT
+                                  </span>
+                                </div>
                               </p>
                             </div>
                             <div
@@ -2427,7 +2427,16 @@ exports[`Manifest Trigger Tests on click of edit - submits thru the right payloa
                               <p
                                 class="StyledProps--font StyledProps--main StyledProps--font-variation-table-headers"
                               >
-                                PIPELINE.ARTIFACTTRIGGERCONFIGPANEL.ARTIFACTREPOSITORY
+                                <div
+                                  class="Text--withDocsTooltip"
+                                  data-tooltip-id="manifestRepository"
+                                >
+                                  <span
+                                    class="StyledProps--font StyledProps--main textHeading StyledProps--inline"
+                                  >
+                                    PIPELINE.ARTIFACTTRIGGERCONFIGPANEL.ARTIFACTREPOSITORY
+                                  </span>
+                                </div>
                               </p>
                             </div>
                             <div
@@ -2439,7 +2448,16 @@ exports[`Manifest Trigger Tests on click of edit - submits thru the right payloa
                               <p
                                 class="StyledProps--font StyledProps--main StyledProps--font-variation-table-headers"
                               >
-                                COMMON.LOCATION
+                                <div
+                                  class="Text--withDocsTooltip"
+                                  data-tooltip-id="artifactManifestLocation"
+                                >
+                                  <span
+                                    class="StyledProps--font StyledProps--main textHeading StyledProps--inline"
+                                  >
+                                    COMMON.LOCATION
+                                  </span>
+                                </div>
                               </p>
                             </div>
                             <div
@@ -2684,35 +2702,8 @@ exports[`Manifest Trigger Tests on click of edit - submits thru the right payloa
   >
     <div>
       <p
-        class="StyledProps--font StyledProps--main inputheader StyledProps--margin-top-medium StyledProps--margin-bottom-small"
-      >
-        <span
-          class="bp3-popover-wrapper manifestInfoTooltip"
-        >
-          <span
-            class="bp3-popover-target"
-          >
-            <span
-              class="bp3-icon StyledProps--main"
-              data-icon="info"
-              tabindex="0"
-            >
-              <svg
-                height="16"
-                viewBox="0 0 12 12"
-                width="16"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  clip-rule="evenodd"
-                  d="M0 6a6 6 0 1012 0A6 6 0 000 6zm.75 0a5.25 5.25 0 1010.5 0A5.25 5.25 0 00.75 6zm4.206 3.104v.646h2.682v-.646l-.836-.144V4.203H4.956v.65l.836.144V8.96l-.836.144zm1.846-7.352v1.03h-1.01v-1.03h1.01z"
-                  fill-rule="evenodd"
-                />
-              </svg>
-            </span>
-          </span>
-        </span>
-      </p>
+        class="StyledProps--font StyledProps--main inputheader StyledProps--margin-top-medium"
+      />
       <div
         class="Layout--vertical StyledProps--main inputWidth layoutVerticalSpacing"
         data-name="manifest"
@@ -3521,13 +3512,17 @@ exports[`Manifest Trigger Tests on click of edit artifact - submits thru the rig
                   <div
                     class="Layout--vertical StyledProps--main artifactTriggerConfigContainer StyledProps--padding-xxlarge"
                   >
-                    <span
-                      class="StyledProps--font StyledProps--main formContentTitle StyledProps--inline"
-                      data-tooltip-id="artifactManifestLabel"
+                    <div
+                      class="Text--withDocsTooltip"
+                      data-tooltip-id="artifactLabel"
                     >
-                      triggers.triggerConfigurationLabel
-                      
-                    </span>
+                      <span
+                        class="StyledProps--font StyledProps--main formContentTitle StyledProps--inline"
+                      >
+                        triggers.triggerConfigurationLabel
+                        
+                      </span>
+                    </div>
                     <div
                       class="formContent"
                     >
@@ -3687,12 +3682,16 @@ exports[`Manifest Trigger Tests on click of edit artifact - submits thru the rig
                         </div>
                       </div>
                     </div>
-                    <span
-                      class="StyledProps--font StyledProps--main formContentTitle StyledProps--inline"
-                      data-tooltip-id="listenOnNewArtifactManifest"
+                    <div
+                      class="Text--withDocsTooltip"
+                      data-tooltip-id="listenNewArtifact"
                     >
-                      pipeline.artifactTriggerConfigPanel.listenOnNewArtifact
-                    </span>
+                      <span
+                        class="StyledProps--font StyledProps--main formContentTitle StyledProps--inline"
+                      >
+                        pipeline.artifactTriggerConfigPanel.listenOnNewArtifact
+                      </span>
+                    </div>
                     <div
                       class="formContent"
                     >
@@ -3716,7 +3715,16 @@ exports[`Manifest Trigger Tests on click of edit artifact - submits thru the rig
                               <p
                                 class="StyledProps--font StyledProps--main StyledProps--font-variation-table-headers"
                               >
-                                PIPELINE.ARTIFACTTRIGGERCONFIGPANEL.ARTIFACT
+                                <div
+                                  class="Text--withDocsTooltip"
+                                  data-tooltip-id="artifactName"
+                                >
+                                  <span
+                                    class="StyledProps--font StyledProps--main textHeading StyledProps--inline"
+                                  >
+                                    PIPELINE.ARTIFACTTRIGGERCONFIGPANEL.ARTIFACT
+                                  </span>
+                                </div>
                               </p>
                             </div>
                             <div
@@ -3728,7 +3736,16 @@ exports[`Manifest Trigger Tests on click of edit artifact - submits thru the rig
                               <p
                                 class="StyledProps--font StyledProps--main StyledProps--font-variation-table-headers"
                               >
-                                PIPELINE.ARTIFACTTRIGGERCONFIGPANEL.ARTIFACTREPOSITORY
+                                <div
+                                  class="Text--withDocsTooltip"
+                                  data-tooltip-id="artifactRepository"
+                                >
+                                  <span
+                                    class="StyledProps--font StyledProps--main textHeading StyledProps--inline"
+                                  >
+                                    PIPELINE.ARTIFACTTRIGGERCONFIGPANEL.ARTIFACTREPOSITORY
+                                  </span>
+                                </div>
                               </p>
                             </div>
                             <div
@@ -3740,7 +3757,16 @@ exports[`Manifest Trigger Tests on click of edit artifact - submits thru the rig
                               <p
                                 class="StyledProps--font StyledProps--main StyledProps--font-variation-table-headers"
                               >
-                                COMMON.LOCATION
+                                <div
+                                  class="Text--withDocsTooltip"
+                                  data-tooltip-id="artifactManifestLocation"
+                                >
+                                  <span
+                                    class="StyledProps--font StyledProps--main textHeading StyledProps--inline"
+                                  >
+                                    COMMON.LOCATION
+                                  </span>
+                                </div>
                               </p>
                             </div>
                             <div
@@ -4905,13 +4931,17 @@ exports[`Manifest Trigger Tests throws validation error when select artifact/man
                   <div
                     class="Layout--vertical StyledProps--main artifactTriggerConfigContainer StyledProps--padding-xxlarge"
                   >
-                    <span
-                      class="StyledProps--font StyledProps--main formContentTitle StyledProps--inline"
+                    <div
+                      class="Text--withDocsTooltip"
                       data-tooltip-id="artifactManifestLabel"
                     >
-                      triggers.triggerConfigurationLabel
-                      
-                    </span>
+                      <span
+                        class="StyledProps--font StyledProps--main formContentTitle StyledProps--inline"
+                      >
+                        triggers.triggerConfigurationLabel
+                        
+                      </span>
+                    </div>
                     <div
                       class="formContent"
                     >
@@ -5071,12 +5101,16 @@ exports[`Manifest Trigger Tests throws validation error when select artifact/man
                         </div>
                       </div>
                     </div>
-                    <span
-                      class="StyledProps--font StyledProps--main formContentTitle StyledProps--inline"
+                    <div
+                      class="Text--withDocsTooltip"
                       data-tooltip-id="listenOnNewArtifactManifest"
                     >
-                      pipeline.artifactTriggerConfigPanel.listenOnNewArtifact
-                    </span>
+                      <span
+                        class="StyledProps--font StyledProps--main formContentTitle StyledProps--inline"
+                      >
+                        pipeline.artifactTriggerConfigPanel.listenOnNewArtifact
+                      </span>
+                    </div>
                     <div
                       class="formContent"
                     >

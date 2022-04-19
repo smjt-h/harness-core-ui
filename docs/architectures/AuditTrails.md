@@ -4,7 +4,9 @@ The Audit trail framework is built using the _registration_ pattern. Developers 
 
 Registration of **resources** requires the following details -
 
-- **Icon** - Module icon to which the resource belongs.
+- **moduleIcon** - Module icon to which the resource belongs.
+- **moduleLabel** - Label to show in tooltip when hover on module icon.
+- **resourceLabel** - Corresponding resource label to be visible in resource column.
 - **resourceUrl** - Resource redirection url (For eg. Connector details page in case of connector)
 
 Example of a resource registration:
@@ -12,19 +14,24 @@ Example of a resource registration:
 ```typescript
 import AuditTrailFactory from '@audit-trail/factories/AuditTrailFactory'
 import type { ResourceDTO, ResourceScopeDTO } from 'services/audit'
+
 AuditTrailFactory.registerResourceHandler('CONNECTOR', {
   moduleIcon: {
-    name: 'nav-settings',
-    size: 30
+    name: 'nav-settings'
   },
-  resourceUrl: (resource: ResourceDTO, resourceScope: ResourceScopeDTO) => {
+  moduleLabel: platformLabel,
+  resourceLabel: 'connector',
+  resourceUrl: (resource: ResourceDTO, resourceScope: ResourceScope) => {
     const { accountIdentifier, orgIdentifier, projectIdentifier } = resourceScope
+
     return routes.toConnectorDetails({
       orgIdentifier,
-      accountId: accountIdentifier || accountPathProps.accountId,
+      accountId: accountIdentifier,
       connectorId: resource.identifier,
       projectIdentifier
     })
   }
 })
 ```
+
+Note - `CONNECTOR` in above example is a resource type present in audit service types, genrated through swagger.json. To add a new resorce, types should be generted first.

@@ -1,0 +1,44 @@
+{
+  "metaData": {},
+  "resource": {
+    "delegateGroupDetails": [
+      {
+        "groupId": "AqOKLok1STKeFlz54qTAFQ",
+        "delegateGroupIdentifier": "arpit",
+        "delegateType": "KUBERNETES",
+        "groupName": "arpit",
+        "groupImplicitSelectors": {
+          "arpit": "GROUP_NAME"
+        },
+        "delegateInsightsDetails": {
+          "insights": []
+        },
+        "lastHeartBeat": 0,
+        "connectivityStatus": "disconnected",
+        "activelyConnected": false,
+        "grpcActive": true,
+        "delegateInstanceDetails": [],
+        "tokenActive": true
+      },
+      {
+        "groupId": "3uoFTM8wT-iydit_92SFGw",
+        "delegateGroupIdentifier": "kkk",
+        "delegateType": "DOCKER",
+        "groupName": "kkk",
+        "groupImplicitSelectors": {
+          "kkk": "GROUP_NAME"
+        },
+        "delegateInsightsDetails": {
+          "insights": []
+        },
+        "lastHeartBeat": 0,
+        "connectivityStatus": "disconnected",
+        "activelyConnected": false,
+        "grpcActive": true,
+        "delegateInstanceDetails": [],
+        "tokenActive": true
+      }
+    ]
+  },
+  "responseMessages": []
+}

@@ -245,7 +245,7 @@ export default function SelectDeploymentType(props: SelectServiceDeploymentTypeP
             </Text>
             <a
               className={deployServiceCsss.learnMore}
-              href="https://docs.harness.io/article/4o7oqwih6h-harness-key-concepts#cd_abstraction_model"
+              href="https://ngdocs.harness.io/article/1fjmm4by22"
               rel="noreferrer"
               target="_blank"
             >

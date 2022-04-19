@@ -23,7 +23,7 @@ module.exports = inputSchema => {
 
     if (fs.existsSync(overridesFile)) {
       const data = fs.readFileSync(overridesFile, 'utf8')
-      const { allowpaths, operationIdOverrides } = yaml.safeLoad(data)
+      const { allowpaths, operationIdOverrides } = yaml.load(data)
 
       if (!allowpaths.includes('*')) {
         paths = _.pick(paths, ...allowpaths)

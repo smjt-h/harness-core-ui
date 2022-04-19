@@ -97,7 +97,7 @@ describe('Request util', () => {
       ],
       resourceType: [
         {
-          label: 'common.apikey',
+          label: 'API_KEY',
           value: 'API_KEY'
         }
       ]

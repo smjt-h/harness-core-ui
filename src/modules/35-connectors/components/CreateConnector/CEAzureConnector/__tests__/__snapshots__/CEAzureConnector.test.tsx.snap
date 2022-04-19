@@ -138,7 +138,7 @@ exports[`Create Azure connector Wizard should render create new billing exports 
               class="StyledProps--font Text--lineclamp StyledProps--main StepWizard--stepName"
               style="--text-line-clamp: 2; width: 200px;"
             >
-              connectors.ceAzure.steps.testConnection
+              connectors.ceAzure.testConnection.heading
             </p>
           </div>
         </div>
@@ -969,7 +969,7 @@ exports[`Create Azure connector Wizard should render existing billing exports fo
               class="StyledProps--font Text--lineclamp StyledProps--main StepWizard--stepName"
               style="--text-line-clamp: 2; width: 200px;"
             >
-              connectors.ceAzure.steps.testConnection
+              connectors.ceAzure.testConnection.heading
             </p>
           </div>
         </div>
@@ -1427,7 +1427,7 @@ exports[`Create Azure connector Wizard should render feature cards, render servi
               class="StyledProps--font Text--lineclamp StyledProps--main StepWizard--stepName"
               style="--text-line-clamp: 2; width: 200px;"
             >
-              connectors.ceAzure.steps.testConnection
+              connectors.ceAzure.testConnection.heading
             </p>
           </div>
         </div>
@@ -2137,7 +2137,7 @@ exports[`Create Azure connector Wizard should render feature cards, render servi
               class="StyledProps--font Text--lineclamp StyledProps--main StepWizard--stepName"
               style="--text-line-clamp: 2; width: 200px;"
             >
-              connectors.ceAzure.steps.testConnection
+              connectors.ceAzure.testConnection.heading
             </p>
           </div>
         </div>
@@ -2590,7 +2590,7 @@ exports[`Create Azure connector Wizard should render feature cards, render servi
               class="StyledProps--font Text--lineclamp StyledProps--main StepWizard--stepName"
               style="--text-line-clamp: 2; width: 200px;"
             >
-              connectors.ceAzure.steps.testConnection
+              connectors.ceAzure.testConnection.heading
             </p>
           </div>
         </div>
@@ -2599,176 +2599,127 @@ exports[`Create Azure connector Wizard should render feature cards, render servi
         >
            
           <div
-            class="Layout--vertical Layout--layout-spacing-medium StyledProps--main stepContainer"
+            class="Layout--vertical StyledProps--main"
           >
-            <h2
-              class="StyledProps--font StyledProps--font-h2 StyledProps--main header"
-              level="2"
-            >
-              connectors.ceAzure.testConnection.heading
-            </h2>
             <div
-              class="Layout--vertical Layout--layout-spacing-large StyledProps--main StepsProgress--stepsProgress"
-              id="steps-progress"
+              class="Layout--vertical StyledProps--main"
             >
+              <p
+                class="StyledProps--font StyledProps--main StyledProps--font-variation-h3 StyledProps--color StyledProps--color-grey800"
+              >
+                connectors.stepThreeName
+              </p>
               <div
-                class="StepsProgress--progressBar"
+                class="StyledProps--font StyledProps--main content contentMinHeight StyledProps--padding-top-xxlarge"
               >
                 <div
-                  class="bp3-progress-bar bp3-intent-danger bp3-no-stripes StepsProgress--progressHeight"
+                  class="Layout--vertical Layout--layout-spacing-large StyledProps--main StepsProgress--stepsProgress"
+                  id="steps-progress"
                 >
                   <div
-                    class="bp3-progress-meter"
-                    style="width: 50%;"
-                  />
-                </div>
-              </div>
-              <div
-                class="Layout--vertical Layout--layout-spacing-large StyledProps--main"
-              >
-                <div
-                  class="StepsProgress--stepWrap"
-                >
-                  <span
-                    class="bp3-icon bp3-icon-error StyledProps--main StyledProps--color StyledProps--color-red500 StyledProps--margin-right-small"
-                    icon="error"
+                    class="StepsProgress--progressBar"
                   >
-                    <svg
-                      data-icon="error"
-                      height="16"
-                      viewBox="0 0 16 16"
-                      width="16"
+                    <div
+                      class="bp3-progress-bar bp3-intent-danger bp3-no-stripes StepsProgress--progressHeight"
                     >
-                      <desc>
-                        error
-                      </desc>
-                      <path
-                        d="M7.99-.01c-4.42 0-8 3.58-8 8s3.58 8 8 8 8-3.58 8-8-3.58-8-8-8zm1 13h-2v-2h2v2zm0-3h-2v-7h2v7z"
-                        fill-rule="evenodd"
+                      <div
+                        class="bp3-progress-meter"
+                        style="width: 100%;"
                       />
-                    </svg>
-                  </span>
-                  <div
-                    class="StyledProps--font StyledProps--main StepsProgress--stepLabelContainer"
-                    style=""
-                  >
-                    connectors.ceAzure.testConnection.validatePermission
+                    </div>
                   </div>
-                </div>
-                <div
-                  class="StepsProgress--stepWrap"
-                >
-                  <span
-                    class="bp3-icon bp3-icon-blank StyledProps--main StyledProps--color StyledProps--color-yellow500 StyledProps--margin-right-small"
-                    icon="blank"
-                  >
-                    <svg
-                      data-icon="blank"
-                      height="16"
-                      viewBox="0 0 16 16"
-                      width="16"
-                    >
-                      <desc>
-                        blank
-                      </desc>
-                    </svg>
-                  </span>
                   <div
-                    class="StyledProps--font StyledProps--main StepsProgress--stepLabelContainer"
-                    style="font-weight: normal;"
+                    class="Layout--vertical Layout--layout-spacing-large StyledProps--main"
                   >
-                    connectors.ceAzure.testConnection.verifyExport
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div
-              class="connectorErrorBox"
-            >
-              <div
-                class="Layout--vertical Layout--layout-spacing-medium StyledProps--main"
-              >
-                <span
-                  class="StyledProps--font StyledProps--main StyledProps--inline StyledProps--color StyledProps--color-red700"
-                  style="display: inline-flex; align-items: center;"
-                >
-                  <span
-                    class="bp3-icon StyledProps--main Text--icon StyledProps--padding-right-small StyledProps--color StyledProps--color-red700"
-                    data-icon="circle-cross"
-                  >
-                    <svg
-                      height="18"
-                      viewBox="0 0 13 13"
-                      width="18"
-                      xmlns="http://www.w3.org/2000/svg"
+                    <div
+                      class="StepsProgress--stepWrap"
                     >
-                      <path
-                        clip-rule="evenodd"
-                        d="M.167 6.501a6.333 6.333 0 1012.666 0 6.333 6.333 0 00-12.666 0zm4.071-3.003l2.26 2.263 2.264-2.263c.495-.495 1.236.248.741.743L7.24 6.504l2.254 2.258c.495.495-.247 1.238-.742.743L6.497 7.246 4.238 9.505c-.495.495-1.236-.249-.741-.744l2.258-2.258-2.259-2.262c-.494-.495.248-1.238.742-.743z"
-                        fill-rule="evenodd"
-                      />
-                    </svg>
-                  </span>
-                  Connector authentication failed
-                </span>
-                <div
-                  class="StyledProps--font StyledProps--main"
-                >
-                  <span
-                    class="StyledProps--font StyledProps--main StyledProps--inline StyledProps--font-small StyledProps--color StyledProps--color-grey700"
-                    style="display: inline-flex; align-items: center;"
-                  >
-                    <span
-                      class="bp3-icon StyledProps--main Text--icon StyledProps--padding-right-small"
-                      data-icon="info"
-                    >
-                      <svg
-                        height="16"
-                        viewBox="0 0 12 12"
-                        width="16"
-                        xmlns="http://www.w3.org/2000/svg"
+                      <span
+                        class="bp3-icon bp3-icon-error StyledProps--main StyledProps--color StyledProps--color-red500 StyledProps--margin-right-small"
+                        icon="error"
                       >
-                        <path
-                          clip-rule="evenodd"
-                          d="M0 6a6 6 0 1012 0A6 6 0 000 6zm.75 0a5.25 5.25 0 1010.5 0A5.25 5.25 0 00.75 6zm4.206 3.104v.646h2.682v-.646l-.836-.144V4.203H4.956v.65l.836.144V8.96l-.836.144zm1.846-7.352v1.03h-1.01v-1.03h1.01z"
-                          fill-rule="evenodd"
-                        />
-                      </svg>
-                    </span>
-                    Something went wrong
-                  </span>
+                        <svg
+                          data-icon="error"
+                          height="16"
+                          viewBox="0 0 16 16"
+                          width="16"
+                        >
+                          <desc>
+                            error
+                          </desc>
+                          <path
+                            d="M7.99-.01c-4.42 0-8 3.58-8 8s3.58 8 8 8 8-3.58 8-8-3.58-8-8-8zm1 13h-2v-2h2v2zm0-3h-2v-7h2v7z"
+                            fill-rule="evenodd"
+                          />
+                        </svg>
+                      </span>
+                      <div
+                        class="StyledProps--font StyledProps--main StepsProgress--stepLabelContainer"
+                        style=""
+                      >
+                        <div
+                          class="Layout--vertical StyledProps--main"
+                          style="width: 100%;"
+                        >
+                          <p
+                            class="StyledProps--font StyledProps--main StyledProps--color StyledProps--color-grey600"
+                          >
+                            connectors.testConnectionStep.validationText.azure
+                          </p>
+                          <p
+                            class="StyledProps--font StyledProps--main StyledProps--padding-top-small"
+                          >
+                            connectors.testConnectionStep.placeholderError
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
-            <button
-              class="bp3-button Button--button StyledProps--font StyledProps--main continueAndPreviousBtns StyledProps--intent-primary Button--with-current-color Button--withRightIcon"
-              type="button"
+            <div
+              class="Layout--horizontal Layout--layout-spacing-large StyledProps--main btnWrapper"
             >
-              <span
-                class="bp3-button-text"
+              <button
+                class="bp3-button bp3-disabled bp3-loading Button--button StyledProps--font StyledProps--main StyledProps--intent-primary Button--with-current-color Button--variation Button--variation-secondary"
+                disabled=""
+                tabindex="-1"
+                type="button"
               >
-                finish
-              </span>
-              <span
-                class="bp3-icon bp3-icon-chevron-right StyledProps--main"
-                icon="chevron-right"
-              >
-                <svg
-                  data-icon="chevron-right"
-                  height="16"
-                  viewBox="0 0 16 16"
-                  width="16"
+                <div
+                  class="bp3-spinner bp3-button-spinner"
                 >
-                  <desc>
-                    chevron-right
-                  </desc>
-                  <path
-                    d="M10.71 7.29l-4-4a1.003 1.003 0 00-1.42 1.42L8.59 8 5.3 11.29c-.19.18-.3.43-.3.71a1.003 1.003 0 001.71.71l4-4c.18-.18.29-.43.29-.71 0-.28-.11-.53-.29-.71z"
-                    fill-rule="evenodd"
-                  />
-                </svg>
-              </span>
-            </button>
+                  <div
+                    class="bp3-spinner-animation"
+                  >
+                    <svg
+                      height="20"
+                      stroke-width="16.00"
+                      viewBox="-3.00 -3.00 106.00 106.00"
+                      width="20"
+                    >
+                      <path
+                        class="bp3-spinner-track"
+                        d="M 50,50 m 0,-45 a 45,45 0 1 1 0,90 a 45,45 0 1 1 0,-90"
+                      />
+                      <path
+                        class="bp3-spinner-head"
+                        d="M 50,50 m 0,-45 a 45,45 0 1 1 0,90 a 45,45 0 1 1 0,-90"
+                        pathLength="280"
+                        stroke-dasharray="280 280"
+                        stroke-dashoffset="210"
+                      />
+                    </svg>
+                  </div>
+                </div>
+                <span
+                  class="bp3-button-text"
+                >
+                  finish
+                </span>
+              </button>
+            </div>
           </div>
         </div>
         <span
@@ -2914,7 +2865,7 @@ exports[`Create Azure connector Wizard should render overview step 1`] = `
               class="StyledProps--font Text--lineclamp StyledProps--main StepWizard--stepName"
               style="--text-line-clamp: 2; width: 200px;"
             >
-              connectors.ceAzure.steps.testConnection
+              connectors.ceAzure.testConnection.heading
             </p>
           </div>
         </div>
@@ -3375,7 +3326,7 @@ exports[`Create Azure connector Wizard should throw an error when connectors alr
               class="StyledProps--font Text--lineclamp StyledProps--main StepWizard--stepName"
               style="--text-line-clamp: 2; width: 200px;"
             >
-              connectors.ceAzure.steps.testConnection
+              connectors.ceAzure.testConnection.heading
             </p>
           </div>
         </div>

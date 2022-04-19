@@ -6,7 +6,7 @@
  */
 
 import React, { FC } from 'react'
-import { Button, Color, Layout } from '@harness/uicore'
+import { Button, ButtonVariation, Color, Layout } from '@harness/uicore'
 import { Spinner } from '@blueprintjs/core'
 import { useStrings } from 'framework/strings'
 
@@ -30,6 +30,7 @@ const FlagSettingsFormButtons: FC<FlagSettingsFormButtonsProps> = ({ submitting,
         type="submit"
         text={getString('saveChanges')}
         intent="primary"
+        variation={ButtonVariation.PRIMARY}
         disabled={submitting}
         onClick={e => {
           e.preventDefault()
@@ -39,6 +40,7 @@ const FlagSettingsFormButtons: FC<FlagSettingsFormButtonsProps> = ({ submitting,
       <Button
         type="reset"
         text={getString('cancel')}
+        variation={ButtonVariation.SECONDARY}
         disabled={submitting}
         onClick={e => {
           e.preventDefault()

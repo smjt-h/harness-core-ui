@@ -79,7 +79,13 @@ const StepSuccessVerification: React.FC<StepProps<K8sDelegateWizardData> & StepS
         <Button
           id="stepReviewScriptBackButton"
           text={getString('back')}
-          onClick={onClickBack}
+          onClick={() => {
+            onClickBack()
+            trackEvent(DelegateActions.VerificationBack, {
+              category: Category.DELEGATE,
+              data: props.prevStepData
+            })
+          }}
           icon="chevron-left"
           margin={{ right: 'small' }}
         />
@@ -90,7 +96,7 @@ const StepSuccessVerification: React.FC<StepProps<K8sDelegateWizardData> & StepS
           onClick={() => {
             trackEvent(DelegateActions.SaveCreateDelegate, {
               category: Category.DELEGATE,
-              ...props.prevStepData
+              data: props.prevStepData
             })
             props?.onClose()
           }}

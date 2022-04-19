@@ -29,7 +29,7 @@
 
 .runPipelineErrorPopover {
   padding: 0 var(--spacing-medium);
-  background: white;
+  background: var(--white);
   color: var(--red-400);
   font-weight: 500;
 }
@@ -37,6 +37,5 @@
 .sticky {
   position: fixed;
   top: 97px;
-  width: 100% !important;
   z-index: 10;
 }

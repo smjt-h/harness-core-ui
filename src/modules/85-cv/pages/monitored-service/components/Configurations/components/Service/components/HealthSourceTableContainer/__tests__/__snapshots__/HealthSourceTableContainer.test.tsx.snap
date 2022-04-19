@@ -3,7 +3,7 @@
 exports[`Validate should close drawer 1`] = `
 <div>
   <div
-    class="Layout--vertical StyledProps--main StyledProps--margin-xxlarge"
+    class="Layout--vertical StyledProps--main tooltipStyle StyledProps--margin-xxlarge"
   >
     <div
       class="bp3-card bp3-elevation-0 Card--card sectionCard shadow"
@@ -231,7 +231,7 @@ exports[`Validate should close drawer 1`] = `
 exports[`Validate should render HealthSourceTableContainer with data 1`] = `
 <div>
   <div
-    class="Layout--vertical StyledProps--main StyledProps--margin-xxlarge"
+    class="Layout--vertical StyledProps--main tooltipStyle StyledProps--margin-xxlarge"
   >
     <div
       class="bp3-card bp3-elevation-0 Card--card sectionCard shadow"
@@ -459,7 +459,7 @@ exports[`Validate should render HealthSourceTableContainer with data 1`] = `
 exports[`Validate should render HealthSourceTableContainer with no data 1`] = `
 <div>
   <div
-    class="Layout--vertical StyledProps--main StyledProps--margin-xxlarge"
+    class="Layout--vertical StyledProps--main tooltipStyle StyledProps--margin-xxlarge"
   >
     <div
       class="bp3-card bp3-elevation-0 Card--card sectionCard shadow"

@@ -115,7 +115,7 @@ export const getEditViewValidateFieldsConfig = (buildInfrastructureType: K8sDire
   },
   {
     name: 'spec.privileged',
-    label: 'ci.privileged',
+    label: 'pipeline.buildInfra.privileged',
     type: ValidationFieldTypes.Boolean
   },
   {

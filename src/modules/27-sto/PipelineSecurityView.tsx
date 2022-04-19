@@ -11,3 +11,5 @@ import { RemotePipelineSecurityView, STORemoteComponentMounter } from './STOApp'
 export const PipelineSecurityView: React.FC<Record<string, unknown>> = props => (
   <STORemoteComponentMounter component={<RemotePipelineSecurityView {...props} />} />
 )
+
+export default PipelineSecurityView

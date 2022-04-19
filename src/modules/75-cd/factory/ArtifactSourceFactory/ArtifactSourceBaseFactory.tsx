@@ -6,6 +6,7 @@
  */
 
 import { ArtifactoryArtifactSource } from '@cd/components/PipelineSteps/K8sServiceSpec/ArtifactSource/ArtifactoryArtifactSource/ArtifactoryArtifactSource'
+import { CustomArtifactSource } from '@cd/components/PipelineSteps/K8sServiceSpec/ArtifactSource/CustomArtifactSource/CustomArtifactSource'
 import { DockerArtifactSource } from '@cd/components/PipelineSteps/K8sServiceSpec/ArtifactSource/DockerArtifactSource/DockerArtifactSource'
 import { ECRArtifactSource } from '@cd/components/PipelineSteps/K8sServiceSpec/ArtifactSource/ECRArtifactSource/ECRArtifactSource'
 import { GCRArtifactSource } from '@cd/components/PipelineSteps/K8sServiceSpec/ArtifactSource/GCRArtifactSource/GCRArtifactSource'
@@ -40,4 +41,5 @@ artifactSourceBaseFactory.registerArtifactSource(new GCRArtifactSource())
 artifactSourceBaseFactory.registerArtifactSource(new ECRArtifactSource())
 artifactSourceBaseFactory.registerArtifactSource(new NexusArtifactSource())
 artifactSourceBaseFactory.registerArtifactSource(new ArtifactoryArtifactSource())
+artifactSourceBaseFactory.registerArtifactSource(new CustomArtifactSource())
 export default artifactSourceBaseFactory

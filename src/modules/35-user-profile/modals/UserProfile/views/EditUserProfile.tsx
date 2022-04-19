@@ -24,6 +24,7 @@ import { useStrings } from 'framework/strings'
 import { useAppStore } from 'framework/AppStore/AppStoreContext'
 import { UserInfo, useUpdateUserInfo } from 'services/cd-ng'
 import { useToaster } from '@common/exports'
+import useRBACError from '@rbac/utils/useRBACError/useRBACError'
 
 interface UserProfileData {
   user: UserInfo
@@ -34,6 +35,7 @@ interface UserProfileData {
 const EditUserProfile: React.FC<UserProfileData> = props => {
   const { user, onSubmit, onClose } = props
   const { getString } = useStrings()
+  const { getRBACErrorMessage } = useRBACError()
   const [modalErrorHandler, setModalErrorHandler] = useState<ModalErrorHandlerBinding>()
   const { mutate: updateProfile, loading } = useUpdateUserInfo({})
   const { showError, showSuccess } = useToaster()
@@ -51,7 +53,7 @@ const EditUserProfile: React.FC<UserProfileData> = props => {
       }
     } catch (e) {
       /* istanbul ignore next */
-      modalErrorHandler?.showDanger(e.data?.message || e.message)
+      modalErrorHandler?.showDanger(getRBACErrorMessage(e))
     }
   }
 

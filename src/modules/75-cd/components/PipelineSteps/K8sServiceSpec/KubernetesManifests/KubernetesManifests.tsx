@@ -9,8 +9,7 @@ import React, { useEffect } from 'react'
 import { get, isEmpty } from 'lodash-es'
 import { useParams } from 'react-router-dom'
 import cx from 'classnames'
-import { Icon, Text } from '@harness/uicore'
-import { Tooltip } from '@blueprintjs/core'
+import { Text } from '@harness/uicore'
 
 import { useStrings } from 'framework/strings'
 import manifestSourceBaseFactory from '@cd/factory/ManifestSourceFactory/ManifestSourceBaseFactory'
@@ -18,7 +17,7 @@ import type { GitQueryParams, InputSetPathProps, PipelineType } from '@common/in
 import { useQueryParams } from '@common/hooks'
 import type { ManifestConfig } from 'services/cd-ng'
 import type { KubernetesManifestsProps } from '../K8sServiceSpecInterface'
-import { getNonRuntimeFields, isRuntimeMode } from '../K8sServiceSpecHelper'
+import { isRuntimeMode } from '../K8sServiceSpecHelper'
 import { fromPipelineInputTriggerTab, getManifestTriggerSetValues } from '../ManifestSource/ManifestSourceUtils'
 import css from './KubernetesManifests.module.scss'
 
@@ -59,19 +58,8 @@ const ManifestInputField = (props: ManifestInputFieldProps): React.ReactElement 
   }
   return (
     <div key={props.manifest?.identifier}>
-      <Text className={css.inputheader} margin={{ top: 'medium', bottom: 'small' }}>
+      <Text className={css.inputheader} margin={{ top: 'medium' }}>
         {!props.fromTrigger && get(props.manifest, 'identifier', '')}
-        {!isEmpty(
-          JSON.parse(getNonRuntimeFields(manifestDefaultValue?.spec, get(props.template, `${props.manifestPath}.spec`)))
-        ) && (
-          <Tooltip
-            position="top"
-            className={css.manifestInfoTooltip}
-            content={getNonRuntimeFields(manifestDefaultValue?.spec, get(props.template, `${props.manifestPath}.spec`))}
-          >
-            <Icon name="info" />
-          </Tooltip>
-        )}
       </Text>
       {manifestSource &&
         manifestSource.renderContent({

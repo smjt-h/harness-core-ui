@@ -24,6 +24,7 @@ import { useToaster } from '@common/components'
 import type { AccountPathProps } from '@common/interfaces/RouteInterfaces'
 import { useUpdateWhitelistedDomains } from 'services/cd-ng'
 import { useStrings } from 'framework/strings'
+import useRBACError from '@rbac/utils/useRBACError/useRBACError'
 
 interface Props {
   onSubmit?: () => void
@@ -36,6 +37,7 @@ interface FormValues {
 }
 
 const RestrictEmailDomainsForm: React.FC<Props> = ({ onSubmit, onCancel, whitelistedDomains }) => {
+  const { getRBACErrorMessage } = useRBACError()
   const { getString } = useStrings()
   const { showSuccess } = useToaster()
   const { accountId } = useParams<AccountPathProps>()
@@ -56,7 +58,7 @@ const RestrictEmailDomainsForm: React.FC<Props> = ({ onSubmit, onCancel, whiteli
         onSubmit?.()
       }
     } catch (e) {
-      /* istanbul ignore next */ modalErrorHandler?.showDanger(e.data?.message || e.message)
+      /* istanbul ignore next */ modalErrorHandler?.showDanger(getRBACErrorMessage(e))
     }
   }
 

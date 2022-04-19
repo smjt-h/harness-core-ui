@@ -1,10 +1,3 @@
-/*
- * Copyright 2022 Harness Inc. All rights reserved.
- * Use of this source code is governed by the PolyForm Shield 1.0.0 license
- * that can be found in the licenses directory at the root of this repository, also available at
- * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
- */
-
 import gql from 'graphql-tag'
 import * as Urql from 'urql'
 export type Maybe<T> = T | null
@@ -87,6 +80,13 @@ export const RecommendationsDocument = gql`
         resourceName
         monthlyCost
         monthlySaving
+        recommendationDetails {
+          ... on NodeRecommendationDTO {
+            recommended {
+              provider
+            }
+          }
+        }
       }
     }
   }
@@ -223,6 +223,35 @@ export const FetchCcmMetaDataDocument = gql`
 
 export function useFetchCcmMetaDataQuery(options?: Omit<Urql.UseQueryArgs<FetchCcmMetaDataQueryVariables>, 'query'>) {
   return Urql.useQuery<FetchCcmMetaDataQuery>({ query: FetchCcmMetaDataDocument, ...options })
+}
+export const FetchNodeRecommendationRequestDocument = gql`
+  query FetchNodeRecommendationRequest(
+    $nodePoolId: NodePoolIdInput!
+    $startTime: OffsetDateTime!
+    $endTime: OffsetDateTime!
+  ) {
+    nodeRecommendationRequest(nodePoolId: $nodePoolId, startTime: $startTime, endTime: $endTime) {
+      recommendClusterRequest {
+        maxNodes
+        minNodes
+        sumCpu
+        sumMem
+      }
+      totalResourceUsage {
+        maxcpu
+        maxmemory
+      }
+    }
+  }
+`
+
+export function useFetchNodeRecommendationRequestQuery(
+  options: Omit<Urql.UseQueryArgs<FetchNodeRecommendationRequestQueryVariables>, 'query'> = {}
+) {
+  return Urql.useQuery<FetchNodeRecommendationRequestQuery>({
+    query: FetchNodeRecommendationRequestDocument,
+    ...options
+  })
 }
 export const FetchNodeSummaryDocument = gql`
   query FetchNodeSummary(
@@ -787,6 +816,10 @@ export const FetchRecommendationDocument = gql`
         }
       }
       ... on NodeRecommendationDTO {
+        totalResourceUsage {
+          maxcpu
+          maxmemory
+        }
         current {
           instanceCategory
           nodePools {
@@ -1192,6 +1225,13 @@ export type RecommendationsQuery = {
       resourceName: string | null
       monthlyCost: number | null
       monthlySaving: number | null
+      recommendationDetails:
+        | {
+            __typename?: 'NodeRecommendationDTO'
+            recommended: { __typename?: 'RecommendationResponse'; provider: string | null } | null
+          }
+        | { __typename?: 'WorkloadRecommendationDTO' }
+        | null
     } | null> | null
   } | null
 }
@@ -1319,6 +1359,27 @@ export type FetchCcmMetaDataQuery = {
     defaultGcpPerspectiveId: string | null
     defaultClusterPerspectiveId: string | null
   } | null
+}
+
+export type FetchNodeRecommendationRequestQueryVariables = Exact<{
+  nodePoolId: NodePoolIdInput
+  startTime: Scalars['OffsetDateTime']
+  endTime: Scalars['OffsetDateTime']
+}>
+
+export type FetchNodeRecommendationRequestQuery = {
+  __typename?: 'Query'
+  nodeRecommendationRequest: Maybe<{
+    __typename?: 'RecommendNodePoolClusterRequest'
+    recommendClusterRequest: Maybe<{
+      __typename?: 'RecommendClusterRequest'
+      maxNodes: Maybe<any>
+      minNodes: Maybe<any>
+      sumCpu: Maybe<number>
+      sumMem: Maybe<number>
+    }>
+    totalResourceUsage: Maybe<{ __typename?: 'TotalResourceUsage'; maxcpu: number; maxmemory: number }>
+  }>
 }
 
 export type FetchNodeSummaryQueryVariables = Exact<{
@@ -1762,6 +1823,7 @@ export type FetchRecommendationQuery = {
     | {
         __typename?: 'NodeRecommendationDTO'
         id: string | null
+        totalResourceUsage: { __typename?: 'TotalResourceUsage'; maxcpu: number; maxmemory: number } | null
         current: {
           __typename?: 'RecommendationResponse'
           instanceCategory: InstanceCategory | null
@@ -2562,6 +2624,7 @@ export type NodeRecommendationDto = {
   nodePoolId: Maybe<NodePoolId>
   recommended: Maybe<RecommendationResponse>
   resourceRequirement: Maybe<RecommendClusterRequest>
+  totalResourceUsage: Maybe<TotalResourceUsage>
 }
 
 export type PerspectiveData = {
@@ -2771,7 +2834,7 @@ export type Query = {
   /** Fetch CCM MetaData for account */
   ccmMetaData: Maybe<CcmMetaData>
   instancedata: Maybe<InstanceDataDemo>
-  nodeRecommendationRequest: Maybe<RecommendClusterRequest>
+  nodeRecommendationRequest: Maybe<RecommendNodePoolClusterRequest>
   /** Table for perspective */
   overviewTimeSeriesStats: Maybe<PerspectiveTimeSeriesData>
   /** Fields for perspective explorer */
@@ -2965,6 +3028,12 @@ export type RecommendClusterRequest = {
   zone: Maybe<Scalars['String']>
 }
 
+export type RecommendNodePoolClusterRequest = {
+  __typename?: 'RecommendNodePoolClusterRequest'
+  recommendClusterRequest: Maybe<RecommendClusterRequest>
+  totalResourceUsage: Maybe<TotalResourceUsage>
+}
+
 export type RecommendationItemDto = {
   __typename?: 'RecommendationItemDTO'
   clusterName: Maybe<Scalars['String']>
@@ -3080,6 +3149,14 @@ export type TimeSeriesDataPoints = {
   __typename?: 'TimeSeriesDataPoints'
   time: Scalars['Long']
   values: Array<Maybe<DataPoint>>
+}
+
+export type TotalResourceUsage = {
+  __typename?: 'TotalResourceUsage'
+  maxcpu: Scalars['Float']
+  maxmemory: Scalars['Float']
+  sumcpu: Scalars['Float']
+  summemory: Scalars['Float']
 }
 
 export enum ViewChartType {

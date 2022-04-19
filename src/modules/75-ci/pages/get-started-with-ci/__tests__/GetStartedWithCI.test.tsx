@@ -7,8 +7,8 @@
 
 import React from 'react'
 
-import { render } from '@testing-library/react'
-import { TestWrapper } from '@common/utils/testUtils'
+import { fireEvent, render, getByText as getByTextBody } from '@testing-library/react'
+import { findDialogContainer, TestWrapper } from '@common/utils/testUtils'
 import GetStartedWithCI from '../GetStartedWithCI'
 
 describe('Test Get Started With CI', () => {
@@ -24,5 +24,9 @@ describe('Test Get Started With CI', () => {
     )
     expect(getByText('ci.getStartedWithCI.chooseAnOption')).toBeTruthy()
     expect(getByText('ci.getStartedWithCI.configInfra')).toBeTruthy()
+    const runButton = getByText('runPipelineText')
+    fireEvent.click(runButton)
+    const dialog = findDialogContainer() as HTMLElement
+    expect(getByTextBody(dialog, 'ci.getStartedWithCI.provisionSecureEnv')).toBeTruthy()
   })
 })

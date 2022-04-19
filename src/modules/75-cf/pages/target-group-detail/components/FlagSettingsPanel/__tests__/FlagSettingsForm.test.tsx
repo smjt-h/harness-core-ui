@@ -11,8 +11,9 @@ import { getByRole, render, RenderResult, screen, waitFor } from '@testing-libra
 import userEvent from '@testing-library/user-event'
 import { TestWrapper } from '@common/utils/testUtils'
 import * as cfServices from 'services/cf'
+import { PERCENTAGE_ROLLOUT_VALUE } from '@cf/constants'
 import type { TargetGroupFlagsMap } from '../../../TargetGroupDetailPage.types'
-import { mockTargetGroup, mockTargetGroupFlagsMap } from '../../../__tests__/mocks'
+import { mockFlagWithPercentageRollout, mockTargetGroup, mockTargetGroupFlagsMap } from '../../../__tests__/mocks'
 import FlagSettingsForm, { FlagSettingsFormProps } from '../FlagSettingsForm'
 
 const renderComponent = (props: Partial<FlagSettingsFormProps> = {}): RenderResult =>
@@ -177,7 +178,7 @@ describe('FlagSettingsForm', () => {
     oddFlags.forEach(flagName => expect(screen.getByText(flagName)).toBeInTheDocument())
     evenFlags.forEach(flagName => expect(screen.getByText(flagName)).toBeInTheDocument())
 
-    await userEvent.type(searchBox, 'odd', { delay: 100 })
+    await userEvent.type(searchBox, 'odd')
 
     await waitFor(() => {
       oddFlags.forEach(flagName => expect(screen.getByText(flagName)).toBeInTheDocument())
@@ -185,7 +186,7 @@ describe('FlagSettingsForm', () => {
     })
 
     userEvent.clear(searchBox)
-    await userEvent.type(searchBox, 'even', { delay: 100 })
+    await userEvent.type(searchBox, 'even')
 
     await waitFor(() => {
       oddFlags.forEach(flagName => expect(screen.queryByText(flagName)).not.toBeInTheDocument())
@@ -262,5 +263,55 @@ describe('FlagSettingsForm', () => {
     userEvent.click(screen.getByRole('button', { name: 'cf.segmentDetail.addFlag' }))
 
     await waitFor(() => expect(openAddFlagDialogMock).toHaveBeenCalled())
+  })
+
+  test('it should display the percentage rollout UI when Percentage Rollout is set as variation', async () => {
+    const targetGroupFlagsMap = {
+      [mockFlagWithPercentageRollout.identifier]: {
+        identifier: mockFlagWithPercentageRollout.identifier,
+        name: mockFlagWithPercentageRollout.name,
+        variation: PERCENTAGE_ROLLOUT_VALUE,
+        environment: 'e1',
+        project: 'p1',
+        type: 'CONDITION',
+        ruleId: 'r3',
+        flag: mockFlagWithPercentageRollout
+      }
+    } as TargetGroupFlagsMap
+
+    renderComponent({ targetGroupFlagsMap })
+
+    await waitFor(() => {
+      expect(screen.getByTestId('variation-percentage-rollout')).toBeInTheDocument()
+    })
+  })
+
+  test('it should display the percentage rollout error when the weight sum exceeds 100%', async () => {
+    const targetGroupFlagsMap = {
+      [mockFlagWithPercentageRollout.identifier]: {
+        identifier: mockFlagWithPercentageRollout.identifier,
+        name: mockFlagWithPercentageRollout.name,
+        variation: PERCENTAGE_ROLLOUT_VALUE,
+        environment: 'e1',
+        project: 'p1',
+        type: 'CONDITION',
+        ruleId: 'r3',
+        flag: mockFlagWithPercentageRollout
+      }
+    } as TargetGroupFlagsMap
+
+    renderComponent({ targetGroupFlagsMap })
+
+    await waitFor(() => {
+      expect(screen.getByTestId('variation-percentage-rollout')).toBeInTheDocument()
+      expect(screen.queryByText('cf.percentageRollout.invalidTotalError')).not.toBeInTheDocument()
+    })
+
+    const firstWeightInput = screen.getAllByRole('spinbutton')[0]
+
+    userEvent.clear(firstWeightInput)
+    await userEvent.type(firstWeightInput, '101')
+
+    await waitFor(() => expect(screen.getByText('cf.percentageRollout.invalidTotalError')).toBeInTheDocument())
   })
 })

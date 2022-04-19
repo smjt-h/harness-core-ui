@@ -31,6 +31,7 @@ interface CostBucketStepProps {
     total: number
     current: number
     defaultOpen: boolean
+    isComingSoon?: boolean
   }
 }
 

@@ -33,6 +33,7 @@ import type {
   StepElementConfig
 } from 'services/cd-ng'
 import { useStrings } from 'framework/strings'
+import { FormMultiTypeCheckboxField, Separator } from '@common/components'
 import { MultiTypeTextField } from '@common/components/MultiTypeText/MultiTypeText'
 import MultiTypeListInputSet from '@common/components/MultiTypeListInputSet/MultiTypeListInputSet'
 import MultiTypeDelegateSelector from '@common/components/MultiTypeDelegateSelector/MultiTypeDelegateSelector'
@@ -420,6 +421,11 @@ export function StageInputSetFormInternal({
     accountId: string
   }>()
 
+  const containerSecurityContextFields = ['containerSecurityContext', 'runAsUser']
+  const deploymentStageTemplateInfraKeys = Object.keys((deploymentStageTemplate.infrastructure as any)?.spec || {})
+  const hasContainerSecurityContextFields = containerSecurityContextFields.some(field =>
+    deploymentStageTemplateInfraKeys.includes(field)
+  )
   const renderMultiTypeMapInputSet = React.useCallback(
     (fieldName: string, stringKey: keyof StringsMap): React.ReactElement => (
       <MultiTypeMapInputSet
@@ -441,6 +447,68 @@ export function StageInputSetFormInternal({
       />
     ),
     []
+  )
+
+  const renderMultiTypeCheckboxInputSet = React.useCallback(
+    ({
+      name,
+      labelKey,
+      tooltipId,
+      defaultTrue
+    }: {
+      name: string
+      labelKey: keyof StringsMap
+      tooltipId: string
+      defaultTrue?: boolean
+    }): React.ReactElement => (
+      <FormMultiTypeCheckboxField
+        name={name}
+        label={getString(labelKey)}
+        defaultTrue={defaultTrue}
+        multiTypeTextbox={{
+          expressions,
+          allowableTypes,
+          disabled: readonly
+        }}
+        tooltipProps={{ dataTooltipId: tooltipId }}
+        setToFalseWhenEmpty={true}
+        disabled={readonly}
+      />
+    ),
+    [expressions]
+  )
+
+  const renderMultiTypeListInputSet = React.useCallback(
+    ({
+      name,
+      labelKey,
+      tooltipId
+    }: {
+      name: string
+      labelKey: keyof StringsMap
+      tooltipId: string
+    }): React.ReactElement => (
+      <Container className={stepCss.bottomMargin3}>
+        <MultiTypeListInputSet
+          name={name}
+          multiTextInputProps={{
+            expressions,
+            allowableTypes
+          }}
+          formik={formik}
+          multiTypeFieldSelectorProps={{
+            label: (
+              <Text font={{ variation: FontVariation.FORM_LABEL }} tooltipProps={{ dataTooltipId: tooltipId }}>
+                {getString(labelKey)}
+              </Text>
+            ),
+            allowedTypes: [MultiTypeInputType.FIXED]
+          }}
+          disabled={readonly}
+        />
+      </Container>
+    ),
+    [expressions]
   )
 
   return (
@@ -590,26 +658,6 @@ export function StageInputSetFormInternal({
                 disabled={readonly}
               />
             )}
-            {(deploymentStageTemplate.infrastructure as any).spec?.runAsUser && (
-              <Container className={stepCss.bottomMargin5}>
-                <MultiTypeTextField
-                  label={
-                    <Text font={{ variation: FontVariation.FORM_LABEL }} margin={{ bottom: 'xsmall' }}>
-                      {getString('pipeline.stepCommonFields.runAsUser')}
-                    </Text>
-                  }
-                  name={`${isEmpty(path) ? '' : `${path}.`}infrastructure.spec.runAsUser`}
-                  multiTextInputProps={{
-                    multiTextInputProps: {
-                      expressions,
-                      allowableTypes: allowableTypes
-                    },
-                    disabled: readonly,
-                    placeholder: '1000'
-                  }}
-                />
-              </Container>
-            )}
             {(deploymentStageTemplate.infrastructure as any).spec?.initTimeout && (
               <FormMultiTypeDurationField
                 label={
@@ -632,6 +680,105 @@ export function StageInputSetFormInternal({
               )}
             {(deploymentStageTemplate.infrastructure as any).spec?.labels &&
               renderMultiTypeMapInputSet(`${isEmpty(path) ? '' : `${path}.`}infrastructure.spec.labels`, 'ci.labels')}
+            {(deploymentStageTemplate.infrastructure as any).spec?.automountServiceAccountToken &&
+              renderMultiTypeCheckboxInputSet({
+                name: `${isEmpty(path) ? '' : `${path}.`}infrastructure.spec.automountServiceAccountToken`,
+                labelKey: 'pipeline.buildInfra.automountServiceAccountToken',
+                tooltipId: 'automountServiceAccountToken',
+                defaultTrue: true
+              })}
+            {(deploymentStageTemplate.infrastructure as any).spec?.priorityClassName && (
+              <Container className={stepCss.bottomMargin3}>
+                <MultiTypeTextField
+                  label={
+                    <Text font={{ variation: FontVariation.FORM_LABEL }} margin={{ bottom: 'xsmall' }}>
+                      {getString('pipeline.buildInfra.priorityClassName')}
+                    </Text>
+                  }
+                  name={`${isEmpty(path) ? '' : `${path}.`}infrastructure.spec.priorityClassName`}
+                  multiTextInputProps={{
+                    multiTextInputProps: {
+                      expressions,
+                      allowableTypes: allowableTypes
+                    },
+                    disabled: readonly
+                  }}
+                />
+              </Container>
+            )}
+            {hasContainerSecurityContextFields && (
+              <>
+                <Separator topSeparation={16} bottomSeparation={8} />
+
+                <div className={cx(css.tabSubHeading, stepCss.topMargin5)} id="containerSecurityContext">
+                  {getString('pipeline.buildInfra.containerSecurityContext')}
+                </div>
+              </>
+            )}
+            {(deploymentStageTemplate.infrastructure as any).spec?.containerSecurityContext?.privileged &&
+              renderMultiTypeCheckboxInputSet({
+                name: `${isEmpty(path) ? '' : `${path}.`}infrastructure.spec.containerSecurityContext.privileged`,
+                labelKey: 'pipeline.buildInfra.privileged',
+                tooltipId: 'privileged'
+              })}
+            {(deploymentStageTemplate.infrastructure as any).spec?.containerSecurityContext?.allowPrivilegeEscalation &&
+              renderMultiTypeCheckboxInputSet({
+                name: `${
+                  isEmpty(path) ? '' : `${path}.`
+                }infrastructure.spec.containerSecurityContext.allowPrivilegeEscalation`,
+                labelKey: 'pipeline.buildInfra.allowPrivilegeEscalation',
+                tooltipId: 'allowPrivilegeEscalation'
+              })}
+            {(deploymentStageTemplate.infrastructure as any).spec?.containerSecurityContext?.capabilities?.add &&
+              renderMultiTypeListInputSet({
+                name: `${isEmpty(path) ? '' : `${path}.`}infrastructure.spec.containerSecurityContext.capabilities.add`,
+                labelKey: 'pipeline.buildInfra.addCapabilities',
+                tooltipId: 'addCapabilities'
+              })}
+            {(deploymentStageTemplate.infrastructure as any).spec?.containerSecurityContext?.capabilities?.drop &&
+              renderMultiTypeListInputSet({
+                name: `${
+                  isEmpty(path) ? '' : `${path}.`
+                }infrastructure.spec.containerSecurityContext.capabilities.drop`,
+                labelKey: 'pipeline.buildInfra.dropCapabilities',
+                tooltipId: 'dropCapabilities'
+              })}
+            {(deploymentStageTemplate.infrastructure as any).spec?.containerSecurityContext?.runAsNonRoot &&
+              renderMultiTypeCheckboxInputSet({
+                name: `${isEmpty(path) ? '' : `${path}.`}infrastructure.spec.containerSecurityContext.runAsNonRoot`,
+                labelKey: 'pipeline.buildInfra.runAsNonRoot',
+                tooltipId: 'runAsNonRoot'
+              })}
+            {(deploymentStageTemplate.infrastructure as any).spec?.containerSecurityContext?.readOnlyRootFilesystem &&
+              renderMultiTypeCheckboxInputSet({
+                name: `${
+                  isEmpty(path) ? '' : `${path}.`
+                }infrastructure.spec.containerSecurityContext.readOnlyRootFilesystem`,
+                labelKey: 'pipeline.buildInfra.readOnlyRootFilesystem',
+                tooltipId: 'readOnlyRootFilesystem'
+              })}
+            {((deploymentStageTemplate.infrastructure as any).spec?.runAsUser ||
+              (deploymentStageTemplate.infrastructure as any).spec?.containerSecurityContext?.runAsUser) && (
+              <Container className={stepCss.bottomMargin3}>
+                <MultiTypeTextField
+                  label={
+                    <Text font={{ variation: FontVariation.FORM_LABEL }} margin={{ bottom: 'xsmall' }}>
+                      {getString('pipeline.stepCommonFields.runAsUser')}
+                    </Text>
+                  }
+                  name={`${isEmpty(path) ? '' : `${path}.`}infrastructure.spec.containerSecurityContext.runAsUser`}
+                  multiTextInputProps={{
+                    multiTextInputProps: {
+                      expressions,
+                      allowableTypes: allowableTypes
+                    },
+                    disabled: readonly,
+                    placeholder: '1000'
+                  }}
+                />
+              </Container>
+            )}
+            {hasContainerSecurityContextFields && <Separator topSeparation={16} bottomSeparation={16} />}
           </div>
           <div className={css.nestedAccordions}>
             {deploymentStageTemplate.infrastructure?.environmentRef && (
@@ -760,7 +907,7 @@ export function StageInputSetFormInternal({
                   viewType={viewType}
                   allowableTypes={allowableTypes}
                   key={identifier}
-                  onUpdate={data => {
+                  onUpdate={data => /* istanbul ignore next */ {
                     const originalServiceDependency = (deploymentStage as any)?.serviceDependencies?.[index]
                     let initialValues = deploymentStageInputSet?.serviceDependencies?.[index]
 

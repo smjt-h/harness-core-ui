@@ -6,23 +6,19 @@
  */
 
 import React, { FC } from 'react'
+import type { Cell } from 'react-table'
 import { FormInput } from '@harness/uicore'
 import { useStrings } from 'framework/strings'
 import type { Feature } from 'services/cf'
 
-export interface AddFlagCheckboxCellProps {
-  flag: Feature
-  fieldPrefix: string
-}
-
-const AddFlagCheckboxCell: FC<AddFlagCheckboxCellProps> = ({ flag, fieldPrefix }) => {
+const AddFlagCheckboxCell: FC<Cell<Feature>> = ({ row: { original: flag } }) => {
   const { getString } = useStrings()
 
   return (
     <FormInput.CheckBox
       label=""
       aria-label={getString('cf.segmentDetail.addFlagNameToTargetGroup', { flagName: flag.name })}
-      name={`${fieldPrefix}.added`}
+      name={`flags.${flag.identifier}.added`}
       style={{ margin: 0 }}
     />
   )

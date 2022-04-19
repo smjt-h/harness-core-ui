@@ -111,7 +111,7 @@ describe('GCP AP form', () => {
         container,
         fieldId: 'machine_type',
         type: InputTypes.SELECT,
-        value: mockedMachine
+        value: mockedMachine.name
       }
     ])
 
@@ -135,7 +135,7 @@ describe('GCP AP form', () => {
             host_name: 'random.lightwingtest.io',
             metadata: {
               security_groups: [mockedSecurityGroup.name],
-              machine_type: mockedMachine,
+              machine_type: mockedMachine.name,
               subnet_name: mockedSubnet.name
             }
           }}
@@ -169,7 +169,7 @@ describe('GCP AP form', () => {
             host_name: 'random.lightwingtest.io',
             metadata: {
               security_groups: [mockedSecurityGroup.name],
-              machine_type: mockedMachine,
+              machine_type: mockedMachine.name,
               subnet_name: mockedSubnet.name
             }
           }}

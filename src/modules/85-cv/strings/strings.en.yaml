@@ -30,6 +30,7 @@ trend: Trend
 known: Known
 unknown: Unknown
 unexpected: Unexpected
+unexpectedFrequency: Unexpected Frequency
 copyURL: Copy URL
 urlCopied: URL Copied
 unit: Unit
@@ -67,7 +68,7 @@ serviceDashboardPage:
   twelveHours: 12 Hours
   oneDay: 1 Day
   sevenDays: 7 Days
-  thirtyDays: 30 Days
+  thirtyDays: '{{$.common.30days}}'
   noServicesConfigured: No services have been configured
   goToMonitoringSources: Go to Monitoring Source Page
 abbreviatedCategories:
@@ -260,6 +261,7 @@ monitoringSources:
       tiers: Tiers
     searchTiersPlaceHolder: 'Search for Tiers'
   gco:
+    noMetricData: No data for current metric
     connectToMonitoringSource: Connect to your Google Cloud Platform
     defaultName: 'My Google Cloud Operations Monitoring Source'
     firstTimeSetupText: 'First time? You can setup a new Connector to Google Cloud Platform. It takes 2 minutes.'
@@ -457,6 +459,7 @@ monitoredServices:
   showingAllServices: Showing all Services ({{ serviceCount }})
   showingServiceAtRisk: Showing Services at Risk ({{ serviceCount }})
   noAvailableData: No available data.
+  noAvailableLogData: 'Select a timeline to see logs data'
   noMatchingData: No matching data.
   dependencyHealth: Dependency Health
   dependenciesHealth: Dependencies Health
@@ -633,7 +636,6 @@ healthSource:
 
 slos:
   title: SLOs
-  editSLO: 'Edit SLO: {{name}}'
   deleteSLO: Delete SLO
   createSLO: Create SLO
   healthSource: Health source
@@ -695,7 +697,7 @@ slos:
       healthSource: A Health Source is a combination of a Harness Service and associated Environment that monitors changes in health trends of the service using logs or metrics collected from an Application Performance Management or logging tool.
       whatIsSli: What is an SLI?
       sliDefinition: An SLI (service level indicator), which measures the performance of the service. Also, an SLI measures compliance with an SLO (service level objective).
-      sliDefinition2: So, if your SLA (Service Level Agreement) specifies that your systems will be available 99.95% of the time, your SLO is likely 99.95% uptime and your SLI is the actual measurement of your uptime.
+      sliDefinition2: So, if your SLA (Service Level Agreement) specifies that your systems will be available 99.9% of the time, your SLO is likely 99.95% uptime and your SLI is the actual measurement of your uptime.
       availabilityDescription: Measures how available your service was to users or valid requests served successfully.
       latencyDescription: Measures how fast your service responded to users or how many valid request served faster than a defined thresholds.
       thresholdDescription: The number of valid requests is compared to the length of time.
@@ -713,10 +715,12 @@ slos:
       calendarBasedDefinition: Compliance periods can be set to calendar periods like a weekly, monthly or quarterly. At the end of a calendar period, you are given a performance score. The performance score, which is calculated against the performance threshold, tells you whether your service was compliant or not. Even though you may view the performance throughout the period when you use a calendar period, you only get a compliance rating for every compliance period.
       calendarBasedDefinition2: Calendar windows are more closely aligned with business planning and project work.
 SLO: SLO
+SLOWithName: 'SLO: {{ name }}'
 SLOPerformanceTrend: SLO Performance Trend
 sloRecalculationInProgress: SLO recalculation in progress
 errorBudgetRecalculationInProgress: Error Budget recalculation in progress
-errorBudgetRemaining: Error Budget Remaining (mins)
+errorBudgetRemaining: Error Budget Remaining
+errorBudgetRemainingWithMins: Error Budget Remaining (mins)
 minutesRemaining: minutes remaining
 errorBudgetBurnDown: Error Budget Burndown
 SLITriggered: SLI Triggered
@@ -831,3 +835,13 @@ download: Download
 lastOneHour: Last 1 hour
 last12Hours: Last 12 hours
 showingLogsFor: Showing logs for
+logs:
+  priorityOrRiskSelectionRequired: 'Priority or Risk selection is required'
+  eventMarkedAs: This event was marked as
+  eventPriorityUpdate: This event was marked with priority
+  notARisk: Not a Risk
+  reportedBy: Reported by
+  radarChartInfo: The 360° on the circular chart represents the attribute. Use the slider below to narrow down the clusters view on the radar chart. You can click on a cluster to explore more details.
+externalAPICalls: External API Calls
+somethingWentWrongWhileParsingTheData: Something went wrong while parsing the data
+fetchingDataFrom: Fetching data from

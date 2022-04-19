@@ -38,7 +38,7 @@ const TEST_PATH = routes.toTriggersWizardPage({ ...accountPathProps, ...triggerP
 
 const iValues = {
   manifestType: 'HelmChart',
-  originalPipeline: {
+  resolvedPipeline: {
     name: 'test-manifest',
     identifier: 'testmanifest',
     projectIdentifier: 'mtran',

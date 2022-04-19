@@ -6,6 +6,7 @@
  */
 
 import React, { useState } from 'react'
+import { isUndefined } from 'lodash-es'
 import { Container, Text } from '@wings-software/uicore'
 import { useParams } from 'react-router-dom'
 import { Color } from '@harness/design-system'
@@ -36,6 +37,7 @@ export default function PipelineSummaryCards() {
 
   useErrorHandler(error)
 
+  const successRate = roundNumber(data?.data?.executions?.success?.percent)
   return (
     <Container>
       <RangeSelectorWithTitle title={getString('pipeline.dashboards.pipelineHealth')} onRangeSelected={setRange} />
@@ -57,7 +59,7 @@ export default function PipelineSummaryCards() {
               {getString('pipeline.dashboards.successRate')}
             </Text>
           }
-          text={roundNumber(data?.data?.executions?.success?.percent) + '%'}
+          text={isUndefined(successRate) ? undefined : successRate + '%'}
           rate={data?.data?.executions?.success?.rate}
           isLoading={loading}
         />

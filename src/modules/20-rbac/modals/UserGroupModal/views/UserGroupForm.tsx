@@ -29,6 +29,7 @@ import { useMutateAsGet } from '@common/hooks'
 import { IdentifierSchema, NameSchema } from '@common/utils/Validation'
 import UserItemRenderer, { UserItem } from '@audit-trail/components/UserItemRenderer/UserItemRenderer'
 import UserTagRenderer from '@audit-trail/components/UserTagRenderer/UserTagRenderer'
+import useRBACError from '@rbac/utils/useRBACError/useRBACError'
 import css from '@rbac/modals/UserGroupModal/useUserGroupModal.module.scss'
 
 interface UserGroupModalData {
@@ -46,6 +47,7 @@ interface UserGroupFormDTO extends UserGroupDTO {
 const UserGroupForm: React.FC<UserGroupModalData> = props => {
   const { data: userGroupData, onSubmit, isEdit, isAddMember, onCancel } = props
   const { accountId, orgIdentifier, projectIdentifier } = useParams<ProjectPathProps>()
+  const { getRBACErrorMessage } = useRBACError()
   const { getString } = useStrings()
   const { showSuccess } = useToaster()
   const [search, setSearch] = useState<string>()
@@ -103,7 +105,7 @@ const UserGroupForm: React.FC<UserGroupModalData> = props => {
       }
     } catch (e) {
       /* istanbul ignore next */
-      modalErrorHandler?.showDanger(e.data?.message || e.message)
+      modalErrorHandler?.showDanger(getRBACErrorMessage(e))
     }
   }
 
@@ -118,7 +120,7 @@ const UserGroupForm: React.FC<UserGroupModalData> = props => {
       }
     } catch (e) {
       /* istanbul ignore next */
-      modalErrorHandler?.showDanger(e.data?.message || e.message)
+      modalErrorHandler?.showDanger(getRBACErrorMessage(e))
     }
   }
   return (

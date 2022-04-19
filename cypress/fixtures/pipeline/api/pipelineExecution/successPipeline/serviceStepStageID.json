@@ -1,0 +1,203 @@
+{
+  "status": "SUCCESS",
+  "data": {
+    "pipelineExecutionSummary": {
+      "pipelineIdentifier": "testPipeline_Cypressss",
+      "planExecutionId": "executionId",
+      "name": "testPipeline_Cypressss",
+      "status": "Running",
+      "tags": [],
+      "executionTriggerInfo": {
+        "triggerType": "MANUAL",
+        "triggeredBy": {
+          "uuid": "qUaLKpHcTOS3ThJVG2bwIw",
+          "identifier": "Pratyush Garg",
+          "extraInfo": {
+            "email": "pratyush.garg@harness.io"
+          }
+        },
+        "isRerun": false
+      },
+      "governanceMetadata": {
+        "id": "",
+        "deny": false,
+        "details": [],
+        "message": "FF: [OPA_PIPELINE_GOVERNANCE] is disabled for account: [px7xd_BFRCi-pfWPYXVjvw]",
+        "timestamp": "0",
+        "status": "",
+        "accountId": "",
+        "orgId": "",
+        "projectId": "",
+        "entity": "",
+        "type": "",
+        "action": "",
+        "created": "0"
+      },
+      "moduleInfo": {},
+      "layoutNodeMap": {
+        "nodeId": {
+          "nodeType": "Deployment",
+          "nodeGroup": "STAGE",
+          "nodeIdentifier": "testStage_Cypress",
+          "name": "testStage_Cypress",
+          "nodeUuid": "nodeId",
+          "status": "Running",
+          "module": "cd",
+          "moduleInfo": {
+            "cd": {}
+          },
+          "startTs": 1648618556380,
+          "edgeLayoutList": {
+            "currentNodeChildren": [],
+            "nextIds": []
+          },
+          "nodeRunInfo": {
+            "whenCondition": "<+OnPipelineSuccess>",
+            "evaluatedCondition": true,
+            "expressions": [
+              {
+                "expression": "OnPipelineSuccess",
+                "expressionValue": "true",
+                "count": 1
+              }
+            ]
+          }
+        }
+      },
+      "modules": ["cd"],
+      "startingNodeId": "nodeId",
+      "startTs": 1648618556244,
+      "createdAt": 1648618556266,
+      "canRetry": true,
+      "showRetryHistory": false,
+      "runSequence": 5,
+      "successfulStagesCount": 0,
+      "runningStagesCount": 1,
+      "failedStagesCount": 0,
+      "totalStagesCount": 1,
+      "allowStageExecutions": false,
+      "stagesExecution": false
+    },
+    "executionGraph": {
+      "rootNodeId": "rwppPwg_QzGpgOMLfQOSGw",
+      "nodeMap": {
+        "EVGNxoMZQmOsT1lYJa1kSA": {
+          "uuid": "EVGNxoMZQmOsT1lYJa1kSA",
+          "setupId": "pOUA8UHuTXy1eJr4shkmsQ",
+          "name": "Service",
+          "identifier": "serviceConfig",
+          "baseFqn": "pipeline.stages.testStage_Cypress.spec.serviceConfig",
+          "outcomes": {},
+          "stepParameters": {
+            "serviceRef": "testService",
+            "childNodeId": null
+          },
+          "startTs": 1648618556531,
+          "endTs": null,
+          "stepType": "SERVICE_CONFIG",
+          "status": "Running",
+          "failureInfo": null,
+          "skipInfo": null,
+          "nodeRunInfo": null,
+          "executableResponses": [
+            {
+              "child": {
+                "childNodeId": "service-pOUA8UHuTXy1eJr4shkmsQ",
+                "logKeys": [
+                  "accountId:px7xd_BFRCi-pfWPYXVjvw/orgId:default/projectId:project1/pipelineId:testPipeline_Cypressss/runSequence:5/level0:pipeline/level1:stages/level2:testStage_Cypress/level3:spec/level4:serviceConfig"
+                ],
+                "units": []
+              }
+            }
+          ],
+          "unitProgresses": [],
+          "progressData": null,
+          "delegateInfoList": [],
+          "interruptHistories": [],
+          "stepDetails": null
+        },
+        "rwppPwg_QzGpgOMLfQOSGw": {
+          "uuid": "rwppPwg_QzGpgOMLfQOSGw",
+          "setupId": "nodeId",
+          "name": "testStage_Cypress",
+          "identifier": "testStage_Cypress",
+          "baseFqn": "pipeline.stages.testStage_Cypress",
+          "outcomes": {},
+          "stepParameters": {
+            "uuid": "nodeId",
+            "identifier": "testStage_Cypress",
+            "name": "testStage_Cypress",
+            "description": "",
+            "skipCondition": null,
+            "when": {
+              "pipelineStatus": "SUCCESS",
+              "condition": null
+            },
+            "failureStrategies": [
+              {
+                "onFailure": {
+                  "errors": ["ALL_ERRORS"],
+                  "action": {
+                    "type": "STAGE_ROLLBACK"
+                  }
+                }
+              }
+            ],
+            "variables": {
+              "__recast": "java.util.LinkedHashMap"
+            },
+            "tags": {},
+            "type": "Deployment",
+            "specConfig": {
+              "childNodeID": null
+            }
+          },
+          "startTs": 1648618556380,
+          "endTs": null,
+          "stepType": "DEPLOYMENT_STAGE_STEP",
+          "status": "Running",
+          "failureInfo": null,
+          "skipInfo": null,
+          "nodeRunInfo": {
+            "whenCondition": "<+OnPipelineSuccess>",
+            "evaluatedCondition": true,
+            "expressions": [
+              {
+                "expression": "OnPipelineSuccess",
+                "expressionValue": "true",
+                "count": 1
+              }
+            ]
+          },
+          "executableResponses": [
+            {
+              "child": {
+                "childNodeId": "egJWaxkQQFGFUkkIImmHVA",
+                "logKeys": [],
+                "units": []
+              }
+            }
+          ],
+          "unitProgresses": [],
+          "progressData": null,
+          "delegateInfoList": [],
+          "interruptHistories": [],
+          "stepDetails": null
+        }
+      },
+      "nodeAdjacencyListMap": {
+        "EVGNxoMZQmOsT1lYJa1kSA": {
+          "children": [],
+          "nextIds": []
+        },
+        "rwppPwg_QzGpgOMLfQOSGw": {
+          "children": ["EVGNxoMZQmOsT1lYJa1kSA"],
+          "nextIds": []
+        }
+      },
+      "representationStrategy": "camelCase"
+    }
+  },
+  "metaData": null,
+  "correlationId": "2b98a938-9a7c-4fda-a83d-357281b846a1"
+}

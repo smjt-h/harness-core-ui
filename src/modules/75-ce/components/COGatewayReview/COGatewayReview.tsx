@@ -235,11 +235,14 @@ const COGatewayReview: React.FC<COGatewayReviewProps> = props => {
           )}
         </ReviewDetailsSection>
       )}
-      {(isK8sRule || !_isEmpty(filteredSchedules) || !_isEmpty(filteredSchedules)) && (
+      {(isK8sRule ||
+        !_isEmpty(props.gatewayDetails.resourceMeta?.container_svc) ||
+        !_isEmpty(filteredSchedules) ||
+        !_isEmpty(filteredSchedules)) && (
         <ReviewDetailsSection isEditable onEdit={handleAdvancedConfigEdit}>
           <Heading level={2}>{getString('ce.co.autoStoppingRule.configuration.step4.advancedConfiguration')}</Heading>
           <Layout.Vertical style={{ marginTop: 'var(--spacing-large)' }}>
-            {isK8sRule && (
+            {(isK8sRule || !_isEmpty(props.gatewayDetails.resourceMeta?.container_svc)) && (
               <Layout.Horizontal
                 spacing={'large'}
                 padding={{ bottom: 'medium' }}
@@ -282,7 +285,18 @@ const COGatewayReview: React.FC<COGatewayReviewProps> = props => {
           />
         </Layout.Vertical>
       )}
-
+      {!_isEmpty(props.gatewayDetails.accessPointData) && (
+        <ReviewDetailsSection>
+          <Layout.Horizontal
+            spacing={'large'}
+            padding={{ bottom: 'medium' }}
+            className={cx(css.equalSpacing, css.borderSpacing)}
+          >
+            <Text>{getString('ce.co.accessPoint.ap')}</Text>
+            <Text>{props.gatewayDetails.accessPointData?.name}</Text>
+          </Layout.Horizontal>
+        </ReviewDetailsSection>
+      )}
       {!isK8sRule && (
         <>
           {!_isEmpty(props.gatewayDetails.routing.ports) &&

@@ -56,7 +56,12 @@ const ClusterData = {
 describe('test cases for groupby views', () => {
   test('should be able to render group by view popover', async () => {
     const { container } = render(
-      <GroupByDropDown setGroupBy={jest.fn()} data={ClusterData as QlceViewFieldIdentifierData} />
+      <GroupByDropDown
+        isBusinessMapping={false}
+        openBusinessMappingDrawer={jest.fn()}
+        setGroupBy={jest.fn()}
+        data={ClusterData as QlceViewFieldIdentifierData}
+      />
     )
 
     expect(container).toMatchSnapshot()

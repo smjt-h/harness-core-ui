@@ -8,6 +8,7 @@
 import React, { useState } from 'react'
 import { Container, Layout, Color, ButtonSize, Text, Card, FontVariation, FlexExpander, Button } from '@harness/uicore'
 import { Collapse } from '@blueprintjs/core'
+import cx from 'classnames'
 import { useStrings } from 'framework/strings'
 import css from './Step.module.scss'
 
@@ -18,6 +19,7 @@ interface StepProps {
     total: number
     current: number
     defaultOpen: boolean
+    isComingSoon?: boolean
   }
   title: string
   children: React.ReactElement
@@ -34,7 +36,7 @@ const Step: (props: StepProps) => React.ReactElement = ({ stepProps, title, chil
 
   return (
     <Card className={css.container}>
-      <Container>
+      <Container className={cx({ [css.comingSoon]: stepProps.isComingSoon })}>
         <Layout.Horizontal className={css.headerContainer}>
           <Text
             className={css.pillRadius}
@@ -53,16 +55,18 @@ const Step: (props: StepProps) => React.ReactElement = ({ stepProps, title, chil
               total: stepProps.total
             })}
           </Text>
+          {stepProps.isComingSoon ? <Text padding={{ left: 'medium' }}>{getString('common.comingSoon')}</Text> : null}
           <FlexExpander />
           <Button
             icon={isOpen ? 'chevron-up' : 'chevron-down'}
+            disabled={stepProps.isComingSoon}
             iconProps={{
               size: 20
             }}
             minimal
             intent="primary"
             onClick={() => {
-              setIsOpen(val => !val)
+              !stepProps.isComingSoon && setIsOpen(val => !val)
             }}
           />
         </Layout.Horizontal>

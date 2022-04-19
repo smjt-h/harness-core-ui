@@ -13,7 +13,13 @@ import type { FeatureIdentifier } from 'framework/featureStore/FeatureIdentifier
 import type { CheckFeatureReturn } from 'framework/featureStore/featureStoreUtil'
 import { TestWrapper } from '@common/utils/testUtils'
 import COGatewayList from '../COGatewayList'
-import { mockedEcsServiceData, mockedInstanceServiceData, mockedK8sServiceData, mockedRdsServiceData } from './data'
+import {
+  mockedEcsClusterServiceData,
+  mockedEcsServiceData,
+  mockedInstanceServiceData,
+  mockedK8sServiceData,
+  mockedRdsServiceData
+} from './data'
 
 const testpath = '/account/:accountId/ce/orgs/:orgIdentifier/projects/:projectIdentifier/autostopping-rules/create'
 const testparams = { accountId: 'accountId', orgIdentifier: 'orgIdentifier', projectIdentifier: 'projectIdentifier' }
@@ -75,6 +81,20 @@ const mockedSavingsData = [
 
 const mockedSavingsOfServiceData = { response: mockedSavingsData }
 
+const mockedConnectorData = {
+  data: {
+    connector: {
+      name: 'harness-qa',
+      identifier: 'harnessqa',
+      description: null,
+      orgIdentifier: null,
+      projectIdentifier: null,
+      tags: {},
+      type: 'CEAws'
+    }
+  }
+}
+
 jest.mock('services/lw', () => ({
   useAllServiceResources: jest.fn().mockImplementation(() => ({
     data: null,
@@ -128,6 +148,22 @@ jest.mock('services/lw', () => ({
   })),
   useDeleteStaticSchedule: jest.fn().mockImplementation(() => ({
     mutate: jest.fn()
+  })),
+  useDescribeServiceInContainerServiceCluster: jest.fn().mockImplementation(() => ({
+    data: { response: mockedEcsClusterServiceData },
+    loading: false
+  })),
+  useRouteDetails: jest.fn().mockImplementation(() => ({
+    data: null,
+    loading: false,
+    refetch: jest.fn()
+  }))
+}))
+
+jest.mock('services/cd-ng', () => ({
+  useGetConnector: jest.fn().mockImplementation(() => ({
+    data: mockedConnectorData,
+    loading: false
   }))
 }))
 
@@ -210,9 +246,51 @@ describe('Test COGatewayList', () => {
     })
   })
 
+  test('able to search through the list', () => {
+    const { container } = render(
+      <TestWrapper path={testpath} pathParams={testparams}>
+        <COGatewayList></COGatewayList>
+      </TestWrapper>
+    )
+    const searchInput = container.querySelector('input[type="search"]') as HTMLInputElement
+    expect(searchInput).toBeDefined()
+    act(async () => {
+      await waitFor(() => {
+        fireEvent.change(searchInput, { target: { value: 'test' } })
+      })
+    })
+
+    expect(searchInput.value).toBe('test')
+    expect(container).toMatchSnapshot()
+  })
+
+  test('error from services API should show error', () => {
+    const servicesSpy = jest.spyOn(lwServices, 'useGetServices')
+    servicesSpy.mockImplementation(
+      () =>
+        ({
+          data: null,
+          loading: false,
+          error: { data: { errors: ['Fetch Service error'] } },
+          refetch: jest.fn()
+        } as any)
+    )
+    const { container } = render(
+      <TestWrapper path={testpath} pathParams={testparams}>
+        <COGatewayList></COGatewayList>
+      </TestWrapper>
+    )
+
+    act(() => {
+      expect(container).toMatchSnapshot()
+    })
+    servicesSpy.mockClear()
+  })
+
   describe('render based on the content', () => {
     test('render page loader on initial loading', () => {
-      jest.spyOn(lwServices, 'useGetServices').mockImplementation(
+      const servicesSpy = jest.spyOn(lwServices, 'useGetServices')
+      servicesSpy.mockImplementation(
         () =>
           ({
             data: null,
@@ -227,10 +305,13 @@ describe('Test COGatewayList', () => {
         </TestWrapper>
       )
       expect(container).toMatchSnapshot()
+      servicesSpy.mockClear()
     })
 
-    test('render empty page component', () => {
-      jest.spyOn(lwServices, 'useGetServices').mockImplementation(
+    // eslint-disable-next-line jest/no-disabled-tests
+    test.skip('render empty page component for no rules created', () => {
+      const servicesSpy = jest.spyOn(lwServices, 'useGetServices')
+      servicesSpy.mockImplementation(
         () =>
           ({
             data: { response: null },
