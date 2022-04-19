@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">77.78% </span>
+                <span class="strong">86.21% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>28/36</span>
+                <span class='fraction'>25/29</span>
             </div>
         
             
@@ -37,16 +37,16 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">33.33% </span>
+                <span class="strong">66.67% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>2/6</span>
+                <span class='fraction'>2/3</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">77.78% </span>
+                <span class="strong">86.21% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>28/36</span>
+                <span class='fraction'>25/29</span>
             </div>
         
             
@@ -153,23 +153,7 @@
 <a name='L94'></a><a href='#L94'>94</a>
 <a name='L95'></a><a href='#L95'>95</a>
 <a name='L96'></a><a href='#L96'>96</a>
-<a name='L97'></a><a href='#L97'>97</a>
-<a name='L98'></a><a href='#L98'>98</a>
-<a name='L99'></a><a href='#L99'>99</a>
-<a name='L100'></a><a href='#L100'>100</a>
-<a name='L101'></a><a href='#L101'>101</a>
-<a name='L102'></a><a href='#L102'>102</a>
-<a name='L103'></a><a href='#L103'>103</a>
-<a name='L104'></a><a href='#L104'>104</a>
-<a name='L105'></a><a href='#L105'>105</a>
-<a name='L106'></a><a href='#L106'>106</a>
-<a name='L107'></a><a href='#L107'>107</a>
-<a name='L108'></a><a href='#L108'>108</a>
-<a name='L109'></a><a href='#L109'>109</a>
-<a name='L110'></a><a href='#L110'>110</a>
-<a name='L111'></a><a href='#L111'>111</a>
-<a name='L112'></a><a href='#L112'>112</a>
-<a name='L113'></a><a href='#L113'>113</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L97'></a><a href='#L97'>97</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -182,8 +166,6 @@
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">3x</span>
@@ -194,16 +176,13 @@
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -212,18 +191,7 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">3x</span>
@@ -291,10 +259,8 @@
 import React, { useCallback } from 'react'
 import { MultiTypeInputType, NestedAccordionProvider, PageError } from '@wings-software/uicore'
 import { isEmpty, omit, set } from 'lodash-es'
-import { produce } from 'immer'
 import { useTemplateVariables } from '@pipeline/components/TemplateVariablesContext/TemplateVariablesContext'
 import { PageSpinner } from '@common/components'
-import type { NGTemplateInfoConfig } from 'services/template-ng'
 import StageCard from '@pipeline/components/PipelineStudio/PipelineVariables/Cards/StageCard'
 import { TemplateContext } from '@templates-library/components/TemplateStudio/TemplateContext/TemplateContext'
 import type { StageElementConfig, StepElementConfig } from 'services/cd-ng'
@@ -305,38 +271,24 @@ import { GitSyncStoreProvider } from 'framework/GitRepoStore/GitSyncStoreContext
 import { sanitize } from '@common/utils/JSONUtils'
 import { VariablesHeader } from '@pipeline/components/PipelineStudio/PipelineVariables/VariablesHeader/VariablesHeader'
 import { TemplateType } from '@templates-library/utils/templatesUtils'
-import { DrawerTypes } from '../TemplateContext/TemplateActions'
 import css from '@pipeline/components/PipelineStudio/PipelineVariables/PipelineVariables.module.scss'
 &nbsp;
 const TemplateVariables: React.FC = (): JSX.Element =&gt; {
   const {
-    state: { template, templateView },
-    updateTemplate,
-    updateTemplateView
+    state: { template },
+    updateTemplate
   } = React.useContext(TemplateContext)
   const { originalTemplate, variablesTemplate, metadataMap, error, initLoading } = useTemplateVariables()
-  const [templateAtState, setTemplateAtState] = React.useState&lt;NGTemplateInfoConfig&gt;(originalTemplate)
 &nbsp;
   const onUpdate = useCallback(
 <span class="fstat-no" title="function not covered" >    async </span>(stage: StageElementConfig | StepElementConfig) =&gt; {
       const processNode = <span class="cstat-no" title="statement not covered" >omit(stage, 'name', 'identifier', 'description', 'tags')</span>
 <span class="cstat-no" title="statement not covered" >      sanitize(processNode, { removeEmptyArray: false, removeEmptyObject: false, removeEmptyString: false })</span>
-      const updatedTemplate = <span class="cstat-no" title="statement not covered" >produce(templateAtState, <span class="fstat-no" title="function not covered" >draft </span>=&gt; {</span>
-<span class="cstat-no" title="statement not covered" >        set(draft, 'spec', processNode)</span>
-      })
-<span class="cstat-no" title="statement not covered" >      setTemplateAtState(updatedTemplate)</span>
+<span class="cstat-no" title="statement not covered" >      set(originalTemplate, 'spec', processNode)</span>
+<span class="cstat-no" title="statement not covered" >      await updateTemplate(originalTemplate)</span>
     },
-    [templateAtState]
+    [originalTemplate, updateTemplate]
   )
-&nbsp;
-  async function <span class="fstat-no" title="function not covered" >applyChanges(</span>): Promise&lt;void&gt; {
-<span class="cstat-no" title="statement not covered" >    await updateTemplate(templateAtState)</span>
-<span class="cstat-no" title="statement not covered" >    updateTemplateView({ ...templateView, isDrawerOpened: false, drawerData: { type: DrawerTypes.AddStep } })</span>
-  }
-&nbsp;
-  async function <span class="fstat-no" title="function not covered" >discardChanges(</span>): Promise&lt;void&gt; {
-<span class="cstat-no" title="statement not covered" >    updateTemplateView({ ...templateView, isDrawerOpened: false, drawerData: { type: DrawerTypes.AddStep } })</span>
-  }
 &nbsp;
   if (initLoading) {
     return &lt;PageSpinner /&gt;
@@ -350,7 +302,7 @@ const TemplateVariables: React.FC = (): JSX.Element =&gt; {
         &lt;PageError message={(error<span class="branch-0 cbranch-no" title="branch not covered" >?.d</span>ata as Error)<span class="branch-1 cbranch-no" title="branch not covered" >?.message </span>|| error<span class="branch-0 cbranch-no" title="branch not covered" >?.m</span>essage} /&gt;
       ) : !isEmpty(variablesTemplate) ? (
         &lt;div className={css.content}&gt;
-          &lt;VariablesHeader enableSearch={false} applyChanges={applyChanges} discardChanges={discardChanges} /&gt;
+          &lt;VariablesHeader enableSearch={false} /&gt;
           &lt;div className={css.variableList}&gt;
             &lt;GitSyncStoreProvider&gt;
               {originalTemplate.type === TemplateType.Stage &amp;&amp; (
@@ -400,7 +352,7 @@ export default function TemplateVariablesWrapper(): React.ReactElement {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Tue Apr 19 2022 16:07:07 GMT+0000 (Greenwich Mean Time)
+                at Tue Apr 19 2022 16:17:42 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../../prettify.js"></script>
