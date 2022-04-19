@@ -804,3 +804,19 @@ and: and
 payload: Payload
 andCaps: AND
 orCaps: OR
+costCalculator:
+  month: 'Month '
+  year: 'Year'
+  team: 'Team'
+  enterprise: 'Enterprise '
+  tax: 'Tax'
+  support : 'Support'
+  unitPrice : 'Unit Price'
+  currentUsage : 'Current Usage'
+  plannedUsage: 'Planned Usage'
+  recommended: 'Recommended Usage'
+  nextPayment: 'Next Payment'
+  ff:
+    developer: 'Developer'
+    mau: 'MAU'
+
