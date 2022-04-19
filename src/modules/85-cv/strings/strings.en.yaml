@@ -845,3 +845,4 @@ logs:
 externalAPICalls: External API Calls
 somethingWentWrongWhileParsingTheData: Something went wrong while parsing the data
 fetchingDataFrom: Fetching data from
+serviceDetails: Service Details

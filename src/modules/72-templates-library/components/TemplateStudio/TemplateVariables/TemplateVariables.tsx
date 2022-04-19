@@ -8,8 +8,10 @@
 import React, { useCallback } from 'react'
 import { MultiTypeInputType, NestedAccordionProvider, PageError } from '@wings-software/uicore'
 import { isEmpty, omit, set } from 'lodash-es'
+import { produce } from 'immer'
 import { useTemplateVariables } from '@pipeline/components/TemplateVariablesContext/TemplateVariablesContext'
 import { PageSpinner } from '@common/components'
+import type { NGTemplateInfoConfig } from 'services/template-ng'
 import StageCard from '@pipeline/components/PipelineStudio/PipelineVariables/Cards/StageCard'
 import { TemplateContext } from '@templates-library/components/TemplateStudio/TemplateContext/TemplateContext'
 import type { StageElementConfig, StepElementConfig } from 'services/cd-ng'
@@ -20,24 +22,38 @@ import { GitSyncStoreProvider } from 'framework/GitRepoStore/GitSyncStoreContext
 import { sanitize } from '@common/utils/JSONUtils'
 import { VariablesHeader } from '@pipeline/components/PipelineStudio/PipelineVariables/VariablesHeader/VariablesHeader'
 import { TemplateType } from '@templates-library/utils/templatesUtils'
+import { DrawerTypes } from '../TemplateContext/TemplateActions'
 import css from '@pipeline/components/PipelineStudio/PipelineVariables/PipelineVariables.module.scss'
 
 const TemplateVariables: React.FC = (): JSX.Element => {
   const {
-    state: { template },
-    updateTemplate
+    state: { template, templateView },
+    updateTemplate,
+    updateTemplateView
   } = React.useContext(TemplateContext)
   const { originalTemplate, variablesTemplate, metadataMap, error, initLoading } = useTemplateVariables()
+  const [templateAtState, setTemplateAtState] = React.useState<NGTemplateInfoConfig>(originalTemplate)
 
   const onUpdate = useCallback(
     async (stage: StageElementConfig | StepElementConfig) => {
       const processNode = omit(stage, 'name', 'identifier', 'description', 'tags')
       sanitize(processNode, { removeEmptyArray: false, removeEmptyObject: false, removeEmptyString: false })
-      set(originalTemplate, 'spec', processNode)
-      await updateTemplate(originalTemplate)
+      const updatedTemplate = produce(templateAtState, draft => {
+        set(draft, 'spec', processNode)
+      })
+      setTemplateAtState(updatedTemplate)
     },
-    [originalTemplate, updateTemplate]
+    [templateAtState]
   )
+
+  async function applyChanges(): Promise<void> {
+    await updateTemplate(templateAtState)
+    updateTemplateView({ ...templateView, isDrawerOpened: false, drawerData: { type: DrawerTypes.AddStep } })
+  }
+
+  async function discardChanges(): Promise<void> {
+    updateTemplateView({ ...templateView, isDrawerOpened: false, drawerData: { type: DrawerTypes.AddStep } })
+  }
 
   if (initLoading) {
     return <PageSpinner />
@@ -51,7 +67,7 @@ const TemplateVariables: React.FC = (): JSX.Element => {
         <PageError message={(error?.data as Error)?.message || error?.message} />
       ) : !isEmpty(variablesTemplate) ? (
         <div className={css.content}>
-          <VariablesHeader enableSearch={false} />
+          <VariablesHeader enableSearch={false} applyChanges={applyChanges} discardChanges={discardChanges} />
           <div className={css.variableList}>
             <GitSyncStoreProvider>
               {originalTemplate.type === TemplateType.Stage && (

@@ -25,7 +25,14 @@ export interface SLOCardHeaderProps {
 // SLOCardContent
 
 export interface SLOCardContentProps {
+  isCardView?: boolean
   serviceLevelObjective: SLODashboardWidget
+  sliderTimeRange?: { startTime: number; endTime: number }
+  setSliderTimeRange?: (timeRange?: SLOCardContentProps['sliderTimeRange']) => void
+}
+
+export interface SLOTargetChartWithChangeTimelineProps extends SLOCardContentProps {
+  type: SLOCardToggleViews
 }
 
 export enum SLOCardToggleViews {
@@ -38,6 +45,9 @@ export interface GetSLOAndErrorBudgetGraphOptions {
   maxXLimit: number
   type: SLOCardToggleViews
   serviceLevelObjective: SLODashboardWidget
+  startTime: number
+  endTime: number
+  isCardView?: boolean
 }
 
 export type RiskTypes = 'HEALTHY' | 'OBSERVE' | 'NEED_ATTENTION' | 'UNHEALTHY' | 'EXHAUSTED'

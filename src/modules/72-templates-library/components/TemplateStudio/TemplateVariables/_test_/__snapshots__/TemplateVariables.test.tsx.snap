@@ -177,6 +177,30 @@ exports[`<TemplateVariables /> tests snapshot test 1`] = `
           </div>
         </div>
         <div />
+        <div
+          class="mainActions"
+        >
+          <button
+            class="bp3-button Button--button StyledProps--font StyledProps--main Button--with-current-color Button--variation Button--variation-secondary Button--size Button--small"
+            type="button"
+          >
+            <span
+              class="bp3-button-text"
+            >
+              applyChanges
+            </span>
+          </button>
+          <button
+            class="bp3-button bp3-minimal Button--button StyledProps--font StyledProps--main Button--with-current-color Button--without-shadow Button--size Button--small"
+            type="button"
+          >
+            <span
+              class="bp3-button-text"
+            >
+              pipeline.discard
+            </span>
+          </button>
+        </div>
       </div>
       <div
         class="variableListHeader"
@@ -185,13 +209,11 @@ exports[`<TemplateVariables /> tests snapshot test 1`] = `
           class="StyledProps--font StyledProps--main StyledProps--font-variation-small-bold StyledProps--color StyledProps--color-grey600"
         >
           variableLabel
-           
         </p>
         <p
           class="StyledProps--font StyledProps--main StyledProps--font-variation-small-bold StyledProps--color StyledProps--color-grey600"
         >
           common.input
-           
         </p>
       </div>
       <div

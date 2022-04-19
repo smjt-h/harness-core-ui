@@ -86,6 +86,7 @@ $headerHeight: 146px;
 
 .errorBudgetGaugeContainer {
   position: relative;
+  min-width: 200px;
 
   .errorBudgetRemaining {
     text-align: center;
@@ -121,4 +122,8 @@ $headerHeight: 146px;
 
 .clearButton {
   align-self: flex-end;
+}
+
+.timelineSlider {
+  height: 85% !important;
 }

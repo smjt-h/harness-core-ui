@@ -6,7 +6,7 @@
  */
 
 import React from 'react'
-import { act, fireEvent, render } from '@testing-library/react'
+import { act, fireEvent, render, waitFor } from '@testing-library/react'
 import { MultiTypeInputType, VisualYamlSelectedView as SelectedView } from '@wings-software/uicore'
 
 import produce from 'immer'
@@ -241,7 +241,7 @@ describe('<PipelineVariables /> tests', () => {
     )
   })
 
-  test('should call update stage with unresolved stage', async () => {
+  test('should call update pipeline with unresolved stage', async () => {
     ;(useCreateVariables as jest.Mock).mockReturnValue({
       mutate: jest.fn(() =>
         Promise.resolve({
@@ -272,6 +272,8 @@ describe('<PipelineVariables /> tests', () => {
 
     await findByText('variablesText')
 
+    const apply = await findByText('applyChanges')
+
     act(() => {
       fireEvent.change(
         getByTestId('pipeline.Stage_2.variables-panel').querySelector(
@@ -280,9 +282,12 @@ describe('<PipelineVariables /> tests', () => {
         { target: { value: 'val2' } }
       )
     })
-    const updatedSecondStage = cloneDeep(get(stageTemplateContextMock, 'state.pipeline.stages[1].stage'))
-    set(updatedSecondStage, 'variables[0].value', 'val2')
-    expect(stageTemplateContextMock.updateStage).toBeCalledWith(updatedSecondStage)
+
+    fireEvent.click(apply)
+
+    const updatedSecondStage = cloneDeep(get(stageTemplateContextMock, 'state.pipeline'))
+    set(updatedSecondStage, 'stages[1].stage.variables[0].value', 'val2')
+    await waitFor(() => expect(stageTemplateContextMock.updatePipeline).toBeCalledWith(updatedSecondStage))
   })
 
   test('renders loader', async () => {

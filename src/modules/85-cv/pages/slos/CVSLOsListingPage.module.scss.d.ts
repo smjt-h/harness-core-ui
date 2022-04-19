@@ -24,5 +24,6 @@ declare const styles: {
   readonly sloGlanceCard: string
   readonly sloRiskFilterCard: string
   readonly sloTags: string
+  readonly timelineSlider: string
 }
 export default styles

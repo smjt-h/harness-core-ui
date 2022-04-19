@@ -2304,6 +2304,7 @@ export interface StringsMap {
   'projectsOrgs.welcomeSecondLine': string
   'projectsOrgs.whyCreateProject': string
   'projectsOrgs.youHaveNoProjects': string
+  'pipeline.ACR.name': string
   'pipeline.aboutYourStage.stageNamePlaceholder': string
   'pipeline.addStage.description': string
   'pipeline.addStage.title': string
@@ -5557,6 +5558,7 @@ export interface StringsMap {
   'cv.serviceDashboardPage.sevenDays': string
   'cv.serviceDashboardPage.thirtyDays': string
   'cv.serviceDashboardPage.twelveHours': string
+  'cv.serviceDetails': string
   'cv.serviceHealthTrend': string
   'cv.servicesAtRisk': string
   'cv.setup': string

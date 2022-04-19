@@ -386,7 +386,7 @@ exports[`Test cases for CVSLODetailsPage it should render the component and take
               <p
                 class="StyledProps--font StyledProps--main StyledProps--font-variation-card-title StyledProps--color StyledProps--color-grey800 StyledProps--padding-bottom-medium"
               >
-                ce.co.autoStoppingRule.review.serviceDetails
+                cv.serviceDetails
               </p>
               <div
                 class="Layout--horizontal Layout--layout-spacing-xlarge StyledProps--main"
@@ -525,6 +525,15 @@ exports[`Test cases for CVSLODetailsPage it should render the component and take
                 </div>
               </div>
             </div>
+            <span
+              data-testid="slo-card-content"
+            />
+            <div
+              class="StyledProps--font StyledProps--main StyledProps--padding-bottom-xlarge"
+            />
+            <span
+              data-testid="changes-table"
+            />
           </div>
         </div>
       </div>

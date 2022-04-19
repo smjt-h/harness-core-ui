@@ -17,33 +17,29 @@ exports[`ChangesAndServiceDependency should render 1`] = `
         )
       </p>
       <div
-        class="StyledProps--font StyledProps--main cardContainer container"
+        class="bp3-card bp3-elevation-0 Card--card cardContainer"
       >
         <div
-          class="StyledProps--font StyledProps--main content"
+          class="StyledProps--font StyledProps--main noData"
         >
           <div
-            class="StyledProps--font StyledProps--main noData"
+            class="StyledProps--font StyledProps--main NoDataCard--noDataCard StyledProps--flex StyledProps--flex-align-center-center"
           >
             <div
-              class="StyledProps--font StyledProps--main NoDataCard--noDataCard StyledProps--flex StyledProps--flex-align-center-center"
+              class="Layout--vertical Layout--layout-spacing-medium StyledProps--main"
+              style="align-items: center; margin-top: -48px; width: 470px;"
             >
-              <div
-                class="Layout--vertical Layout--layout-spacing-medium StyledProps--main"
-                style="align-items: center; margin-top: -48px; width: 470px;"
+              <img
+                src="test-file-stub"
+              />
+              <p
+                class="StyledProps--font StyledProps--main NoDataCard--message StyledProps--font-align-center StyledProps--color StyledProps--color-grey600"
               >
-                <img
-                  src="test-file-stub"
-                />
-                <p
-                  class="StyledProps--font StyledProps--main NoDataCard--message StyledProps--font-align-center StyledProps--color StyledProps--color-grey600"
-                >
-                  cv.monitoredServices.noAvailableData
-                </p>
-                <div
-                  class="NoDataCard--buttonContainer"
-                />
-              </div>
+                cv.monitoredServices.noAvailableData
+              </p>
+              <div
+                class="NoDataCard--buttonContainer"
+              />
             </div>
           </div>
         </div>

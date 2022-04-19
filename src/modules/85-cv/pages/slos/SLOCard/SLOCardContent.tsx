@@ -5,27 +5,23 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import React, { useMemo, useState } from 'react'
-import { Layout, Container, Heading, PillToggle, PillToggleProps, Text } from '@wings-software/uicore'
+import React, { useState } from 'react'
+import { Layout, Container, Heading, PillToggle, PillToggleProps, Text, Card } from '@harness/uicore'
 import { Color, FontVariation } from '@harness/design-system'
 import { PageSpinner } from '@common/components'
 import { useStrings } from 'framework/strings'
-import { SLOTargetChart } from '@cv/pages/slos/components/SLOTargetChart/SLOTargetChart'
-import { getDataPointsWithMinMaxXLimit } from '@cv/pages/slos/components/SLOTargetChart/SLOTargetChart.utils'
-import ChangeTimeline from '@cv/components/ChangeTimeline/ChangeTimeline'
-import ErrorBudgetGauge from './ErrorBudgetGauge'
-import { getErrorBudgetGaugeOptions, getSLOAndErrorBudgetGraphOptions } from '../CVSLOListingPage.utils'
+import { getErrorBudgetGaugeOptions } from '../CVSLOListingPage.utils'
 import { SLOCardContentProps, SLOCardToggleViews } from '../CVSLOsListingPage.types'
+import ErrorBudgetGauge from './ErrorBudgetGauge'
+import SLOTargetChartWithChangeTimeline from './SLOTargetChartWithChangeTimeline'
 import css from '../CVSLOsListingPage.module.scss'
 
-const SLOCardContent: React.FC<SLOCardContentProps> = ({ serviceLevelObjective }) => {
+const SLOCardContent: React.FC<SLOCardContentProps> = props => {
   const { getString } = useStrings()
-  const { sloPerformanceTrend, sloTargetPercentage, errorBudgetBurndown, monitoredServiceIdentifier } =
-    serviceLevelObjective
+  const { isCardView, serviceLevelObjective, setSliderTimeRange } = props
+  const { sloPerformanceTrend, sloTargetPercentage } = serviceLevelObjective
 
   const [toggle, setToggle] = useState(SLOCardToggleViews.SLO)
-  const startTime = sloPerformanceTrend[0]?.timestamp
-  const endTime = sloPerformanceTrend[sloPerformanceTrend.length - 1]?.timestamp
 
   const toggleProps: PillToggleProps<SLOCardToggleViews> = {
     options: [
@@ -38,47 +34,29 @@ const SLOCardContent: React.FC<SLOCardContentProps> = ({ serviceLevelObjective }
         value: SLOCardToggleViews.ERROR_BUDGET
       }
     ],
-    onChange: view => setToggle(view),
+    onChange: view => {
+      setToggle(view)
+      setSliderTimeRange?.()
+    },
     selectedView: toggle,
     className: css.pillToggle
   }
 
-  const sloPerformanceTrendData = useMemo(
-    () => getDataPointsWithMinMaxXLimit(sloPerformanceTrend),
-    [sloPerformanceTrend]
-  )
-  const errorBudgetBurndownData = useMemo(
-    () => getDataPointsWithMinMaxXLimit(errorBudgetBurndown),
-    [errorBudgetBurndown]
-  )
-
-  const renderChangeTimelineSummary = (): JSX.Element => {
-    if (startTime && endTime) {
-      return (
-        <ChangeTimeline
-          monitoredServiceIdentifier={monitoredServiceIdentifier}
-          startTime={startTime}
-          endTime={endTime}
-          hideTimeline
-        />
-      )
-    } else {
-      return <></>
-    }
-  }
+  const SLOAndErrorBudgetChartContainer = isCardView ? Card : Container
+  const SLO_SLI_CARD_WIDTH = isCardView ? 200 : 120
 
   return (
     <Layout.Vertical
       spacing="large"
       margin={{ top: 'medium' }}
       padding={{ top: 'medium' }}
-      border={{ color: Color.GREY_100, top: true }}
+      border={{ color: isCardView ? Color.WHITE : Color.GREY_100, top: true }}
     >
       <Container flex={{ justifyContent: 'center' }}>
         <PillToggle {...toggleProps} />
       </Container>
 
-      <Container style={{ position: 'relative' }}>
+      <SLOAndErrorBudgetChartContainer style={{ position: 'relative' }}>
         {toggle === SLOCardToggleViews.SLO && (
           <>
             <Container flex>
@@ -91,7 +69,12 @@ const SLOCardContent: React.FC<SLOCardContentProps> = ({ serviceLevelObjective }
             </Container>
             <Layout.Horizontal spacing="medium">
               <Layout.Vertical spacing="medium" margin={{ top: 'large' }}>
-                <Container width={120} background={Color.GREY_100} padding="small" className={css.sloGlanceCard}>
+                <Container
+                  width={SLO_SLI_CARD_WIDTH}
+                  background={Color.GREY_100}
+                  padding="small"
+                  className={css.sloGlanceCard}
+                >
                   <Text font={{ variation: FontVariation.FORM_LABEL }} tooltipProps={{ dataTooltipId: 'SLO' }}>
                     {getString('cv.SLO')}
                   </Text>
@@ -99,7 +82,12 @@ const SLOCardContent: React.FC<SLOCardContentProps> = ({ serviceLevelObjective }
                     {(Number(sloTargetPercentage) || 0).toFixed(2)}%
                   </Heading>
                 </Container>
-                <Container width={120} background={Color.GREY_100} padding="small" className={css.sloGlanceCard}>
+                <Container
+                  width={SLO_SLI_CARD_WIDTH}
+                  background={Color.GREY_100}
+                  padding="small"
+                  className={css.sloGlanceCard}
+                >
                   <Text font={{ variation: FontVariation.FORM_LABEL }} tooltipProps={{ dataTooltipId: 'SLI' }}>
                     {getString('cv.slos.sli')}
                   </Text>
@@ -108,18 +96,7 @@ const SLOCardContent: React.FC<SLOCardContentProps> = ({ serviceLevelObjective }
                   </Heading>
                 </Container>
               </Layout.Vertical>
-              <Container style={{ position: 'relative' }} className={css.flexGrowOne}>
-                <SLOTargetChart
-                  dataPoints={sloPerformanceTrendData.dataPoints}
-                  customChartOptions={getSLOAndErrorBudgetGraphOptions({
-                    type: SLOCardToggleViews.SLO,
-                    serviceLevelObjective,
-                    minXLimit: sloPerformanceTrendData.minXLimit,
-                    maxXLimit: sloPerformanceTrendData.maxXLimit
-                  })}
-                />
-                {renderChangeTimelineSummary()}
-              </Container>
+              <SLOTargetChartWithChangeTimeline {...props} type={SLOCardToggleViews.SLO} />
             </Layout.Horizontal>
           </>
         )}
@@ -131,9 +108,9 @@ const SLOCardContent: React.FC<SLOCardContentProps> = ({ serviceLevelObjective }
                 message={getString('cv.errorBudgetRecalculationInProgress')}
               />
             )}
-            <Container width={185} height={200} className={css.errorBudgetGaugeContainer}>
+            <Container height={200} className={css.errorBudgetGaugeContainer}>
               <Heading font={{ variation: FontVariation.FORM_HELP }} data-tooltip-id={'errorBudgetRemaining'}>
-                {getString('cv.errorBudgetRemaining')}
+                {getString('cv.errorBudgetRemainingWithMins')}
               </Heading>
               <ErrorBudgetGauge customChartOptions={getErrorBudgetGaugeOptions(serviceLevelObjective)} />
               <Text font={{ variation: FontVariation.SMALL }} className={css.errorBudgetRemaining} width={175}>
@@ -145,20 +122,11 @@ const SLOCardContent: React.FC<SLOCardContentProps> = ({ serviceLevelObjective }
               <Heading font={{ variation: FontVariation.FORM_HELP }} data-tooltip-id={'errorBudgetBurnDown'}>
                 {getString('cv.errorBudgetBurnDown')}
               </Heading>
-              <SLOTargetChart
-                dataPoints={errorBudgetBurndownData.dataPoints}
-                customChartOptions={getSLOAndErrorBudgetGraphOptions({
-                  serviceLevelObjective,
-                  type: SLOCardToggleViews.ERROR_BUDGET,
-                  minXLimit: errorBudgetBurndownData.minXLimit,
-                  maxXLimit: errorBudgetBurndownData.maxXLimit
-                })}
-              />
-              {renderChangeTimelineSummary()}
+              <SLOTargetChartWithChangeTimeline {...props} type={SLOCardToggleViews.ERROR_BUDGET} />
             </Container>
           </Layout.Horizontal>
         )}
-      </Container>
+      </SLOAndErrorBudgetChartContainer>
     </Layout.Vertical>
   )
 }

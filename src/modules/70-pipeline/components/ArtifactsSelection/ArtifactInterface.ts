@@ -50,6 +50,7 @@ export type ArtifactType =
   | 'Nexus3Registry'
   | 'ArtifactoryRegistry'
   | 'CustomArtifact'
+  | 'Acr'
 export interface OrganizationCreationType {
   type: ArtifactType
 }

@@ -11,7 +11,7 @@ import { get } from 'lodash-es'
 
 import { PageSpinner } from '@common/components'
 import { useStrings } from 'framework/strings'
-import type { PipelineInfoConfig } from 'services/cd-ng'
+import type { PipelineInfoConfig, StageElementWrapperConfig, StageElementConfig } from 'services/cd-ng'
 import { GitSyncStoreProvider } from 'framework/GitRepoStore/GitSyncStoreContext'
 import {
   PipelineVariablesContextProvider,
@@ -21,17 +21,18 @@ import { VariablesHeader } from '@pipeline/components/PipelineStudio/PipelineVar
 import PipelineCard from '@pipeline/components/PipelineStudio/PipelineVariables/Cards/PipelineCard'
 import StageCard from '@pipeline/components/PipelineStudio/PipelineVariables/Cards/StageCard'
 import { usePipelineContext } from '../PipelineContext/PipelineContext'
+import { DrawerTypes } from '../PipelineContext/PipelineActions'
 import VariableAccordionSummary from './VariableAccordionSummary'
 import css from './PipelineVariables.module.scss'
 
 export function PipelineVariables(): React.ReactElement {
   const {
-    state: { pipeline },
-    updatePipeline,
+    state: { pipeline, pipelineView },
     stepsFactory,
     isReadonly,
     allowableTypes,
-    updateStage
+    updatePipeline: updatePipelineInContext,
+    updatePipelineView
   } = usePipelineContext()
   const {
     originalPipeline,
@@ -42,6 +43,7 @@ export function PipelineVariables(): React.ReactElement {
     searchIndex = 0
   } = usePipelineVariables()
   const { getString } = useStrings()
+  const [pipelineAsState, setPipelineAsState] = React.useState(pipeline)
 
   const pipelineVariablesRef = React.useRef()
   React.useLayoutEffect(() => {
@@ -53,6 +55,47 @@ export function PipelineVariables(): React.ReactElement {
       })
     }
   }, [searchIndex])
+
+  React.useEffect(() => {
+    setPipelineAsState(pipeline)
+  }, [pipeline])
+
+  if (initLoading) return <PageSpinner />
+
+  async function updateStage(newStage: StageElementConfig): Promise<void> {
+    function _updateStages(stages: StageElementWrapperConfig[]): StageElementWrapperConfig[] {
+      return stages.map(node => {
+        if (node.stage?.identifier === newStage.identifier) {
+          return { stage: newStage }
+        } else if (node.parallel) {
+          return {
+            parallel: _updateStages(node.parallel)
+          }
+        }
+
+        return node
+      })
+    }
+
+    return setPipelineAsState(originalPipelineAsState => ({
+      ...originalPipelineAsState,
+      stages: _updateStages(originalPipelineAsState.stages || [])
+    }))
+  }
+
+  async function updatePipeline(newPipeline: PipelineInfoConfig): Promise<void> {
+    setPipelineAsState(newPipeline)
+  }
+
+  async function applyChanges(): Promise<void> {
+    await updatePipelineInContext(pipelineAsState)
+    updatePipelineView({ ...pipelineView, isDrawerOpened: false, drawerData: { type: DrawerTypes.AddStep } })
+  }
+
+  async function discardChanges(): Promise<void> {
+    updatePipelineView({ ...pipelineView, isDrawerOpened: false, drawerData: { type: DrawerTypes.AddStep } })
+  }
+
   const stagesCards: JSX.Element[] = []
   /* istanbul ignore else */
   if (variablesPipeline.stages && variablesPipeline.stages?.length > 0) {
@@ -99,15 +142,13 @@ export function PipelineVariables(): React.ReactElement {
     })
   }
 
-  if (initLoading) return <PageSpinner />
-
   return (
     <div className={css.pipelineVariables}>
       {error ? (
         <PageError message={(error?.data as Error)?.message || error?.message} />
       ) : (
         <div className={css.content}>
-          <VariablesHeader />
+          <VariablesHeader applyChanges={applyChanges} discardChanges={discardChanges} />
           <div className={css.variableList} ref={pipelineVariablesRef as any}>
             <GitSyncStoreProvider>
               <NestedAccordionPanel

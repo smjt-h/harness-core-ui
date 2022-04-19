@@ -5,13 +5,19 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import React from 'react'
+import React, { useState } from 'react'
 import { Container, Page } from '@harness/uicore'
+import ChangesTable from '@cv/pages/monitored-service/components/ServiceHealth/components/ChangesAndServiceDependency/components/ChangesTable/ChangesTable'
 import ServiceDetails from './views/ServiceDetails'
 import type { DetailsPanelProps } from './DetailsPanel.types'
+import SLOCardContent from '../../SLOCard/SLOCardContent'
 import css from './DetailsPanel.module.scss'
 
 const DetailsPanel: React.FC<DetailsPanelProps> = ({ loading, errorMessage, retryOnError, sloDashboardWidget }) => {
+  const [sliderTimeRange, setSliderTimeRange] = useState<{ startTime: number; endTime: number }>()
+
+  const { startTime, endTime } = sliderTimeRange ?? { startTime: 0, endTime: 0 }
+
   return (
     <Page.Body
       loading={loading}
@@ -22,9 +28,24 @@ const DetailsPanel: React.FC<DetailsPanelProps> = ({ loading, errorMessage, retr
       }}
       className={css.pageBody}
     >
-      <Container padding="xlarge">
-        {sloDashboardWidget && <ServiceDetails sloDashboardWidget={sloDashboardWidget} />}
-      </Container>
+      {sloDashboardWidget && (
+        <Container padding="xlarge">
+          <ServiceDetails sloDashboardWidget={sloDashboardWidget} />
+          <SLOCardContent
+            isCardView
+            sliderTimeRange={sliderTimeRange}
+            setSliderTimeRange={setSliderTimeRange}
+            serviceLevelObjective={sloDashboardWidget}
+          />
+          <Container padding={{ bottom: 'xlarge' }} />
+          <ChangesTable
+            hasChangeSource
+            startTime={startTime || sloDashboardWidget.currentPeriodStartTime}
+            endTime={endTime || sloDashboardWidget.currentPeriodEndTime}
+            monitoredServiceIdentifier={sloDashboardWidget.monitoredServiceIdentifier}
+          />
+        </Container>
+      )}
     </Page.Body>
   )
 }

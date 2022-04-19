@@ -329,6 +329,10 @@ export interface AccessControlCheckError {
     | 'POLICY_SET_ERROR'
     | 'INVALID_ARTIFACTORY_REGISTRY_REQUEST'
     | 'INVALID_NEXUS_REGISTRY_REQUEST'
+    | 'ENTITY_NOT_FOUND'
+    | 'INVALID_AZURE_CONTAINER_REGISTRY_REQUEST'
+    | 'AZURE_AUTHENTICATION_ERROR'
+    | 'AZURE_CONFIG_ERROR'
   correlationId?: string
   detailedMessage?: string
   failedPermissionChecks?: PermissionCheck[]
@@ -504,6 +508,32 @@ export interface AccountSettings {
   orgIdentifier?: string
   projectIdentifier?: string
   type: 'Connector'
+}
+
+export type AcrArtifactConfig = ArtifactConfig & {
+  connectorRef: string
+  metadata?: string
+  registry: string
+  repository: string
+  subscription: string
+  tag?: string
+  tagRegex?: string
+}
+
+export interface AcrBuildDetailsDTO {
+  buildUrl?: string
+  labels?: {
+    [key: string]: string
+  }
+  metadata?: {
+    [key: string]: string
+  }
+  repository?: string
+  tag?: string
+}
+
+export interface AcrResponseDTO {
+  buildDetailsList?: AcrBuildDetailsDTO[]
 }
 
 export interface ActiveProjectsCountDTO {
@@ -1030,6 +1060,10 @@ export type AzureDevOpsSCMDTO = SourceCodeManagerDTO & {
   authentication?: GithubAuthentication
 }
 
+export type AzureInheritFromDelegateDetails = AzureCredentialSpec & {
+  auth: AzureMSIAuth
+}
+
 export type AzureKeyVaultConnectorDTO = ConnectorConfigDTO & {
   azureEnvironmentType?: 'AZURE' | 'AZURE_US_GOVERNMENT'
   clientId: string
@@ -1054,10 +1088,70 @@ export type AzureKeyVaultMetadataSpecDTO = SecretManagerMetadataSpecDTO & {
   vaultNames?: string[]
 }
 
+export interface AzureMSIAuth {
+  [key: string]: any
+}
+
 export type AzureManualDetails = AzureCredentialSpec & {
+  applicationId: string
   auth: AzureAuthDTO
-  clientId: string
   tenantId: string
+}
+
+export interface AzureRepoApiAccess {
+  spec?: AzureRepoApiAccessSpecDTO
+  type: 'Token'
+}
+
+export interface AzureRepoApiAccessSpecDTO {
+  [key: string]: any
+}
+
+export interface AzureRepoAuthentication {
+  spec: AzureRepoCredentialsDTO
+  type: 'Http' | 'Ssh'
+}
+
+export type AzureRepoConnector = ConnectorConfigDTO & {
+  apiAccess?: AzureRepoApiAccess
+  authentication: AzureRepoAuthentication
+  delegateSelectors?: string[]
+  type: 'Organization' | 'Repo'
+  url: string
+  validationRepo?: string
+}
+
+export interface AzureRepoCredentialsDTO {
+  [key: string]: any
+}
+
+export type AzureRepoHttpCredentials = AzureRepoCredentialsDTO & {
+  spec: AzureRepoHttpCredentialsSpecDTO
+  type: 'UsernameToken'
+}
+
+export interface AzureRepoHttpCredentialsSpecDTO {
+  [key: string]: any
+}
+
+export type AzureRepoSshCredentials = AzureRepoCredentialsDTO & {
+  sshKeyRef: string
+}
+
+export type AzureRepoTokenSpec = AzureRepoApiAccessSpecDTO & {
+  tokenRef: string
+}
+
+export type AzureRepoUsernameToken = AzureRepoHttpCredentialsSpecDTO & {
+  tokenRef: string
+  username?: string
+  usernameRef?: string
+}
+
+export type AzureSystemAssignedMSIAuth = AzureAuthCredentialDTO & { [key: string]: any }
+
+export type AzureUserAssignedMSIAuth = AzureAuthCredentialDTO & {
+  clientId: string
 }
 
 export interface BarrierInfoConfig {
@@ -2630,6 +2724,10 @@ export interface Error {
     | 'POLICY_SET_ERROR'
     | 'INVALID_ARTIFACTORY_REGISTRY_REQUEST'
     | 'INVALID_NEXUS_REGISTRY_REQUEST'
+    | 'ENTITY_NOT_FOUND'
+    | 'INVALID_AZURE_CONTAINER_REGISTRY_REQUEST'
+    | 'AZURE_AUTHENTICATION_ERROR'
+    | 'AZURE_CONFIG_ERROR'
   correlationId?: string
   detailedMessage?: string
   message?: string
@@ -3006,6 +3104,10 @@ export interface Failure {
     | 'POLICY_SET_ERROR'
     | 'INVALID_ARTIFACTORY_REGISTRY_REQUEST'
     | 'INVALID_NEXUS_REGISTRY_REQUEST'
+    | 'ENTITY_NOT_FOUND'
+    | 'INVALID_AZURE_CONTAINER_REGISTRY_REQUEST'
+    | 'AZURE_AUTHENTICATION_ERROR'
+    | 'AZURE_CONFIG_ERROR'
   correlationId?: string
   errors?: ValidationError[]
   message?: string
@@ -6012,7 +6114,7 @@ export interface PriceDTO {
 
 export interface PrimaryArtifact {
   spec: ArtifactConfig
-  type: 'DockerRegistry' | 'Gcr' | 'Ecr' | 'Nexus3Registry' | 'ArtifactoryRegistry'
+  type: 'DockerRegistry' | 'Gcr' | 'Ecr' | 'Acr' | 'Nexus3Registry' | 'ArtifactoryRegistry' | 'CustomArtifact'
 }
 
 export interface Principal {
@@ -6218,6 +6320,13 @@ export interface ResponseAccountResourcesDTO {
 export interface ResponseAccountSettingResponse {
   correlationId?: string
   data?: AccountSettingResponse
+  metaData?: { [key: string]: any }
+  status?: 'SUCCESS' | 'FAILURE' | 'ERROR'
+}
+
+export interface ResponseAcrResponseDTO {
+  correlationId?: string
+  data?: AcrResponseDTO
   metaData?: { [key: string]: any }
   status?: 'SUCCESS' | 'FAILURE' | 'ERROR'
 }
@@ -7199,6 +7308,10 @@ export interface ResponseMessage {
     | 'POLICY_SET_ERROR'
     | 'INVALID_ARTIFACTORY_REGISTRY_REQUEST'
     | 'INVALID_NEXUS_REGISTRY_REQUEST'
+    | 'ENTITY_NOT_FOUND'
+    | 'INVALID_AZURE_CONTAINER_REGISTRY_REQUEST'
+    | 'AZURE_AUTHENTICATION_ERROR'
+    | 'AZURE_CONFIG_ERROR'
   exception?: Throwable
   failureTypes?: (
     | 'EXPIRED'
@@ -8764,7 +8877,7 @@ export type ShellScriptStepInfo = StepSpecType & {
 export interface SidecarArtifact {
   identifier: string
   spec: ArtifactConfig
-  type: 'DockerRegistry' | 'Gcr' | 'Ecr' | 'Nexus3Registry' | 'ArtifactoryRegistry'
+  type: 'DockerRegistry' | 'Gcr' | 'Ecr' | 'Acr' | 'Nexus3Registry' | 'ArtifactoryRegistry' | 'CustomArtifact'
 }
 
 export interface SidecarArtifactWrapper {
@@ -9729,9 +9842,12 @@ export type UserGroupDTORequestBody = UserGroupDTO
 
 export type YamlSchemaDetailsWrapperRequestBody = YamlSchemaDetailsWrapper
 
+
 export type CreateEnvironmentGroupBodyRequestBody = string
 
 export type GetBuildDetailsForEcrWithYamlBodyRequestBody = string
+
+export type GetBuildDetailsForAcrArtifactWithYamlBodyRequestBody = string
 
 export type UnsubscribeBodyRequestBody = string[]
 
@@ -11534,6 +11650,270 @@ export const updateApiKeyPromise = (
     signal
   )
 
+export interface GetACRRegistriesBySubscriptionQueryParams {
+  connectorRef: string
+  accountIdentifier: string
+  orgIdentifier: string
+  projectIdentifier: string
+  subscription: string
+}
+
+export type GetACRRegistriesBySubscriptionProps = Omit<
+  GetProps<ResponseListString, Failure | Error, GetACRRegistriesBySubscriptionQueryParams, void>,
+  'path'
+>
+
+/**
+ * Gets ACR registries by subscription
+ */
+export const GetACRRegistriesBySubscription = (props: GetACRRegistriesBySubscriptionProps) => (
+  <Get<ResponseListString, Failure | Error, GetACRRegistriesBySubscriptionQueryParams, void>
+    path={`/artifacts/acr/container-registries`}
+    base={getConfig('ng/api')}
+    {...props}
+  />
+)
+
+export type UseGetACRRegistriesBySubscriptionProps = Omit<
+  UseGetProps<ResponseListString, Failure | Error, GetACRRegistriesBySubscriptionQueryParams, void>,
+  'path'
+>
+
+/**
+ * Gets ACR registries by subscription
+ */
+export const useGetACRRegistriesBySubscription = (props: UseGetACRRegistriesBySubscriptionProps) =>
+  useGet<ResponseListString, Failure | Error, GetACRRegistriesBySubscriptionQueryParams, void>(
+    `/artifacts/acr/container-registries`,
+    { base: getConfig('ng/api'), ...props }
+  )
+
+/**
+ * Gets ACR registries by subscription
+ */
+export const getACRRegistriesBySubscriptionPromise = (
+  props: GetUsingFetchProps<ResponseListString, Failure | Error, GetACRRegistriesBySubscriptionQueryParams, void>,
+  signal?: RequestInit['signal']
+) =>
+  getUsingFetch<ResponseListString, Failure | Error, GetACRRegistriesBySubscriptionQueryParams, void>(
+    getConfig('ng/api'),
+    `/artifacts/acr/container-registries`,
+    props,
+    signal
+  )
+
+export interface GetACRRepositoriesQueryParams {
+  connectorRef: string
+  accountIdentifier: string
+  orgIdentifier: string
+  projectIdentifier: string
+  subscription: string
+}
+
+export interface GetACRRepositoriesPathParams {
+  registry: string
+}
+
+export type GetACRRepositoriesProps = Omit<
+  GetProps<ResponseListString, Failure | Error, GetACRRepositoriesQueryParams, GetACRRepositoriesPathParams>,
+  'path'
+> &
+  GetACRRepositoriesPathParams
+
+/**
+ * Gets ACR repositories by subscription and container registry name
+ */
+export const GetACRRepositories = ({ registry, ...props }: GetACRRepositoriesProps) => (
+  <Get<ResponseListString, Failure | Error, GetACRRepositoriesQueryParams, GetACRRepositoriesPathParams>
+    path={`/artifacts/acr/container-registries/${registry}/repositories`}
+    base={getConfig('ng/api')}
+    {...props}
+  />
+)
+
+export type UseGetACRRepositoriesProps = Omit<
+  UseGetProps<ResponseListString, Failure | Error, GetACRRepositoriesQueryParams, GetACRRepositoriesPathParams>,
+  'path'
+> &
+  GetACRRepositoriesPathParams
+
+/**
+ * Gets ACR repositories by subscription and container registry name
+ */
+export const useGetACRRepositories = ({ registry, ...props }: UseGetACRRepositoriesProps) =>
+  useGet<ResponseListString, Failure | Error, GetACRRepositoriesQueryParams, GetACRRepositoriesPathParams>(
+    (paramsInPath: GetACRRepositoriesPathParams) =>
+      `/artifacts/acr/container-registries/${paramsInPath.registry}/repositories`,
+    { base: getConfig('ng/api'), pathParams: { registry }, ...props }
+  )
+
+/**
+ * Gets ACR repositories by subscription and container registry name
+ */
+export const getACRRepositoriesPromise = (
+  {
+    registry,
+    ...props
+  }: GetUsingFetchProps<
+    ResponseListString,
+    Failure | Error,
+    GetACRRepositoriesQueryParams,
+    GetACRRepositoriesPathParams
+  > & { registry: string },
+  signal?: RequestInit['signal']
+) =>
+  getUsingFetch<ResponseListString, Failure | Error, GetACRRepositoriesQueryParams, GetACRRepositoriesPathParams>(
+    getConfig('ng/api'),
+    `/artifacts/acr/container-registries/${registry}/repositories`,
+    props,
+    signal
+  )
+
+export interface GetBuildDetailsForACRRepositoryQueryParams {
+  subscription?: string
+  registry?: string
+  repository?: string
+  connectorRef?: string
+  accountIdentifier: string
+  orgIdentifier: string
+  projectIdentifier: string
+  branch?: string
+  repoIdentifier?: string
+  getDefaultFromOtherRepo?: boolean
+}
+
+export type GetBuildDetailsForACRRepositoryProps = Omit<
+  GetProps<ResponseAcrResponseDTO, Failure | Error, GetBuildDetailsForACRRepositoryQueryParams, void>,
+  'path'
+>
+
+/**
+ * Gets ACR repository build details
+ */
+export const GetBuildDetailsForACRRepository = (props: GetBuildDetailsForACRRepositoryProps) => (
+  <Get<ResponseAcrResponseDTO, Failure | Error, GetBuildDetailsForACRRepositoryQueryParams, void>
+    path={`/artifacts/acr/getBuildDetails`}
+    base={getConfig('ng/api')}
+    {...props}
+  />
+)
+
+export type UseGetBuildDetailsForACRRepositoryProps = Omit<
+  UseGetProps<ResponseAcrResponseDTO, Failure | Error, GetBuildDetailsForACRRepositoryQueryParams, void>,
+  'path'
+>
+
+/**
+ * Gets ACR repository build details
+ */
+export const useGetBuildDetailsForACRRepository = (props: UseGetBuildDetailsForACRRepositoryProps) =>
+  useGet<ResponseAcrResponseDTO, Failure | Error, GetBuildDetailsForACRRepositoryQueryParams, void>(
+    `/artifacts/acr/getBuildDetails`,
+    { base: getConfig('ng/api'), ...props }
+  )
+
+/**
+ * Gets ACR repository build details
+ */
+export const getBuildDetailsForACRRepositoryPromise = (
+  props: GetUsingFetchProps<ResponseAcrResponseDTO, Failure | Error, GetBuildDetailsForACRRepositoryQueryParams, void>,
+  signal?: RequestInit['signal']
+) =>
+  getUsingFetch<ResponseAcrResponseDTO, Failure | Error, GetBuildDetailsForACRRepositoryQueryParams, void>(
+    getConfig('ng/api'),
+    `/artifacts/acr/getBuildDetails`,
+    props,
+    signal
+  )
+
+export interface GetBuildDetailsForAcrArtifactWithYamlQueryParams {
+  subscription?: string
+  registry?: string
+  repository?: string
+  connectorRef?: string
+  accountIdentifier: string
+  orgIdentifier: string
+  projectIdentifier: string
+  pipelineIdentifier: string
+  fqnPath: string
+  branch?: string
+  repoIdentifier?: string
+  getDefaultFromOtherRepo?: boolean
+}
+
+export type GetBuildDetailsForAcrArtifactWithYamlProps = Omit<
+  MutateProps<
+    ResponseAcrResponseDTO,
+    Failure | Error,
+    GetBuildDetailsForAcrArtifactWithYamlQueryParams,
+    GetBuildDetailsForAcrArtifactWithYamlBodyRequestBody,
+    void
+  >,
+  'path' | 'verb'
+>
+
+/**
+ * Gets ACR build details with yaml input for expression resolution
+ */
+export const GetBuildDetailsForAcrArtifactWithYaml = (props: GetBuildDetailsForAcrArtifactWithYamlProps) => (
+  <Mutate<
+    ResponseAcrResponseDTO,
+    Failure | Error,
+    GetBuildDetailsForAcrArtifactWithYamlQueryParams,
+    GetBuildDetailsForAcrArtifactWithYamlBodyRequestBody,
+    void
+  >
+    verb="POST"
+    path={`/artifacts/acr/getBuildDetailsV2`}
+    base={getConfig('ng/api')}
+    {...props}
+  />
+)
+
+export type UseGetBuildDetailsForAcrArtifactWithYamlProps = Omit<
+  UseMutateProps<
+    ResponseAcrResponseDTO,
+    Failure | Error,
+    GetBuildDetailsForAcrArtifactWithYamlQueryParams,
+    GetBuildDetailsForAcrArtifactWithYamlBodyRequestBody,
+    void
+  >,
+  'path' | 'verb'
+>
+
+/**
+ * Gets ACR build details with yaml input for expression resolution
+ */
+export const useGetBuildDetailsForAcrArtifactWithYaml = (props: UseGetBuildDetailsForAcrArtifactWithYamlProps) =>
+  useMutate<
+    ResponseAcrResponseDTO,
+    Failure | Error,
+    GetBuildDetailsForAcrArtifactWithYamlQueryParams,
+    GetBuildDetailsForAcrArtifactWithYamlBodyRequestBody,
+    void
+  >('POST', `/artifacts/acr/getBuildDetailsV2`, { base: getConfig('ng/api'), ...props })
+
+/**
+ * Gets ACR build details with yaml input for expression resolution
+ */
+export const getBuildDetailsForAcrArtifactWithYamlPromise = (
+  props: MutateUsingFetchProps<
+    ResponseAcrResponseDTO,
+    Failure | Error,
+    GetBuildDetailsForAcrArtifactWithYamlQueryParams,
+    GetBuildDetailsForAcrArtifactWithYamlBodyRequestBody,
+    void
+  >,
+  signal?: RequestInit['signal']
+) =>
+  mutateUsingFetch<
+    ResponseAcrResponseDTO,
+    Failure | Error,
+    GetBuildDetailsForAcrArtifactWithYamlQueryParams,
+    GetBuildDetailsForAcrArtifactWithYamlBodyRequestBody,
+    void
+  >('POST', getConfig('ng/api'), `/artifacts/acr/getBuildDetailsV2`, props, signal)
+
 export interface GetArtifactsBuildsDetailsForArtifactoryQueryParams {
   connectorRef: string
   repositoryName: string
@@ -12515,7 +12895,7 @@ export type GetBuildDetailsForEcrWithYamlProps = Omit<
     ResponseEcrResponseDTO,
     Failure | Error,
     GetBuildDetailsForEcrWithYamlQueryParams,
-    GetBuildDetailsForEcrWithYamlBodyRequestBody,
+    GetBuildDetailsForAcrArtifactWithYamlBodyRequestBody,
     void
   >,
   'path' | 'verb'
@@ -12529,7 +12909,7 @@ export const GetBuildDetailsForEcrWithYaml = (props: GetBuildDetailsForEcrWithYa
     ResponseEcrResponseDTO,
     Failure | Error,
     GetBuildDetailsForEcrWithYamlQueryParams,
-    GetBuildDetailsForEcrWithYamlBodyRequestBody,
+    GetBuildDetailsForAcrArtifactWithYamlBodyRequestBody,
     void
   >
     verb="POST"
@@ -12544,7 +12924,7 @@ export type UseGetBuildDetailsForEcrWithYamlProps = Omit<
     ResponseEcrResponseDTO,
     Failure | Error,
     GetBuildDetailsForEcrWithYamlQueryParams,
-    GetBuildDetailsForEcrWithYamlBodyRequestBody,
+    GetBuildDetailsForAcrArtifactWithYamlBodyRequestBody,
     void
   >,
   'path' | 'verb'
@@ -12558,7 +12938,7 @@ export const useGetBuildDetailsForEcrWithYaml = (props: UseGetBuildDetailsForEcr
     ResponseEcrResponseDTO,
     Failure | Error,
     GetBuildDetailsForEcrWithYamlQueryParams,
-    GetBuildDetailsForEcrWithYamlBodyRequestBody,
+    GetBuildDetailsForAcrArtifactWithYamlBodyRequestBody,
     void
   >('POST', `/artifacts/ecr/getBuildDetailsV2`, { base: getConfig('ng/api'), ...props })
 
@@ -12570,7 +12950,7 @@ export const getBuildDetailsForEcrWithYamlPromise = (
     ResponseEcrResponseDTO,
     Failure | Error,
     GetBuildDetailsForEcrWithYamlQueryParams,
-    GetBuildDetailsForEcrWithYamlBodyRequestBody,
+    GetBuildDetailsForAcrArtifactWithYamlBodyRequestBody,
     void
   >,
   signal?: RequestInit['signal']
@@ -12579,7 +12959,7 @@ export const getBuildDetailsForEcrWithYamlPromise = (
     ResponseEcrResponseDTO,
     Failure | Error,
     GetBuildDetailsForEcrWithYamlQueryParams,
-    GetBuildDetailsForEcrWithYamlBodyRequestBody,
+    GetBuildDetailsForAcrArtifactWithYamlBodyRequestBody,
     void
   >('POST', getConfig('ng/api'), `/artifacts/ecr/getBuildDetailsV2`, props, signal)
 
@@ -12959,7 +13339,7 @@ export type GetBuildDetailsForGcrWithYamlProps = Omit<
     ResponseGcrResponseDTO,
     Failure | Error,
     GetBuildDetailsForGcrWithYamlQueryParams,
-    GetBuildDetailsForEcrWithYamlBodyRequestBody,
+    GetBuildDetailsForAcrArtifactWithYamlBodyRequestBody,
     void
   >,
   'path' | 'verb'
@@ -12973,7 +13353,7 @@ export const GetBuildDetailsForGcrWithYaml = (props: GetBuildDetailsForGcrWithYa
     ResponseGcrResponseDTO,
     Failure | Error,
     GetBuildDetailsForGcrWithYamlQueryParams,
-    GetBuildDetailsForEcrWithYamlBodyRequestBody,
+    GetBuildDetailsForAcrArtifactWithYamlBodyRequestBody,
     void
   >
     verb="POST"
@@ -12988,7 +13368,7 @@ export type UseGetBuildDetailsForGcrWithYamlProps = Omit<
     ResponseGcrResponseDTO,
     Failure | Error,
     GetBuildDetailsForGcrWithYamlQueryParams,
-    GetBuildDetailsForEcrWithYamlBodyRequestBody,
+    GetBuildDetailsForAcrArtifactWithYamlBodyRequestBody,
     void
   >,
   'path' | 'verb'
@@ -13002,7 +13382,7 @@ export const useGetBuildDetailsForGcrWithYaml = (props: UseGetBuildDetailsForGcr
     ResponseGcrResponseDTO,
     Failure | Error,
     GetBuildDetailsForGcrWithYamlQueryParams,
-    GetBuildDetailsForEcrWithYamlBodyRequestBody,
+    GetBuildDetailsForAcrArtifactWithYamlBodyRequestBody,
     void
   >('POST', `/artifacts/gcr/getBuildDetailsV2`, { base: getConfig('ng/api'), ...props })
 
@@ -13014,7 +13394,7 @@ export const getBuildDetailsForGcrWithYamlPromise = (
     ResponseGcrResponseDTO,
     Failure | Error,
     GetBuildDetailsForGcrWithYamlQueryParams,
-    GetBuildDetailsForEcrWithYamlBodyRequestBody,
+    GetBuildDetailsForAcrArtifactWithYamlBodyRequestBody,
     void
   >,
   signal?: RequestInit['signal']
@@ -13023,7 +13403,7 @@ export const getBuildDetailsForGcrWithYamlPromise = (
     ResponseGcrResponseDTO,
     Failure | Error,
     GetBuildDetailsForGcrWithYamlQueryParams,
-    GetBuildDetailsForEcrWithYamlBodyRequestBody,
+    GetBuildDetailsForAcrArtifactWithYamlBodyRequestBody,
     void
   >('POST', getConfig('ng/api'), `/artifacts/gcr/getBuildDetailsV2`, props, signal)
 
@@ -14260,6 +14640,217 @@ export const updateWhitelistedDomainsPromise = (
     UpdateWhitelistedDomainsBodyRequestBody,
     void
   >('PUT', getConfig('ng/api'), `/authentication-settings/whitelisted-domains`, props, signal)
+
+export interface GetAzureSubscriptionsQueryParams {
+  connectorRef: string
+  accountIdentifier: string
+  orgIdentifier: string
+  projectIdentifier: string
+}
+
+export type GetAzureSubscriptionsProps = Omit<
+  GetProps<ResponseMapStringString, Failure | Error, GetAzureSubscriptionsQueryParams, void>,
+  'path'
+>
+
+/**
+ * Gets azure subscriptions
+ */
+export const GetAzureSubscriptions = (props: GetAzureSubscriptionsProps) => (
+  <Get<ResponseMapStringString, Failure | Error, GetAzureSubscriptionsQueryParams, void>
+    path={`/azure/subscriptions`}
+    base={getConfig('ng/api')}
+    {...props}
+  />
+)
+
+export type UseGetAzureSubscriptionsProps = Omit<
+  UseGetProps<ResponseMapStringString, Failure | Error, GetAzureSubscriptionsQueryParams, void>,
+  'path'
+>
+
+/**
+ * Gets azure subscriptions
+ */
+export const useGetAzureSubscriptions = (props: UseGetAzureSubscriptionsProps) =>
+  useGet<ResponseMapStringString, Failure | Error, GetAzureSubscriptionsQueryParams, void>(`/azure/subscriptions`, {
+    base: getConfig('ng/api'),
+    ...props
+  })
+
+/**
+ * Gets azure subscriptions
+ */
+export const getAzureSubscriptionsPromise = (
+  props: GetUsingFetchProps<ResponseMapStringString, Failure | Error, GetAzureSubscriptionsQueryParams, void>,
+  signal?: RequestInit['signal']
+) =>
+  getUsingFetch<ResponseMapStringString, Failure | Error, GetAzureSubscriptionsQueryParams, void>(
+    getConfig('ng/api'),
+    `/azure/subscriptions`,
+    props,
+    signal
+  )
+
+export interface GetAzureResourceGroupsBySubscriptionQueryParams {
+  connectorRef: string
+  accountIdentifier: string
+  orgIdentifier: string
+  projectIdentifier: string
+}
+
+export interface GetAzureResourceGroupsBySubscriptionPathParams {
+  subscription: string
+}
+
+export type GetAzureResourceGroupsBySubscriptionProps = Omit<
+  GetProps<
+    ResponseListString,
+    Failure | Error,
+    GetAzureResourceGroupsBySubscriptionQueryParams,
+    GetAzureResourceGroupsBySubscriptionPathParams
+  >,
+  'path'
+> &
+  GetAzureResourceGroupsBySubscriptionPathParams
+
+/**
+ * Gets azure resource groups by subscription
+ */
+export const GetAzureResourceGroupsBySubscription = ({
+  subscription,
+  ...props
+}: GetAzureResourceGroupsBySubscriptionProps) => (
+  <Get<
+    ResponseListString,
+    Failure | Error,
+    GetAzureResourceGroupsBySubscriptionQueryParams,
+    GetAzureResourceGroupsBySubscriptionPathParams
+  >
+    path={`/azure/subscriptions/${subscription}/resourceGroups`}
+    base={getConfig('ng/api')}
+    {...props}
+  />
+)
+
+export type UseGetAzureResourceGroupsBySubscriptionProps = Omit<
+  UseGetProps<
+    ResponseListString,
+    Failure | Error,
+    GetAzureResourceGroupsBySubscriptionQueryParams,
+    GetAzureResourceGroupsBySubscriptionPathParams
+  >,
+  'path'
+> &
+  GetAzureResourceGroupsBySubscriptionPathParams
+
+/**
+ * Gets azure resource groups by subscription
+ */
+export const useGetAzureResourceGroupsBySubscription = ({
+  subscription,
+  ...props
+}: UseGetAzureResourceGroupsBySubscriptionProps) =>
+  useGet<
+    ResponseListString,
+    Failure | Error,
+    GetAzureResourceGroupsBySubscriptionQueryParams,
+    GetAzureResourceGroupsBySubscriptionPathParams
+  >(
+    (paramsInPath: GetAzureResourceGroupsBySubscriptionPathParams) =>
+      `/azure/subscriptions/${paramsInPath.subscription}/resourceGroups`,
+    { base: getConfig('ng/api'), pathParams: { subscription }, ...props }
+  )
+
+/**
+ * Gets azure resource groups by subscription
+ */
+export const getAzureResourceGroupsBySubscriptionPromise = (
+  {
+    subscription,
+    ...props
+  }: GetUsingFetchProps<
+    ResponseListString,
+    Failure | Error,
+    GetAzureResourceGroupsBySubscriptionQueryParams,
+    GetAzureResourceGroupsBySubscriptionPathParams
+  > & { subscription: string },
+  signal?: RequestInit['signal']
+) =>
+  getUsingFetch<
+    ResponseListString,
+    Failure | Error,
+    GetAzureResourceGroupsBySubscriptionQueryParams,
+    GetAzureResourceGroupsBySubscriptionPathParams
+  >(getConfig('ng/api'), `/azure/subscriptions/${subscription}/resourceGroups`, props, signal)
+
+export interface GetAzureClustersQueryParams {
+  connectorRef: string
+  accountIdentifier: string
+  orgIdentifier: string
+  projectIdentifier: string
+}
+
+export interface GetAzureClustersPathParams {
+  subscription: string
+  resourceGroup: string
+}
+
+export type GetAzureClustersProps = Omit<
+  GetProps<ResponseListString, Failure | Error, GetAzureClustersQueryParams, GetAzureClustersPathParams>,
+  'path'
+> &
+  GetAzureClustersPathParams
+
+/**
+ * Gets azure k8s clusters by subscription
+ */
+export const GetAzureClusters = ({ subscription, resourceGroup, ...props }: GetAzureClustersProps) => (
+  <Get<ResponseListString, Failure | Error, GetAzureClustersQueryParams, GetAzureClustersPathParams>
+    path={`/azure/subscriptions/${subscription}/resourceGroups/${resourceGroup}/clusters`}
+    base={getConfig('ng/api')}
+    {...props}
+  />
+)
+
+export type UseGetAzureClustersProps = Omit<
+  UseGetProps<ResponseListString, Failure | Error, GetAzureClustersQueryParams, GetAzureClustersPathParams>,
+  'path'
+> &
+  GetAzureClustersPathParams
+
+/**
+ * Gets azure k8s clusters by subscription
+ */
+export const useGetAzureClusters = ({ subscription, resourceGroup, ...props }: UseGetAzureClustersProps) =>
+  useGet<ResponseListString, Failure | Error, GetAzureClustersQueryParams, GetAzureClustersPathParams>(
+    (paramsInPath: GetAzureClustersPathParams) =>
+      `/azure/subscriptions/${paramsInPath.subscription}/resourceGroups/${paramsInPath.resourceGroup}/clusters`,
+    { base: getConfig('ng/api'), pathParams: { subscription, resourceGroup }, ...props }
+  )
+
+/**
+ * Gets azure k8s clusters by subscription
+ */
+export const getAzureClustersPromise = (
+  {
+    subscription,
+    resourceGroup,
+    ...props
+  }: GetUsingFetchProps<
+    ResponseListString,
+    Failure | Error,
+    GetAzureClustersQueryParams,
+    GetAzureClustersPathParams
+  > & { subscription: string; resourceGroup: string },
+  signal?: RequestInit['signal']
+) =>
+  getUsingFetch<ResponseListString, Failure | Error, GetAzureClustersQueryParams, GetAzureClustersPathParams>(
+    getConfig('ng/api'),
+    `/azure/subscriptions/${subscription}/resourceGroups/${resourceGroup}/clusters`,
+    props,
+    signal
+  )
 
 export interface GetGCSBucketListQueryParams {
   connectorRef?: string
