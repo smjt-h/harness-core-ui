@@ -19,6 +19,7 @@ export interface DelegateSelectorProps {
   tabName?: string
 }
 
+ // formik wrapping for delegate selector panel
 export function DelegateSelector(props: DelegateSelectorProps): React.ReactElement {
   const { selectedStage, onUpdate, isReadonly, tabName } = props
   // eslint-disable-next-line react-hooks/exhaustive-deps
