@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">85.29% </span>
+                <span class="strong">90% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>29/34</span>
+                <span class='fraction'>27/30</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">56.9% </span>
+                <span class="strong">47.5% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>66/116</span>
+                <span class='fraction'>38/80</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">83.33% </span>
+                <span class="strong">80% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>5/6</span>
+                <span class='fraction'>4/5</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">85.29% </span>
+                <span class="strong">90% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>29/34</span>
+                <span class='fraction'>27/30</span>
             </div>
         
             
@@ -133,16 +133,7 @@
 <a name='L74'></a><a href='#L74'>74</a>
 <a name='L75'></a><a href='#L75'>75</a>
 <a name='L76'></a><a href='#L76'>76</a>
-<a name='L77'></a><a href='#L77'>77</a>
-<a name='L78'></a><a href='#L78'>78</a>
-<a name='L79'></a><a href='#L79'>79</a>
-<a name='L80'></a><a href='#L80'>80</a>
-<a name='L81'></a><a href='#L81'>81</a>
-<a name='L82'></a><a href='#L82'>82</a>
-<a name='L83'></a><a href='#L83'>83</a>
-<a name='L84'></a><a href='#L84'>84</a>
-<a name='L85'></a><a href='#L85'>85</a>
-<a name='L86'></a><a href='#L86'>86</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L77'></a><a href='#L77'>77</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -154,7 +145,6 @@
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
@@ -165,9 +155,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -180,8 +168,15 @@
 <span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">7x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -197,19 +192,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">7x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -239,16 +221,14 @@ import { parse } from 'yaml'
 import produce from 'immer'
 import { useCallback } from 'react'
 import type { StageElementConfig } from 'services/cd-ng'
-import type { TemplateSummaryResponse } from 'services/template-ng'
 import { usePipelineContext } from '@pipeline/components/PipelineStudio/PipelineContext/PipelineContext'
 import { useTemplateSelector } from '@pipeline/utils/useTemplateSelector'
 import { createTemplate, getStageType } from '@pipeline/utils/templateUtils'
 import { getIdentifierFromValue } from '@common/components/EntityReference/EntityReference'
 &nbsp;
 interface TemplateActionsReturnType {
-  onUseTemplate: (template: TemplateSummaryResponse, isCopied?: boolean) =&gt; Promise&lt;void&gt;
-  onRemoveTemplate: () =&gt; Promise&lt;void&gt;
-  onOpenTemplateSelector: () =&gt; void
+  addOrUpdateTemplate: () =&gt; void
+  removeTemplate: () =&gt; Promise&lt;void&gt;
 }
 &nbsp;
 export function useStageTemplateActions(): TemplateActionsReturnType {
@@ -257,16 +237,22 @@ export function useStageTemplateActions(): TemplateActionsReturnType {
       selectionState: { selectedStageId = <span class="branch-0 cbranch-no" title="branch not covered" >'' </span>},
       templateTypes
     },
-    setTemplateTypes,
     updateStage,
     getStageFromPipeline
   } = usePipelineContext()
-  const { openTemplateSelector, closeTemplateSelector } = useTemplateSelector()
   const { stage } = getStageFromPipeline(selectedStageId)
+  const { getTemplate } = useTemplateSelector()
 &nbsp;
-  const onUseTemplate = useCallback(
-    async (template: TemplateSummaryResponse, isCopied = false) =&gt; {
-      closeTemplateSelector()
+  const addOrUpdateTemplate = useCallback(async () =&gt; {
+    try {
+      const { template, isCopied } = await getTemplate({
+        templateType: 'Stage',
+        selectedChildType: getStageType(stage<span class="branch-0 cbranch-no" title="branch not covered" >?.s</span>tage, templateTypes),
+        ...(stage<span class="branch-0 cbranch-no" title="branch not covered" >?.s</span>tage<span class="branch-0 cbranch-no" title="branch not covered" >?.t</span>emplate &amp;&amp; <span class="branch-1 cbranch-no" title="branch not covered" >{</span>
+          selectedTemplateRef: getIdentifierFromValue(stage.stage.template.templateRef),
+          selectedVersionLabel: stage.stage.template.versionLabel
+        })
+      })
       const node = stage<span class="branch-0 cbranch-no" title="branch not covered" >?.s</span>tage
       <span class="missing-if-branch" title="if path not taken" >I</span>if (
         !isCopied &amp;&amp;
@@ -282,35 +268,22 @@ export function useStageTemplateActions(): TemplateActionsReturnType {
           })
         : createTemplate(node, template)
       await updateStage(processNode)
-      <span class="missing-if-branch" title="if path not taken" >I</span>if (!isCopied &amp;&amp; template<span class="branch-0 cbranch-no" title="branch not covered" >?.i</span>dentifier &amp;&amp; template<span class="branch-0 cbranch-no" title="branch not covered" >?.c</span>hildType) {
-<span class="cstat-no" title="statement not covered" >        templateTypes[template.identifier] = template.childType</span>
-<span class="cstat-no" title="statement not covered" >        setTemplateTypes(templateTypes)</span>
-      }
-    },
-    [closeTemplateSelector, stage<span class="branch-0 cbranch-no" title="branch not covered" >?.s</span>tage, updateStage]
-  )
+    } catch (_) {
+      // Do nothing.. user cancelled template selection
+    }
+  }, [stage<span class="branch-0 cbranch-no" title="branch not covered" >?.s</span>tage, templateTypes, getTemplate, updateStage])
 &nbsp;
-  const onOpenTemplateSelector = useCallback(() =&gt; {
-    openTemplateSelector({
-      templateType: 'Stage',
-      selectedChildType: getStageType(stage<span class="branch-0 cbranch-no" title="branch not covered" >?.s</span>tage, templateTypes),
-      selectedTemplateRef: getIdentifierFromValue(defaultTo(stage<span class="branch-0 cbranch-no" title="branch not covered" >?.s</span>tage<span class="branch-0 cbranch-no" title="branch not covered" >?.t</span>emplate<span class="branch-1 cbranch-no" title="branch not covered" >?.templateRef,</span> '')),
-      selectedVersionLabel: stage<span class="branch-0 cbranch-no" title="branch not covered" >?.s</span>tage<span class="branch-0 cbranch-no" title="branch not covered" >?.t</span>emplate<span class="branch-1 cbranch-no" title="branch not covered" >?.versionLabel,</span>
-      onUseTemplate
-    })
-  }, [stage<span class="branch-0 cbranch-no" title="branch not covered" >?.s</span>tage, templateTypes, openTemplateSelector, onUseTemplate])
-&nbsp;
-  const onRemoveTemplate = useCallback(async () =&gt; {
+  const removeTemplate = useCallback(async () =&gt; {
     const node = stage<span class="branch-0 cbranch-no" title="branch not covered" >?.s</span>tage
     const processNode = produce({} as StageElementConfig, draft =&gt; {
       draft.name = defaultTo(node<span class="branch-0 cbranch-no" title="branch not covered" >?.n</span>ame, '')
       draft.identifier = defaultTo(node<span class="branch-0 cbranch-no" title="branch not covered" >?.i</span>dentifier, '')
-      draft.type = getStageType(stage<span class="branch-0 cbranch-no" title="branch not covered" >?.s</span>tage, templateTypes)
+      draft.type = getStageType(node, templateTypes)
     })
     await updateStage(processNode)
   }, [stage<span class="branch-0 cbranch-no" title="branch not covered" >?.s</span>tage, templateTypes, updateStage])
 &nbsp;
-  return { onUseTemplate, onRemoveTemplate, onOpenTemplateSelector }
+  return { addOrUpdateTemplate, removeTemplate }
 }
 &nbsp;</pre></td></tr></table></pre>
 
@@ -319,7 +292,7 @@ export function useStageTemplateActions(): TemplateActionsReturnType {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Tue Apr 19 2022 02:10:52 GMT+0000 (Greenwich Mean Time)
+                at Tue Apr 19 2022 03:12:29 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../prettify.js"></script>

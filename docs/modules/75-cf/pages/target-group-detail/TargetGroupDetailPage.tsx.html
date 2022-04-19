@@ -30,16 +30,16 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">90.48% </span>
+                <span class="strong">83.33% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>38/42</span>
+                <span class='fraction'>40/48</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>4/4</span>
+                <span class='fraction'>2/2</span>
             </div>
         
             
@@ -213,13 +213,17 @@
 <a name='L154'></a><a href='#L154'>154</a>
 <a name='L155'></a><a href='#L155'>155</a>
 <a name='L156'></a><a href='#L156'>156</a>
-<a name='L157'></a><a href='#L157'>157</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L157'></a><a href='#L157'>157</a>
+<a name='L158'></a><a href='#L158'>158</a>
+<a name='L159'></a><a href='#L159'>159</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -286,24 +290,12 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">12x</span>
-<span class="cline-any cline-yes">12x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">12x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">12x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -368,6 +360,18 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">/*
  * Copyright 2022 Harness Inc. All rights reserved.
@@ -376,12 +380,12 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 &nbsp;
-import React, { FC, useMemo } from 'react'
+import React, { FC } from 'react'
 import { useParams } from 'react-router-dom'
 import { Tab, Tabs, Page, Container, Layout } from '@wings-software/uicore'
 import { useStrings } from 'framework/strings'
 import { useGetSegment, Segment, Feature } from 'services/cf'
-import { useGetEnvironment, EnvironmentResponseDTO } from 'services/cd-ng'
+import { useGetEnvironment } from 'services/cd-ng'
 import { ContainerSpinner } from '@common/components/ContainerSpinner/ContainerSpinner'
 import StringWithTooltip from '@common/components/StringWithTooltip/StringWithTooltip'
 import { useDocumentTitle } from '@common/hooks/useDocumentTitle'
@@ -391,10 +395,12 @@ import useActiveEnvironment from '@cf/hooks/useActiveEnvironment'
 import { useGitSync } from '@cf/hooks/useGitSync'
 import TargetManagementToolbar from '@cf/components/TargetManagementToolbar/TargetManagementToolbar'
 import { AuditLogs } from '@cf/components/AuditLogs/AuditLogs'
-import { DetailPageTemplate, DetailPageTemplateProps } from '@cf/components/DetailPageTemplate/DetailPageTemplate'
-import TargetGroupHeader from './components/TargetGroupHeader'
+import { DetailPageTemplate } from '@cf/components/DetailPageTemplate/DetailPageTemplate'
+import { ResourceType } from '@rbac/interfaces/ResourceType'
+import { PermissionIdentifier } from '@rbac/interfaces/PermissionIdentifier'
 import TargetGroupCriteria from './components/TargetGroupCriteria'
 import FlagSettingsPanel from './components/FlagSettingsPanel/FlagSettingsPanel'
+import useDeleteTargetGroupDialog from './hooks/useDeleteTargetGroupDialog'
 &nbsp;
 import css from './TargetGroupDetailPage.module.scss'
 &nbsp;
@@ -441,32 +447,20 @@ const TargetGroupDetailPage: FC = () =&gt; {
     }
   })
 &nbsp;
-  const breadcrumbs = useMemo&lt;DetailPageTemplateProps['breadcrumbs']&gt;(
-    () =&gt; [
-      {
-        title: `${getString('cf.shared.targetManagement')}: ${getString('cf.shared.segments')}`,
-        url: withActiveEnvironment(
-          routes.toCFSegments({
-            accountId: accountIdentifier,
-            orgIdentifier,
-            projectIdentifier
-          })
-        )
-      }
-    ],
-    [accountIdentifier, orgIdentifier, projectIdentifier, withActiveEnvironment]
-  )
+  const deleteTargetGroupDialog = useDeleteTargetGroupDialog(targetGroup as Segment)
 &nbsp;
-  const createdDate = useMemo&lt;string | undefined&gt;(
-    () =&gt;
-      targetGroup?.createdAt
-        ? getString('cf.targetDetail.createdOnDate', {
-            date: formatDate(targetGroup.createdAt as number),
-            time: formatTime(targetGroup.createdAt as number)
-          })
-        : undefined,
-    [targetGroup?.createdAt]
-  )
+  const breadcrumbs = [
+    {
+      label: `${getString('cf.shared.targetManagement')}: ${getString('cf.shared.segments')}`,
+      url: withActiveEnvironment(
+        routes.toCFSegments({
+          accountId: accountIdentifier,
+          orgIdentifier,
+          projectIdentifier
+        })
+      )
+    }
+  ]
 &nbsp;
   if (targetGroupLoading || envLoading) {
     return &lt;ContainerSpinner flex={{ align: 'center-center' }} /&gt;
@@ -487,11 +481,23 @@ const TargetGroupDetailPage: FC = () =&gt; {
     &lt;DetailPageTemplate
       breadcrumbs={breadcrumbs}
       title={targetGroup<span class="branch-0 cbranch-no" title="branch not covered" >?.n</span>ame}
-      subTitle={createdDate}
+      subTitle={getString('cf.targetDetail.createdOnDate', {
+        date: formatDate(targetGroup<span class="branch-0 cbranch-no" title="branch not covered" >?.c</span>reatedAt as number),
+        time: formatTime(targetGroup<span class="branch-0 cbranch-no" title="branch not covered" >?.c</span>reatedAt as number)
+      })}
       identifier={targetGroup<span class="branch-0 cbranch-no" title="branch not covered" >?.i</span>dentifier}
-      headerExtras={
-        &lt;TargetGroupHeader targetGroup={targetGroup as Segment} env={envData<span class="branch-0 cbranch-no" title="branch not covered" >?.d</span>ata as EnvironmentResponseDTO} /&gt;
-      }
+      menuItems={[
+        {
+          icon: 'cross',
+          text: getString('delete'),
+          onClick: deleteTargetGroupDialog,
+          permission: {
+            resource: { resourceType: ResourceType.ENVIRONMENT, resourceIdentifier: targetGroup<span class="branch-0 cbranch-no" title="branch not covered" >?.i</span>dentifier },
+            permission: PermissionIdentifier.DELETE_FF_TARGETGROUP
+          }
+        }
+      ]}
+      metaData={{ environment: envData<span class="branch-0 cbranch-no" title="branch not covered" >?.d</span>ata<span class="branch-0 cbranch-no" title="branch not covered" >?.n</span>ame as string }}
     &gt;
       &lt;Layout.Vertical height="100%"&gt;
         {gitSync.isGitSyncActionsEnabled &amp;&amp; &lt;TargetManagementToolbar gitSync={gitSync} /&gt;}
@@ -532,7 +538,7 @@ export default TargetGroupDetailPage
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Tue Apr 19 2022 02:10:52 GMT+0000 (Greenwich Mean Time)
+                at Tue Apr 19 2022 03:12:29 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../prettify.js"></script>

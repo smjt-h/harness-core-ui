@@ -30,9 +30,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">66.67% </span>
+                <span class="strong">64.71% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>10/15</span>
+                <span class='fraction'>11/17</span>
             </div>
         
             
@@ -183,23 +183,25 @@
 <a name='L124'></a><a href='#L124'>124</a>
 <a name='L125'></a><a href='#L125'>125</a>
 <a name='L126'></a><a href='#L126'>126</a>
-<a name='L127'></a><a href='#L127'>127</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L127'></a><a href='#L127'>127</a>
+<a name='L128'></a><a href='#L128'>128</a>
+<a name='L129'></a><a href='#L129'>129</a>
+<a name='L130'></a><a href='#L130'>130</a>
+<a name='L131'></a><a href='#L131'>131</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">282x</span>
-<span class="cline-any cline-yes">282x</span>
-<span class="cline-any cline-yes">282x</span>
-<span class="cline-any cline-yes">282x</span>
+<span class="cline-any cline-yes">288x</span>
+<span class="cline-any cline-yes">288x</span>
+<span class="cline-any cline-yes">288x</span>
+<span class="cline-any cline-yes">288x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">282x</span>
-<span class="cline-any cline-yes">282x</span>
-<span class="cline-any cline-yes">282x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">288x</span>
+<span class="cline-any cline-yes">288x</span>
+<span class="cline-any cline-yes">288x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -207,7 +209,10 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">282x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">288x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -239,7 +244,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">282x</span>
+<span class="cline-any cline-yes">288x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -264,10 +269,11 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">282x</span>
+<span class="cline-any cline-yes">288x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -280,6 +286,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -331,6 +339,7 @@ export interface ErrorHandlerProps {
   height?: number | string
   skipUrlsInErrorHeader?: boolean
   className?: string
+  errorHintsRenderer?: (item: ResponseMessage[]) =&gt; React.ReactElement
 }
 &nbsp;
 const extractInfo = (
@@ -391,9 +400,10 @@ const ErrorList: React.FC&lt;{
 }
 &nbsp;
 export const ErrorHandler: React.FC&lt;ErrorHandlerProps&gt; = props =&gt; {
-  const { responseMessages, width, height, skipUrlsInErrorHeader = false, className = '' } = props
+  const { responseMessages, width, height, errorHintsRenderer, skipUrlsInErrorHeader = false, className = '' } = props
   const errorObjects = useMemo(() =&gt; extractInfo(responseMessages), [responseMessages])
   const { getString } = useStrings()
+&nbsp;
   return (
     &lt;Layout.Vertical
       background={Color.RED_100}
@@ -421,13 +431,15 @@ export const ErrorHandler: React.FC&lt;ErrorHandlerProps&gt; = props =&gt; {
                 )}
               &lt;/Container&gt;
               {&lt;ErrorList items={explanations} header={getString('common.errorHandler.issueCouldBe')} icon={'info'} /&gt;}
-              {
+              {errorHintsRenderer ? (
+<span class="branch-0 cbranch-no" title="branch not covered" >                errorHintsRenderer(hints)</span>
+              ) : (
                 &lt;ErrorList
                   items={hints}
                   header={getString('common.errorHandler.tryTheseSuggestions')}
                   icon={'lightbulb'}
                 /&gt;
-              }
+              )}
             &lt;/Layout.Vertical&gt;
           )
         })}
@@ -442,7 +454,7 @@ export const ErrorHandler: React.FC&lt;ErrorHandlerProps&gt; = props =&gt; {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Tue Apr 19 2022 02:10:52 GMT+0000 (Greenwich Mean Time)
+                at Tue Apr 19 2022 03:12:29 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../prettify.js"></script>
