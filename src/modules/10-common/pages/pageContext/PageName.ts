@@ -63,5 +63,9 @@ export enum PAGE_NAME {
   Environments = 'Environments',
   CDPipelineStudio = 'CDPipelineStudio',
   CDPipelineDeploymentList = 'CDPipelineDeploymentList',
-  GitOpsPage = 'GitOpsPage'
+  GitOpsPage = 'GitOpsPage',
+  AccountConfiguration = 'AccountConfiguration',
+  AccountOverview = 'AccountOverview',
+  SubscriptionsPage = 'SubscriptionsPage',
+  PlanPage = 'PlanPage'
 }

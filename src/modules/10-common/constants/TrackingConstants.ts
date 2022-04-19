@@ -106,7 +106,11 @@ export enum Category {
   SECRET = 'Secret',
   CONNECTOR = 'Connector',
   DELEGATE = 'Delegate',
-  ENVIRONMENT = 'Environment'
+  ENVIRONMENT = 'Environment',
+  CONTACT_SALES = 'ContactSales',
+  LICENSE = 'License',
+  FEEDBACK = 'Feedback',
+  ENFORCEMENT = 'Enforcement'
 }
 
 export enum ManifestActions {
@@ -140,4 +144,23 @@ export enum ExitModalActions {
 export enum EnvironmentActions {
   StartCreateEnvironment = 'Start Create Environment',
   SaveCreateEnvironment = 'Save Create Environment'
+}
+
+export enum ContactSalesActions {
+  LoadContactSales = 'Load Contact Sales',
+  SubmitContactSales = 'Submit Contact Sales'
+}
+
+export enum FeedbackActions {
+  LoadFeedback = 'Load Feedback',
+  SubmitFeedback = 'Submit Feedback'
+}
+
+export enum LicenseActions {
+  ExtendTrial = 'Extend Trial',
+  LoadExtendedTrial = 'Load Extended Trial'
+}
+
+export enum FeatureActions {
+  DismissFeatureBanner = 'Dismiss Feature Banner'
 }
