@@ -25,7 +25,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>11/11</span>
+                <span class='fraction'>10/10</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>11/11</span>
+                <span class='fraction'>10/10</span>
             </div>
         
             
@@ -123,20 +123,7 @@
 <a name='L64'></a><a href='#L64'>64</a>
 <a name='L65'></a><a href='#L65'>65</a>
 <a name='L66'></a><a href='#L66'>66</a>
-<a name='L67'></a><a href='#L67'>67</a>
-<a name='L68'></a><a href='#L68'>68</a>
-<a name='L69'></a><a href='#L69'>69</a>
-<a name='L70'></a><a href='#L70'>70</a>
-<a name='L71'></a><a href='#L71'>71</a>
-<a name='L72'></a><a href='#L72'>72</a>
-<a name='L73'></a><a href='#L73'>73</a>
-<a name='L74'></a><a href='#L74'>74</a>
-<a name='L75'></a><a href='#L75'>75</a>
-<a name='L76'></a><a href='#L76'>76</a>
-<a name='L77'></a><a href='#L77'>77</a>
-<a name='L78'></a><a href='#L78'>78</a>
-<a name='L79'></a><a href='#L79'>79</a>
-<a name='L80'></a><a href='#L80'>80</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L67'></a><a href='#L67'>67</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -148,6 +135,11 @@
 <span class="cline-any cline-yes">17x</span>
 <span class="cline-any cline-yes">17x</span>
 <span class="cline-any cline-yes">17x</span>
+<span class="cline-any cline-yes">17x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">17x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -156,28 +148,10 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">21x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">17x</span>
-<span class="cline-any cline-yes">22x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">22x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">22x</span>
-<span class="cline-any cline-yes">22x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">21x</span>
+<span class="cline-any cline-yes">21x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -223,21 +197,17 @@
  */
 &nbsp;
 import React from 'react'
-import { Button, ButtonSize, ButtonVariation, ExpandingSearchInput, Icon, Layout, Text } from '@harness/uicore'
+import { ExpandingSearchInput, Icon, Layout, Text } from '@wings-software/uicore'
 import { FontVariation, Color } from '@harness/design-system'
 import { useStrings } from 'framework/strings'
 import { usePipelineVariables } from '@pipeline/components/PipelineVariablesContext/PipelineVariablesContext'
-&nbsp;
-import css from '../PipelineVariables.module.scss'
+import css from '@pipeline/components/PipelineStudio/PipelineVariables/PipelineVariables.module.scss'
 &nbsp;
 export interface VariablesHeaderProps {
   enableSearch?: boolean
-  applyChanges(): void
-  discardChanges(): void
 }
 &nbsp;
-export function VariablesHeader(props: VariablesHeaderProps): JSX.Element {
-  const { enableSearch = true, applyChanges, discardChanges } = props
+export function VariablesHeader({ enableSearch = true }: VariablesHeaderProps): JSX.Element {
   const {
     onSearchInputChange,
     searchIndex = 0,
@@ -262,7 +232,7 @@ export function VariablesHeader(props: VariablesHeaderProps): JSX.Element {
           {enableSearch &amp;&amp; (
             &lt;ExpandingSearchInput
               alwaysExpanded
-              width={420}
+              width={450}
               onChange={onSearchInputChange}
               showPrevNextButtons
               fixedText={`${Math.min((searchIndex || 0) + 1, searchResults<span class="branch-0 cbranch-no" title="branch not covered" >?.l</span>ength)} / ${searchResults<span class="branch-0 cbranch-no" title="branch not covered" >?.l</span>ength}`}
@@ -273,22 +243,13 @@ export function VariablesHeader(props: VariablesHeaderProps): JSX.Element {
             /&gt;
           )}
         &lt;/div&gt;
-        &lt;div className={css.mainActions}&gt;
-          &lt;Button
-            variation={ButtonVariation.SECONDARY}
-            size={ButtonSize.SMALL}
-            text={getString('applyChanges')}
-            onClick={applyChanges}
-          /&gt;
-          &lt;Button minimal size={ButtonSize.SMALL} text={getString('pipeline.discard')} onClick={discardChanges} /&gt;
-        &lt;/div&gt;
       &lt;/div&gt;
       &lt;div className={css.variableListHeader}&gt;
         &lt;Text font={{ variation: FontVariation.SMALL_BOLD }} color={Color.GREY_600}&gt;
-          {getString('variableLabel')}
+          {getString('variableLabel')}{' '}
         &lt;/Text&gt;
         &lt;Text font={{ variation: FontVariation.SMALL_BOLD }} color={Color.GREY_600}&gt;
-          {getString('common.input')}
+          {getString('common.input')}{' '}
         &lt;/Text&gt;
       &lt;/div&gt;
     &lt;/&gt;
@@ -301,7 +262,7 @@ export function VariablesHeader(props: VariablesHeaderProps): JSX.Element {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Tue Apr 19 2022 14:58:12 GMT+0000 (Greenwich Mean Time)
+                at Tue Apr 19 2022 15:20:55 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../../../prettify.js"></script>
