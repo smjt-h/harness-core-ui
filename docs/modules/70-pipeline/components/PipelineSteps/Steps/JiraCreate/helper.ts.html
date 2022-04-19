@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">85.06% </span>
+                <span class="strong">71.26% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>74/87</span>
+                <span class='fraction'>62/87</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">77.34% </span>
+                <span class="strong">66.15% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>99/128</span>
+                <span class='fraction'>86/130</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">88.46% </span>
+                <span class="strong">76.92% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>23/26</span>
+                <span class='fraction'>20/26</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">82.61% </span>
+                <span class="strong">68.12% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>57/69</span>
+                <span class='fraction'>47/69</span>
             </div>
         
             
@@ -243,13 +243,7 @@
 <a name='L184'></a><a href='#L184'>184</a>
 <a name='L185'></a><a href='#L185'>185</a>
 <a name='L186'></a><a href='#L186'>186</a>
-<a name='L187'></a><a href='#L187'>187</a>
-<a name='L188'></a><a href='#L188'>188</a>
-<a name='L189'></a><a href='#L189'>189</a>
-<a name='L190'></a><a href='#L190'>190</a>
-<a name='L191'></a><a href='#L191'>191</a>
-<a name='L192'></a><a href='#L192'>192</a>
-<a name='L193'></a><a href='#L193'>193</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L187'></a><a href='#L187'>187</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -318,27 +312,21 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">7x</span>
-<span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -506,31 +494,25 @@ export const processFieldsForSubmit = (values: JiraCreateData): JiraCreateFieldT
   return toReturn
 }
 &nbsp;
-export const getInitialValueForSelectedField = (
+export const getInitialValueForSelectedField = <span class="fstat-no" title="function not covered" >(</span>
   savedFields: JiraCreateFieldType[],
   field: JiraFieldNG
 ): string | number | SelectOption | MultiSelectOption[] =&gt; {
-  const savedValue = savedFields.find(sf =&gt; sf.name === field.name)<span class="branch-0 cbranch-no" title="branch not covered" >?.v</span>alue
-  if (typeof savedValue === 'number') {
-    return savedValue as number
-  } else <span class="missing-if-branch" title="else path not taken" >E</span>if (typeof savedValue === 'string') {
-    if (
-      getMultiTypeFromValue(savedValue) === MultiTypeInputType.FIXED &amp;&amp;
-      field.allowedValues &amp;&amp;
-      field.schema.type === 'option'
-    ) {
-      if (field.schema.array) {
-        // multiselect
-        // return multiselectoption[]
-        const splitValues = (savedValue as string).split(',')
-        return splitValues.map(splitvalue =&gt; ({ label: splitvalue, value: splitvalue })) as MultiSelectOption[]
-      } else {
-        // singleselect
-        // return selectoption
-        return { label: savedValue, value: savedValue } as SelectOption
-      }
+  const savedValue = <span class="cstat-no" title="statement not covered" >savedFields.find(<span class="fstat-no" title="function not covered" >sf </span>=&gt; <span class="cstat-no" title="statement not covered" >sf.name === field.name)</span>?.value</span>
+<span class="cstat-no" title="statement not covered" >  if (typeof savedValue === 'number') {</span>
+<span class="cstat-no" title="statement not covered" >    return savedValue as number</span>
+  } else <span class="cstat-no" title="statement not covered" >if (typeof savedValue === 'string') {</span>
+<span class="cstat-no" title="statement not covered" >    if (field.allowedValues &amp;&amp; field.schema.type === 'option' &amp;&amp; field.schema.array) {</span>
+      // multiselect
+      // return multiselectoption[]
+      const splitValues = (<span class="cstat-no" title="statement not covered" >savedValue as string).split(',')</span>
+<span class="cstat-no" title="statement not covered" >      return splitValues.map(<span class="fstat-no" title="function not covered" >splitvalue </span>=&gt; (<span class="cstat-no" title="statement not covered" >{ label: splitvalue, value: splitvalue })</span>) as MultiSelectOption[]</span>
+    } else <span class="cstat-no" title="statement not covered" >if (field.allowedValues &amp;&amp; field.schema.type === 'option') {</span>
+      // singleselect
+      // return selectoption
+<span class="cstat-no" title="statement not covered" >      return { label: savedValue, value: savedValue } as SelectOption</span>
     }
-    return savedValue as string
+<span class="cstat-no" title="statement not covered" >    return savedValue as string</span>
   }
 <span class="cstat-no" title="statement not covered" >  return ''</span>
 }
@@ -640,7 +622,7 @@ export const updateMap = (alreadySelectedFields: JiraFieldNG[]): Record&lt;strin
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Tue Apr 19 2022 09:44:36 GMT+0000 (Greenwich Mean Time)
+                at Tue Apr 19 2022 09:45:05 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../../../prettify.js"></script>
