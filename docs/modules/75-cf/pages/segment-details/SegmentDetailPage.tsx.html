@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">91.38% </span>
+                <span class="strong">91.94% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>53/58</span>
+                <span class='fraction'>57/62</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">83.33% </span>
+                <span class="strong">82.69% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>45/54</span>
+                <span class='fraction'>43/52</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">91.23% </span>
+                <span class="strong">91.8% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>52/57</span>
+                <span class='fraction'>56/61</span>
             </div>
         
             
@@ -257,12 +257,7 @@
 <a name='L198'></a><a href='#L198'>198</a>
 <a name='L199'></a><a href='#L199'>199</a>
 <a name='L200'></a><a href='#L200'>200</a>
-<a name='L201'></a><a href='#L201'>201</a>
-<a name='L202'></a><a href='#L202'>202</a>
-<a name='L203'></a><a href='#L203'>203</a>
-<a name='L204'></a><a href='#L204'>204</a>
-<a name='L205'></a><a href='#L205'>205</a>
-<a name='L206'></a><a href='#L206'>206</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L201'></a><a href='#L201'>201</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -290,14 +285,10 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">8x</span>
@@ -356,6 +347,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -365,6 +358,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -462,11 +457,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">/*
  * Copyright 2022 Harness Inc. All rights reserved.
  * Use of this source code is governed by the PolyForm Shield 1.0.0 license
@@ -476,33 +466,29 @@
 &nbsp;
 import React from 'react'
 import { useHistory, useParams } from 'react-router-dom'
-import { Avatar, Container, Layout, Text, PageError } from '@wings-software/uicore'
+import { Container, Layout, PageError } from '@wings-software/uicore'
 import { Intent } from '@harness/design-system'
-import { useStrings } from 'framework/strings'
+import { useStrings, String } from 'framework/strings'
 import { DeleteSegmentQueryParams, GetSegmentQueryParams, useDeleteSegment, useGetSegment } from 'services/cf'
 import routes from '@common/RouteDefinitions'
 import { ContainerSpinner } from '@common/components/ContainerSpinner/ContainerSpinner'
 import { PageSpinner, useToaster } from '@common/components'
-import { DISABLE_AVATAR_PROPS, formatDate, formatTime, getErrorMessage, showToaster } from '@cf/utils/CFUtils'
+import { formatDate, formatTime, getErrorMessage, showToaster } from '@cf/utils/CFUtils'
 import { useSyncedEnvironment } from '@cf/hooks/useSyncedEnvironment'
 import { useConfirmAction } from '@common/hooks'
 import { useDocumentTitle } from '@common/hooks/useDocumentTitle'
 import { DetailPageTemplate } from '@cf/components/DetailPageTemplate/DetailPageTemplate'
+import { FeatureIdentifier } from 'framework/featureStore/FeatureIdentifier'
 import useActiveEnvironment from '@cf/hooks/useActiveEnvironment'
+import usePlanEnforcement from '@cf/hooks/usePlanEnforcement'
 import TargetManagementToolbar from '@cf/components/TargetManagementToolbar/TargetManagementToolbar'
 import { useGitSync } from '@cf/hooks/useGitSync'
+import { ResourceType } from '@rbac/interfaces/ResourceType'
+import { PermissionIdentifier } from '@rbac/interfaces/PermissionIdentifier'
 import { FlagsUseSegment } from './flags-use-segment/FlagsUseSegment'
 import { SegmentSettings } from './segment-settings/SegmentSettings'
-import SegmentDetailsPageOptionsMenu from './segment-details-page-options-menu/SegmentDetailsPageOptionsMenu'
-import css from './SegmentDetailPage.module.scss'
 &nbsp;
-export const fullSizeContentStyle: React.CSSProperties = {
-  position: 'fixed',
-  top: '135px',
-  left: '290px',
-  width: 'calc(100% - 290px)',
-  height: 'calc(100% - 135px)'
-}
+import css from './SegmentDetailPage.module.scss'
 &nbsp;
 export const SegmentDetailPage: React.FC = () =&gt; {
   const { getString } = useStrings()
@@ -529,8 +515,8 @@ export const SegmentDetailPage: React.FC = () =&gt; {
     } as GetSegmentQueryParams
   })
   const {
-    loading: envLoading,
     data: envData,
+    loading: envLoading,
     error: envError,
     refetch: envRefetch
   } = useSyncedEnvironment({
@@ -539,10 +525,10 @@ export const SegmentDetailPage: React.FC = () =&gt; {
     projectIdentifier,
     environmentIdentifier
   })
-  const title = `${getString('cf.shared.targetManagement')}: ${getString('cf.shared.segments')}`
+  const label = `${getString('cf.shared.targetManagement')}: ${getString('cf.shared.segments')}`
   const breadcrumbs = [
     {
-      title,
+      label,
       url: withActiveEnvironment(
         routes.toCFSegments({
           accountId: accountIdentifier,
@@ -561,17 +547,21 @@ export const SegmentDetailPage: React.FC = () =&gt; {
       orgIdentifier
     } as DeleteSegmentQueryParams
   })
+&nbsp;
+  const { isPlanEnforcementEnabled } = usePlanEnforcement()
+  const planEnforcementProps = isPlanEnforcementEnabled
+    ? <span class="branch-0 cbranch-no" title="branch not covered" >{</span>
+        featuresProps: {
+          featuresRequest: {
+            featureNames: [FeatureIdentifier.MAUS]
+          }
+        }
+      }
+    : undefined
+&nbsp;
   const deleteSegmentConfirm = useConfirmAction({
     title: getString('cf.segments.delete.title'),
-    message: (
-      &lt;Text&gt;
-        &lt;span
-          dangerouslySetInnerHTML={{
-            __html: getString('cf.segments.delete.message', { segmentName: segment?.name })
-          }}
-        /&gt;
-      &lt;/Text&gt;
-    ),
+    message: &lt;String useRichText stringID="cf.segments.delete.message" vars={{ name: segment?.name }} /&gt;,
     intent: Intent.DANGER,
     action: async () =&gt; {
       clear()
@@ -597,7 +587,7 @@ export const SegmentDetailPage: React.FC = () =&gt; {
     }
   })
 &nbsp;
-  useDocumentTitle(title)
+  useDocumentTitle(label)
 &nbsp;
   const gitSync = useGitSync()
 &nbsp;
@@ -610,7 +600,7 @@ export const SegmentDetailPage: React.FC = () =&gt; {
     }
 &nbsp;
 <span class="cstat-no" title="statement not covered" >    return (</span>
-      &lt;Container style={fullSizeContentStyle}&gt;
+      &lt;Container className={css.fullSizeContentStyle}&gt;
         &lt;ContainerSpinner /&gt;
       &lt;/Container&gt;
     )
@@ -631,38 +621,33 @@ export const SegmentDetailPage: React.FC = () =&gt; {
       return ErrorComponent
     }
 &nbsp;
-    return &lt;Container style={fullSizeContentStyle}&gt;{ErrorComponent}&lt;/Container&gt;
+    return &lt;Container className={css.fullSizeContentStyle}&gt;{ErrorComponent}&lt;/Container&gt;
   }
 &nbsp;
   return (
     &lt;DetailPageTemplate
       breadcrumbs={breadcrumbs}
       title={segment<span class="branch-0 cbranch-no" title="branch not covered" >?.n</span>ame}
-      titleIcon={&lt;Avatar name={segment<span class="branch-0 cbranch-no" title="branch not covered" >?.n</span>ame} size="medium" {...DISABLE_AVATAR_PROPS} className={css.avatar} /&gt;}
       subTitle={getString('cf.targetDetail.createdOnDate', {
         date: formatDate(segment<span class="branch-0 cbranch-no" title="branch not covered" >?.c</span>reatedAt as number),
         time: formatTime(segment<span class="branch-0 cbranch-no" title="branch not covered" >?.c</span>reatedAt as number)
       })}
       identifier={segment<span class="branch-0 cbranch-no" title="branch not covered" >?.i</span>dentifier}
-      headerExtras={
-        &lt;&gt;
-          &lt;Container style={{ position: 'absolute', top: '15px', right: '25px' }}&gt;
-            &lt;SegmentDetailsPageOptionsMenu
-              deleteSegmentConfirm={deleteSegmentConfirm}
-              activeEnvironment={environmentIdentifier}
-            /&gt;
-          &lt;/Container&gt;
-          &lt;Text style={{ position: 'absolute', top: '76px', right: '30px' }}&gt;
-            &lt;span
-              dangerouslySetInnerHTML={{
-                __html: getString('cf.targetDetail.environmentLine', { name: envData<span class="branch-0 cbranch-no" title="branch not covered" >?.d</span>ata<span class="branch-0 cbranch-no" title="branch not covered" >?.n</span>ame })
-              }}
-            /&gt;
-          &lt;/Text&gt;
-        &lt;/&gt;
-      }
+      menuItems={[
+        {
+          icon: 'cross',
+          text: getString('delete'),
+          onClick: deleteSegmentConfirm,
+          permission: {
+            resource: { resourceType: ResourceType.ENVIRONMENT, resourceIdentifier: environmentIdentifier },
+            permission: PermissionIdentifier.DELETE_FF_TARGETGROUP
+          },
+          ...planEnforcementProps
+        }
+      ]}
+      metaData={{ environment: envData<span class="branch-0 cbranch-no" title="branch not covered" >?.d</span>ata<span class="branch-0 cbranch-no" title="branch not covered" >?.n</span>ame as string }}
     &gt;
-      &lt;Layout.Vertical height="100%" style={{ flexGrow: 1, background: 'var(--white)' }}&gt;
+      &lt;Layout.Vertical height="100%" className={css.gitSyncContainer}&gt;
         {gitSync.isGitSyncActionsEnabled &amp;&amp; &lt;TargetManagementToolbar gitSync={gitSync} /&gt;}
         &lt;Layout.Horizontal height="100%"&gt;
           &lt;FlagsUseSegment gitSync={gitSync} /&gt;
@@ -679,7 +664,7 @@ export const SegmentDetailPage: React.FC = () =&gt; {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Tue Apr 19 2022 09:32:28 GMT+0000 (Greenwich Mean Time)
+                at Tue Apr 19 2022 09:44:36 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../prettify.js"></script>

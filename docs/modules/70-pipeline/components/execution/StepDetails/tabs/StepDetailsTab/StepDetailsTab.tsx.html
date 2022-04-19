@@ -30,9 +30,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">65.79% </span>
+                <span class="strong">94.74% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>25/38</span>
+                <span class='fraction'>36/38</span>
             </div>
         
             
@@ -111,46 +111,48 @@
 <a name='L52'></a><a href='#L52'>52</a>
 <a name='L53'></a><a href='#L53'>53</a>
 <a name='L54'></a><a href='#L54'>54</a>
-<a name='L55'></a><a href='#L55'>55</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L55'></a><a href='#L55'>55</a>
+<a name='L56'></a><a href='#L56'>56</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">30x</span>
-<span class="cline-any cline-yes">30x</span>
-<span class="cline-any cline-yes">30x</span>
-<span class="cline-any cline-yes">30x</span>
+<span class="cline-any cline-yes">34x</span>
+<span class="cline-any cline-yes">34x</span>
+<span class="cline-any cline-yes">34x</span>
+<span class="cline-any cline-yes">34x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">30x</span>
-<span class="cline-any cline-yes">30x</span>
-<span class="cline-any cline-yes">30x</span>
-<span class="cline-any cline-yes">30x</span>
-<span class="cline-any cline-yes">30x</span>
-<span class="cline-any cline-yes">30x</span>
+<span class="cline-any cline-yes">34x</span>
+<span class="cline-any cline-yes">34x</span>
+<span class="cline-any cline-yes">34x</span>
+<span class="cline-any cline-yes">34x</span>
+<span class="cline-any cline-yes">34x</span>
+<span class="cline-any cline-yes">34x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">30x</span>
+<span class="cline-any cline-yes">34x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">30x</span>
-<span class="cline-any cline-yes">8x</span>
-<span class="cline-any cline-yes">8x</span>
-<span class="cline-any cline-yes">8x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">8x</span>
+<span class="cline-any cline-yes">34x</span>
+<span class="cline-any cline-yes">13x</span>
+<span class="cline-any cline-yes">13x</span>
+<span class="cline-any cline-yes">13x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">8x</span>
-<span class="cline-any cline-yes">8x</span>
-<span class="cline-any cline-yes">8x</span>
+<span class="cline-any cline-yes">13x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">8x</span>
+<span class="cline-any cline-yes">13x</span>
+<span class="cline-any cline-yes">13x</span>
+<span class="cline-any cline-yes">13x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">13x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -183,7 +185,7 @@ import { String } from 'framework/strings'
 import { ErrorHandler } from '@common/components/ErrorHandler/ErrorHandler'
 import { LogsContentWithErrorBoundary as LogsContent } from '@pipeline/components/LogsContent/LogsContent'
 import { isExecutionSkipped, isExecutionCompletedWithBadState } from '@pipeline/utils/statusHelpers'
-import { StepDetails } from '@pipeline/components/execution/StepDetails/common/StepDetails/StepDetails'
+import { StepDetails, StepLabels } from '@pipeline/components/execution/StepDetails/common/StepDetails/StepDetails'
 import { useQueryParams } from '@common/hooks'
 import type { ExecutionQueryParams } from '@pipeline/utils/executionUtils'
 &nbsp;
@@ -191,30 +193,31 @@ import css from './StepDetailsTab.module.scss'
 &nbsp;
 export interface ExecutionStepDetailsTabProps {
   step: ExecutionNode
+  labels?: StepLabels[]
 }
 &nbsp;
 export function StepDetailsTab(props: ExecutionStepDetailsTabProps): React.ReactElement {
-  const { step } = props
+  const { step, labels } = props
   const { pathname } = useLocation()
   const queryParams = useQueryParams&lt;ExecutionQueryParams&gt;()
 &nbsp;
   const logUrl = `${pathname}?${qs.stringify({ ...queryParams, view: 'log' })}`
 &nbsp;
-  const errorMessage = step<span class="branch-0 cbranch-no" title="branch not covered" >?.f</span>ailureInfo<span class="branch-1 cbranch-no" title="branch not covered" >?.message </span>|| step.executableResponses<span class="branch-1 cbranch-no" title="branch not covered" >?.[0]<span class="branch-1 cbranch-no" title="branch not covered" >?</span>.skipTask<span class="branch-1 cbranch-no" title="branch not covered" >?</span>.message</span>
+  const errorMessage = step<span class="branch-0 cbranch-no" title="branch not covered" >?.f</span>ailureInfo?.message || step.executableResponses?.[0]?.skipTask?.message
   const isFailed = isExecutionCompletedWithBadState(step.status)
   const isSkipped = isExecutionSkipped(step.status)
 &nbsp;
   return (
     &lt;div className={css.detailsTab}&gt;
-      {step.failureInfo<span class="branch-1 cbranch-no" title="branch not covered" >?.responseMessages<span class="branch-1 cbranch-no" title="branch not covered" >?</span>.length </span>? (
-<span class="branch-0 cbranch-no" title="branch not covered" >        &lt;ErrorHandler responseMessages={step.failureInfo?.responseMessages as ResponseMessage[]} /&gt;</span>
+      {step.failureInfo?.responseMessages?.length ? (
+        &lt;ErrorHandler responseMessages={step.failureInfo<span class="branch-0 cbranch-no" title="branch not covered" >?.r</span>esponseMessages as ResponseMessage[]} /&gt;
       ) : errorMessage ? (
-<span class="branch-0 cbranch-no" title="branch not covered" >        &lt;div className={cx(css.errorMsg, { [css.error]: isFailed, [css.warn]: isSkipped })}&gt;</span>
+        &lt;div className={cx(css.errorMsg, { [css.error]: isFailed, [css.warn]: isSkipped })}&gt;
           &lt;String className={css.title} stringID="errorSummaryText" tagName="div" /&gt;
           &lt;p&gt;{errorMessage}&lt;/p&gt;
         &lt;/div&gt;
       ) : null}
-      &lt;StepDetails step={step} /&gt;
+      &lt;StepDetails step={step} labels={labels} /&gt;
       &lt;LogsContent mode="step-details" toConsoleView={logUrl} /&gt;
     &lt;/div&gt;
   )
@@ -226,7 +229,7 @@ export function StepDetailsTab(props: ExecutionStepDetailsTabProps): React.React
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Tue Apr 19 2022 09:32:28 GMT+0000 (Greenwich Mean Time)
+                at Tue Apr 19 2022 09:44:36 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../../../../prettify.js"></script>

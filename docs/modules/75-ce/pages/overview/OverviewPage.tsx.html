@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">88% </span>
+                <span class="strong">88.68% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>44/50</span>
+                <span class='fraction'>47/53</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">88% </span>
+                <span class="strong">88.68% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>44/50</span>
+                <span class='fraction'>47/53</span>
             </div>
         
             
@@ -244,12 +244,7 @@
 <a name='L185'></a><a href='#L185'>185</a>
 <a name='L186'></a><a href='#L186'>186</a>
 <a name='L187'></a><a href='#L187'>187</a>
-<a name='L188'></a><a href='#L188'>188</a>
-<a name='L189'></a><a href='#L189'>189</a>
-<a name='L190'></a><a href='#L190'>190</a>
-<a name='L191'></a><a href='#L191'>191</a>
-<a name='L192'></a><a href='#L192'>192</a>
-<a name='L193'></a><a href='#L193'>193</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L188'></a><a href='#L188'>188</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -272,6 +267,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -330,6 +327,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">3x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -370,14 +368,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -450,7 +440,7 @@
 &nbsp;
 import React, { useEffect, useState } from 'react'
 import cx from 'classnames'
-import { Container, Text, Page } from '@wings-software/uicore'
+import { Container, Page } from '@wings-software/uicore'
 import {
   CcmMetaData,
   StatsInfo,
@@ -477,6 +467,8 @@ import OverviewAddCluster from '@ce/components/OverviewPage/OverviewAddCluster'
 import { Utils } from '@ce/common/Utils'
 import { useCreateConnectorMinimal } from '@ce/components/CreateConnector/CreateConnector'
 import NoData from '@ce/components/OverviewPage/OverviewNoData'
+import { TitleWithToolTipId } from '@common/components/Title/TitleWithToolTipId'
+import { useStrings } from 'framework/strings'
 import bgImage from './images/CD/overviewBg.png'
 import css from './Overview.module.scss'
 &nbsp;
@@ -521,6 +513,7 @@ const NoDataOverviewPage: React.FC&lt;NoDataOverviewPageProps&gt; = (props: NoDa
 }
 &nbsp;
 const OverviewPage: React.FC = () =&gt; {
+  const { getString } = useStrings()
   const [timeRange, setTimeRange] = useState&lt;TimeRange&gt;({
     to: DATE_RANGE_SHORTCUTS.LAST_30_DAYS[1].format(CE_DATE_FORMAT_INTERNAL),
     from: DATE_RANGE_SHORTCUTS.LAST_30_DAYS[0].format(CE_DATE_FORMAT_INTERNAL)
@@ -564,15 +557,7 @@ const OverviewPage: React.FC = () =&gt; {
   return (
     &lt;Container&gt;
       &lt;Page.Header
-        title={
-          &lt;Text
-            color="grey800"
-            style={{ fontSize: 20, fontWeight: 'bold' }}
-            tooltipProps={{ dataTooltipId: 'ccmOverviewTitle' }}
-          &gt;
-            Overview
-          &lt;/Text&gt;
-        }
+        title={&lt;TitleWithToolTipId title={getString('overview')} toolTipId="ccmOverviewTitle" /&gt;}
         content={&lt;PerspectiveTimeRangePicker timeRange={timeRange} setTimeRange={setTimeRange} /&gt;}
       /&gt;
       &lt;Page.Body&gt;
@@ -640,7 +625,7 @@ export default OverviewPage
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Tue Apr 19 2022 09:32:28 GMT+0000 (Greenwich Mean Time)
+                at Tue Apr 19 2022 09:44:36 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../prettify.js"></script>

@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">85.71% </span>
+                <span class="strong">95% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>18/21</span>
+                <span class='fraction'>19/20</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">45% </span>
+                <span class="strong">90% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>9/20</span>
+                <span class='fraction'>18/20</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">25% </span>
+                <span class="strong">66.67% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>1/4</span>
+                <span class='fraction'>2/3</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">85.71% </span>
+                <span class="strong">95% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>18/21</span>
+                <span class='fraction'>19/20</span>
             </div>
         
             
@@ -163,7 +163,11 @@
 <a name='L104'></a><a href='#L104'>104</a>
 <a name='L105'></a><a href='#L105'>105</a>
 <a name='L106'></a><a href='#L106'>106</a>
-<a name='L107'></a><a href='#L107'>107</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L107'></a><a href='#L107'>107</a>
+<a name='L108'></a><a href='#L108'>108</a>
+<a name='L109'></a><a href='#L109'>109</a>
+<a name='L110'></a><a href='#L110'>110</a>
+<a name='L111'></a><a href='#L111'>111</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -196,26 +200,30 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">4x</span>
-<span class="cline-any cline-yes">17x</span>
+<span class="cline-any cline-yes">21x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">17x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">21x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">17x</span>
-<span class="cline-any cline-yes">17x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">17x</span>
-<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">17x</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">21x</span>
+<span class="cline-any cline-yes">21x</span>
+<span class="cline-any cline-yes">21x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">21x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">17x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">21x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -305,20 +313,22 @@ const AdvancedConfiguration: React.FC&lt;AdvancedConfigurationProps&gt; = props 
   const { getString } = useStrings()
 &nbsp;
   const [selectedTab, setSelectedTab] = useState&lt;AdvancedConfigTabs&gt;(
-    props.activeStepDetails?.count === 4 &amp;&amp; <span class="branch-1 cbranch-no" title="branch not covered" >props.activeStepDetails?.tabId</span>
-      ? (<span class="branch-0 cbranch-no" title="branch not covered" >props.activeStepDetails?.tabId as AdvancedConfigTabs)</span>
+    props.activeStepDetails?.count === 4 &amp;&amp; props.activeStepDetails<span class="branch-0 cbranch-no" title="branch not covered" >?.t</span>abId
+      ? (props.activeStepDetails<span class="branch-0 cbranch-no" title="branch not covered" >?.t</span>abId as AdvancedConfigTabs)
       : AdvancedConfigTabs.deps
   )
 &nbsp;
   const isK8sSelected = props.selectedResource === RESOURCES.KUBERNETES
+  const isEcsSelected = props.selectedResource === RESOURCES.ECS
   const isAwsProvider = Utils.isProviderAws(props.gatewayDetails.provider)
 &nbsp;
-  const handleTabChange = <span class="fstat-no" title="function not covered" >(i</span>d: string) =&gt; {
-<span class="cstat-no" title="statement not covered" >    setSelectedTab(id as AdvancedConfigTabs)</span>
+  const handleTabChange = (id: string) =&gt; {
+    setSelectedTab(id as AdvancedConfigTabs)
   }
 &nbsp;
-  const handledFixedSchedulesAddition = <span class="fstat-no" title="function not covered" >(s</span>chedules: FixedScheduleClient[]) =&gt; {
-<span class="cstat-no" title="statement not covered" >    props.setGatewayDetails({ ...props.gatewayDetails, schedules })</span>
+  /* istanbul ignore next */
+  const handledFixedSchedulesAddition = (schedules: FixedScheduleClient[]) =&gt; {
+    props.setGatewayDetails({ ...props.gatewayDetails, schedules })
   }
 &nbsp;
   return (
@@ -330,10 +340,12 @@ const AdvancedConfiguration: React.FC&lt;AdvancedConfigurationProps&gt; = props 
       subTitle={getString('ce.co.gatewayConfig.advancedConfigDescription')}
       totalStepsCount={props.totalStepsCount}
       id={CONFIG_STEP_IDS[3]}
-      dataTooltip={{ titleId: isAwsProvider ? 'awsSetupAdvancedConfig' : <span class="branch-1 cbranch-no" title="branch not covered" >'azureSetupAdvancedConfig' </span>}}
+      dataTooltip={{
+        titleId: isAwsProvider ? 'awsSetupAdvancedConfig' : /* istanbul ignore next */ 'azureSetupAdvancedConfig'
+      }}
     &gt;
       &lt;Layout.Vertical spacing="medium"&gt;
-        {isK8sSelected &amp;&amp; (
+        {(isK8sSelected || isEcsSelected) &amp;&amp; (
           &lt;Toggle
             label={'Hide Progress Page'}
             checked={props.gatewayDetails.opts.hide_progress_page}
@@ -382,7 +394,7 @@ export default AdvancedConfiguration
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Tue Apr 19 2022 09:32:28 GMT+0000 (Greenwich Mean Time)
+                at Tue Apr 19 2022 09:44:36 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../../../prettify.js"></script>

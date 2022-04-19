@@ -23,23 +23,23 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">74.65% </span>
+                <span class="strong">77.46% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>53/71</span>
+                <span class='fraction'>55/71</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">55.47% </span>
+                <span class="strong">55.3% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>71/128</span>
+                <span class='fraction'>73/132</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">42.86% </span>
+                <span class="strong">52.38% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>9/21</span>
+                <span class='fraction'>11/21</span>
             </div>
         
             
@@ -447,7 +447,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -505,7 +505,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">9x</span>
+<span class="cline-any cline-yes">10x</span>
 <span class="cline-any cline-yes">9x</span>
 <span class="cline-any cline-yes">9x</span>
 <span class="cline-any cline-yes">9x</span>
@@ -609,24 +609,24 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">9x</span>
-<span class="cline-any cline-yes">9x</span>
+<span class="cline-any cline-yes">10x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">9x</span>
+<span class="cline-any cline-yes">10x</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">9x</span>
+<span class="cline-any cline-yes">10x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">9x</span>
+<span class="cline-any cline-yes">10x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">14x</span>
+<span class="cline-any cline-yes">17x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -711,37 +711,37 @@ const parseDataForFileView = (
   data: GitSyncErrorDTO[],
   onShowDetails: (fileData: SelectedFile) =&gt; void
 ): GitSyncErrorMessageProps[] =&gt; {
-  return data.map(<span class="fstat-no" title="function not covered" >item </span>=&gt; <span class="cstat-no" title="statement not covered" >({</span>
+  return data.map(item =&gt; ({
     mode: 'FILE',
-    title: item.completeFilePath || '',
+    title: item.completeFilePath || <span class="branch-1 cbranch-no" title="branch not covered" >'',</span>
     repo: item.repoId,
     branch: item.branchName,
     timestamp: item.createdAt,
-    commitId: defaultTo(item.additionalErrorDetails?.gitCommitId, ''),
+    commitId: defaultTo(item.additionalErrorDetails<span class="branch-0 cbranch-no" title="branch not covered" >?.g</span>itCommitId, ''),
     items: [
       {
-        reason: item.failureReason || '',
-        ...(item.additionalErrorDetails?.yamlContent
+        reason: item.failureReason || <span class="branch-1 cbranch-no" title="branch not covered" >'',</span>
+        ...(item.additionalErrorDetails<span class="branch-0 cbranch-no" title="branch not covered" >?.y</span>amlContent
           ? {
               showDetails: <span class="fstat-no" title="function not covered" >() =</span>&gt; {
 <span class="cstat-no" title="statement not covered" >                onShowDetails({</span>
                   fileName: defaultTo((item.completeFilePath || '').split('/').pop(), ''),
-                  filePath: item.repoUrl + '/' + item.completeFilePath,
+                  filePath: item.additionalErrorDetails?.entityUrl,
                   type: defaultTo(item.entityType, ''),
                   content: item.additionalErrorDetails?.yamlContent
                 })
               }
             }
-          : {})
+          : <span class="branch-1 cbranch-no" title="branch not covered" >{})</span>
       }
     ]
   }))
 }
 &nbsp;
-const parseDataForConnectivityView = (data: GitSyncErrorDTO[] = []): GitSyncErrorMessageProps[] =&gt; {
-  return data.map(<span class="fstat-no" title="function not covered" >item </span>=&gt; (<span class="cstat-no" title="statement not covered" >{</span>
+const parseDataForConnectivityView = (data: GitSyncErrorDTO[] = <span class="branch-0 cbranch-no" title="branch not covered" >[])</span>: GitSyncErrorMessageProps[] =&gt; {
+  return data.map(item =&gt; ({
     mode: 'CONNECTIVITY',
-    title: item.failureReason || '',
+    title: item.failureReason || <span class="branch-1 cbranch-no" title="branch not covered" >'',</span>
     repo: item.repoId,
     branch: item.branchName,
     timestamp: item.createdAt,
@@ -826,10 +826,10 @@ export const GitSyncErrorsPanel: React.FC = () =&gt; {
   reloadAction.current = refetch
 &nbsp;
   const paginationProps: PaginationProps = {
-    itemCount: data<span class="branch-0 cbranch-no" title="branch not covered" >?.d</span>ata?.totalItems || 0,
-    pageSize: data<span class="branch-0 cbranch-no" title="branch not covered" >?.d</span>ata?.pageSize || 0,
-    pageCount: data<span class="branch-0 cbranch-no" title="branch not covered" >?.d</span>ata?.totalPages || 0,
-    pageIndex: data<span class="branch-0 cbranch-no" title="branch not covered" >?.d</span>ata?.pageIndex || 0,
+    itemCount: data<span class="branch-0 cbranch-no" title="branch not covered" >?.d</span>ata<span class="branch-0 cbranch-no" title="branch not covered" >?.t</span>otalItems || <span class="branch-1 cbranch-no" title="branch not covered" >0,</span>
+    pageSize: data<span class="branch-0 cbranch-no" title="branch not covered" >?.d</span>ata<span class="branch-0 cbranch-no" title="branch not covered" >?.p</span>ageSize || <span class="branch-1 cbranch-no" title="branch not covered" >0,</span>
+    pageCount: data<span class="branch-0 cbranch-no" title="branch not covered" >?.d</span>ata<span class="branch-0 cbranch-no" title="branch not covered" >?.t</span>otalPages || <span class="branch-1 cbranch-no" title="branch not covered" >0,</span>
+    pageIndex: data<span class="branch-0 cbranch-no" title="branch not covered" >?.d</span>ata<span class="branch-0 cbranch-no" title="branch not covered" >?.p</span>ageIndex || 0,
     gotoPage: <span class="fstat-no" title="function not covered" >pageNumber </span>=&gt; <span class="cstat-no" title="statement not covered" >setPageIndex(pageNumber)</span>
   }
 &nbsp;
@@ -911,8 +911,8 @@ export const GitSyncErrorsPanel: React.FC = () =&gt; {
     const parsedData = isCommitView
       ? parseDataForCommitView(data<span class="branch-0 cbranch-no" title="branch not covered" >?.d</span>ata<span class="branch-0 cbranch-no" title="branch not covered" >?.c</span>ontent)
       : isFileView
-      ? parseDataForFileView(defaultTo(data<span class="branch-0 cbranch-no" title="branch not covered" >?.d</span>ata<span class="branch-1 cbranch-no" title="branch not covered" >?.content,</span> []), onShowDetails)
-      : parseDataForConnectivityView(data<span class="branch-0 cbranch-no" title="branch not covered" >?.d</span>ata<span class="branch-1 cbranch-no" title="branch not covered" >?.content)</span>
+      ? parseDataForFileView(defaultTo(data<span class="branch-0 cbranch-no" title="branch not covered" >?.d</span>ata<span class="branch-0 cbranch-no" title="branch not covered" >?.c</span>ontent, []), onShowDetails)
+      : parseDataForConnectivityView(data<span class="branch-0 cbranch-no" title="branch not covered" >?.d</span>ata<span class="branch-0 cbranch-no" title="branch not covered" >?.c</span>ontent)
 &nbsp;
     return (
       &lt;Layout.Vertical height="calc(100% - 16px)"&gt;
@@ -940,7 +940,7 @@ export const GitSyncErrorsPanel: React.FC = () =&gt; {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Tue Apr 19 2022 09:32:28 GMT+0000 (Greenwich Mean Time)
+                at Tue Apr 19 2022 09:44:36 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../../prettify.js"></script>

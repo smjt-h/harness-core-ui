@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">75.51% </span>
+                <span class="strong">71.7% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>37/49</span>
+                <span class='fraction'>38/53</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">56.96% </span>
+                <span class="strong">53.57% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>45/79</span>
+                <span class='fraction'>45/84</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">50% </span>
+                <span class="strong">46.15% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>6/12</span>
+                <span class='fraction'>6/13</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">75.51% </span>
+                <span class="strong">71.7% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>37/49</span>
+                <span class='fraction'>38/53</span>
             </div>
         
             
@@ -247,7 +247,14 @@
 <a name='L188'></a><a href='#L188'>188</a>
 <a name='L189'></a><a href='#L189'>189</a>
 <a name='L190'></a><a href='#L190'>190</a>
-<a name='L191'></a><a href='#L191'>191</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L191'></a><a href='#L191'>191</a>
+<a name='L192'></a><a href='#L192'>192</a>
+<a name='L193'></a><a href='#L193'>193</a>
+<a name='L194'></a><a href='#L194'>194</a>
+<a name='L195'></a><a href='#L195'>195</a>
+<a name='L196'></a><a href='#L196'>196</a>
+<a name='L197'></a><a href='#L197'>197</a>
+<a name='L198'></a><a href='#L198'>198</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -324,6 +331,18 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">17x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">11x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -337,11 +356,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -514,6 +528,18 @@ const COGatewayConfig: React.FC&lt;COGatewayConfigProps&gt; = props =&gt; {
     }
   }, [])
 &nbsp;
+  const groupsValidation = <span class="fstat-no" title="function not covered" >(): boolean =</span>&gt; {
+<span class="cstat-no" title="statement not covered" >    if (isGcpProvider) {</span>
+<span class="cstat-no" title="statement not covered" >      return (props.gatewayDetails.routing.instance.scale_group?.desired as number) &gt; 0</span>
+    } else {
+<span class="cstat-no" title="statement not covered" >      return (</span>
+        (props.gatewayDetails.routing.instance.scale_group?.on_demand as number) &lt;=
+          (props.gatewayDetails.routing.instance.scale_group?.max as number) &amp;&amp;
+        (props.gatewayDetails.routing.instance.scale_group?.spot as number) &gt;= 0
+      )
+    }
+  }
+&nbsp;
   function isValid(): boolean {
     return (
       (props.gatewayDetails.selectedInstances.length &gt; 0 ||
@@ -528,12 +554,7 @@ const COGatewayConfig: React.FC&lt;COGatewayConfigProps&gt; = props =&gt; {
       (!_isEmpty(props.gatewayDetails.deps)
         ? <span class="branch-0 cbranch-no" title="branch not covered" >props.gatewayDetails.deps.every(<span class="fstat-no" title="function not covered" >_dep </span>=&gt; <span class="cstat-no" title="statement not covered" >!isNaN(_dep.dep_id as number) &amp;&amp; !isNaN(_dep.delay_secs as number))</span></span>
         : true) &amp;&amp;
-      (props.gatewayDetails.routing.instance.scale_group
-        ? <span class="branch-0 cbranch-no" title="branch not covered" >(props.gatewayDetails.routing.instance.scale_group?.on_demand as number) &gt; 0 &amp;&amp;</span>
-          (props.gatewayDetails.routing.instance.scale_group?.on_demand as number) &lt;=
-            (props.gatewayDetails.routing.instance.scale_group.max as number) &amp;&amp;
-          (props.gatewayDetails.routing.instance.scale_group?.spot as number) &gt;= 0
-        : true) &amp;&amp;
+      (!_isEmpty(props.gatewayDetails.routing.instance.scale_group) ? <span class="branch-0 cbranch-no" title="branch not covered" >groupsValidation() </span>: true) &amp;&amp;
       (selectedResource === RESOURCES.ECS
         ? <span class="branch-0 cbranch-no" title="branch not covered" >_defaultTo(props.gatewayDetails.routing.container_svc?.task_count, 0) &gt; -1</span>
         : true)
@@ -634,7 +655,7 @@ export default COGatewayConfig
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Tue Apr 19 2022 09:32:28 GMT+0000 (Greenwich Mean Time)
+                at Tue Apr 19 2022 09:44:36 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../prettify.js"></script>

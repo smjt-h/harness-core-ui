@@ -25,14 +25,14 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>45/45</span>
+                <span class='fraction'>49/49</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">85% </span>
+                <span class="strong">88.46% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>34/40</span>
+                <span class='fraction'>46/52</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>45/45</span>
+                <span class='fraction'>49/49</span>
             </div>
         
             
@@ -276,7 +276,10 @@
 <a name='L217'></a><a href='#L217'>217</a>
 <a name='L218'></a><a href='#L218'>218</a>
 <a name='L219'></a><a href='#L219'>219</a>
-<a name='L220'></a><a href='#L220'>220</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L220'></a><a href='#L220'>220</a>
+<a name='L221'></a><a href='#L221'>221</a>
+<a name='L222'></a><a href='#L222'>222</a>
+<a name='L223'></a><a href='#L223'>223</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -291,6 +294,7 @@
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
@@ -367,6 +371,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">8x</span>
 <span class="cline-any cline-yes">8x</span>
+<span class="cline-any cline-yes">8x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">8x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -426,20 +431,19 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -495,6 +499,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">/*
  * Copyright 2022 Harness Inc. All rights reserved.
  * Use of this source code is governed by the PolyForm Shield 1.0.0 license
@@ -511,6 +517,7 @@ import { useStrings } from 'framework/strings'
 import type { ExecutionNode } from 'services/pipeline-ng'
 &nbsp;
 import { useDeepCompareEffect } from '@common/hooks'
+import { useModuleInfo } from '@common/hooks/useModuleInfo'
 import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
 import routes from '@common/RouteDefinitions'
 &nbsp;
@@ -586,6 +593,7 @@ export function PolicyEvaluationContent({ step }: { step: ExecutionNode }) {
 function PolicySetInfo({ policySet }: { policySet: { [key: string]: any } }) {
   const { accountId, orgIdentifier, projectIdentifier } = useParams&lt;ProjectPathProps&gt;()
   const { getString } = useStrings()
+  const { module } = useModuleInfo()
 &nbsp;
   const { name, identifier, status, policyDetails: policies } = policySet
 &nbsp;
@@ -618,9 +626,9 @@ function PolicySetInfo({ policySet }: { policySet: { [key: string]: any } }) {
                 &lt;Link
                   to={routes.toGovernancePolicySetDetail({
                     accountId,
+                    policySetIdentifier: defaultTo(identifier, ''),
                     ...(scope === getString('orgLabel') &amp;&amp; { orgIdentifier }),
-                    ...(scope === getString('projectLabel') &amp;&amp; { projectIdentifier }),
-                    policySetIdentifier: defaultTo(policySet.identifier, '')
+                    ...(scope === getString('projectLabel') &amp;&amp; { module, orgIdentifier, projectIdentifier })
                   })}
                 &gt;
                   {getString('pipeline.policyEvaluations.policySetName', { name })}
@@ -635,7 +643,7 @@ function PolicySetInfo({ policySet }: { policySet: { [key: string]: any } }) {
         &gt;
           &lt;Container margin={{ top: 'large' }} border={{ top: true }}&gt;
             {policyIds.map((id, index) =&gt; {
-              return &lt;PolicyInfo key={id} policy={policies[id]} scope={scope} numberInList={index + 1} /&gt;
+              return &lt;PolicyInfo key={id} policy={policies[id]} numberInList={index + 1} /&gt;
             })}
           &lt;/Container&gt;
         &lt;/Collapse&gt;
@@ -644,21 +652,20 @@ function PolicySetInfo({ policySet }: { policySet: { [key: string]: any } }) {
   }
 }
 &nbsp;
-export function PolicyInfo({
-  policy,
-  scope,
-  numberInList
-}: {
-  policy: EvaluatedPolicy
-  scope: string
-  numberInList: number
-}) {
+export function PolicyInfo({ policy, numberInList }: { policy: EvaluatedPolicy; numberInList: number }) {
   const { accountId, orgIdentifier, projectIdentifier } = useParams&lt;ProjectPathProps&gt;()
   const { getString } = useStrings()
+  const { module } = useModuleInfo()
 &nbsp;
-  const { name: policyName, status, denyMessages, error: errorMessage } = policy
+  const { name: policyName, identifier, status, denyMessages, error: errorMessage } = policy
   const statusColor =
     status === EvaluationStatus.PASS ? Color.SUCCESS : status === EvaluationStatus.ERROR ? Color.ERROR : Color.WARNING
+&nbsp;
+  const scope = identifier<span class="branch-0 cbranch-no" title="branch not covered" >?.i</span>ncludes('account.')
+    ? getString('account')
+    : identifier<span class="branch-0 cbranch-no" title="branch not covered" >?.i</span>ncludes('org.')
+    ? getString('orgLabel')
+    : getString('projectLabel')
 &nbsp;
   return (
     &lt;Layout.Horizontal flex={{ justifyContent: 'flex-start', alignItems: 'flex-start' }} padding={{ top: 'large' }}&gt;
@@ -668,9 +675,9 @@ export function PolicyInfo({
             to={{
               pathname: routes.toGovernanceViewPolicy({
                 accountId,
-                ...(scope === getString('orgLabel') &amp;&amp; <span class="branch-1 cbranch-no" title="branch not covered" >{ orgIdentifier })</span>,
-                ...(scope === getString('projectLabel') &amp;&amp; <span class="branch-1 cbranch-no" title="branch not covered" >{ projectIdentifier })</span>,
-                policyIdentifier: defaultTo(policy.identifier, '')
+                policyIdentifier: defaultTo(identifier, ''),
+                ...(scope === getString('orgLabel') &amp;&amp; { orgIdentifier }),
+                ...(scope === getString('projectLabel') &amp;&amp; { module, orgIdentifier, projectIdentifier })
               })
             }}
           &gt;
@@ -690,7 +697,7 @@ export function PolicyInfo({
           )}
           {errorMessage &amp;&amp; (
             &lt;FailureInfo label={getString('error')}&gt;
-              &lt;Text key={errorMessage} color={statusColor}&gt;
+              &lt;Text key={errorMessage} color={statusColor} lineClamp={2}&gt;
                 {errorMessage}
               &lt;/Text&gt;
             &lt;/FailureInfo&gt;
@@ -710,7 +717,9 @@ function FailureInfo({ label, children }: { label: string; children: React.React
       flex={{ alignItems: 'flex-start', justifyContent: 'flex-start' }}
     &gt;
       &lt;Text color={Color.BLACK}&gt;{label.toUpperCase()}&lt;/Text&gt;
-      &lt;Container padding={{ left: 'small' }}&gt;{children}&lt;/Container&gt;
+      &lt;Container padding={{ left: 'small' }} width={300}&gt;
+        {children}
+      &lt;/Container&gt;
     &lt;/Layout.Horizontal&gt;
   )
 }
@@ -721,7 +730,7 @@ function FailureInfo({ label, children }: { label: string; children: React.React
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Tue Apr 19 2022 09:32:28 GMT+0000 (Greenwich Mean Time)
+                at Tue Apr 19 2022 09:44:36 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../../../../../prettify.js"></script>
