@@ -216,7 +216,7 @@ export const CostCalculator = (): JSX.Element => {
     getCostForUnits(
       developerPlannedSeats ? developerPlannedSeats : 0,
       ffUnitTypes.DEVELOPER,
-      edition as Editions,
+      edition,
       PlanType.MONTHLY
     ),
     developerPlannedSeats,
@@ -447,8 +447,8 @@ export const CostCalculator = (): JSX.Element => {
       )}
       {shownPage === CalcPage.Review && (
         <ReviewPage
-          previousEdition={edition as Editions}
-          previousPlan={plan as PlanType}
+          previousEdition={edition}
+          previousPlan={plan}
           newEdition={editionSelected}
           newPlan={paymentFrequencySelected}
           previousDevelopers={developerPlannedSeats ? developerPlannedSeats : developerUsageSeats}
@@ -478,7 +478,6 @@ export const ExampleModal = () => {
     className: Classes.DIALOG,
     style: { width: 1056, height: 750 }
   }
-  //let modalErrorHander: ModalErrorHandlerBinding
 
   const [openModal, hideModal] = useModalHook(() => (
     <Dialog onClose={hideModal} {...modalPropsLight}>
