@@ -140,69 +140,77 @@ exports[`ECS Service Selector Modal error 1`] = `
         style="min-height: 250px;"
       >
         <div
-          class="Layout--horizontal StyledProps--main searchAndFilterWrapper"
+          class="Layout--vertical Layout--layout-spacing-medium StyledProps--main"
         >
           <div
-            class="bp3-input-group ui-search-box ExpandingSearchInput--main searchContainer  ExpandingSearchInput--alwaysExpanded ExpandingSearchInput--light"
-            data-name=""
+            class="Layout--horizontal StyledProps--main searchAndFilterWrapper"
           >
-            <span
-              class="bp3-icon StyledProps--main ExpandingSearchInput--icon StyledProps--color StyledProps--color-grey700"
-              data-icon="thinner-search"
+            <div
+              class="bp3-input-group ui-search-box ExpandingSearchInput--main searchContainer  ExpandingSearchInput--alwaysExpanded ExpandingSearchInput--light"
+              data-name=""
             >
-              <svg
-                fill="none"
-                height="14"
-                viewBox="0 0 16 16"
-                width="14"
-                xmlns="http://www.w3.org/2000/svg"
+              <span
+                class="bp3-icon StyledProps--main ExpandingSearchInput--icon StyledProps--color StyledProps--color-grey700"
+                data-icon="thinner-search"
               >
-                <path
-                  d="M7.125 13.25c1.617 0 3.32-.695 4.375-1.75L15 15l-3.5-3.5c1.021-1.005 1.75-2.894 1.75-4.375a6.125 6.125 0 10-6.125 6.125z"
-                  stroke="currentColor"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-              </svg>
-            </span>
-            <input
-              class="bp3-input  ExpandingSearchInput--filter"
-              dir="auto"
-              placeholder="Search"
-              style="padding-right: 38px;"
-              type="search"
-              value=""
-            />
+                <svg
+                  fill="none"
+                  height="14"
+                  viewBox="0 0 16 16"
+                  width="14"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M7.125 13.25c1.617 0 3.32-.695 4.375-1.75L15 15l-3.5-3.5c1.021-1.005 1.75-2.894 1.75-4.375a6.125 6.125 0 10-6.125 6.125z"
+                    stroke="currentColor"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+              </span>
+              <input
+                class="bp3-input  ExpandingSearchInput--filter"
+                dir="auto"
+                placeholder="Search"
+                style="padding-right: 38px;"
+                type="search"
+                value=""
+              />
+            </div>
           </div>
-        </div>
-        <div
-          class="Layout--horizontal StyledProps--main StyledProps--flex StyledProps--flex-justifyContent-center"
-        >
-          <p
-            class="StyledProps--font StyledProps--main StyledProps--font-size-medium"
-            style="display: flex; align-items: center;"
+          <div
+            class="StyledProps--font StyledProps--main"
           >
-            <span
-              class="bp3-icon StyledProps--main Text--icon StyledProps--padding-right-xsmall"
-              data-icon="execution-warning"
+            <div
+              class="Layout--horizontal StyledProps--main StyledProps--flex StyledProps--flex-justifyContent-center"
             >
-              <svg
-                height="20"
-                viewBox="0 0 19 15"
-                width="20"
-                xmlns="http://www.w3.org/2000/svg"
+              <p
+                class="StyledProps--font StyledProps--main StyledProps--font-size-medium"
+                style="display: flex; align-items: center;"
               >
-                <path
-                  color="#fff"
-                  d="M15.964 15H3.027C.702 15-.737 12.787.392 11.021L6.29 1.339c1.152-1.785 5.261-1.785 6.412 0l5.897 9.682C19.75 12.768 18.288 15 15.964 15z"
-                />
-                <path
-                  d="M4.23 13.75h10.408c1.713 0 2.79-1.77 1.941-3.157l-5.22-8.53c-.848-1.417-3.002-1.417-3.85 0l-5.22 8.53c-.832 1.402.229 3.157 1.941 3.157zm5.22-1.894c-.456 0-.832-.354-.832-.785 0-.431.376-.786.832-.786.457 0 .832.354.816.801.016.416-.375.77-.816.77zm-.212-7.083c.392-.093.8.092.963.446.049.123.081.247.081.385-.016.385-.049.785-.081 1.17-.033.601-.082 1.217-.114 1.817-.017.2-.017.37-.017.57a.6.6 0 01-.62.57c-.342 0-.603-.231-.62-.554-.048-.94-.114-1.879-.163-2.818l-.049-.755a.82.82 0 01.62-.831z"
-                />
-              </svg>
-            </span>
-            ce.co.autoStoppingRule.configuration.ecsModal.emptyDescription
-          </p>
+                <span
+                  class="bp3-icon StyledProps--main Text--icon StyledProps--padding-right-xsmall"
+                  data-icon="execution-warning"
+                >
+                  <svg
+                    height="20"
+                    viewBox="0 0 19 15"
+                    width="20"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      color="#fff"
+                      d="M15.964 15H3.027C.702 15-.737 12.787.392 11.021L6.29 1.339c1.152-1.785 5.261-1.785 6.412 0l5.897 9.682C19.75 12.768 18.288 15 15.964 15z"
+                    />
+                    <path
+                      d="M4.23 13.75h10.408c1.713 0 2.79-1.77 1.941-3.157l-5.22-8.53c-.848-1.417-3.002-1.417-3.85 0l-5.22 8.53c-.832 1.402.229 3.157 1.941 3.157zm5.22-1.894c-.456 0-.832-.354-.832-.785 0-.431.376-.786.832-.786.457 0 .832.354.816.801.016.416-.375.77-.816.77zm-.212-7.083c.392-.093.8.092.963.446.049.123.081.247.081.385-.016.385-.049.785-.081 1.17-.033.601-.082 1.217-.114 1.817-.017.2-.017.37-.017.57a.6.6 0 01-.62.57c-.342 0-.603-.231-.62-.554-.048-.94-.114-1.879-.163-2.818l-.049-.755a.82.82 0 01.62-.831z"
+                    />
+                  </svg>
+                </span>
+                ce.co.autoStoppingRule.configuration.ecsModal.emptyDescription
+              </p>
+            </div>
+          </div>
         </div>
       </div>
       <div
@@ -392,69 +400,77 @@ exports[`ECS Service Selector Modal should display message for selecting region 
         style="min-height: 250px;"
       >
         <div
-          class="Layout--horizontal StyledProps--main searchAndFilterWrapper"
+          class="Layout--vertical Layout--layout-spacing-medium StyledProps--main"
         >
           <div
-            class="bp3-input-group ui-search-box ExpandingSearchInput--main searchContainer  ExpandingSearchInput--alwaysExpanded ExpandingSearchInput--light"
-            data-name=""
+            class="Layout--horizontal StyledProps--main searchAndFilterWrapper"
           >
-            <span
-              class="bp3-icon StyledProps--main ExpandingSearchInput--icon StyledProps--color StyledProps--color-grey700"
-              data-icon="thinner-search"
+            <div
+              class="bp3-input-group ui-search-box ExpandingSearchInput--main searchContainer  ExpandingSearchInput--alwaysExpanded ExpandingSearchInput--light"
+              data-name=""
             >
-              <svg
-                fill="none"
-                height="14"
-                viewBox="0 0 16 16"
-                width="14"
-                xmlns="http://www.w3.org/2000/svg"
+              <span
+                class="bp3-icon StyledProps--main ExpandingSearchInput--icon StyledProps--color StyledProps--color-grey700"
+                data-icon="thinner-search"
               >
-                <path
-                  d="M7.125 13.25c1.617 0 3.32-.695 4.375-1.75L15 15l-3.5-3.5c1.021-1.005 1.75-2.894 1.75-4.375a6.125 6.125 0 10-6.125 6.125z"
-                  stroke="currentColor"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-              </svg>
-            </span>
-            <input
-              class="bp3-input  ExpandingSearchInput--filter"
-              dir="auto"
-              placeholder="Search"
-              style="padding-right: 38px;"
-              type="search"
-              value=""
-            />
+                <svg
+                  fill="none"
+                  height="14"
+                  viewBox="0 0 16 16"
+                  width="14"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M7.125 13.25c1.617 0 3.32-.695 4.375-1.75L15 15l-3.5-3.5c1.021-1.005 1.75-2.894 1.75-4.375a6.125 6.125 0 10-6.125 6.125z"
+                    stroke="currentColor"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+              </span>
+              <input
+                class="bp3-input  ExpandingSearchInput--filter"
+                dir="auto"
+                placeholder="Search"
+                style="padding-right: 38px;"
+                type="search"
+                value=""
+              />
+            </div>
           </div>
-        </div>
-        <div
-          class="Layout--horizontal StyledProps--main StyledProps--flex StyledProps--flex-justifyContent-center"
-        >
-          <p
-            class="StyledProps--font StyledProps--main StyledProps--font-size-medium"
-            style="display: flex; align-items: center;"
+          <div
+            class="StyledProps--font StyledProps--main"
           >
-            <span
-              class="bp3-icon StyledProps--main Text--icon StyledProps--padding-right-xsmall"
-              data-icon="execution-warning"
+            <div
+              class="Layout--horizontal StyledProps--main StyledProps--flex StyledProps--flex-justifyContent-center"
             >
-              <svg
-                height="20"
-                viewBox="0 0 19 15"
-                width="20"
-                xmlns="http://www.w3.org/2000/svg"
+              <p
+                class="StyledProps--font StyledProps--main StyledProps--font-size-medium"
+                style="display: flex; align-items: center;"
               >
-                <path
-                  color="#fff"
-                  d="M15.964 15H3.027C.702 15-.737 12.787.392 11.021L6.29 1.339c1.152-1.785 5.261-1.785 6.412 0l5.897 9.682C19.75 12.768 18.288 15 15.964 15z"
-                />
-                <path
-                  d="M4.23 13.75h10.408c1.713 0 2.79-1.77 1.941-3.157l-5.22-8.53c-.848-1.417-3.002-1.417-3.85 0l-5.22 8.53c-.832 1.402.229 3.157 1.941 3.157zm5.22-1.894c-.456 0-.832-.354-.832-.785 0-.431.376-.786.832-.786.457 0 .832.354.816.801.016.416-.375.77-.816.77zm-.212-7.083c.392-.093.8.092.963.446.049.123.081.247.081.385-.016.385-.049.785-.081 1.17-.033.601-.082 1.217-.114 1.817-.017.2-.017.37-.017.57a.6.6 0 01-.62.57c-.342 0-.603-.231-.62-.554-.048-.94-.114-1.879-.163-2.818l-.049-.755a.82.82 0 01.62-.831z"
-                />
-              </svg>
-            </span>
-            ce.co.autoStoppingRule.configuration.ecsModal.emptyDescription
-          </p>
+                <span
+                  class="bp3-icon StyledProps--main Text--icon StyledProps--padding-right-xsmall"
+                  data-icon="execution-warning"
+                >
+                  <svg
+                    height="20"
+                    viewBox="0 0 19 15"
+                    width="20"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      color="#fff"
+                      d="M15.964 15H3.027C.702 15-.737 12.787.392 11.021L6.29 1.339c1.152-1.785 5.261-1.785 6.412 0l5.897 9.682C19.75 12.768 18.288 15 15.964 15z"
+                    />
+                    <path
+                      d="M4.23 13.75h10.408c1.713 0 2.79-1.77 1.941-3.157l-5.22-8.53c-.848-1.417-3.002-1.417-3.85 0l-5.22 8.53c-.832 1.402.229 3.157 1.941 3.157zm5.22-1.894c-.456 0-.832-.354-.832-.785 0-.431.376-.786.832-.786.457 0 .832.354.816.801.016.416-.375.77-.816.77zm-.212-7.083c.392-.093.8.092.963.446.049.123.081.247.081.385-.016.385-.049.785-.081 1.17-.033.601-.082 1.217-.114 1.817-.017.2-.017.37-.017.57a.6.6 0 01-.62.57c-.342 0-.603-.231-.62-.554-.048-.94-.114-1.879-.163-2.818l-.049-.755a.82.82 0 01.62-.831z"
+                    />
+                  </svg>
+                </span>
+                ce.co.autoStoppingRule.configuration.ecsModal.emptyDescription
+              </p>
+            </div>
+          </div>
         </div>
       </div>
       <div
@@ -710,225 +726,229 @@ exports[`ECS Service Selector Modal should fill in region and cluster and displa
         style="min-height: 250px;"
       >
         <div
-          class="Layout--horizontal StyledProps--main searchAndFilterWrapper"
+          class="Layout--vertical Layout--layout-spacing-medium StyledProps--main"
         >
           <div
-            class="bp3-input-group ui-search-box ExpandingSearchInput--main searchContainer  ExpandingSearchInput--alwaysExpanded ExpandingSearchInput--light"
-            data-name=""
-          >
-            <span
-              class="bp3-icon StyledProps--main ExpandingSearchInput--icon StyledProps--color StyledProps--color-grey700"
-              data-icon="thinner-search"
-            >
-              <svg
-                fill="none"
-                height="14"
-                viewBox="0 0 16 16"
-                width="14"
-                xmlns="http://www.w3.org/2000/svg"
-              >
-                <path
-                  d="M7.125 13.25c1.617 0 3.32-.695 4.375-1.75L15 15l-3.5-3.5c1.021-1.005 1.75-2.894 1.75-4.375a6.125 6.125 0 10-6.125 6.125z"
-                  stroke="currentColor"
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                />
-              </svg>
-            </span>
-            <input
-              class="bp3-input  ExpandingSearchInput--filter"
-              dir="auto"
-              placeholder="Search"
-              style="padding-right: 38px;"
-              type="search"
-              value=""
-            />
-          </div>
-        </div>
-        <div
-          class="TableV2--table"
-        >
-          <div
-            class="TableV2--header"
-            role="row"
+            class="Layout--horizontal StyledProps--main searchAndFilterWrapper"
           >
             <div
-              class="TableV2--cell"
-              colspan="1"
-              role="columnheader"
-              style="width: 5%;"
+              class="bp3-input-group ui-search-box ExpandingSearchInput--main searchContainer  ExpandingSearchInput--alwaysExpanded ExpandingSearchInput--light"
+              data-name=""
             >
-              <p
-                class="StyledProps--font StyledProps--main StyledProps--font-variation-table-headers"
+              <span
+                class="bp3-icon StyledProps--main ExpandingSearchInput--icon StyledProps--color StyledProps--color-grey700"
+                data-icon="thinner-search"
               >
-                
-              </p>
-            </div>
-            <div
-              class="TableV2--cell"
-              colspan="1"
-              role="columnheader"
-              style="width: 40%;"
-            >
-              <p
-                class="StyledProps--font StyledProps--main StyledProps--font-variation-table-headers"
-              >
-                name
-              </p>
-            </div>
-            <div
-              class="TableV2--cell"
-              colspan="1"
-              role="columnheader"
-              style="width: 50%;"
-            >
-              <p
-                class="StyledProps--font StyledProps--main StyledProps--font-variation-table-headers"
-              >
-                ID
-              </p>
+                <svg
+                  fill="none"
+                  height="14"
+                  viewBox="0 0 16 16"
+                  width="14"
+                  xmlns="http://www.w3.org/2000/svg"
+                >
+                  <path
+                    d="M7.125 13.25c1.617 0 3.32-.695 4.375-1.75L15 15l-3.5-3.5c1.021-1.005 1.75-2.894 1.75-4.375a6.125 6.125 0 10-6.125 6.125z"
+                    stroke="currentColor"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                  />
+                </svg>
+              </span>
+              <input
+                class="bp3-input  ExpandingSearchInput--filter"
+                dir="auto"
+                placeholder="Search"
+                style="padding-right: 38px;"
+                type="search"
+                value=""
+              />
             </div>
           </div>
           <div
-            class="TableV2--body"
+            class="TableV2--table"
           >
             <div
-              class="TableV2--row TableV2--card"
+              class="TableV2--header"
               role="row"
             >
               <div
                 class="TableV2--cell"
-                role="cell"
+                colspan="1"
+                role="columnheader"
                 style="width: 5%;"
               >
-                <label
-                  class="bp3-control bp3-radio StyledProps--font Radio--radio radioBtn StyledProps--main"
+                <p
+                  class="StyledProps--font StyledProps--main StyledProps--font-variation-table-headers"
                 >
-                  <input
-                    type="radio"
-                  />
-                  <span
-                    class="bp3-control-indicator"
-                  />
-                </label>
+                  
+                </p>
               </div>
               <div
                 class="TableV2--cell"
-                role="cell"
+                colspan="1"
+                role="columnheader"
                 style="width: 40%;"
               >
                 <p
-                  class="StyledProps--font Text--lineclamp StyledProps--main StyledProps--color StyledProps--color-black"
-                  style="--text-line-clamp: 1;"
+                  class="StyledProps--font StyledProps--main StyledProps--font-variation-table-headers"
                 >
-                  dummy-service
+                  name
                 </p>
               </div>
               <div
                 class="TableV2--cell"
-                role="cell"
+                colspan="1"
+                role="columnheader"
                 style="width: 50%;"
               >
                 <p
-                  class="StyledProps--font Text--lineclamp StyledProps--main StyledProps--color StyledProps--color-black"
-                  style="--text-line-clamp: 1;"
+                  class="StyledProps--font StyledProps--main StyledProps--font-variation-table-headers"
                 >
-                  dummy-service-id
+                  ID
                 </p>
               </div>
             </div>
-          </div>
-          <div
-            class="Layout--horizontal StyledProps--main TableV2--pagination Pagination--container StyledProps--padding-top-medium StyledProps--padding-bottom-medium StyledProps--flex StyledProps--flex-align-center-center StyledProps--flex-distribution-space-between"
-          >
-            <span
-              class="StyledProps--font StyledProps--main StyledProps--inline StyledProps--font-variation-small-semi"
-            >
-              1
-               of 
-              1
-            </span>
             <div
-              class="Layout--horizontal StyledProps--main"
+              class="TableV2--body"
             >
-              <button
-                class="bp3-button bp3-disabled Button--button StyledProps--font StyledProps--main Pagination--roundedButton Pagination--buttonLeft Button--with-current-color Button--withLeftIcon Button--size Button--small"
-                disabled=""
-                tabindex="-1"
-                type="button"
+              <div
+                class="TableV2--row TableV2--card"
+                role="row"
               >
-                <span
-                  class="bp3-icon bp3-icon-arrow-left StyledProps--main StyledProps--padding-right-xsmall"
-                  icon="arrow-left"
+                <div
+                  class="TableV2--cell"
+                  role="cell"
+                  style="width: 5%;"
                 >
-                  <svg
-                    data-icon="arrow-left"
-                    height="12"
-                    viewBox="0 0 16 16"
-                    width="12"
+                  <label
+                    class="bp3-control bp3-radio StyledProps--font Radio--radio radioBtn StyledProps--main"
                   >
-                    <desc>
-                      arrow-left
-                    </desc>
-                    <path
-                      d="M13.99 6.99H4.41L7.7 3.7a1.003 1.003 0 00-1.42-1.42l-5 5a1.014 1.014 0 000 1.42l5 5a1.003 1.003 0 001.42-1.42L4.41 8.99H14c.55 0 1-.45 1-1s-.46-1-1.01-1z"
-                      fill-rule="evenodd"
+                    <input
+                      type="radio"
                     />
-                  </svg>
-                </span>
-                <span
-                  class="bp3-button-text"
+                    <span
+                      class="bp3-control-indicator"
+                    />
+                  </label>
+                </div>
+                <div
+                  class="TableV2--cell"
+                  role="cell"
+                  style="width: 40%;"
                 >
-                  Prev
-                </span>
-              </button>
-              <button
-                class="bp3-button bp3-disabled Button--button StyledProps--font StyledProps--main Pagination--roundedButton Pagination--selected Button--with-current-color"
-                disabled=""
-                tabindex="-1"
-                type="button"
-              >
-                <span
-                  class="bp3-button-text"
-                >
-                  1
-                </span>
-              </button>
-              <button
-                class="bp3-button bp3-disabled Button--button StyledProps--font StyledProps--main Pagination--roundedButton Pagination--buttonRight Button--with-current-color Button--withRightIcon Button--size Button--small"
-                disabled=""
-                tabindex="-1"
-                type="button"
-              >
-                <span
-                  class="bp3-button-text"
-                >
-                  Next
-                </span>
-                <span
-                  class="bp3-icon bp3-icon-arrow-right StyledProps--main"
-                  icon="arrow-right"
-                >
-                  <svg
-                    data-icon="arrow-right"
-                    height="12"
-                    viewBox="0 0 16 16"
-                    width="12"
+                  <p
+                    class="StyledProps--font Text--lineclamp StyledProps--main StyledProps--color StyledProps--color-black"
+                    style="--text-line-clamp: 1;"
                   >
-                    <desc>
-                      arrow-right
-                    </desc>
-                    <path
-                      d="M14.7 7.29l-5-5a.965.965 0 00-.71-.3 1.003 1.003 0 00-.71 1.71l3.29 3.29H1.99c-.55 0-1 .45-1 1s.45 1 1 1h9.59l-3.29 3.29a1.003 1.003 0 001.42 1.42l5-5c.18-.18.29-.43.29-.71s-.12-.52-.3-.7z"
-                      fill-rule="evenodd"
-                    />
-                  </svg>
-                </span>
-              </button>
+                    dummy-service
+                  </p>
+                </div>
+                <div
+                  class="TableV2--cell"
+                  role="cell"
+                  style="width: 50%;"
+                >
+                  <p
+                    class="StyledProps--font Text--lineclamp StyledProps--main StyledProps--color StyledProps--color-black"
+                    style="--text-line-clamp: 1;"
+                  >
+                    dummy-service-id
+                  </p>
+                </div>
+              </div>
             </div>
-            <span>
-              Showing 5 per page
-            </span>
+            <div
+              class="Layout--horizontal StyledProps--main TableV2--pagination Pagination--container StyledProps--padding-top-medium StyledProps--padding-bottom-medium StyledProps--flex StyledProps--flex-align-center-center StyledProps--flex-distribution-space-between"
+            >
+              <span
+                class="StyledProps--font StyledProps--main StyledProps--inline StyledProps--font-variation-small-semi"
+              >
+                1
+                 of 
+                1
+              </span>
+              <div
+                class="Layout--horizontal StyledProps--main"
+              >
+                <button
+                  class="bp3-button bp3-disabled Button--button StyledProps--font StyledProps--main Pagination--roundedButton Pagination--buttonLeft Button--with-current-color Button--withLeftIcon Button--size Button--small"
+                  disabled=""
+                  tabindex="-1"
+                  type="button"
+                >
+                  <span
+                    class="bp3-icon bp3-icon-arrow-left StyledProps--main StyledProps--padding-right-xsmall"
+                    icon="arrow-left"
+                  >
+                    <svg
+                      data-icon="arrow-left"
+                      height="12"
+                      viewBox="0 0 16 16"
+                      width="12"
+                    >
+                      <desc>
+                        arrow-left
+                      </desc>
+                      <path
+                        d="M13.99 6.99H4.41L7.7 3.7a1.003 1.003 0 00-1.42-1.42l-5 5a1.014 1.014 0 000 1.42l5 5a1.003 1.003 0 001.42-1.42L4.41 8.99H14c.55 0 1-.45 1-1s-.46-1-1.01-1z"
+                        fill-rule="evenodd"
+                      />
+                    </svg>
+                  </span>
+                  <span
+                    class="bp3-button-text"
+                  >
+                    Prev
+                  </span>
+                </button>
+                <button
+                  class="bp3-button bp3-disabled Button--button StyledProps--font StyledProps--main Pagination--roundedButton Pagination--selected Button--with-current-color"
+                  disabled=""
+                  tabindex="-1"
+                  type="button"
+                >
+                  <span
+                    class="bp3-button-text"
+                  >
+                    1
+                  </span>
+                </button>
+                <button
+                  class="bp3-button bp3-disabled Button--button StyledProps--font StyledProps--main Pagination--roundedButton Pagination--buttonRight Button--with-current-color Button--withRightIcon Button--size Button--small"
+                  disabled=""
+                  tabindex="-1"
+                  type="button"
+                >
+                  <span
+                    class="bp3-button-text"
+                  >
+                    Next
+                  </span>
+                  <span
+                    class="bp3-icon bp3-icon-arrow-right StyledProps--main"
+                    icon="arrow-right"
+                  >
+                    <svg
+                      data-icon="arrow-right"
+                      height="12"
+                      viewBox="0 0 16 16"
+                      width="12"
+                    >
+                      <desc>
+                        arrow-right
+                      </desc>
+                      <path
+                        d="M14.7 7.29l-5-5a.965.965 0 00-.71-.3 1.003 1.003 0 00-.71 1.71l3.29 3.29H1.99c-.55 0-1 .45-1 1s.45 1 1 1h9.59l-3.29 3.29a1.003 1.003 0 001.42 1.42l5-5c.18-.18.29-.43.29-.71s-.12-.52-.3-.7z"
+                        fill-rule="evenodd"
+                      />
+                    </svg>
+                  </span>
+                </button>
+              </div>
+              <span>
+                Showing 5 per page
+              </span>
+            </div>
           </div>
         </div>
       </div>

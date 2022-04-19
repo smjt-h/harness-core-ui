@@ -301,30 +301,36 @@ const COEcsSelector: React.FC<COEcsSelectorProps> = props => {
         </Layout.Vertical>
         <div className={css.sectionSeparator} />
         <Container style={{ minHeight: 250 }}>
-          <Layout.Horizontal className={css.searchAndFilterWrapper}>
-            <ExpandingSearchInput className={css.searchContainer} onChange={handleSearch} alwaysExpanded />
-          </Layout.Horizontal>
-          {loading && (
-            <Layout.Horizontal flex={{ justifyContent: 'center' }}>
-              <Icon name="spinner" size={24} color="blue500" />
+          <Layout.Vertical spacing={'medium'}>
+            <Layout.Horizontal className={css.searchAndFilterWrapper}>
+              <ExpandingSearchInput className={css.searchContainer} onChange={handleSearch} alwaysExpanded />
             </Layout.Horizontal>
-          )}
-          {!loading && (!selectedRegion || !selectedContainer) && (
-            <Layout.Horizontal flex={{ justifyContent: 'center' }}>
-              <Text icon={'execution-warning'} font={{ size: 'medium' }} iconProps={{ size: 20 }}>
-                {getString('ce.co.autoStoppingRule.configuration.ecsModal.emptyDescription')}
-              </Text>
-            </Layout.Horizontal>
-          )}
-          {!loading && selectedRegion && selectedContainer && (
-            <ECSServicesTable
-              data={servicesToShow}
-              pageIndex={pageIndex}
-              selectedService={selectedClusterService}
-              setSelectedService={setSelectedClusterService}
-              setPageIndex={setPageIndex}
-            />
-          )}
+            {loading && (
+              <Container>
+                <Layout.Horizontal flex={{ justifyContent: 'center' }}>
+                  <Icon name="spinner" size={24} color="blue500" />
+                </Layout.Horizontal>
+              </Container>
+            )}
+            {!loading && (!selectedRegion || !selectedContainer) && (
+              <Container>
+                <Layout.Horizontal flex={{ justifyContent: 'center' }}>
+                  <Text icon={'execution-warning'} font={{ size: 'medium' }} iconProps={{ size: 20 }}>
+                    {getString('ce.co.autoStoppingRule.configuration.ecsModal.emptyDescription')}
+                  </Text>
+                </Layout.Horizontal>
+              </Container>
+            )}
+            {!loading && selectedRegion && selectedContainer && (
+              <ECSServicesTable
+                data={servicesToShow}
+                pageIndex={pageIndex}
+                selectedService={selectedClusterService}
+                setSelectedService={setSelectedClusterService}
+                setPageIndex={setPageIndex}
+              />
+            )}
+          </Layout.Vertical>
         </Container>
         <Layout.Horizontal flex={{ alignItems: 'center' }} spacing={'large'}>
           <Button

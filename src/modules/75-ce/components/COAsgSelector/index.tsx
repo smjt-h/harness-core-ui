@@ -168,70 +168,74 @@ const COAsgSelector: React.FC<COAsgSelectorprops> = props => {
         {/* <Layout.Vertical style={{ paddingTop: 20 }}>
         </Layout.Vertical> */}
         <Container style={{ minHeight: 250 }}>
-          <Layout.Horizontal className={css.searchAndFilterWrapper}>
-            <ExpandingSearchInput
-              className={css.searchContainer}
-              onChange={(text: string) => props.search(text)}
-              alwaysExpanded
-            />
-          </Layout.Horizontal>
-          {loadingEnabled && (
-            <Layout.Horizontal flex={{ justifyContent: 'center' }}>
-              <Icon name="spinner" size={24} color="blue500" />
+          <Layout.Vertical spacing={'medium'}>
+            <Layout.Horizontal className={css.searchAndFilterWrapper}>
+              <ExpandingSearchInput
+                className={css.searchContainer}
+                onChange={(text: string) => props.search(text)}
+                alwaysExpanded
+              />
             </Layout.Horizontal>
-          )}
-          {!loadingEnabled && isGcpProvider && _isEmpty(gcpFilters?.region) ? (
-            <Layout.Horizontal flex={{ justifyContent: 'center' }}>
-              <Text icon={'execution-warning'} font={{ size: 'medium' }} iconProps={{ size: 20 }}>
-                {getString('ce.co.autoStoppingRule.configuration.igModal.gcpFiltersNotSelectedDescription')}
-              </Text>
-            </Layout.Horizontal>
-          ) : null}
-          {!loadingEnabled && !_isEmpty(props.scalingGroups) && (
-            <TableV2<ASGMinimal>
-              data={defaultTo(props.scalingGroups, []).slice(
-                pageIndex * TOTAL_ITEMS_PER_PAGE,
-                pageIndex * TOTAL_ITEMS_PER_PAGE + TOTAL_ITEMS_PER_PAGE
-              )}
-              pagination={{
-                pageSize: TOTAL_ITEMS_PER_PAGE,
-                pageIndex: pageIndex,
-                pageCount: Math.ceil(defaultTo(props.scalingGroups, []).length / TOTAL_ITEMS_PER_PAGE),
-                itemCount: defaultTo(props.scalingGroups, []).length,
-                gotoPage: newPageIndex => setPageIndex(newPageIndex)
-              }}
-              columns={[
-                {
-                  Header: '',
-                  id: 'selected',
-                  Cell: TableCheck,
-                  width: '5%',
-                  disableSortBy: true
-                },
-                {
-                  accessor: 'name',
-                  Header: getString('ce.co.instanceSelector.name'),
-                  width: '70%',
-                  Cell: NameCell,
-                  disableSortBy: true
-                },
-                {
-                  accessor: 'desired',
-                  Header: getString('instanceFieldOptions.instances'),
-                  width: '10%',
-                  Cell: TableCell,
-                  disableSortBy: true
-                },
-                {
-                  accessor: 'region',
-                  Header: getString('regionLabel'),
-                  width: '10%',
-                  Cell: TableCell,
-                  disableSortBy: true
-                }
-              ]}
-            />
-          )}
+            {loadingEnabled && (
+              <Container>
+                <Layout.Horizontal flex={{ justifyContent: 'center' }}>
+                  <Icon name="spinner" size={24} color="blue500" />
+                </Layout.Horizontal>
+              </Container>
+            )}
+            {!loadingEnabled && isGcpProvider && _isEmpty(gcpFilters?.region) ? (
+              <Layout.Horizontal flex={{ justifyContent: 'center' }}>
+                <Text icon={'execution-warning'} font={{ size: 'medium' }} iconProps={{ size: 20 }}>
+                  {getString('ce.co.autoStoppingRule.configuration.igModal.gcpFiltersNotSelectedDescription')}
+                </Text>
+              </Layout.Horizontal>
+            ) : null}
+            {!loadingEnabled && !_isEmpty(props.scalingGroups) && (
+              <TableV2<ASGMinimal>
+                data={defaultTo(props.scalingGroups, []).slice(
+                  pageIndex * TOTAL_ITEMS_PER_PAGE,
+                  pageIndex * TOTAL_ITEMS_PER_PAGE + TOTAL_ITEMS_PER_PAGE
+                )}
+                pagination={{
+                  pageSize: TOTAL_ITEMS_PER_PAGE,
+                  pageIndex: pageIndex,
+                  pageCount: Math.ceil(defaultTo(props.scalingGroups, []).length / TOTAL_ITEMS_PER_PAGE),
+                  itemCount: defaultTo(props.scalingGroups, []).length,
+                  gotoPage: newPageIndex => setPageIndex(newPageIndex)
+                }}
+                columns={[
+                  {
+                    Header: '',
+                    id: 'selected',
+                    Cell: TableCheck,
+                    width: '5%',
+                    disableSortBy: true
+                  },
+                  {
+                    accessor: 'name',
+                    Header: getString('ce.co.instanceSelector.name'),
+                    width: '70%',
+                    Cell: NameCell,
+                    disableSortBy: true
+                  },
+                  {
+                    accessor: 'desired',
+                    Header: getString('instanceFieldOptions.instances'),
+                    width: '10%',
+                    Cell: TableCell,
+                    disableSortBy: true
+                  },
+                  {
+                    accessor: 'region',
+                    Header: getString('regionLabel'),
+                    width: '10%',
+                    Cell: TableCell,
+                    disableSortBy: true
+                  }
+                ]}
+              />
+            )}
+          </Layout.Vertical>
         </Container>
         <Container style={{ marginTop: 'var(--spacing-medium)' }}>
           <Layout.Horizontal flex={{ alignItems: 'center' }}>
