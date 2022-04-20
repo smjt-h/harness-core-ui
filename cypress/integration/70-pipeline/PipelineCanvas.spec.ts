@@ -85,7 +85,7 @@ describe('GIT SYNC DISABLED', () => {
     cy.get('[value="testEnv"]').should('be.visible')
 
     cy.get('[data-name="toggle-option-two"]').click()
-    cy.matchImageSnapshot('Pipeline Canvas - Yaml Editor')
+    // cy.matchImageSnapshot('Pipeline Canvas - Yaml Editor')
 
     // Enable YAML editing
     cy.contains('span', 'Edit YAML').click({ force: true })
@@ -137,7 +137,7 @@ describe('APPROVAL STAGE', () => {
     cy.intercept('GET', approvalStageYamlSnippet, { fixture: 'pipeline/api/approvals/stageYamlSnippet' })
     cy.fillName('testApprovalStage_Cypress')
     cy.clickSubmit()
-    cy.matchImageSnapshot('Add stage Validation')
+    // cy.matchImageSnapshot('Add stage Validation')
 
     cy.contains('span', 'Approval type is required').should('be.visible').should('have.class', 'FormError--error')
 
@@ -147,7 +147,7 @@ describe('APPROVAL STAGE', () => {
 
     cy.get('[data-icon="harness-with-color"]').should('be.visible')
 
-    cy.matchImageSnapshot('Stage Added')
+    // cy.matchImageSnapshot('Stage Added')
 
     cy.contains('span', 'Advanced').click({ force: true })
 
@@ -156,7 +156,7 @@ describe('APPROVAL STAGE', () => {
 
     // By default the when condition selected should be 'execute this stage if pipeline execution is successful thus far'
     cy.get('[value="Success"]').should('be.checked')
-    cy.matchImageSnapshot('Advanced Tab')
+    // cy.matchImageSnapshot('Advanced Tab')
   })
 
   it('should add jira approval stage with default when condition and no default failure strategy', () => {

@@ -24,7 +24,7 @@ describe('Environment for Pipeline', () => {
     cy.contains('span', 'New Environment').should('be.visible')
     cy.contains('span', 'New Environment').click()
     cy.wait(1000)
-    cy.matchImageSnapshot('New Environment Modal')
+    // cy.matchImageSnapshot('New Environment Modal')
 
     cy.fillName('testEnv')
     cy.get('span[data-testid="description-edit"]').should('be.visible')
