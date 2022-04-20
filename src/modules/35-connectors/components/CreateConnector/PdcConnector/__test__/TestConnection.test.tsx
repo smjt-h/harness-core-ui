@@ -15,23 +15,28 @@ const onCloseFn = jest.fn()
 const gotoStep = jest.fn()
 jest.mock('services/portal', () => ({
   useGetTestConnectionResult: jest.fn().mockImplementation(() => ({
-    mutate: jest.fn().mockImplementation(({ queryParams }) =>
-      queryParams?.accountId === 'pass'
-        ? {
-            data: {
-              status: 'SUCCESS'
-            }
-          }
-        : {
-            data: {
-              errors: [
-                {
-                  reason: 'Failed',
-                  message: 'Error connectiong'
+    mutate: jest.fn().mockImplementation(
+      ({ queryParams }) =>
+        new Promise(resolve => {
+          resolve(
+            queryParams?.accountId === 'pass'
+              ? {
+                  data: {
+                    status: 'SUCCESS'
+                  }
                 }
-              ]
-            }
-          }
+              : {
+                  data: {
+                    errors: [
+                      {
+                        reason: 'Failed',
+                        message: 'Error connectiong'
+                      }
+                    ]
+                  }
+                }
+          )
+        })
     )
   }))
 }))
@@ -40,20 +45,6 @@ describe('Test TestConnection component', () => {
   test('Render component with pass api request', async () => {
     const { container } = render(
       <TestWrapper path="/account/pass" pathParams={{}}>
-        <TestConnection onClose={onCloseFn} gotoStep={gotoStep} />
-      </TestWrapper>
-    )
-
-    await act(async () => {
-      fireEvent.click(container.querySelector('button[type="submit"]')!)
-    })
-
-    expect(onCloseFn).toBeCalled()
-  })
-
-  test('Render component with fail api request', async () => {
-    const { container } = render(
-      <TestWrapper path="/account/fail" pathParams={{}}>
         <TestConnection onClose={onCloseFn} gotoStep={gotoStep} />
       </TestWrapper>
     )

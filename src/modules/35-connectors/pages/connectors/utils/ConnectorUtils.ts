@@ -1691,6 +1691,8 @@ export const getConnectorDisplayName = (type: string) => {
       return 'Docker Registry'
     case Connectors.GCP:
       return 'GCP'
+    case Connectors.PDC:
+      return 'Physical Data Center'
     case Connectors.APP_DYNAMICS:
       return 'AppDynamics'
     case Connectors.SPLUNK:

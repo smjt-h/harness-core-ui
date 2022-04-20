@@ -10,7 +10,7 @@ import { noop } from 'lodash-es'
 import { render, fireEvent, queryByText } from '@testing-library/react'
 import { act } from 'react-dom/test-utils'
 import { TestWrapper } from '@common/utils/testUtils'
-import { mockResponse, mockSecret, encryptedKeyMock, backButtonMock } from './mocks'
+import { mockResponse, encryptedKeyMock, backButtonMock } from './mocks'
 import CreatePdcConnector from '../CreatePdcConnector'
 import { backButtonTest } from '../../commonTest'
 
@@ -35,7 +35,6 @@ jest.mock('services/cd-ng', () => ({
   validateTheIdentifierIsUniquePromise: jest.fn().mockImplementation(() => Promise.resolve(mockResponse)),
   useCreateConnector: jest.fn().mockImplementation(() => ({ mutate: createConnector })),
   useUpdateConnector: jest.fn().mockImplementation(() => ({ mutate: updateConnector })),
-  getSecretV2Promise: jest.fn().mockImplementation(() => Promise.resolve(mockSecret)),
   useGetFileContent: jest.fn().mockImplementation(() => ({ refetch: jest.fn() })),
   useCreatePR: jest.fn().mockImplementation(() => ({ mutate: jest.fn() }))
 }))
