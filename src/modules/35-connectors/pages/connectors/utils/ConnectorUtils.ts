@@ -1097,18 +1097,7 @@ export const buildAzureBlobPayload = (formData: FormData): BuildAzureBlobPayload
     ...pick(formData, ['name', 'description', 'projectIdentifier', 'identifier', 'orgIdentifier', 'tags']),
     type: Connectors.AZURE_BLOB,
     spec: {
-      ...pick(formData, [
-        'clientId',
-        'tenantId',
-        'default',
-        'subscription',
-        'connectionString',
-        'containerName',
-        'vaultName',
-        'keyName',
-        'keyId',
-        'delegateSelectors'
-      ]),
+      ...pick(formData, ['clientId', 'tenantId', 'default', 'containerURL', 'delegateSelectors']),
       secretKey: formData.secretKey?.referenceString
     }
   }
@@ -1577,9 +1566,7 @@ export const setupAzureBlobFormData = async (connectorInfo: ConnectorInfoDTO, ac
     clientId: connectorInfoSpec?.clientId || undefined,
     secretKey: secretKey || undefined,
     tenantId: connectorInfoSpec?.tenantId || undefined,
-    subscription: connectorInfoSpec?.subscription || undefined,
-    connectionString: connectorInfoSpec?.connectionString || undefined,
-    containerName: connectorInfoSpec?.containerName || undefined,
+    containerURL: connectorInfoSpec?.containerURL || undefined,
     default: connectorInfoSpec?.default || false
   }
 }
