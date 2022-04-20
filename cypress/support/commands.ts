@@ -105,6 +105,18 @@ Cypress.Commands.overwrite('matchImageSnapshot', (originalFn, snapshotName, opti
   }
 })
 
+// @ts-ignore
+Cypress.Commands.overwrite('screenshot', (originalFn, subject, name, options) => {
+  // only take screenshots in headless browser
+  if (Cypress.browser.isHeadless) {
+    // return the original screenshot function
+    // @ts-ignore
+    return originalFn(subject, name, options)
+  }
+
+  return cy.log('No screenshot taken when headed')
+})
+
 Cypress.Commands.add('clickSubmit', () => {
   cy.get('[type="submit"]').click()
 })
