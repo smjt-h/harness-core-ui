@@ -13,6 +13,8 @@ import type { ModuleName } from 'framework/types/ModuleName'
 import type { Project } from 'services/cd-ng'
 import { useStrings } from 'framework/strings'
 import { useModuleInfo } from '@common/hooks/useModuleInfo'
+import { useTelemetry } from '@common/hooks/useTelemetry'
+import { ExitModalActions, Category } from '@common/constants/TrackingConstants'
 import { useModuleSelectModal } from '../ModuleSelect/useModuleSelect'
 import { Views } from './Constants'
 import { ProjectCollaboratorsStep } from './views/Collaborators'
@@ -68,6 +70,7 @@ export const useProjectModal = ({
       onWizardComplete?.(wizardData)
     }
   }
+  const { trackEvent } = useTelemetry()
   const [showModal, hideModal] = useModalHook(
     () => (
       <Dialog
@@ -124,6 +127,7 @@ export const useProjectModal = ({
             }
             onCloseModal?.()
             setView(Views.CREATE)
+            trackEvent(ExitModalActions.ExitByClose, { category: Category.PROJECT })
             hideModal()
           }}
           className={css.crossIcon}
