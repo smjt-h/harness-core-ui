@@ -80,6 +80,7 @@ const UserProfilePage: React.FC = () => {
                 font={{ size: 'large', weight: 'semi-bold' }}
                 lineClamp={1}
                 className={css.overflow}
+                data-hj-suppress
               >
                 {user.name}
               </Text>

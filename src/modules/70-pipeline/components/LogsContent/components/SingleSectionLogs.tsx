@@ -38,7 +38,7 @@ export function SingleSectionLogs(
   }
 
   return (
-    <pre className={css.container}>
+    <pre className={css.container} data-hj-suppress>
       <Virtuoso
         overscan={50}
         totalCount={length}

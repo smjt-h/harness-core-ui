@@ -59,7 +59,7 @@ export function GroupedLogs(
   }
 
   return (
-    <pre className={css.container}>
+    <pre className={css.container} data-hj-suppress>
       <GroupedVirtuoso
         overscan={50}
         ref={ref}

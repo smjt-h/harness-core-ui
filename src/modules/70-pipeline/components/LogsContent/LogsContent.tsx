@@ -197,7 +197,7 @@ export function LogsContent(props: LogsContentProps): React.ReactElement {
           <GroupedLogs ref={virtuosoRef} state={state} actions={actions} />
         )
       ) : (
-        <pre className={css.container}>
+        <pre className={css.container} data-hj-suppress>
           <StrTemplate tagName="div" className={css.noLogs} stringID="common.logs.noLogsText" />
         </pre>
       )}

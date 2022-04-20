@@ -15,6 +15,7 @@ StaticServices.configurationService.get().updateValue('files.eol', '\n')
 import YamlWorker from 'worker-loader!@wings-software/monaco-yaml/lib/esm/yaml.worker'
 //@ts-ignore
 import EditorWorker from 'worker-loader!monaco-editor/esm/vs/editor/editor.worker'
+import { addHotJarSuppressionAttribute } from '@common/utils/utils'
 
 export type ReactMonacoEditorRef =
   | ((instance: ReactMonacoEditor | null) => void)
@@ -61,6 +62,9 @@ const MonacoEditor = (props: ExtendedMonacoEditorProps, ref: ReactMonacoEditorRe
         return new EditorWorker()
       }
     }
+
+    // Don't allow HotJar to record content in Yaml/Code editor(s)
+    addHotJarSuppressionAttribute([...document.querySelectorAll('.react-monaco-editor-container')])
   }
 
   const theme = props.options?.readOnly ? 'disable-theme' : 'vs'

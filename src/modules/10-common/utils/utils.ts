@@ -61,3 +61,16 @@ export const formatCount = (num: number): string => {
   }
   return num.toLocaleString()
 }
+
+const HOTJAR_SUPPRESSION_ATTR = 'data-hj-suppress'
+
+// Utility to add `data-hj-suppress` into a collection of elements to
+// suppress data from HotJar recording
+// @see https://bit.ly/3rCgpOY
+export const addHotJarSuppressionAttribute = (elements: Element[] | null | undefined): void => {
+  elements?.forEach((e: Element) => {
+    if (!e.hasAttribute(HOTJAR_SUPPRESSION_ATTR)) {
+      e.setAttribute(HOTJAR_SUPPRESSION_ATTR, 'true')
+    }
+  })
+}
