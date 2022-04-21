@@ -672,7 +672,7 @@ export function RightBar(): JSX.Element {
                 <div className={Classes.DIALOG_FOOTER}>
                   <Button
                     variation={ButtonVariation.PRIMARY}
-                    text={getString('save')}
+                    text={getString('applyChanges')}
                     onClick={submitForm}
                     disabled={isReadonly}
                   />{' '}
