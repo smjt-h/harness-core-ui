@@ -41,24 +41,22 @@ describe('GIT SYNC DISABLED', () => {
       return false
     })
     cy.intercept('GET', gitSyncEnabledCall, { connectivityMode: null, gitSyncEnabled: false })
+    cy.intercept('GET', cdFailureStrategiesYaml, {
+      fixture: 'pipeline/api/pipelines/failureStrategiesYaml'
+    }).as('cdFailureStrategiesYaml')
     cy.login('test', 'test')
 
     cy.visitCreatePipeline()
-
     cy.fillName('testPipeline_Cypress')
-
     cy.clickSubmit()
-
     cy.createDeploymentStage()
   })
 
   it('should display the error returned by pipeline save API', () => {
     cy.intercept('POST', pipelineSaveCall, { fixture: 'pipeline/api/pipelines.post' }).as('pipelineSaveCall')
-    cy.intercept('GET', cdFailureStrategiesYaml, { fixture: 'pipeline/api/pipelines/failureStrategiesYaml' }).as(
-      'cdFailureStrategiesYaml'
-    )
-    cy.contains('span', 'New Service').click()
 
+    cy.wait('@cdFailureStrategiesYaml')
+    cy.contains('span', 'New Service').click()
     cy.fillName('testService')
     cy.get('[data-id="service-save"]').click()
 
