@@ -383,23 +383,26 @@ export function ACRArtifact({
       context === ModalViewFor.SIDECAR
     ) as ACRArtifactType
 
-    values.subscriptionId = getSubscription(values)
-
-    const registry = getValue(values?.registry) || getValue(formikRef?.current?.values?.registry)
     /* istanbul ignore else */
-    if (registry && getMultiTypeFromValue(registry) === MultiTypeInputType.FIXED) {
-      values.registry = {
-        label: registry,
-        value: registry
+    if (initialValues) {
+      values.subscriptionId = getSubscription(values)
+
+      const registry = getValue(values?.registry) || getValue(formikRef?.current?.values?.registry)
+      /* istanbul ignore else */
+      if (registry && getMultiTypeFromValue(registry) === MultiTypeInputType.FIXED) {
+        values.registry = {
+          label: registry,
+          value: registry
+        }
       }
-    }
 
-    const repository = getValue(values?.repository) || getValue(formikRef?.current?.values?.repository)
-    /* istanbul ignore else */
-    if (repository && getMultiTypeFromValue(repository) === MultiTypeInputType.FIXED) {
-      values.repository = {
-        label: repository,
-        value: repository
+      const repository = getValue(values?.repository) || getValue(formikRef?.current?.values?.repository)
+      /* istanbul ignore else */
+      if (repository && getMultiTypeFromValue(repository) === MultiTypeInputType.FIXED) {
+        values.repository = {
+          label: repository,
+          value: repository
+        }
       }
     }
 
