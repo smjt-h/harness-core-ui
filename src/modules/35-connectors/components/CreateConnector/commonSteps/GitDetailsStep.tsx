@@ -66,6 +66,8 @@ const getTooltipAnchorForHeading = (connectorType: ConnectorInfoDTO['type']): st
     return 'githubConnectorDetailsTooltip'
   } else if (connectorType === 'Bitbucket') {
     return 'bitbucketConnectorDetailsTooltip'
+  } else if (connectorType === 'Azure') {
+    return 'azureReposConnectorDetailsTooltip'
   } else if (connectorType === 'Gitlab') {
     return 'gitlabConnectorDetailsTooltip'
   }
@@ -121,6 +123,10 @@ const GitDetailsStep: React.FC<StepProps<ConnectorConfigDTO> & ConnectorDetailsS
         return urlType === GitUrlType.ACCOUNT
           ? getString('common.git.bitbucketAccountUrl')
           : getString('common.git.bitbucketRepoUrl')
+      case Connectors.AZURE_REPO:
+        return urlType === GitUrlType.ACCOUNT
+          ? getString('common.git.azureReposAccountUrl')
+          : getString('common.git.azureReposRepoUrl')
       default:
         return ''
     }
@@ -141,6 +147,10 @@ const GitDetailsStep: React.FC<StepProps<ConnectorConfigDTO> & ConnectorDetailsS
         return connectionType === GitConnectionType.HTTP
           ? getString('common.git.bitbucketUrlPlaceholder')
           : getString('common.git.bitbucketPlaceholderSSH')
+      case Connectors.AZURE_REPO:
+        return connectionType === GitConnectionType.HTTP
+          ? getString('common.git.azureReposUrlPlaceholder')
+          : getString('common.git.azureReposPlaceholderSSH')
       default:
         return ''
     }

@@ -23,6 +23,7 @@ import ConnectorDetailsStep from '../commonSteps/ConnectorDetailsStep'
 import GitDetailsStep from '../commonSteps/GitDetailsStep'
 import StepAzureRepoAuthentication from './StepAuth/StepAzureRepoAuthentication'
 import css from './CreateAzureRepoConnector.module.scss'
+
 const CreateAzureRepoConnector = (props: CreateConnectorModalProps): JSX.Element => {
   const { getString } = useStrings()
   const commonProps = pick(props, [
@@ -37,13 +38,13 @@ const CreateAzureRepoConnector = (props: CreateConnectorModalProps): JSX.Element
 
   return (
     <StepWizard
-      icon={getConnectorIconByType(Connectors.BITBUCKET)}
+      icon={getConnectorIconByType(Connectors.AZURE_REPO)}
       iconProps={{ size: 50 }}
       className={css.azureRepoConnector}
-      title={getString(getConnectorTitleIdByType(Connectors.BITBUCKET))}
+      title={getString(getConnectorTitleIdByType(Connectors.AZURE_REPO))}
     >
       <ConnectorDetailsStep
-        type={Connectors.BITBUCKET}
+        type={Connectors.AZURE_REPO}
         name={getString('overview')}
         isEditMode={props.isEditMode}
         connectorInfo={props.connectorInfo}
@@ -51,7 +52,7 @@ const CreateAzureRepoConnector = (props: CreateConnectorModalProps): JSX.Element
         mock={props.mock}
       />
       <GitDetailsStep
-        type={Connectors.BITBUCKET}
+        type={Connectors.AZURE_REPO}
         name={getString('details')}
         isEditMode={props.isEditMode}
         connectorInfo={props.connectorInfo}
@@ -74,7 +75,7 @@ const CreateAzureRepoConnector = (props: CreateConnectorModalProps): JSX.Element
         gitDetails={props.gitDetails}
       />
       <VerifyOutOfClusterDelegate
-        type={Connectors.BITBUCKET}
+        type={Connectors.AZURE_REPO}
         name={getString('connectors.stepThreeName')}
         connectorInfo={props.connectorInfo}
         isStep={true}
