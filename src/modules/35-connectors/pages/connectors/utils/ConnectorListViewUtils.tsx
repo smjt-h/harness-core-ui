@@ -41,7 +41,7 @@ const getAWSDisplaySummary = (connector: ConnectorInfoDTO): JSX.Element | string
 }
 
 const getAzureBlobConnectorDisplaySummary = (connector: ConnectorInfoDTO): JSX.Element | string => {
-  return getConnectorDisplaySummaryLabel('common.containerURL', textRenderer(connector?.spec?.containerURL))
+  return getConnectorDisplaySummaryLabel('common.containerURL', linkRenderer(connector?.spec?.containerURL))
 }
 
 const linkRenderer = (value: string): JSX.Element => {
