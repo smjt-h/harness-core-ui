@@ -287,11 +287,14 @@ describe('Execution Stages', () => {
     resourceName: StepResourceObject[],
     withWarning?: boolean
   ): void {
-    cy.get('p[data-name="node-name"]').contains('Add step').click({ force: true })
-
-    cy.get('[data-testid=addStepPipeline]').should('be.visible')
-    cy.wait(500)
-    cy.get('[data-testid=addStepPipeline]').click({ force: true })
+    cy.get('*[class^="ExecutionGraph-module_canvas"]')
+      .should('be.visible')
+      .within(() => {
+        cy.get('span[data-icon="zoom-out"]').click()
+        cy.get('p[data-name="node-name"]').contains('Add step').click({ force: true })
+        cy.get('[data-testid=addStepPipeline]').should('be.visible').click({ force: true })
+        cy.wait(500)
+      })
     cy.wait('@stepLibrary').wait(500)
     cy.contains('section', stageText).click({ force: true })
 
