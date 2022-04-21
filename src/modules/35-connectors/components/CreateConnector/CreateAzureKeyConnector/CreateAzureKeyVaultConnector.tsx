@@ -43,7 +43,6 @@ const CreateAzureKeyVaultConnector: React.FC<CreateConnectorModalProps> = props 
         disableGitSync={true}
       />
       <AzureKeyVaultForm
-        type={Connectors.AZURE_KEY_VAULT}
         name={getString('details')}
         identifier={CONNECTOR_CREDENTIALS_STEP_IDENTIFIER}
         connectorInfo={props.connectorInfo}
@@ -65,7 +64,6 @@ const CreateAzureKeyVaultConnector: React.FC<CreateConnectorModalProps> = props 
         submitOnNextStep
       />
       <SetupVault
-        type={Connectors.AZURE_KEY_VAULT}
         name={getString('connectors.azureKeyVault.labels.setupVault')}
         onConnectorCreated={onSuccess}
         connectorInfo={props.connectorInfo}

@@ -103,7 +103,7 @@ title:
   ceAzureConnector: 'Azure Connector'
   datadog: 'Datadog'
   azureKeyVault: 'Azure Key Vault'
-  azureBlob: 'Azure Blob Key Vault'
+  azureBlob: 'Azure Blob Storage'
   sumologic: 'SumoLogic'
   ceAws: 'AWS Connector '
   gcpKms: GCP Key Management Service

@@ -1745,7 +1745,7 @@ export const getConnectorDisplayName = (type: string) => {
     case Connectors.AWS_KMS:
       return 'AWS KMS'
     case Connectors.AZURE_BLOB:
-      return 'Azure Blob Key Vault'
+      return 'Azure Blob Storage'
     case Connectors.AZURE_KEY_VAULT:
       return 'Azure Key Vault'
     case Connectors.DYNATRACE:
