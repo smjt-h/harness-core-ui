@@ -543,6 +543,10 @@ const getAzureBlobSchema = (connector: ConnectorInfoDTO): Array<ActivityDetailsR
     {
       label: 'connectors.azureBlob.labels.containerURL',
       value: data.containerURL
+    },
+    {
+      label: 'connectors.hashiCorpVault.default',
+      value: data.default ? YesOrNo.YES : YesOrNo.NO
     }
   ]
 }
