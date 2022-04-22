@@ -88,7 +88,7 @@ export const CloudFormationCreateStack = (
   const [capabilities, setCapabilities] = useState<MultiSelectOption[]>([])
   const [awsStates, setAwsStates] = useState<MultiSelectOption[]>([])
   const [awsRoles, setAwsRoles] = useState<MultiSelectOption[]>([])
-  const [awsTemplateRef, setAwsTemplateRef] = useState<string>('')
+  const [awsRef, setAwsRef] = useState<string>('')
 
   const { data: regionData } = useListAwsRegions({
     queryParams: {
@@ -123,11 +123,12 @@ export const CloudFormationCreateStack = (
 
   const { data: roleData, refetch } = useGetIamRolesForAws({
     lazy: true,
+    debounce: 500,
     queryParams: {
       accountIdentifier: accountId,
       orgIdentifier: orgIdentifier,
       projectIdentifier: projectIdentifier,
-      connectorRef: awsTemplateRef
+      connectorRef: awsRef
     }
   })
 
@@ -136,8 +137,10 @@ export const CloudFormationCreateStack = (
       const roleValues = map(roleData?.data, cap => ({ label: cap, value: cap }))
       setAwsRoles(roleValues as MultiSelectOption[])
     }
-    refetch()
-  }, [roleData, awsTemplateRef])
+    if (!roleData) {
+      refetch()
+    }
+  }, [roleData, awsRef])
 
   return (
     <Formik
@@ -176,27 +179,29 @@ export const CloudFormationCreateStack = (
             stackName: Yup.string().required(getString('cd.cloudFormation.errors.stackName')),
             templateFile: Yup.object().shape({
               type: Yup.string(),
-              spec: Yup.object().shape({
-                // templateBody: Yup.string().when('spec.configuration.templateFile.type', {
-                //   is: value => value === TemplateTypes.Inline,
-                //   then: Yup.string().required('Template body required'),
-                //   otherwise: Yup.string().notRequired()
-                // }),
-                // templateUrl: Yup.string().when('spec.configuration.templateFile.type', {
-                //   is: value => value === TemplateTypes.S3URL,
-                //   then: Yup.string().required('Template URL required'),
-                //   otherwise: Yup.string().notRequired()
-                // }),
-                // store: Yup.object({
-                //   spec: Yup.object().shape({
-                //     connectorRef: ConnectorRefSchema()
-                //   })
-                // }).when('spec.configuration.templateFile.type', {
-                //   is: value => value === TemplateTypes.Remote,
-                //   then: Yup.object().required('Required'),
-                //   otherwise: Yup.object().notRequired()
-                // }),
-              })
+              spec: Yup.object()
+                .when('type', {
+                  is: value => value === TemplateTypes.Inline,
+                  then: Yup.object().shape({
+                    templateBody: Yup.string().required('Template body required')
+                  })
+                })
+                .when('type', {
+                  is: value => value === TemplateTypes.S3URL,
+                  then: Yup.object().shape({
+                    templateUrl: Yup.string().required('S3 url required')
+                  })
+                })
+                .when('type', {
+                  is: value => value === TemplateTypes.Remote,
+                  then: Yup.object().shape({
+                    store: Yup.object({
+                      spec: Yup.object().shape({
+                        connectorRef: ConnectorRefSchema()
+                      })
+                    })
+                  })
+                })
             })
           })
         })
@@ -207,13 +212,13 @@ export const CloudFormationCreateStack = (
         const { values, setFieldValue, errors } = formik
         window.console.log('values: ', values, errors)
         const awsConnector = values?.spec?.configuration?.connectorRef
-        if (awsConnector?.value !== awsTemplateRef) {
-          setAwsTemplateRef(awsConnector?.value)
+        if (awsConnector?.value !== awsRef) {
+          setAwsRef(awsConnector?.value)
         }
         const config = values?.spec?.configuration
         const templateFileType = config?.templateFile?.type
         const inlineTemplateFile = config?.templateFile?.spec?.templateBody
-        const remoteTemplateFile = config?.templateFile?.spec?.store?.spec?.paths?.[0]
+        const remoteTemplateFile = config?.templateFile?.spec?.store?.spec
         const templateUrl = config?.templateFile?.spec?.templateUrl
         const remoteParameterFiles = config?.parameters
         const inlineParameters = config?.parameters?.inline
@@ -315,8 +320,6 @@ export const CloudFormationCreateStack = (
                     disabled={readonly}
                     value={templateFileType}
                     onChange={e => {
-                      // remove any previous template file data
-                      setFieldValue('spec.configuration.templateFile.type', e.target.value)
                       if (e.target.value === TemplateTypes.Inline) {
                         setFieldValue('spec.configuration.templateFile', {
                           type: TemplateTypes.Inline,
@@ -327,9 +330,11 @@ export const CloudFormationCreateStack = (
                       } else if (e.target.value === TemplateTypes.Remote) {
                         setFieldValue('spec.configuration.templateFile', {
                           type: TemplateTypes.Remote,
-                          store: {
-                            spec: {
-                              connectorRef: undefined
+                          spec: {
+                            store: {
+                              spec: {
+                                connectorRef: undefined
+                              }
                             }
                           }
                         })
@@ -359,7 +364,9 @@ export const CloudFormationCreateStack = (
                 >
                   <>
                     <a className={css.configPlaceHolder}>
-                      {remoteTemplateFile ? `/${remoteTemplateFile}` : 'Specify template file...'}
+                      {remoteTemplateFile?.paths?.[0]
+                        ? `/${remoteTemplateFile?.paths?.[0]}`
+                        : 'Specify template file...'}
                     </a>
                     <Button
                       minimal
@@ -556,7 +563,8 @@ export const CloudFormationCreateStack = (
                               data-name="config-edit"
                               onClick={() => setInlineParams(true)}
                             >
-                              {getString('cd.cloudFormation.specifyInlineParameterFiles')}
+                              {`${JSON.stringify(parameterOverrides)}` ||
+                                getString('cd.cloudFormation.specifyInlineParameterFiles')}
                             </a>
                           </div>
                         </div>
@@ -607,7 +615,7 @@ export const CloudFormationCreateStack = (
                     <div className={css.divider} />
                     <div className={cx(stepCss.formGroup, stepCss.alignStart, css.addMarginTop, css.addMarginBottom)}>
                       <MultiTypeFieldSelector
-                        name="spec.configuration.spec.tags.spec.content"
+                        name="spec.configuration.tags.spec.content"
                         label={
                           <Text style={{ color: 'rgb(11, 11, 13)' }}>
                             {getString('optionalField', { name: getString('tagsLabel') })}
@@ -619,7 +627,7 @@ export const CloudFormationCreateStack = (
                         disabled={readonly}
                         expressionRender={() => (
                           <TFMonaco
-                            name="spec.configuration.spec.tags.spec.content"
+                            name="spec.configuration.tags.spec.content"
                             formik={formik}
                             expressions={expressions}
                             title={getString('tagsLabel')}
@@ -627,7 +635,7 @@ export const CloudFormationCreateStack = (
                         )}
                       >
                         <TFMonaco
-                          name="spec.configuration.spec.tags.spec.content"
+                          name="spec.configuration.tags.spec.content"
                           formik={formik}
                           expressions={expressions}
                           title={getString('tagsLabel')}
@@ -637,11 +645,11 @@ export const CloudFormationCreateStack = (
                         <ConfigureOptions
                           value={values.spec?.configuration?.spec?.tags?.spec?.content}
                           type="String"
-                          variableName="spec.configuration.spec.tags.spec.content"
+                          variableName="spec.configuration.tags.spec.content"
                           showRequiredField={false}
                           showDefaultField={false}
                           showAdvanced={true}
-                          onChange={value => setFieldValue('tags', value)}
+                          onChange={value => setFieldValue('spec.configuration.tags.spec.content', value)}
                           isReadonly={readonly}
                         />
                       )}
@@ -688,7 +696,6 @@ export const CloudFormationCreateStack = (
               isOpen={showInlineParams}
               onClose={() => setInlineParams(false)}
               onSubmit={inlineValues => {
-                console.log('inlineValues: ', inlineValues)
                 setFieldValue('spec.configuration.parameterOverrides', inlineValues?.parameterOverrides)
                 setInlineParams(false)
               }}
@@ -696,6 +703,17 @@ export const CloudFormationCreateStack = (
               type={templateFileType}
               region={awsRegion}
               body={inlineTemplateFile || templateUrl}
+              git={
+                templateFileType === TemplateTypes.Remote
+                  ? {
+                      gitConnectorRef: remoteTemplateFile?.connectorRef?.value || remoteTemplateFile?.connectorRef,
+                      isBranch: remoteTemplateFile?.gitFetchType === 'Branch',
+                      filePath: remoteTemplateFile?.paths?.[0],
+                      branch: remoteTemplateFile?.branch,
+                      commitId: remoteTemplateFile?.commitId
+                    }
+                  : undefined
+              }
             />
           </>
         )

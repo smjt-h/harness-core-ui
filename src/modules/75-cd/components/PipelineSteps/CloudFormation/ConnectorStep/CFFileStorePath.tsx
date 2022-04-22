@@ -70,6 +70,15 @@ export const CFFileStore: React.FC<StepProps<any> & CFFileStoreProps> = ({
           spec: Yup.object().shape({
             store: Yup.object().shape({
               spec: Yup.object().shape({
+                gitFetchType: Yup.string().required(getString('cd.gitFetchTypeRequired')),
+                branch: Yup.string().when('gitFetchType', {
+                  is: 'Branch',
+                  then: Yup.string().trim().required(getString('validation.branchName'))
+                }),
+                commitId: Yup.string().when('gitFetchType', {
+                  is: 'Commit',
+                  then: Yup.string().trim().required(getString('validation.commitId'))
+                }),
                 paths: pathSchema
               })
             })

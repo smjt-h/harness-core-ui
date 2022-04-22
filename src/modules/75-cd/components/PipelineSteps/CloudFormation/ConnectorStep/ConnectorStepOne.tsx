@@ -73,18 +73,22 @@ const ConnectorStepOne: React.FC<StepProps<any> & ConnectorStepOneProps> = ({
   useEffect(() => {
     const connectorType = isParam
       ? initialValues.spec.configuration.parameters[index]?.store?.type
-      : initialValues?.spec?.configuration?.templateFile?.spec?.type
+      : initialValues?.spec?.configuration?.templateFile?.spec?.store?.type
     setSelectedConnector(connectorType === "S3Url" ? 'S3' : connectorType)
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialValues])
+
   useEffect(() => {
     if (!isParam) {
       setAllowedTypes(AllowedTypes.filter(item => item !== 'S3'))
     }
   }, [isParam])
+
   useEffect(() => {
     if (showNewConnector) {
       nextStep?.()
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [showNewConnector])
 
   const isS3 = selectedConnector && selectedConnector === 'S3'
@@ -110,7 +114,9 @@ const ConnectorStepOne: React.FC<StepProps<any> & ConnectorStepOneProps> = ({
     spec: Yup.object().shape({
       configuration: Yup.object().shape({
         templateFile: Yup.object().shape({
-          ...connectorSchema
+          spec:Yup.object().shape({
+            ...connectorSchema
+          })
         })
       })
     })
