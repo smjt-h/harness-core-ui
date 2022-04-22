@@ -467,6 +467,41 @@ export const setupBitbucketFormData = async (connectorInfo: ConnectorInfoDTO, ac
   return formData
 }
 
+export const setupAzureRepoFormData = async (connectorInfo: ConnectorInfoDTO, accountId: string): Promise<FormData> => {
+  const scopeQueryParams: GetSecretV2QueryParams = {
+    accountIdentifier: accountId,
+    projectIdentifier: connectorInfo.projectIdentifier,
+    orgIdentifier: connectorInfo.orgIdentifier
+  }
+
+  const authData = connectorInfo?.spec?.authentication
+  const formData = {
+    sshKey: await setSecretField(authData?.spec?.sshKeyRef, scopeQueryParams),
+    authType: authData?.spec?.type,
+    username:
+      authData?.spec?.spec?.username || authData?.spec?.spec?.usernameRef
+        ? {
+            value: authData?.spec?.spec?.username || authData?.spec?.spec?.usernameRef,
+            type: authData?.spec?.spec?.usernameRef ? ValueType.ENCRYPTED : ValueType.TEXT
+          }
+        : undefined,
+    password: await setSecretField(authData?.spec?.spec?.passwordRef, scopeQueryParams),
+    enableAPIAccess: !!connectorInfo?.spec?.apiAccess,
+    apiAccessUsername:
+      connectorInfo?.spec?.apiAccess?.spec?.username || connectorInfo?.spec?.apiAccess?.spec?.usernameRef
+        ? {
+            value: connectorInfo?.spec?.apiAccess?.spec?.username || connectorInfo?.spec?.apiAccess?.spec?.usernameRef,
+            type: connectorInfo?.spec?.apiAccess?.spec?.usernameRef ? ValueType.ENCRYPTED : ValueType.TEXT
+          }
+        : undefined,
+
+    apiAuthType: connectorInfo?.spec?.apiAccess?.type,
+    accessToken: await setSecretField(connectorInfo?.spec?.apiAccess?.spec?.tokenRef, scopeQueryParams)
+  }
+
+  return formData
+}
+
 export const getK8AuthFormFields = async (connectorInfo: ConnectorInfoDTO, accountId: string): Promise<FormData> => {
   const scopeQueryParams: GetSecretV2QueryParams = {
     accountIdentifier: accountId,

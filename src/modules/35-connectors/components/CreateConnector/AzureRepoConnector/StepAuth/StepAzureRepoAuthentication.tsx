@@ -23,7 +23,7 @@ import {
 import * as Yup from 'yup'
 import { FontVariation } from '@harness/design-system'
 import type { FormikProps } from 'formik'
-import { setupBitbucketFormData, GitConnectionType } from '@connectors/pages/connectors/utils/ConnectorUtils'
+import { setupAzureRepoFormData, GitConnectionType } from '@connectors/pages/connectors/utils/ConnectorUtils'
 import type { SecretReferenceInterface } from '@secrets/utils/SecretField'
 import type { ConnectorConfigDTO, ConnectorRequestBody, ConnectorInfoDTO } from 'services/cd-ng'
 import SSHSecretInput from '@secrets/components/SSHSecretInput/SSHSecretInput'
@@ -36,12 +36,12 @@ import commonStyles from '@connectors/components/CreateConnector/commonSteps/Con
 import css from './StepAzureRepoAuthentication.module.scss'
 import commonCss from '../../commonSteps/ConnectorCommonStyles.module.scss'
 
-interface StepBitbucketAuthenticationProps extends ConnectorInfoDTO {
+interface StepAzureRepoAuthenticationProps extends ConnectorInfoDTO {
   name: string
   isEditMode?: boolean
 }
 
-interface BitbucketAuthenticationProps {
+interface AzureRepoAuthenticationProps {
   onConnectorCreated: (data?: ConnectorRequestBody) => void | Promise<void>
   isEditMode: boolean
   setIsEditMode: (val: boolean) => void
@@ -52,7 +52,7 @@ interface BitbucketAuthenticationProps {
   projectIdentifier: string
 }
 
-interface BitbucketFormInterface {
+interface AzureRepoFormInterface {
   connectionType: string
   authType: string
   username: TextReferenceInterface | void
@@ -64,7 +64,7 @@ interface BitbucketFormInterface {
   accessToken: SecretReferenceInterface | void
 }
 
-const defaultInitialFormData: BitbucketFormInterface = {
+const defaultInitialFormData: AzureRepoFormInterface = {
   connectionType: GitConnectionType.HTTP,
   authType: GitAuthTypes.USER_PASSWORD,
   username: undefined,
@@ -76,7 +76,7 @@ const defaultInitialFormData: BitbucketFormInterface = {
   accessToken: undefined
 }
 
-const RenderBitbucketAuthForm: React.FC<FormikProps<BitbucketFormInterface>> = props => {
+const RenderAzureRepoAuthForm: React.FC<FormikProps<AzureRepoFormInterface>> = props => {
   const { getString } = useStrings()
   return (
     <>
@@ -90,7 +90,7 @@ const RenderBitbucketAuthForm: React.FC<FormikProps<BitbucketFormInterface>> = p
   )
 }
 
-const RenderAPIAccessFormWrapper: React.FC<FormikProps<BitbucketFormInterface>> = props => {
+const RenderAPIAccessFormWrapper: React.FC<FormikProps<AzureRepoFormInterface>> = props => {
   const { getString } = useStrings()
 
   const apiAuthOptions: Array<SelectOption> = [
@@ -125,8 +125,8 @@ const RenderAPIAccessFormWrapper: React.FC<FormikProps<BitbucketFormInterface>> 
   )
 }
 
-const StepBitbucketAuthentication: React.FC<
-  StepProps<StepBitbucketAuthenticationProps> & BitbucketAuthenticationProps
+const StepAzureRepoAuthentication: React.FC<
+  StepProps<StepAzureRepoAuthenticationProps> & AzureRepoAuthenticationProps
 > = props => {
   const { getString } = useStrings()
   const { prevStepData, nextStep, accountId } = props
@@ -144,8 +144,8 @@ const StepBitbucketAuthentication: React.FC<
     if (loadingConnectorSecrets) {
       if (props.isEditMode) {
         if (props.connectorInfo) {
-          setupBitbucketFormData(props.connectorInfo, accountId).then(data => {
-            setInitialValues(data as BitbucketFormInterface)
+          setupAzureRepoFormData(props.connectorInfo, accountId).then(data => {
+            setInitialValues(data as AzureRepoFormInterface)
             setLoadingConnectorSecrets(false)
           })
         } else {
@@ -156,7 +156,7 @@ const StepBitbucketAuthentication: React.FC<
   }, [loadingConnectorSecrets])
 
   const handleSubmit = (formData: ConnectorConfigDTO) => {
-    nextStep?.({ ...props.connectorInfo, ...prevStepData, ...formData } as StepBitbucketAuthenticationProps)
+    nextStep?.({ ...props.connectorInfo, ...prevStepData, ...formData } as StepAzureRepoAuthenticationProps)
   }
 
   return loadingConnectorSecrets ? (
@@ -170,7 +170,7 @@ const StepBitbucketAuthentication: React.FC<
           ...initialValues,
           ...prevStepData
         }}
-        formName="bitbAuthForm"
+        formName="azureRepoAuthForm"
         validationSchema={getCommonConnectorsValidationSchema(getString).concat(
           Yup.object().shape({
             apiAuthType: Yup.string().when('enableAPIAccess', {
@@ -206,7 +206,7 @@ const StepBitbucketAuthentication: React.FC<
                     <Text font={{ variation: FontVariation.H6 }}>{getString('authentication')}</Text>
                     <FormInput.Select name="authType" items={authOptions} className={commonStyles.authTypeSelect} />
                   </Container>
-                  <RenderBitbucketAuthForm {...formikProps} />
+                  <RenderAzureRepoAuthForm {...formikProps} />
                 </Container>
               )}
 
@@ -225,7 +225,7 @@ const StepBitbucketAuthentication: React.FC<
                 text={getString('back')}
                 icon="chevron-left"
                 onClick={() => props?.previousStep?.(props?.prevStepData)}
-                data-name="bitbucketBackButton"
+                data-name="azureRepoBackButton"
                 variation={ButtonVariation.SECONDARY}
               />
               <Button
@@ -243,4 +243,4 @@ const StepBitbucketAuthentication: React.FC<
   )
 }
 
-export default StepBitbucketAuthentication
+export default StepAzureRepoAuthentication
