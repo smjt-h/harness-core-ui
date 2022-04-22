@@ -12,6 +12,7 @@ import { Dialog, Layout, Icon, Text, FontVariation, Color, Container, Button, Bu
 import { String, useStrings } from 'framework/strings'
 import type { StringsMap } from 'stringTypes'
 
+import backgroundImg from './assets/background.svg'
 import samplePipelineImg from '../../../assets/images/sample-pipeline.svg'
 import provisioningInit from './assets/provisioning_init.json'
 import provisioningInProgress from './assets/provisioning_in_progress.json'
@@ -120,65 +121,76 @@ export const InfraProvisioningCarousel: React.FC<InfraProvisioningCarouselProps>
       onClose={onClose}
       className={css.main}
     >
-      <Layout.Horizontal padding={{ top: 'small', bottom: 'small' }}>
-        {provisioningStatus === 'IN_PROGRESS' ? (
-          <>
-            <Layout.Vertical style={{ flex: 1, alignItems: 'center' }} padding="xlarge">
-              <Icon name="harness" size={34} padding="large" />
-              <Text font={{ variation: FontVariation.H4 }} style={{ textAlign: 'center' }}>
-                {getString('ci.getStartedWithCI.provisionSecureEnv')}
-              </Text>
-              <Container padding={{ bottom: 'large' }}>
-                <Lottie animationData={animationData} play />
-              </Container>
-              <Text font={{ variation: FontVariation.SMALL }}>
-                {getString('ci.getStartedWithCI.duration', {
-                  count: 2,
-                  unit: getString('triggers.schedulePanel.minutesLabel').toLowerCase()
-                })}
-              </Text>
-            </Layout.Vertical>
-            <Layout.Vertical style={{ flex: 1, alignItems: 'center' }} padding="xlarge">
-              <Layout.Vertical spacing="medium">
-                <Container padding={{ top: 'large' }}>
-                  <Container
-                    style={{ background: `transparent url(${samplePipelineImg}) no-repeat` }}
-                    className={css.samplePipeline}
-                  />
+      <Container>
+        <Layout.Horizontal
+          style={{
+            backgroundImage: `url(${backgroundImg})`,
+            backgroundRepeat: 'no-repeat',
+            backgroundPosition: 'center',
+            backgroundSize: 'cover , cover'
+          }}
+          className={css.bg}
+          padding={{ top: 'xxxlarge', left: 'xxxlarge', right: 'xxxlarge' }}
+        >
+          {provisioningStatus === 'IN_PROGRESS' ? (
+            <>
+              <Layout.Vertical style={{ flex: 1, alignItems: 'center' }} padding="xlarge">
+                <Icon name="harness" size={34} padding="large" />
+                <Text font={{ variation: FontVariation.H4 }} style={{ textAlign: 'center' }}>
+                  {getString('ci.getStartedWithCI.provisionSecureEnv')}
+                </Text>
+                <Container padding={{ bottom: 'large' }}>
+                  <Lottie animationData={animationData} play />
                 </Container>
-                <Layout.Vertical spacing="medium" style={{ alignItems: 'center' }} className={css.fixedMinHeight}>
-                  <Text font={{ variation: FontVariation.H4 }}>{getString(CarouselSlides[activeSlide].label)}</Text>
-                  <Text font={{ variation: FontVariation.BODY }} style={{ textAlign: 'center' }}>
-                    {getString(CarouselSlides[activeSlide].details)}
-                  </Text>
-                </Layout.Vertical>
+                <Text font={{ variation: FontVariation.SMALL }}>
+                  {getString('ci.getStartedWithCI.duration', {
+                    count: 2,
+                    unit: getString('triggers.schedulePanel.minutesLabel').toLowerCase()
+                  })}
+                </Text>
               </Layout.Vertical>
-              <Layout.Horizontal>{renderDots(CarouselSlides.length)}</Layout.Horizontal>
+              <Layout.Vertical style={{ flex: 1, alignItems: 'center' }} padding="xxlarge">
+                <Layout.Vertical spacing="medium">
+                  <Container padding={{ top: 'large' }}>
+                    <Container
+                      style={{ background: `transparent url(${samplePipelineImg}) no-repeat` }}
+                      className={css.samplePipeline}
+                    />
+                  </Container>
+                  <Layout.Vertical spacing="medium" style={{ alignItems: 'center' }} className={css.fixedMinHeight}>
+                    <Text font={{ variation: FontVariation.H4 }}>{getString(CarouselSlides[activeSlide].label)}</Text>
+                    <Text font={{ variation: FontVariation.BODY }} style={{ textAlign: 'center' }}>
+                      {getString(CarouselSlides[activeSlide].details)}
+                    </Text>
+                  </Layout.Vertical>
+                </Layout.Vertical>
+                <Layout.Horizontal>{renderDots(CarouselSlides.length)}</Layout.Horizontal>
+              </Layout.Vertical>
+            </>
+          ) : provisioningStatus === 'FAILED' ? (
+            <Layout.Vertical flex style={{ alignItems: 'center', width: '100%' }} padding="large" spacing="large">
+              <Text font={{ variation: FontVariation.H4 }}>
+                {getString('ci.getStartedWithCI.infraProvisioningFailed')}
+              </Text>
+              <Container padding={{ top: 'xlarge', bottom: 'large' }}>
+                <Container
+                  style={{ background: `transparent url(${samplePipelineImg}) no-repeat` }}
+                  className={css.samplePipeline}
+                />
+              </Container>
+              <Text
+                font={{ variation: FontVariation.BODY }}
+                style={{ textAlign: 'center' }}
+                padding={{ bottom: 'small' }}
+              >
+                <String stringID="ci.getStartedWithCI.troubleShootFailedProvisioning" useRichText={true} />
+              </Text>
+              <Button variation={ButtonVariation.PRIMARY} text={getString('ci.getStartedWithCI.chooseDiffInfra')} />
+              <Button icon="contact-support" text={getString('common.contactSupport')} />
             </Layout.Vertical>
-          </>
-        ) : provisioningStatus === 'FAILED' ? (
-          <Layout.Vertical flex style={{ alignItems: 'center', width: '100%' }} padding="large" spacing="large">
-            <Text font={{ variation: FontVariation.H4 }}>
-              {getString('ci.getStartedWithCI.infraProvisioningFailed')}
-            </Text>
-            <Container padding={{ top: 'xlarge', bottom: 'large' }}>
-              <Container
-                style={{ background: `transparent url(${samplePipelineImg}) no-repeat` }}
-                className={css.samplePipeline}
-              />
-            </Container>
-            <Text
-              font={{ variation: FontVariation.BODY }}
-              style={{ textAlign: 'center' }}
-              padding={{ bottom: 'small' }}
-            >
-              <String stringID="ci.getStartedWithCI.troubleShootFailedProvisioning" useRichText={true} />
-            </Text>
-            <Button variation={ButtonVariation.PRIMARY} text={getString('ci.getStartedWithCI.chooseDiffInfra')} />
-            <Button icon="contact-support" text={getString('common.contactSupport')} />
-          </Layout.Vertical>
-        ) : null}
-      </Layout.Horizontal>
+          ) : null}
+        </Layout.Horizontal>
+      </Container>
     </Dialog>
   )
 }
