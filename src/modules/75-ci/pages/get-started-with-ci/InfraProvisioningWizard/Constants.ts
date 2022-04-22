@@ -109,11 +109,20 @@ export interface GitProvider {
 
 export const AllGitProviders: GitProvider[] = [
   { icon: 'github', label: 'common.repo_provider.githubLabel', type: 'Github' },
-  { icon: 'gitlab', label: 'common.repo_provider.gitlabLabel', type: 'Gitlab', disabled: true },
-  { icon: 'bitbucket-blue', label: 'common.repo_provider.bitbucketLabel', type: 'Bitbucket', disabled: true }
+  { icon: 'gitlab', label: 'common.repo_provider.gitlabLabel', type: 'Gitlab' },
+  { icon: 'bitbucket-blue', label: 'common.repo_provider.bitbucketLabel', type: 'Bitbucket' }
 ]
 
 export enum GitAuthenticationMethod {
   OAuth = 'OAUTH',
-  AccessToken = 'ACCESS_TOKEN'
+  AccessToken = 'ACCESS_TOKEN',
+  AccessKey = 'ACCESS_KEY',
+  UserNameAndApplicationPassword = 'USERNAME_AND_PASSWORD'
 }
+
+export const GitProviderTypeToAuthenticationMethodMapping: Map<ConnectorInfoDTO['type'], GitAuthenticationMethod> =
+  new Map([
+    ['Github', GitAuthenticationMethod.AccessToken],
+    ['Gitlab', GitAuthenticationMethod.AccessKey],
+    ['Bitbucket', GitAuthenticationMethod.UserNameAndApplicationPassword]
+  ])

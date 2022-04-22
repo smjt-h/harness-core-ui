@@ -164,6 +164,7 @@ getStartedWithCI:
   createPipeline: Create Pipeline
   codebaseHelptext: Harness will clone your codebase to your build infrastructure at Pipeline runtime.
   searchRepo: Search Repository
+  appPassword: Application Password
   carousel:
     labels:
       harnessCIFeatures: Harness CI

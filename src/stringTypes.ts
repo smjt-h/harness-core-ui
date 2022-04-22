@@ -4813,6 +4813,7 @@ export interface StringsMap {
   'ci.executionLabel': string
   'ci.fileStore': string
   'ci.getStartedWithCI.accessTokenLabel': string
+  'ci.getStartedWithCI.appPassword': string
   'ci.getStartedWithCI.authMethod': string
   'ci.getStartedWithCI.authMethodLabel': string
   'ci.getStartedWithCI.awsBuildLocation': string

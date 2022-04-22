@@ -7,7 +7,7 @@
 
 import React, { useEffect, useRef, useState } from 'react'
 import * as Yup from 'yup'
-import type { FormikContext } from 'formik'
+import type { FormikContext, FormikProps } from 'formik'
 import cx from 'classnames'
 import {
   Text,
@@ -28,7 +28,12 @@ import {
 import { useStrings } from 'framework/strings'
 import { OAuthProviders, OAuthProviderType } from '@common/constants/OAuthProviders'
 import { TestStatus } from '@common/components/TestConnectionWidget/TestConnectionWidget'
-import { AllGitProviders, GitAuthenticationMethod, GitProvider } from './Constants'
+import {
+  AllGitProviders,
+  GitAuthenticationMethod,
+  GitProvider,
+  GitProviderTypeToAuthenticationMethodMapping
+} from './Constants'
 
 import css from './InfraProvisioningWizard.module.scss'
 
@@ -148,6 +153,116 @@ const SelectGitProviderRef = (
     }
   }
 
+  const getButtonLabel = React.useCallback((): string => {
+    switch (gitProvider?.type) {
+      case 'Github':
+        return getString('ci.getStartedWithCI.accessTokenLabel')
+      case 'Bitbucket':
+        return `${getString('username')} & ${getString('ci.getStartedWithCI.appPassword')}`
+      case 'Gitlab':
+        return getString('common.accessKey')
+      default:
+        return ''
+    }
+  }, [gitProvider])
+
+  const getViewForNonOAuthMethod = React.useCallback(
+    (formikProps: FormikProps<SelectGitProviderInterface>): JSX.Element => {
+      switch (gitProvider?.type) {
+        case 'Github':
+          return (
+            <Layout.Horizontal flex={{ justifyContent: 'flex-start' }} spacing="large">
+              <FormInput.Text
+                style={{ width: '40%' }}
+                name="accessToken"
+                label={
+                  <Text font={{ variation: FontVariation.FORM_LABEL }}>
+                    {getString('ci.getStartedWithCI.accessTokenLabel')}
+                  </Text>
+                }
+                tooltipProps={{ dataTooltipId: 'accessToken' }}
+                disabled={[TestStatus.FAILED, TestStatus.IN_PROGRESS].includes(testConnectionStatus)}
+              />
+              <Container
+                padding={{ top: 'small', left: 'small' }}
+                className={cx({
+                  [css.testConnectionBtnWithError]: formikProps.touched.accessToken && formikProps.errors.accessToken
+                })}
+              >
+                <TestConnection />
+              </Container>
+            </Layout.Horizontal>
+          )
+        case 'Bitbucket':
+          return (
+            <Layout.Vertical>
+              <Layout.Horizontal flex={{ justifyContent: 'flex-start' }} spacing="large">
+                <FormInput.Text
+                  style={{ width: '40%' }}
+                  name="userName"
+                  label={<Text font={{ variation: FontVariation.FORM_LABEL }}>{getString('username')}</Text>}
+                  tooltipProps={{ dataTooltipId: 'username' }}
+                  disabled={[TestStatus.FAILED, TestStatus.IN_PROGRESS].includes(testConnectionStatus)}
+                />
+              </Layout.Horizontal>
+              <Layout.Horizontal flex={{ justifyContent: 'flex-start' }} spacing="large">
+                <FormInput.Text
+                  style={{ width: '40%' }}
+                  name="applicationPassword"
+                  label={
+                    <Text font={{ variation: FontVariation.FORM_LABEL }}>
+                      {getString('ci.getStartedWithCI.appPassword')}
+                    </Text>
+                  }
+                  tooltipProps={{ dataTooltipId: 'applicationPassword' }}
+                  disabled={[TestStatus.FAILED, TestStatus.IN_PROGRESS].includes(testConnectionStatus)}
+                />
+                <Container
+                  padding={{ top: 'small', left: 'small' }}
+                  className={cx({
+                    [css.testConnectionBtnWithError]: formikProps.touched.accessToken && formikProps.errors.accessToken
+                  })}
+                >
+                  <TestConnection />
+                </Container>
+              </Layout.Horizontal>
+            </Layout.Vertical>
+          )
+        case 'Gitlab':
+          return (
+            <Layout.Horizontal flex={{ justifyContent: 'flex-start' }} spacing="large">
+              <FormInput.Text
+                style={{ width: '40%' }}
+                name="accessKey"
+                label={<Text font={{ variation: FontVariation.FORM_LABEL }}>{getString('common.accessKey')}</Text>}
+                tooltipProps={{ dataTooltipId: 'accessKey' }}
+                disabled={[TestStatus.FAILED, TestStatus.IN_PROGRESS].includes(testConnectionStatus)}
+              />
+              <Container
+                padding={{ top: 'small', left: 'small' }}
+                className={cx({
+                  [css.testConnectionBtnWithError]: formikProps.touched.accessToken && formikProps.errors.accessToken
+                })}
+              >
+                <TestConnection />
+              </Container>
+            </Layout.Horizontal>
+          )
+        default:
+          return <></>
+      }
+    },
+    [gitProvider]
+  )
+
+  const isNonOAuthMethodSelect = React.useCallback(() => {
+    return (
+      (gitProvider?.type === 'Github' && authMethod === GitAuthenticationMethod.AccessToken) ||
+      (gitProvider?.type === 'Gitlab' && authMethod === GitAuthenticationMethod.AccessKey) ||
+      (gitProvider?.type === 'Bitbucket' && authMethod === GitAuthenticationMethod.UserNameAndApplicationPassword)
+    )
+  }, [gitProvider, authMethod])
+
   return (
     <Layout.Vertical width="70%">
       <Text font={{ variation: FontVariation.H4 }}>{getString('ci.getStartedWithCI.codeRepo')}</Text>
@@ -243,13 +358,15 @@ const SelectGitProviderRef = (
                       />
                       <Button
                         round
-                        text={getString('ci.getStartedWithCI.accessTokenLabel')}
+                        text={getButtonLabel()}
                         onClick={() => {
                           formikProps.setFieldValue('accessToken', '')
                           formikProps.setFieldValue('gitAuthenticationMethod', GitAuthenticationMethod.AccessToken)
-                          setAuthMethod(GitAuthenticationMethod.AccessToken)
+                          if (gitProvider?.type) {
+                            setAuthMethod(GitProviderTypeToAuthenticationMethodMapping.get(gitProvider.type))
+                          }
                         }}
-                        intent={authMethod === GitAuthenticationMethod.AccessToken ? 'primary' : 'none'}
+                        intent={isNonOAuthMethodSelect() ? 'primary' : 'none'}
                       />
                     </Layout.Horizontal>
                     {formikProps.touched.gitAuthenticationMethod && !formikProps.values.gitAuthenticationMethod ? (
@@ -263,31 +380,8 @@ const SelectGitProviderRef = (
                       </Container>
                     ) : null}
                   </Layout.Vertical>
-                  {authMethod === GitAuthenticationMethod.AccessToken ? (
-                    <Container padding={{ top: 'xlarge' }}>
-                      <Layout.Horizontal flex={{ justifyContent: 'flex-start' }} spacing="large">
-                        <FormInput.Text
-                          style={{ width: '40%' }}
-                          name="accessToken"
-                          label={
-                            <Text font={{ variation: FontVariation.FORM_LABEL }}>
-                              {getString('ci.getStartedWithCI.accessTokenLabel')}
-                            </Text>
-                          }
-                          tooltipProps={{ dataTooltipId: 'accessToken' }}
-                          disabled={[TestStatus.FAILED, TestStatus.IN_PROGRESS].includes(testConnectionStatus)}
-                        />
-                        <Container
-                          padding={{ top: 'small', left: 'small' }}
-                          className={cx({
-                            [css.testConnectionBtnWithError]:
-                              formikProps.touched.accessToken && formikProps.errors.accessToken
-                          })}
-                        >
-                          <TestConnection />
-                        </Container>
-                      </Layout.Horizontal>
-                    </Container>
+                  {isNonOAuthMethodSelect() ? (
+                    <Container padding={{ top: 'xlarge' }}>{getViewForNonOAuthMethod(formikProps)}</Container>
                   ) : null}
                 </>
               ) : null}
