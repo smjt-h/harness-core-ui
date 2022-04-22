@@ -6,11 +6,11 @@
  */
 
 import React from 'react'
-import isEmpty from 'lodash/isEmpty'
+import { get, isEmpty } from 'lodash-es'
 import { useParams } from 'react-router-dom'
 import cx from 'classnames'
 import type { FormikProps } from 'formik'
-import { FormInput, Text, Container, MultiTypeInputType } from '@wings-software/uicore'
+import { FormInput, Text, Container, MultiTypeInputType, SelectOption } from '@wings-software/uicore'
 import { Color } from '@harness/design-system'
 import { MultiTypeTextField, MultiTypeTextProps } from '@common/components/MultiTypeText/MultiTypeText'
 import MultiTypeList from '@common/components/MultiTypeList/MultiTypeList'
@@ -19,6 +19,7 @@ import { useGitScope } from '@pipeline/utils/CIUtils'
 import { StepViewType } from '@pipeline/components/AbstractSteps/Step'
 import { ConnectorRefWidth } from '@pipeline/utils/constants'
 import { useVariablesExpression } from '@pipeline/components/PipelineStudio/PiplineHooks/useVariablesExpression'
+import { RegExAllowedInputExpression } from '@pipeline/components/PipelineSteps/Steps/CustomVariables/CustomVariableInputSet'
 import { FormMultiTypeConnectorField } from '@connectors/components/ConnectorReferenceField/FormMultiTypeConnectorField'
 import { useStrings } from 'framework/strings'
 import type { StringsMap } from 'stringTypes'
@@ -38,10 +39,11 @@ interface CIStepProps {
   path?: string
   isInputSetView?: boolean
   allowableTypes?: MultiTypeInputType[]
+  template?: Record<string, any>
 }
 
 export const CIStep: React.FC<CIStepProps> = props => {
-  const { isNewStep, readonly, stepLabel, enableFields, stepViewType, path, isInputSetView, formik } = props
+  const { isNewStep, readonly, stepLabel, enableFields, stepViewType, path, isInputSetView, formik, template } = props
   const { accountId, projectIdentifier, orgIdentifier } = useParams<{
     projectIdentifier: string
     orgIdentifier: string
@@ -53,6 +55,46 @@ export const CIStep: React.FC<CIStepProps> = props => {
   const prefix = isEmpty(path) ? '' : `${path}.`
 
   const stepCss = stepViewType === StepViewType.DeploymentForm ? css.sm : css.lg
+
+  const renderMultiTypeInputWithAllowedValues = React.useCallback(
+    ({ name, tooltipId, labelKey }: { name: string; tooltipId: string; labelKey: keyof StringsMap }) => {
+      if (!name) {
+        return
+      }
+      const tokens = name.split('.')
+      const tokenCount = tokens.length
+      let templateKey
+      if (Array.isArray(tokens) && tokenCount > 0) {
+        templateKey = tokens[tokenCount - 1]
+        const value = get(template?.spec, templateKey)
+        const items: SelectOption[] = []
+        if (RegExAllowedInputExpression.test(value as string)) {
+          // This separates out "<+input>.allowedValues(a, b, c)" to ["<+input>", ["a", "b", "c"]]
+          const match = (value as string).match(RegExAllowedInputExpression)
+          if (match && match?.length > 1) {
+            const allowedValues = match[1]
+            items.push(...allowedValues.split(',').map(item => ({ label: item, value: item })))
+          }
+        }
+        return (
+          <FormInput.MultiTypeInput
+            name={name}
+            label={getString(labelKey)}
+            useValue
+            selectItems={items}
+            multiTypeInputProps={{
+              allowableTypes: AllMultiTypeInputTypesForInputSet,
+              expressions,
+              selectProps: { disabled: readonly, items }
+            }}
+            disabled={readonly}
+            tooltipProps={{ dataTooltipId: tooltipId }}
+          />
+        )
+      }
+    },
+    [template]
+  )
 
   const renderMultiTypeTextField = React.useCallback(
     ({
@@ -181,12 +223,18 @@ export const CIStep: React.FC<CIStepProps> = props => {
       {!enableFields['spec.connectorRef']?.shouldHide &&
       Object.prototype.hasOwnProperty.call(enableFields, 'spec.image') ? (
         <Container className={cx(css.formGroup, stepCss, css.bottomMargin5)}>
-          {renderMultiTypeTextField({
-            name: `${prefix}spec.image`,
-            tooltipId: enableFields['spec.image'].tooltipId,
-            labelKey: 'imageLabel',
-            inputProps: enableFields['spec.image'].multiTextInputProps
-          })}
+          {isInputSetView
+            ? renderMultiTypeInputWithAllowedValues({
+                name: `${prefix}spec.image`,
+                tooltipId: enableFields['spec.image'].tooltipId,
+                labelKey: 'imageLabel'
+              })
+            : renderMultiTypeTextField({
+                name: `${prefix}spec.image`,
+                tooltipId: enableFields['spec.image'].tooltipId,
+                labelKey: 'imageLabel',
+                inputProps: enableFields['spec.image'].multiTextInputProps
+              })}
         </Container>
       ) : null}
       {Object.prototype.hasOwnProperty.call(enableFields, 'spec.target') ? (
