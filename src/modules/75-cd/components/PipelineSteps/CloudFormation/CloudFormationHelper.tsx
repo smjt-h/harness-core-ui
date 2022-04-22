@@ -185,7 +185,9 @@ export const FormatFilePaths = (values: any, isParam: boolean, index: number) =>
         templateFile: {
           spec: {
             store: {
+              ...values?.spec?.configuration?.templateFile?.spec?.store,
               spec: {
+                ...values?.spec?.configuration?.templateFile?.spec?.store?.spec,
                 paths: formatPaths(templateFile || '')
               }
             }

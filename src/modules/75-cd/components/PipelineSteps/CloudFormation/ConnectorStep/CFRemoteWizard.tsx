@@ -63,7 +63,7 @@ const CFRemoteWizard = ({
   setFieldValue,
   index,
   regions
-}: any) => {
+}: any): JSX.Element => {
   const { getString } = useStrings()
   const { accountId, projectIdentifier, orgIdentifier } = useParams<ProjectPathProps>()
   const [isEditMode, setIsEditMode] = useState(false)
@@ -161,6 +161,7 @@ const CFRemoteWizard = ({
         ...values.spec.configuration.templateFile.spec.store.spec,
         paths: paths.map((filePath: Path) => filePath.path)
       })
+      setFieldValue(`spec.configuration.templateFile.spec.store.type`, connectorRef?.connector?.type)
       setFieldValue(
         'spec.configuration.templateFile.spec.store.spec.paths',
         paths.map((filePath: Path) => filePath.path)

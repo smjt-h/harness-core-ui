@@ -5,17 +5,35 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import React from 'react'
+import React, { useState } from 'react'
 import * as Yup from 'yup'
 import { useParams } from 'react-router-dom'
-import { map, defaultTo, isEmpty } from 'lodash-es'
-import { Layout, Button, Formik, ButtonVariation, Select, FormInput, Text, useToaster } from '@harness/uicore'
+import { map, isEmpty, find } from 'lodash-es'
+import {
+  Layout,
+  Button,
+  Formik,
+  ButtonVariation,
+  Select,
+  FormInput,
+  Text,
+  useToaster,
+  MultiSelectOption
+} from '@harness/uicore'
 import { Form, FieldArray } from 'formik'
 import { Classes, Dialog } from '@blueprintjs/core'
 import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
 import { useStrings } from 'framework/strings'
 import { useCFParametersForAws } from 'services/cd-ng'
 import css from '../CloudFormation.module.scss'
+
+interface GitDetails {
+  gitConnectorRef: string
+  commitId?: string
+  filePath?: string
+  isBranch: boolean
+  branch?: string
+}
 
 interface InlineParameterFileProps {
   onClose: () => void
@@ -26,6 +44,7 @@ interface InlineParameterFileProps {
   type: string
   region: string
   body: string
+  git?: GitDetails
 }
 
 enum RequestTypes {
@@ -42,21 +61,25 @@ export const InlineParameterFile = ({
   awsConnectorRef,
   type,
   region,
-  body
+  body,
+  git
 }: InlineParameterFileProps): JSX.Element => {
   const { getString } = useStrings()
   const { showError } = useToaster()
   const { accountId, projectIdentifier, orgIdentifier } = useParams<ProjectPathProps>()
-  // const [remoteParams, setRemoteParams] = useState()
-
+  const [remoteParams, setRemoteParams] = useState<MultiSelectOption[]>()
+  const queryParams = {
+    awsConnectorRef: awsConnectorRef,
+    type: RequestTypes[type as keyof typeof RequestTypes],
+    region: region,
+    ...git
+  }
   const { mutate: getParamsFromAWS } = useCFParametersForAws({
     queryParams: {
       accountIdentifier: accountId,
       orgIdentifier: orgIdentifier,
       projectIdentifier: projectIdentifier,
-      awsConnectorRef: awsConnectorRef,
-      type: RequestTypes[type as keyof typeof RequestTypes],
-      region: region
+      ...queryParams
     }
   })
 
@@ -65,11 +88,12 @@ export const InlineParameterFile = ({
       showError('AWS Connector, Region and Template File cannot be empty')
     } else {
       try {
-        const result = await getParamsFromAWS(JSON.parse(body))
-        console.log('result: ', result)
+        const result = await getParamsFromAWS(git ? {} : JSON.parse(body))
+        if (result?.data) {
+          setRemoteParams(map(result?.data, param => ({ label: param.paramKey!, value: param.paramKey! })))
+        }
       } catch (e) {
-        showError(e)
-        console.log(e)
+        showError(e.message)
       }
     }
   }
@@ -92,21 +116,21 @@ export const InlineParameterFile = ({
       <Layout.Vertical padding="xxlarge">
         <Formik
           formName="inlineParameterFileForm"
-          initialValues={initialValues}
+          initialValues={{ parameterOverrides: initialValues }}
           onSubmit={onSubmit}
           validationSchema={Yup.object().shape({
             parameterOverrides: Yup.array().of(
               Yup.object().shape({
-                name: Yup.string().min(1).required(getString('cd.cloudFormation.errors.name')),
-                value: Yup.string().min(1).required(getString('cd.cloudFormation.errors.value'))
+                name: Yup.string(),
+                value: Yup.string()
               })
             )
           })}
           enableReinitialize
         >
           {({ values, setFieldValue }) => {
-            const params = defaultTo(values?.parameters, [{ name: '', value: '' }])
-            const items = [{ label: 'test', value: 'test' }]
+            const params =
+              values?.parameterOverrides.length > 0 ? values?.parameterOverrides : [{ name: '', value: '' }]
             return (
               <Form>
                 <Layout.Horizontal flex={{ alignItems: 'flex-start', justifyContent: 'flex-start' }}>
@@ -131,7 +155,7 @@ export const InlineParameterFile = ({
                   </Layout.Vertical>
                 </Layout.Horizontal>
                 <FieldArray
-                  name="spec.configuration.parameterOverrides"
+                  name="parameterOverrides"
                   render={arrayHelpers => (
                     <>
                       {map(params, (item: any, index: number) => (
@@ -143,19 +167,15 @@ export const InlineParameterFile = ({
                         >
                           <Select
                             onChange={({ value }) => {
-                              setFieldValue(`spec.configuration.parameterOverrides[${index}].name`, value)
+                              setFieldValue(`parameterOverrides[${index}].name`, value)
                             }}
-                            items={items}
+                            items={remoteParams || []}
                             allowCreatingNewItems
                             className={css.overrideSelect}
-                            name={`spec.configuration.parameterOverrides[${index}].name`}
-                            value={items.find(param => param.value === params[index].name)}
+                            name={`parameterOverrides[${index}].name`}
+                            value={find(remoteParams, ['value', item.name]) || { label: item.name, value: item.name }}
                           />
-                          <FormInput.Text
-                            name={`spec.configuration.parameterOverrides[${index}].value`}
-                            label=""
-                            placeholder="Value"
-                          />
+                          <FormInput.Text name={`parameterOverrides[${index}].value`} label="" placeholder="Value" />
                           <Button
                             minimal
                             icon="main-trash"
