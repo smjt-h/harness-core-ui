@@ -54,7 +54,10 @@ interface SelectGitProviderProps {
 }
 
 export interface SelectGitProviderInterface {
-  accessToken: string
+  accessToken?: string
+  username?: string
+  applicationPassword?: string
+  accessKey?: string
   gitAuthenticationMethod?: GitAuthenticationMethod
   gitProvider?: GitProvider
 }
@@ -186,7 +189,7 @@ const SelectGitProviderRef = (
               <Container
                 padding={{ top: 'small', left: 'small' }}
                 className={cx({
-                  [css.testConnectionBtnWithError]: formikProps.touched.accessToken && formikProps.errors.accessToken
+                  [css.testConnectionBtnWithError]: formikProps.touched && formikProps.errors.accessToken
                 })}
               >
                 <TestConnection />
@@ -199,7 +202,7 @@ const SelectGitProviderRef = (
               <Layout.Horizontal flex={{ justifyContent: 'flex-start' }} spacing="large">
                 <FormInput.Text
                   style={{ width: '40%' }}
-                  name="userName"
+                  name="username"
                   label={<Text font={{ variation: FontVariation.FORM_LABEL }}>{getString('username')}</Text>}
                   tooltipProps={{ dataTooltipId: 'username' }}
                   disabled={[TestStatus.FAILED, TestStatus.IN_PROGRESS].includes(testConnectionStatus)}
@@ -220,7 +223,8 @@ const SelectGitProviderRef = (
                 <Container
                   padding={{ top: 'small', left: 'small' }}
                   className={cx({
-                    [css.testConnectionBtnWithError]: formikProps.touched.accessToken && formikProps.errors.accessToken
+                    [css.testConnectionBtnWithError]:
+                      formikProps.touched.applicationPassword && formikProps.errors.applicationPassword
                   })}
                 >
                   <TestConnection />
@@ -241,7 +245,7 @@ const SelectGitProviderRef = (
               <Container
                 padding={{ top: 'small', left: 'small' }}
                 className={cx({
-                  [css.testConnectionBtnWithError]: formikProps.touched.accessToken && formikProps.errors.accessToken
+                  [css.testConnectionBtnWithError]: formikProps.touched.accessKey && formikProps.errors.accessKey
                 })}
               >
                 <TestConnection />
@@ -263,21 +267,48 @@ const SelectGitProviderRef = (
     )
   }, [gitProvider, authMethod])
 
+  const getValidationSchema = React.useCallback(() => {
+    switch (gitProvider?.type) {
+      case 'Github':
+        return Yup.object().shape({
+          accessToken: Yup.string()
+            .trim()
+            .required(getString('fieldRequired', { field: getString('ci.getStartedWithCI.accessTokenLabel') }))
+        })
+      case 'Gitlab':
+        return Yup.object().shape({
+          accessKey: Yup.string()
+            .trim()
+            .required(getString('fieldRequired', { field: getString('common.accessKey') }))
+        })
+      case 'Bitbucket':
+        return Yup.object().shape({
+          username: Yup.string()
+            .trim()
+            .required(getString('fieldRequired', { field: getString('username') })),
+          applicationPassword: Yup.string()
+            .trim()
+            .required(getString('fieldRequired', { field: getString('ci.getStartedWithCI.appPassword') }))
+        })
+      default:
+        return Yup.object().shape({})
+    }
+  }, [gitProvider])
+
   return (
     <Layout.Vertical width="70%">
       <Text font={{ variation: FontVariation.H4 }}>{getString('ci.getStartedWithCI.codeRepo')}</Text>
       <Formik<SelectGitProviderInterface>
         initialValues={{
           accessToken: '',
+          accessKey: '',
+          applicationPassword: '',
+          username: '',
           gitProvider: selectedGitProvider,
           gitAuthenticationMethod: undefined
         }}
         formName="ciInfraProvisiong-gitProvider"
-        validationSchema={Yup.object().shape({
-          accessToken: Yup.string()
-            .trim()
-            .required(getString('fieldRequired', { field: getString('ci.getStartedWithCI.accessTokenLabel') }))
-        })}
+        validationSchema={getValidationSchema()}
         validateOnChange={true}
         onSubmit={(values: SelectGitProviderInterface) => Promise.resolve(values)}
       >
