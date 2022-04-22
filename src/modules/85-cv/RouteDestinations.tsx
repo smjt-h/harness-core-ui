@@ -66,7 +66,7 @@ import ServiceAccountDetails from '@rbac/pages/ServiceAccountDetails/ServiceAcco
 import ServiceAccountsPage from '@rbac/pages/ServiceAccounts/ServiceAccounts'
 import { PubSubPipelineActions } from '@pipeline/factories/PubSubPipelineAction'
 import { PipelineActions } from '@pipeline/factories/PubSubPipelineAction/types'
-// import TemplatesPage from '@templates-library/pages/TemplatesPage/TemplatesPage'
+import TemplatesPage from '@templates-library/pages/TemplatesPage/TemplatesPage'
 import { TemplateStudioWrapper } from '@templates-library/components/TemplateStudio/TemplateStudioWrapper'
 import { inputSetTemplatePromise } from 'services/cv'
 import { yamlStringify } from '@common/utils/YamlHelperMethods'
@@ -251,13 +251,13 @@ export default (
       <ConnectorsPage />
     </RouteWithLayout>
     {/* uncomment once BE integration is complete  */}
-    {/* <RouteWithLayout
+    <RouteWithLayout
       exact
       sidebarProps={CVSideNavProps}
       path={routes.toTemplates({ ...accountPathProps, ...projectPathProps, ...cvModuleParams })}
     >
       <TemplatesPage />
-    </RouteWithLayout> */}
+    </RouteWithLayout>
 
     <RouteWithLayout
       sidebarProps={CVSideNavProps}

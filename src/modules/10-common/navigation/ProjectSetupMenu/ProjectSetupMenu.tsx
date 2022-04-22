@@ -25,7 +25,7 @@ const ProjectSetupMenu: React.FC<ProjectSetupMenuProps> = ({ module }) => {
   const { NG_TEMPLATES, OPA_PIPELINE_GOVERNANCE } = useFeatureFlags()
   const params = { accountId, orgIdentifier, projectIdentifier, module }
   const isCIorCD = module === 'ci' || module === 'cd'
-  // const isCV = module === 'cv'
+  const isCV = module === 'cv'
   const getGitSyncEnabled = isCIorCD || !module
 
   return (
@@ -45,7 +45,7 @@ const ProjectSetupMenu: React.FC<ProjectSetupMenuProps> = ({ module }) => {
          To enable templates for CV
          Replace isCIorCD with (isCIorCD || isCV) 
          */}
-        {NG_TEMPLATES && isCIorCD && (
+        {NG_TEMPLATES && (isCIorCD || isCV) && (
           <SidebarLink label={getString('common.templates')} to={routes.toTemplates(params)} />
         )}
         {OPA_PIPELINE_GOVERNANCE && isCIorCD && (
