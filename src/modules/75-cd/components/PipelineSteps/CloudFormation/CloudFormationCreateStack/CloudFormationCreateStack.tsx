@@ -116,13 +116,17 @@ export class CFCreateStack extends PipelineStep<any> {
     let templateFile = data.spec.configuration.templateFile
 
     if (data?.spec?.configuration?.templateFile?.type === 'Remote') {
+      const connectorRef =
+        data?.spec?.configuration?.templateFile?.spec?.store?.spec?.connectorRef?.value ||
+        data?.spec?.configuration?.templateFile?.spec?.store?.spec?.connectorRef
       templateFile = {
         ...data.spec.configuration.templateFile,
         spec: {
           store: {
+            ...data.spec.configuration.templateFile?.spec?.store,
             spec: {
               ...data?.spec?.configuration?.templateFile?.spec?.store?.spec,
-              connectorRef: data?.spec?.configuration?.templateFile?.spec?.store?.spec?.connectorRef?.value
+              connectorRef
             }
           }
         }
@@ -179,25 +183,22 @@ export class CFCreateStack extends PipelineStep<any> {
       )
     }
 
-    if (isEmpty(data.spec.configuration?.tags)) {
-      delete data.spec.configuration?.tags
-    }
-
     if (isEmpty(data.spec.configuration?.roleArn)) {
       delete data.spec.configuration?.roleArn
     }
 
-    if (isEmpty(data.spec.configuration?.parameterOverrides)) {
+    if (!isEmpty(data.spec.configuration?.parameterOverrides)) {
+      set(
+        data,
+        'spec.configuration.parameterOverrides',
+        map(data.spec.configuration?.parameterOverrides, ({ name, value }) => ({ name, value, type: 'String' }))
+      )
+    } else {
       delete data.spec.configuration?.parameterOverrides
     }
 
-    if (!isEmpty(data.spec.configuration?.tags?.spec?.content)) {
-      data.spec.configuration.tags = {
-        type: 'inline',
-        spec: {
-          content: data.spec.configuration?.spec?.tags?.spec?.content
-        }
-      }
+    if (!isEmpty(data.spec.configuration?.tags)) {
+      set(data, 'spec.configuration.tags.type', 'Inline')
     }
 
     return {
