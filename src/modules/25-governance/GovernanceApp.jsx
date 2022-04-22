@@ -26,6 +26,7 @@ import { useFeatureFlags } from '@common/hooks/useFeatureFlag'
 import { useGetSchemaYaml } from 'services/pipeline-ng'
 import { useGetListOfBranchesWithStatus } from 'services/cd-ng'
 import SessionToken from 'framework/utils/SessionToken'
+import { NavigationCheck } from '@common/exports'
 
 // Due to some typing complexity, governance/App is lazily imported
 // from a .js file for now
@@ -71,7 +72,8 @@ export const GovernanceRemoteComponentMounter = props => {
             RbacButton,
             RbacOptionsMenuButton,
             GitFilters,
-            GitSyncStoreProvider
+            GitSyncStoreProvider,
+            NavigationCheck
           }}
         >
           {component}
