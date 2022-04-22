@@ -49,6 +49,11 @@ export const templateColorStyleMap: { [keyof in TemplateType]: React.CSSProperti
     color: '#299B2C',
     stroke: '#D4E7D1',
     fill: '#E4F7E1'
+  },
+  [TemplateType.MonitoredService]: {
+    color: '#06B7C3',
+    stroke: '#D4E7D1',
+    fill: '#E4F7E1'
   }
 }
 
@@ -85,6 +90,11 @@ export const templateStudioColorStyleMap: { [keyof in TemplateType]: React.CSSPr
   },
   [TemplateType.Infrastructure]: {
     color: '#299B2C',
+    stroke: '#D4E7D1',
+    fill: '#E4F7E1'
+  },
+  [TemplateType.MonitoredService]: {
+    color: '#06B7C3',
     stroke: '#D4E7D1',
     fill: '#E4F7E1'
   }

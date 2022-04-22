@@ -67,7 +67,7 @@ export default function TemplatesPage(): React.ReactElement {
   const { projectIdentifier, orgIdentifier, accountId, module } = useParams<ProjectPathProps & ModulePathParams>()
   const { isGitSyncEnabled } = useAppStore()
   const scope = getScopeFromDTO({ projectIdentifier, orgIdentifier, accountIdentifier: accountId })
-  const allowedTemplateTypes = getAllowedTemplateTypes(getString).filter(item => !item.disabled)
+  const allowedTemplateTypes = getAllowedTemplateTypes(getString, module).filter(item => !item.disabled)
 
   useDocumentTitle([getString('common.templates')])
 

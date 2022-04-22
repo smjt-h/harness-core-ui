@@ -238,7 +238,7 @@ export function PipelineCanvas({
   const [blockNavigation, setBlockNavigation] = React.useState(false)
   const [selectedBranch, setSelectedBranch] = React.useState(branch || '')
   const [savedTemplate, setSavedTemplate] = React.useState<TemplateSummaryResponse>()
-  const [disableVisualView, setDisableVisualView] = React.useState(entityValidityDetails.valid === false)
+  const [disableVisualView, setDisableVisualView] = React.useState(entityValidityDetails?.valid === false)
   const { OPA_PIPELINE_GOVERNANCE } = useFeatureFlags()
   const [governanceMetadata, setGovernanceMetadata] = useState<GovernanceMetadata>()
   const shouldShowGovernanceEvaluation =
@@ -636,21 +636,21 @@ export function PipelineCanvas({
     // for new pipeline always use UI as default view
     if (pipelineIdentifier === DefaultNewPipelineId) {
       setView(SelectedView.VISUAL)
-    } else if (entityValidityDetails.valid === false || view === SelectedView.YAML) {
+    } else if (entityValidityDetails?.valid === false || view === SelectedView.YAML) {
       setView(SelectedView.YAML)
     } else {
       setView(SelectedView.VISUAL)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [pipelineIdentifier, entityValidityDetails.valid])
+  }, [pipelineIdentifier, entityValidityDetails?.valid])
 
   React.useEffect(() => {
-    if (entityValidityDetails.valid === false) {
+    if (entityValidityDetails?.valid === false) {
       setDisableVisualView(true)
     } else {
       setDisableVisualView(false)
     }
-  }, [entityValidityDetails.valid])
+  }, [entityValidityDetails?.valid])
 
   React.useEffect(() => {
     if (isInitialized) {
@@ -1072,10 +1072,16 @@ export function PipelineCanvas({
                     variation={ButtonVariation.PRIMARY}
                     icon="run-pipeline"
                     intent="success"
-                    disabled={isUpdated}
+                    disabled={isUpdated || entityValidityDetails?.valid === false}
                     className={css.runPipelineBtn}
                     text={getString('runPipelineText')}
-                    tooltip={isUpdated ? 'Please click Save and then run the pipeline.' : ''}
+                    tooltip={
+                      entityValidityDetails?.valid === false
+                        ? getString('pipeline.cannotRunInvalidPipeline')
+                        : isUpdated
+                        ? 'Please click Save and then run the pipeline.'
+                        : ''
+                    }
                     onClick={e => {
                       e.stopPropagation()
                       openRunPipelineModal()

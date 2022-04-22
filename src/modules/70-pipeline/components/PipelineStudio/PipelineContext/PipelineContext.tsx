@@ -157,7 +157,13 @@ export const getPipelineByIdentifier = (
       obj = response
     }
     if (obj.status === 'SUCCESS' && obj.data?.yamlPipeline) {
-      const yamlPipelineDetails = parse(obj.data?.yamlPipeline)
+      let yamlPipelineDetails = null
+      try {
+        yamlPipelineDetails = parse(obj.data?.yamlPipeline)
+      } catch (e) {
+        // caught YAMLSemanticError, YAMLReferenceError, YAMLSyntaxError, YAMLWarning
+      }
+
       return {
         ...(yamlPipelineDetails !== null && { ...yamlPipelineDetails.pipeline }),
         gitDetails: obj.data.gitDetails ?? {},

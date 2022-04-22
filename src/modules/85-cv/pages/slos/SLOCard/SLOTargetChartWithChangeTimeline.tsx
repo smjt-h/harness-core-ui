@@ -36,7 +36,9 @@ const SLOTargetChartWithChangeTimeline: React.FC<SLOTargetChartWithChangeTimelin
 
   const [showTimelineSlider, setShowTimelineSlider] = useState(false)
   const startTime = currentPeriodStartTime
-  const endTime = sloPerformanceTrend[sloPerformanceTrend.length - 1]?.timestamp ?? startTime
+  const SLOEndTime = sloPerformanceTrend[sloPerformanceTrend.length - 1]?.timestamp
+  const errorBudgetEndTime = errorBudgetBurndown[errorBudgetBurndown.length - 1]?.timestamp
+  const endTime = (type === SLOCardToggleViews.SLO ? SLOEndTime : errorBudgetEndTime) ?? startTime
   const [changeTimelineSummary, setChangeTimelineSummary] = useState<ChangesInfoCardData[] | null>(null)
 
   const onFocusTimeRange = useCallback(

@@ -94,6 +94,8 @@ function InputSetList(): React.ReactElement {
     }
   })
 
+  const isPipelineInvalid = pipeline?.data?.entityValidityDetails?.valid === false
+
   const { mutate: deleteInputSet } = useDeleteInputSetForPipeline({
     queryParams: { accountIdentifier: accountId, orgIdentifier, projectIdentifier, pipelineIdentifier }
   })
@@ -231,7 +233,7 @@ function InputSetList(): React.ReactElement {
               </Menu>
             }
             position={Position.BOTTOM}
-            disabled={!canUpdateInputSet || !pipelineHasRuntimeInputs}
+            disabled={!canUpdateInputSet || !pipelineHasRuntimeInputs || isPipelineInvalid}
           >
             <RbacButton
               text={getString('inputSets.newInputSet')}
@@ -244,9 +246,11 @@ function InputSetList(): React.ReactElement {
                 },
                 permission: PermissionIdentifier.EDIT_PIPELINE
               }}
-              disabled={!pipelineHasRuntimeInputs}
+              disabled={!pipelineHasRuntimeInputs || isPipelineInvalid}
               tooltip={
-                !pipelineHasRuntimeInputs ? (
+                isPipelineInvalid ? (
+                  getString('pipeline.cannotAddInputSetInvalidPipeline')
+                ) : !pipelineHasRuntimeInputs ? (
                   <Text padding="medium">{getString('pipeline.inputSets.noRuntimeInputsCurrently')}</Text>
                 ) : undefined
               }
@@ -278,8 +282,10 @@ function InputSetList(): React.ReactElement {
           message: getString('pipeline.inputSets.aboutInputSets'),
           buttonText: getString('inputSets.newInputSet'),
           onClick: () => goToInputSetForm(),
-          buttonDisabled: !canUpdateInputSet || !pipelineHasRuntimeInputs,
-          buttonDisabledTooltip: !pipelineHasRuntimeInputs
+          buttonDisabled: !canUpdateInputSet || !pipelineHasRuntimeInputs || isPipelineInvalid,
+          buttonDisabledTooltip: isPipelineInvalid
+            ? getString('pipeline.cannotAddInputSetInvalidPipeline')
+            : !pipelineHasRuntimeInputs
             ? getString('pipeline.inputSets.noRuntimeInputsCurrently')
             : undefined
         }}
@@ -288,6 +294,7 @@ function InputSetList(): React.ReactElement {
           data={inputSet?.data}
           gotoPage={setPage}
           pipelineHasRuntimeInputs={pipelineHasRuntimeInputs}
+          isPipelineInvalid={isPipelineInvalid}
           goToInputSetDetail={inputSetTemp => {
             setSelectedInputSet({
               identifier: inputSetTemp?.identifier,

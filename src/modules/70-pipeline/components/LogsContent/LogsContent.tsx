@@ -25,6 +25,7 @@ import { useGlobalEventListener } from '@common/hooks'
 import type { ConsoleViewStepDetailProps } from '@pipeline/factories/ExecutionFactory/types'
 import type { ExecutionPageQueryParams } from '@pipeline/utils/types'
 import type { ModulePathParams, ExecutionPathProps } from '@common/interfaces/RouteInterfaces'
+import { addHotJarSuppressionAttribute } from '@common/utils/utils'
 import { isExecutionComplete } from '@pipeline/utils/statusHelpers'
 import { useLogsContent } from './useLogsContent'
 import { GroupedLogsWithRef as GroupedLogs } from './components/GroupedLogs'
@@ -242,7 +243,7 @@ export function LogsContent(props: LogsContentProps): React.ReactElement {
           <GroupedLogs ref={virtuosoRef} state={state} actions={actions} />
         )
       ) : (
-        <pre className={css.container}>
+        <pre className={css.container} {...addHotJarSuppressionAttribute()}>
           <StrTemplate tagName="div" className={css.noLogs} stringID="common.logs.noLogsText" />
         </pre>
       )}

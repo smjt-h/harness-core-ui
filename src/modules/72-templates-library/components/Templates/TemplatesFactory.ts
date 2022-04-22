@@ -8,12 +8,14 @@
 import { TemplateFactory } from '@templates-library/components/AbstractTemplate/TemplateFactory'
 import { StepTemplate } from '@templates-library/components/Templates/StepTemplate/StepTemplate'
 import { StageTemplate } from '@templates-library/components/Templates/StageTemplate/StageTemplate'
+import { MonitoredServiceTemplate } from './MonitoredServiceTemplate/MonitoredServiceTemplate'
 
 const templateFactory = new TemplateFactory()
 
 // common
 templateFactory.registerTemplate(new StepTemplate())
 templateFactory.registerTemplate(new StageTemplate())
+templateFactory.registerTemplate(new MonitoredServiceTemplate())
 
 // build steps
 export default templateFactory

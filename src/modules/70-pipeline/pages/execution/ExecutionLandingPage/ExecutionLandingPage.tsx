@@ -104,6 +104,7 @@ export default function ExecutionLandingPage(props: React.PropsWithChildren<unkn
   /* These are used when auto updating selected stage/step when a pipeline is running */
   const [autoSelectedStageId, setAutoSelectedStageId] = React.useState<string>('')
   const [autoSelectedStepId, setAutoSelectedStepId] = React.useState<string>('')
+  const [isPipelineInvalid, setIsPipelineInvalid] = React.useState(false)
 
   /* These are updated only when new data is fetched successfully */
   const [selectedStageId, setSelectedStageId] = React.useState<string>('')
@@ -234,6 +235,7 @@ export default function ExecutionLandingPage(props: React.PropsWithChildren<unkn
         pipelineExecutionDetail: data?.data || null,
         allNodeMap,
         pipelineStagesMap,
+        isPipelineInvalid,
         selectedStageId,
         selectedStepId,
         loading,
@@ -246,6 +248,7 @@ export default function ExecutionLandingPage(props: React.PropsWithChildren<unkn
         setStepsGraphCanvasState,
         setSelectedStageId,
         setSelectedStepId,
+        setIsPipelineInvalid,
         addNewNodeToMap(id, node) {
           setAllNodeMap(nodeMap => ({ ...nodeMap, [id]: node }))
         }

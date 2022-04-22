@@ -8,6 +8,7 @@
 import React from 'react'
 import { Virtuoso, VirtuosoHandle } from 'react-virtuoso'
 import { Button, ButtonSize, ButtonVariation } from '@harness/uicore'
+import { addHotJarSuppressionAttribute } from '@common/utils/utils'
 
 import { MultiLogLine } from './MultiLogLine/MultiLogLine'
 import type { CommonLogsProps } from './LogsProps'
@@ -38,7 +39,7 @@ export function SingleSectionLogs(
   }
 
   return (
-    <pre className={css.container}>
+    <pre className={css.container} {...addHotJarSuppressionAttribute()}>
       <Virtuoso
         overscan={50}
         totalCount={length}

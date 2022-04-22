@@ -27,6 +27,7 @@ import {
   useUpdateMonitoredService
 } from 'services/cv'
 import { PageSpinner, useToaster, NavigationCheck } from '@common/components'
+import type { NGTemplateInfoConfigWithMonitoredService } from '@templates-library/components/Templates/MonitoredServiceTemplate/MonitoredServiceTemplate'
 import { MonitoredServiceEnum } from '@cv/pages/monitored-service/MonitoredServicePage.constants'
 import { ChangeSourceCategoryName } from '@cv/pages/ChangeSource/ChangeSourceDrawer/ChangeSourceDrawer.constants'
 import { useStrings } from 'framework/strings'
@@ -38,7 +39,12 @@ import type { MonitoredServiceForm } from './components/Service/Service.types'
 import { determineUnSaveState, onTabChange, onSubmit } from './Configurations.utils'
 import css from './Configurations.module.scss'
 
-export default function Configurations(): JSX.Element {
+interface ConfigurationsInterface {
+  isTemplate?: boolean
+  updateTemplate?: (template: NGTemplateInfoConfigWithMonitoredService) => Promise<void>
+}
+
+export default function Configurations({ isTemplate, updateTemplate }: ConfigurationsInterface): JSX.Element {
   const { getString } = useStrings()
   const { showWarning, showError, showSuccess } = useToaster()
   const history = useHistory()
@@ -310,9 +316,11 @@ export default function Configurations(): JSX.Element {
               value={initialValues}
               onSuccess={async payload => onSuccess(payload, getString('service'))}
               serviceTabformRef={serviceTabformRef}
-              cachedInitialValues={cachedInitialValues}
+              cachedInitialValues={!isTemplate ? cachedInitialValues : undefined}
               setDBData={setDBData}
               onDiscard={onDiscard}
+              isTemplate={isTemplate}
+              updateTemplate={updateTemplate}
               onChangeMonitoredServiceType={updatedDTO => {
                 setDefaultMonitoredService(omit(updatedDTO, ['isEdit']) as MonitoredServiceDTO)
                 setCachedInitialValue(updatedDTO)

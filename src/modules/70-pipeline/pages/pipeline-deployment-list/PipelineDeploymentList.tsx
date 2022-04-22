@@ -45,6 +45,7 @@ const pollingIntervalInMilliseconds = 5_000
 export interface PipelineDeploymentListProps {
   onRunPipeline(): void
   showHealthAndExecution?: boolean
+  isPipelineInvalid?: boolean
 }
 
 const renderSpinner = ({
@@ -112,14 +113,16 @@ const getCreateRunPipeline = ({
 const renderDeploymentListHeader = ({
   pipelineExecutionSummary,
   hasFilters,
-  onRunPipeline
+  onRunPipeline,
+  isPipelineInvalid
 }: {
   pipelineExecutionSummary: PagePipelineExecutionSummary
   hasFilters: boolean
   onRunPipeline: () => void
+  isPipelineInvalid?: boolean
 }): JSX.Element | null => {
   if (!!pipelineExecutionSummary?.content?.length || hasFilters) {
-    return <PipelineDeploymentListHeader onRunPipeline={onRunPipeline} />
+    return <PipelineDeploymentListHeader onRunPipeline={onRunPipeline} isPipelineInvalid={isPipelineInvalid} />
   }
   return null
 }
@@ -135,6 +138,7 @@ function NoDeployments(props: {
   pipelineIdentifier: string
   queryParams: QueryParams
   onRunPipeline: () => void
+  isPipelineInvalid?: boolean
 }): JSX.Element {
   const {
     hasFilters,
@@ -146,7 +150,8 @@ function NoDeployments(props: {
     goToPipeline,
     pipelineIdentifier,
     queryParams,
-    onRunPipeline
+    onRunPipeline,
+    isPipelineInvalid
   } = props || {}
   return (
     <div className={css.noDeploymentSection}>
@@ -175,6 +180,8 @@ function NoDeployments(props: {
           <RbacButton
             intent="primary"
             text={runPipeline ? getString('pipeline.runAPipeline') : getString('common.createPipeline')}
+            disabled={isPipelineInvalid}
+            tooltip={isPipelineInvalid ? getString('pipeline.cannotRunInvalidPipeline') : ''}
             onClick={createPipeline ? () => goToPipeline() : onRunPipeline}
             permission={{
               permission: runPipeline ? PermissionIdentifier.EXECUTE_PIPELINE : PermissionIdentifier.EDIT_PIPELINE,
@@ -367,7 +374,12 @@ export default function PipelineDeploymentList(props: PipelineDeploymentListProp
         refetchFilters={refetchFilters}
         queryParams={queryParams}
       >
-        {renderDeploymentListHeader({ pipelineExecutionSummary, hasFilters, onRunPipeline: props.onRunPipeline })}
+        {renderDeploymentListHeader({
+          pipelineExecutionSummary,
+          hasFilters,
+          onRunPipeline: props.onRunPipeline,
+          isPipelineInvalid: props.isPipelineInvalid
+        })}
         <Page.Body
           className={css.main}
           key={pipelineIdentifier}
@@ -395,10 +407,14 @@ export default function PipelineDeploymentList(props: PipelineDeploymentListProp
               goToPipeline={goToPipeline}
               pipelineIdentifier={pipelineIdentifier}
               queryParams={queryParams}
+              isPipelineInvalid={props.isPipelineInvalid}
             />
           ) : (
             <React.Fragment>
-              <ExecutionsList pipelineExecutionSummary={pipelineExecutionSummary?.content} />
+              <ExecutionsList
+                pipelineExecutionSummary={pipelineExecutionSummary?.content}
+                isPipelineInvalid={props.isPipelineInvalid}
+              />
               <ExecutionsPagination pipelineExecutionSummary={pipelineExecutionSummary} />
             </React.Fragment>
           )}

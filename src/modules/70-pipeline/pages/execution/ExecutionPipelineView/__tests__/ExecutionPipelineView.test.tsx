@@ -7,6 +7,7 @@
 
 import React from 'react'
 import { render } from '@testing-library/react'
+import { getMockFor_useGetPipeline } from '@pipeline/components/RunPipelineModal/__tests__/mocks'
 
 import { TestWrapper } from '@common/utils/testUtils'
 
@@ -21,6 +22,10 @@ jest.mock('../ExecutionLogView/ExecutionLogView', () => {
   // eslint-disable-next-line react/display-name
   return () => <div data-testid="view">ExecutionLogView</div>
 })
+
+jest.mock('services/pipeline-ng', () => ({
+  useGetPipeline: jest.fn(() => getMockFor_useGetPipeline())
+}))
 
 describe('<ExecutionPipelineView /> tests', () => {
   test('renders graph view by default', () => {

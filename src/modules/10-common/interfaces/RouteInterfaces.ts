@@ -61,6 +61,7 @@ export type TemplateType =
   | 'Infrastructure'
   | 'StepGroup'
   | 'Execution'
+  | 'MonitoredService'
   | ':templateType(Step)'
   | ':templateType(Stage)'
   | ':templateType(Pipeline)'
@@ -68,6 +69,7 @@ export type TemplateType =
   | ':templateType(Infrastructure)'
   | ':templateType(StepGroup)'
   | ':templateType(Execution)'
+  | ':templateType(MonitoredService)'
   | ':templateType'
 
 export interface TemplateStudioPathProps extends ProjectPathProps {

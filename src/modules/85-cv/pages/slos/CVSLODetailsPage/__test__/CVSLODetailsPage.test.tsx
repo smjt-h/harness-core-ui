@@ -50,6 +50,16 @@ jest.mock(
   })
 )
 
+jest.mock(
+  '@cv/pages/monitored-service/components/ServiceHealth/components/ChangesSourceCard/ChangesSourceCard',
+  () => ({
+    __esModule: true,
+    default: function ChangesSourceCard() {
+      return <span data-testid="changes-source-card" />
+    }
+  })
+)
+
 const renderComponent = (): RenderResult => {
   return render(
     <TestWrapper {...testWrapperProps}>

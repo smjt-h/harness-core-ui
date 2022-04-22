@@ -531,9 +531,45 @@ exports[`Test cases for CVSLODetailsPage it should render the component and take
             <div
               class="StyledProps--font StyledProps--main StyledProps--padding-bottom-xlarge"
             />
-            <span
-              data-testid="changes-table"
-            />
+            <div
+              class="bp3-card bp3-elevation-0 Card--card changesCard"
+            >
+              <h2
+                class="StyledProps--font StyledProps--font-h2 StyledProps--main StyledProps--color StyledProps--color-grey800 StyledProps--padding-bottom-medium StyledProps--font-variation-card-title"
+                level="2"
+              >
+                changes
+              </h2>
+              <span
+                data-testid="changes-source-card"
+              />
+              <p
+                class="StyledProps--font StyledProps--main StyledProps--color StyledProps--color-grey600 StyledProps--font-variation-small StyledProps--padding-top-small StyledProps--padding-bottom-small"
+                style="display: flex; align-items: center;"
+              >
+                <span
+                  class="bp3-icon StyledProps--main Text--icon StyledProps--padding-right-xsmall StyledProps--color StyledProps--color-primary7"
+                  data-icon="info"
+                >
+                  <svg
+                    height="12"
+                    viewBox="0 0 12 12"
+                    width="12"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <path
+                      clip-rule="evenodd"
+                      d="M0 6a6 6 0 1012 0A6 6 0 000 6zm.75 0a5.25 5.25 0 1010.5 0A5.25 5.25 0 00.75 6zm4.206 3.104v.646h2.682v-.646l-.836-.144V4.203H4.956v.65l.836.144V8.96l-.836.144zm1.846-7.352v1.03h-1.01v-1.03h1.01z"
+                      fill-rule="evenodd"
+                    />
+                  </svg>
+                </span>
+                cv.theTrendIsDeterminedForTheSelectedPeriodOverPeriod
+              </p>
+              <span
+                data-testid="changes-table"
+              />
+            </div>
           </div>
         </div>
       </div>

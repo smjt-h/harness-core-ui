@@ -14,6 +14,7 @@ import { Formik, Text } from '@wings-software/uicore'
 import { Color } from '@harness/design-system'
 import { useStrings } from 'framework/strings'
 import { PageSpinner } from '@common/components'
+import type { NGTemplateInfoConfigWithMonitoredService } from '@templates-library/components/Templates/MonitoredServiceTemplate/MonitoredServiceTemplate'
 import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
 import { ResourceType } from '@rbac/interfaces/ResourceType'
 import { PermissionIdentifier } from '@rbac/interfaces/PermissionIdentifier'
@@ -36,7 +37,9 @@ function Service({
   setDBData,
   onDiscard,
   serviceTabformRef,
-  onChangeMonitoredServiceType
+  onChangeMonitoredServiceType,
+  isTemplate,
+  updateTemplate
 }: {
   value: MonitoredServiceForm
   onSuccess: (val: any) => Promise<void>
@@ -45,9 +48,11 @@ function Service({
   onDiscard?: () => void
   serviceTabformRef?: any
   onChangeMonitoredServiceType: (updatedValues: MonitoredServiceForm) => void
+  isTemplate?: boolean
+  updateTemplate?: (template: NGTemplateInfoConfigWithMonitoredService) => Promise<void>
 }): JSX.Element {
   const { getString } = useStrings()
-  const { projectIdentifier, identifier } = useParams<ProjectPathProps & { identifier: string }>()
+  const { projectIdentifier, identifier, orgIdentifier } = useParams<ProjectPathProps & { identifier: string }>()
 
   const isEdit = !!identifier
 
@@ -134,6 +139,22 @@ function Service({
           updateChangeSource(data, formik)
           hideDrawer()
         }
+        if (isTemplate && formik.dirty) {
+          updateTemplate?.({
+            identifier,
+            name: 'Test Template',
+            orgIdentifier,
+            projectIdentifier,
+            spec: {
+              spec: { serviceRef: serviceRef, environmentRef: environmentRef },
+              timeout: '2m',
+              type: 'Http'
+            } as any,
+            tags: {},
+            type: 'MonitoredService',
+            versionLabel: 'v1'
+          })
+        }
 
         return (
           <div>
@@ -141,26 +162,29 @@ function Service({
               <PageSpinner />
             ) : (
               <>
-                <div className={css.saveDiscardButton}>
-                  <SaveAndDiscardButton
-                    isUpdated={isUpdated(formik.dirty, initialValues, cachedInitialValues)}
-                    onSave={() => onSave({ formik, onSuccess })}
-                    onDiscard={() => {
-                      formik.resetForm()
-                      onDiscard?.()
-                    }}
-                    RbacPermission={{
-                      permission: PermissionIdentifier.EDIT_MONITORED_SERVICE,
-                      resource: {
-                        resourceType: ResourceType.MONITOREDSERVICE,
-                        resourceIdentifier: projectIdentifier
-                      }
-                    }}
-                  />
-                </div>
+                {!isTemplate && (
+                  <div className={css.saveDiscardButton}>
+                    <SaveAndDiscardButton
+                      isUpdated={isUpdated(formik.dirty, initialValues, cachedInitialValues)}
+                      onSave={() => onSave({ formik, onSuccess })}
+                      onDiscard={() => {
+                        formik.resetForm()
+                        onDiscard?.()
+                      }}
+                      RbacPermission={{
+                        permission: PermissionIdentifier.EDIT_MONITORED_SERVICE,
+                        resource: {
+                          resourceType: ResourceType.MONITOREDSERVICE,
+                          resourceIdentifier: projectIdentifier
+                        }
+                      }}
+                    />
+                  </div>
+                )}
                 <MonitoredServiceOverview
                   formikProps={formik}
                   isEdit={isEdit}
+                  isTemplate={isTemplate}
                   onChangeMonitoredServiceType={type => {
                     if (type === formik.values.type) {
                       return

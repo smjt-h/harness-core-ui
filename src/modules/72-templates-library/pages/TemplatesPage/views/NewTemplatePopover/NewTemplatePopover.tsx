@@ -30,8 +30,8 @@ import { FeatureWarningTooltip } from '@common/components/FeatureWarning/Feature
 function NewTemplatePopoverWrapper(): React.ReactElement {
   const { getString } = useStrings()
   const history = useHistory()
-  const allowedTemplateTypes = getAllowedTemplateTypes(getString)
   const { projectIdentifier, orgIdentifier, accountId, module } = useParams<ProjectPathProps & ModulePathParams>()
+  const allowedTemplateTypes = getAllowedTemplateTypes(getString, module)
   const [menuOpen, setMenuOpen] = React.useState(false)
   const { enabled: templatesEnabled } = useFeature({
     featureRequest: {

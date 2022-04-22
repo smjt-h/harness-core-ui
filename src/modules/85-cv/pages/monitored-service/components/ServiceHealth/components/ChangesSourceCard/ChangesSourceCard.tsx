@@ -37,7 +37,8 @@ export default function ChangeSourceCard(props: ChangeSourceCardInterface): JSX.
       monitoredServiceIdentifier,
       startTime,
       endTime
-    }
+    },
+    debounce: 500
   })
 
   const { Infrastructure, Deployment, Alert } = data?.resource?.categoryCountMap || {}

@@ -66,7 +66,16 @@ const TriggersPage: React.FC = (): React.ReactElement => {
 
   useDocumentTitle([pipeline?.data?.name || getString('pipelines'), getString('common.triggersLabel')])
 
-  return <TriggersList onNewTriggerClick={onNewTriggerClick} repoIdentifier={repoIdentifier} branch={branch} />
+  const isPipelineInvalid = pipeline?.data?.entityValidityDetails?.valid === false
+
+  return (
+    <TriggersList
+      onNewTriggerClick={onNewTriggerClick}
+      repoIdentifier={repoIdentifier}
+      branch={branch}
+      isPipelineInvalid={isPipelineInvalid}
+    />
+  )
 }
 
 export default TriggersPage

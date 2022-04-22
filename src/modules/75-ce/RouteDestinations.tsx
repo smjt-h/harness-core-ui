@@ -154,35 +154,30 @@ const licenseRedirectData: LicenseRedirectProps = {
   expiredTrialRedirect: RedirectToSubscriptions
 }
 
-const CERoutes: React.FC = () => {
+const getRequestOptions = (): Partial<RequestInit> => {
   const token = SessionToken.getToken()
+
+  const headers: RequestInit['headers'] = {}
+
+  if (token && token.length > 0) {
+    headers.Authorization = `Bearer ${token}`
+  }
+
+  return { headers }
+}
+
+const CERoutes: React.FC = () => {
   const { accountId } = useParams<AccountPathProps>()
-
-  const getRequestOptions = React.useMemo((): Partial<RequestInit> => {
-    const headers: RequestInit['headers'] = {}
-
-    if (token && token.length > 0) {
-      headers.Authorization = `Bearer ${token}`
-    }
-
-    return { headers }
-  }, [token])
 
   const urqlClient = React.useMemo(() => {
     const url = getConfig(`ccm/api/graphql?accountIdentifier=${accountId}&routingId=${accountId}`)
-
-    // if (url.startsWith('/')) {
-    //   url = url.substr(1)
-    // }
     return createClient({
       url: url,
-      fetchOptions: () => {
-        return getRequestOptions
-      },
+      fetchOptions: getRequestOptions,
       exchanges: [dedupExchange, requestPolicyExchange({}), cacheExchange, fetchExchange],
       requestPolicy: 'cache-first'
     })
-  }, [token, accountId])
+  }, [accountId])
 
   return (
     <Provider value={urqlClient}>

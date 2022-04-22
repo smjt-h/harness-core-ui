@@ -2391,6 +2391,10 @@ export interface StringsMap {
   'pipeline.buildInfra.readOnlyRootFilesystem': string
   'pipeline.buildInfra.runAsNonRoot': string
   'pipeline.buildRepo': string
+  'pipeline.cannotAddInputSetInvalidPipeline': string
+  'pipeline.cannotAddTriggerInvalidPipeline': string
+  'pipeline.cannotEditTriggerInvalidPipeline': string
+  'pipeline.cannotRunInvalidPipeline': string
   'pipeline.changeTemplate': string
   'pipeline.changeTemplateLabel': string
   'pipeline.ci.validations.port': string
@@ -4190,6 +4194,7 @@ export interface StringsMap {
   'ce.recommendation.detailsPage.limitPercentileLegendText': string
   'ce.recommendation.detailsPage.memoryValueBuffer': string
   'ce.recommendation.detailsPage.monthlySpendByDate': string
+  'ce.recommendation.detailsPage.nodepoolDetails': string
   'ce.recommendation.detailsPage.percentileOfReqAndLimit': string
   'ce.recommendation.detailsPage.performanceOptimized': string
   'ce.recommendation.detailsPage.performanceOptimizedCaps': string
@@ -5579,11 +5584,13 @@ export interface StringsMap {
   'cv.slos.contextualHelp.target.rollingWindowBased': string
   'cv.slos.contextualHelp.target.rollingWindowDefinition': string
   'cv.slos.contextualHelp.target.rollingWindowDefinition2': string
+  'cv.slos.createMonitoredService': string
   'cv.slos.createSLO': string
   'cv.slos.deleteSLO': string
   'cv.slos.healthSource': string
   'cv.slos.healthSourceForSLI': string
   'cv.slos.latencySLI': string
+  'cv.slos.monitoredServiceText': string
   'cv.slos.noData': string
   'cv.slos.noMatchingData': string
   'cv.slos.noSLOsStateMessage': string
@@ -5629,6 +5636,7 @@ export interface StringsMap {
   'cv.statusCode': string
   'cv.sunday': string
   'cv.thanObjectiveValue': string
+  'cv.theTrendIsDeterminedForTheSelectedPeriodOverPeriod': string
   'cv.thirdPartyCalls.modalTitle': string
   'cv.thirdPartyCalls.noCallsWereMade': string
   'cv.thirdPartyCalls.requestMade': string

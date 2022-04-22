@@ -11,6 +11,7 @@ import type { TemplateContextInterface } from '@templates-library/components/Tem
 import type { JsonNode, NGTemplateInfoConfig } from 'services/template-ng'
 import { TemplateType } from '@templates-library/utils/templatesUtils'
 import { DrawerTypes } from '@templates-library/components/TemplateStudio/TemplateContext/TemplateActions'
+import type { NGTemplateInfoConfigWithMonitoredService } from '@templates-library/components/Templates/MonitoredServiceTemplate/MonitoredServiceTemplate'
 
 export const stepTemplateMock: NGTemplateInfoConfig = {
   name: 'Test Template',
@@ -93,6 +94,17 @@ export const stageTemplateMock: NGTemplateInfoConfig = {
   } as JsonNode
 }
 
+export const monitoredServiceTemplateMock: NGTemplateInfoConfigWithMonitoredService = {
+  name: 'Test Template',
+  identifier: 'Test_Template',
+  versionLabel: 'v1',
+  type: 'MonitoredService',
+  projectIdentifier: 'Yogesh_Test',
+  orgIdentifier: 'default',
+  tags: {},
+  spec: {} as JsonNode
+}
+
 export const getTemplateContextMock = (type: TemplateType): TemplateContextInterface => {
   const defaultTemplateContextMock: TemplateContextInterface = {
     state: {
@@ -138,6 +150,11 @@ export const getTemplateContextMock = (type: TemplateType): TemplateContextInter
       return produce(defaultTemplateContextMock, draft => {
         set(draft, 'state.template', stageTemplateMock)
         set(draft, 'state.originalTemplate', stageTemplateMock)
+      })
+    case TemplateType.MonitoredService:
+      return produce(defaultTemplateContextMock, draft => {
+        set(draft, 'state.template', monitoredServiceTemplateMock)
+        set(draft, 'state.originalTemplate', monitoredServiceTemplateMock)
       })
     default:
       return defaultTemplateContextMock

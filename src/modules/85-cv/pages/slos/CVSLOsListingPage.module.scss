@@ -84,6 +84,19 @@ $headerHeight: 146px;
   }
 }
 
+.cardSloAndSli {
+  width: 120px;
+  padding: var(--spacing-small) !important;
+  border-radius: var(--spacing-small);
+}
+
+.cardSloAndSliForCardView {
+  width: 200px;
+  height: 80px;
+  padding: var(--spacing-large) !important;
+  border-radius: var(--spacing-small);
+}
+
 .errorBudgetGaugeContainer {
   position: relative;
   min-width: 200px;

@@ -43,7 +43,8 @@ const SLOCardContent: React.FC<SLOCardContentProps> = props => {
   }
 
   const SLOAndErrorBudgetChartContainer = isCardView ? Card : Container
-  const SLO_SLI_CARD_WIDTH = isCardView ? 200 : 120
+  const stylesSLOAndSLICard = isCardView ? css.cardSloAndSliForCardView : css.cardSloAndSli
+  const headingVariation = isCardView ? FontVariation.SMALL_BOLD : FontVariation.FORM_LABEL
 
   return (
     <Layout.Vertical
@@ -60,7 +61,7 @@ const SLOCardContent: React.FC<SLOCardContentProps> = props => {
         {toggle === SLOCardToggleViews.SLO && (
           <>
             <Container flex>
-              <Heading level={2} font={{ variation: FontVariation.FORM_HELP }} data-tooltip-id={'SLOPerformanceTrend'}>
+              <Heading level={2} font={{ variation: headingVariation }} data-tooltip-id={'SLOPerformanceTrend'}>
                 {getString('cv.SLOPerformanceTrend')}
               </Heading>
               {serviceLevelObjective.recalculatingSLI && (
@@ -69,12 +70,7 @@ const SLOCardContent: React.FC<SLOCardContentProps> = props => {
             </Container>
             <Layout.Horizontal spacing="medium">
               <Layout.Vertical spacing="medium" margin={{ top: 'large' }}>
-                <Container
-                  width={SLO_SLI_CARD_WIDTH}
-                  background={Color.GREY_100}
-                  padding="small"
-                  className={css.sloGlanceCard}
-                >
+                <Container background={Color.GREY_100} className={stylesSLOAndSLICard}>
                   <Text font={{ variation: FontVariation.FORM_LABEL }} tooltipProps={{ dataTooltipId: 'SLO' }}>
                     {getString('cv.SLO')}
                   </Text>
@@ -82,12 +78,7 @@ const SLOCardContent: React.FC<SLOCardContentProps> = props => {
                     {(Number(sloTargetPercentage) || 0).toFixed(2)}%
                   </Heading>
                 </Container>
-                <Container
-                  width={SLO_SLI_CARD_WIDTH}
-                  background={Color.GREY_100}
-                  padding="small"
-                  className={css.sloGlanceCard}
-                >
+                <Container background={Color.GREY_100} className={stylesSLOAndSLICard}>
                   <Text font={{ variation: FontVariation.FORM_LABEL }} tooltipProps={{ dataTooltipId: 'SLI' }}>
                     {getString('cv.slos.sli')}
                   </Text>
@@ -109,7 +100,7 @@ const SLOCardContent: React.FC<SLOCardContentProps> = props => {
               />
             )}
             <Container height={200} className={css.errorBudgetGaugeContainer}>
-              <Heading font={{ variation: FontVariation.FORM_HELP }} data-tooltip-id={'errorBudgetRemaining'}>
+              <Heading font={{ variation: headingVariation }} data-tooltip-id={'errorBudgetRemaining'}>
                 {getString('cv.errorBudgetRemainingWithMins')}
               </Heading>
               <ErrorBudgetGauge customChartOptions={getErrorBudgetGaugeOptions(serviceLevelObjective)} />
@@ -119,7 +110,7 @@ const SLOCardContent: React.FC<SLOCardContentProps> = props => {
               </Text>
             </Container>
             <Container className={css.flexGrowOne}>
-              <Heading font={{ variation: FontVariation.FORM_HELP }} data-tooltip-id={'errorBudgetBurnDown'}>
+              <Heading font={{ variation: headingVariation }} data-tooltip-id={'errorBudgetBurnDown'}>
                 {getString('cv.errorBudgetBurnDown')}
               </Heading>
               <SLOTargetChartWithChangeTimeline {...props} type={SLOCardToggleViews.ERROR_BUDGET} />

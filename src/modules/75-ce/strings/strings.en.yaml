@@ -568,6 +568,7 @@ recommendation:
     burstable: 'BURSTABLE'
     guaranteed: 'GUARANTEED'
     monthlySpendByDate: 'by {{date}}'
+    nodepoolDetails: Nodepool Details
   recommendationChart:
     cpuPlaceholder: 'CPU Usage(millicores)'
     noOfSamples: 'Number of samples'

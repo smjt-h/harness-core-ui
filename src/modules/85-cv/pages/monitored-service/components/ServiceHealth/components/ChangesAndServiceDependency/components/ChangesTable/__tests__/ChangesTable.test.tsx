@@ -109,7 +109,8 @@ describe('Change table', () => {
           changeSourceTypes: [],
           changeCategories: []
         },
-        queryParamStringifyOptions: { arrayFormat: 'repeat' }
+        queryParamStringifyOptions: { arrayFormat: 'repeat' },
+        debounce: 500
       })
     )
 
@@ -208,5 +209,22 @@ describe('Change table', () => {
     await waitFor(() => expect(getByText('changes(4)')).toBeTruthy())
 
     expect(container).toMatchSnapshot()
+  })
+
+  test('should verify container should not be a Card', () => {
+    const { container } = render(
+      <TestWrapper>
+        <ChangesTable
+          isCardView={false}
+          hasChangeSource
+          startTime={1}
+          endTime={2}
+          serviceIdentifier={'srv'}
+          environmentIdentifier={'env'}
+        />
+      </TestWrapper>
+    )
+
+    expect(container.querySelector('.bp3-card')).not.toBeInTheDocument()
   })
 })

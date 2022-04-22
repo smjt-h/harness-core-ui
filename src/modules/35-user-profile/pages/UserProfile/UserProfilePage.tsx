@@ -20,6 +20,7 @@ import { Page } from '@common/components'
 import TwoFactorAuthentication from '@user-profile/components/TwoFactorAuthentication/TwoFactorAuthentication'
 import useSwitchAccountModal from '@common/modals/SwitchAccount/useSwitchAccountModal'
 import type { AccountPathProps } from '@common/interfaces/RouteInterfaces'
+import { addHotJarSuppressionAttribute } from '@common/utils/utils'
 import { AuthenticationMechanisms } from '@auth-settings/constants/utils'
 import UserOverView from './views/UserOverView'
 import css from './UserProfile.module.scss'
@@ -77,6 +78,7 @@ const UserProfilePage: React.FC = () => {
                 font={{ size: 'large', weight: 'semi-bold' }}
                 lineClamp={1}
                 className={css.overflow}
+                {...addHotJarSuppressionAttribute()}
               >
                 {user.name}
               </Text>

@@ -36,7 +36,7 @@ export default function ExecutionTabs(props: React.PropsWithChildren<unknown>): 
   const [selectedTabId, setSelectedTabId] = React.useState('')
   const { children } = props
   const { getString } = useStrings()
-  const { pipelineExecutionDetail } = useExecutionContext()
+  const { pipelineExecutionDetail, isPipelineInvalid } = useExecutionContext()
   const params = useParams<PipelineType<ExecutionPathProps>>()
   const location = useLocation()
   const { view } = useQueryParams<ExecutionQueryParams>()
@@ -128,8 +128,11 @@ export default function ExecutionTabs(props: React.PropsWithChildren<unknown>): 
           <span>{getString('common.pipeline')}</span>
         </NavLink>
       )
-    },
-    {
+    }
+  ]
+
+  if (!isPipelineInvalid) {
+    tabList.push({
       id: TAB_ID_MAP.INPUTS,
       title: (
         <NavLink
@@ -141,8 +144,8 @@ export default function ExecutionTabs(props: React.PropsWithChildren<unknown>): 
           <span>{getString('inputs')}</span>
         </NavLink>
       )
-    }
-  ]
+    })
+  }
 
   if (opaBasedGovernanceEnabled) {
     tabList.push({

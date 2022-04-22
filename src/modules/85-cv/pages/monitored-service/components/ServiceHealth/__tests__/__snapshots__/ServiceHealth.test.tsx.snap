@@ -189,22 +189,22 @@ exports[`Unit tests for ServiceHealth Verify if all the fields are rendered corr
         class="StyledProps--font StyledProps--main"
         style="width: 60%;"
       >
-        <p
-          class="StyledProps--font StyledProps--main StyledProps--font-weight-bold StyledProps--font-size-normal StyledProps--padding-bottom-medium"
-        >
-          changes
-          (
-          0
-          )
-        </p>
         <div
-          class="bp3-card bp3-elevation-0 Card--card cardContainer"
+          class="StyledProps--font StyledProps--main"
         >
+          <p
+            class="StyledProps--font StyledProps--main StyledProps--font-variation-h6 StyledProps--padding-bottom-medium"
+          >
+            changes
+            (
+            0
+            )
+          </p>
           <div
-            class="StyledProps--font StyledProps--main noData"
+            class="bp3-card bp3-elevation-0 Card--card childContainer cardContainer"
           >
             <div
-              class="StyledProps--font StyledProps--main NoDataCard--noDataCard StyledProps--flex StyledProps--flex-align-center-center"
+              class="StyledProps--font StyledProps--main NoDataCard--noDataCard noDataContainer StyledProps--flex StyledProps--flex-align-center-center"
             >
               <div
                 class="Layout--vertical Layout--layout-spacing-medium StyledProps--main"
