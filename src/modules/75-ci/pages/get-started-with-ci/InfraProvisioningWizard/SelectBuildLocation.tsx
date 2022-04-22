@@ -8,7 +8,13 @@
 import React, { useState, useEffect } from 'react'
 import { Icon, Container, Text, FontVariation, Layout, CardSelect, PillToggle, Color } from '@harness/uicore'
 import { useStrings } from 'framework/strings'
-import { Hosting, SelectBuildLocationProps, BuildLocationDetails, AllBuildLocations } from './Constants'
+import {
+  Hosting,
+  SelectBuildLocationProps,
+  BuildLocationDetails,
+  AllBuildLocationsForSaaS,
+  AllBuildLocationsForOnPrem
+} from './Constants'
 
 import css from './InfraProvisioningWizard.module.scss'
 
@@ -44,7 +50,6 @@ export const SelectBuildLocation: React.FC<SelectBuildLocationProps> = props => 
           selectedView={hosting}
           onChange={(item: Hosting) => setHosting(item)}
           className={css.hostingToggle}
-          disableToggle={true}
         />
       </Container>
       <Text font={{ variation: FontVariation.H5 }} padding={{ bottom: 'medium' }}>
@@ -52,7 +57,7 @@ export const SelectBuildLocation: React.FC<SelectBuildLocationProps> = props => 
       </Text>
       <CardSelect
         cornerSelected={true}
-        data={AllBuildLocations}
+        data={hosting === Hosting.SaaS ? AllBuildLocationsForSaaS : AllBuildLocationsForOnPrem}
         cardClassName={css.card}
         renderItem={(item: BuildLocationDetails) => {
           const { icon, label, details, approxETAInMins, disabled } = item

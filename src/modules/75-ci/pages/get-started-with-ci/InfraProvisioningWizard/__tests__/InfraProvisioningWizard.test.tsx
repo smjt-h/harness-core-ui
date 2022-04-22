@@ -8,7 +8,7 @@
 import React from 'react'
 import { act, fireEvent, render, getByText as getByTextBody } from '@testing-library/react'
 import { findDialogContainer } from '@common/utils/testUtils'
-import { HostedByHarnessBuildLocation, InfraProvisiongWizardStepId, AllBuildLocations } from '../Constants'
+import { HostedByHarnessBuildLocation, InfraProvisiongWizardStepId, AllBuildLocationsForSaaS } from '../Constants'
 import { InfraProvisioningWizard } from '../InfraProvisioningWizard'
 import { SelectBuildLocation } from '../SelectBuildLocation'
 
@@ -25,7 +25,7 @@ describe('Render and test InfraProvisioningWizard', () => {
 
     // All build infra type cards should be visible
     const buildInfraCards = Array.from(container.querySelectorAll('div[class*="bp3-card"]')) as HTMLElement[]
-    expect(buildInfraCards.length).toBe(AllBuildLocations.length)
+    expect(buildInfraCards.length).toBe(AllBuildLocationsForSaaS.length)
 
     // Hosted By Harness build infra card should be selected by default
     expect(buildInfraCards[0].className).toContain('Card--selected')

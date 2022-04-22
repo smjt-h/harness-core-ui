@@ -53,8 +53,7 @@ export const HostedByHarnessBuildLocation: BuildLocationDetails = {
   approxETAInMins: 2
 }
 
-export const AllBuildLocations: BuildLocationDetails[] = [
-  HostedByHarnessBuildLocation,
+export const AllBuildLocationsForOnPrem: BuildLocationDetails[] = [
   {
     icon: 'app-kubernetes',
     location: BuildLocation.Kubernetes,
@@ -79,6 +78,11 @@ export const AllBuildLocations: BuildLocationDetails[] = [
     approxETAInMins: 2,
     disabled: true
   }
+]
+
+export const AllBuildLocationsForSaaS: BuildLocationDetails[] = [
+  HostedByHarnessBuildLocation,
+  ...AllBuildLocationsForOnPrem
 ]
 
 export enum InfraProvisiongWizardStepId {
