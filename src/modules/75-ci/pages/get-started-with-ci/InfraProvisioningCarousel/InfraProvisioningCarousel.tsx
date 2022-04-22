@@ -12,7 +12,6 @@ import { Dialog, Layout, Icon, Text, FontVariation, Color, Container, Button, Bu
 import { String, useStrings } from 'framework/strings'
 import type { StringsMap } from 'stringTypes'
 
-import backgroundImg from './assets/background.svg'
 import samplePipelineImg from '../../../assets/images/sample-pipeline.svg'
 import provisioningInit from './assets/provisioning_init.json'
 import provisioningInProgress from './assets/provisioning_in_progress.json'
@@ -122,16 +121,7 @@ export const InfraProvisioningCarousel: React.FC<InfraProvisioningCarouselProps>
       className={css.main}
     >
       <Container>
-        <Layout.Horizontal
-          style={{
-            backgroundImage: `url(${backgroundImg})`,
-            backgroundRepeat: 'no-repeat',
-            backgroundPosition: 'center',
-            backgroundSize: 'cover , cover'
-          }}
-          className={css.bg}
-          padding={{ top: 'xxxlarge', left: 'xxxlarge', right: 'xxxlarge' }}
-        >
+        <Layout.Horizontal padding={{ top: 'xxxlarge', left: 'xxxlarge', right: 'xxxlarge' }}>
           {provisioningStatus === 'IN_PROGRESS' ? (
             <>
               <Layout.Vertical style={{ flex: 1, alignItems: 'center' }} padding="xlarge">
