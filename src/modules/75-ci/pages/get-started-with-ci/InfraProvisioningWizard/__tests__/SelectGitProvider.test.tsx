@@ -9,7 +9,7 @@ import React from 'react'
 import { render, act, fireEvent, waitFor } from '@testing-library/react'
 import { fillAtForm, InputTypes } from '@common/utils/JestFormHelper'
 import { SelectGitProvider } from '../SelectGitProvider'
-import { AllGitProviders, InfraProvisiongWizardStepId } from '../Constants'
+import { AllGitProviders, Hosting, InfraProvisiongWizardStepId } from '../Constants'
 import { InfraProvisioningWizard } from '../InfraProvisioningWizard'
 
 jest.mock('framework/strings', () => ({
@@ -22,7 +22,7 @@ jest.useFakeTimers()
 
 describe('Test SelectGitProvider component', () => {
   test('Initial render', async () => {
-    const { container, getByText } = render(<SelectGitProvider />)
+    const { container, getByText } = render(<SelectGitProvider selectedHosting={Hosting.SaaS} />)
     const gitProviderCards = Array.from(container.querySelectorAll('div[class*="bp3-card"]')) as HTMLElement[]
     expect(gitProviderCards.length).toBe(AllGitProviders.length)
 
@@ -51,7 +51,9 @@ describe('Test SelectGitProvider component', () => {
   })
 
   test('Render with a git provider already selected by the user', async () => {
-    const { container, getByText } = render(<SelectGitProvider selectedGitProvider={AllGitProviders[0]} />)
+    const { container, getByText } = render(
+      <SelectGitProvider selectedGitProvider={AllGitProviders[0]} selectedHosting={Hosting.SaaS} />
+    )
 
     // Access token field should be visible only for Access Token auth method
     await act(async () => {

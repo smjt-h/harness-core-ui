@@ -32,7 +32,8 @@ import {
   AllGitProviders,
   GitAuthenticationMethod,
   GitProvider,
-  GitProviderTypeToAuthenticationMethodMapping
+  GitProviderTypeToAuthenticationMethodMapping,
+  Hosting
 } from './Constants'
 
 import css from './InfraProvisioningWizard.module.scss'
@@ -42,6 +43,7 @@ const OAUTH_REDIRECT_URL_PREFIX = `${location.protocol}//${location.host}/gatewa
 export interface SelectGitProviderRef {
   values: SelectGitProviderInterface
   setFieldTouched(field: keyof SelectGitProviderInterface & string, isTouched?: boolean, shouldValidate?: boolean): void
+  validate: () => boolean
 }
 
 export type SelectGitProviderForwardRef =
@@ -50,6 +52,7 @@ export type SelectGitProviderForwardRef =
   | null
 
 interface SelectGitProviderProps {
+  selectedHosting: Hosting
   selectedGitProvider?: GitProvider
 }
 
@@ -66,7 +69,7 @@ const SelectGitProviderRef = (
   props: SelectGitProviderProps,
   forwardRef: SelectGitProviderForwardRef
 ): React.ReactElement => {
-  const { selectedGitProvider } = props
+  const { selectedGitProvider, selectedHosting } = props
   const { getString } = useStrings()
   const [gitProvider, setGitProvider] = useState<GitProvider>()
   const [authMethod, setAuthMethod] = useState<GitAuthenticationMethod>()
@@ -100,7 +103,8 @@ const SelectGitProviderRef = (
     if (values) {
       forwardRef.current = {
         values: values,
-        setFieldTouched: setFieldTouched
+        setFieldTouched: setFieldTouched,
+        validate: validateGitProviderSetup
       }
     }
   }
@@ -173,7 +177,7 @@ const SelectGitProviderRef = (
     (formikProps: FormikProps<SelectGitProviderInterface>): JSX.Element => {
       switch (gitProvider?.type) {
         case 'Github':
-          return (
+          return selectedHosting === Hosting.SaaS ? (
             <Layout.Horizontal flex={{ justifyContent: 'flex-start' }} spacing="large">
               <FormInput.Text
                 style={{ width: '40%' }}
@@ -195,6 +199,8 @@ const SelectGitProviderRef = (
                 <TestConnection />
               </Container>
             </Layout.Horizontal>
+          ) : (
+            <></>
           )
         case 'Bitbucket':
           return (
@@ -256,10 +262,10 @@ const SelectGitProviderRef = (
           return <></>
       }
     },
-    [gitProvider]
+    [gitProvider, selectedHosting]
   )
 
-  const isNonOAuthMethodSelect = React.useCallback(() => {
+  const isNonOAuthMethodSelect = React.useCallback((): boolean => {
     return (
       (gitProvider?.type === 'Github' && authMethod === GitAuthenticationMethod.AccessToken) ||
       (gitProvider?.type === 'Gitlab' && authMethod === GitAuthenticationMethod.AccessKey) ||
@@ -295,15 +301,84 @@ const SelectGitProviderRef = (
     }
   }, [gitProvider])
 
+  const getInitialValues = React.useCallback((): Record<string, string> => {
+    switch (gitProvider?.type) {
+      case 'Github':
+        return { accessToken: '' }
+      case 'Gitlab':
+        return { accessKey: '' }
+      case 'Bitbucket':
+        return { applicationPassword: '', username: '' }
+      default:
+        return {}
+    }
+  }, [gitProvider])
+
+  const resetField = (field: keyof SelectGitProviderInterface) => {
+    const { setFieldValue, setFieldTouched } = formikRef.current || {}
+    setFieldValue?.(field, '')
+    setFieldTouched?.(field, false)
+  }
+
+  const resetFormFieldsOnGitAuthMethodSelect = React.useCallback((): void => {
+    switch (gitProvider?.type) {
+      case 'Github':
+        resetField('accessToken')
+        return
+      case 'Gitlab':
+        resetField('accessKey')
+        return
+      case 'Bitbucket':
+        resetField('applicationPassword')
+        resetField('username')
+        return
+      default:
+        return
+    }
+  }, [gitProvider, authMethod])
+
+  const markFieldsDirtyToShowValidationErrors = React.useCallback((): void => {
+    switch (gitProvider?.type) {
+      case 'Github':
+        resetField('accessToken')
+        return
+      case 'Gitlab':
+        resetField('accessKey')
+        return
+      case 'Bitbucket':
+        resetField('applicationPassword')
+        resetField('username')
+        return
+      default:
+        return
+    }
+  }, [gitProvider, authMethod])
+
+  const validateGitProviderSetup = React.useCallback((): boolean => {
+    const { accessToken, accessKey, applicationPassword, username } = formikRef.current?.values || {}
+    switch (gitProvider?.type) {
+      case 'Github':
+        return gitProvider?.type === 'Github' && authMethod === GitAuthenticationMethod.AccessToken && !!accessToken
+      case 'Gitlab':
+        return gitProvider?.type === 'Gitlab' && authMethod === GitAuthenticationMethod.AccessKey && !!accessKey
+      case 'Bitbucket':
+        return (
+          gitProvider?.type === 'Bitbucket' &&
+          authMethod === GitAuthenticationMethod.UserNameAndApplicationPassword &&
+          !!username &&
+          !!applicationPassword
+        )
+      default:
+        return false
+    }
+  }, [gitProvider, authMethod])
+
   return (
     <Layout.Vertical width="70%">
       <Text font={{ variation: FontVariation.H4 }}>{getString('ci.getStartedWithCI.codeRepo')}</Text>
       <Formik<SelectGitProviderInterface>
         initialValues={{
-          accessToken: '',
-          accessKey: '',
-          applicationPassword: '',
-          username: '',
+          ...getInitialValues(),
           gitProvider: selectedGitProvider,
           gitAuthenticationMethod: undefined
         }}
@@ -348,7 +423,7 @@ const SelectGitProviderRef = (
                   )}
                   selected={gitProvider}
                   onChange={(item: GitProvider) => {
-                    formikProps.setFieldValue('gitProvider', item.type)
+                    formikProps.setFieldValue('gitProvider', item)
                     setGitProvider(item)
                   }}
                 />
@@ -391,10 +466,11 @@ const SelectGitProviderRef = (
                         round
                         text={getButtonLabel()}
                         onClick={() => {
-                          formikProps.setFieldValue('accessToken', '')
-                          formikProps.setFieldValue('gitAuthenticationMethod', GitAuthenticationMethod.AccessToken)
+                          resetFormFieldsOnGitAuthMethodSelect()
                           if (gitProvider?.type) {
-                            setAuthMethod(GitProviderTypeToAuthenticationMethodMapping.get(gitProvider.type))
+                            const gitAuthMethod = GitProviderTypeToAuthenticationMethodMapping.get(gitProvider.type)
+                            formikProps.setFieldValue('gitAuthenticationMethod', gitAuthMethod)
+                            setAuthMethod(gitAuthMethod)
                           }
                         }}
                         intent={isNonOAuthMethodSelect() ? 'primary' : 'none'}

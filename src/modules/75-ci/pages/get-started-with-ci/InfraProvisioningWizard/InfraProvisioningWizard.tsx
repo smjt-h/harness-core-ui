@@ -15,7 +15,8 @@ import {
   HostedByHarnessBuildLocation,
   InfraProvisiongWizardStepId,
   StepStatus,
-  GitAuthenticationMethod
+  GitAuthenticationMethod,
+  Hosting
 } from './Constants'
 import { SelectBuildLocation } from './SelectBuildLocation'
 import { SelectGitProvider, SelectGitProviderRef } from './SelectGitProvider'
@@ -67,7 +68,7 @@ export const InfraProvisioningWizard: React.FC<InfraProvisioningWizardProps> = p
     [
       InfraProvisiongWizardStepId.SelectGitProvider,
       {
-        stepRender: <SelectGitProvider ref={selectGitProviderRef} />,
+        stepRender: <SelectGitProvider ref={selectGitProviderRef} selectedHosting={Hosting.SaaS} />,
         onClickNext: () => {
           const { values, setFieldTouched } = selectGitProviderRef.current || {}
           const { gitProvider } = values || {}
@@ -101,17 +102,28 @@ export const InfraProvisioningWizard: React.FC<InfraProvisioningWizardProps> = p
           <SelectGitProvider
             ref={selectGitProviderRef}
             selectedGitProvider={selectGitProviderRef.current?.values.gitProvider}
+            selectedHosting={Hosting.SaaS}
           />
         ),
         onClickNext: () => {
           const { values, setFieldTouched } = selectGitProviderRef.current || {}
-          const { accessToken, gitProvider, gitAuthenticationMethod } = values || {}
+          const { accessToken, gitProvider, gitAuthenticationMethod, accessKey, username, applicationPassword } =
+            values || {}
           if (!gitAuthenticationMethod) {
             setFieldTouched?.('gitAuthenticationMethod', true)
             return
           }
-          if (!accessToken) {
+          if (gitProvider?.type === 'Github' && !accessToken) {
             setFieldTouched?.('accessToken', true)
+          } else if (gitProvider?.type === 'Gitlab' && !accessKey) {
+            setFieldTouched?.('accessKey', true)
+          } else if (gitProvider?.type === 'Bitbucket') {
+            if (!username) {
+              setFieldTouched?.('username', true)
+            }
+            if (!applicationPassword) {
+              setFieldTouched?.('applicationPassword', true)
+            }
           }
           if (
             (gitAuthenticationMethod === GitAuthenticationMethod.AccessToken && accessToken && gitProvider) ||
