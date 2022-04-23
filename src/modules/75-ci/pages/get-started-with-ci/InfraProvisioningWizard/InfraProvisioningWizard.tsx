@@ -15,7 +15,6 @@ import {
   HostedByHarnessBuildLocation,
   InfraProvisiongWizardStepId,
   StepStatus,
-  GitAuthenticationMethod,
   Hosting
 } from './Constants'
 import { SelectBuildLocation } from './SelectBuildLocation'
@@ -106,29 +105,9 @@ export const InfraProvisioningWizard: React.FC<InfraProvisioningWizardProps> = p
           />
         ),
         onClickNext: () => {
-          const { values, setFieldTouched } = selectGitProviderRef.current || {}
-          const { accessToken, gitProvider, gitAuthenticationMethod, accessKey, username, applicationPassword } =
-            values || {}
-          if (!gitAuthenticationMethod) {
-            setFieldTouched?.('gitAuthenticationMethod', true)
-            return
-          }
-          if (gitProvider?.type === 'Github' && !accessToken) {
-            setFieldTouched?.('accessToken', true)
-          } else if (gitProvider?.type === 'Gitlab' && !accessKey) {
-            setFieldTouched?.('accessKey', true)
-          } else if (gitProvider?.type === 'Bitbucket') {
-            if (!username) {
-              setFieldTouched?.('username', true)
-            }
-            if (!applicationPassword) {
-              setFieldTouched?.('applicationPassword', true)
-            }
-          }
-          if (
-            (gitAuthenticationMethod === GitAuthenticationMethod.AccessToken && accessToken && gitProvider) ||
-            (gitAuthenticationMethod === GitAuthenticationMethod.OAuth && gitProvider)
-          ) {
+          const { validate, showValidationErrors } = selectGitProviderRef.current || {}
+          showValidationErrors?.()
+          if (validate?.()) {
             setCurrentWizardStepId(InfraProvisiongWizardStepId.SelectRepository)
             updateStepStatus(
               [

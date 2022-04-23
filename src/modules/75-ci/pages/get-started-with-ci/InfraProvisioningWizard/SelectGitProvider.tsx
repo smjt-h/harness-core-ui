@@ -44,6 +44,7 @@ export interface SelectGitProviderRef {
   values: SelectGitProviderInterface
   setFieldTouched(field: keyof SelectGitProviderInterface & string, isTouched?: boolean, shouldValidate?: boolean): void
   validate: () => boolean
+  showValidationErrors: () => void
 }
 
 export type SelectGitProviderForwardRef =
@@ -104,7 +105,8 @@ const SelectGitProviderRef = (
       forwardRef.current = {
         values: values,
         setFieldTouched: setFieldTouched,
-        validate: validateGitProviderSetup
+        validate: validateGitProviderSetup,
+        showValidationErrors: markFieldsTouchedToShowValidationErrors
       }
     }
   }
@@ -337,20 +339,24 @@ const SelectGitProviderRef = (
     }
   }, [gitProvider, authMethod])
 
-  const markFieldsDirtyToShowValidationErrors = React.useCallback((): void => {
-    switch (gitProvider?.type) {
-      case 'Github':
-        resetField('accessToken')
-        return
-      case 'Gitlab':
-        resetField('accessKey')
-        return
-      case 'Bitbucket':
-        resetField('applicationPassword')
-        resetField('username')
-        return
-      default:
-        return
+  const markFieldsTouchedToShowValidationErrors = React.useCallback((): void => {
+    const { values, setFieldTouched } = formikRef.current || {}
+    const { accessToken, accessKey, applicationPassword, username } = values || {}
+    if (!authMethod) {
+      setFieldTouched?.('gitAuthenticationMethod', true)
+      return
+    }
+    if (gitProvider?.type === 'Github' && !accessToken) {
+      setFieldTouched?.('accessToken', true)
+    } else if (gitProvider?.type === 'Gitlab' && !accessKey) {
+      setFieldTouched?.('accessKey', true)
+    } else if (gitProvider?.type === 'Bitbucket') {
+      if (!username) {
+        setFieldTouched?.('username', true)
+      }
+      if (!applicationPassword) {
+        setFieldTouched?.('applicationPassword', true)
+      }
     }
   }, [gitProvider, authMethod])
 
