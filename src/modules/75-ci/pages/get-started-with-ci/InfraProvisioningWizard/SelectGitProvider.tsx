@@ -162,6 +162,8 @@ const SelectGitProviderRef = (
     }
   }
 
+  //#region form view
+
   const getButtonLabel = React.useCallback((): string => {
     switch (gitProvider?.type) {
       case 'Github':
@@ -175,7 +177,7 @@ const SelectGitProviderRef = (
     }
   }, [gitProvider])
 
-  const getViewForNonOAuthMethod = React.useCallback(
+  const renderNonOAuthView = React.useCallback(
     (formikProps: FormikProps<SelectGitProviderInterface>): JSX.Element => {
       switch (gitProvider?.type) {
         case 'Github':
@@ -205,7 +207,7 @@ const SelectGitProviderRef = (
             <></>
           )
         case 'Bitbucket':
-          return (
+          return selectedHosting === Hosting.SaaS ? (
             <Layout.Vertical>
               <Layout.Horizontal flex={{ justifyContent: 'flex-start' }} spacing="large">
                 <FormInput.Text
@@ -239,9 +241,11 @@ const SelectGitProviderRef = (
                 </Container>
               </Layout.Horizontal>
             </Layout.Vertical>
+          ) : (
+            <></>
           )
         case 'Gitlab':
-          return (
+          return selectedHosting === Hosting.SaaS ? (
             <Layout.Horizontal flex={{ justifyContent: 'flex-start' }} spacing="large">
               <FormInput.Text
                 style={{ width: '40%' }}
@@ -259,6 +263,8 @@ const SelectGitProviderRef = (
                 <TestConnection />
               </Container>
             </Layout.Horizontal>
+          ) : (
+            <></>
           )
         default:
           return <></>
@@ -267,77 +273,9 @@ const SelectGitProviderRef = (
     [gitProvider, selectedHosting]
   )
 
-  const isNonOAuthMethodSelect = React.useCallback((): boolean => {
-    return (
-      (gitProvider?.type === 'Github' && authMethod === GitAuthenticationMethod.AccessToken) ||
-      (gitProvider?.type === 'Gitlab' && authMethod === GitAuthenticationMethod.AccessKey) ||
-      (gitProvider?.type === 'Bitbucket' && authMethod === GitAuthenticationMethod.UserNameAndApplicationPassword)
-    )
-  }, [gitProvider, authMethod])
+  //#endregion
 
-  const getValidationSchema = React.useCallback(() => {
-    switch (gitProvider?.type) {
-      case 'Github':
-        return Yup.object().shape({
-          accessToken: Yup.string()
-            .trim()
-            .required(getString('fieldRequired', { field: getString('ci.getStartedWithCI.accessTokenLabel') }))
-        })
-      case 'Gitlab':
-        return Yup.object().shape({
-          accessKey: Yup.string()
-            .trim()
-            .required(getString('fieldRequired', { field: getString('common.accessKey') }))
-        })
-      case 'Bitbucket':
-        return Yup.object().shape({
-          username: Yup.string()
-            .trim()
-            .required(getString('fieldRequired', { field: getString('username') })),
-          applicationPassword: Yup.string()
-            .trim()
-            .required(getString('fieldRequired', { field: getString('ci.getStartedWithCI.appPassword') }))
-        })
-      default:
-        return Yup.object().shape({})
-    }
-  }, [gitProvider])
-
-  const getInitialValues = React.useCallback((): Record<string, string> => {
-    switch (gitProvider?.type) {
-      case 'Github':
-        return { accessToken: '' }
-      case 'Gitlab':
-        return { accessKey: '' }
-      case 'Bitbucket':
-        return { applicationPassword: '', username: '' }
-      default:
-        return {}
-    }
-  }, [gitProvider])
-
-  const resetField = (field: keyof SelectGitProviderInterface) => {
-    const { setFieldValue, setFieldTouched } = formikRef.current || {}
-    setFieldValue?.(field, '')
-    setFieldTouched?.(field, false)
-  }
-
-  const resetFormFieldsOnGitAuthMethodSelect = React.useCallback((): void => {
-    switch (gitProvider?.type) {
-      case 'Github':
-        resetField('accessToken')
-        return
-      case 'Gitlab':
-        resetField('accessKey')
-        return
-      case 'Bitbucket':
-        resetField('applicationPassword')
-        resetField('username')
-        return
-      default:
-        return
-    }
-  }, [gitProvider, authMethod])
+  //#region methods exposed via ref
 
   const markFieldsTouchedToShowValidationErrors = React.useCallback((): void => {
     const { values, setFieldTouched } = formikRef.current || {}
@@ -378,6 +316,88 @@ const SelectGitProviderRef = (
         return false
     }
   }, [gitProvider, authMethod])
+
+  //#endregion
+
+  const isNonOAuthMethodSelect = React.useCallback((): boolean => {
+    return (
+      (gitProvider?.type === 'Github' && authMethod === GitAuthenticationMethod.AccessToken) ||
+      (gitProvider?.type === 'Gitlab' && authMethod === GitAuthenticationMethod.AccessKey) ||
+      (gitProvider?.type === 'Bitbucket' && authMethod === GitAuthenticationMethod.UserNameAndApplicationPassword)
+    )
+  }, [gitProvider, authMethod])
+
+  //#region formik related
+
+  const getInitialValues = React.useCallback((): Record<string, string> => {
+    switch (gitProvider?.type) {
+      case 'Github':
+        return { accessToken: '' }
+      case 'Gitlab':
+        return { accessKey: '' }
+      case 'Bitbucket':
+        return { applicationPassword: '', username: '' }
+      default:
+        return {}
+    }
+  }, [gitProvider])
+
+  const getValidationSchema = React.useCallback(() => {
+    switch (gitProvider?.type) {
+      case 'Github':
+        return Yup.object().shape({
+          accessToken: Yup.string()
+            .trim()
+            .required(getString('fieldRequired', { field: getString('ci.getStartedWithCI.accessTokenLabel') }))
+        })
+      case 'Gitlab':
+        return Yup.object().shape({
+          accessKey: Yup.string()
+            .trim()
+            .required(getString('fieldRequired', { field: getString('common.accessKey') }))
+        })
+      case 'Bitbucket':
+        return Yup.object().shape({
+          username: Yup.string()
+            .trim()
+            .required(getString('fieldRequired', { field: getString('username') })),
+          applicationPassword: Yup.string()
+            .trim()
+            .required(getString('fieldRequired', { field: getString('ci.getStartedWithCI.appPassword') }))
+        })
+      default:
+        return Yup.object().shape({})
+    }
+  }, [gitProvider])
+
+  //#endregion
+
+  //#region on change of a git provider
+
+  const resetField = (field: keyof SelectGitProviderInterface) => {
+    const { setFieldValue, setFieldTouched } = formikRef.current || {}
+    setFieldValue?.(field, '')
+    setFieldTouched?.(field, false)
+  }
+
+  const resetFormFieldsOnGitAuthMethodSelect = React.useCallback((): void => {
+    switch (gitProvider?.type) {
+      case 'Github':
+        resetField('accessToken')
+        return
+      case 'Gitlab':
+        resetField('accessKey')
+        return
+      case 'Bitbucket':
+        resetField('applicationPassword')
+        resetField('username')
+        return
+      default:
+        return
+    }
+  }, [gitProvider, authMethod])
+
+  //#endregion
 
   return (
     <Layout.Vertical width="70%">
@@ -494,7 +514,7 @@ const SelectGitProviderRef = (
                     ) : null}
                   </Layout.Vertical>
                   {isNonOAuthMethodSelect() ? (
-                    <Container padding={{ top: 'xlarge' }}>{getViewForNonOAuthMethod(formikProps)}</Container>
+                    <Container padding={{ top: 'xlarge' }}>{renderNonOAuthView(formikProps)}</Container>
                   ) : null}
                 </>
               ) : null}
