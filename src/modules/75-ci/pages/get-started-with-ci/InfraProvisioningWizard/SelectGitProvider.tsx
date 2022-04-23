@@ -178,11 +178,20 @@ const SelectGitProviderRef = (
   }, [gitProvider])
 
   const renderNonOAuthView = React.useCallback(
-    (formikProps: FormikProps<SelectGitProviderInterface>): JSX.Element => {
+    (_formikProps: FormikProps<SelectGitProviderInterface>): JSX.Element => {
       switch (gitProvider?.type) {
         case 'Github':
-          return selectedHosting === Hosting.SaaS ? (
-            <Layout.Horizontal flex={{ justifyContent: 'flex-start' }} spacing="large">
+          return (
+            <Layout.Vertical>
+              {selectedHosting === Hosting.OnPrem ? (
+                <FormInput.Text
+                  style={{ width: '40%' }}
+                  name="url"
+                  label={<Text font={{ variation: FontVariation.FORM_LABEL }}>{getString('UrlLabel')}</Text>}
+                  tooltipProps={{ dataTooltipId: 'url' }}
+                  disabled={[TestStatus.FAILED, TestStatus.IN_PROGRESS].includes(testConnectionStatus)}
+                />
+              ) : null}
               <FormInput.Text
                 style={{ width: '40%' }}
                 name="accessToken"
@@ -194,59 +203,60 @@ const SelectGitProviderRef = (
                 tooltipProps={{ dataTooltipId: 'accessToken' }}
                 disabled={[TestStatus.FAILED, TestStatus.IN_PROGRESS].includes(testConnectionStatus)}
               />
-              <Container
-                padding={{ top: 'small', left: 'small' }}
-                className={cx({
-                  [css.testConnectionBtnWithError]: formikProps.touched && formikProps.errors.accessToken
-                })}
-              >
-                <TestConnection />
-              </Container>
-            </Layout.Horizontal>
-          ) : (
-            <></>
+            </Layout.Vertical>
           )
         case 'Bitbucket':
-          return selectedHosting === Hosting.SaaS ? (
+          return (
             <Layout.Vertical>
-              <Layout.Horizontal flex={{ justifyContent: 'flex-start' }} spacing="large">
+              {selectedHosting === Hosting.OnPrem ? (
                 <FormInput.Text
                   style={{ width: '40%' }}
-                  name="username"
-                  label={<Text font={{ variation: FontVariation.FORM_LABEL }}>{getString('username')}</Text>}
-                  tooltipProps={{ dataTooltipId: 'username' }}
-                  disabled={[TestStatus.FAILED, TestStatus.IN_PROGRESS].includes(testConnectionStatus)}
-                />
-              </Layout.Horizontal>
-              <Layout.Horizontal flex={{ justifyContent: 'flex-start' }} spacing="large">
-                <FormInput.Text
-                  style={{ width: '40%' }}
-                  name="applicationPassword"
+                  name="url"
                   label={
                     <Text font={{ variation: FontVariation.FORM_LABEL }}>
-                      {getString('ci.getStartedWithCI.appPassword')}
+                      {getString('ci.getStartedWithCI.apiUrlLabel')}
                     </Text>
                   }
-                  tooltipProps={{ dataTooltipId: 'applicationPassword' }}
+                  tooltipProps={{ dataTooltipId: 'url' }}
                   disabled={[TestStatus.FAILED, TestStatus.IN_PROGRESS].includes(testConnectionStatus)}
                 />
-                <Container
-                  padding={{ top: 'small', left: 'small' }}
-                  className={cx({
-                    [css.testConnectionBtnWithError]:
-                      formikProps.touched.applicationPassword && formikProps.errors.applicationPassword
-                  })}
-                >
-                  <TestConnection />
-                </Container>
-              </Layout.Horizontal>
+              ) : null}
+              <FormInput.Text
+                style={{ width: '40%' }}
+                name="username"
+                label={<Text font={{ variation: FontVariation.FORM_LABEL }}>{getString('username')}</Text>}
+                tooltipProps={{ dataTooltipId: 'username' }}
+                disabled={[TestStatus.FAILED, TestStatus.IN_PROGRESS].includes(testConnectionStatus)}
+              />
+              <FormInput.Text
+                style={{ width: '40%' }}
+                name="applicationPassword"
+                label={
+                  <Text font={{ variation: FontVariation.FORM_LABEL }}>
+                    {getString('ci.getStartedWithCI.appPassword')}
+                  </Text>
+                }
+                tooltipProps={{ dataTooltipId: 'applicationPassword' }}
+                disabled={[TestStatus.FAILED, TestStatus.IN_PROGRESS].includes(testConnectionStatus)}
+              />
             </Layout.Vertical>
-          ) : (
-            <></>
           )
         case 'Gitlab':
-          return selectedHosting === Hosting.SaaS ? (
-            <Layout.Horizontal flex={{ justifyContent: 'flex-start' }} spacing="large">
+          return (
+            <Layout.Vertical>
+              {selectedHosting === Hosting.OnPrem ? (
+                <FormInput.Text
+                  style={{ width: '40%' }}
+                  name="url"
+                  label={
+                    <Text font={{ variation: FontVariation.FORM_LABEL }}>
+                      {getString('ci.getStartedWithCI.apiUrlLabel')}
+                    </Text>
+                  }
+                  tooltipProps={{ dataTooltipId: 'url' }}
+                  disabled={[TestStatus.FAILED, TestStatus.IN_PROGRESS].includes(testConnectionStatus)}
+                />
+              ) : null}
               <FormInput.Text
                 style={{ width: '40%' }}
                 name="accessKey"
@@ -254,17 +264,8 @@ const SelectGitProviderRef = (
                 tooltipProps={{ dataTooltipId: 'accessKey' }}
                 disabled={[TestStatus.FAILED, TestStatus.IN_PROGRESS].includes(testConnectionStatus)}
               />
-              <Container
-                padding={{ top: 'small', left: 'small' }}
-                className={cx({
-                  [css.testConnectionBtnWithError]: formikProps.touched.accessKey && formikProps.errors.accessKey
-                })}
-              >
-                <TestConnection />
-              </Container>
-            </Layout.Horizontal>
-          ) : (
-            <></>
+              <TestConnection />
+            </Layout.Vertical>
           )
         default:
           return <></>
