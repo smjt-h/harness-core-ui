@@ -6,6 +6,12 @@ export enum VariableType {
   String = 'String'
 }
 
+export enum Validation {
+  FixedValue = 'FixedValue',
+  AllowedValues = 'AllowedValues',
+  Regex = 'Regex'
+}
+
 export interface VariableFormData {
   name: string
   identifier: string
@@ -14,6 +20,7 @@ export interface VariableFormData {
   fixedValue: string
   allowedValue: string[]
   defaultValue: string
+  validation: Validation.FixedValue
 }
 
 export interface VariableFormDataWithScope extends VariableFormData {
@@ -39,6 +46,8 @@ export function convertVariableFormDataToDTO(data: VariableFormDataWithScope): V
     variable: {
       name: data.name,
       identifier: data.identifier,
+      orgIdentifier: data.orgIdentifier,
+      projectIdentifier: data.projectIdentifier,
       description: data.description,
       type: data.type,
       spec: {

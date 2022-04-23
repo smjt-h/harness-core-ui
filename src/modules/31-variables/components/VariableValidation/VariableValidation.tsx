@@ -3,12 +3,7 @@ import { FormInput } from '@harness/uicore'
 import type { FormikContext } from 'formik'
 import { useStrings } from 'framework/strings'
 import AllowedValuesField from '../AllowedValues/AllowedValuesField'
-
-export enum Validation {
-  FixedValue = 'FixedValue',
-  AllowedValues = 'AllowedValues',
-  Regex = 'Regex'
-}
+import { Validation } from '@variables/utils/VariablesUtils'
 
 interface VariableValidationProps {
   formik: FormikContext<any>

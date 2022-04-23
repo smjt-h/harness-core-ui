@@ -16,7 +16,7 @@ import type { VariableDTO, VariableRequestDTO } from 'services/cd-ng'
 import css from '@variables/components/CreateEditVariable/CreateEditVariable.module.scss'
 
 export interface UseCreateUpdateVariableModalProps {
-  onSuccess?: ((data: any) => void) | (() => void)
+  onSuccess?: ((data: VariableDTO) => void) | (() => void)
   isEdit?: boolean
 }
 
@@ -29,6 +29,10 @@ const useCreateEditVariableModal = (props: UseCreateUpdateVariableModalProps): U
   const [variable, setVariable] = useState<VariableDTO>()
   const { accountId, projectIdentifier, orgIdentifier } = useParams<ProjectPathProps>()
   const { getString } = useStrings()
+  const handleSuccess = (data: VariableDTO) => {
+    hideModal()
+    props.onSuccess?.(data)
+  }
   const [showModal, hideModal] = useModalHook(
     () => (
       <Dialog
@@ -45,6 +49,7 @@ const useCreateEditVariableModal = (props: UseCreateUpdateVariableModalProps): U
           accountId={accountId}
           orgIdentifier={(variable ? variable.orgIdentifier : orgIdentifier) as string}
           projectIdentifier={(variable ? variable.projectIdentifier : projectIdentifier) as string}
+          onSuccess={handleSuccess}
         />
       </Dialog>
     ),

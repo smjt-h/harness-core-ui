@@ -1218,6 +1218,8 @@ export interface StringsMap {
   'secrets.titleSelect': string
   'secrets.typeSSH': string
   'variables.newVariable': string
+  'variables.noVariableExist': string
+  'variables.noVariableFound': string
   'authSettings.SAMLProvider': string
   'authSettings.WhitelistedDomainsUpdated': string
   'authSettings.accountOrOAuthLogin': string
