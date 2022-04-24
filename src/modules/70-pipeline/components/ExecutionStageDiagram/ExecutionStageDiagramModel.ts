@@ -11,7 +11,11 @@ import cx from 'classnames'
 import { last, isEmpty, defaultTo, uniq } from 'lodash-es'
 import type { IconName } from '@harness/uicore'
 import type { UseStringsReturn } from 'framework/strings'
-import { ExecutionStatusEnum, isExecutionRunning } from '@pipeline/utils/statusHelpers'
+import {
+  ExecutionStatusEnum,
+  isExecutionCompletedWithBadState,
+  isExecutionRunning
+} from '@pipeline/utils/statusHelpers'
 import { ExecutionPipeline, ExecutionPipelineNode, ExecutionPipelineNodeType } from './ExecutionPipelineModel'
 import {
   getNodeStyles,
@@ -316,8 +320,12 @@ export class ExecutionStageDiagramModel extends Diagram.DiagramModel {
           const parallelStageNames: Array<string> = []
           let isSelected = false
           const icons: Array<IconName> = []
+          let isFailedStatus = false
           parallel.forEach(nodeP => {
             const { item: stage } = nodeP
+            if (isExecutionCompletedWithBadState(stage?.status)) {
+              isFailedStatus = true
+            }
             if (stage?.identifier === selectedStageId && stage) {
               parallelStageNames.unshift(stage.name)
               icons.unshift(stage.icon)
@@ -327,6 +335,20 @@ export class ExecutionStageDiagramModel extends Diagram.DiagramModel {
               icons.push(stage?.icon as IconName)
             }
           })
+          const failedStage = isFailedStatus
+            ? {
+                secondaryIcon: 'execution-warning' as IconName,
+                secondaryIconProps: { size: 18 },
+                secondaryIconStyle: {
+                  color: 'var(--execution-pipeline-color-dark-red)',
+                  animation: `${css.fadeIn} 1s`,
+                  paddingBottom: `2px`,
+                  top: -7,
+                  right: -7
+                }
+              }
+            : { secondaryIcon: undefined }
+
           const selectedStage = defaultTo(
             parallel.filter(nodeP => nodeP.item?.identifier === selectedStageId)[0],
             parallel[0]
@@ -338,6 +360,7 @@ export class ExecutionStageDiagramModel extends Diagram.DiagramModel {
               defaultTo(selectedStage.item?.type, ExecutionPipelineNodeType.NORMAL),
               NODE_HAS_BORDER
             ),
+            ...failedStage,
             identifier: isSelected ? selectedStageId : node.parallel[0].item?.identifier,
             id: isSelected ? selectedStageId : node.parallel[0].item?.identifier,
             parallelNodes: node.parallel.map(nodeP => defaultTo(nodeP?.item?.identifier, '')),
@@ -358,7 +381,7 @@ export class ExecutionStageDiagramModel extends Diagram.DiagramModel {
           groupedNode.setPosition(startX, startY)
           if (!isEmpty(prevNodes) && prevNodes) {
             prevNodes.forEach((prevNode: Diagram.DefaultNodeModel) => {
-              this.connectedParentToNode(groupedNode, prevNode, !isParallelNode)
+              this.connectedParentToNode(groupedNode, prevNode, false)
             })
           }
           startX += GROUP_NODE_WIDTH
@@ -445,8 +468,12 @@ export class ExecutionStageDiagramModel extends Diagram.DiagramModel {
               const parallelNodes = defaultTo(parallel.slice(pIdx), [])
               let isSelected = false
               const icons: Array<IconName> = []
+              let isFailedStatus = false
               parallelNodes.forEach(nodePP => {
                 const { item: stage } = nodePP
+                if (isExecutionCompletedWithBadState(stage?.status)) {
+                  isFailedStatus = true
+                }
                 if (stage?.identifier === selectedStageId && stage) {
                   parallelStageNames.unshift(stage.name)
                   icons.unshift(stage.icon)
@@ -456,6 +483,19 @@ export class ExecutionStageDiagramModel extends Diagram.DiagramModel {
                   icons.push(stage?.icon as IconName)
                 }
               })
+              const failedStage = isFailedStatus
+                ? {
+                    secondaryIcon: 'execution-warning' as IconName,
+                    secondaryIconProps: { size: 18 },
+                    secondaryIconStyle: {
+                      color: 'var(--execution-pipeline-color-dark-red)',
+                      animation: `${css.fadeIn} 1s`,
+                      paddingBottom: `2px`,
+                      top: -7,
+                      right: -7
+                    }
+                  }
+                : { secondaryIcon: undefined }
               const selectedStage = defaultTo(
                 parallel.filter(nodePP => nodePP.item?.identifier === selectedStageId)[0],
                 parallel[0]
@@ -467,9 +507,11 @@ export class ExecutionStageDiagramModel extends Diagram.DiagramModel {
                   defaultTo(selectedStage.item?.type, ExecutionPipelineNodeType.NORMAL),
                   NODE_HAS_BORDER
                 ),
+                ...failedStage,
                 identifier: isSelected ? selectedStageId : parallelNodes[0].item?.identifier,
                 id: isSelected ? selectedStageId : parallelNodes[0].item?.identifier,
                 parallelNodes: parallelNodes.map(nodePP => defaultTo(nodePP?.item?.identifier, '')),
+                isInComplete: true,
                 name: isSelected
                   ? getString('pipeline.parallelSelectedStages', {
                       selected: parallelStageNames[0],
@@ -485,7 +527,7 @@ export class ExecutionStageDiagramModel extends Diagram.DiagramModel {
               groupedNode.setPosition(newX + PARALLEL_LINES_WIDTH - 18, newY)
               if (!isEmpty(prevNodes) && prevNodes) {
                 prevNodes.forEach((prevNode: Diagram.DefaultNodeModel) => {
-                  this.connectedParentToNode(groupedNode, prevNode, !isParallelNode)
+                  this.connectedParentToNode(groupedNode, prevNode, false)
                 })
               }
               prevNodesAr.push(groupedNode)

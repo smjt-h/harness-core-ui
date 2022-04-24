@@ -8,6 +8,8 @@
 .container {
   min-width: 180px;
   max-width: 240px;
+  max-height: 400px;
+  overflow: scroll;
   .stageRow {
     cursor: pointer;
     position: relative;

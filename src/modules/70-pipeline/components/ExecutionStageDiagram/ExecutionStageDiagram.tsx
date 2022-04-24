@@ -39,6 +39,7 @@ import {
 import { CanvasButtons, CanvasButtonsActions } from '../CanvasButtons/CanvasButtons'
 import * as Diagram from '../Diagram'
 import css from './ExecutionStageDiagram.module.scss'
+import ExecutionStatusLabel from '../ExecutionStatusLabel/ExecutionStatusLabel'
 
 export function findParallelNodeFromNodeId<T>(
   data: ExecutionPipeline<T>,
@@ -81,11 +82,14 @@ export function renderPopover<T>({ data, parallelNodes, selectedStageId, onSelec
             onSelectNode(defaultTo(node.item?.identifier, ''))
           }}
         >
-          <Layout.Horizontal flex={{ alignItems: 'center', justifyContent: 'flex-start' }} spacing="small">
-            {node.item?.icon && <Icon name={node.item.icon} size={20} />}
-            <Text lineClamp={1} font={{ weight: 'semi-bold', size: 'small' }} color={Color.GREY_800}>
-              {node.item?.name}
-            </Text>
+          <Layout.Horizontal flex={{ justifyContent: 'space-between' }}>
+            <Layout.Horizontal flex={{ alignItems: 'center', justifyContent: 'flex-start' }} spacing="small">
+              {node.item?.icon && <Icon name={node.item.icon} size={20} />}
+              <Text lineClamp={1} font={{ weight: 'semi-bold', size: 'small' }} color={Color.GREY_800}>
+                {node.item?.name}
+              </Text>
+            </Layout.Horizontal>
+            <ExecutionStatusLabel status={node.item?.status} />
           </Layout.Horizontal>
         </Container>
       ))}

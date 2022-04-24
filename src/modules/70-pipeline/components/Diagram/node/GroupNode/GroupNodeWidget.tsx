@@ -97,6 +97,15 @@ export function GroupNodeWidget(props: GroupNodeProps): JSX.Element {
           ...options.customNodeStyle
         }}
       >
+        {options.secondaryIcon && (
+          <Icon
+            className={css.secondaryIcon}
+            size={8}
+            name={options.secondaryIcon}
+            style={options.secondaryIconStyle}
+            {...options.secondaryIconProps}
+          />
+        )}
         <div className={css.iconGroup}>
           {options.icons[0] && <Icon size={28} name={options.icons[0]} {...options.iconPropsAr?.[0]} />}
           {options.icons[1] && <Icon size={28} name={options.icons[1]} {...options.iconPropsAr?.[1]} />}
