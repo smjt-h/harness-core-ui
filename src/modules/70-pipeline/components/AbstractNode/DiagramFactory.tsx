@@ -29,7 +29,7 @@ export class DiagramFactory {
   canCreate = false
   canDelete = false
   nodeBank: NodeBank
-  groupNode: React.FC = GroupNode
+  groupNode: any = GroupNode
   listeners: { [id: string]: BaseListener }
   constructor(diagramType?: string) {
     this.nodeBank = new Map<string, NodeDetails>()

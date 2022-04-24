@@ -28,7 +28,6 @@ import type { StageType } from '@pipeline/utils/stageHelpers'
 import type { DeploymentStageElementConfig, StageElementWrapper } from '@pipeline/utils/pipelineTypes'
 import type { TemplateSummaryResponse } from 'services/template-ng'
 import type { GetTemplateProps, GetTemplateResponse } from '@pipeline/utils/useTemplateSelector'
-import type { SelectorData } from '@pipeline/components/PipelineStudio/PipelineContext/PipelineActions'
 import type { DynamicPopoverHandlerBinding } from '@common/components/DynamicPopover/DynamicPopover'
 import { DefaultNodeModel, DiagramType, Event } from '@pipeline/components/Diagram'
 import { PipelineOrStageStatus } from '@pipeline/components/PipelineSteps/AdvancedSteps/ConditionalExecutionPanel/ConditionalExecutionPanelUtils'
@@ -435,11 +434,10 @@ export const getLinkEventListeners = (
     pipelineTemp?: PipelineInfoConfig,
     destinationNode?: StageElementWrapper
   ) => void,
-  openTemplateSelector: (selectorData: SelectorData) => void,
-  closeTemplateSelector: () => void,
   openSplitView: boolean,
   updateMoveStageDetails: (moveStageDetails: MoveStageDetailsType) => void,
   confirmMoveStage: () => void,
+  getTemplate: (data: GetTemplateProps) => Promise<GetTemplateResponse>,
   stageMap: Map<string, StageState>
 ): LinkModelListener => {
   const {
@@ -447,8 +445,7 @@ export const getLinkEventListeners = (
     contextType = 'Pipeline',
     stagesMap,
     renderPipelineStage,
-    getStageFromPipeline: getStageFromPipelineContext,
-    setTemplateTypes
+    getStageFromPipeline: getStageFromPipelineContext
   } = pipelineContext
 
   return {
@@ -466,9 +463,7 @@ export const getLinkEventListeners = (
             renderPipelineStage,
             contextType,
             templateTypes,
-            setTemplateTypes,
-            openTemplateSelector,
-            closeTemplateSelector
+            getTemplate
           },
           { useArrows: false, darkMode: false, fixedPosition: openSplitView }
         )
@@ -560,10 +555,10 @@ export const getNodeEventListerner = (
     pipelineTemp?: PipelineInfoConfig,
     destinationNode?: StageElementWrapper
   ) => void,
-  openTemplateSelector: (selectorData: SelectorData) => void,
-  closeTemplateSelector: () => void,
+
   updateMoveStageDetails: (moveStageDetails: MoveStageDetailsType) => void,
   confirmMoveStage: () => void,
+  getTemplate: (data: GetTemplateProps) => Promise<GetTemplateResponse>,
   stageMap: Map<string, StageState>
 ): NodeModelListener => {
   const {
@@ -578,8 +573,7 @@ export const getNodeEventListerner = (
     updatePipeline,
     updatePipelineView,
     renderPipelineStage,
-    getStageFromPipeline: getStageFromPipelineContext,
-    setTemplateTypes
+    getStageFromPipeline: getStageFromPipelineContext
   } = pipelineContext
   return {
     // Can not remove this Any because of React Diagram Issue
@@ -600,9 +594,7 @@ export const getNodeEventListerner = (
               stagesMap,
               contextType,
               templateTypes,
-              setTemplateTypes,
-              openTemplateSelector,
-              closeTemplateSelector
+              getTemplate
             },
             { useArrows: true, darkMode: false, fixedPosition: false }
           )
@@ -624,9 +616,7 @@ export const getNodeEventListerner = (
                 renderPipelineStage,
                 contextType,
                 templateTypes,
-                setTemplateTypes,
-                openTemplateSelector,
-                closeTemplateSelector
+                getTemplate
               },
               { useArrows: false, darkMode: false, fixedPosition: false }
             )
@@ -651,9 +641,7 @@ export const getNodeEventListerner = (
                   renderPipelineStage,
                   contextType,
                   templateTypes,
-                  setTemplateTypes,
-                  openTemplateSelector,
-                  closeTemplateSelector
+                  getTemplate
                 },
                 { useArrows: false, darkMode: false, fixedPosition: false }
               )
@@ -681,9 +669,7 @@ export const getNodeEventListerner = (
                   renderPipelineStage,
                   contextType,
                   templateTypes,
-                  setTemplateTypes,
-                  openTemplateSelector,
-                  closeTemplateSelector
+                  getTemplate
                 },
                 { useArrows: false, darkMode: false, fixedPosition: false }
               )
@@ -721,9 +707,7 @@ export const getNodeEventListerner = (
             renderPipelineStage,
             contextType,
             templateTypes,
-            setTemplateTypes,
-            openTemplateSelector,
-            closeTemplateSelector
+            getTemplate
           },
           { useArrows: false, darkMode: false, fixedPosition: false },
           event.callback
@@ -813,9 +797,7 @@ export const getNodeEventListerner = (
             renderPipelineStage,
             contextType,
             templateTypes,
-            setTemplateTypes,
-            openTemplateSelector,
-            closeTemplateSelector
+            getTemplate
           },
           { useArrows: true, darkMode: false, fixedPosition: false, placement: 'top' },
           noop,

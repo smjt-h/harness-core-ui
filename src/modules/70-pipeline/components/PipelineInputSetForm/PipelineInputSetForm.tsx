@@ -40,6 +40,7 @@ import { StepType } from '../PipelineSteps/PipelineStepInterface'
 import { getStageFromPipeline } from '../PipelineStudio/StepUtil'
 import { PipelineVariablesContextProvider } from '../PipelineVariablesContext/PipelineVariablesContext'
 import { useVariablesExpression } from '../PipelineStudio/PiplineHooks/useVariablesExpression'
+import { StageAdvancedInputSetForm } from './StageAdvancedInputSetForm'
 import css from './PipelineInputSetForm.module.scss'
 import stepCss from '@pipeline/components/PipelineSteps/Steps/Steps.module.scss'
 

@@ -66,7 +66,7 @@ import { useStageBuilderCanvasState } from './useStageBuilderCanvasState'
 import { StageList } from './views/StageList'
 import { SplitViewTypes } from '../PipelineContext/PipelineActions'
 import { usePipelineContext } from '../PipelineContext/PipelineContext'
-import { getLinkEventListenersOld, getLinkListernersOld } from './StageBuildOldUtils'
+import { getNodeListenersOld, getLinkListernersOld } from './StageBuildOldUtils'
 import css from './StageBuilder.module.scss'
 
 const diagram = new DiagramFactory('graph')
@@ -191,10 +191,7 @@ export const renderPopover = ({
         }
       },
       contextType: contextType,
-      templateTypes,
-      setTemplateTypes,
-      openTemplateSelector,
-      closeTemplateSelector
+      getTemplate
     })
   }
   return renderPipelineStage({
@@ -632,7 +629,7 @@ function StageBuilder(): JSX.Element {
     }
   })
 
-  const nodeListeners: NodeModelListener = getLinkEventListenersOld(
+  const nodeListeners: NodeModelListener = getNodeListenersOld(
     updateStageOnAddLink,
     setSelectionRef,
     confirmDeleteStage,
@@ -640,10 +637,9 @@ function StageBuilder(): JSX.Element {
     dynamicPopoverHandler,
     pipelineContext,
     addStage,
-    openTemplateSelector,
-    closeTemplateSelector,
     updateMoveStageDetails,
     confirmMoveStage,
+    getTemplate,
     stageMap,
     engine
   )
@@ -656,10 +652,9 @@ function StageBuilder(): JSX.Element {
     dynamicPopoverHandler,
     pipelineContext,
     addStageNew,
-    openTemplateSelector,
-    closeTemplateSelector,
     updateMoveStageDetails,
     confirmMoveStage,
+    getTemplate,
     stageMap
   )
 
@@ -681,11 +676,10 @@ function StageBuilder(): JSX.Element {
     dynamicPopoverHandler,
     pipelineContext,
     addStage,
-    openTemplateSelector,
-    closeTemplateSelector,
     openSplitView,
     updateMoveStageDetails,
     confirmMoveStage,
+    getTemplate,
     stageMap
   )
 
@@ -693,11 +687,10 @@ function StageBuilder(): JSX.Element {
     dynamicPopoverHandler,
     pipelineContext,
     addStageNew,
-    openTemplateSelector,
-    closeTemplateSelector,
     openSplitView,
     updateMoveStageDetails,
     confirmMoveStage,
+    getTemplate,
     stageMap
   )
 

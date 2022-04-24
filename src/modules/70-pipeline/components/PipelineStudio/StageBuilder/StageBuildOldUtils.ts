@@ -4,7 +4,6 @@ import type { NodeModelListener, LinkModelListener, DiagramEngine } from '@proje
 import type { StageElementWrapperConfig, PipelineInfoConfig } from 'services/cd-ng'
 import type * as Diagram from '@pipeline/components/Diagram'
 import type { DeploymentStageElementConfig, StageElementWrapper } from '@pipeline/utils/pipelineTypes'
-import type { SelectorData } from '@pipeline/components/PipelineStudio/PipelineContext/PipelineActions'
 import {
   DefaultLinkEvent,
   DefaultNodeEvent,
@@ -16,6 +15,7 @@ import {
 import type { DynamicPopoverHandlerBinding } from '@common/components/DynamicPopover/DynamicPopover'
 import { moveStageToFocusDelayed } from '@pipeline/components/ExecutionStageDiagram/ExecutionStageDiagramUtils'
 import { PipelineOrStageStatus } from '@pipeline/components/PipelineSteps/AdvancedSteps/ConditionalExecutionPanel/ConditionalExecutionPanelUtils'
+import type { GetTemplateProps, GetTemplateResponse } from '@pipeline/utils/useTemplateSelector'
 import { EmptyStageName } from '../PipelineConstants'
 import type { PipelineContextInterface } from '../PipelineContext/PipelineContext'
 import type { MoveStageDetailsType } from './StageBuilder'
@@ -37,7 +37,7 @@ export enum MoveDirection {
   BEHIND
 }
 
-export const getLinkEventListenersOld = (
+export const getNodeListenersOld = (
   updateStageOnAddLink: (event: any, dropNode: StageElementWrapper | undefined, current: any) => void,
   setSelectionRef: MutableRefObject<(selectionState: PipelineSelectionState) => void>,
   confirmDeleteStage: () => void,
@@ -53,10 +53,10 @@ export const getLinkEventListenersOld = (
     openSetupAfterAdd?: boolean,
     pipeline?: PipelineInfoConfig
   ) => void,
-  openTemplateSelector: (selectorData: SelectorData) => void,
-  closeTemplateSelector: () => void,
+
   updateMoveStageDetails: (moveStageDetails: MoveStageDetailsType) => void,
   confirmMoveStage: () => void,
+  getTemplate: (data: GetTemplateProps) => Promise<GetTemplateResponse>,
   stageMap: Map<string, StageState>,
   engine: DiagramEngine
 ): NodeModelListener => {
@@ -73,8 +73,7 @@ export const getLinkEventListenersOld = (
     updatePipeline,
     updatePipelineView,
     renderPipelineStage,
-    getStageFromPipeline,
-    setTemplateTypes
+    getStageFromPipeline
   } = pipelineContext
   return {
     // Can not remove this Any because of React Diagram Issue
@@ -94,9 +93,7 @@ export const getLinkEventListenersOld = (
               stagesMap,
               contextType,
               templateTypes,
-              setTemplateTypes,
-              openTemplateSelector,
-              closeTemplateSelector
+              getTemplate
             },
             { useArrows: true, darkMode: false, fixedPosition: false }
           )
@@ -121,10 +118,8 @@ export const getLinkEventListenersOld = (
                 stagesMap,
                 renderPipelineStage,
                 contextType,
-                templateTypes,
-                setTemplateTypes,
-                openTemplateSelector,
-                closeTemplateSelector
+                getTemplate,
+                templateTypes
               },
               { useArrows: false, darkMode: false, fixedPosition: false }
             )
@@ -149,10 +144,8 @@ export const getLinkEventListenersOld = (
                   stagesMap,
                   renderPipelineStage,
                   contextType,
-                  templateTypes,
-                  setTemplateTypes,
-                  openTemplateSelector,
-                  closeTemplateSelector
+                  getTemplate,
+                  templateTypes
                 },
                 { useArrows: false, darkMode: false, fixedPosition: false }
               )
@@ -182,10 +175,8 @@ export const getLinkEventListenersOld = (
                   stagesMap,
                   renderPipelineStage,
                   contextType,
-                  templateTypes,
-                  setTemplateTypes,
-                  openTemplateSelector,
-                  closeTemplateSelector
+                  getTemplate,
+                  templateTypes
                 },
                 { useArrows: false, darkMode: false, fixedPosition: false }
               )
@@ -224,10 +215,8 @@ export const getLinkEventListenersOld = (
             stagesMap,
             renderPipelineStage,
             contextType,
-            templateTypes,
-            setTemplateTypes,
-            openTemplateSelector,
-            closeTemplateSelector
+            getTemplate,
+            templateTypes
           },
           { useArrows: false, darkMode: false, fixedPosition: false },
           eventTemp.callback
@@ -318,10 +307,8 @@ export const getLinkEventListenersOld = (
             stagesMap,
             renderPipelineStage,
             contextType,
-            templateTypes,
-            setTemplateTypes,
-            openTemplateSelector,
-            closeTemplateSelector
+            getTemplate,
+            templateTypes
           },
           { useArrows: true, darkMode: false, fixedPosition: false, placement: 'top' },
           noop,
@@ -350,11 +337,11 @@ export const getLinkListernersOld = (
     openSetupAfterAdd?: boolean,
     pipeline?: PipelineInfoConfig
   ) => void,
-  openTemplateSelector: (selectorData: SelectorData) => void,
-  closeTemplateSelector: () => void,
+
   openSplitView: boolean,
   updateMoveStageDetails: (moveStageDetails: MoveStageDetailsType) => void,
   confirmMoveStage: () => void,
+  getTemplate: (data: GetTemplateProps) => Promise<GetTemplateResponse>,
   stageMap: Map<string, StageState>
 ): LinkModelListener => {
   const {
@@ -362,8 +349,7 @@ export const getLinkListernersOld = (
     contextType = 'Pipeline',
     stagesMap,
     renderPipelineStage,
-    getStageFromPipeline,
-    setTemplateTypes
+    getStageFromPipeline
   } = pipelineContext
   return {
     [Event.AddLinkClicked]: (event: any) => {
@@ -379,10 +365,8 @@ export const getLinkListernersOld = (
             stagesMap,
             renderPipelineStage,
             contextType,
-            templateTypes,
-            setTemplateTypes,
-            openTemplateSelector,
-            closeTemplateSelector
+            getTemplate,
+            templateTypes
           },
           { useArrows: false, darkMode: false, fixedPosition: openSplitView }
         )

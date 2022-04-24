@@ -54,7 +54,7 @@
   position: relative;
   height: 100%;
   width: 100%;
-  // transform-origin: top left;
+  transform-origin: top left;
 }
 
 .main {
@@ -79,7 +79,7 @@
 .common {
   inset: 0px;
   position: absolute;
-  // transform-origin: 0px 0px;
+  transform-origin: 0px 0px;
   width: 100%;
   height: 100%;
   overflow: visible;

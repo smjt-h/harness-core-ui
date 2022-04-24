@@ -31,7 +31,6 @@ const getScaledValue = (value: number, scalingFactor: number): number => {
   } else {
     finalValue = valueMultiplied + mulFactor
   }
-
   return finalValue
 }
 interface DrawSVGPathOptions {
@@ -149,23 +148,32 @@ const getComputedPosition = (
     const childEl = typeof childId === 'string' ? (document.getElementById(childId) as HTMLDivElement) : childId
     const childPos = childEl?.getBoundingClientRect() as DOMRect
     const parentPos = defaultTo(parentElement, childEl.closest('#tree-container'))?.getBoundingClientRect() as DOMRect
-
-    const updatedTop = childPos.top - parentPos.top
-    const updatedLeft = childPos.left - parentPos.left
-    const updatedRight = updatedLeft + childPos.width
-    const updatedBottom = updatedTop + childPos.height
+    // console.log(childId)
+    let updatedTop = childPos.top - parentPos.top
+    updatedTop = getScaledValue(updatedTop, scalingFactor)
+    // console.log({ original: childPos.top - parentPos.top, updated: updatedTop, dim: 'top' })
+    let updatedLeft = childPos.left - parentPos.left
+    updatedLeft = getScaledValue(updatedLeft, scalingFactor)
+    // console.log({ original: childPos.left - parentPos.left, updated: updatedLeft, dim: 'left' })
+    let updatedRight = updatedLeft + childPos.width
+    updatedRight = getScaledValue(updatedRight, scalingFactor)
+    // console.log({ original: updatedLeft + childPos.width, updated: updatedRight, dim: 'right' })
+    let updatedBottom = updatedTop + childPos.height
+    updatedBottom = getScaledValue(updatedBottom, scalingFactor)
+    // console.log({ original: updatedTop + childPos.height, updated: updatedBottom, dim: 'bottom' })
 
     const updatedPos: DOMRect = {
       ...childPos,
-      left: getScaledValue(updatedLeft, scalingFactor),
-      top: getScaledValue(updatedTop, scalingFactor),
-      right: getScaledValue(updatedRight, scalingFactor),
+      left: updatedLeft,
+      top: updatedTop,
+      right: updatedRight,
       bottom: updatedBottom,
       width: childPos.width,
       height: childPos.height,
       x: childPos.x,
       y: childPos.y
     }
+    // console.log(updatedPos)
     return updatedPos
   } catch (e) {
     return null
@@ -309,7 +317,6 @@ const getPipelineGraphData = (
 
   return graphState
 }
-
 const trasformStageData = (stages: StageElementWrapperConfig[], graphType: PipelineGraphType): PipelineGraphState[] => {
   const finalData: PipelineGraphState[] = []
 
