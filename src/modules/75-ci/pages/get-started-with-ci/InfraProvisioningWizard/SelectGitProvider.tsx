@@ -26,6 +26,7 @@ import {
   FormError
 } from '@harness/uicore'
 import { useStrings } from 'framework/strings'
+import type { StringsMap } from 'stringTypes'
 import { OAuthProviders, OAuthProviderType } from '@common/constants/OAuthProviders'
 import { TestStatus } from '@common/components/TestConnectionWidget/TestConnectionWidget'
 import {
@@ -177,93 +178,78 @@ const SelectGitProviderRef = (
     }
   }, [gitProvider])
 
+  const renderTextField = React.useCallback(
+    ({ name, label, tooltipId }: { name: string; label: keyof StringsMap; tooltipId: string }) => {
+      return (
+        <FormInput.Text
+          style={{ width: '40%' }}
+          name={name}
+          label={<Text font={{ variation: FontVariation.FORM_LABEL }}>{getString(label)}</Text>}
+          tooltipProps={{ dataTooltipId: tooltipId }}
+          disabled={[TestStatus.FAILED, TestStatus.IN_PROGRESS].includes(testConnectionStatus)}
+        />
+      )
+    },
+    [testConnectionStatus]
+  )
+
   const renderNonOAuthView = React.useCallback(
     (_formikProps: FormikProps<SelectGitProviderInterface>): JSX.Element => {
       switch (gitProvider?.type) {
         case 'Github':
           return (
             <Layout.Vertical>
-              {selectedHosting === Hosting.OnPrem ? (
-                <FormInput.Text
-                  style={{ width: '40%' }}
-                  name="url"
-                  label={<Text font={{ variation: FontVariation.FORM_LABEL }}>{getString('UrlLabel')}</Text>}
-                  tooltipProps={{ dataTooltipId: 'url' }}
-                  disabled={[TestStatus.FAILED, TestStatus.IN_PROGRESS].includes(testConnectionStatus)}
-                />
-              ) : null}
-              <FormInput.Text
-                style={{ width: '40%' }}
-                name="accessToken"
-                label={
-                  <Text font={{ variation: FontVariation.FORM_LABEL }}>
-                    {getString('ci.getStartedWithCI.accessTokenLabel')}
-                  </Text>
-                }
-                tooltipProps={{ dataTooltipId: 'accessToken' }}
-                disabled={[TestStatus.FAILED, TestStatus.IN_PROGRESS].includes(testConnectionStatus)}
-              />
+              {selectedHosting === Hosting.OnPrem
+                ? renderTextField({
+                    name: 'url',
+                    label: 'UrlLabel',
+                    tooltipId: 'url'
+                  })
+                : null}
+              {renderTextField({
+                name: 'accessToken',
+                label: 'ci.getStartedWithCI.accessTokenLabel',
+                tooltipId: 'accessToken'
+              })}
             </Layout.Vertical>
           )
         case 'Bitbucket':
           return (
             <Layout.Vertical>
-              {selectedHosting === Hosting.OnPrem ? (
-                <FormInput.Text
-                  style={{ width: '40%' }}
-                  name="url"
-                  label={
-                    <Text font={{ variation: FontVariation.FORM_LABEL }}>
-                      {getString('ci.getStartedWithCI.apiUrlLabel')}
-                    </Text>
-                  }
-                  tooltipProps={{ dataTooltipId: 'url' }}
-                  disabled={[TestStatus.FAILED, TestStatus.IN_PROGRESS].includes(testConnectionStatus)}
-                />
-              ) : null}
-              <FormInput.Text
-                style={{ width: '40%' }}
-                name="username"
-                label={<Text font={{ variation: FontVariation.FORM_LABEL }}>{getString('username')}</Text>}
-                tooltipProps={{ dataTooltipId: 'username' }}
-                disabled={[TestStatus.FAILED, TestStatus.IN_PROGRESS].includes(testConnectionStatus)}
-              />
-              <FormInput.Text
-                style={{ width: '40%' }}
-                name="applicationPassword"
-                label={
-                  <Text font={{ variation: FontVariation.FORM_LABEL }}>
-                    {getString('ci.getStartedWithCI.appPassword')}
-                  </Text>
-                }
-                tooltipProps={{ dataTooltipId: 'applicationPassword' }}
-                disabled={[TestStatus.FAILED, TestStatus.IN_PROGRESS].includes(testConnectionStatus)}
-              />
+              {selectedHosting === Hosting.OnPrem
+                ? renderTextField({
+                    name: 'url',
+                    label: 'ci.getStartedWithCI.apiUrlLabel',
+                    tooltipId: 'url'
+                  })
+                : null}
+              {renderTextField({
+                name: 'username',
+                label: 'username',
+                tooltipId: 'username'
+              })}
+              {renderTextField({
+                name: 'applicationPassword',
+                label: 'ci.getStartedWithCI.appPassword',
+                tooltipId: 'applicationPassword'
+              })}
             </Layout.Vertical>
           )
         case 'Gitlab':
           return (
             <Layout.Vertical>
-              {selectedHosting === Hosting.OnPrem ? (
-                <FormInput.Text
-                  style={{ width: '40%' }}
-                  name="url"
-                  label={
-                    <Text font={{ variation: FontVariation.FORM_LABEL }}>
-                      {getString('ci.getStartedWithCI.apiUrlLabel')}
-                    </Text>
-                  }
-                  tooltipProps={{ dataTooltipId: 'url' }}
-                  disabled={[TestStatus.FAILED, TestStatus.IN_PROGRESS].includes(testConnectionStatus)}
-                />
-              ) : null}
-              <FormInput.Text
-                style={{ width: '40%' }}
-                name="accessKey"
-                label={<Text font={{ variation: FontVariation.FORM_LABEL }}>{getString('common.accessKey')}</Text>}
-                tooltipProps={{ dataTooltipId: 'accessKey' }}
-                disabled={[TestStatus.FAILED, TestStatus.IN_PROGRESS].includes(testConnectionStatus)}
-              />
+              {selectedHosting === Hosting.OnPrem
+                ? renderTextField({
+                    name: 'url',
+                    label: 'ci.getStartedWithCI.apiUrlLabel',
+                    tooltipId: 'url'
+                  })
+                : null}
+              {renderTextField({
+                name: 'accessKey',
+                label: 'common.accessKey',
+                tooltipId: 'accessKey'
+              })}
               <TestConnection />
             </Layout.Vertical>
           )
