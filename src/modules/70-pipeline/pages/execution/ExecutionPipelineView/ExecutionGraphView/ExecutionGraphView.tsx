@@ -110,7 +110,7 @@ export default function ExecutionGraphView(): React.ReactElement {
   )
   const [layoutState] = layouts
   const [isStepDetailsVisible, setStepDetailsVisibility] = React.useState(false)
-  const [primaryPaneSize, setPrimaryPaneSize] = React.useState(250)
+  const [primaryPaneSize, setPrimaryPaneSize] = React.useState(300)
   const [tertiaryPaneSize, setTertiaryPaneSize] = React.useState(
     layoutState === ExecutionLayoutState.RIGHT ? RIGHT_LAYOUT_DEFAULT_SIZE : BOTTOM_LAYOUT_DEFAULT_SIZE
   )

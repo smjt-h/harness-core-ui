@@ -8,19 +8,23 @@
 // this is an auto-generated file, do not update this manually
 declare const styles: {
   readonly canvas: string
+  readonly container: string
   readonly errorTooltip: string
   readonly fadeIn: string
   readonly groupLabels: string
   readonly label: string
   readonly main: string
+  readonly renderPopover: string
   readonly rotate: string
   readonly runningNode: string
+  readonly secondaryIcon: string
   readonly selected: string
   readonly selectedLabel: string
   readonly shine: string
   readonly stageButton: string
   readonly stageError: string
   readonly stageItem: string
+  readonly stageRow: string
   readonly stageSelection: string
   readonly whiteBackground: string
 }

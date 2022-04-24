@@ -67,12 +67,16 @@ export class DiagramModel<G extends DiagramModelGenerics = DiagramModelGenerics>
         for (const keyLink in links) {
           const link = links[keyLink]
           link.getSourcePort().removeLink(link)
+          // this.getActiveLinkLayer().removeModel(link.getSourcePort().getID())
           link.getTargetPort().removeLink(link)
+          // this.getActiveLinkLayer().removeModel(link.getTargetPort().getID())
           this.removeLink(link)
+          // this.getActiveLinkLayer().removeModel(link.getID())
         }
       }
 
       this.removeNode(node)
+      this.getActiveLinkLayer().removeModel(node.getID())
     }
   }
 

@@ -8,7 +8,9 @@
 import type { LinkModelListener, NodeModelListener } from '@projectstorm/react-diagrams-core'
 import type { BaseModelListener } from '@projectstorm/react-canvas-core'
 import cx from 'classnames'
-import { last, isEmpty } from 'lodash-es'
+import { last, isEmpty, defaultTo, uniq } from 'lodash-es'
+import type { IconName } from '@harness/uicore'
+import type { UseStringsReturn } from 'framework/strings'
 import { ExecutionStatusEnum, isExecutionRunning } from '@pipeline/utils/statusHelpers'
 import { ExecutionPipeline, ExecutionPipelineNode, ExecutionPipelineNodeType } from './ExecutionPipelineModel'
 import {
@@ -31,7 +33,7 @@ import css from './ExecutionStageDiagram.module.scss'
 
 const SPACE_AFTER_GROUP = 0.2
 const GROUP_HEADER_DEPTH = 0.3
-
+const GROUP_NODE_WIDTH = 90
 export interface NodeStyleInterface {
   width: number
   height: number
@@ -52,6 +54,19 @@ export interface Listeners {
 
 export const EmptyNodeSeparator = '$node$'
 
+interface AddUpdateGraphArgs<T> {
+  pipeline: ExecutionPipeline<T>
+  listeners: Listeners
+  showParallelStagesGroup: boolean
+  getString: UseStringsReturn['getString']
+  selectedId?: string
+  zoomLevel: number
+  diagramContainerHeight?: number
+  showStartEndNode?: boolean
+  showEndNode?: boolean
+  groupStage?: Map<string, GroupState<T>>
+  hideCollapseButton?: boolean
+}
 export interface ExecutionStageDiagramConfiguration {
   FIRST_AND_LAST_SEGMENT_LENGTH: number
   SPACE_BETWEEN_ELEMENTS: number
@@ -68,6 +83,9 @@ export interface ExecutionStageDiagramConfiguration {
 interface RenderGraphNodesProps<T> {
   node: ExecutionPipelineNode<T>
   startX: number
+  showParallelStagesGroup: boolean
+  getString: UseStringsReturn['getString']
+  zoomLevel: number
   startY: number
   selectedStageId?: string
   disableCollapseButton?: boolean
@@ -120,6 +138,31 @@ export class ExecutionStageDiagramModel extends Diagram.DiagramModel {
     Object.assign(this.diagConfig, diagConfig)
   }
 
+  removeParallelNodes<T>(parallel: ExecutionPipelineNode<T>[]): void {
+    const startNode = this.getNodeFromId(
+      `${EmptyNodeSeparator}-${EmptyNodeSeparator}${
+        parallel[0].item?.identifier || parallel[0].group?.identifier
+      }-Start`
+    )
+    if (startNode) {
+      this.clearAllLinksForNodeAndNode(startNode.getID())
+    }
+
+    const emptyNodeEnd = this.getNodeFromId(
+      `${EmptyNodeSeparator}${parallel[0].item?.identifier || parallel[0].group?.identifier}${EmptyNodeSeparator}-End`
+    )
+
+    if (emptyNodeEnd) {
+      this.clearAllLinksForNodeAndNode(emptyNodeEnd.getID())
+    }
+    parallel.forEach(nodeP => {
+      const node = this.getNodeFromId(defaultTo(nodeP.item?.identifier, ''))
+      if (node) {
+        this.clearAllLinksForNodeAndNode(node.getID())
+      }
+    })
+  }
+
   renderGraphNodes<T>(props: RenderGraphNodesProps<T>): {
     startX: number
     startY: number
@@ -131,6 +174,9 @@ export class ExecutionStageDiagramModel extends Diagram.DiagramModel {
       disableCollapseButton,
       diagramContainerHeight,
       showEndNode,
+      zoomLevel,
+      getString,
+      showParallelStagesGroup,
       groupStage = new Map(),
       verticalStepGroup = false,
       isRootGroup = true,
@@ -262,124 +308,243 @@ export class ExecutionStageDiagramModel extends Diagram.DiagramModel {
       return { startX, startY, prevNodes: [nodeRender] }
     } else if (node.parallel && prevNodes) {
       const { parallel } = node
-      /* istanbul ignore else */ if (parallel.length > 0) {
-        // lines calculation
-        const inLineStatus = getParallelNodesStatusForInLine(parallel)
-        const outLinesStatus = getParallelNodesStatusForOutLines(parallel)
-
-        let newX = startX
-        let newY = startY
-        /* istanbul ignore else */ if (!isEmpty(prevNodes)) {
-          const emptyNodeStart =
-            this.getNodeFromId(
-              `${EmptyNodeSeparator}-${EmptyNodeSeparator}${
-                parallel[0].item?.identifier || parallel[0].group?.identifier
-              }-Start`
-            ) ||
-            new Diagram.EmptyNodeModel({
-              id: `${EmptyNodeSeparator}-${EmptyNodeSeparator}${
-                parallel[0].item?.identifier || parallel[0].group?.identifier
-              }-Start`,
-              name: 'Empty',
-              showPorts: !verticalStepGroup,
-              hideOutPort: true
+      const splitSize = defaultTo(diagramContainerHeight, 0)
+      const availableNodesRender = Math.floor(splitSize / ((this.gapY * zoomLevel) / 100))
+      this.removeParallelNodes(parallel)
+      /* istanbul ignore else */ if (parallel.length > 1) {
+        if (splitSize < this.gapY * parallel.length + 40 && availableNodesRender === 1) {
+          const parallelStageNames: Array<string> = []
+          let isSelected = false
+          const icons: Array<IconName> = []
+          parallel.forEach(nodeP => {
+            const { item: stage } = nodeP
+            if (stage?.identifier === selectedStageId && stage) {
+              parallelStageNames.unshift(stage.name)
+              icons.unshift(stage.icon)
+              isSelected = true
+            } else {
+              parallelStageNames.push(stage?.name || '')
+              icons.push(stage?.icon as IconName)
+            }
+          })
+          const selectedStage = defaultTo(
+            parallel.filter(nodeP => nodeP.item?.identifier === selectedStageId)[0],
+            parallel[0]
+          )
+          const groupedNode = new Diagram.GroupNodeModel({
+            customNodeStyle: getNodeStyles(
+              isSelected,
+              defaultTo(selectedStage.item?.status, 'NotStarted'),
+              defaultTo(selectedStage.item?.type, ExecutionPipelineNodeType.NORMAL),
+              NODE_HAS_BORDER
+            ),
+            identifier: isSelected ? selectedStageId : node.parallel[0].item?.identifier,
+            id: isSelected ? selectedStageId : node.parallel[0].item?.identifier,
+            parallelNodes: node.parallel.map(nodeP => defaultTo(nodeP?.item?.identifier, '')),
+            name:
+              parallelStageNames.length > 2
+                ? getString('pipeline.parallelSelectedStages', {
+                    selected: parallelStageNames[0],
+                    total: parallelStageNames.length - 1
+                  })
+                : parallelStageNames.join(', '),
+            width: GROUP_NODE_WIDTH,
+            allowAdd: true,
+            height: 40,
+            icons: uniq(icons)
+          })
+          startX += isFirstNode ? FIRST_AND_LAST_SEGMENT_LENGTH : SPACE_BETWEEN_ELEMENTS
+          this.addNode(groupedNode)
+          groupedNode.setPosition(startX, startY)
+          if (!isEmpty(prevNodes) && prevNodes) {
+            prevNodes.forEach((prevNode: Diagram.DefaultNodeModel) => {
+              this.connectedParentToNode(groupedNode, prevNode, !isParallelNode)
             })
-          this.addNode(emptyNodeStart)
-
-          newX += verticalStepGroup
-            ? 0
-            : isFirstNode
-            ? FIRST_AND_LAST_SEGMENT_LENGTH
-            : isFirstStepGroupNode
-            ? FIRST_AND_LAST_SEGMENT_IN_GROUP_LENGTH
-            : SPACE_BETWEEN_ELEMENTS
-
-          emptyNodeStart.setPosition(newX, newY)
-          prevNodes.forEach((prevNode: Diagram.DefaultNodeModel) => {
-            this.connectedParentToNode(
-              emptyNodeStart,
-              prevNode,
-              false,
-              0,
-              getArrowsColor(inLineStatus, undefined, verticalStepGroup)
-            )
-          })
-          prevNodes = [emptyNodeStart]
-        }
-        const prevNodesAr: Diagram.DefaultNodeModel[] = []
-        parallel.forEach((nodeP, pIdx) => {
-          const resp = this.renderGraphNodes({
-            node: nodeP,
-            startX: newX,
-            startY: newY,
-            selectedStageId: selectedStageId,
-            disableCollapseButton: disableCollapseButton,
-            diagramContainerHeight: diagramContainerHeight,
-            prevNodes: prevNodes,
-            showEndNode: showEndNode,
-            groupStage: groupStage,
-            verticalStepGroup: verticalStepGroup,
-            isRootGroup: isRootGroup && pIdx == 0,
-            isParallelNode: true
-          })
-
-          startX = Math.max(startX, resp.startX)
-
-          const depthYParallel = calculateDepth(nodeP, groupStage, SPACE_AFTER_GROUP, SPACE_AFTER_GROUP)
-          newY = resp.startY + this.gapY * depthYParallel
-          /* istanbul ignore else */ if (resp.prevNodes) {
-            prevNodesAr.push(...resp.prevNodes)
           }
-        })
-        /* istanbul ignore else */ if (!isEmpty(prevNodesAr)) {
-          const emptyNodeId = `${EmptyNodeSeparator}${
-            parallel[0].item?.identifier || parallel[0].group?.identifier
-          }${EmptyNodeSeparator}-End`
-          const emptyNodeEnd =
-            this.getNodeFromId(emptyNodeId) ||
-            new Diagram.EmptyNodeModel({
-              id: emptyNodeId,
-              name: 'Empty',
-              showPorts: !verticalStepGroup,
-              hideInPort: true,
-              hideOutPort: !outLinesStatus.displayLines && ALLOW_PORT_HIDE
+          startX += GROUP_NODE_WIDTH
+          prevNodes = [groupedNode]
+        } else {
+          // lines calculation
+          const inLineStatus = getParallelNodesStatusForInLine(parallel)
+          const outLinesStatus = getParallelNodesStatusForOutLines(parallel)
+
+          let newX = startX
+          let newY = startY
+          /* istanbul ignore else */ if (!isEmpty(prevNodes)) {
+            const emptyNodeStart =
+              this.getNodeFromId(
+                `${EmptyNodeSeparator}-${EmptyNodeSeparator}${
+                  parallel[0].item?.identifier || parallel[0].group?.identifier
+                }-Start`
+              ) ||
+              new Diagram.EmptyNodeModel({
+                id: `${EmptyNodeSeparator}-${EmptyNodeSeparator}${
+                  parallel[0].item?.identifier || parallel[0].group?.identifier
+                }-Start`,
+                name: 'Empty',
+                showPorts: !verticalStepGroup,
+                hideOutPort: true
+              })
+            this.addNode(emptyNodeStart)
+
+            newX += verticalStepGroup
+              ? 0
+              : isFirstNode
+              ? FIRST_AND_LAST_SEGMENT_LENGTH
+              : isFirstStepGroupNode
+              ? FIRST_AND_LAST_SEGMENT_IN_GROUP_LENGTH
+              : SPACE_BETWEEN_ELEMENTS
+
+            emptyNodeStart.setPosition(newX, newY)
+            prevNodes.forEach((prevNode: Diagram.DefaultNodeModel) => {
+              this.connectedParentToNode(
+                emptyNodeStart,
+                prevNode,
+                false,
+                0,
+                getArrowsColor(inLineStatus, undefined, verticalStepGroup)
+              )
             })
-          // NOTE: this does not work
-          // emptyNodeEnd.setOptions({
-          //   ...emptyNodeEnd.getOptions(),
-          //   ...{ showPorts: !verticalStepGroup, hideInPort: true, hideOutPort: !outLinesStatus.displayLines }
-          // })
-
-          // NOTE: workaround solution to show out port
-          if (outLinesStatus.displayLines && !verticalStepGroup && ALLOW_PORT_HIDE) {
-            makeVisibleOutPortOnEmptyNode(emptyNodeId)
+            prevNodes = [emptyNodeStart]
           }
+          const prevNodesAr: Diagram.DefaultNodeModel[] = []
+          parallel.every((nodeP, pIdx) => {
+            if (
+              pIdx + 1 < availableNodesRender ||
+              parallel.length === availableNodesRender ||
+              !showParallelStagesGroup
+            ) {
+              const resp = this.renderGraphNodes({
+                node: nodeP,
+                startX: newX,
+                startY: newY,
+                zoomLevel,
+                getString,
+                showParallelStagesGroup,
+                selectedStageId: selectedStageId,
+                disableCollapseButton: disableCollapseButton,
+                diagramContainerHeight: diagramContainerHeight,
+                prevNodes: prevNodes,
+                showEndNode: showEndNode,
+                groupStage: groupStage,
+                verticalStepGroup: verticalStepGroup,
+                isRootGroup: isRootGroup && pIdx == 0,
+                isParallelNode: true
+              })
 
-          this.addNode(emptyNodeEnd)
-          startX += verticalStepGroup ? 0 : PARALLEL_LINES_WIDTH
-          emptyNodeEnd.setPosition(startX, startY)
-          prevNodesAr.forEach((prevNode: Diagram.DefaultNodeModel) => {
-            this.connectedParentToNode(
-              emptyNodeEnd,
-              prevNode,
-              false,
-              0,
-              getArrowsColor(
-                outLinesStatus.status,
-                true,
-                verticalStepGroup || (!outLinesStatus.displayLines && !showEndNode)
-              ),
-              { type: 'out', size: LINE_SEGMENT_LENGTH }
-            )
+              startX = Math.max(startX, resp.startX)
+
+              const depthYParallel = calculateDepth(nodeP, groupStage, SPACE_AFTER_GROUP, SPACE_AFTER_GROUP)
+              newY = resp.startY + this.gapY * depthYParallel
+              /* istanbul ignore else */ if (resp.prevNodes) {
+                prevNodesAr.push(...resp.prevNodes)
+              }
+              return true
+            } else {
+              const parallelStageNames: Array<string> = []
+              const parallelNodes = defaultTo(parallel.slice(pIdx), [])
+              let isSelected = false
+              const icons: Array<IconName> = []
+              parallelNodes.forEach(nodePP => {
+                const { item: stage } = nodePP
+                if (stage?.identifier === selectedStageId && stage) {
+                  parallelStageNames.unshift(stage.name)
+                  icons.unshift(stage.icon)
+                  isSelected = true
+                } else {
+                  parallelStageNames.push(stage?.name || '')
+                  icons.push(stage?.icon as IconName)
+                }
+              })
+              const selectedStage = defaultTo(
+                parallel.filter(nodePP => nodePP.item?.identifier === selectedStageId)[0],
+                parallel[0]
+              )
+              const groupedNode = new Diagram.GroupNodeModel({
+                customNodeStyle: getNodeStyles(
+                  isSelected,
+                  defaultTo(selectedStage.item?.status, 'NotStarted'),
+                  defaultTo(selectedStage.item?.type, ExecutionPipelineNodeType.NORMAL),
+                  NODE_HAS_BORDER
+                ),
+                identifier: isSelected ? selectedStageId : parallelNodes[0].item?.identifier,
+                id: isSelected ? selectedStageId : parallelNodes[0].item?.identifier,
+                parallelNodes: parallelNodes.map(nodePP => defaultTo(nodePP?.item?.identifier, '')),
+                name: isSelected
+                  ? getString('pipeline.parallelSelectedStages', {
+                      selected: parallelStageNames[0],
+                      total: parallelStageNames.length - 1
+                    })
+                  : getString('pipeline.parallelStages', { total: parallelStageNames.length }),
+                width: GROUP_NODE_WIDTH,
+                allowAdd: true,
+                height: 40,
+                icons: uniq(icons)
+              })
+              this.addNode(groupedNode)
+              groupedNode.setPosition(newX + PARALLEL_LINES_WIDTH - 18, newY)
+              if (!isEmpty(prevNodes) && prevNodes) {
+                prevNodes.forEach((prevNode: Diagram.DefaultNodeModel) => {
+                  this.connectedParentToNode(groupedNode, prevNode, !isParallelNode)
+                })
+              }
+              prevNodesAr.push(groupedNode)
+              return false
+            }
           })
-          prevNodes = [emptyNodeEnd]
+          /* istanbul ignore else */ if (!isEmpty(prevNodesAr)) {
+            const emptyNodeId = `${EmptyNodeSeparator}${
+              parallel[0].item?.identifier || parallel[0].group?.identifier
+            }${EmptyNodeSeparator}-End`
+            const emptyNodeEnd =
+              this.getNodeFromId(emptyNodeId) ||
+              new Diagram.EmptyNodeModel({
+                id: emptyNodeId,
+                name: 'Empty',
+                showPorts: !verticalStepGroup,
+                hideInPort: true,
+                hideOutPort: !outLinesStatus.displayLines && ALLOW_PORT_HIDE
+              })
+            // NOTE: this does not work
+            // emptyNodeEnd.setOptions({
+            //   ...emptyNodeEnd.getOptions(),
+            //   ...{ showPorts: !verticalStepGroup, hideInPort: true, hideOutPort: !outLinesStatus.displayLines }
+            // })
+
+            // NOTE: workaround solution to show out port
+            if (outLinesStatus.displayLines && !verticalStepGroup && ALLOW_PORT_HIDE) {
+              makeVisibleOutPortOnEmptyNode(emptyNodeId)
+            }
+
+            this.addNode(emptyNodeEnd)
+            startX += verticalStepGroup ? 0 : PARALLEL_LINES_WIDTH
+            emptyNodeEnd.setPosition(startX, startY)
+            prevNodesAr.forEach((prevNode: Diagram.DefaultNodeModel) => {
+              this.connectedParentToNode(
+                emptyNodeEnd,
+                prevNode,
+                false,
+                0,
+                getArrowsColor(
+                  outLinesStatus.status,
+                  true,
+                  verticalStepGroup || (!outLinesStatus.displayLines && !showEndNode)
+                ),
+                { type: 'out', size: LINE_SEGMENT_LENGTH }
+              )
+            })
+            prevNodes = [emptyNodeEnd]
+          }
         }
       } else {
         return this.renderGraphNodes({
           node: parallel[0],
           startX,
           startY,
+          getString,
           selectedStageId,
+          zoomLevel,
+          showParallelStagesGroup,
           disableCollapseButton,
           diagramContainerHeight,
           prevNodes,
@@ -460,8 +625,11 @@ export class ExecutionStageDiagramModel extends Diagram.DiagramModel {
               startY,
               selectedStageId,
               disableCollapseButton,
+              zoomLevel,
+              getString,
               diagramContainerHeight,
               prevNodes,
+              showParallelStagesGroup,
               showEndNode,
               groupStage,
               verticalStepGroup: node.group?.verticalStepGroup,
@@ -589,16 +757,20 @@ export class ExecutionStageDiagramModel extends Diagram.DiagramModel {
     }
   }
 
-  addUpdateGraph<T>(
-    pipeline: ExecutionPipeline<T>,
-    listeners: Listeners,
-    selectedId?: string,
-    diagramContainerHeight?: number,
-    showStartEndNode?: boolean,
-    showEndNode?: boolean,
-    groupStage?: Map<string, GroupState<T>>,
-    hideCollapseButton?: boolean
-  ): void {
+  addUpdateGraph<T>(args: AddUpdateGraphArgs<T>): void {
+    const {
+      pipeline,
+      listeners,
+      showParallelStagesGroup,
+      selectedId,
+      diagramContainerHeight,
+      showStartEndNode,
+      getString,
+      showEndNode,
+      zoomLevel,
+      groupStage,
+      hideCollapseButton
+    } = args
     const { FIRST_AND_LAST_SEGMENT_LENGTH, START_AND_END_NODE_WIDTH } = this.diagConfig
     let { startX, startY } = this
 
@@ -627,6 +799,9 @@ export class ExecutionStageDiagramModel extends Diagram.DiagramModel {
         startX,
         startY,
         selectedStageId: selectedId,
+        showParallelStagesGroup,
+        zoomLevel,
+        getString,
         disableCollapseButton: hideCollapseButton,
         diagramContainerHeight,
         prevNodes,
@@ -712,9 +887,10 @@ export class ExecutionStageDiagramModel extends Diagram.DiagramModel {
 /**
  * Workaround solution to make Out port of Empty node visible
  */
-function makeVisibleOutPortOnEmptyNode(emptyNodeId: string) {
+function makeVisibleOutPortOnEmptyNode(emptyNodeId: string): void {
   const el = document.querySelector('*[data-nodeid="' + emptyNodeId + '"]')
   if ((el?.firstChild?.childNodes?.[1] as HTMLElement)?.style?.visibility) {
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     ;(el!.firstChild!.childNodes[1]! as HTMLElement)!.style!.visibility = 'visible'
   }
 }

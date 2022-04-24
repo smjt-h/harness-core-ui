@@ -197,6 +197,7 @@ export default function ExecutionGraph(props: ExecutionGraphProps): React.ReactE
               dynamicPopoverHandler?.hide()
               setStageSetupIdId('')
             }}
+            showParallelStagesGroup
             selectedIdentifier={selectedStageId}
             itemClickHandler={e => props.onSelectedStage(e.stage.identifier)}
             diagramContainerHeight={primaryPaneSize}
