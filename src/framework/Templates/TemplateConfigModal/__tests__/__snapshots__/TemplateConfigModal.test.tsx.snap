@@ -85,7 +85,9 @@ exports[`CREATE MODE if form changesupdate the preview card: changed value shoul
                               style="vertical-align: middle; cursor: pointer;"
                             >
                               <svg
+                                height="12"
                                 viewBox="0 0 16 16"
+                                width="12"
                                 xmlns="http://www.w3.org/2000/svg"
                               >
                                 <path
@@ -155,7 +157,9 @@ exports[`CREATE MODE if form changesupdate the preview card: changed value shoul
                               data-testid="description-edit"
                             >
                               <svg
+                                height="12"
                                 viewBox="0 0 16 16"
+                                width="12"
                                 xmlns="http://www.w3.org/2000/svg"
                               >
                                 <path
@@ -190,7 +194,9 @@ exports[`CREATE MODE if form changesupdate the preview card: changed value shoul
                               data-testid="tags-edit"
                             >
                               <svg
+                                height="12"
                                 viewBox="0 0 16 16"
+                                width="12"
                                 xmlns="http://www.w3.org/2000/svg"
                               >
                                 <path
