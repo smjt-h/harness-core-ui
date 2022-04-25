@@ -6,9 +6,8 @@
  */
 
 import React from 'react'
-import { Layout, Tabs, Tab, Button, Icon, ButtonVariation } from '@wings-software/uicore'
+import { Layout, Tabs, Tab, Button, Icon, ButtonVariation, HarnessIconName } from '@wings-software/uicore'
 import cx from 'classnames'
-import type { HarnessIconName } from '@wings-software/uicore'
 import { Expander, IconName } from '@blueprintjs/core'
 import { defaultTo, get, isEmpty, set } from 'lodash-es'
 import type { ValidationError } from 'yup'

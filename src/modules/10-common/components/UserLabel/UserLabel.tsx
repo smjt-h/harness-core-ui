@@ -6,9 +6,8 @@
  */
 
 import React from 'react'
-import { Icon, Layout, Text, Avatar, TextProps } from '@wings-software/uicore'
+import { Icon, Layout, Text, Avatar, TextProps, IconProps } from '@wings-software/uicore'
 import { Color } from '@harness/design-system'
-import type { IconProps } from '@wings-software/uicore'
 import cx from 'classnames'
 
 import { Popover, PopoverInteractionKind, Position, Classes } from '@blueprintjs/core'

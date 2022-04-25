@@ -9,9 +9,8 @@ import React from 'react'
 import { Expander } from '@blueprintjs/core'
 import { cloneDeep, isEmpty, isEqual, set } from 'lodash-es'
 import produce from 'immer'
-import { Tabs, Tab, Icon, Button, Layout, ButtonVariation } from '@wings-software/uicore'
+import { Tabs, Tab, Icon, Button, Layout, ButtonVariation, HarnessIconName } from '@wings-software/uicore'
 import { Color } from '@harness/design-system'
-import type { HarnessIconName } from '@wings-software/uicore'
 import { useFeatureFlag } from '@common/hooks/useFeatureFlag'
 import {
   PipelineContextType,

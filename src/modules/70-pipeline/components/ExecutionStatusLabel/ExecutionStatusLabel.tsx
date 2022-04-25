@@ -7,8 +7,7 @@
 
 import React from 'react'
 import cx from 'classnames'
-import { Icon } from '@wings-software/uicore'
-import type { IconProps } from '@wings-software/uicore'
+import { Icon, IconProps } from '@wings-software/uicore'
 
 import type { ExecutionStatus } from '@pipeline/utils/statusHelpers'
 import { String } from 'framework/strings'

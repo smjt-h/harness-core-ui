@@ -6,9 +6,8 @@
  */
 
 import React from 'react'
-import { Icon, Layout, Text } from '@wings-software/uicore'
+import { Icon, Layout, Text, IconProps } from '@wings-software/uicore'
 import { Color } from '@harness/design-system'
-import type { IconProps } from '@wings-software/uicore'
 import { NavLink } from 'react-router-dom'
 import { useStrings } from 'framework/strings'
 

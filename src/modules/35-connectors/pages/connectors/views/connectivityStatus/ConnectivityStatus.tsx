@@ -14,13 +14,13 @@ import {
   StepsProgress,
   ButtonVariation,
   ButtonSize,
-  IconName
+  IconName,
+  IconProps
 } from '@wings-software/uicore'
 import { Position, Intent, PopoverInteractionKind } from '@blueprintjs/core'
 import { Color } from '@harness/design-system'
 import { useParams } from 'react-router-dom'
 import ReactTimeago from 'react-timeago'
-import type { IconProps } from '@wings-software/uicore'
 import defaultTo from 'lodash-es/defaultTo'
 import { useStrings } from 'framework/strings'
 import {

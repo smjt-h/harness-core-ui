@@ -15,9 +15,9 @@ import {
   FormInput,
   Formik,
   FormikForm,
-  SelectOption
+  SelectOption,
+  IconProps
 } from '@wings-software/uicore'
-import type { IconProps } from '@wings-software/uicore'
 import { noop } from 'lodash-es'
 import { Color } from '@harness/design-system'
 import { useParams } from 'react-router-dom'
