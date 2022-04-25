@@ -68,7 +68,7 @@ export const CIStep: React.FC<CIStepProps> = props => {
       fieldPath
     }: {
       name: string
-      tooltipId: string
+      tooltipId?: string
       labelKey: keyof StringsMap
       fieldPath: string
     }) => {
@@ -98,7 +98,7 @@ export const CIStep: React.FC<CIStepProps> = props => {
               selectProps: { disabled: readonly, items }
             }}
             disabled={readonly}
-            tooltipProps={{ dataTooltipId: tooltipId }}
+            tooltipProps={{ dataTooltipId: tooltipId ?? '' }}
           />
         )
       }
@@ -120,7 +120,7 @@ export const CIStep: React.FC<CIStepProps> = props => {
       inputProps: MultiTypeTextProps['multiTextInputProps']
       fieldPath: string
     }) => {
-      if (isInputSetView && template && shouldRenderRunTimeInputViewWithAllowedValues(fieldPath, template)) {
+      if (isInputSetView && shouldRenderRunTimeInputViewWithAllowedValues(fieldPath, template)) {
         return renderMultiTypeInputWithAllowedValues({
           name,
           tooltipId: tooltipId,
@@ -196,10 +196,9 @@ export const CIStep: React.FC<CIStepProps> = props => {
       ) : null}
       <Container className={cx(css.formGroup, stepCss)}>
         {Object.prototype.hasOwnProperty.call(enableFields, 'description') ? (
-          isInputSetView && template && shouldRenderRunTimeInputViewWithAllowedValues('description', template) ? (
+          isInputSetView && shouldRenderRunTimeInputViewWithAllowedValues('description', template) ? (
             renderMultiTypeInputWithAllowedValues({
               name: `${prefix}description`,
-              tooltipId: '',
               labelKey: 'description',
               fieldPath: 'description'
             })
@@ -222,32 +221,42 @@ export const CIStep: React.FC<CIStepProps> = props => {
       </Container>
       {!enableFields['spec.connectorRef']?.shouldHide &&
       Object.prototype.hasOwnProperty.call(enableFields, 'spec.connectorRef') ? (
-        <Container className={css.bottomMargin3}>
-          <FormMultiTypeConnectorField
-            label={enableFields['spec.connectorRef'].label}
-            type={enableFields['spec.connectorRef'].type}
-            width={
-              stepViewType === StepViewType.DeploymentForm
-                ? ConnectorRefWidth.DeploymentFormView
-                : stepViewType === StepViewType.InputSet
-                ? ConnectorRefWidth.InputSetView
-                : ConnectorRefWidth.DefaultView
-            }
-            name={`${prefix}spec.connectorRef`}
-            placeholder={getString('select')}
-            accountIdentifier={accountId}
-            projectIdentifier={projectIdentifier}
-            orgIdentifier={orgIdentifier}
-            multiTypeProps={{
-              expressions,
-              allowableTypes: isInputSetView ? AllMultiTypeInputTypesForInputSet : AllMultiTypeInputTypesForStep,
-              disabled: readonly,
-              ...enableFields['spec.connectorRef'].multiTypeProps
-            }}
-            gitScope={gitScope}
-            setRefValue
-          />
-        </Container>
+        isInputSetView && shouldRenderRunTimeInputViewWithAllowedValues('description', template) ? (
+          <Container className={cx(css.formGroup, stepCss, css.bottomMargin3)}>
+            {renderMultiTypeInputWithAllowedValues({
+              name: `${prefix}spec.connectorRef`,
+              labelKey: 'description',
+              fieldPath: 'spec.connectorRef'
+            })}
+          </Container>
+        ) : (
+          <Container className={css.bottomMargin3}>
+            <FormMultiTypeConnectorField
+              label={enableFields['spec.connectorRef'].label}
+              type={enableFields['spec.connectorRef'].type}
+              width={
+                stepViewType === StepViewType.DeploymentForm
+                  ? ConnectorRefWidth.DeploymentFormView
+                  : stepViewType === StepViewType.InputSet
+                  ? ConnectorRefWidth.InputSetView
+                  : ConnectorRefWidth.DefaultView
+              }
+              name={`${prefix}spec.connectorRef`}
+              placeholder={getString('select')}
+              accountIdentifier={accountId}
+              projectIdentifier={projectIdentifier}
+              orgIdentifier={orgIdentifier}
+              multiTypeProps={{
+                expressions,
+                allowableTypes: isInputSetView ? AllMultiTypeInputTypesForInputSet : AllMultiTypeInputTypesForStep,
+                disabled: readonly,
+                ...enableFields['spec.connectorRef'].multiTypeProps
+              }}
+              gitScope={gitScope}
+              setRefValue
+            />
+          </Container>
+        )
       ) : null}
       {!enableFields['spec.connectorRef']?.shouldHide &&
       Object.prototype.hasOwnProperty.call(enableFields, 'spec.image') ? (
