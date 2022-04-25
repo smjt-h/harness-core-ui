@@ -38,7 +38,7 @@ interface CFFileStoreProps {
   allowableTypes: MultiTypeInputType[]
   initialValues: any
   onSubmit: (values: any, connector: any) => void
-  index: number
+  index?: number
 }
 
 export const CFFileStore: React.FC<StepProps<any> & CFFileStoreProps> = ({
@@ -102,7 +102,7 @@ export const CFFileStore: React.FC<StepProps<any> & CFFileStoreProps> = ({
     })
   }
   return (
-    <Layout.Vertical spacing="xxlarge" padding="small" className={css.tfVarStore}>
+    <Layout.Vertical spacing="xxlarge" padding="small" className={css.filePath}>
       <Text font="large" color={Color.GREY_800}>
         {title}
       </Text>
@@ -124,7 +124,7 @@ export const CFFileStore: React.FC<StepProps<any> & CFFileStoreProps> = ({
           }
           return (
             <Form>
-              <div className={css.tfRemoteForm}>
+              <div className={css.filePathForm}>
                 {isParam && (
                   <div className={cx(stepCss.formGroup, stepCss.md)}>
                     <FormInput.MultiTextInput
@@ -174,7 +174,7 @@ export const CFFileStore: React.FC<StepProps<any> & CFFileStoreProps> = ({
                         name={name}
                         render={arrayHelpers => (
                           <>
-                            {map(filePaths, (path: any, i: number) => (
+                            {map(filePaths, (path: string, i: number) => (
                               <Layout.Horizontal
                                 key={`${path}-${i}`}
                                 flex={{ distribution: 'space-between' }}

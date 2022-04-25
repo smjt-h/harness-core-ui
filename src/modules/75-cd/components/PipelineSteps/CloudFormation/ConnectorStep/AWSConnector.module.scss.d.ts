@@ -9,12 +9,12 @@
 declare const styles: {
   readonly awsForm: string
   readonly connectorIcon: string
+  readonly filePathForm: string
   readonly formComponent: string
   readonly formContainerStepOne: string
   readonly horizontalFlex: string
   readonly modal: string
   readonly newConnectorButton: string
   readonly squareCardContainer: string
-  readonly tfRemoteForm: string
 }
 export default styles

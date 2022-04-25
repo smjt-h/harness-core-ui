@@ -35,6 +35,11 @@ interface GitDetails {
   branch?: string
 }
 
+interface ParameterOverride {
+  name: string
+  value: string
+}
+
 interface InlineParameterFileProps {
   onClose: () => void
   onSubmit: (values: any) => void
@@ -69,18 +74,16 @@ export const InlineParameterFile = ({
   const { accountId, projectIdentifier, orgIdentifier } = useParams<ProjectPathProps>()
   const [remoteParams, setRemoteParams] = useState<MultiSelectOption[]>()
   const queryParams = {
+    accountIdentifier: accountId,
+    orgIdentifier: orgIdentifier,
+    projectIdentifier: projectIdentifier,
     awsConnectorRef: awsConnectorRef,
     type: RequestTypes[type as keyof typeof RequestTypes],
     region: region,
     ...git
   }
   const { mutate: getParamsFromAWS } = useCFParametersForAws({
-    queryParams: {
-      accountIdentifier: accountId,
-      orgIdentifier: orgIdentifier,
-      projectIdentifier: projectIdentifier,
-      ...queryParams
-    }
+    queryParams: queryParams
   })
 
   const getParameters = async (): Promise<void> => {
@@ -105,7 +108,7 @@ export const InlineParameterFile = ({
       title={
         <Layout.Horizontal flex={{ alignItems: 'center', justifyContent: 'center' }}>
           <Text font="medium" style={{ color: 'rgb(11, 11, 13)' }}>
-            CloudFormation Parameter Overrides
+            {getString('cd.cloudFormation.inlineParameterFiles')}
           </Text>
         </Layout.Horizontal>
       }
@@ -135,11 +138,11 @@ export const InlineParameterFile = ({
               <Form>
                 <Layout.Horizontal flex={{ alignItems: 'flex-start', justifyContent: 'flex-start' }}>
                   <Layout.Vertical className={css.overrideSelect}>
-                    <Text style={{ color: 'rgb(11, 11, 13)', fontWeight: 'bold' }}>Parameters ({params.length})</Text>
+                    <Text style={{ color: 'rgb(11, 11, 13)', fontWeight: 'bold' }}>{getString('connectors.parameters')} ({params.length})</Text>
                   </Layout.Vertical>
                   <Layout.Vertical>
                     <a onClick={getParameters} className={css.configPlaceHolder}>
-                      Retrieve Names from template
+                      {getString('cd.cloudFormation.retrieveNames')}
                     </a>
                   </Layout.Vertical>
                 </Layout.Horizontal>
@@ -148,21 +151,21 @@ export const InlineParameterFile = ({
                   flex={{ alignItems: 'flex-start', justifyContent: 'flex-start' }}
                 >
                   <Layout.Vertical className={css.overrideSelect}>
-                    <Text style={{ color: 'rgb(11, 11, 13)' }}>NAME</Text>
+                    <Text style={{ color: 'rgb(11, 11, 13)' }}>{getString('name')}</Text>
                   </Layout.Vertical>
                   <Layout.Vertical>
-                    <Text style={{ color: 'rgb(11, 11, 13)' }}>VALUE</Text>
+                    <Text style={{ color: 'rgb(11, 11, 13)' }}>{getString('valueLabel')}</Text>
                   </Layout.Vertical>
                 </Layout.Horizontal>
                 <FieldArray
                   name="parameterOverrides"
                   render={arrayHelpers => (
                     <>
-                      {map(params, (item: any, index: number) => (
+                      {map(params, (param: ParameterOverride, index: number) => (
                         <Layout.Horizontal
                           spacing="medium"
                           className={css.formContainer}
-                          key={`${item}-${index}`}
+                          key={`${param}-${index}`}
                           draggable={false}
                         >
                           <Select
@@ -173,7 +176,7 @@ export const InlineParameterFile = ({
                             allowCreatingNewItems
                             className={css.overrideSelect}
                             name={`parameterOverrides[${index}].name`}
-                            value={find(remoteParams, ['value', item.name]) || { label: item.name, value: item.name }}
+                            value={find(remoteParams, ['value', param.name]) || { label: param.name, value: param.name }}
                           />
                           <FormInput.Text name={`parameterOverrides[${index}].value`} label="" placeholder="Value" />
                           <Button

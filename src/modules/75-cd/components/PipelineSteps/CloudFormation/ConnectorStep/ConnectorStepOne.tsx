@@ -44,7 +44,7 @@ interface ConnectorStepOneProps {
   setSelectedConnector: (type: string) => void
   initialValues: any
   isParam: boolean
-  index: number
+  index?: number
   regions: MultiSelectOption[]
 }
 
@@ -72,7 +72,7 @@ const ConnectorStepOne: React.FC<StepProps<any> & ConnectorStepOneProps> = ({
 
   useEffect(() => {
     const connectorType = isParam
-      ? initialValues.spec.configuration.parameters[index]?.store?.type
+      ? initialValues.spec.configuration.parameters[index!]?.store?.type
       : initialValues?.spec?.configuration?.templateFile?.spec?.store?.type
     setSelectedConnector(connectorType === "S3Url" ? 'S3' : connectorType)
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -136,7 +136,7 @@ const ConnectorStepOne: React.FC<StepProps<any> & ConnectorStepOneProps> = ({
         }}
         initialValues={
           isParam
-            ? { spec: { configuration: { parameters: { ...initialValues.spec.configuration.parameters[index] } } } }
+            ? { spec: { configuration: { parameters: { ...initialValues.spec.configuration.parameters[index!] } } } }
             : { ...initialValues }
         }
         validationSchema={validationSchema}
