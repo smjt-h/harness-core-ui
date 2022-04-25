@@ -13,6 +13,7 @@ import { TestWrapper } from '@common/utils/testUtils'
 import * as configUtils from '../Configurations.utils'
 import Configurations from '../Configurations'
 import { cachedData, editModeData } from '../components/Service/__tests__/Service.mock'
+import { ConfigurationsWithRef } from '../ConfigurationsRef'
 
 jest.mock('@cv/components/HarnessServiceAndEnvironment/HarnessServiceAndEnvironment', () => ({
   useGetHarnessServices: () => ({
@@ -92,6 +93,33 @@ describe('Unit tests for Configuration', () => {
     await waitFor(() => expect(container.querySelector('[class*="menuItemLabel"]')).not.toBeNull())
     fireEvent.click(getByText('Infrastructure'))
     await waitFor(() => expect(getByText('cv.healthSource.noData')).not.toBeNull())
+  })
+
+  test('ConfigurationsWithRef renders', async () => {
+    jest.spyOn(dbHook, 'useIndexedDBHook').mockReturnValue({
+      dbInstance: {
+        put: jest.fn(),
+        get: jest.fn().mockReturnValue(Promise.resolve({ currentData: cachedData }))
+      } as any,
+      isInitializingDB: false
+    })
+    const { container } = render(
+      <TestWrapper>
+        <ConfigurationsWithRef
+          isTemplate={true}
+          ref={{
+            current: {
+              resetForm: jest.fn(),
+              submitForm: jest.fn(),
+              getErrors: jest.fn()
+            }
+          }}
+          updateTemplate={jest.fn()}
+        />
+      </TestWrapper>
+    )
+
+    expect(container).toMatchSnapshot()
   })
 
   test('Ensure that error message is displayeed when api throws error', async () => {

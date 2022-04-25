@@ -14,19 +14,13 @@ export default function ServiceRef(props: ServiceTabInterface, formikRef: any) {
 
   React.useImperativeHandle(formikRef, () => ({
     resetForm() {
-      if (serviceRef?.current) {
-        return serviceRef.current?.resetForm()
-      }
+      return serviceRef?.current?.resetForm()
     },
     submitForm() {
-      if (serviceRef?.current) {
-        return serviceRef.current?.submitForm()
-      }
+      return serviceRef?.current?.submitForm()
     },
     getErrors() {
-      if (serviceRef?.current) {
-        return serviceRef.current?.getErrors() || {}
-      }
+      return serviceRef?.current?.getErrors() || {}
     }
   }))
   return <Service {...props} formikRef={formikRef} />

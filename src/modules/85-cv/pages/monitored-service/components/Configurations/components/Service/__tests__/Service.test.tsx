@@ -16,6 +16,7 @@ import Service from '../Service'
 import { editModeData, onUpdatePayload, cachedData } from './Service.mock'
 import { monitoredService } from '../../Dependency/__tests__/Dependency.mock'
 import type { MonitoredServiceForm } from '../Service.types'
+import { ServiceWithRef } from '../ServiceRef'
 
 const paramsEditMode = { ...accountPathProps, ...projectPathProps, ...modulePathProps, identifier: ':identifier' }
 const testWrapperProps: TestWrapperProps = {
@@ -248,5 +249,26 @@ describe('Verify Service', () => {
       },
       type: 'Infrastructure'
     })
+  })
+
+  test('should render serviceWithRef', () => {
+    const { container } = render(
+      <TestWrapper {...testWrapperProps}>
+        <ServiceWithRef
+          ref={{
+            current: {
+              resetForm: jest.fn(),
+              submitForm: jest.fn(),
+              getErrors: jest.fn()
+            }
+          }}
+          value={monitoredService}
+          onSuccess={onSuccess}
+          serviceTabformRef={{ current: {} }}
+          onChangeMonitoredServiceType={jest.fn()}
+        />
+      </TestWrapper>
+    )
+    expect(container).toMatchSnapshot()
   })
 })

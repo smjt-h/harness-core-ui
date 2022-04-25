@@ -19,19 +19,13 @@ export default function ConfigurationsRef({ isTemplate, updateTemplate }: Config
 
   React.useImperativeHandle(formikRef, () => ({
     resetForm() {
-      if (serviceRef?.current) {
-        return serviceRef.current?.resetForm()
-      }
+      return serviceRef?.current?.resetForm()
     },
     submitForm() {
-      if (serviceRef?.current) {
-        return serviceRef.current?.submitForm()
-      }
+      return serviceRef?.current?.submitForm()
     },
     getErrors() {
-      if (serviceRef?.current) {
-        return serviceRef.current?.getErrors() || {}
-      }
+      return serviceRef?.current?.getErrors() || {}
     }
   }))
   return <Configurations serviceRef={serviceRef} isTemplate={isTemplate} updateTemplate={updateTemplate} />
