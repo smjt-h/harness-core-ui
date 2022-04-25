@@ -148,7 +148,11 @@ export function RightBar(): JSX.Element {
   const { repoIdentifier, branch } = useQueryParams<GitQueryParams>()
 
   const [isCodebaseDialogOpen, setIsCodebaseDialogOpen] = React.useState(false)
+  const [codebaseRuntimeInputs, setCodebaseRuntimeInputs] = React.useState({
+    ...(isRuntimeInput(codebase?.connectorRef) && { connectorRef: true })
+  })
   const codebaseInitialValues: CodebaseValues = {
+    connectorRef: codebase?.connectorRef,
     repoName: codebase?.repoName,
     depth: codebase?.depth !== undefined ? String(codebase.depth) : undefined,
     sslVerify: codebase?.sslVerify !== undefined ? Number(codebase.sslVerify) : undefined,
@@ -505,7 +509,7 @@ export function RightBar(): JSX.Element {
             initialValues={codebaseInitialValues}
             validationSchema={Yup.object().shape({
               connectorRef: Yup.mixed().required(getString('fieldRequired', { field: getString('connector') })),
-              ...(connectionType === 'Account' && {
+              ...((connectionType === 'Account' || codebaseRuntimeInputs.connectorRef) && {
                 repoName: Yup.string().required(getString('common.validation.repositoryName'))
               })
             })}
@@ -586,7 +590,7 @@ export function RightBar(): JSX.Element {
               closeCodebaseDialog()
             }}
           >
-            {({ values, submitForm, errors }) => (
+            {({ values, submitForm, errors, setFieldValue }) => (
               <>
                 <div className={Classes.DIALOG_BODY}>
                   <FormikForm>
@@ -604,11 +608,40 @@ export function RightBar(): JSX.Element {
                         orgIdentifier={orgIdentifier}
                         gitScope={{ repo: repoIdentifier || '', branch, getDefaultFromOtherRepo: true }}
                         multiTypeProps={{ expressions, disabled: isReadonly, allowableTypes }}
+                        onChange={(
+                          value?: { record?: { spec?: { type?: string; url?: string } } },
+                          _valueType,
+                          type
+                        ) => {
+                          console.log(value, _valueType, type)
+                          if (type === MultiTypeInputType.FIXED) {
+                            if (value?.record?.spec?.type === 'Account') {
+                              setConnectionType('Account')
+                              // setting the reponame to this
+                              setConnectorUrl(value?.record?.spec?.url || '')
+                              setFieldValue('repoName', '')
+                            } else if (value?.record?.spec?.type === 'Repo') {
+                              setConnectionType('Repo')
+                              setConnectorUrl(value?.record?.spec?.url || '')
+                              setFieldValue('repoName', value?.record?.spec?.url || '')
+                            } else {
+                              setConnectionType('')
+                              setConnectorUrl('')
+                              setFieldValue('repoName', '')
+                              // set repo name also to nothing
+                            }
+                          }
+                          setCodebaseRuntimeInputs({
+                            ...codebaseRuntimeInputs,
+                            connectorRef: isRuntimeInput(value)
+                          })
+                        }}
                       />
                     </Container>
 
-                    {connectionType === 'Repo' ? (
+                    {!isRuntimeInput(values.connectorRef) && connectionType === 'Repo' ? (
                       <>
+                        <Text margin={{ bottom: 'xsmall' }}>{getString('common.repositoryName')}</Text>
                         <TextInput name="repoName" value={connectorUrl} style={{ flexGrow: 1 }} disabled />
                       </>
                     ) : (
@@ -633,7 +666,7 @@ export function RightBar(): JSX.Element {
                             }}
                           />
                         </Container>
-                        {!isRuntimeInput(values.repoName) && connectorUrl.length > 0 ? (
+                        {!isRuntimeInput(values.connectorRef) && connectorUrl?.length > 0 ? (
                           <div className={css.predefinedValue}>
                             <Text lineClamp={1} width="460px">
                               {(connectorUrl[connectorUrl.length - 1] === '/' ? connectorUrl : connectorUrl + '/') +
