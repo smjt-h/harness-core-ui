@@ -7,8 +7,7 @@
 
 import React from 'react'
 import { connect } from 'formik'
-import { Text, getMultiTypeFromValue, MultiTypeInputType, FormikForm } from '@wings-software/uicore'
-import { Color } from '@harness/design-system'
+import { getMultiTypeFromValue, MultiTypeInputType, FormikForm } from '@wings-software/uicore'
 import { useStrings } from 'framework/strings'
 import { useVariablesExpression } from '@pipeline/components/PipelineStudio/PiplineHooks/useVariablesExpression'
 import StepCommonFieldsInputSet from '@ci/components/PipelineSteps/StepCommonFields/StepCommonFieldsInputSet'
@@ -43,17 +42,7 @@ export const DependencyInputSetBasic: React.FC<DependencyProps> = ({
           }),
           ...(getMultiTypeFromValue(template?.spec?.connectorRef) === MultiTypeInputType.RUNTIME && {
             'spec.connectorRef': {
-              label: (
-                <Text
-                  className={css.inpLabel}
-                  color={Color.GREY_600}
-                  font={{ size: 'small', weight: 'semi-bold' }}
-                  style={{ display: 'flex', alignItems: 'center' }}
-                  tooltipProps={{ dataTooltipId: 'dependencyConnectorInfo' }}
-                >
-                  {getString('pipelineSteps.connectorLabel')}
-                </Text>
-              ),
+              label: { labelKey: 'pipelineSteps.connectorLabel', tooltipId: 'dependencyConnector' },
               type: [Connectors.GCP, Connectors.AWS, Connectors.DOCKER]
             }
           }),

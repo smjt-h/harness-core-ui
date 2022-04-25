@@ -181,6 +181,23 @@ export const CIStep: React.FC<CIStepProps> = props => {
     [expressions]
   )
 
+  const renderLabel = React.useCallback(
+    ({ labelKey, tooltipId }: { labelKey: keyof StringsMap; tooltipId: string }) => {
+      return (
+        <Text
+          className={css.inpLabel}
+          color={Color.GREY_600}
+          font={{ size: 'small', weight: 'semi-bold' }}
+          style={{ display: 'flex', alignItems: 'center' }}
+          tooltipProps={{ dataTooltipId: tooltipId }}
+        >
+          {getString(labelKey)}
+        </Text>
+      )
+    },
+    []
+  )
+
   return (
     <>
       {stepViewType !== StepViewType.Template && Object.prototype.hasOwnProperty.call(enableFields, 'name') ? (
@@ -225,14 +242,15 @@ export const CIStep: React.FC<CIStepProps> = props => {
           <Container className={cx(css.formGroup, stepCss, css.bottomMargin3)}>
             {renderMultiTypeInputWithAllowedValues({
               name: `${prefix}spec.connectorRef`,
-              labelKey: 'description',
+              labelKey: enableFields['spec.connectorRef'].label.labelKey,
+              tooltipId: enableFields['spec.connectorRef'].label.tooltipId,
               fieldPath: 'spec.connectorRef'
             })}
           </Container>
         ) : (
           <Container className={css.bottomMargin3}>
             <FormMultiTypeConnectorField
-              label={enableFields['spec.connectorRef'].label}
+              label={renderLabel(enableFields['spec.connectorRef'].label)}
               type={enableFields['spec.connectorRef'].type}
               width={
                 stepViewType === StepViewType.DeploymentForm
