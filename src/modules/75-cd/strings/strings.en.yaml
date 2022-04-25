@@ -221,8 +221,12 @@ cloudFormation:
   paramFileConnector: Parameter File Connector
   templateFileConnector: Template File Connector
   templateFileStore: Template File Store
+  retrieveNames: Retrieve Names from template
+  awsURL: S3 URL
   errors:
     region: AWS Region is required
     stackName: Stack Name is required
     name: Name cannot be empty
     value: Value cannot be empty
+    templateBody: Template body required
+    awsURL: S3 url required

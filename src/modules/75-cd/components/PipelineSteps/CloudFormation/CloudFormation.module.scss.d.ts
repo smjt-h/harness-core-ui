@@ -9,44 +9,31 @@
 declare const styles: {
   readonly addMarginBottom: string
   readonly addMarginTop: string
-  readonly addTfVarFile: string
   readonly configField: string
   readonly configFile: string
-  readonly configFileLabel: string
   readonly configLabel: string
   readonly configPlaceHolder: string
   readonly configWizard: string
-  readonly contentTextArea: string
-  readonly createTfWizard: string
   readonly crossIcon: string
   readonly divider: string
   readonly drag: string
   readonly dragOver: string
   readonly dragging: string
-  readonly fieldBorder: string
+  readonly filePath: string
+  readonly filePathForm: string
   readonly formComponent: string
   readonly formContainer: string
   readonly formContainerStepOne: string
-  readonly headerContainer: string
   readonly horizontalFlex: string
-  readonly iconMargin: string
   readonly iconPosition: string
   readonly inputWidth: string
-  readonly manifestIcon: string
   readonly modal: string
   readonly newConnectorButton: string
   readonly optionalDetails: string
-  readonly optionsViewContainer: string
   readonly overrideSelect: string
   readonly overridesInputHeader: string
-  readonly radioBtns: string
-  readonly remoteIcon: string
   readonly squareCardContainer: string
   readonly templateDropdown: string
-  readonly tfRemoteForm: string
-  readonly tfVarLabel: string
-  readonly tfVarMargin: string
-  readonly tfVarStore: string
-  readonly tooltipProps: string
+  readonly wizard: string
 }
 export default styles

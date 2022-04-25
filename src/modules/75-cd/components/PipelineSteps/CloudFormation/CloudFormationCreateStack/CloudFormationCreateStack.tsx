@@ -11,35 +11,15 @@ import { isEmpty, map, set } from 'lodash-es'
 import { IconName, MultiTypeInputType, getMultiTypeFromValue } from '@harness/uicore'
 import { yupToFormErrors, FormikErrors } from 'formik'
 import { StepViewType, StepProps, ValidateInputSetProps } from '@pipeline/components/AbstractSteps/Step'
-import type { ExecutionElementConfig } from 'services/cd-ng'
 import { StepType } from '@pipeline/components/PipelineSteps/PipelineStepInterface'
 import { PipelineStep } from '@pipeline/components/PipelineSteps/PipelineStep'
 import { getDurationValidationSchema } from '@common/components/MultiTypeDuration/MultiTypeDuration'
-import {} from '../CloudFormationInterfaces'
+import type { CreateStackStepInfo, CreateStackData } from '../CloudFormationInterfaces'
 import { CloudFormationCreateStack } from './CloudFormationCreateStackRef'
 
 const CloudFormationCreateStackWithRef = forwardRef(CloudFormationCreateStack)
 
-export type ProvisionersOptions = 'CLOUD_FORMATION'
-export interface CloudFormationData {
-  provisioner: ExecutionElementConfig
-  originalProvisioner?: Partial<ExecutionElementConfig>
-  provisionerEnabled: boolean
-  provisionerSnippetLoading?: boolean
-  selectedProvisioner?: ProvisionersOptions
-}
-export interface CloudFormationProps {
-  initialValues: CloudFormationData
-  template?: CloudFormationData
-  path?: string
-  readonly?: boolean
-  stepViewType?: StepViewType
-  onUpdate?: (data: CloudFormationData) => void
-  onChange?: (data: CloudFormationData) => void
-  allowableTypes: MultiTypeInputType[]
-}
-
-export class CFCreateStack extends PipelineStep<any> {
+export class CFCreateStack extends PipelineStep<CreateStackStepInfo> {
   constructor() {
     super()
     this._hasStepVariables = true
@@ -50,7 +30,7 @@ export class CFCreateStack extends PipelineStep<any> {
   protected stepIcon: IconName = 'cloud-formation-create'
   protected stepName = 'Cloud Formation Create Stack'
 
-  protected defaultValues = {
+  protected defaultValues: CreateStackStepInfo = {
     type: StepType.CloudFormationCreateStack,
     name: '',
     identifier: '',
@@ -74,7 +54,12 @@ export class CFCreateStack extends PipelineStep<any> {
     }
   }
 
-  validateInputSet({ data, template, getString, viewType }: ValidateInputSetProps<any>): FormikErrors<any> {
+  validateInputSet({
+    data,
+    template,
+    getString,
+    viewType
+  }: ValidateInputSetProps<CreateStackStepInfo>): FormikErrors<CreateStackStepInfo> {
     /* istanbul ignore next */
     const errors = {} as any
     /* istanbul ignore next */
@@ -106,12 +91,8 @@ export class CFCreateStack extends PipelineStep<any> {
     }
     return errors
   }
-
-  // private getInitialValues(data: any) {
-  //   return data
-  // }
-
-  processFormData(data: any) {
+  /* istanbul ignore next */
+  processFormData(data: any): CreateStackStepInfo {
     const awsConnRef = data.spec.configuration.connectorRef.value
     let templateFile = data.spec.configuration.templateFile
 
@@ -206,7 +187,7 @@ export class CFCreateStack extends PipelineStep<any> {
     }
   }
 
-  private getInitialValues(data: any): any {
+  private getInitialValues(data: CreateStackStepInfo): CreateStackData {
     const formData = {
       ...data,
       spec: {
