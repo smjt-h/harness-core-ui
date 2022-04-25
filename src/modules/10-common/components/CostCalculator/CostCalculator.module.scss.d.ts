@@ -7,8 +7,6 @@
  **/
 // this is an auto-generated file, do not update this manually
 declare const styles: {
-  readonly bp3SliderHandle: string
-  readonly bp3SliderLabel: string
   readonly changedDevelopers: string
   readonly changedMaus: string
   readonly changingText: string
@@ -33,6 +31,7 @@ declare const styles: {
   readonly reviewItems: string
   readonly reviewText: string
   readonly sliderDotContainer: string
+  readonly subscriptionType: string
   readonly supportInfoBoxText: string
   readonly tax: string
   readonly textInputWidth: string

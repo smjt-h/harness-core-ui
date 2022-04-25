@@ -65,18 +65,33 @@
   text-decoration: underline;
 }
 
+
 .textInputWidth {
-  width: 60px !important;
+  :global(.bp3-input) {
+    max-width: 60px !important;
+  }
+}
+
+.top-slider-dots {
+  position: relative;
+  height: 34px;
 }
 
 .slider-dot-container {
   position: absolute;
   left: 0;
+  top: 12px;
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: center;
+  justify-content: flex-start;
 }
 
-.top-slider-dots {
-  position: relative;
+.subscriptionType {
+  border-radius: 4px;
+  background: var(--primary-7);
 }
+
 
 .reviewContainer {
   display: grid;
