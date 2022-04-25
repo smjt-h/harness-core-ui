@@ -56,6 +56,8 @@ export const RunStepInputSetBasic: React.FC<RunStepProps> = ({
         showImage={getMultiTypeFromValue(template?.spec?.image) === MultiTypeInputType.RUNTIME}
         stepViewType={stepViewType}
         path={path || ''}
+        template={template}
+        isInputSetView={true}
       />
       {getMultiTypeFromValue(template?.spec?.command) === MultiTypeInputType.RUNTIME && (
         <div className={cx(css.fieldsGroup, css.withoutSpacing, css.topPadding3, css.bottomPadding3, stepCss)}>

@@ -132,6 +132,8 @@ export const RunTestsStepInputSetBasic: React.FC<RunTestsStepProps> = ({
         showImage={getMultiTypeFromValue(template?.spec?.image) === MultiTypeInputType.RUNTIME}
         stepViewType={stepViewType}
         path={path || ''}
+        template={template}
+        isInputSetView={true}
       />
       {getMultiTypeFromValue(template?.spec?.packages) === MultiTypeInputType.RUNTIME && (
         <Container className={cx(css.formGroup, stepCss, css.bottomMargin5)}>
