@@ -40,6 +40,8 @@ export const DockerHubStepInputSetBasic: React.FC<DockerHubStepProps> = ({
           })
         }}
         path={path || ''}
+        isInputSetView={true}
+        template={template}
       />
       <ArtifactStepCommon
         path={path}

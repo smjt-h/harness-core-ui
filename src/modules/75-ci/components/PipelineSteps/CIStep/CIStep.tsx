@@ -238,7 +238,7 @@ export const CIStep: React.FC<CIStepProps> = props => {
       </Container>
       {!enableFields['spec.connectorRef']?.shouldHide &&
       Object.prototype.hasOwnProperty.call(enableFields, 'spec.connectorRef') ? (
-        isInputSetView && shouldRenderRunTimeInputViewWithAllowedValues('description', template) ? (
+        isInputSetView && shouldRenderRunTimeInputViewWithAllowedValues('spec.connectorRef', template) ? (
           <Container className={cx(css.formGroup, stepCss, css.bottomMargin3)}>
             {renderMultiTypeInputWithAllowedValues({
               name: `${prefix}spec.connectorRef`,
