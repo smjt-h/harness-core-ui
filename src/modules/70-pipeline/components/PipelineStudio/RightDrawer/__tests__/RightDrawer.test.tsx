@@ -690,7 +690,6 @@ describe('Right Drawer tests', () => {
       act(() => {
         fireEvent.click(applyBtn)
       })
-
       expect(pipelineContextMock.updatePipelineView).toHaveBeenCalled()
       expect(pipelineContextMock.updatePipelineView).toHaveBeenCalledWith(updatePipelineViewFnArg1)
     })
