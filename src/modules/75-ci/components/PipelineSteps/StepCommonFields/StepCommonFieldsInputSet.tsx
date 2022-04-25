@@ -172,7 +172,11 @@ function StepCommonFieldsInputSet<T>(props: StepCommonFieldsInputSetProps<T>): J
             </Text>
 
             <Layout.Horizontal
-              className={cx(css.formGroup, css.lgOverride)}
+              className={cx(
+                css.formGroup,
+                { [css.lgOverride]: isLimitMemoryRuntime && isLimitCPURuntime },
+                { [stepCss]: isLimitMemoryRuntime || isLimitCPURuntime }
+              )}
               style={{ marginTop: 'small', marginBottom: 'small' }}
               spacing="medium"
             >
