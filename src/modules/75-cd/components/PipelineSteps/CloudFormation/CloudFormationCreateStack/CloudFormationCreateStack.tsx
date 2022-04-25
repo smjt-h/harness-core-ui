@@ -138,24 +138,16 @@ export class CFCreateStack extends PipelineStep<any> {
         data,
         'spec.configuration.parameters',
         map(params, param => {
-          let body = {}
-          if (param?.store?.type === 'S3Url') {
-            body = {
-              region: param?.store?.spec?.region,
-              urls: param?.store?.spec?.paths || param?.store?.spec?.urls
-            }
-          } else {
-            body = {
-              paths: param?.store?.spec?.paths
-            }
-          }
           return {
             ...param,
             store: {
               ...param?.store,
               spec: {
+                ...param?.store?.spec,
                 connectorRef: param.store.spec.connectorRef?.value || param.store.spec.connectorRef,
-                ...body
+                ...(param?.store?.spec?.region
+                  ? { urls: param?.store?.spec?.paths || param?.store?.spec?.urls }
+                  : { paths: param?.store?.spec?.paths })
               }
             }
           }
@@ -227,24 +219,16 @@ export class CFCreateStack extends PipelineStep<any> {
           parameterOverrides: data?.spec?.configuration?.parameterOverrides || [],
           parameters:
             map(data?.spec?.configuration?.parameters, param => {
-              let body
-              if (param?.store?.type === 'S3Url') {
-                body = {
-                  region: param?.store?.spec?.region,
-                  paths: param?.store?.spec?.urls
-                }
-              } else {
-                body = {
-                  paths: param?.store?.spec?.paths
-                }
-              }
               return {
                 ...param,
                 store: {
                   ...param?.store,
                   spec: {
+                    ...param?.store?.spec,
                     connectorRef: param.store.spec.connectorRef,
-                    ...body
+                    ...(param?.store?.spec?.region
+                      ? { urls: param?.store?.spec?.urls }
+                      : { paths: param?.store?.spec?.paths })
                   }
                 }
               }
