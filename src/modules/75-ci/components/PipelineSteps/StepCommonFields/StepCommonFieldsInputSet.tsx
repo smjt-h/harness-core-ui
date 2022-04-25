@@ -144,26 +144,19 @@ function StepCommonFieldsInputSet<T>(props: StepCommonFieldsInputSetProps<T>): J
       )}
       {isRunAsUserRuntime && (
         <Container className={cx(css.formGroup, stepCss, css.topSpacingLarge, css.bottomMargin5)}>
-          <MultiTypeTextField
-            label={
-              <Layout.Horizontal flex={{ justifyContent: 'flex-start', alignItems: 'baseline' }}>
-                <Text className={css.inpLabel} color={Color.GREY_600} font={{ size: 'small', weight: 'semi-bold' }}>
-                  {getString('pipeline.stepCommonFields.runAsUser')}
-                </Text>
-                &nbsp;
-                {getOptionalSubLabel(getString, 'runAsUser')}
-              </Layout.Horizontal>
-            }
-            name={`${isEmpty(path) ? '' : `${path}.`}spec.runAsUser`}
-            multiTextInputProps={{
+          {renderMultiTypeTextField({
+            name: `${isEmpty(path) ? '' : `${path}.`}spec.runAsUser`,
+            labelKey: 'pipeline.stepCommonFields.runAsUser',
+            tooltipId: 'runAsUser',
+            inputProps: {
               multiTextInputProps: {
                 expressions,
                 allowableTypes: AllMultiTypeInputTypesForInputSet
               },
               disabled: readonly,
               placeholder: '1000'
-            }}
-          />
+            }
+          })}
         </Container>
       )}
       {(isLimitMemoryRuntime || isLimitCPURuntime) && (
