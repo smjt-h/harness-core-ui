@@ -10,6 +10,7 @@ import type { FormikErrors } from 'formik'
 import { RUNTIME_INPUT_VALUE, MultiTypeInputType } from '@wings-software/uicore'
 import type { UseFromStageInfraYaml } from 'services/ci'
 import { usePipelineContext } from '@pipeline/components/PipelineStudio/PipelineContext/PipelineContext'
+import { RegExAllowedInputExpression } from '@pipeline/components/PipelineSteps/Steps/CustomVariables/CustomVariableInputSet'
 import type { StringsMap } from 'stringTypes'
 import type { BuildStageElementConfig, StageElementWrapper } from '@pipeline/utils/pipelineTypes'
 
@@ -56,6 +57,13 @@ export const shouldRenderRunTimeInputView = (value: any): boolean => {
     } else {
       return typeof value === 'string' && value.startsWith(RUNTIME_INPUT_VALUE)
     }
+  }
+  return false
+}
+
+export const shouldRenderRunTimeInputViewWithAllowedValues = (value: string): boolean => {
+  if (shouldRenderRunTimeInputView(value)) {
+    return RegExAllowedInputExpression.test(value)
   }
   return false
 }
