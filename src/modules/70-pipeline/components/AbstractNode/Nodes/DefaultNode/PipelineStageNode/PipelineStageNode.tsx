@@ -1,3 +1,4 @@
+event
 /*
  * Copyright 2021 Harness Inc. All rights reserved.
  * Use of this source code is governed by the PolyForm Shield 1.0.0 license
@@ -137,7 +138,8 @@ function PipelineStageNode(props: PipelineStageNodeProps): JSX.Element {
             target: event.target,
             data: {
               identifier: props?.identifier as string,
-              node: props
+              node: props,
+              id: props.id
             }
           })
         }}
