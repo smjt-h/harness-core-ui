@@ -182,14 +182,14 @@ export const CIStep: React.FC<CIStepProps> = props => {
   )
 
   const renderLabel = React.useCallback(
-    ({ labelKey, tooltipId }: { labelKey: keyof StringsMap; tooltipId: string }) => {
+    ({ labelKey, tooltipId }: { labelKey: keyof StringsMap; tooltipId?: string }) => {
       return (
         <Text
           className={css.inpLabel}
           color={Color.GREY_600}
           font={{ size: 'small', weight: 'semi-bold' }}
           style={{ display: 'flex', alignItems: 'center' }}
-          tooltipProps={{ dataTooltipId: tooltipId }}
+          tooltipProps={{ dataTooltipId: tooltipId ?? '' }}
         >
           {getString(labelKey)}
         </Text>
@@ -243,7 +243,7 @@ export const CIStep: React.FC<CIStepProps> = props => {
             {renderMultiTypeInputWithAllowedValues({
               name: `${prefix}spec.connectorRef`,
               labelKey: enableFields['spec.connectorRef'].label.labelKey,
-              tooltipId: enableFields['spec.connectorRef'].label.tooltipId,
+              tooltipId: enableFields['spec.connectorRef'].label?.tooltipId,
               fieldPath: 'spec.connectorRef'
             })}
           </Container>
