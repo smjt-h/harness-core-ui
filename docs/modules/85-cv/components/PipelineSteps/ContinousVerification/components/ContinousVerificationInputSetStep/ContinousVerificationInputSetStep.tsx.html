@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">97.3% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>34/34</span>
+                <span class='fraction'>36/37</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">82.46% </span>
+                <span class="strong">72.41% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>47/57</span>
+                <span class='fraction'>63/87</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">97.3% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>34/34</span>
+                <span class='fraction'>36/37</span>
             </div>
         
             
@@ -240,7 +240,15 @@
 <a name='L181'></a><a href='#L181'>181</a>
 <a name='L182'></a><a href='#L182'>182</a>
 <a name='L183'></a><a href='#L183'>183</a>
-<a name='L184'></a><a href='#L184'>184</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L184'></a><a href='#L184'>184</a>
+<a name='L185'></a><a href='#L185'>185</a>
+<a name='L186'></a><a href='#L186'>186</a>
+<a name='L187'></a><a href='#L187'>187</a>
+<a name='L188'></a><a href='#L188'>188</a>
+<a name='L189'></a><a href='#L189'>189</a>
+<a name='L190'></a><a href='#L190'>190</a>
+<a name='L191'></a><a href='#L191'>191</a>
+<a name='L192'></a><a href='#L192'>192</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -257,6 +265,7 @@
 <span class="cline-any cline-yes">9x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">9x</span>
 <span class="cline-any cline-yes">9x</span>
 <span class="cline-any cline-yes">9x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -289,6 +298,11 @@
 <span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-yes">4x</span>
 <span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -300,6 +314,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">4x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -441,6 +457,7 @@ import { FormMultiTypeDurationField } from '@common/components/MultiTypeDuration
 import type { InputSetPathProps, PipelineType } from '@common/interfaces/RouteInterfaces'
 import type { PipelineInfoConfig } from 'services/cd-ng'
 import { useGetPipeline } from 'services/pipeline-ng'
+import { StepType } from '@pipeline/components/PipelineSteps/PipelineStepInterface'
 import { useVariablesExpression } from '@pipeline/components/PipelineStudio/PiplineHooks/useVariablesExpression'
 import type { spec } from '../../types'
 import { checkIfRunTimeInput } from '../../utils'
@@ -473,7 +490,12 @@ export function ContinousVerificationInputSetStep(
   const { sensitivity, duration, baseline, trafficsplit, deploymentTag } = (template<span class="branch-0 cbranch-no" title="branch not covered" >?.s</span>pec?.spec as spec) || {}
   const { data: pipelineData, refetch: fetchPipeline } = useGetPipeline({
     pipelineIdentifier,
-    queryParams: { accountIdentifier: accountId, orgIdentifier, projectIdentifier },
+    queryParams: {
+      accountIdentifier: accountId,
+      orgIdentifier,
+      projectIdentifier,
+      getTemplatesResolvedPipeline: template<span class="branch-0 cbranch-no" title="branch not covered" >?.t</span>ype === StepType.Verify
+    },
     lazy: true
   })
 &nbsp;
@@ -483,10 +505,12 @@ export function ContinousVerificationInputSetStep(
   }, [])
 &nbsp;
   useEffect(() =&gt; {
-    <span class="missing-if-branch" title="else path not taken" >E</span>if (pipelineData<span class="branch-0 cbranch-no" title="branch not covered" >?.d</span>ata<span class="branch-0 cbranch-no" title="branch not covered" >?.y</span>amlPipeline) {
+    <span class="missing-if-branch" title="if path not taken" >I</span>if (pipelineData<span class="branch-0 cbranch-no" title="branch not covered" >?.d</span>ata<span class="branch-0 cbranch-no" title="branch not covered" >?.r</span>esolvedTemplatesPipelineYaml) {
+<span class="cstat-no" title="statement not covered" >      setPipeline(parse(pipelineData?.data?.resolvedTemplatesPipelineYaml))</span>
+    } else <span class="missing-if-branch" title="else path not taken" >E</span>if (pipelineData<span class="branch-0 cbranch-no" title="branch not covered" >?.d</span>ata<span class="branch-0 cbranch-no" title="branch not covered" >?.y</span>amlPipeline) {
       setPipeline(parse(pipelineData<span class="branch-0 cbranch-no" title="branch not covered" >?.d</span>ata<span class="branch-0 cbranch-no" title="branch not covered" >?.y</span>amlPipeline))
     }
-  }, [pipelineData<span class="branch-0 cbranch-no" title="branch not covered" >?.d</span>ata<span class="branch-0 cbranch-no" title="branch not covered" >?.y</span>amlPipeline])
+  }, [pipelineData<span class="branch-0 cbranch-no" title="branch not covered" >?.d</span>ata<span class="branch-0 cbranch-no" title="branch not covered" >?.y</span>amlPipeline, pipelineData<span class="branch-0 cbranch-no" title="branch not covered" >?.d</span>ata<span class="branch-0 cbranch-no" title="branch not covered" >?.r</span>esolvedTemplatesPipelineYaml])
 &nbsp;
   const { serviceIdentifierFromStage, envIdentifierDataFromStage } = useMemo(() =&gt; {
     return getInfraAndServiceFromStage(pipeline)
@@ -613,7 +637,7 @@ export function ContinousVerificationInputSetStep(
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Tue Apr 19 2022 20:31:11 GMT+0000 (Greenwich Mean Time)
+                at Mon Apr 25 2022 06:31:19 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../../../../prettify.js"></script>

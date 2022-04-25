@@ -23,30 +23,30 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">92.86% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>13/14</span>
+                <span class='fraction'>0/14</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">47.37% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>9/19</span>
+                <span class='fraction'>0/19</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">66.67% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>2/3</span>
+                <span class='fraction'>0/3</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">92.86% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>13/14</span>
+                <span class='fraction'>0/14</span>
             </div>
         
             
@@ -55,7 +55,7 @@
             Press <em>n</em> or <em>j</em> to go to the next uncovered block, <em>b</em>, <em>p</em> or <em>k</em> for the previous block.
         </p>
     </div>
-    <div class='status-line high'></div>
+    <div class='status-line low'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -102,25 +102,25 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">9x</span>
-<span class="cline-any cline-yes">9x</span>
-<span class="cline-any cline-yes">9x</span>
-<span class="cline-any cline-yes">9x</span>
-<span class="cline-any cline-yes">9x</span>
-<span class="cline-any cline-yes">9x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">9x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">9x</span>
-<span class="cline-any cline-yes">7x</span>
-<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">7x</span>
-<span class="cline-any cline-yes">5x</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">7x</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -140,30 +140,30 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 &nbsp;
-import React, { useMemo } from 'react'
-import { Select, SelectOption } from '@wings-software/uicore'
-import classNames from 'classnames'
-import { useStrings } from 'framework/strings'
-import { getDropdownOptions } from '@cv/components/HealthSourceDropDown/HealthSourceDropDown.utils'
-import { VerificationType } from '@cv/components/HealthSourceDropDown/HealthSourceDropDown.constants'
+<span class="cstat-no" title="statement not covered" >import React, { useMemo } from 'react'</span>
+<span class="cstat-no" title="statement not covered" >import { Select, SelectOption } from '@wings-software/uicore'</span>
+<span class="cstat-no" title="statement not covered" >import classNames from 'classnames'</span>
+<span class="cstat-no" title="statement not covered" >import { useStrings } from 'framework/strings'</span>
+<span class="cstat-no" title="statement not covered" >import { getDropdownOptions } from '@cv/components/HealthSourceDropDown/HealthSourceDropDown.utils'</span>
+<span class="cstat-no" title="statement not covered" >import { VerificationType } from '@cv/components/HealthSourceDropDown/HealthSourceDropDown.constants'</span>
 import type { HealthSourceDropDownProps } from './HealthSourcesDropdown.types'
-import css from './HealthSourcesDropdown.module.scss'
+<span class="cstat-no" title="statement not covered" >import css from './HealthSourcesDropdown.module.scss'</span>
 &nbsp;
-export function HealthSourceDropDown(props: HealthSourceDropDownProps): JSX.Element {
-  const { onChange, className, verificationType = <span class="branch-0 cbranch-no" title="branch not covered" >VerificationType.TIME_SERIES,</span> data, error, loading } = props
-  const { getString } = useStrings()
+<span class="cstat-no" title="statement not covered" >export function <span class="fstat-no" title="function not covered" >H</span>ealthSourceDropDown(</span>props: HealthSourceDropDownProps): JSX.Element {
+  const { onChange, className, verificationType = <span class="branch-0 cbranch-no" title="branch not covered" >VerificationType.TIME_SERIES,</span> data, error, loading } = <span class="cstat-no" title="statement not covered" >props</span>
+  const { getString } = <span class="cstat-no" title="statement not covered" >useStrings()</span>
 &nbsp;
-  const healthSources: SelectOption[] = useMemo(() =&gt; {
-    return getDropdownOptions({ loading, error, data, verificationType }, getString)
+  const healthSources: SelectOption[] = <span class="cstat-no" title="statement not covered" >useMemo(<span class="fstat-no" title="function not covered" >() =</span>&gt; {</span>
+<span class="cstat-no" title="statement not covered" >    return getDropdownOptions({ loading, error, data, verificationType }, getString)</span>
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data, error, loading, verificationType])
 &nbsp;
-  return (
+<span class="cstat-no" title="statement not covered" >  return (</span>
     &lt;Select
       items={healthSources}
       className={classNames(css.maxDropDownWidth, className)}
-      defaultSelectedItem={healthSources<span class="branch-0 cbranch-no" title="branch not covered" >?.[0</span>]}
-      key={healthSources<span class="branch-0 cbranch-no" title="branch not covered" >?.[0</span>]<span class="branch-1 cbranch-no" title="branch not covered" >?.value as string}</span>
+      defaultSelectedItem={healthSources?.[0]}
+      key={healthSources?.[0]?.value as string}
       inputProps={{ placeholder: getString('pipeline.verification.healthSourcePlaceholder') }}
       onChange={<span class="fstat-no" title="function not covered" >item </span>=&gt; {
 <span class="cstat-no" title="statement not covered" >        onChange(item?.value === 'all' ? '' : (item.value as string))</span>
@@ -178,7 +178,7 @@ export function HealthSourceDropDown(props: HealthSourceDropDownProps): JSX.Elem
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Tue Apr 19 2022 20:31:11 GMT+0000 (Greenwich Mean Time)
+                at Mon Apr 25 2022 06:31:19 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../../../prettify.js"></script>

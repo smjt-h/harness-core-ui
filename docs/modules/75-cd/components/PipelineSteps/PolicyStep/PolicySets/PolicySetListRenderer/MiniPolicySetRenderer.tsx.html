@@ -25,7 +25,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>26/26</span>
+                <span class='fraction'>27/27</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>25/25</span>
+                <span class='fraction'>26/26</span>
             </div>
         
             
@@ -207,35 +207,37 @@
 <a name='L148'></a><a href='#L148'>148</a>
 <a name='L149'></a><a href='#L149'>149</a>
 <a name='L150'></a><a href='#L150'>150</a>
-<a name='L151'></a><a href='#L151'>151</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L151'></a><a href='#L151'>151</a>
+<a name='L152'></a><a href='#L152'>152</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">92x</span>
-<span class="cline-any cline-yes">92x</span>
-<span class="cline-any cline-yes">92x</span>
-<span class="cline-any cline-yes">92x</span>
-<span class="cline-any cline-yes">92x</span>
+<span class="cline-any cline-yes">101x</span>
+<span class="cline-any cline-yes">101x</span>
+<span class="cline-any cline-yes">101x</span>
+<span class="cline-any cline-yes">101x</span>
+<span class="cline-any cline-yes">101x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">92x</span>
-<span class="cline-any cline-yes">92x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">92x</span>
-<span class="cline-any cline-yes">92x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">92x</span>
+<span class="cline-any cline-yes">101x</span>
+<span class="cline-any cline-yes">101x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">101x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">101x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">101x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">92x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">101x</span>
+<span class="cline-any cline-yes">31x</span>
 <span class="cline-any cline-yes">31x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">31x</span>
@@ -306,7 +308,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">92x</span>
+<span class="cline-any cline-yes">101x</span>
 <span class="cline-any cline-yes">7x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">7x</span>
@@ -374,9 +376,9 @@ import { Button, Color, Layout, Text } from '@harness/uicore'
 import { LinkedPolicy, useGetPolicySet } from 'services/pm'
 &nbsp;
 import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
+import useRBACError, { RBACError } from '@rbac/utils/useRBACError/useRBACError'
 &nbsp;
 import { PolicySetType } from '../../PolicyStepTypes'
-import { getErrorMessage } from '../../utils'
 &nbsp;
 import css from './PolicySetListRenderer.module.scss'
 &nbsp;
@@ -387,6 +389,7 @@ interface MiniPolicySetRendererProps {
 &nbsp;
 export function MiniPolicySetRenderer({ policySetId, deletePolicySet }: MiniPolicySetRendererProps) {
   const { accountId: accountIdentifier, projectIdentifier, orgIdentifier } = useParams&lt;ProjectPathProps&gt;()
+  const { getRBACErrorMessage } = useRBACError()
 &nbsp;
   const policySetType = policySetId.includes('account.')
     ? PolicySetType.ACCOUNT
@@ -430,7 +433,7 @@ export function MiniPolicySetRenderer({ policySetId, deletePolicySet }: MiniPoli
           &lt;Spinner size={Spinner.SIZE_SMALL} /&gt;
         ) : error ? (
           &lt;Text lineClamp={1} color={Color.RED_800}&gt;
-            {getErrorMessage(error)}
+            {getRBACErrorMessage(error as RBACError)}
           &lt;/Text&gt;
         ) : policySet ? (
           &lt;&gt;
@@ -514,7 +517,7 @@ export function MiniPoliciesRenderer({ policies, alignRight }: MiniPoliciesRende
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Tue Apr 19 2022 20:31:11 GMT+0000 (Greenwich Mean Time)
+                at Mon Apr 25 2022 06:31:19 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../../../../prettify.js"></script>

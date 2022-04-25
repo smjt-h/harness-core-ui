@@ -218,19 +218,16 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">10x</span>
-<span class="cline-any cline-yes">88x</span>
-<span class="cline-any cline-yes">88x</span>
-<span class="cline-any cline-yes">88x</span>
-<span class="cline-any cline-yes">88x</span>
-<span class="cline-any cline-yes">88x</span>
-<span class="cline-any cline-yes">88x</span>
-<span class="cline-any cline-yes">88x</span>
+<span class="cline-any cline-yes">32x</span>
+<span class="cline-any cline-yes">32x</span>
+<span class="cline-any cline-yes">32x</span>
+<span class="cline-any cline-yes">32x</span>
+<span class="cline-any cline-yes">32x</span>
+<span class="cline-any cline-yes">32x</span>
+<span class="cline-any cline-yes">32x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">88x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">32x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -239,7 +236,10 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">88x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">32x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -261,14 +261,14 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">88x</span>
+<span class="cline-any cline-yes">32x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">88x</span>
+<span class="cline-any cline-yes">32x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -277,7 +277,7 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">88x</span>
+<span class="cline-any cline-yes">32x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -329,7 +329,7 @@ import React, { useState } from 'react'
 import { useParams } from 'react-router-dom'
 import type { Cell, CellValue, ColumnInstance, Renderer, Row, TableInstance } from 'react-table'
 import { useStrings } from 'framework/strings'
-import { ResourceGroupDTO, ResourceGroupResponse, useDeleteResourceGroup } from 'services/resourcegroups'
+import { ResourceGroupV2, ResourceGroupV2Response, useDeleteResourceGroupV2 } from 'services/resourcegroups'
 import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
 import { ResourceType } from '@rbac/interfaces/ResourceType'
 import { PermissionIdentifier } from '@rbac/interfaces/PermissionIdentifier'
@@ -339,21 +339,21 @@ import css from './ResourceGroupList.module.scss'
 export type CellPropsResourceGroupColumn&lt;D extends Record&lt;string, any&gt;, V = any&gt; = TableInstance&lt;D&gt; &amp; {
   column: ColumnInstance&lt;D&gt; &amp; {
     reload?: () =&gt; Promise&lt;void&gt;
-    openResourceGroupModal?: (resourceGroup: ResourceGroupDTO) =&gt; void
+    openResourceGroupModal?: (resourceGroup: ResourceGroupV2) =&gt; void
   }
   row: Row&lt;D&gt;
   cell: Cell&lt;D, V&gt;
   value: CellValue&lt;V&gt;
 }
 &nbsp;
-const ResourceGroupColumnMenu: Renderer&lt;CellPropsResourceGroupColumn&lt;ResourceGroupResponse&gt;&gt; = ({ row, column }) =&gt; {
+const ResourceGroupColumnMenu: Renderer&lt;CellPropsResourceGroupColumn&lt;ResourceGroupV2Response&gt;&gt; = ({ row, column }) =&gt; {
   const data = row.original
   const isHarnessManaged = data.harnessManaged
   const [menuOpen, setMenuOpen] = useState(false)
   const { showSuccess, showError } = useToaster()
   const { accountId, projectIdentifier, orgIdentifier } = useParams&lt;ProjectPathProps&gt;()
   const { getString } = useStrings()
-  const { mutate: deleteResourceGroup } = useDeleteResourceGroup({
+  const { mutate: deleteResourceGroup } = useDeleteResourceGroupV2({
     queryParams: { accountIdentifier: accountId, projectIdentifier, orgIdentifier }
   })
   const permissionRequest = {
@@ -451,7 +451,7 @@ export default ResourceGroupColumnMenu
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Tue Apr 19 2022 20:31:11 GMT+0000 (Greenwich Mean Time)
+                at Mon Apr 25 2022 06:31:19 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../prettify.js"></script>

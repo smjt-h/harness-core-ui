@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">73.3% </span>
+                <span class="strong">73.54% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>162/221</span>
+                <span class='fraction'>164/223</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">55.04% </span>
+                <span class="strong">57.83% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>251/456</span>
+                <span class='fraction'>251/434</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">73.18% </span>
+                <span class="strong">73.42% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>161/220</span>
+                <span class='fraction'>163/222</span>
             </div>
         
             
@@ -945,13 +945,10 @@
 <span class="cline-any cline-yes">23x</span>
 <span class="cline-any cline-yes">23x</span>
 <span class="cline-any cline-yes">23x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">23x</span>
-<span class="cline-any cline-yes">23x</span>
-<span class="cline-any cline-yes">23x</span>
-<span class="cline-any cline-yes">23x</span>
 <span class="cline-any cline-yes">23x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">23x</span>
+<span class="cline-any cline-yes">23x</span>
 <span class="cline-any cline-yes">23x</span>
 <span class="cline-any cline-yes">23x</span>
 <span class="cline-any cline-yes">23x</span>
@@ -959,6 +956,10 @@
 <span class="cline-any cline-yes">23x</span>
 <span class="cline-any cline-yes">23x</span>
 <span class="cline-any cline-yes">23x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">23x</span>
+<span class="cline-any cline-yes">23x</span>
+<span class="cline-any cline-yes">23x</span>
 <span class="cline-any cline-yes">23x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">23x</span>
@@ -979,6 +980,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">54x</span>
 <span class="cline-any cline-yes">54x</span>
 <span class="cline-any cline-yes">54x</span>
 <span class="cline-any cline-yes">54x</span>
@@ -1468,8 +1470,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -1730,7 +1730,7 @@ import { Color } from '@harness/design-system'
 import { useHistory, useParams } from 'react-router-dom'
 import cx from 'classnames'
 import { parse } from 'yaml'
-import { defaultTo, isEmpty, pick } from 'lodash-es'
+import { isEmpty, pick } from 'lodash-es'
 import type { FormikErrors } from 'formik'
 import { Classes, Dialog, Tooltip } from '@blueprintjs/core'
 import { useStrings } from 'framework/strings'
@@ -1760,6 +1760,7 @@ import { useExecutionContext } from '@pipeline/context/ExecutionContext'
 import type { YamlBuilderHandlerBinding, YamlBuilderProps } from '@common/interfaces/YAMLBuilderProps'
 &nbsp;
 import RbacButton from '@rbac/components/Button/Button'
+import useRBACError from '@rbac/utils/useRBACError/useRBACError'
 import { ResourceType } from '@rbac/interfaces/ResourceType'
 import { PermissionIdentifier } from '@rbac/interfaces/PermissionIdentifier'
 import { usePermission } from '@rbac/hooks/usePermission'
@@ -1805,6 +1806,7 @@ function RetryPipeline({
   const { isGitSyncEnabled } = useAppStore()
   const { getString } = useStrings()
   const { showSuccess, showWarning, showError } = useToaster()
+  const { getRBACErrorMessage } = useRBACError()
   const history = useHistory()
 &nbsp;
   const { projectIdentifier, orgIdentifier, pipelineIdentifier, accountId, executionIdentifier, module } =
@@ -2051,7 +2053,7 @@ function RetryPipeline({
 <span class="cstat-no" title="statement not covered" >              setCurrentPipeline(toBeUpdated)</span>
             }
           } catch (e) {
-<span class="cstat-no" title="statement not covered" >            showError(e?.data?.message || e?.message, undefined, 'pipeline.feth.inputSetTemplateYaml.error')</span>
+<span class="cstat-no" title="statement not covered" >            showError(getRBACErrorMessage(e), undefined, 'pipeline.feth.inputSetTemplateYaml.error')</span>
           }
         }
 <span class="cstat-no" title="statement not covered" >        fetchData()</span>
@@ -2145,7 +2147,7 @@ function RetryPipeline({
           }
         }
       } catch (error) {
-<span class="cstat-no" title="statement not covered" >        showWarning(error?.data?.message || getString('runPipelineForm.runPipelineFailed'))</span>
+<span class="cstat-no" title="statement not covered" >        showWarning(getRBACErrorMessage(error) || getString('runPipelineForm.runPipelineFailed'))</span>
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -2287,9 +2289,7 @@ function RetryPipeline({
   return (
     &lt;Formik&lt;PipelineInfoConfig&gt;
       initialValues={
-        currentPipeline?.pipeline
-          ? clearRuntimeInput(currentPipeline.pipeline)
-          : { name: '', identifier: defaultTo(pipelineIdentifier, ''), stages: [] }
+        currentPipeline?.pipeline ? clearRuntimeInput(currentPipeline.pipeline) : ({} as PipelineInfoConfig)
       }
       formName="retryPipeline"
       onSubmit={<span class="fstat-no" title="function not covered" >values </span>=&gt; {
@@ -2533,7 +2533,7 @@ export default RetryPipeline
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Tue Apr 19 2022 20:31:11 GMT+0000 (Greenwich Mean Time)
+                at Mon Apr 25 2022 06:31:19 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../prettify.js"></script>

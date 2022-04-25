@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">86.96% </span>
+                <span class="strong">87.32% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>60/69</span>
+                <span class='fraction'>62/71</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">83.15% </span>
+                <span class="strong">82.42% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>74/89</span>
+                <span class='fraction'>75/91</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">86.96% </span>
+                <span class="strong">87.32% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>60/69</span>
+                <span class='fraction'>62/71</span>
             </div>
         
             
@@ -298,7 +298,14 @@
 <a name='L239'></a><a href='#L239'>239</a>
 <a name='L240'></a><a href='#L240'>240</a>
 <a name='L241'></a><a href='#L241'>241</a>
-<a name='L242'></a><a href='#L242'>242</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L242'></a><a href='#L242'>242</a>
+<a name='L243'></a><a href='#L243'>243</a>
+<a name='L244'></a><a href='#L244'>244</a>
+<a name='L245'></a><a href='#L245'>245</a>
+<a name='L246'></a><a href='#L246'>246</a>
+<a name='L247'></a><a href='#L247'>247</a>
+<a name='L248'></a><a href='#L248'>248</a>
+<a name='L249'></a><a href='#L249'>249</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -362,6 +369,10 @@
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">21x</span>
@@ -426,6 +437,9 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">21x</span>
+<span class="cline-any cline-yes">21x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -577,7 +591,7 @@ export default function ExecutionTabs(props: React.PropsWithChildren&lt;unknown&
   const [selectedTabId, setSelectedTabId] = React.useState('')
   const { children } = props
   const { getString } = useStrings()
-  const { pipelineExecutionDetail } = useExecutionContext()
+  const { pipelineExecutionDetail, isPipelineInvalid } = useExecutionContext()
   const params = useParams&lt;PipelineType&lt;ExecutionPathProps&gt;&gt;()
   const location = useLocation()
   const { view } = useQueryParams&lt;ExecutionQueryParams&gt;()
@@ -602,7 +616,11 @@ export default function ExecutionTabs(props: React.PropsWithChildren&lt;unknown&
   function handleLogViewChange(e: React.ChangeEvent&lt;HTMLInputElement&gt;): void {
     const { checked } = e.target as HTMLInputElement
 &nbsp;
-    updateQueryParams({ view: checked ? 'log' : 'graph', filterAnomalous: 'false' })
+    updateQueryParams({
+      view: checked ? 'log' : 'graph',
+      filterAnomalous: 'false',
+      type: getString('pipeline.verification.analysisTab.metrics')
+    })
   }
 &nbsp;
   React.useEffect(() =&gt; {
@@ -665,8 +683,11 @@ export default function ExecutionTabs(props: React.PropsWithChildren&lt;unknown&
           &lt;span&gt;{getString('common.pipeline')}&lt;/span&gt;
         &lt;/NavLink&gt;
       )
-    },
-    {
+    }
+  ]
+&nbsp;
+  <span class="missing-if-branch" title="else path not taken" >E</span>if (!isPipelineInvalid) {
+    tabList.push({
       id: TAB_ID_MAP.INPUTS,
       title: (
         &lt;NavLink
@@ -678,8 +699,8 @@ export default function ExecutionTabs(props: React.PropsWithChildren&lt;unknown&
           &lt;span&gt;{getString('inputs')}&lt;/span&gt;
         &lt;/NavLink&gt;
       )
-    }
-  ]
+    })
+  }
 &nbsp;
   <span class="missing-if-branch" title="if path not taken" >I</span>if (opaBasedGovernanceEnabled) {
 <span class="cstat-no" title="statement not covered" >    tabList.push({</span>
@@ -787,7 +808,7 @@ export default function ExecutionTabs(props: React.PropsWithChildren&lt;unknown&
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Tue Apr 19 2022 20:31:11 GMT+0000 (Greenwich Mean Time)
+                at Mon Apr 25 2022 06:31:19 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../../../prettify.js"></script>

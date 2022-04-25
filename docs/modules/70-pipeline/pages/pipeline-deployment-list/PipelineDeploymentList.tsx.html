@@ -30,9 +30,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">67.07% </span>
+                <span class="strong">66.86% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>112/167</span>
+                <span class='fraction'>113/169</span>
             </div>
         
             
@@ -466,7 +466,23 @@
 <a name='L407'></a><a href='#L407'>407</a>
 <a name='L408'></a><a href='#L408'>408</a>
 <a name='L409'></a><a href='#L409'>409</a>
-<a name='L410'></a><a href='#L410'>410</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L410'></a><a href='#L410'>410</a>
+<a name='L411'></a><a href='#L411'>411</a>
+<a name='L412'></a><a href='#L412'>412</a>
+<a name='L413'></a><a href='#L413'>413</a>
+<a name='L414'></a><a href='#L414'>414</a>
+<a name='L415'></a><a href='#L415'>415</a>
+<a name='L416'></a><a href='#L416'>416</a>
+<a name='L417'></a><a href='#L417'>417</a>
+<a name='L418'></a><a href='#L418'>418</a>
+<a name='L419'></a><a href='#L419'>419</a>
+<a name='L420'></a><a href='#L420'>420</a>
+<a name='L421'></a><a href='#L421'>421</a>
+<a name='L422'></a><a href='#L422'>422</a>
+<a name='L423'></a><a href='#L423'>423</a>
+<a name='L424'></a><a href='#L424'>424</a>
+<a name='L425'></a><a href='#L425'>425</a>
+<a name='L426'></a><a href='#L426'>426</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -509,6 +525,7 @@
 <span class="cline-any cline-yes">6x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">6x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -586,6 +603,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">54x</span>
 <span class="cline-any cline-yes">31x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -615,8 +634,12 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">23x</span>
 <span class="cline-any cline-yes">23x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -840,7 +863,16 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -922,6 +954,7 @@ const pollingIntervalInMilliseconds = 5_000
 export interface PipelineDeploymentListProps {
   onRunPipeline(): void
   showHealthAndExecution?: boolean
+  isPipelineInvalid?: boolean
 }
 &nbsp;
 const renderSpinner = ({
@@ -989,14 +1022,16 @@ const getCreateRunPipeline = ({
 const renderDeploymentListHeader = ({
   pipelineExecutionSummary,
   hasFilters,
-  onRunPipeline
+  onRunPipeline,
+  isPipelineInvalid
 }: {
   pipelineExecutionSummary: PagePipelineExecutionSummary
   hasFilters: boolean
   onRunPipeline: () =&gt; void
+  isPipelineInvalid?: boolean
 }): JSX.Element | null =&gt; {
   if (!!pipelineExecutionSummary<span class="branch-0 cbranch-no" title="branch not covered" >?.c</span>ontent?.length || hasFilters) {
-    return &lt;PipelineDeploymentListHeader onRunPipeline={onRunPipeline} /&gt;
+    return &lt;PipelineDeploymentListHeader onRunPipeline={onRunPipeline} isPipelineInvalid={isPipelineInvalid} /&gt;
   }
   return null
 }
@@ -1012,6 +1047,7 @@ function NoDeployments(props: {
   pipelineIdentifier: string
   queryParams: QueryParams
   onRunPipeline: () =&gt; void
+  isPipelineInvalid?: boolean
 }): JSX.Element {
   const {
     hasFilters,
@@ -1023,7 +1059,8 @@ function NoDeployments(props: {
     goToPipeline,
     pipelineIdentifier,
     queryParams,
-    onRunPipeline
+    onRunPipeline,
+    isPipelineInvalid
   } = props || <span class="branch-1 cbranch-no" title="branch not covered" >{}</span>
   return (
     &lt;div className={css.noDeploymentSection}&gt;
@@ -1052,6 +1089,8 @@ function NoDeployments(props: {
           &lt;RbacButton
             intent="primary"
             text={runPipeline ? getString('pipeline.runAPipeline') : <span class="branch-1 cbranch-no" title="branch not covered" >getString('common.createPipeline')}</span>
+            disabled={isPipelineInvalid}
+            tooltip={isPipelineInvalid ? <span class="branch-0 cbranch-no" title="branch not covered" >getString('pipeline.cannotRunInvalidPipeline') </span>: ''}
             onClick={createPipeline ? <span class="fstat-no" title="function not covered" ><span class="branch-0 cbranch-no" title="branch not covered" >() =</span>&gt; <span class="cstat-no" title="statement not covered" >goToPipeline() </span></span>: onRunPipeline}
             permission={{
               permission: runPipeline ? PermissionIdentifier.EXECUTE_PIPELINE : <span class="branch-1 cbranch-no" title="branch not covered" >PermissionIdentifier.EDIT_PIPELINE,</span>
@@ -1244,7 +1283,12 @@ export default function PipelineDeploymentList(props: PipelineDeploymentListProp
         refetchFilters={refetchFilters}
         queryParams={queryParams}
       &gt;
-        {renderDeploymentListHeader({ pipelineExecutionSummary, hasFilters, onRunPipeline: props.onRunPipeline })}
+        {renderDeploymentListHeader({
+          pipelineExecutionSummary,
+          hasFilters,
+          onRunPipeline: props.onRunPipeline,
+          isPipelineInvalid: props.isPipelineInvalid
+        })}
         &lt;Page.Body
           className={css.main}
           key={pipelineIdentifier}
@@ -1272,10 +1316,14 @@ export default function PipelineDeploymentList(props: PipelineDeploymentListProp
               goToPipeline={goToPipeline}
               pipelineIdentifier={pipelineIdentifier}
               queryParams={queryParams}
+              isPipelineInvalid={props.isPipelineInvalid}
             /&gt;
           ) : (
             &lt;React.Fragment&gt;
-              &lt;ExecutionsList pipelineExecutionSummary={pipelineExecutionSummary<span class="branch-0 cbranch-no" title="branch not covered" >?.c</span>ontent} /&gt;
+              &lt;ExecutionsList
+                pipelineExecutionSummary={pipelineExecutionSummary<span class="branch-0 cbranch-no" title="branch not covered" >?.c</span>ontent}
+                isPipelineInvalid={props.isPipelineInvalid}
+              /&gt;
               &lt;ExecutionsPagination pipelineExecutionSummary={pipelineExecutionSummary} /&gt;
             &lt;/React.Fragment&gt;
           )}
@@ -1291,7 +1339,7 @@ export default function PipelineDeploymentList(props: PipelineDeploymentListProp
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Tue Apr 19 2022 20:31:11 GMT+0000 (Greenwich Mean Time)
+                at Mon Apr 25 2022 06:31:19 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../prettify.js"></script>

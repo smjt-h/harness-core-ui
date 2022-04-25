@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">84.34% </span>
+                <span class="strong">84.52% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>70/83</span>
+                <span class='fraction'>71/84</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">86.08% </span>
+                <span class="strong">86.25% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>68/79</span>
+                <span class='fraction'>69/80</span>
             </div>
         
             
@@ -428,9 +428,7 @@
 <a name='L369'></a><a href='#L369'>369</a>
 <a name='L370'></a><a href='#L370'>370</a>
 <a name='L371'></a><a href='#L371'>371</a>
-<a name='L372'></a><a href='#L372'>372</a>
-<a name='L373'></a><a href='#L373'>373</a>
-<a name='L374'></a><a href='#L374'>374</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L372'></a><a href='#L372'>372</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -459,9 +457,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -481,6 +476,7 @@
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">2x</span>
@@ -831,10 +827,7 @@ import { produce } from 'immer'
 import { parse } from 'yaml'
 import type { PipelineInfoConfig } from 'services/cd-ng'
 import { ConnectorInfoDTO, useGetConnector } from 'services/cd-ng'
-import {
-  PipelineContextType,
-  usePipelineContext
-} from '@pipeline/components/PipelineStudio/PipelineContext/PipelineContext'
+import { usePipelineContext } from '@pipeline/components/PipelineStudio/PipelineContext/PipelineContext'
 import { useStrings } from 'framework/strings'
 import {
   ConnectorReferenceField,
@@ -857,6 +850,7 @@ import type { TemplateSummaryResponse } from 'services/template-ng'
 import { createTemplate, getTemplateNameWithLabel } from '@pipeline/utils/templateUtils'
 import { useTelemetry } from '@common/hooks/useTelemetry'
 import { Category, StageActions } from '@common/constants/TrackingConstants'
+import { isContextTypeNotStageTemplate } from '@pipeline/components/PipelineStudio/PipelineUtils'
 import css from './EditStageView.module.scss'
 &nbsp;
 export interface EditStageView {
@@ -956,14 +950,14 @@ export const EditStageView: React.FC&lt;EditStageView&gt; = ({ data, template, o
   const validationSchema = () =&gt;
     Yup.lazy((values: Values): any =&gt;
       Yup.object().shape({
-        ...(contextType === PipelineContextType.Pipeline &amp;&amp; {
+        ...(isContextTypeNotStageTemplate(contextType) &amp;&amp; {
           name: NameSchemaWithoutHook(getString, {
             requiredErrorMsg: getString('fieldRequired', { field: getString('stageNameLabel') })
           }),
           identifier: IdentifierSchemaWithoutHook(getString)
         }),
         ...(!codebase &amp;&amp;
-          contextType === PipelineContextType.Pipeline &amp;&amp;
+          isContextTypeNotStageTemplate(contextType) &amp;&amp;
           values.cloneCodebase &amp;&amp; {
             connectorRef: Yup.mixed().required(getString('fieldRequired', { field: getString('connector') })),
             ...(connectionType === 'Account' &amp;&amp; <span class="branch-1 cbranch-no" title="branch not covered" >{</span>
@@ -1046,7 +1040,7 @@ export const EditStageView: React.FC&lt;EditStageView&gt; = ({ data, template, o
               &gt;
                 {getString('pipelineSteps.build.create.aboutYourStage')}
               &lt;/Text&gt;
-              {contextType === PipelineContextType.Pipeline &amp;&amp;
+              {isContextTypeNotStageTemplate(contextType) &amp;&amp;
                 (template ? (
 <span class="branch-0 cbranch-no" title="branch not covered" >                  &lt;NameId</span>
                     identifierProps={{
@@ -1093,7 +1087,7 @@ export const EditStageView: React.FC&lt;EditStageView&gt; = ({ data, template, o
                 &lt;/div&gt;
               )}
               {/* We don't need to configure CI Codebase if it is already configured or we are skipping Clone Codebase step */}
-              {!codebase &amp;&amp; formikProps.values.cloneCodebase &amp;&amp; contextType === PipelineContextType.Pipeline &amp;&amp; (
+              {!codebase &amp;&amp; formikProps.values.cloneCodebase &amp;&amp; isContextTypeNotStageTemplate(contextType) &amp;&amp; (
                 &lt;div className={css.configureCodebase}&gt;
                   &lt;Text
                     font={{ size: 'normal', weight: 'semi-bold' }}
@@ -1183,7 +1177,7 @@ export const EditStageView: React.FC&lt;EditStageView&gt; = ({ data, template, o
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Tue Apr 19 2022 20:31:11 GMT+0000 (Greenwich Mean Time)
+                at Mon Apr 25 2022 06:31:19 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../../../prettify.js"></script>

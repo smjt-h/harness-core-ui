@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">87.39% </span>
+                <span class="strong">87.5% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>104/119</span>
+                <span class='fraction'>105/120</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">65.08% </span>
+                <span class="strong">64.55% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>123/189</span>
+                <span class='fraction'>122/189</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">87.29% </span>
+                <span class="strong">87.39% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>103/118</span>
+                <span class='fraction'>104/119</span>
             </div>
         
             
@@ -455,9 +455,7 @@
 <a name='L396'></a><a href='#L396'>396</a>
 <a name='L397'></a><a href='#L397'>397</a>
 <a name='L398'></a><a href='#L398'>398</a>
-<a name='L399'></a><a href='#L399'>399</a>
-<a name='L400'></a><a href='#L400'>400</a>
-<a name='L401'></a><a href='#L401'>401</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L399'></a><a href='#L399'>399</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -481,9 +479,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
@@ -496,6 +491,7 @@
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
@@ -880,10 +876,7 @@ import ExecutionGraph, {
   ExecutionGraphRefObj
 } from '@pipeline/components/PipelineStudio/ExecutionGraph/ExecutionGraph'
 import { DrawerTypes } from '@pipeline/components/PipelineStudio/PipelineContext/PipelineActions'
-import {
-  PipelineContextType,
-  usePipelineContext
-} from '@pipeline/components/PipelineStudio/PipelineContext/PipelineContext'
+import { usePipelineContext } from '@pipeline/components/PipelineStudio/PipelineContext/PipelineContext'
 import { AdvancedPanels } from '@pipeline/components/PipelineStudio/StepCommands/StepCommandTypes'
 import { useStrings } from 'framework/strings'
 import { StageErrorContext } from '@pipeline/context/StageErrorContext'
@@ -896,6 +889,7 @@ import { useAddStepTemplate } from '@pipeline/hooks/useAddStepTemplate'
 import { StageType } from '@pipeline/utils/stageHelpers'
 import { getCDStageValidationSchema } from '@cd/components/PipelineSteps/PipelineStepsUtil'
 import type { DeploymentStageElementConfig } from '@pipeline/utils/pipelineTypes'
+import { isContextTypeNotStageTemplate } from '@pipeline/components/PipelineStudio/PipelineUtils'
 import DeployInfraSpecifications from '../DeployInfraSpecifications/DeployInfraSpecifications'
 import DeployServiceSpecifications from '../DeployServiceSpecifications/DeployServiceSpecifications'
 import DeployStageSpecifications from '../DeployStageSpecifications/DeployStageSpecifications'
@@ -1240,7 +1234,7 @@ export default function DeployStageSetupShell(): JSX.Element {
           panel={&lt;DeployAdvancedSpecifications&gt;{navBtns}&lt;/DeployAdvancedSpecifications&gt;}
           data-testid="advanced"
         /&gt;
-        {contextType === PipelineContextType.Pipeline &amp;&amp; isTemplatesEnabled &amp;&amp; <span class="branch-2 cbranch-no" title="branch not covered" >selectedStage?.stage </span>&amp;&amp; (
+        {isTemplatesEnabled &amp;&amp; <span class="branch-1 cbranch-no" title="branch not covered" >isContextTypeNotStageTemplate(contextType) </span>&amp;&amp; <span class="branch-2 cbranch-no" title="branch not covered" >selectedStage?.stage </span>&amp;&amp; (
 <span class="branch-3 cbranch-no" title="branch not covered" >          &lt;&gt;</span>
             &lt;Expander /&gt;
             &lt;SaveTemplateButton
@@ -1264,7 +1258,7 @@ export default function DeployStageSetupShell(): JSX.Element {
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Tue Apr 19 2022 20:31:11 GMT+0000 (Greenwich Mean Time)
+                at Mon Apr 25 2022 06:31:19 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../../prettify.js"></script>

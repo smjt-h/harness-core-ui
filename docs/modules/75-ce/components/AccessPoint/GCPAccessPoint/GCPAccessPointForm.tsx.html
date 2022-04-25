@@ -25,14 +25,14 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>69/69</span>
+                <span class='fraction'>72/72</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">91.75% </span>
+                <span class="strong">87.8% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>89/97</span>
+                <span class='fraction'>108/123</span>
             </div>
         
             
@@ -46,7 +46,7 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>69/69</span>
+                <span class='fraction'>72/72</span>
             </div>
         
             
@@ -399,7 +399,20 @@
 <a name='L340'></a><a href='#L340'>340</a>
 <a name='L341'></a><a href='#L341'>341</a>
 <a name='L342'></a><a href='#L342'>342</a>
-<a name='L343'></a><a href='#L343'>343</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L343'></a><a href='#L343'>343</a>
+<a name='L344'></a><a href='#L344'>344</a>
+<a name='L345'></a><a href='#L345'>345</a>
+<a name='L346'></a><a href='#L346'>346</a>
+<a name='L347'></a><a href='#L347'>347</a>
+<a name='L348'></a><a href='#L348'>348</a>
+<a name='L349'></a><a href='#L349'>349</a>
+<a name='L350'></a><a href='#L350'>350</a>
+<a name='L351'></a><a href='#L351'>351</a>
+<a name='L352'></a><a href='#L352'>352</a>
+<a name='L353'></a><a href='#L353'>353</a>
+<a name='L354'></a><a href='#L354'>354</a>
+<a name='L355'></a><a href='#L355'>355</a>
+<a name='L356'></a><a href='#L356'>356</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -424,6 +437,10 @@
 <span class="cline-any cline-yes">10x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-yes">10x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -452,6 +469,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">17x</span>
 <span class="cline-any cline-yes">17x</span>
 <span class="cline-any cline-yes">17x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -627,6 +645,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">25x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -719,6 +739,12 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -765,6 +791,8 @@ import { useStrings } from 'framework/strings'
 import type { AccountPathProps } from '@common/interfaces/RouteInterfaces'
 import useRegionsForSelection from '@ce/common/hooks/useRegionsForSelection'
 import type { AccessPointScreenMode } from '@ce/types'
+import { useFeatureFlag } from '@common/hooks/useFeatureFlag'
+import { FeatureFlag } from '@common/featureFlags'
 import css from './GCPAccessPoint.module.scss'
 &nbsp;
 export interface GcpApFormValue {
@@ -775,6 +803,8 @@ export interface GcpApFormValue {
   zone?: string
   machine_type?: string
   subnet_name?: string
+  cert_secret_id?: string
+  key_secret_id?: string
 }
 &nbsp;
 interface GCPAccessPointFormProps {
@@ -796,6 +826,7 @@ const GCPAccessPointForm: React.FC&lt;GCPAccessPointFormProps&gt; = ({
 }) =&gt; {
   const { getString } = useStrings()
   const { accountId } = useParams&lt;AccountPathProps&gt;()
+  const tlsSupportEnabled = useFeatureFlag(FeatureFlag.CCM_GCP_TLS_ENABLED)
 &nbsp;
   const [selectedRegion, setSelectedRegion] = useState&lt;string | undefined&gt;(loadBalancer.region)
   const [selectedVpc, setSelectedVpc] = useState&lt;string | undefined&gt;(loadBalancer.vpc)
@@ -965,7 +996,9 @@ const GCPAccessPointForm: React.FC&lt;GCPAccessPointFormProps&gt; = ({
             loadBalancer.metadata<span class="branch-0 cbranch-no" title="branch not covered" >?.m</span>achine_type,
             machinesData?.response?.find(m =&gt; m.is_default)?.name
           ),
-          subnet_name: loadBalancer.metadata<span class="branch-0 cbranch-no" title="branch not covered" >?.s</span>ubnet_name
+          subnet_name: loadBalancer.metadata<span class="branch-0 cbranch-no" title="branch not covered" >?.s</span>ubnet_name,
+          cert_secret_id: _defaultTo(loadBalancer.metadata<span class="branch-0 cbranch-no" title="branch not covered" >?.c</span>ertificates<span class="branch-1 cbranch-no" title="branch not covered" >?.[0]<span class="branch-1 cbranch-no" title="branch not covered" >?</span>.cert_secret_id,</span> ''),
+          key_secret_id: _defaultTo(loadBalancer.metadata<span class="branch-0 cbranch-no" title="branch not covered" >?.c</span>ertificates<span class="branch-1 cbranch-no" title="branch not covered" >?.[0]<span class="branch-1 cbranch-no" title="branch not covered" >?</span>.key_secret_id,</span> '')
         }}
         enableReinitialize
         formName="lbFormSecond"
@@ -1057,6 +1090,12 @@ const GCPAccessPointForm: React.FC&lt;GCPAccessPointFormProps&gt; = ({
                 // }
               /&gt;
             &lt;/Layout.Horizontal&gt;
+            {tlsSupportEnabled &amp;&amp; (
+<span class="branch-1 cbranch-no" title="branch not covered" >              &lt;Layout.Horizontal className={css.formFieldRow}&gt;</span>
+                &lt;FormInput.Text name="cert_secret_id" label={getString('ce.co.accessPoint.gcpCertificateId')} /&gt;
+                &lt;FormInput.Text name="key_secret_id" label={getString('ce.co.accessPoint.gcpSecretId')} /&gt;
+              &lt;/Layout.Horizontal&gt;
+            )}
             &lt;Layout.Horizontal style={{ marginTop: 220 }}&gt;
               &lt;Button
                 text={'Back'}
@@ -1090,7 +1129,7 @@ export default GCPAccessPointForm
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Tue Apr 19 2022 20:31:11 GMT+0000 (Greenwich Mean Time)
+                at Mon Apr 25 2022 06:31:19 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../../prettify.js"></script>

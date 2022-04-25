@@ -25,21 +25,21 @@
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>27/27</span>
+                <span class='fraction'>26/26</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">91.67% </span>
+                <span class="strong">95% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>22/24</span>
+                <span class='fraction'>19/20</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Functions</span>
-                <span class='fraction'>6/6</span>
+                <span class='fraction'>5/5</span>
             </div>
         
             
@@ -163,7 +163,8 @@
 <a name='L104'></a><a href='#L104'>104</a>
 <a name='L105'></a><a href='#L105'>105</a>
 <a name='L106'></a><a href='#L106'>106</a>
-<a name='L107'></a><a href='#L107'>107</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L107'></a><a href='#L107'>107</a>
+<a name='L108'></a><a href='#L108'>108</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -193,8 +194,6 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">7x</span>
@@ -217,6 +216,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">9x</span>
 <span class="cline-any cline-yes">9x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">9x</span>
@@ -268,6 +268,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">/*
  * Copyright 2021 Harness Inc. All rights reserved.
@@ -278,10 +280,10 @@
 &nbsp;
 import React, { ReactNode, useMemo, FC } from 'react'
 import { Breadcrumb, Page, FontVariation, Heading, HarnessDocTooltip } from '@harness/uicore'
-import { get } from 'lodash-es'
 import { NGBreadcrumbs } from '@common/components/NGBreadcrumbs/NGBreadcrumbs'
 import { ContainerSpinner } from '@common/components/ContainerSpinner/ContainerSpinner'
 import { useDocumentTitle } from '@common/hooks/useDocumentTitle'
+import useRBACError, { RBACError } from '@rbac/utils/useRBACError/useRBACError'
 import css from './EnvironmentsList.module.scss'
 &nbsp;
 interface EnvironmentPageHeadingProps {
@@ -299,8 +301,6 @@ export interface EnvironmentPageTemplateProps {
   error?: unknown
   retryOnError?: () =&gt; void
 }
-&nbsp;
-const getErrorMessage = (error: any): string =&gt; get(error, 'data.error', get(error, 'data.message', error<span class="branch-0 cbranch-no" title="branch not covered" >?.m</span>essage))
 &nbsp;
 const EnvironmentPageHeading: FC&lt;EnvironmentPageHeadingProps&gt; = ({ tooltipId, children }) =&gt; {
   return (
@@ -324,6 +324,7 @@ const EnvironmentListingPageTemplate: React.FC&lt;EnvironmentPageTemplateProps&g
   children
 }) =&gt; {
   useDocumentTitle(title)
+  const { getRBACErrorMessage } = useRBACError()
 &nbsp;
   enum STATUS {
     'loading',
@@ -359,7 +360,9 @@ const EnvironmentListingPageTemplate: React.FC&lt;EnvironmentPageTemplateProps&g
       {toolbar &amp;&amp; &lt;Page.SubHeader className={css.toolbar}&gt;{toolbar}&lt;/Page.SubHeader&gt;}
 &nbsp;
       &lt;div className={css.content}&gt;
-        {state === STATUS.error &amp;&amp; &lt;Page.Error message={getErrorMessage(error)} onClick={retryOnError} /&gt;}
+        {state === STATUS.error &amp;&amp; (
+          &lt;Page.Error message={getRBACErrorMessage(error as RBACError) as string} onClick={retryOnError} /&gt;
+        )}
         {state === STATUS.ok &amp;&amp; children}
       &lt;/div&gt;
 &nbsp;
@@ -382,7 +385,7 @@ export default EnvironmentListingPageTemplate
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Tue Apr 19 2022 20:31:11 GMT+0000 (Greenwich Mean Time)
+                at Mon Apr 25 2022 06:31:19 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../../prettify.js"></script>

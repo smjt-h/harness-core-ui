@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">94.12% </span>
+                <span class="strong">94.44% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>32/34</span>
+                <span class='fraction'>34/36</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">71.7% </span>
+                <span class="strong">71.93% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>38/53</span>
+                <span class='fraction'>41/57</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">94.12% </span>
+                <span class="strong">94.44% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>32/34</span>
+                <span class='fraction'>34/36</span>
             </div>
         
             
@@ -211,7 +211,13 @@
 <a name='L152'></a><a href='#L152'>152</a>
 <a name='L153'></a><a href='#L153'>153</a>
 <a name='L154'></a><a href='#L154'>154</a>
-<a name='L155'></a><a href='#L155'>155</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L155'></a><a href='#L155'>155</a>
+<a name='L156'></a><a href='#L156'>156</a>
+<a name='L157'></a><a href='#L157'>157</a>
+<a name='L158'></a><a href='#L158'>158</a>
+<a name='L159'></a><a href='#L159'>159</a>
+<a name='L160'></a><a href='#L160'>160</a>
+<a name='L161'></a><a href='#L161'>161</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -223,6 +229,7 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -236,6 +243,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -293,6 +301,9 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -364,6 +375,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">/*
  * Copyright 2021 Harness Inc. All rights reserved.
@@ -377,6 +389,7 @@ import { useParams } from 'react-router-dom'
 import { Layout, Text, Card, Popover, Container } from '@wings-software/uicore'
 import { Color, FontVariation } from '@harness/design-system'
 import { Position, Menu, MenuItem } from '@blueprintjs/core'
+import { defaultTo } from 'lodash-es'
 &nbsp;
 import { NodepoolTimeRange, NodepoolTimeRangeType, NodepoolTimeRangeValue } from '@ce/types'
 import { GET_NODEPOOL_DATE_RANGE } from '@ce/utils/momentUtils'
@@ -392,6 +405,7 @@ import {
 } from 'services/ce/services'
 import routes from '@common/RouteDefinitions'
 import { useStrings } from 'framework/strings'
+import { getProviderIcon } from '@ce/utils/recommendationUtils'
 import { NGBreadcrumbs } from '@common/components/NGBreadcrumbs/NGBreadcrumbs'
 import { ViewNodepoolTimeRange } from '@ce/components/RecommendationDetails/constants'
 import NodeRecommendationDetails from '@ce/components/NodeRecommendation/NodeRecommendation'
@@ -407,8 +421,8 @@ const NodeRecommendationDetailsPage = () =&gt; {
   const { getString } = useStrings()
   const { recommendation, accountId, recommendationName } = useParams&lt;Params&gt;()
   const [timeRange, setTimeRange] = useState&lt;NodepoolTimeRangeValue&gt;({
-    value: NodepoolTimeRangeType.LAST_DAY,
-    label: NodepoolTimeRange.LAST_DAY
+    value: NodepoolTimeRangeType.LAST_7,
+    label: NodepoolTimeRange.LAST_7
   })
   const timeRangeFilter = GET_NODEPOOL_DATE_RANGE[timeRange.value]
 &nbsp;
@@ -451,7 +465,10 @@ const NodeRecommendationDetailsPage = () =&gt; {
       &lt;Page.Header
         title={
           &lt;Layout.Horizontal spacing="small"&gt;
-            &lt;Text icon="gcp" font={{ variation: FontVariation.BODY1 }}&gt;
+            &lt;Text
+              icon={getProviderIcon(defaultTo(recommendationDetails.recommended<span class="branch-0 cbranch-no" title="branch not covered" >?.p</span>rovider, ''))}
+              font={{ variation: FontVariation.BODY1 }}
+            &gt;
               {getString('ce.recommendation.detailsPage.headerText')}
             &lt;/Text&gt;
             &lt;Text font={{ variation: FontVariation.H4 }} style={{ verticalAlign: 'middle' }}&gt;
@@ -511,6 +528,7 @@ const NodeRecommendationDetailsPage = () =&gt; {
             nodeRecommendationRequestData={
               nodeRecommendationRequestData<span class="branch-0 cbranch-no" title="branch not covered" >?.n</span>odeRecommendationRequest as RecommendNodePoolClusterRequest
             }
+            nodePoolData={nodePoolData as RecommendationItemDto}
           /&gt;
         &lt;/Container&gt;
       &lt;/Page.Body&gt;
@@ -526,7 +544,7 @@ export default NodeRecommendationDetailsPage
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Tue Apr 19 2022 20:31:11 GMT+0000 (Greenwich Mean Time)
+                at Mon Apr 25 2022 06:31:19 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../prettify.js"></script>

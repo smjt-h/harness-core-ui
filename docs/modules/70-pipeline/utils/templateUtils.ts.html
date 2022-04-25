@@ -152,46 +152,46 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">142x</span>
-<span class="cline-any cline-yes">142x</span>
-<span class="cline-any cline-yes">142x</span>
+<span class="cline-any cline-yes">145x</span>
+<span class="cline-any cline-yes">145x</span>
+<span class="cline-any cline-yes">145x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">142x</span>
-<span class="cline-any cline-yes">142x</span>
+<span class="cline-any cline-yes">145x</span>
+<span class="cline-any cline-yes">145x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">142x</span>
+<span class="cline-any cline-yes">145x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">142x</span>
+<span class="cline-any cline-yes">145x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">142x</span>
-<span class="cline-any cline-yes">27x</span>
+<span class="cline-any cline-yes">145x</span>
+<span class="cline-any cline-yes">23x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">142x</span>
+<span class="cline-any cline-yes">145x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">142x</span>
-<span class="cline-any cline-yes">66x</span>
+<span class="cline-any cline-yes">145x</span>
+<span class="cline-any cline-yes">34x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">142x</span>
+<span class="cline-any cline-yes">145x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">142x</span>
+<span class="cline-any cline-yes">145x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -202,7 +202,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">142x</span>
+<span class="cline-any cline-yes">145x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -218,7 +218,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">142x</span>
+<span class="cline-any cline-yes">145x</span>
 <span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
@@ -243,7 +243,7 @@
 import { defaultTo, get, isEmpty, set, unset } from 'lodash-es'
 import produce from 'immer'
 import { parse } from 'yaml'
-import type { StageElementConfig, StepElementConfig, TemplateLinkConfig } from 'services/cd-ng'
+import type { PipelineInfoConfig, StageElementConfig, StepElementConfig, TemplateLinkConfig } from 'services/cd-ng'
 import type { TemplateSummaryResponse } from 'services/template-ng'
 import { getIdentifierFromValue, getScopeFromDTO } from '@common/components/EntityReference/EntityReference'
 import { Scope } from '@common/interfaces/SecretsInterface'
@@ -280,7 +280,7 @@ export const getStepType = (step?: StepElementConfig | TemplateStepNode): StepTy
 }
 &nbsp;
 export const setTemplateInputs = (
-  data: TemplateStepNode | StageElementConfig,
+  data: TemplateStepNode | StageElementConfig | PipelineInfoConfig,
   templateInputs: TemplateLinkConfig['templateInputs']
 ) =&gt; {
   if (isEmpty(templateInputs)) {
@@ -290,7 +290,7 @@ export const setTemplateInputs = (
   }
 }
 &nbsp;
-export const createTemplate = &lt;T extends StageElementConfig | StepOrStepGroupOrTemplateStepData&gt;(
+export const createTemplate = &lt;T extends PipelineInfoConfig | StageElementConfig | StepOrStepGroupOrTemplateStepData&gt;(
   data?: T,
   template?: TemplateSummaryResponse
 ) =&gt; {
@@ -328,7 +328,7 @@ export const createStepNodeFromTemplate = (template: TemplateSummaryResponse, is
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Tue Apr 19 2022 20:31:11 GMT+0000 (Greenwich Mean Time)
+                at Mon Apr 25 2022 06:31:19 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../prettify.js"></script>

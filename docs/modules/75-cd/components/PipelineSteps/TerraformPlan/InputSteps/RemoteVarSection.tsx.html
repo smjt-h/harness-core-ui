@@ -23,9 +23,9 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">90.91% </span>
+                <span class="strong">91.3% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>40/44</span>
+                <span class='fraction'>42/46</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">90.7% </span>
+                <span class="strong">91.11% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>39/43</span>
+                <span class='fraction'>41/45</span>
             </div>
         
             
@@ -266,39 +266,42 @@
 <a name='L207'></a><a href='#L207'>207</a>
 <a name='L208'></a><a href='#L208'>208</a>
 <a name='L209'></a><a href='#L209'>209</a>
-<a name='L210'></a><a href='#L210'>210</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L210'></a><a href='#L210'>210</a>
+<a name='L211'></a><a href='#L211'>211</a>
+<a name='L212'></a><a href='#L212'>212</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">91x</span>
-<span class="cline-any cline-yes">91x</span>
-<span class="cline-any cline-yes">91x</span>
-<span class="cline-any cline-yes">91x</span>
-<span class="cline-any cline-yes">91x</span>
+<span class="cline-any cline-yes">100x</span>
+<span class="cline-any cline-yes">100x</span>
+<span class="cline-any cline-yes">100x</span>
+<span class="cline-any cline-yes">100x</span>
+<span class="cline-any cline-yes">100x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">91x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">100x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">91x</span>
-<span class="cline-any cline-yes">91x</span>
-<span class="cline-any cline-yes">91x</span>
-<span class="cline-any cline-yes">91x</span>
-<span class="cline-any cline-yes">91x</span>
-<span class="cline-any cline-yes">91x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">91x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">91x</span>
+<span class="cline-any cline-yes">100x</span>
+<span class="cline-any cline-yes">100x</span>
+<span class="cline-any cline-yes">100x</span>
+<span class="cline-any cline-yes">100x</span>
+<span class="cline-any cline-yes">100x</span>
+<span class="cline-any cline-yes">100x</span>
+<span class="cline-any cline-yes">100x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">100x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">100x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -317,6 +320,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-yes">5x</span>
 <span class="cline-any cline-yes">5x</span>
@@ -473,8 +477,8 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">91x</span>
-<span class="cline-any cline-yes">91x</span>
+<span class="cline-any cline-yes">100x</span>
+<span class="cline-any cline-yes">100x</span>
 <span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">/*
  * Copyright 2021 Harness Inc. All rights reserved.
  * Use of this source code is governed by the PolyForm Shield 1.0.0 license
@@ -501,6 +505,7 @@ import { useStrings } from 'framework/strings'
 import List from '@common/components/List/List'
 import { Connectors } from '@connectors/constants'
 import { FormMultiTypeConnectorField } from '@connectors/components/ConnectorReferenceField/FormMultiTypeConnectorField'
+import useRBACError from '@rbac/utils/useRBACError/useRBACError'
 import { useGetRepositoriesDetailsForArtifactory } from 'services/cd-ng'
 import { useVariablesExpression } from '@pipeline/components/PipelineStudio/PiplineHooks/useVariablesExpression'
 &nbsp;
@@ -527,6 +532,7 @@ function TFRemoteSectionRef(
     accountId: string
   }&gt;()
   const { showError } = useToaster()
+  const { getRBACErrorMessage } = useRBACError()
   const { repoIdentifier, branch } = useQueryParams&lt;GitQueryParams&gt;()
   const [connectorRepos, setConnectorRepos] = useState&lt;SelectOption[]&gt;()
   let connectorVal = get(
@@ -562,7 +568,7 @@ function TFRemoteSectionRef(
 &nbsp;
   useEffect(() =&gt; {
     <span class="missing-if-branch" title="if path not taken" >I</span>if (ArtifactRepoError) {
-<span class="cstat-no" title="statement not covered" >      showError(ArtifactRepoError.message)</span>
+<span class="cstat-no" title="statement not covered" >      showError(getRBACErrorMessage(ArtifactRepoError))</span>
     }
   }, [ArtifactRepoError])
 &nbsp;
@@ -691,7 +697,7 @@ export default TFRemoteSection
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Tue Apr 19 2022 20:31:11 GMT+0000 (Greenwich Mean Time)
+                at Mon Apr 25 2022 06:31:19 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../../../prettify.js"></script>

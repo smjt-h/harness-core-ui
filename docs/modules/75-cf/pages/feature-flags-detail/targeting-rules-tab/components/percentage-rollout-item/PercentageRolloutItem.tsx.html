@@ -126,7 +126,14 @@
 <a name='L67'></a><a href='#L67'>67</a>
 <a name='L68'></a><a href='#L68'>68</a>
 <a name='L69'></a><a href='#L69'>69</a>
-<a name='L70'></a><a href='#L70'>70</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<a name='L70'></a><a href='#L70'>70</a>
+<a name='L71'></a><a href='#L71'>71</a>
+<a name='L72'></a><a href='#L72'>72</a>
+<a name='L73'></a><a href='#L73'>73</a>
+<a name='L74'></a><a href='#L74'>74</a>
+<a name='L75'></a><a href='#L75'>75</a>
+<a name='L76'></a><a href='#L76'>76</a>
+<a name='L77'></a><a href='#L77'>77</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -151,6 +158,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">3x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -159,9 +167,10 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">63x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">63x</span>
+<span class="cline-any cline-yes">59x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">59x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -186,7 +195,12 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">189x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-yes">177x</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -203,17 +217,18 @@
  */
 &nbsp;
 import { FontVariation } from '@harness/design-system'
-import { Container, Heading, Button } from '@harness/uicore'
+import { Container, Text, Button, SelectOption } from '@harness/uicore'
 import React, { ReactElement } from 'react'
 import PercentageRollout from '@cf/components/PercentageRollout/PercentageRollout'
 import type { Segment, Variation } from 'services/cf'
 import { useStrings } from 'framework/strings'
-import type { VariationPercentageRollout } from '../../Types.types'
+import type { VariationPercentageRollout } from '../../types'
 import { DisabledFeatureTooltip } from '../disabled-feature-tooltip/DisabledFeatureTooltip'
 &nbsp;
 interface VariationPercentageRolloutProps {
   variationPercentageRollout: VariationPercentageRollout
   index: number
+  initialOption: SelectOption
   disabled: boolean
   removePercentageRollout: (index: number) =&gt; void
   segments: Segment[]
@@ -225,6 +240,7 @@ const PercentageRolloutItem = ({
   index,
   disabled,
   removePercentageRollout,
+  initialOption,
   segments,
   featureFlagVariations
 }: VariationPercentageRolloutProps): ReactElement =&gt; {
@@ -236,9 +252,9 @@ const PercentageRolloutItem = ({
         flex={{ justifyContent: 'space-between', alignItems: 'center' }}
         data-testid={`percentage_rollout_item_${index}`}
       &gt;
-        &lt;Heading level={4} font={{ variation: FontVariation.BODY2 }}&gt;
+        &lt;Text inline font={{ variation: FontVariation.BODY }} icon="percentage"&gt;
           {getString('cf.featureFlags.percentageRollout')}
-        &lt;/Heading&gt;
+        &lt;/Text&gt;
         &lt;DisabledFeatureTooltip&gt;
           &lt;Button
             disabled={disabled}
@@ -251,14 +267,19 @@ const PercentageRolloutItem = ({
         &lt;/DisabledFeatureTooltip&gt;
       &lt;/Container&gt;
 &nbsp;
-      &lt;PercentageRollout
-        targetGroups={segments}
-        variations={featureFlagVariations}
-        fieldValues={variationPercentageRollout}
-        prefix={(fieldName: string) =&gt; `targetingRuleItems[${index}].${fieldName}`}
-        hideOverError
-      /&gt;
-      &lt;Container border={{ bottom: true }} /&gt;
+      &lt;Container border={{ bottom: true }} padding={{ bottom: 'large' }}&gt;
+        &lt;PercentageRollout
+          targetGroups={segments}
+          variations={featureFlagVariations}
+          fieldValues={variationPercentageRollout}
+          prefix={(fieldName: string) =&gt; `targetingRuleItems[${index}].${fieldName}`}
+          value={initialOption}
+          distributionWidth={340}
+          addClearButton
+          hideOverError
+          hideTargetGroupDivider
+        /&gt;
+      &lt;/Container&gt;
     &lt;/&gt;
   )
 }
@@ -271,7 +292,7 @@ export default PercentageRolloutItem
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank">istanbul</a>
-                at Tue Apr 19 2022 20:31:11 GMT+0000 (Greenwich Mean Time)
+                at Mon Apr 25 2022 06:31:19 GMT+0000 (Greenwich Mean Time)
             </div>
         </div>
         <script src="../../../../../../../prettify.js"></script>
