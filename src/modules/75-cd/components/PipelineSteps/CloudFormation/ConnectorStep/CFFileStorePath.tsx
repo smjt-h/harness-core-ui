@@ -25,6 +25,7 @@ import {
 } from '@harness/uicore'
 import MultiTypeFieldSelector from '@common/components/MultiTypeFieldSelector/MultiTypeFieldSelector'
 import { useVariablesExpression } from '@pipeline/components/PipelineStudio/PiplineHooks/useVariablesExpression'
+import { ConfigureOptions } from '@common/components/ConfigureOptions/ConfigureOptions'
 import { useStrings } from 'framework/strings'
 import { FormatFilePaths } from '../CloudFormationHelper'
 import { onDragStart, onDragEnd, onDragLeave, onDragOver, onDrop } from '../DragHelper'
@@ -101,13 +102,7 @@ export const CFFileStore: React.FC<StepProps<any> & CFFileStoreProps> = ({
         initialValues={FormatFilePaths(initialValues, isParam, index)}
         enableReinitialize
         validationSchema={isParam ? paramSchema : templateSchema}
-        onSubmit={data => {
-          let connector = prevStepData?.spec?.configuration?.templateFile?.spec?.store?.spec?.connectorRef
-          if (isParam) {
-            connector = prevStepData?.spec?.configuration?.parameters[index]?.store?.spec?.connectorRef
-          }
-          onSubmit(data, connector)
-        }}
+        onSubmit={data => onSubmit(data, prevStepData)}
       >
         {({ values }) => {
           let name = 'spec.configuration.templateFile.spec.store.spec.paths[0].path'
@@ -116,12 +111,31 @@ export const CFFileStore: React.FC<StepProps<any> & CFFileStoreProps> = ({
           if (isParam) {
             name = `spec.configuration.parameters.store.spec.paths`
             filePaths = values?.spec?.configuration?.parameters?.store?.spec?.paths
-            connector = prevStepData?.spec?.configuration?.parameters[index]?.store?.spec?.connectorRef
+            connector = prevStepData?.spec?.configuration?.parameters?.store?.spec?.connectorRef
           }
-
           return (
             <Form>
               <div className={css.tfRemoteForm}>
+                {isParam && (
+                  <div className={cx(stepCss.formGroup, stepCss.md)}>
+                    <FormInput.MultiTextInput
+                      label={getString('identifier')}
+                      name={`spec.configuration.parameters.identifier`}
+                      multiTextInputProps={{ expressions, allowableTypes }}
+                    />
+                    {getMultiTypeFromValue(values?.spec?.configuration?.parameters?.identifier) === MultiTypeInputType.RUNTIME && (
+                      <ConfigureOptions
+                        style={{ alignSelf: 'center', marginTop: 1 }}
+                        value={values?.spec?.configuration?.parameters?.identifier as string}
+                        type="String"
+                        variableName={`spec.configuration.parameters.identifier`}
+                        showRequiredField={false}
+                        showDefaultField={false}
+                        showAdvanced={true}
+                      />
+                    )}
+                  </div>
+                )}
                 {connector?.connector?.type !== 'Aws' && (
                   <ParameterRepoDetails
                     isParam={isParam}

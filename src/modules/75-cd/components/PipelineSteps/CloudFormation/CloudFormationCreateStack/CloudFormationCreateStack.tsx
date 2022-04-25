@@ -68,7 +68,7 @@ export class CFCreateStack extends PipelineStep<any> {
           spec: {}
         },
         parameterOverrides: [],
-        skipOnStakStatuses: [],
+        skipOnStackStatuses: [],
         capabilities: []
       }
     }
@@ -133,41 +133,50 @@ export class CFCreateStack extends PipelineStep<any> {
       set(
         data,
         'spec.configuration.parameters',
-        map(params, param => ({
-          ...param,
-          store: {
-            ...param?.store,
-            spec: {
-              ...param.store.spec,
-              connectorRef: param.store.spec.connectorRef?.value || param.store.spec.connectorRef
+        map(params, param => {
+          let body = {}
+          if (param?.store?.type === 'S3Url') {
+            body = {
+              region: param?.store?.spec?.region,
+              urls: param?.store?.spec?.paths || param?.store?.spec?.urls
+            }
+          } else {
+            body = {
+              paths: param?.store?.spec?.paths
             }
           }
-        }))
+          return {
+            ...param,
+            store: {
+              ...param?.store,
+              spec: {
+                connectorRef: param.store.spec.connectorRef?.value || param.store.spec.connectorRef,
+                ...body
+              }
+            }
+          }
+        })
       )
     } else {
       delete data.spec.configuration.parameters
     }
 
-    if (!isEmpty(data.spec.configuration?.skipBasedOnStackStatuses)) {
-      const statuses = data.spec.configuration.parameters
+    if (!isEmpty(data?.spec?.configuration?.skipOnStackStatuses)) {
+      const statuses = data?.spec?.configuration?.skipOnStackStatuses
       set(
         data,
-        'spec.configuration.skipBasedOnStackStatuses',
-        map(statuses, status => status.value)
+        'spec.configuration.skipOnStackStatuses',
+        map(statuses, status => status?.value || status)
       )
-    } else {
-      delete data.spec.configuration?.skipBasedOnStackStatuses
     }
 
-    if (!isEmpty(data.spec.configuration?.capabilities)) {
+    if (!isEmpty(data?.spec?.configuration?.capabilities)) {
       const capabilities = data.spec.configuration.capabilities
       set(
         data,
         'spec.configuration.capabilities',
-        map(capabilities, status => status.value)
+        map(capabilities, cap => cap?.value || cap)
       )
-    } else {
-      delete data.spec.configuration?.capabilities
     }
 
     if (isEmpty(data.spec.configuration?.tags)) {
@@ -182,8 +191,13 @@ export class CFCreateStack extends PipelineStep<any> {
       delete data.spec.configuration?.parameterOverrides
     }
 
-    if (isEmpty(data.spec.configuration?.skipOnStackStatuses)) {
-      delete data.spec.configuration?.skipOnStackStatuses
+    if (!isEmpty(data.spec.configuration?.tags?.spec?.content)) {
+      data.spec.configuration.tags = {
+        type: 'inline',
+        spec: {
+          content: data.spec.configuration?.spec?.tags?.spec?.content
+        }
+      }
     }
 
     return {
@@ -208,12 +222,36 @@ export class CFCreateStack extends PipelineStep<any> {
         configuration: {
           ...data?.spec?.configuration,
           connectorRef: data?.spec?.configuration?.connectorRef || '',
-          capabilities: data?.spec?.configuration?.capabilities || [],
+          capabilities: map(data?.spec?.configuration?.capabilities, cap => ({ label: cap, value: cap })) || [],
           parameterOverrides: data?.spec?.configuration?.parameterOverrides || [],
-          parameters: data?.spec?.configuration?.parameters || [],
+          parameters:
+            map(data?.spec?.configuration?.parameters, param => {
+              let body
+              if (param?.store?.type === 'S3Url') {
+                body = {
+                  region: param?.store?.spec?.region,
+                  paths: param?.store?.spec?.urls
+                }
+              } else {
+                body = {
+                  paths: param?.store?.spec?.paths
+                }
+              }
+              return {
+                ...param,
+                store: {
+                  ...param?.store,
+                  spec: {
+                    connectorRef: param.store.spec.connectorRef,
+                    ...body
+                  }
+                }
+              }
+            }) || [],
           region: data?.spec?.configuration?.region || '',
           roleArn: data?.spec?.configuration?.roleArn || '',
-          skipOnStackStatuses: data?.spec?.configuration?.skipOnStackStatuses || [],
+          skipOnStackStatuses:
+            map(data?.spec?.configuration?.skipOnStackStatuses, status => ({ label: status, value: status })) || [],
           stackName: data?.spec?.configuration?.stackName || '',
           tags: data?.spec?.configuration?.tags || '',
           templateFile: data?.spec?.configuration?.templateFile || {

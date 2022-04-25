@@ -6,6 +6,7 @@
  */
 
 import React, { useEffect, useState } from 'react'
+import {find} from 'lodash-es'
 import { Form } from 'formik'
 import { useParams } from 'react-router-dom'
 import {
@@ -70,6 +71,12 @@ const ConnectorStepOne: React.FC<StepProps<any> & ConnectorStepOneProps> = ({
   } ${getString('connector')}`
 
   useEffect(() => {
+    const connectorType = isParam
+      ? initialValues.spec.configuration.parameters[index]?.store?.type
+      : initialValues?.spec?.configuration?.templateFile?.spec?.type
+    setSelectedConnector(connectorType === "S3Url" ? 'S3' : connectorType)
+  }, [initialValues])
+  useEffect(() => {
     if (!isParam) {
       setAllowedTypes(AllowedTypes.filter(item => item !== 'S3'))
     }
@@ -80,6 +87,7 @@ const ConnectorStepOne: React.FC<StepProps<any> & ConnectorStepOneProps> = ({
     }
   }, [showNewConnector])
 
+  const isS3 = selectedConnector && selectedConnector === 'S3'
   const errorMsg = Yup.string().required(getString('pipelineSteps.build.create.connectorRequiredError'))
   const connectorSchema = {
     store: Yup.object().shape({
@@ -91,14 +99,13 @@ const ConnectorStepOne: React.FC<StepProps<any> & ConnectorStepOneProps> = ({
   const paramSchema = {
     spec: Yup.object().shape({
       configuration: Yup.object().shape({
-        parameters: Yup.array(
-          Yup.object().shape({
-            ...connectorSchema
-          })
-        )
+        parameters: Yup.object().shape({
+          ...connectorSchema
+        })
       })
     })
   }
+
   const templateSchema = {
     spec: Yup.object().shape({
       configuration: Yup.object().shape({
@@ -121,13 +128,22 @@ const ConnectorStepOne: React.FC<StepProps<any> & ConnectorStepOneProps> = ({
           setSelectedConnector('')
           nextStep?.(data)
         }}
-        initialValues={initialValues}
+        initialValues={
+          isParam
+            ? { spec: { configuration: { parameters: { ...initialValues.spec.configuration.parameters[index] } } } }
+            : { ...initialValues }
+        }
         validationSchema={validationSchema}
       >
-        {() => {
+        {({ values, setFieldValue }) => {
+          let disabled = !values?.spec?.configuration?.templateFile?.spec?.store?.spec?.connectorRef
           let name = 'spec.configuration.templateFile.spec.store.spec.connectorRef'
           if (isParam) {
-            name = `spec.configuration.parameters[${index}].store.spec.connectorRef`
+            disabled = !(
+              values?.spec?.configuration?.parameters?.store?.spec?.connectorRef &&
+              values?.spec?.configuration?.parameters?.store?.spec?.region
+            )
+            name = `spec.configuration.parameters.store.spec.connectorRef`
           }
           return (
             <>
@@ -186,16 +202,20 @@ const ConnectorStepOne: React.FC<StepProps<any> & ConnectorStepOneProps> = ({
                       />
                     )}
                   </Layout.Horizontal>
-                  {selectedConnector && selectedConnector === 'S3' && (
+                  {isS3 && (
                     <Layout.Horizontal>
                       <Layout.Horizontal className={stepCss.formGroup}>
                         <MultiTypeInput
-                          name={`spec.configuration.parameters[${index}].store.spec.region`}
+                          name={`spec.configuration.parameters.store.spec.region`}
                           selectProps={{
                             addClearBtn: false,
                             items: regions
                           }}
                           width={300}
+                          value={find(regions, ['value', values?.spec?.configuration?.parameters?.store?.spec?.region])}
+                          onChange={({ value }: any) => {
+                            setFieldValue(`spec.configuration.parameters.store.spec.region`, value)
+                          }}
                         />
                       </Layout.Horizontal>
                     </Layout.Horizontal>
@@ -207,7 +227,7 @@ const ConnectorStepOne: React.FC<StepProps<any> & ConnectorStepOneProps> = ({
                     type="submit"
                     text={getString('continue')}
                     rightIcon="chevron-right"
-                    disabled={false}
+                    disabled={disabled}
                   />
                 </Layout.Horizontal>
               </Form>

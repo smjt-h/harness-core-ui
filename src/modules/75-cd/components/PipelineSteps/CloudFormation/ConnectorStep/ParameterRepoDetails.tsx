@@ -56,26 +56,6 @@ export const ParameterRepoDetails: React.FC<StepProps<any> & CFFileStoreProps> =
 
   return (
     <>
-      {isParam && (
-        <div className={cx(stepCss.formGroup, stepCss.md)}>
-          <FormInput.MultiTextInput
-            label={getString('identifier')}
-            name={`spec.configuration.parameters.identifier`}
-            multiTextInputProps={{ expressions, allowableTypes }}
-          />
-          {getMultiTypeFromValue(param?.identifier) === MultiTypeInputType.RUNTIME && (
-            <ConfigureOptions
-              style={{ alignSelf: 'center', marginTop: 1 }}
-              value={param?.identifier as string}
-              type="String"
-              variableName={`spec.configuration.parameters.identifier`}
-              showRequiredField={false}
-              showDefaultField={false}
-              showAdvanced={true}
-            />
-          )}
-        </div>
-      )}
       {(connector?.connector?.spec?.connectionType === 'Account' || connector?.connector?.spec?.type === 'Account') && (
         <div className={cx(stepCss.formGroup, stepCss.md)}>
           <FormInput.MultiTextInput

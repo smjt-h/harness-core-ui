@@ -33,7 +33,7 @@ import {
   FormMultiTypeDurationField,
   getDurationValidationSchema
 } from '@common/components/MultiTypeDuration/MultiTypeDuration'
-import { IdentifierSchemaWithOutName, NameSchema } from '@common/utils/Validation'
+import { IdentifierSchemaWithOutName, NameSchema, ConnectorRefSchema } from '@common/utils/Validation'
 import { useVariablesExpression } from '@pipeline/components/PipelineStudio/PiplineHooks/useVariablesExpression'
 import { ConfigureOptions } from '@common/components/ConfigureOptions/ConfigureOptions'
 import MultiTypeFieldSelector from '@common/components/MultiTypeFieldSelector/MultiTypeFieldSelector'
@@ -63,7 +63,7 @@ interface CloudFormationCreateStackProps {
 enum TemplateTypes {
   Remote = 'Remote',
   S3URL = 'S3URL',
-  Inline = 'inline'
+  Inline = 'Inline'
 }
 
 export const CloudFormationCreateStack = (
@@ -171,30 +171,57 @@ export const CloudFormationCreateStack = (
             return Yup.string().required(getString('common.validation.provisionerIdentifierIsRequired'))
           }),
           configuration: Yup.object().shape({
+            connectorRef: ConnectorRefSchema(),
             region: Yup.string().required(getString('cd.cloudFormation.errors.region')),
-            stackName: Yup.string().required(getString('cd.cloudFormation.errors.stackName'))
+            stackName: Yup.string().required(getString('cd.cloudFormation.errors.stackName')),
+            templateFile: Yup.object().shape({
+              type: Yup.string(),
+              spec: Yup.object().shape({
+                // templateBody: Yup.string().when('spec.configuration.templateFile.type', {
+                //   is: value => value === TemplateTypes.Inline,
+                //   then: Yup.string().required('Template body required'),
+                //   otherwise: Yup.string().notRequired()
+                // }),
+                // templateUrl: Yup.string().when('spec.configuration.templateFile.type', {
+                //   is: value => value === TemplateTypes.S3URL,
+                //   then: Yup.string().required('Template URL required'),
+                //   otherwise: Yup.string().notRequired()
+                // }),
+                // store: Yup.object({
+                //   spec: Yup.object().shape({
+                //     connectorRef: ConnectorRefSchema()
+                //   })
+                // }).when('spec.configuration.templateFile.type', {
+                //   is: value => value === TemplateTypes.Remote,
+                //   then: Yup.object().required('Required'),
+                //   otherwise: Yup.object().notRequired()
+                // }),
+              })
+            })
           })
         })
       })}
     >
       {formik => {
         setFormikRef(formikRef, formik)
-        const { values, setFieldValue } = formik
-        window.console.log('values: ', values)
-        const awsConnector = values?.spec?.configuration?.awsConnectorRef
+        const { values, setFieldValue, errors } = formik
+        window.console.log('values: ', values, errors)
+        const awsConnector = values?.spec?.configuration?.connectorRef
         if (awsConnector?.value !== awsTemplateRef) {
           setAwsTemplateRef(awsConnector?.value)
         }
         const config = values?.spec?.configuration
         const templateFileType = config?.templateFile?.type
-        const inlineTemplateFile = config?.templateFile?.spec?.content
+        const inlineTemplateFile = config?.templateFile?.spec?.templateBody
         const remoteTemplateFile = config?.templateFile?.spec?.store?.spec?.paths?.[0]
+        const templateUrl = config?.templateFile?.spec?.templateUrl
         const remoteParameterFiles = config?.parameters
         const inlineParameters = config?.parameters?.inline
         const awsRegion = config?.region
         const stackStatus = config?.skipOnStackStatuses
         const awsCapabilities = config?.capabilities
-        const awsRole = config?.role
+        const awsRole = config?.roleArn
+        const parameterOverrides = config?.parameterOverrides
         return (
           <>
             <div className={cx(stepCss.formGroup, stepCss.lg)}>
@@ -289,8 +316,31 @@ export const CloudFormationCreateStack = (
                     value={templateFileType}
                     onChange={e => {
                       // remove any previous template file data
-                      setFieldValue('spec.configuration.templateFile', '')
                       setFieldValue('spec.configuration.templateFile.type', e.target.value)
+                      if (e.target.value === TemplateTypes.Inline) {
+                        setFieldValue('spec.configuration.templateFile', {
+                          type: TemplateTypes.Inline,
+                          spec: {
+                            templateBody: ''
+                          }
+                        })
+                      } else if (e.target.value === TemplateTypes.Remote) {
+                        setFieldValue('spec.configuration.templateFile', {
+                          type: TemplateTypes.Remote,
+                          store: {
+                            spec: {
+                              connectorRef: undefined
+                            }
+                          }
+                        })
+                      } else {
+                        setFieldValue('spec.configuration.templateFile', {
+                          type: TemplateTypes.S3URL,
+                          spec: {
+                            templateUrl: ''
+                          }
+                        })
+                      }
                     }}
                   >
                     <option value={TemplateTypes.Remote}>Remote</option>
@@ -325,7 +375,7 @@ export const CloudFormationCreateStack = (
               {templateFileType === TemplateTypes.Inline && (
                 <div className={cx(stepCss.formGroup, stepCss.alignStart, css.addMarginTop, css.addMarginBottom)}>
                   <MultiTypeFieldSelector
-                    name="spec.configuration.templateFile.spec.content"
+                    name="spec.configuration.templateFile.spec.templateBody"
                     label={
                       <Text style={{ color: 'rgb(11, 11, 13)' }}>{getString('cd.cloudFormation.templateFile')}</Text>
                     }
@@ -335,7 +385,7 @@ export const CloudFormationCreateStack = (
                     disabled={readonly}
                     expressionRender={() => (
                       <TFMonaco
-                        name="spec.configuration.templateFile.spec.content"
+                        name="spec.configuration.templateFile.spec.templateBody"
                         formik={formik}
                         expressions={expressions}
                         title={getString('cd.cloudFormation.templateFile')}
@@ -343,7 +393,7 @@ export const CloudFormationCreateStack = (
                     )}
                   >
                     <TFMonaco
-                      name="spec.configuration.templateFile.spec.content"
+                      name="spec.configuration.templateFile.spec.templateBody"
                       formik={formik}
                       expressions={expressions}
                       title={getString('cd.cloudFormation.templateFile')}
@@ -353,11 +403,11 @@ export const CloudFormationCreateStack = (
                     <ConfigureOptions
                       value={inlineTemplateFile}
                       type="String"
-                      variableName="tags"
+                      variableName="spec.configuration.templateFile.spec.templateBody"
                       showRequiredField={false}
                       showDefaultField={false}
                       showAdvanced={true}
-                      onChange={value => setFieldValue('spec.configuration.templateFile.spec.content', value)}
+                      onChange={value => setFieldValue('spec.configuration.templateFile.spec.templateBody', value)}
                       isReadonly={readonly}
                     />
                   )}
@@ -527,8 +577,8 @@ export const CloudFormationCreateStack = (
                           }}
                           disabled={readonly}
                           width={300}
-                          onChange={value => {
-                            setFieldValue('values.spec.configuration.roleArn', value)
+                          onChange={({ value }: any) => {
+                            setFieldValue('spec.configuration.roleArn', value)
                           }}
                           value={find(awsRoles, ['value', awsRole])}
                         />
@@ -569,7 +619,7 @@ export const CloudFormationCreateStack = (
                         disabled={readonly}
                         expressionRender={() => (
                           <TFMonaco
-                            name="tags"
+                            name="spec.configuration.spec.tags.spec.content"
                             formik={formik}
                             expressions={expressions}
                             title={getString('tagsLabel')}
@@ -577,7 +627,7 @@ export const CloudFormationCreateStack = (
                         )}
                       >
                         <TFMonaco
-                          name="tags"
+                          name="spec.configuration.spec.tags.spec.content"
                           formik={formik}
                           expressions={expressions}
                           title={getString('tagsLabel')}
@@ -585,9 +635,9 @@ export const CloudFormationCreateStack = (
                       </MultiTypeFieldSelector>
                       {getMultiTypeFromValue(values.tags) === MultiTypeInputType.RUNTIME && (
                         <ConfigureOptions
-                          value={values.tags}
+                          value={values.spec?.configuration?.spec?.tags?.spec?.content}
                           type="String"
-                          variableName="tags"
+                          variableName="spec.configuration.spec.tags.spec.content"
                           showRequiredField={false}
                           showDefaultField={false}
                           showAdvanced={true}
@@ -607,8 +657,8 @@ export const CloudFormationCreateStack = (
                           multiSelectProps={{
                             items: awsStates
                           }}
-                          value={stackStatus}
                           disabled={readonly}
+                          value={stackStatus || []}
                           onChange={value => {
                             setFieldValue('spec.configuration.skipOnStackStatuses', value)
                           }}
@@ -634,13 +684,18 @@ export const CloudFormationCreateStack = (
               regions={regions}
             />
             <InlineParameterFile
-              initialValues={values}
+              initialValues={parameterOverrides}
               isOpen={showInlineParams}
               onClose={() => setInlineParams(false)}
               onSubmit={inlineValues => {
-                setFieldValue('spec.configuration.parameters.inline', inlineValues?.parameters)
+                console.log('inlineValues: ', inlineValues)
+                setFieldValue('spec.configuration.parameterOverrides', inlineValues?.parameterOverrides)
                 setInlineParams(false)
               }}
+              awsConnectorRef={awsConnector?.value}
+              type={templateFileType}
+              region={awsRegion}
+              body={inlineTemplateFile || templateUrl}
             />
           </>
         )

@@ -16,6 +16,7 @@ import ConnectorDetailsStep from '@connectors/components/CreateConnector/commonS
 import VerifyOutOfClusterDelegate from '@connectors/common/VerifyOutOfClusterDelegate/VerifyOutOfClusterDelegate'
 import GitDetailsStep from '@connectors/components/CreateConnector/commonSteps/GitDetailsStep'
 import DelegateSelectorStep from '@connectors/components/CreateConnector/commonSteps/DelegateSelectorStep/DelegateSelectorStep'
+import { Connectors } from '@connectors/constants'
 import {
   ConnectorMap,
   getBuildPayload,
@@ -46,11 +47,11 @@ interface Path {
   [key: string]: string
 }
 
-interface StepChangeData<SharedObject> {
-  prevStep: number
-  nextStep: number
-  prevStepData: SharedObject
-}
+// interface StepChangeData<SharedObject> {
+//   prevStep: number
+//   nextStep: number
+//   prevStepData: SharedObject
+// }
 
 const CFRemoteWizard = ({
   readonly,
@@ -72,16 +73,16 @@ const CFRemoteWizard = ({
   const fileStoreTitle = getString(
     isParam ? 'cd.cloudFormation.parameterFileDetails' : 'cd.cloudFormation.templateFileStore'
   )
-  const onStepChange = (arg: StepChangeData<any>): void => {
-    if (arg?.prevStep && arg?.nextStep && arg.prevStep > arg.nextStep && arg.nextStep <= 2) {
-      close()
-    }
-  }
+  // const onStepChange = (arg: StepChangeData<any>): void => {
+  //   if (arg?.prevStep && arg?.nextStep && arg.prevStep > arg.nextStep && arg.nextStep <= 2) {
+  //     close()
+  //   }
+  // }
   const close = () => {
     setShowNewConnector(false)
     onClose()
   }
-  const newConnector = () => {
+  const newConnector = (): JSX.Element => {
     const connectorType = ConnectorMap[selectedConnector]
     const buildPayload = getBuildPayload(connectorType as ConnectorTypes)
     return (
@@ -129,6 +130,10 @@ const CFRemoteWizard = ({
     const config = values?.spec?.configuration
     let paths = config?.templateFile?.spec?.store?.spec?.paths
     let connectorFieldName = 'spec.configuration.templateFile.spec.store.spec.connectorRef'
+    let connectorRef = connector?.spec?.configuration?.templateFile?.spec?.store?.spec?.connectorRef
+    if (isParam) {
+      connectorRef = connector?.spec?.configuration?.parameters?.store?.spec?.connectorRef
+    }
 
     if (isParam) {
       paths = config?.parameters?.store?.spec?.paths
@@ -137,11 +142,20 @@ const CFRemoteWizard = ({
         `spec.configuration.parameters[${index}].identifier`,
         values.spec.configuration.parameters.identifier
       )
-      setFieldValue(`spec.configuration.parameters[${index}].store.type`, connector?.connector?.type)
+      setFieldValue(
+        `spec.configuration.parameters[${index}].store.type`,
+        connectorRef?.connector?.type === Connectors.AWS ? 'S3Url' : connector?.connector?.type
+      )
       setFieldValue(`spec.configuration.parameters[${index}].store.spec`, {
         ...values.spec.configuration.parameters.store.spec,
         paths: paths.map((filePath: Path) => filePath.path)
       })
+      if (connector?.spec.configuration.parameters.store.spec?.region) {
+        setFieldValue(
+          `spec.configuration.parameters[${index}].store.spec.region`,
+          connector?.spec.configuration.parameters.store.spec?.region
+        )
+      }
     } else {
       setFieldValue(`spec.configuration.templateFile.spec.store.spec`, {
         ...values.spec.configuration.templateFile.spec.store.spec,
@@ -152,7 +166,7 @@ const CFRemoteWizard = ({
         paths.map((filePath: Path) => filePath.path)
       )
     }
-    setFieldValue(connectorFieldName, connector)
+    setFieldValue(connectorFieldName, connectorRef)
     close()
   }
 
@@ -168,7 +182,7 @@ const CFRemoteWizard = ({
         <StepWizard
           title={fileStoreTitle}
           className={css.configWizard}
-          onStepChange={onStepChange}
+          // onStepChange={onStepChange}
           icon="service-cloudformation"
           iconProps={{
             size: 50

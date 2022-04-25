@@ -78,7 +78,6 @@ export const GetNewConnector = (
   orgIdentifier: string,
   name: string
 ): JSX.Element | null => {
-  console.log('connectorType', connectorType)
   switch (connectorType) {
     case Connectors.GIT:
       return (

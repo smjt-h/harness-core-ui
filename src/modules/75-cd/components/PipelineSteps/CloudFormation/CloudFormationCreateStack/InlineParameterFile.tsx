@@ -7,14 +7,14 @@
 
 import React from 'react'
 import * as Yup from 'yup'
-// import { useParams } from 'react-router-dom'
-import { map, defaultTo } from 'lodash-es'
-import { Layout, Button, Formik, ButtonVariation, Select, FormInput, Text } from '@harness/uicore'
+import { useParams } from 'react-router-dom'
+import { map, defaultTo, isEmpty } from 'lodash-es'
+import { Layout, Button, Formik, ButtonVariation, Select, FormInput, Text, useToaster } from '@harness/uicore'
 import { Form, FieldArray } from 'formik'
 import { Classes, Dialog } from '@blueprintjs/core'
-// import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
+import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
 import { useStrings } from 'framework/strings'
-// import { useCFParametersForAws } from 'services/cd-ng'
+import { useCFParametersForAws } from 'services/cd-ng'
 import css from '../CloudFormation.module.scss'
 
 interface InlineParameterFileProps {
@@ -22,28 +22,57 @@ interface InlineParameterFileProps {
   onSubmit: (values: any) => void
   isOpen: boolean
   initialValues: any
+  awsConnectorRef: string
+  type: string
+  region: string
+  body: string
+}
+
+enum RequestTypes {
+  Remote = 'git',
+  S3URL = 's3',
+  Inline = 'body'
 }
 
 export const InlineParameterFile = ({
   initialValues,
   onSubmit,
   onClose,
-  isOpen
+  isOpen,
+  awsConnectorRef,
+  type,
+  region,
+  body
 }: InlineParameterFileProps): JSX.Element => {
   const { getString } = useStrings()
-  // const { accountId, projectIdentifier, orgIdentifier } = useParams<ProjectPathProps>()
-  // const [, setRemoteParams] = useState()
+  const { showError } = useToaster()
+  const { accountId, projectIdentifier, orgIdentifier } = useParams<ProjectPathProps>()
+  // const [remoteParams, setRemoteParams] = useState()
 
-  // const { mutate } = useCFParametersForAws({
-  //   queryParams: {
-  //     accountIdentifier: accountId,
-  //     orgIdentifier: orgIdentifier,
-  //     projectIdentifier: projectIdentifier,
-  //     awsConnectorRef: '',
-  //     type: '',
-  //     region: ''
-  //   }
-  // })
+  const { mutate: getParamsFromAWS } = useCFParametersForAws({
+    queryParams: {
+      accountIdentifier: accountId,
+      orgIdentifier: orgIdentifier,
+      projectIdentifier: projectIdentifier,
+      awsConnectorRef: awsConnectorRef,
+      type: RequestTypes[type as keyof typeof RequestTypes],
+      region: region
+    }
+  })
+
+  const getParameters = async (): Promise<void> => {
+    if (isEmpty(awsConnectorRef) || isEmpty(type) || isEmpty(region)) {
+      showError('AWS Connector, Region and Template File cannot be empty')
+    } else {
+      try {
+        const result = await getParamsFromAWS(JSON.parse(body))
+        console.log('result: ', result)
+      } catch (e) {
+        showError(e)
+        console.log(e)
+      }
+    }
+  }
 
   return (
     <Dialog
@@ -66,7 +95,7 @@ export const InlineParameterFile = ({
           initialValues={initialValues}
           onSubmit={onSubmit}
           validationSchema={Yup.object().shape({
-            parameters: Yup.array().of(
+            parameterOverrides: Yup.array().of(
               Yup.object().shape({
                 name: Yup.string().min(1).required(getString('cd.cloudFormation.errors.name')),
                 value: Yup.string().min(1).required(getString('cd.cloudFormation.errors.value'))
@@ -85,7 +114,9 @@ export const InlineParameterFile = ({
                     <Text style={{ color: 'rgb(11, 11, 13)', fontWeight: 'bold' }}>Parameters ({params.length})</Text>
                   </Layout.Vertical>
                   <Layout.Vertical>
-                    <a className={css.configPlaceHolder}>Retrieve Names from template</a>
+                    <a onClick={getParameters} className={css.configPlaceHolder}>
+                      Retrieve Names from template
+                    </a>
                   </Layout.Vertical>
                 </Layout.Horizontal>
                 <Layout.Horizontal
@@ -100,7 +131,7 @@ export const InlineParameterFile = ({
                   </Layout.Vertical>
                 </Layout.Horizontal>
                 <FieldArray
-                  name="parameters"
+                  name="spec.configuration.parameterOverrides"
                   render={arrayHelpers => (
                     <>
                       {map(params, (item: any, index: number) => (
@@ -112,15 +143,19 @@ export const InlineParameterFile = ({
                         >
                           <Select
                             onChange={({ value }) => {
-                              setFieldValue(`parameters[${index}].name`, value)
+                              setFieldValue(`spec.configuration.parameterOverrides[${index}].name`, value)
                             }}
                             items={items}
                             allowCreatingNewItems
                             className={css.overrideSelect}
-                            name={`parameters[${index}].name`}
+                            name={`spec.configuration.parameterOverrides[${index}].name`}
                             value={items.find(param => param.value === params[index].name)}
                           />
-                          <FormInput.Text name={`parameters[${index}].value`} label="" placeholder="Value" />
+                          <FormInput.Text
+                            name={`spec.configuration.parameterOverrides[${index}].value`}
+                            label=""
+                            placeholder="Value"
+                          />
                           <Button
                             minimal
                             icon="main-trash"
