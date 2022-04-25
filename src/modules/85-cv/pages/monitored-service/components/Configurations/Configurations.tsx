@@ -5,7 +5,7 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import React, { useEffect, useMemo, useState, useCallback } from 'react'
+import React, { useEffect, useMemo, useState, useCallback, useRef } from 'react'
 import { Container, Tab, Tabs, PageError, Views } from '@wings-software/uicore'
 import { useHistory, useParams, matchPath } from 'react-router-dom'
 import { isEqual, omit } from 'lodash-es'
@@ -32,7 +32,7 @@ import { MonitoredServiceEnum } from '@cv/pages/monitored-service/MonitoredServi
 import { ChangeSourceCategoryName } from '@cv/pages/ChangeSource/ChangeSourceDrawer/ChangeSourceDrawer.constants'
 import { useStrings } from 'framework/strings'
 import { SLODetailsPageTabIds } from '@cv/pages/slos/CVSLODetailsPage/CVSLODetailsPage.types'
-import Service from './components/Service/Service'
+import Service, { ServiceWithRef } from './components/Service/Service'
 import Dependency from './components/Dependency/Dependency'
 import { getInitFormData } from './components/Service/Service.utils'
 import type { MonitoredServiceForm } from './components/Service/Service.types'
@@ -44,7 +44,10 @@ interface ConfigurationsInterface {
   updateTemplate?: (template: NGTemplateInfoConfigWithMonitoredService) => Promise<void>
 }
 
-export default function Configurations({ isTemplate, updateTemplate }: ConfigurationsInterface): JSX.Element {
+export default function Configurations(
+  { isTemplate, updateTemplate }: ConfigurationsInterface,
+  formikRef: any
+): JSX.Element {
   const { getString } = useStrings()
   const { showWarning, showError, showSuccess } = useToaster()
   const history = useHistory()
@@ -102,6 +105,26 @@ export default function Configurations({ isTemplate, updateTemplate }: Configura
     identifier,
     queryParams: { accountId }
   })
+
+  const serviceRef = useRef<any | null>()
+
+  React.useImperativeHandle(formikRef || serviceRef, () => ({
+    resetForm() {
+      if (serviceRef?.current) {
+        return serviceRef.current?.resetForm()
+      }
+    },
+    submitForm() {
+      if (serviceRef?.current) {
+        return serviceRef.current?.submitForm()
+      }
+    },
+    getErrors() {
+      if (serviceRef?.current) {
+        return serviceRef.current?.getErrors() || {}
+      }
+    }
+  }))
 
   useEffect(() => {
     if (overrideBlockNavigation && !redirectToSLO) {
@@ -287,6 +310,9 @@ export default function Configurations({ isTemplate, updateTemplate }: Configura
     )
   }
 
+  const ServiceComponent = isTemplate ? ServiceWithRef : Service
+  const ServiceProps = isTemplate ? { ref: serviceRef } : {}
+
   return (
     <Container className={css.configurationTabs}>
       {(loadingGetMonitoredService || loadingFetchMonitoredServiceYAML || loadingUpdateMonitoredService) && (
@@ -312,8 +338,9 @@ export default function Configurations({ isTemplate, updateTemplate }: Configura
           id={getString('service')}
           title={getString('service')}
           panel={
-            <Service
+            <ServiceComponent
               value={initialValues}
+              {...ServiceProps}
               onSuccess={async payload => onSuccess(payload, getString('service'))}
               serviceTabformRef={serviceTabformRef}
               cachedInitialValues={!isTemplate ? cachedInitialValues : undefined}
@@ -351,13 +378,17 @@ export default function Configurations({ isTemplate, updateTemplate }: Configura
           }
         />
       </Tabs>
-      <NavigationCheck
-        when={true}
-        shouldBlockNavigation={onNavigationChange}
-        navigate={newPath => {
-          history.push(newPath)
-        }}
-      />
+      {!isTemplate && (
+        <NavigationCheck
+          when={true}
+          shouldBlockNavigation={onNavigationChange}
+          navigate={newPath => {
+            history.push(newPath)
+          }}
+        />
+      )}
     </Container>
   )
 }
+
+export const ConfigurationsWithRef = React.forwardRef(Configurations)

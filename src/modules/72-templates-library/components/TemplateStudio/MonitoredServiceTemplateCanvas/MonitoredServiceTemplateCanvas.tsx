@@ -7,15 +7,17 @@
 
 import React from 'react'
 // eslint-disable-next-line
-import Configurations from '@cv/pages/monitored-service/components/Configurations/Configurations'
+import { ConfigurationsWithRef } from '@cv/pages/monitored-service/components/Configurations/Configurations'
 import type { NGTemplateInfoConfigWithMonitoredService } from '@templates-library/components/Templates/MonitoredServiceTemplate/MonitoredServiceTemplate'
 import { TemplateContext } from '../TemplateContext/TemplateContext'
+import type { TemplateFormRef } from '../TemplateStudio'
 
-const MonitoredServiceTemplateCanvas = () => {
+const MonitoredServiceTemplateCanvas = (_props: unknown, formikRef: TemplateFormRef) => {
   const { updateTemplate } = React.useContext(TemplateContext)
   return (
-    <Configurations
+    <ConfigurationsWithRef
       isTemplate={true}
+      ref={formikRef}
       updateTemplate={updateTemplate as (template: NGTemplateInfoConfigWithMonitoredService) => Promise<void>}
     />
   )
