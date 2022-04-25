@@ -85,7 +85,12 @@ export function renderPopover<T>({ data, parallelNodes, selectedStageId, onSelec
           <Layout.Horizontal flex={{ justifyContent: 'space-between' }}>
             <Layout.Horizontal flex={{ alignItems: 'center', justifyContent: 'flex-start' }} spacing="small">
               {node.item?.icon && <Icon name={node.item.icon} size={20} />}
-              <Text lineClamp={1} font={{ weight: 'semi-bold', size: 'small' }} color={Color.GREY_800}>
+              <Text
+                lineClamp={1}
+                style={{ width: 200 }}
+                font={{ weight: 'semi-bold', size: 'small' }}
+                color={Color.GREY_800}
+              >
                 {node.item?.name}
               </Text>
             </Layout.Horizontal>
