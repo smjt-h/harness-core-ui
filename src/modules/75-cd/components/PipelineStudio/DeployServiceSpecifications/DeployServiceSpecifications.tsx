@@ -15,8 +15,7 @@ import {
   Layout,
   RUNTIME_INPUT_VALUE,
   SelectOption,
-  Text,
-  useToaster
+  Text
 } from '@wings-software/uicore'
 import { Color } from '@harness/design-system'
 import produce from 'immer'
@@ -48,6 +47,7 @@ import { useDeepCompareEffect } from '@common/hooks'
 import { StageType } from '@pipeline/utils/stageHelpers'
 import { useFeatureFlags } from '@common/hooks/useFeatureFlag'
 import { Scope } from '@common/interfaces/SecretsInterface'
+import { getIdentifierFromValue } from '@common/components/EntityReference/EntityReference'
 import stageCss from '../DeployStageSetupShell/DeployStage.module.scss'
 
 export default function DeployServiceSpecifications(props: React.PropsWithChildren<unknown>): JSX.Element {
@@ -56,6 +56,7 @@ export default function DeployServiceSpecifications(props: React.PropsWithChildr
   const {
     state: {
       pipeline,
+      templateTypes,
       selectionState: { selectedStageId }
     },
     allowableTypes,
@@ -65,7 +66,6 @@ export default function DeployServiceSpecifications(props: React.PropsWithChildr
     updateStage
   } = usePipelineContext()
   const scrollRef = React.useRef<HTMLDivElement | null>(null)
-  const { showError } = useToaster()
   const { NG_NATIVE_HELM } = useFeatureFlags()
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -135,23 +135,34 @@ export default function DeployServiceSpecifications(props: React.PropsWithChildr
       const newPreviousStageList: SelectOption[] = []
       const currentStageType = stage?.stage?.type
       stages.forEach((item, index) => {
-        if (
-          index < stageIndex &&
-          currentStageType === item?.stage?.type &&
-          !get(item.stage, `spec.serviceConfig.useFromStage.stage`)
-        ) {
-          let serviceName = (item.stage as DeploymentStageElementConfig)?.spec?.serviceConfig?.service?.name
-          if (isEmpty(serviceName) && serviceIdNameMap) {
-            serviceName =
-              serviceIdNameMap[(item.stage as DeploymentStageElementConfig)?.spec?.serviceConfig?.serviceRef as string]
+        if (index < stageIndex) {
+          if (item.stage?.template) {
+            const stageType = get(templateTypes, getIdentifierFromValue(item.stage.template.templateRef))
+            if (currentStageType === stageType) {
+              newPreviousStageList.push({
+                label: `Stage [${item.stage?.name}] - [Template]`,
+                value: item.stage?.identifier || ''
+              })
+            }
+          } else if (
+            currentStageType === item?.stage?.type &&
+            !get(item.stage, `spec.serviceConfig.useFromStage.stage`)
+          ) {
+            let serviceName = (item.stage as DeploymentStageElementConfig)?.spec?.serviceConfig?.service?.name
+            if (isEmpty(serviceName) && serviceIdNameMap) {
+              serviceName =
+                serviceIdNameMap[
+                  (item.stage as DeploymentStageElementConfig)?.spec?.serviceConfig?.serviceRef as string
+                ]
+            }
+            if (isEmpty(serviceName)) {
+              serviceName = (item.stage as DeploymentStageElementConfig)?.spec?.serviceConfig?.serviceRef || ''
+            }
+            newPreviousStageList.push({
+              label: `Stage [${item.stage?.name}] - Service [${serviceName}]`,
+              value: item.stage?.identifier || ''
+            })
           }
-          if (isEmpty(serviceName)) {
-            serviceName = (item.stage as DeploymentStageElementConfig)?.spec?.serviceConfig?.serviceRef || ''
-          }
-          newPreviousStageList.push({
-            label: `Stage [${item.stage?.name}] - Service [${serviceName}]`,
-            value: item.stage?.identifier || ''
-          })
         }
       })
       setPreviousStageList(newPreviousStageList)
@@ -292,18 +303,17 @@ export default function DeployServiceSpecifications(props: React.PropsWithChildr
     [debounceUpdateStage, stage, stage?.stage?.spec?.serviceConfig?.serviceDefinition]
   )
 
-  const handleDeploymentTypeChange = async (deploymentType: string): Promise<void> => {
-    try {
+  const handleDeploymentTypeChange = useCallback(
+    (deploymentType: string): void => {
       const stageData = produce(stage, draft => {
         const serviceDefinition = get(draft, 'stage.spec.serviceConfig.serviceDefinition', {})
         serviceDefinition.type = deploymentType
       })
-      await debounceUpdateStage(stageData?.stage)
       setSelectedDeploymentType(deploymentType)
-    } catch (err) {
-      showError(err?.data?.message || err?.message)
-    }
-  }
+      updateStage(stageData?.stage as StageElementConfig)
+    },
+    [stage, updateStage]
+  )
 
   const getScopeBasedDefaultServiceRef = React.useCallback(() => {
     return scope === Scope.PROJECT ? '' : RUNTIME_INPUT_VALUE

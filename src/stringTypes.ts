@@ -435,7 +435,6 @@ export interface StringsMap {
   'common.plans.title': string
   'common.plusNumber': string
   'common.plusNumberNoSpace': string
-  'common.policies': string
   'common.policiesSets.addOrModifyPolicySet': string
   'common.policiesSets.evaluationCriteria': string
   'common.policiesSets.newPolicyset': string
@@ -3599,6 +3598,8 @@ export interface StringsMap {
   'ce.co.accessPoint.domainName': string
   'ce.co.accessPoint.enterDomain': string
   'ce.co.accessPoint.error': string
+  'ce.co.accessPoint.gcpCertificateId': string
+  'ce.co.accessPoint.gcpSecretId': string
   'ce.co.accessPoint.helpCenter.heading': string
   'ce.co.accessPoint.helpCenter.step1': string
   'ce.co.accessPoint.helpCenter.step2': string
@@ -4081,6 +4082,7 @@ export interface StringsMap {
   'ce.perspectives.confirmDeletePerspectiveTitle': string
   'ce.perspectives.createPerspective.createCustomField': string
   'ce.perspectives.createPerspective.filters.addRuleText': string
+  'ce.perspectives.createPerspective.filters.enterCondition': string
   'ce.perspectives.createPerspective.filters.operator': string
   'ce.perspectives.createPerspective.filters.rulesText1': string
   'ce.perspectives.createPerspective.filters.rulesText2': string
@@ -4095,6 +4097,7 @@ export interface StringsMap {
   'ce.perspectives.createPerspective.nextButton': string
   'ce.perspectives.createPerspective.operatorLabels.in': string
   'ce.perspectives.createPerspective.operatorLabels.notIn': string
+  'ce.perspectives.createPerspective.operatorLabels.opLike': string
   'ce.perspectives.createPerspective.operatorLabels.opNotNull': string
   'ce.perspectives.createPerspective.operatorLabels.opNull': string
   'ce.perspectives.createPerspective.prevButton': string
@@ -4453,6 +4456,8 @@ export interface StringsMap {
   'cf.featureFlags.rules.following': string
   'cf.featureFlags.rules.onRequest': string
   'cf.featureFlags.rules.onRequestVariation': string
+  'cf.featureFlags.rules.searchTargetGroups': string
+  'cf.featureFlags.rules.searchTargets': string
   'cf.featureFlags.rules.serveToFollowing': string
   'cf.featureFlags.rules.serveVariationToTarget': string
   'cf.featureFlags.rules.specificTargeting': string

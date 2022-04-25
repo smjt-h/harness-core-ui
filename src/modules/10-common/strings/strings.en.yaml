@@ -579,10 +579,9 @@ reportNameRequired: Report name is required
 selectUserGroups: Select User Group(s)
 totalSelected: 'Total Selected'
 accountSettings: Account Settings
-governance: Governance
+governance: Policies
 myProfile: My Profile
 accountResources: Account Resources
-policies: 'Policies'
 policy:
   label: Policy
   policysets: Policy Sets

@@ -69,6 +69,7 @@ import { usePermission } from '@rbac/hooks/usePermission'
 import { getScopeFromDTO } from '@common/components/EntityReference/EntityReference'
 import { ResourceType } from '@rbac/interfaces/ResourceType'
 import { PermissionIdentifier } from '@rbac/interfaces/PermissionIdentifier'
+import useRBACError from '@rbac/utils/useRBACError/useRBACError'
 import { StageErrorContext } from '@pipeline/context/StageErrorContext'
 import { DeployTabs } from '@cd/components/PipelineStudio/DeployStageSetupShell/DeployStageSetupShellUtils'
 import { getEnvironmentRefSchema } from '@cd/components/PipelineSteps/PipelineStepsUtil'
@@ -411,6 +412,7 @@ export const DeployEnvironmentWidget: React.FC<DeployEnvironmentProps> = ({
   >()
 
   const { showError } = useToaster()
+  const { getRBACErrorMessage } = useRBACError()
   const {
     data: environmentsResponse,
     loading,
@@ -545,7 +547,7 @@ export const DeployEnvironmentWidget: React.FC<DeployEnvironmentProps> = ({
   }, [loading, environmentsResponse, environmentsResponse?.data?.content?.length])
 
   if (error?.message) {
-    showError(error.message, undefined, 'cd.env.list.error')
+    showError(getRBACErrorMessage(error), undefined, 'cd.env.list.error')
   }
 
   const { expressions } = useVariablesExpression()
@@ -708,6 +710,7 @@ const DeployEnvironmentInputStep: React.FC<DeployEnvironmentProps & { formik?: a
   >()
 
   const { showError } = useToaster()
+  const { getRBACErrorMessage } = useRBACError()
   const [state, setState] = React.useState<DeployEnvironmentState>({
     isEdit: false,
     isEnvironment: false,
@@ -798,7 +801,7 @@ const DeployEnvironmentInputStep: React.FC<DeployEnvironmentProps & { formik?: a
     permissions: [PermissionIdentifier.EDIT_ENVIRONMENT]
   })
   if (error?.message) {
-    showError(error.message, undefined, 'cd.env.list.error')
+    showError(getRBACErrorMessage(error), undefined, 'cd.env.list.error')
   }
   return (
     <>

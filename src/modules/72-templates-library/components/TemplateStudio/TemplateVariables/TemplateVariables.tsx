@@ -14,7 +14,7 @@ import { PageSpinner } from '@common/components'
 import type { NGTemplateInfoConfig } from 'services/template-ng'
 import StageCard from '@pipeline/components/PipelineStudio/PipelineVariables/Cards/StageCard'
 import { TemplateContext } from '@templates-library/components/TemplateStudio/TemplateContext/TemplateContext'
-import type { StageElementConfig, StepElementConfig } from 'services/cd-ng'
+import type { PipelineInfoConfig, StageElementConfig, StepElementConfig } from 'services/cd-ng'
 import { StepCardPanel } from '@pipeline/components/PipelineStudio/PipelineVariables/Cards/StepCard'
 import factory from '@pipeline/components/PipelineSteps/PipelineStepFactory'
 import { DefaultNewStageId } from '@templates-library/components/TemplateStudio/StageTemplateCanvas/StageTemplateForm/StageTemplateForm'
@@ -22,6 +22,7 @@ import { GitSyncStoreProvider } from 'framework/GitRepoStore/GitSyncStoreContext
 import { sanitize } from '@common/utils/JSONUtils'
 import { VariablesHeader } from '@pipeline/components/PipelineStudio/PipelineVariables/VariablesHeader/VariablesHeader'
 import { TemplateType } from '@templates-library/utils/templatesUtils'
+import { PipelineCardPanel } from '@pipeline/components/PipelineStudio/PipelineVariables/PipelineVariables'
 import { DrawerTypes } from '../TemplateContext/TemplateActions'
 import css from '@pipeline/components/PipelineStudio/PipelineVariables/PipelineVariables.module.scss'
 
@@ -32,11 +33,12 @@ const TemplateVariables: React.FC = (): JSX.Element => {
     updateTemplateView
   } = React.useContext(TemplateContext)
   const { originalTemplate, variablesTemplate, metadataMap, error, initLoading } = useTemplateVariables()
+  const allowableTypes = [MultiTypeInputType.FIXED, MultiTypeInputType.RUNTIME, MultiTypeInputType.EXPRESSION]
   const [templateAtState, setTemplateAtState] = React.useState<NGTemplateInfoConfig>(originalTemplate)
 
   const onUpdate = useCallback(
-    async (stage: StageElementConfig | StepElementConfig) => {
-      const processNode = omit(stage, 'name', 'identifier', 'description', 'tags')
+    async (values: PipelineInfoConfig | StageElementConfig | StepElementConfig) => {
+      const processNode = omit(values, 'name', 'identifier', 'description', 'tags')
       sanitize(processNode, { removeEmptyArray: false, removeEmptyObject: false, removeEmptyString: false })
       const updatedTemplate = produce(templateAtState, draft => {
         set(draft, 'spec', processNode)
@@ -59,8 +61,6 @@ const TemplateVariables: React.FC = (): JSX.Element => {
     return <PageSpinner />
   }
 
-  const allowableTypes = [MultiTypeInputType.FIXED, MultiTypeInputType.RUNTIME, MultiTypeInputType.EXPRESSION]
-
   return (
     <div className={css.pipelineVariables}>
       {error ? (
@@ -70,6 +70,17 @@ const TemplateVariables: React.FC = (): JSX.Element => {
           <VariablesHeader enableSearch={false} applyChanges={applyChanges} discardChanges={discardChanges} />
           <div className={css.variableList}>
             <GitSyncStoreProvider>
+              {originalTemplate.type === TemplateType.Pipeline && (
+                <PipelineCardPanel
+                  variablePipeline={variablesTemplate as PipelineInfoConfig}
+                  pipeline={template.spec as PipelineInfoConfig}
+                  originalPipeline={originalTemplate.spec as PipelineInfoConfig}
+                  metadataMap={metadataMap}
+                  allowableTypes={allowableTypes}
+                  stepsFactory={factory}
+                  updatePipeline={onUpdate}
+                />
+              )}
               {originalTemplate.type === TemplateType.Stage && (
                 <StageCard
                   stage={variablesTemplate as StageElementConfig}

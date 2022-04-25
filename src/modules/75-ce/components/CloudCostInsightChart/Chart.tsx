@@ -29,6 +29,7 @@ import css from './Chart.module.scss'
 export const DAYS_FOR_TICK_INTERVAL = 10
 export const ONE_MONTH = 24 * 3600 * 1000 * 30
 
+/* istanbul ignore next */
 function getxAxisFormat(aggregation: QlceViewTimeGroupType, value: number): string {
   switch (aggregation) {
     case QlceViewTimeGroupType.Month:
@@ -138,12 +139,12 @@ const GetChart: React.FC<GetChartProps> = ({
     xAxisOptions.tickInterval = ONE_MONTH
   }
 
+  /* istanbul ignore next */
   const redirection = (event: any) => {
     if (event.target.id.includes('navAnomalies')) {
       const anchorElm = event.target.id
       const elmId = anchorElm.split('_')
-
-      const time = moment(Number(elmId[1])).format(CE_DATE_FORMAT_INTERNAL)
+      const time = moment(Number(elmId[1])).utc().format(CE_DATE_FORMAT_INTERNAL)
 
       history.push({
         pathname: routes.toCEAnomalyDetection({
@@ -175,6 +176,7 @@ const GetChart: React.FC<GetChartProps> = ({
     }
   }
 
+  /* istanbul ignore next */
   const labelsText = (item: Record<string, any>) => {
     return `
       <div class=${css.anomaliesWrapper}>
@@ -254,9 +256,6 @@ const GetChart: React.FC<GetChartProps> = ({
               labels: anomaliesLabels(),
               draggable: '',
               visible: isAnomaliesEnabled,
-              shapeOptions: {
-                r: 10
-              },
               labelOptions: {
                 crop: false,
                 useHTML: true,
@@ -313,7 +312,7 @@ const Chart: React.FC<CCMChartProps> = ({
             showLegends={showLegends}
             anomaliesCountData={anomaliesCountData}
           />
-        ) : null
+        ) : /* istanbul ignore next */ null
       })}
     </>
   )

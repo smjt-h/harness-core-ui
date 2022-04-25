@@ -20,6 +20,7 @@ import {
   useGetPipelineSummary,
   useGetTemplateFromPipeline
 } from 'services/pipeline-ng'
+import useRBACError from '@rbac/utils/useRBACError/useRBACError'
 import { OverlayInputSetForm } from '@pipeline/components/OverlayInputSetForm/OverlayInputSetForm'
 import routes from '@common/RouteDefinitions'
 import type { GitQueryParams, PipelinePathProps, PipelineType } from '@common/interfaces/RouteInterfaces'
@@ -41,6 +42,7 @@ function InputSetList(): React.ReactElement {
     PipelineType<PipelinePathProps> & { accountId: string }
   >()
   const { showSuccess, showError } = useToaster()
+  const { getRBACErrorMessage } = useRBACError()
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [inputSetToDelete, setInputSetToDelete] = useState<InputSetSummaryResponse>()
 
@@ -205,7 +207,7 @@ function InputSetList(): React.ReactElement {
     } catch (err) {
       setIsLoading(false)
       /* istanbul ignore next */
-      showError(err?.data?.message || err?.message, undefined, 'pipeline.delete.inputset.error')
+      showError(getRBACErrorMessage(err), undefined, 'pipeline.delete.inputset.error')
     }
   }
 

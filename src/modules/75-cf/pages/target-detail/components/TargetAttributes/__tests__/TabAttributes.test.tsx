@@ -11,12 +11,12 @@ import { merge } from 'lodash-es'
 import { TestWrapper } from '@common/utils/testUtils'
 import type { Target } from 'services/cf'
 import mockTarget from '@cf/utils/testData/data/mockTarget'
-import TabAttributes, { TabAttributesProps } from '../TabAttributes'
+import TargetAttributes, { TargetAttributesProps } from '../TargetAttributes'
 
-const renderComponent = (props: Partial<TabAttributesProps> = {}): RenderResult =>
+const renderComponent = (props: Partial<TargetAttributesProps> = {}): RenderResult =>
   render(
     <TestWrapper>
-      <TabAttributes target={mockTarget} {...props} />
+      <TargetAttributes target={mockTarget} {...props} />
     </TestWrapper>
   )
 

@@ -307,6 +307,8 @@ co:
     vpcLabel: 'VPC'
     securityGroupsLabel: 'Network tags'
     machineType: 'Machine type'
+    gcpCertificateId: 'Certificate Secret Version'
+    gcpSecretId: 'Private Key Secret Version'
     select:
       accessPoint: 'Select Access Point'
       account: 'Select {{$.ce.co.accessPoint.cloudAccount}}'
@@ -669,6 +671,7 @@ perspectives:
     filters:
       operator: '{{$.common.operator}}'
       searchText: 'Search Here'
+      enterCondition: 'Enter condition'
       selectValues: 'Select Values'
       rulesTitle: 'Rules for Perspective'
       rulesText1: 'Data that matches ANY of the rules will be added to the perspective.'
@@ -684,6 +687,7 @@ perspectives:
       notIn: 'NOT IN'
       opNull: 'NULL'
       opNotNull: 'NOT NULL'
+      opLike: 'LIKE'
   reports:
     title: 'Report Schedules({{ count }})'
     desc: Reports can send a cost report to specified users at the specified frequency.

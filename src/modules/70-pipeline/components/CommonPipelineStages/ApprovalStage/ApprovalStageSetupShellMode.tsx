@@ -12,10 +12,7 @@ import produce from 'immer'
 import { Button, Icon, Layout, Tab, Tabs } from '@wings-software/uicore'
 import { Expander } from '@blueprintjs/core'
 import { Color } from '@harness/design-system'
-import {
-  PipelineContextType,
-  usePipelineContext
-} from '@pipeline/components/PipelineStudio/PipelineContext/PipelineContext'
+import { usePipelineContext } from '@pipeline/components/PipelineStudio/PipelineContext/PipelineContext'
 import { PageSpinner } from '@common/components'
 import { useStrings } from 'framework/strings'
 import { GetInitialStageYamlSnippetQueryParams, useGetInitialStageYamlSnippet } from 'services/pipeline-ng'
@@ -24,6 +21,7 @@ import { StepType } from '@pipeline/components/PipelineSteps/PipelineStepInterfa
 import { SaveTemplateButton } from '@pipeline/components/PipelineStudio/SaveTemplateButton/SaveTemplateButton'
 import { useFeatureFlag } from '@common/hooks/useFeatureFlag'
 import { FeatureFlag } from '@common/featureFlags'
+import { isContextTypeNotStageTemplate } from '@pipeline/components/PipelineStudio/PipelineUtils'
 import { ApprovalStageOverview } from './ApprovalStageOverview'
 import { ApprovalStageExecution } from './ApprovalStageExecution'
 import ApprovalAdvancedSpecifications from './ApprovalStageAdvanced'
@@ -189,7 +187,7 @@ export function ApprovalStageSetupShellMode(): React.ReactElement {
           panel={<ApprovalAdvancedSpecifications />}
           data-testid={tabHeadings[2]}
         />
-        {contextType === PipelineContextType.Pipeline && isTemplatesEnabled && selectedStage?.stage && (
+        {isTemplatesEnabled && isContextTypeNotStageTemplate(contextType) && selectedStage?.stage && (
           <>
             <Expander />
             <SaveTemplateButton data={selectedStage?.stage} type={'Stage'} />

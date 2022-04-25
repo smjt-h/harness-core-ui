@@ -148,7 +148,7 @@ export const TestWrapper: React.FC<TestWrapperProps> = props => {
             FEATURE_ENFORCEMENT_ENABLED: true
           },
           updateAppStore: () => void 0,
-          currentUserInfo: {},
+          currentUserInfo: { uuid: '' },
           ...defaultAppStoreValues
         }}
       >

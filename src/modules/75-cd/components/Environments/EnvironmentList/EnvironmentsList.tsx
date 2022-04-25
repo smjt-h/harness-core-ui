@@ -8,7 +8,7 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import cx from 'classnames'
 import { Pagination, Layout, Text, Container, Heading, TableV2 } from '@wings-software/uicore'
-import { defaultTo, get } from 'lodash-es'
+import { defaultTo } from 'lodash-es'
 import { useParams } from 'react-router-dom'
 import type { Column } from 'react-table'
 import { useModalHook } from '@harness/use-modal'
@@ -17,6 +17,7 @@ import { useEnvironmentStore, ParamsType } from '@cd/components/Environments/com
 import { EnvironmentResponseDTO, useDeleteEnvironmentV2, useGetEnvironmentList } from 'services/cd-ng'
 import { useToaster } from '@common/exports'
 import RbacButton from '@rbac/components/Button/Button'
+import useRBACError, { RBACError } from '@rbac/utils/useRBACError/useRBACError'
 import { PermissionIdentifier } from '@rbac/interfaces/PermissionIdentifier'
 import { useStrings } from 'framework/strings'
 import { NewEditEnvironmentModal } from '@cd/components/PipelineSteps/DeployEnvStep/DeployEnvStep'
@@ -35,6 +36,7 @@ export const EnvironmentList: React.FC = () => {
   const { getString } = useStrings()
   const { accountId, orgIdentifier, projectIdentifier } = useParams<ParamsType>()
   const { showError, showSuccess } = useToaster()
+  const { getRBACErrorMessage } = useRBACError()
   const [page, setPage] = useState(0)
   const { fetchDeploymentList } = useEnvironmentStore()
   const [rowData, setRowData] = React.useState<EnvironmentResponseDTO>()
@@ -130,7 +132,7 @@ export const EnvironmentList: React.FC = () => {
       showSuccess(`Successfully deleted environment ${id}`)
       refetch()
     } catch (e) {
-      showError(get(e, 'data.message', e?.message), 0, 'cf.delete.env.error')
+      showError(getRBACErrorMessage(e as RBACError), 0, 'cf.delete.env.error')
     }
   }
   type CustomColumn<T extends Record<string, any>> = Column<T>

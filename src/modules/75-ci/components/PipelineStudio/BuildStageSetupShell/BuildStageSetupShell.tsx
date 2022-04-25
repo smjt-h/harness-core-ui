@@ -37,6 +37,7 @@ import type { K8sDirectInfraYaml, UseFromStageInfraYaml, VmInfraYaml, VmPoolYaml
 import { FeatureFlag } from '@common/featureFlags'
 import { SaveTemplateButton } from '@pipeline/components/PipelineStudio/SaveTemplateButton/SaveTemplateButton'
 import { useAddStepTemplate } from '@pipeline/hooks/useAddStepTemplate'
+import { isContextTypeNotStageTemplate } from '@pipeline/components/PipelineStudio/PipelineUtils'
 import BuildInfraSpecifications from '../BuildInfraSpecifications/BuildInfraSpecifications'
 import BuildStageSpecifications from '../BuildStageSpecifications/BuildStageSpecifications'
 import BuildAdvancedSpecifications from '../BuildAdvancedSpecifications/BuildAdvancedSpecifications'
@@ -412,7 +413,7 @@ export default function BuildStageSetupShell(): JSX.Element {
           panel={<BuildAdvancedSpecifications>{navBtns}</BuildAdvancedSpecifications>}
           data-testid={getString('ci.advancedLabel')}
         />
-        {contextType === PipelineContextType.Pipeline && isTemplatesEnabled && selectedStage?.stage && (
+        {isTemplatesEnabled && isContextTypeNotStageTemplate(contextType) && selectedStage?.stage && (
           <>
             <Expander />
             <SaveTemplateButton data={selectedStage?.stage} type={'Stage'} />

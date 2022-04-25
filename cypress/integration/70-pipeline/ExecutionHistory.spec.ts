@@ -10,7 +10,7 @@ import {
   projectId
 } from '../../support/70-pipeline/constants'
 
-describe('Pipeline Execution History', () => {
+describe.skip('Pipeline Execution History', () => {
   beforeEach(() => {
     cy.on('uncaught:exception', () => {
       // returning false here prevents Cypress from

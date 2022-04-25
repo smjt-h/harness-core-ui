@@ -18,13 +18,14 @@ export const ThirdPartyIntegrations: React.FC = () => {
   // 		1. Community = window.deploymentType is 'COMMUNITY'
   // 		2. Trial = deploymentType is 'SAAS' AND account does not have any paid module
   const shouldIntegrateHotJar = useMemo(() => {
+    const isProd = /^app.harness.io$/i.test(location.hostname)
     const isCommunity = window.deploymentType === 'COMMUNITY'
     const isTrial =
       window.deploymentType === 'SAAS' &&
       licenseInformation &&
       !Object.values(licenseInformation).find(licenseInfo => licenseInfo?.licenseType === 'PAID')
 
-    return !window.hj && (isCommunity || isTrial)
+    return isProd && !window.hj && (isCommunity || isTrial)
   }, [licenseInformation])
 
   useEffect(() => {

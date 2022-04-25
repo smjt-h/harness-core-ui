@@ -101,7 +101,15 @@ const GCPAccessPointConfig: React.FC<GCPAccessPointConfigProps> = ({
         zone: values.zone,
         subnet_name: values.subnet_name,
         security_groups: values.securityGroups?.map(s => s.value) as string[],
-        machine_type: values.machine_type
+        machine_type: values.machine_type,
+        ...((values.cert_secret_id || values.key_secret_id) && {
+          certificates: [
+            {
+              cert_secret_id: values.cert_secret_id,
+              key_secret_id: values.key_secret_id
+            }
+          ]
+        })
       }
     }
   }

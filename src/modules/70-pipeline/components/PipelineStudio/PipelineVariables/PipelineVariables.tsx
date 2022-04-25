@@ -14,7 +14,7 @@ import {
   ConfirmationDialog,
   Intent
 } from '@harness/uicore'
-import { get, isEqual } from 'lodash-es'
+import { get, isEqual, set } from 'lodash-es'
 
 import { PageSpinner } from '@common/components'
 import { useStrings } from 'framework/strings'
@@ -25,7 +25,9 @@ import {
   usePipelineVariables
 } from '@pipeline/components/PipelineVariablesContext/PipelineVariablesContext'
 import { VariablesHeader } from '@pipeline/components/PipelineStudio/PipelineVariables/VariablesHeader/VariablesHeader'
-import PipelineCard from '@pipeline/components/PipelineStudio/PipelineVariables/Cards/PipelineCard'
+import PipelineCard, {
+  PipelineCardProps
+} from '@pipeline/components/PipelineStudio/PipelineVariables/Cards/PipelineCard'
 import StageCard from '@pipeline/components/PipelineStudio/PipelineVariables/Cards/StageCard'
 import { usePipelineContext } from '../PipelineContext/PipelineContext'
 import { DrawerTypes } from '../PipelineContext/PipelineActions'
@@ -112,27 +114,6 @@ export function PipelineVariablesWithRef(
 
   if (initLoading) return <PageSpinner />
 
-  async function updateStage(newStage: StageElementConfig): Promise<void> {
-    function _updateStages(stages: StageElementWrapperConfig[]): StageElementWrapperConfig[] {
-      return stages.map(node => {
-        if (node.stage?.identifier === newStage.identifier) {
-          return { stage: newStage }
-        } else if (node.parallel) {
-          return {
-            parallel: _updateStages(node.parallel)
-          }
-        }
-
-        return node
-      })
-    }
-
-    return setPipelineAsState(originalPipelineAsState => ({
-      ...originalPipelineAsState,
-      stages: _updateStages(originalPipelineAsState.stages || [])
-    }))
-  }
-
   async function updatePipeline(newPipeline: PipelineInfoConfig): Promise<void> {
     setPipelineAsState(newPipeline)
   }
@@ -144,52 +125,6 @@ export function PipelineVariablesWithRef(
 
   async function discardChanges(): Promise<void> {
     closeDrawer()
-  }
-
-  const stagesCards: JSX.Element[] = []
-  /* istanbul ignore else */
-  if (variablesPipeline.stages && variablesPipeline.stages?.length > 0) {
-    variablesPipeline.stages?.forEach((data, i) => {
-      if (data.parallel && data.parallel.length > 0) {
-        data.parallel.forEach((nodeP, j: number) => {
-          if (nodeP.stage) {
-            const stagePath = `stages[${i}].parallel[${j}].stage`
-            const unresolvedStage = get(pipeline, stagePath)
-            stagesCards.push(
-              <StageCard
-                originalStage={get(originalPipeline, stagePath)}
-                unresolvedStage={unresolvedStage}
-                key={nodeP.stage.identifier}
-                stage={nodeP.stage}
-                metadataMap={metadataMap}
-                readonly={isReadonly || !!unresolvedStage.template}
-                path="pipeline"
-                allowableTypes={allowableTypes}
-                stepsFactory={stepsFactory}
-                updateStage={updateStage}
-              />
-            )
-          }
-        })
-      } /* istanbul ignore else */ else if (data.stage) {
-        const stagePath = `stages[${i}].stage`
-        const unresolvedStage = get(pipeline, stagePath)
-        stagesCards.push(
-          <StageCard
-            key={data.stage.identifier}
-            stage={data.stage}
-            originalStage={get(originalPipeline, stagePath)}
-            unresolvedStage={unresolvedStage}
-            metadataMap={metadataMap}
-            readonly={isReadonly || !!unresolvedStage.template}
-            path="pipeline"
-            allowableTypes={allowableTypes}
-            stepsFactory={stepsFactory}
-            updateStage={updateStage}
-          />
-        )
-      }
-    })
   }
 
   return (
@@ -215,19 +150,16 @@ export function PipelineVariablesWithRef(
                 detailsClassName={css.pipelineDetails}
                 panelClassName={css.pipelineMarginBottom}
                 details={
-                  <>
-                    <PipelineCard
-                      variablePipeline={variablesPipeline}
-                      pipeline={pipeline}
-                      stepsFactory={stepsFactory}
-                      updatePipeline={updatePipeline}
-                      metadataMap={metadataMap}
-                      readonly={isReadonly}
-                      allowableTypes={allowableTypes}
-                    />
-
-                    {stagesCards.length > 0 ? stagesCards : null}
-                  </>
+                  <PipelineCardPanel
+                    variablePipeline={variablesPipeline}
+                    originalPipeline={originalPipeline}
+                    pipeline={pipeline}
+                    stepsFactory={stepsFactory}
+                    updatePipeline={updatePipeline}
+                    metadataMap={metadataMap}
+                    readonly={isReadonly || !!pipeline.template}
+                    allowableTypes={allowableTypes}
+                  />
                 }
               />
             </GitSyncStoreProvider>
@@ -244,6 +176,111 @@ export function PipelineVariablesWithRef(
         intent={Intent.WARNING}
       />
     </div>
+  )
+}
+
+export interface PipelineCardPanelProps extends PipelineCardProps {
+  originalPipeline: PipelineInfoConfig
+}
+
+export function PipelineCardPanel(props: PipelineCardPanelProps): React.ReactElement {
+  const {
+    variablePipeline,
+    pipeline,
+    originalPipeline,
+    stepsFactory,
+    metadataMap,
+    allowableTypes,
+    updatePipeline,
+    readonly
+  } = props
+
+  const updateStages = React.useCallback(
+    (newStage: StageElementConfig, stages: StageElementWrapperConfig[]): StageElementWrapperConfig[] => {
+      return stages.map(node => {
+        if (node.stage?.identifier === newStage.identifier) {
+          return { stage: newStage }
+        } else if (node.parallel) {
+          return {
+            parallel: updateStages(newStage, node.parallel)
+          }
+        }
+        return node
+      })
+    },
+    []
+  )
+
+  const updateStage = React.useCallback(
+    async (values: StageElementConfig) => {
+      if (pipeline.stages) {
+        set(pipeline, 'stages', updateStages(values, pipeline.stages))
+        updatePipeline(pipeline)
+      }
+    },
+    [pipeline, updatePipeline]
+  )
+
+  const stagesCards: JSX.Element[] = []
+  /* istanbul ignore else */
+  if (variablePipeline.stages && variablePipeline.stages?.length > 0) {
+    variablePipeline.stages?.forEach((data, i) => {
+      if (data.parallel && data.parallel.length > 0) {
+        data.parallel.forEach((nodeP, j: number) => {
+          if (nodeP.stage) {
+            const stagePath = `stages[${i}].parallel[${j}].stage`
+            const unresolvedStage = get(pipeline.template ? originalPipeline : pipeline, stagePath)
+            stagesCards.push(
+              <StageCard
+                originalStage={get(originalPipeline, stagePath)}
+                unresolvedStage={unresolvedStage}
+                key={nodeP.stage.identifier}
+                stage={nodeP.stage}
+                metadataMap={metadataMap}
+                readonly={readonly || !!unresolvedStage.template}
+                path="pipeline"
+                allowableTypes={allowableTypes}
+                stepsFactory={stepsFactory}
+                updateStage={updateStage}
+              />
+            )
+          }
+        })
+      } /* istanbul ignore else */ else if (data.stage) {
+        const stagePath = `stages[${i}].stage`
+        const unresolvedStage = get(pipeline.template ? originalPipeline : pipeline, stagePath)
+        stagesCards.push(
+          <StageCard
+            key={data.stage.identifier}
+            stage={data.stage}
+            originalStage={get(originalPipeline, stagePath)}
+            unresolvedStage={unresolvedStage}
+            metadataMap={metadataMap}
+            readonly={readonly || !!unresolvedStage.template}
+            path="pipeline"
+            allowableTypes={allowableTypes}
+            stepsFactory={stepsFactory}
+            updateStage={updateStage}
+          />
+        )
+      }
+    })
+  }
+
+  return (
+    <>
+      <PipelineCard
+        variablePipeline={variablePipeline}
+        pipeline={pipeline}
+        stepsFactory={stepsFactory}
+        updatePipeline={updatePipeline}
+        metadataMap={metadataMap}
+        readonly={readonly}
+        allowableTypes={allowableTypes}
+      />
+
+      {stagesCards.length > 0 ? stagesCards : null}
+    </>
   )
 }
 

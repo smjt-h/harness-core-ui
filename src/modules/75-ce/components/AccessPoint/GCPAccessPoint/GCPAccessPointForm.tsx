@@ -22,6 +22,8 @@ import { useStrings } from 'framework/strings'
 import type { AccountPathProps } from '@common/interfaces/RouteInterfaces'
 import useRegionsForSelection from '@ce/common/hooks/useRegionsForSelection'
 import type { AccessPointScreenMode } from '@ce/types'
+import { useFeatureFlag } from '@common/hooks/useFeatureFlag'
+import { FeatureFlag } from '@common/featureFlags'
 import css from './GCPAccessPoint.module.scss'
 
 export interface GcpApFormValue {
@@ -32,6 +34,8 @@ export interface GcpApFormValue {
   zone?: string
   machine_type?: string
   subnet_name?: string
+  cert_secret_id?: string
+  key_secret_id?: string
 }
 
 interface GCPAccessPointFormProps {
@@ -53,6 +57,7 @@ const GCPAccessPointForm: React.FC<GCPAccessPointFormProps> = ({
 }) => {
   const { getString } = useStrings()
   const { accountId } = useParams<AccountPathProps>()
+  const tlsSupportEnabled = useFeatureFlag(FeatureFlag.CCM_GCP_TLS_ENABLED)
 
   const [selectedRegion, setSelectedRegion] = useState<string | undefined>(loadBalancer.region)
   const [selectedVpc, setSelectedVpc] = useState<string | undefined>(loadBalancer.vpc)
@@ -222,7 +227,9 @@ const GCPAccessPointForm: React.FC<GCPAccessPointFormProps> = ({
             loadBalancer.metadata?.machine_type,
             machinesData?.response?.find(m => m.is_default)?.name
           ),
-          subnet_name: loadBalancer.metadata?.subnet_name
+          subnet_name: loadBalancer.metadata?.subnet_name,
+          cert_secret_id: _defaultTo(loadBalancer.metadata?.certificates?.[0]?.cert_secret_id, ''),
+          key_secret_id: _defaultTo(loadBalancer.metadata?.certificates?.[0]?.key_secret_id, '')
         }}
         enableReinitialize
         formName="lbFormSecond"
@@ -314,6 +321,12 @@ const GCPAccessPointForm: React.FC<GCPAccessPointFormProps> = ({
                 // }
               />
             </Layout.Horizontal>
+            {tlsSupportEnabled && (
+              <Layout.Horizontal className={css.formFieldRow}>
+                <FormInput.Text name="cert_secret_id" label={getString('ce.co.accessPoint.gcpCertificateId')} />
+                <FormInput.Text name="key_secret_id" label={getString('ce.co.accessPoint.gcpSecretId')} />
+              </Layout.Horizontal>
+            )}
             <Layout.Horizontal style={{ marginTop: 220 }}>
               <Button
                 text={'Back'}

@@ -62,6 +62,7 @@ import { NameIdDescriptionTags, PageSpinner } from '@common/components'
 import { usePermission } from '@rbac/hooks/usePermission'
 import { ResourceType } from '@rbac/interfaces/ResourceType'
 import { PermissionIdentifier } from '@rbac/interfaces/PermissionIdentifier'
+import useRBACError from '@rbac/utils/useRBACError/useRBACError'
 import { getScopeFromDTO } from '@common/components/EntityReference/EntityReference'
 import YAMLBuilder from '@common/components/YAMLBuilder/YamlBuilder'
 import { StageErrorContext } from '@pipeline/context/StageErrorContext'
@@ -363,6 +364,7 @@ export const DeployServiceWidget: React.FC<DeployServiceProps> = ({
   >()
 
   const { showError } = useToaster()
+  const { getRBACErrorMessage } = useRBACError()
   const {
     data: serviceResponse,
     error,
@@ -492,7 +494,7 @@ export const DeployServiceWidget: React.FC<DeployServiceProps> = ({
   }, [loading, serviceResponse, serviceResponse?.data?.content?.length])
 
   if (error?.message) {
-    showError(error.message, undefined, 'cd.svc.list.error')
+    showError(getRBACErrorMessage(error), undefined, 'cd.svc.list.error')
   }
 
   const [canEdit] = usePermission({
@@ -647,6 +649,7 @@ const DeployServiceInputStep: React.FC<DeployServiceProps & { formik?: any }> = 
     }>
   >()
   const { showError, clear } = useToaster()
+  const { getRBACErrorMessage } = useRBACError()
   const { expressions } = useVariablesExpression()
   const {
     data: serviceResponse,
@@ -737,7 +740,7 @@ const DeployServiceInputStep: React.FC<DeployServiceProps & { formik?: any }> = 
   }, [hideModal])
   if (error?.message) {
     clear()
-    showError(error.message, undefined, 'cd.svc.list.error')
+    showError(getRBACErrorMessage(error), undefined, 'cd.svc.list.error')
   }
   return (
     <>

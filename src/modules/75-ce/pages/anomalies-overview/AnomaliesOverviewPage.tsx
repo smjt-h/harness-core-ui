@@ -19,7 +19,12 @@ import AnomalyFilters from '@ce/components/AnomaliesFilter/AnomaliesFilter'
 import AnomaliesListGridView from '@ce/components/AnomaliesListView/AnomaliesListView'
 import AnomaliesSearch from '@ce/components/AnomaliesSearch/AnomaliesSearch'
 import type { AccountPathProps } from '@common/interfaces/RouteInterfaces'
-import { DEFAULT_TIME_RANGE, getGMTEndDateTime, getGMTStartDateTime } from '@ce/utils/momentUtils'
+import {
+  CE_DATE_FORMAT_INTERNAL,
+  DATE_RANGE_SHORTCUTS,
+  getGMTEndDateTime,
+  getGMTStartDateTime
+} from '@ce/utils/momentUtils'
 import type { orderType, sortType } from '@common/components/Table/react-table-config'
 import { useQueryParamsState } from '@common/hooks/useQueryParamsState'
 import type { TimeRangeFilterType } from '@ce/types'
@@ -74,7 +79,10 @@ const AnomaliesOverviewPage: React.FC = () => {
   const [statusWiseData, setStatusWiseData] = useState([])
   const [filters, setFilters] = useState({})
 
-  const [timeRange, setTimeRange] = useQueryParamsState<TimeRangeFilterType>('timeRange', DEFAULT_TIME_RANGE)
+  const [timeRange, setTimeRange] = useQueryParamsState<TimeRangeFilterType>('timeRange', {
+    to: DATE_RANGE_SHORTCUTS.LAST_30_DAYS[1].format(CE_DATE_FORMAT_INTERNAL),
+    from: DATE_RANGE_SHORTCUTS.LAST_30_DAYS[0].format(CE_DATE_FORMAT_INTERNAL)
+  })
 
   const [sortByObj, setSortByObj] = useState<SortByObjInterface>({})
 
@@ -107,6 +115,7 @@ const AnomaliesOverviewPage: React.FC = () => {
   const [ccmMetaResult] = useFetchCcmMetaDataQuery()
   const { data: ccmData, fetching: isFetchingCcmMetaData } = ccmMetaResult
 
+  /* istanbul ignore next */
   const setAnomaliesFilters = (fieldName: string, operator: string, value: string) => {
     if (value) {
       setFilters(prevFilters => {
@@ -173,6 +182,7 @@ const AnomaliesOverviewPage: React.FC = () => {
     getSummary()
   }, [filters, getAnomalySummary, searchText, timeRange.from, timeRange.to])
 
+  /* istanbul ignore next */
   const parseSummaryData = (summaryData: any) => {
     summaryData.forEach((item: any) => {
       switch (item.widgetDescription) {

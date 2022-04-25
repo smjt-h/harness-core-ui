@@ -25,7 +25,7 @@ import {
 import { useModalHook } from '@harness/use-modal'
 import { useHistory, useParams, matchPath } from 'react-router-dom'
 import { parse } from 'yaml'
-import { defaultTo, get, isEmpty, isEqual, merge, omit, set } from 'lodash-es'
+import { defaultTo, isEmpty, isEqual, merge, omit, set } from 'lodash-es'
 import produce from 'immer'
 import type { PipelineInfoConfig } from 'services/cd-ng'
 import { useStrings } from 'framework/strings'
@@ -39,13 +39,12 @@ import type {
   PipelineType,
   GitQueryParams,
   PipelineStudioQueryParams,
-  RunPipelineQueryParams
+  RunPipelineQueryParams,
+  UseTemplateQueryParams
 } from '@common/interfaces/RouteInterfaces'
 import RbacButton from '@rbac/components/Button/Button'
 import { ResourceType } from '@rbac/interfaces/ResourceType'
 import { PermissionIdentifier } from '@rbac/interfaces/PermissionIdentifier'
-import { UseSaveSuccessResponse, useSaveToGitDialog } from '@common/modals/SaveToGitDialog/useSaveToGitDialog'
-import type { SaveToGitFormInterface } from '@common/components/SaveToGitForm/SaveToGitForm'
 import routes from '@common/RouteDefinitions'
 import {
   EntityGitDetails,
@@ -58,31 +57,27 @@ import { useGlobalEventListener, useMutateAsGet, useQueryParams, useUpdateQueryP
 import type { GitFilterScope } from '@common/components/GitFilters/GitFilters'
 import { TagsPopover } from '@common/components'
 import type { IGitContextFormProps } from '@common/components/GitContextForm/GitContextForm'
-import { validateJSONWithSchema } from '@common/utils/YamlUtils'
 import { useDocumentTitle } from '@common/hooks/useDocumentTitle'
 import { PipelineVariablesContextProvider } from '@pipeline/components/PipelineVariablesContext/PipelineVariablesContext'
-import { useTelemetry } from '@common/hooks/useTelemetry'
-import { PipelineActions } from '@common/constants/TrackingConstants'
 import { useFeatureFlags } from '@common/hooks/useFeatureFlag'
 import GenericErrorHandler from '@common/pages/GenericErrorHandler/GenericErrorHandler'
-import useRBACError from '@rbac/utils/useRBACError/useRBACError'
 import NoEntityFound from '@pipeline/pages/utils/NoEntityFound/NoEntityFound'
 import { getFeaturePropsForRunPipelineButton } from '@pipeline/utils/runPipelineUtils'
 import { RunPipelineForm } from '@pipeline/components/RunPipelineModal/RunPipelineForm'
 import { EvaluationModal } from '@governance/EvaluationModal'
-import { createTemplate } from '@pipeline/utils/templateUtils'
-import { getStepFromStage, validateCICodebaseConfiguration } from '@pipeline/components/PipelineStudio/StepUtil'
+import { createTemplate, getScopeBasedTemplateRef } from '@pipeline/utils/templateUtils'
+import { getStepFromStage } from '@pipeline/components/PipelineStudio/StepUtil'
 import { updateStepWithinStage } from '@pipeline/components/PipelineStudio/RightDrawer/RightDrawer'
 import type { TemplateSummaryResponse } from 'services/template-ng'
-import type { AccessControlCheckError } from 'services/rbac'
-import { savePipeline, usePipelineContext } from '../PipelineContext/PipelineContext'
+import StageBuilder from '@pipeline/components/PipelineStudio/StageBuilder/StageBuilder'
+import { TemplatePipelineBuilder } from '@pipeline/components/PipelineStudio/PipelineTemplateBuilder/TemplatePipelineBuilder/TemplatePipelineBuilder'
+import { SavePipelinePopover } from '@pipeline/components/PipelineStudio/SavePipelinePopover/SavePipelinePopover'
+import { useTemplateSelector } from '@pipeline/utils/useTemplateSelector'
+import { usePipelineContext } from '../PipelineContext/PipelineContext'
 import CreatePipelines from '../CreateModal/PipelineCreate'
-import PipelineErrors from './PipelineErrors/PipelineErrors'
-import { DefaultNewPipelineId, DrawerTypes, SplitViewTypes } from '../PipelineContext/PipelineActions'
+import { DefaultNewPipelineId, DrawerTypes } from '../PipelineContext/PipelineActions'
 import PipelineYamlView from '../PipelineYamlView/PipelineYamlView'
 import { RightBar } from '../RightBar/RightBar'
-import StageBuilder from '../StageBuilder/StageBuilder'
-import { usePipelineSchema } from '../PipelineSchema/PipelineSchemaContext'
 import StudioGitPopover from '../StudioGitPopover'
 import css from './PipelineCanvas.module.scss'
 
@@ -90,10 +85,6 @@ interface OtherModalProps {
   onSubmit?: (values: PipelineInfoConfig) => void
   initialValues?: PipelineInfoConfig
   onClose?: () => void
-}
-
-interface SavePipelineObj {
-  pipeline: PipelineInfoConfig
 }
 
 interface PipelineWithGitContextFormProps extends PipelineInfoConfig {
@@ -140,14 +131,14 @@ export function PipelineCanvas({
     state: {
       selectionState: { selectedStageId },
       templateTypes,
-      pipelineView: { drawerData }
+      pipelineView: { drawerData },
+      templateView: { isTemplateDrawerOpened }
     },
     updatePipeline,
     updateGitDetails,
     deletePipelineCache,
     fetchPipeline,
     view,
-    setSchemaErrorView,
     setView,
     isReadonly,
     updateStage,
@@ -155,8 +146,7 @@ export function PipelineCanvas({
     setSelectedStageId,
     setSelectedSectionId,
     getStageFromPipeline,
-    setTemplateTypes,
-    setSelection
+    setTemplateTypes
   } = usePipelineContext()
   const {
     repoIdentifier,
@@ -168,11 +158,10 @@ export function PipelineCanvas({
     inputSetLabel,
     inputSetRepoIdentifier,
     inputSetBranch,
-    stagesExecuted
-  } = useQueryParams<GitQueryParams & RunPipelineQueryParams>()
+    stagesExecuted,
+    useTemplate
+  } = useQueryParams<GitQueryParams & RunPipelineQueryParams & UseTemplateQueryParams>()
   const { updateQueryParams, replaceQueryParams } = useUpdateQueryParams<PipelineStudioQueryParams>()
-  const { trackEvent } = useTelemetry()
-  const [updatePipelineAPIResponse, setUpdatePipelineAPIResponse] = React.useState<any>()
   const {
     pipeline,
     isUpdated,
@@ -189,7 +178,6 @@ export function PipelineCanvas({
   } = state
 
   const { getString } = useStrings()
-  const { pipelineSchema } = usePipelineSchema()
   const { accountId, projectIdentifier, orgIdentifier, pipelineIdentifier, module } = useParams<
     PipelineType<{
       orgIdentifier: string
@@ -199,6 +187,7 @@ export function PipelineCanvas({
     }> &
       GitQueryParams
   >()
+  const { getTemplate } = useTemplateSelector()
 
   const { data: template } = useMutateAsGet(useGetTemplateFromPipeline, {
     queryParams: {
@@ -212,8 +201,7 @@ export function PipelineCanvas({
     body: {}
   })
 
-  const { showSuccess, showError, clear } = useToaster()
-  const { getRBACErrorMessage } = useRBACError()
+  const { showError, clear } = useToaster()
 
   useDocumentTitle([parse(pipeline?.name || getString('pipelines'))])
   const [discardBEUpdateDialog, setDiscardBEUpdate] = React.useState(false)
@@ -299,20 +287,6 @@ export function PipelineCanvas({
     return true
   }
 
-  const navigateToLocation = (newPipelineId: string, updatedGitDetails?: SaveToGitFormInterface): void => {
-    history.replace(
-      toPipelineStudio({
-        projectIdentifier,
-        orgIdentifier,
-        pipelineIdentifier: newPipelineId,
-        accountId,
-        module,
-        repoIdentifier: updatedGitDetails?.repoIdentifier,
-        branch: updatedGitDetails?.branch
-      })
-    )
-  }
-
   useGlobalEventListener('TEMPLATE_SAVED', event => {
     const { detail: newTemplate } = event
     if (newTemplate) {
@@ -340,7 +314,10 @@ export function PipelineCanvas({
   })
 
   const onUseTemplateConfirm = async () => {
-    if (selectedStageId) {
+    if (savedTemplate?.templateEntityType === 'Pipeline') {
+      const processNode = createTemplate(pipeline, savedTemplate)
+      await updatePipeline(processNode)
+    } else if (selectedStageId) {
       const { stage: selectedStage } = getStageFromPipeline(selectedStageId)
       if (savedTemplate?.templateEntityType === 'Stage') {
         if (selectedStage?.stage) {
@@ -379,215 +356,8 @@ export function PipelineCanvas({
     }
   }
 
-  const gotoViewWithDetails = React.useCallback(
-    ({ stageId, stepId }: { stageId?: string; stepId?: string } = {}): void => {
-      hideErrorModal()
-      // If Yaml mode, or if pipeline error - stay on yaml mode
-      if (isYaml || (!stageId && !stepId)) {
-        return
-      }
-      setSelection({ stageId, stepId })
-      updatePipelineView({
-        ...pipelineView,
-        isSplitViewOpen: true,
-        splitViewData: { type: SplitViewTypes.StageView }
-      })
-    },
-    [isYaml, pipelineView]
-  )
-
-  const [showErrorModal, hideErrorModal] = useModalHook(
-    () => (
-      <PipelineErrors
-        errors={updatePipelineAPIResponse?.metadata?.schemaErrors}
-        gotoViewWithDetails={gotoViewWithDetails}
-        onClose={hideErrorModal}
-      />
-    ),
-    [updatePipelineAPIResponse]
-  )
-
-  const saveAndPublishPipeline = async (
-    latestPipeline: PipelineInfoConfig,
-    updatedGitDetails?: SaveToGitFormInterface,
-    lastObject?: { lastObjectId?: string }
-  ): Promise<UseSaveSuccessResponse> => {
-    setSchemaErrorView(false)
-    const isEdit = pipelineIdentifier !== DefaultNewPipelineId
-    const response = await savePipeline(
-      {
-        accountIdentifier: accountId,
-        projectIdentifier,
-        orgIdentifier,
-        ...(updatedGitDetails ?? {}),
-        ...(lastObject ?? {}),
-        ...(updatedGitDetails && updatedGitDetails.isNewBranch ? { baseBranch: branch } : {})
-      },
-      omit(latestPipeline, 'repo', 'branch'),
-      isEdit,
-      !!OPA_PIPELINE_GOVERNANCE
-    )
-    const newPipelineId = latestPipeline?.identifier
-
-    if (response && response.status === 'SUCCESS') {
-      const governanceData: GovernanceMetadata | undefined = get(response, 'data.governanceMetadata')
-      setGovernanceMetadata(governanceData)
-
-      // Handling cache and page navigation only when Governance is disabled, or Governance Evaluation is successful
-      // Otherwise, keep current pipeline editing states, and show Governance evaluation error
-      if (governanceData?.status !== 'error') {
-        if (pipelineIdentifier === DefaultNewPipelineId) {
-          await deletePipelineCache(gitDetails)
-
-          showSuccess(getString('pipelines-studio.publishPipeline'))
-
-          navigateToLocation(newPipelineId, updatedGitDetails)
-          // note: without setTimeout does not redirect properly after save
-          await fetchPipeline({ forceFetch: true, forceUpdate: true, newPipelineId })
-        } else {
-          await fetchPipeline({ forceFetch: true, forceUpdate: true })
-        }
-        if (updatedGitDetails?.isNewBranch) {
-          navigateToLocation(newPipelineId, updatedGitDetails)
-          location.reload()
-        }
-      }
-      if (isEdit) {
-        trackEvent(isYaml ? PipelineActions.PipelineUpdatedViaYAML : PipelineActions.PipelineUpdatedViaVisual, {})
-      } else {
-        trackEvent(isYaml ? PipelineActions.PipelineCreatedViaYAML : PipelineActions.PipelineCreatedViaVisual, {})
-      }
-    } else {
-      clear()
-      setSchemaErrorView(true)
-      // This is done because when git sync is enabled, errors are displayed in a modal
-      if (!isGitSyncEnabled) {
-        // eslint-disable-next-line
-        // @ts-ignore
-        if (response?.metadata?.schemaErrors?.length) {
-          setUpdatePipelineAPIResponse(response)
-          showErrorModal()
-        } else {
-          showError(
-            getRBACErrorMessage({ data: response as AccessControlCheckError }) || getString('errorWhileSaving'),
-            undefined,
-            'pipeline.save.pipeline.error'
-          )
-        }
-      } else {
-        // isGitSyncEnabled true
-        throw response
-      }
-    }
-    return { status: response?.status }
-  }
-
-  const saveAngPublishWithGitInfo = async (
-    updatedGitDetails: SaveToGitFormInterface,
-    payload?: SavePipelineObj,
-    objectId?: string
-  ): Promise<UseSaveSuccessResponse> => {
-    let latestPipeline: PipelineInfoConfig = payload?.pipeline || pipeline
-
-    if (isYaml && yamlHandler) {
-      try {
-        latestPipeline = payload?.pipeline || (parse(yamlHandler.getLatestYaml()).pipeline as PipelineInfoConfig)
-      } /* istanbul ignore next */ catch (err) {
-        showError(err.message || err, undefined, 'pipeline.save.gitinfo.error')
-      }
-    }
-
-    const response = await saveAndPublishPipeline(
-      latestPipeline,
-      omit(updatedGitDetails, 'name', 'identifier'),
-      pipelineIdentifier !== DefaultNewPipelineId ? { lastObjectId: objectId } : {}
-    )
-
-    return {
-      status: response?.status
-    }
-  }
-
-  const { openSaveToGitDialog } = useSaveToGitDialog<SavePipelineObj>({
-    onSuccess: (
-      gitData: SaveToGitFormInterface,
-      payload?: SavePipelineObj,
-      objectId?: string
-    ): Promise<UseSaveSuccessResponse> =>
-      saveAngPublishWithGitInfo(gitData, payload, objectId || gitDetails?.objectId || '')
-  })
-
-  const saveAndPublish = React.useCallback(async () => {
-    window.dispatchEvent(new CustomEvent('SAVE_PIPELINE_CLICKED'))
-
-    let latestPipeline: PipelineInfoConfig = pipeline
-
-    if (isYaml && yamlHandler) {
-      if (!parse(yamlHandler.getLatestYaml())) {
-        clear()
-        showError(getString('invalidYamlText'))
-        return
-      }
-      try {
-        latestPipeline = parse(yamlHandler.getLatestYaml()).pipeline as PipelineInfoConfig
-      } /* istanbul ignore next */ catch (err) {
-        showError(err.message || err, undefined, 'pipeline.save.pipeline.error')
-      }
-    }
-
-    const ciCodeBaseConfigurationError = validateCICodebaseConfiguration({ pipeline: latestPipeline, getString })
-    if (ciCodeBaseConfigurationError) {
-      clear()
-      showError(ciCodeBaseConfigurationError)
-      return
-    }
-
-    // if Git sync enabled then display modal
-    if (isGitSyncEnabled) {
-      if (isEmpty(gitDetails.repoIdentifier) || isEmpty(gitDetails.branch)) {
-        clear()
-        showError(getString('pipeline.gitExperience.selectRepoBranch'))
-        return
-      }
-      // When git sync enabled, do not irritate user by taking all git info then at the end showing BE errors related to schema
-      const error = await validateJSONWithSchema({ pipeline: latestPipeline }, pipelineSchema?.data as any)
-      if (error.size > 0) {
-        clear()
-        showError(error)
-        return
-      }
-      if (isYaml && yamlHandler && !isValidYaml()) {
-        return
-      }
-
-      openSaveToGitDialog({
-        isEditing: pipelineIdentifier !== DefaultNewPipelineId,
-        resource: {
-          type: 'Pipelines',
-          name: latestPipeline.name,
-          identifier: latestPipeline.identifier,
-          gitDetails: gitDetails ?? {}
-        },
-        payload: { pipeline: omit(latestPipeline, 'repo', 'branch') }
-      })
-    } else {
-      await saveAndPublishPipeline(latestPipeline)
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    deletePipelineCache,
-    accountId,
-    history,
-    toPipelineStudio,
-    projectIdentifier,
-    orgIdentifier,
-    pipeline,
-    fetchPipeline,
-    showError,
-    pipelineIdentifier,
-    isYaml,
-    yamlHandler
-  ])
+  const [usingTemplate, setUsingTemplate] = React.useState<TemplateSummaryResponse>()
+  const [copyingTemplate, setCopyingTemplate] = React.useState<TemplateSummaryResponse>()
 
   const [showModal, hideModal] = useModalHook(() => {
     if (getOtherModal) {
@@ -625,12 +395,31 @@ export function PipelineCanvas({
               })}
               closeModal={onCloseCreate}
               gitDetails={gitDetails as IGitContextFormProps}
+              usingTemplate={usingTemplate}
+              copyingTemplate={copyingTemplate}
             />
           </Dialog>
         </PipelineVariablesContextProvider>
       )
     }
-  }, [pipeline?.identifier, pipeline])
+  }, [pipeline?.identifier, pipeline, usingTemplate, copyingTemplate])
+
+  const addTemplate = async () => {
+    if (!isTemplateDrawerOpened && !usingTemplate && !copyingTemplate) {
+      try {
+        const { template: newTemplate, isCopied } = await getTemplate({ templateType: 'Pipeline' })
+        if (isCopied) {
+          setCopyingTemplate(newTemplate)
+        } else {
+          setUsingTemplate(newTemplate)
+        }
+        showModal()
+      } catch (_) {
+        // user cancelled template selection
+        onCloseCreate()
+      }
+    }
+  }
 
   React.useEffect(() => {
     // for new pipeline always use UI as default view
@@ -655,7 +444,11 @@ export function PipelineCanvas({
   React.useEffect(() => {
     if (isInitialized) {
       if (pipeline?.identifier === DefaultNewPipelineId) {
-        showModal()
+        if (useTemplate) {
+          addTemplate()
+        } else {
+          showModal()
+        }
       }
       if (isBEPipelineUpdated && !discardBEUpdateDialog) {
         openConfirmBEUpdateError()
@@ -671,7 +464,6 @@ export function PipelineCanvas({
     showModal,
     isInitialized,
     isBEPipelineUpdated,
-    openConfirmBEUpdateError,
     discardBEUpdateDialog,
     blockNavigation
   ])
@@ -707,14 +499,23 @@ export function PipelineCanvas({
   ])
 
   const onSubmit = React.useCallback(
-    (data: PipelineInfoConfig, updatedGitDetails?: EntityGitDetails) => {
-      pipeline.name = data.name
-      pipeline.description = data.description
-      pipeline.timeout = data.timeout
-      pipeline.identifier = data.identifier
-      pipeline.tags = data.tags ?? {}
-      if (isEmpty(pipeline.timeout)) {
-        delete pipeline.timeout
+    (
+      values: PipelineInfoConfig,
+      updatedGitDetails?: EntityGitDetails,
+      using?: TemplateSummaryResponse,
+      copying?: TemplateSummaryResponse
+    ) => {
+      pipeline.name = values.name
+      pipeline.description = values.description
+      pipeline.identifier = values.identifier
+      pipeline.tags = values.tags ?? {}
+      if (using) {
+        set(pipeline, 'template.templateRef', getScopeBasedTemplateRef(using))
+        if (using.versionLabel) {
+          set(pipeline, 'template.versionLabel', using.versionLabel)
+        }
+      } else if (copying) {
+        merge(pipeline, parse(copying?.yaml || '')?.template.spec)
       }
       delete (pipeline as PipelineWithGitContextFormProps).repo
       delete (pipeline as PipelineWithGitContextFormProps).branch
@@ -733,6 +534,8 @@ export function PipelineCanvas({
         })
       }
       hideModal()
+      setUsingTemplate(undefined)
+      setCopyingTemplate(undefined)
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [hideModal, pipeline, updatePipeline]
@@ -1044,68 +847,61 @@ export function PipelineCanvas({
                   </div>
                 )}
                 {isUpdated && !isReadonly && <div className={css.tagRender}>{getString('unsavedChanges')}</div>}
-                <div>
-                  {!isReadonly && (
-                    <Button
-                      variation={ButtonVariation.PRIMARY}
-                      text={getString('save')}
-                      onClick={saveAndPublish}
-                      icon="send-data"
-                      className={css.saveButton}
-                      disabled={!isUpdated}
-                    />
-                  )}
-                  {pipelineIdentifier !== DefaultNewPipelineId && !isReadonly && (
-                    <Button
-                      disabled={!isUpdated}
-                      onClick={() => {
-                        updatePipelineView({ ...pipelineView, isYamlEditable: false })
-                        fetchPipeline({ forceFetch: true, forceUpdate: true })
-                      }}
-                      className={css.discardBtn}
-                      variation={ButtonVariation.SECONDARY}
-                      text={getString('pipeline.discard')}
-                    />
-                  )}
-                  <RbacButton
-                    data-testid="card-run-pipeline"
-                    variation={ButtonVariation.PRIMARY}
-                    icon="run-pipeline"
-                    intent="success"
-                    disabled={isUpdated || entityValidityDetails?.valid === false}
-                    className={css.runPipelineBtn}
-                    text={getString('runPipelineText')}
-                    tooltip={
-                      entityValidityDetails?.valid === false
-                        ? getString('pipeline.cannotRunInvalidPipeline')
-                        : isUpdated
-                        ? 'Please click Save and then run the pipeline.'
-                        : ''
-                    }
-                    onClick={e => {
-                      e.stopPropagation()
-                      openRunPipelineModal()
+                <SavePipelinePopover
+                  toPipelineStudio={toPipelineStudio}
+                  setGovernanceMetadata={setGovernanceMetadata}
+                  isValidYaml={isValidYaml}
+                />
+                {pipelineIdentifier !== DefaultNewPipelineId && !isReadonly && (
+                  <Button
+                    disabled={!isUpdated}
+                    onClick={() => {
+                      updatePipelineView({ ...pipelineView, isYamlEditable: false })
+                      fetchPipeline({ forceFetch: true, forceUpdate: true })
                     }}
-                    featuresProps={getFeaturePropsForRunPipelineButton({ modules: template?.data?.modules, getString })}
-                    permission={{
-                      resourceScope: {
-                        accountIdentifier: accountId,
-                        orgIdentifier,
-                        projectIdentifier
-                      },
-                      resource: {
-                        resourceType: ResourceType.PIPELINE,
-                        resourceIdentifier: pipeline?.identifier as string
-                      },
-                      permission: PermissionIdentifier.EXECUTE_PIPELINE
-                    }}
+                    className={css.discardBtn}
+                    variation={ButtonVariation.SECONDARY}
+                    text={getString('pipeline.discard')}
                   />
-                </div>
+                )}
+                <RbacButton
+                  data-testid="card-run-pipeline"
+                  variation={ButtonVariation.PRIMARY}
+                  icon="run-pipeline"
+                  intent="success"
+                  disabled={isUpdated || entityValidityDetails?.valid === false}
+                  className={css.runPipelineBtn}
+                  text={getString('runPipelineText')}
+                  tooltip={
+                    entityValidityDetails?.valid === false
+                      ? getString('pipeline.cannotRunInvalidPipeline')
+                      : isUpdated
+                      ? 'Please click Save and then run the pipeline.'
+                      : ''
+                  }
+                  onClick={e => {
+                    e.stopPropagation()
+                    openRunPipelineModal()
+                  }}
+                  featuresProps={getFeaturePropsForRunPipelineButton({ modules: template?.data?.modules, getString })}
+                  permission={{
+                    resourceScope: {
+                      accountIdentifier: accountId,
+                      orgIdentifier,
+                      projectIdentifier
+                    },
+                    resource: {
+                      resourceType: ResourceType.PIPELINE,
+                      resourceIdentifier: pipeline?.identifier as string
+                    },
+                    permission: PermissionIdentifier.EXECUTE_PIPELINE
+                  }}
+                />
               </div>
             </div>
           </div>
         </div>
-        {isYaml ? <PipelineYamlView /> : <StageBuilder />}
+        {isYaml ? <PipelineYamlView /> : pipeline.template ? <TemplatePipelineBuilder /> : <StageBuilder />}
         {shouldShowGovernanceEvaluation && (
           <EvaluationModal
             accountId={accountId}

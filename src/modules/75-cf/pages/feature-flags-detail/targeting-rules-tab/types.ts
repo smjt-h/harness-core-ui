@@ -5,11 +5,17 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import type { Clause, TargetMap, WeightedVariation } from 'services/cf'
+import type { Clause, WeightedVariation } from 'services/cf'
 
 export enum TargetingRuleItemType {
   VARIATION = 'VARIATION',
   PERCENTAGE_ROLLOUT = 'PERCENTAGE_ROLLOUT'
+}
+
+export enum TargetingRuleItemStatus {
+  LOADED = 'LOADED',
+  ADDED = 'ADDED',
+  DELETED = 'DELETED'
 }
 
 export interface TargetingRulesFormValues {
@@ -18,15 +24,20 @@ export interface TargetingRulesFormValues {
   offVariation: string
   targetingRuleItems: (FormVariationMap | VariationPercentageRollout)[]
 }
-export interface TargetGroup {
+export interface VariationTargetGroup {
   priority: number
-  identifier: string
+  label: string
   ruleId: string
-  name: string
+  value: string
 }
 
+export interface VariationTarget {
+  label: string
+  value: string
+}
 export interface VariationPercentageRollout {
   priority: number
+  status: string
   variations: WeightedVariation[]
   bucketBy: string
   clauses: Clause[]
@@ -35,13 +46,19 @@ export interface VariationPercentageRollout {
 }
 export interface FormVariationMap {
   priority: number
+  status: string
   variationIdentifier: string
   variationName: string
-  targetGroups: TargetGroup[]
-  targets: TargetMap[]
+  targetGroups: VariationTargetGroup[]
+  targets: VariationTarget[]
   type: string
 }
 
 export interface VariationColorMap {
   [key: string]: string
+}
+
+export interface TagInputItem {
+  label: string
+  value: string
 }

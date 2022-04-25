@@ -43,7 +43,8 @@ export const getScopeBasedQueryParams = (
 
 export const getAllowedTemplateTypes = (
   getString: UseStringsReturn['getString'],
-  module?: string
+  module?: string,
+  isPipelineTemplateEnabled?: boolean
 ): TemplateTypeOption[] => {
   const AllowedTemplateTypes = [
     {
@@ -59,7 +60,7 @@ export const getAllowedTemplateTypes = (
     {
       label: getString('common.pipeline'),
       value: TemplateType.Pipeline,
-      disabled: true
+      disabled: !isPipelineTemplateEnabled
     },
     {
       label: getString('service'),

@@ -41,6 +41,7 @@ import {
   ConnectorReferenceDTO,
   FormMultiTypeConnectorField
 } from '@connectors/components/ConnectorReferenceField/FormMultiTypeConnectorField'
+import useRBACError, { RBACError } from '@rbac/utils/useRBACError/useRBACError'
 
 import { getIconByType } from '@connectors/pages/connectors/utils/ConnectorUtils'
 import { Scope } from '@common/interfaces/SecretsInterface'
@@ -120,6 +121,7 @@ const GcpInfrastructureSpecEditable: React.FC<GcpInfrastructureSpecEditableProps
   const delayedOnUpdate = React.useRef(debounce(onUpdate || noop, 300)).current
   const { expressions } = useVariablesExpression()
   const { getString } = useStrings()
+  const { getRBACErrorMessage } = useRBACError()
 
   const {
     data: clusterNamesData,
@@ -296,7 +298,7 @@ const GcpInfrastructureSpecEditable: React.FC<GcpInfrastructureSpecEditableProps
                       addClearBtn: !(loadingClusterNames || readonly),
                       noResults: (
                         <Text padding={'small'}>
-                          {get(clusterError, 'data.message', null) ||
+                          {getRBACErrorMessage(clusterError as RBACError) ||
                             getString('cd.pipelineSteps.infraTab.clusterError')}
                         </Text>
                       )
@@ -428,6 +430,7 @@ const GcpInfrastructureSpecInputForm: React.FC<GcpInfrastructureSpecEditableProp
   const { expressions } = useVariablesExpression()
 
   const { getString } = useStrings()
+  const { getRBACErrorMessage } = useRBACError()
 
   const {
     data: clusterNamesData,
@@ -542,7 +545,7 @@ const GcpInfrastructureSpecInputForm: React.FC<GcpInfrastructureSpecEditableProp
                 noResults: (
                   <Text padding={'small'}>
                     {defaultTo(
-                      get(clusterError, 'data.message', clusterError?.message),
+                      getRBACErrorMessage(clusterError as RBACError),
                       getString('cd.pipelineSteps.infraTab.clusterError')
                     )}
                   </Text>

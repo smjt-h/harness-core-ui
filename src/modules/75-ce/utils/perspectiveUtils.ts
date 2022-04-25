@@ -170,6 +170,16 @@ export const getRuleFilters: (rules: QlceViewRuleInput[]) => QlceViewFilterWrapp
   })) as QlceViewFilterWrapperInput[]
 }
 
+export const getIdFiltersFromRules: (rules: QlceViewRuleInput[]) => QlceViewFilterWrapperInput[] = rules => {
+  const filters: QlceViewFilterWrapperInput[] = []
+
+  rules.map(rule =>
+    rule.conditions?.map(condition => filters.push({ idFilter: condition } as QlceViewFilterWrapperInput))
+  )
+
+  return filters
+}
+
 export const SOURCE_ICON_MAPPING: Record<string, IconName> = {
   AWS: 'service-aws',
   GCP: 'gcp',

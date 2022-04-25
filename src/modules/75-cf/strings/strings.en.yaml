@@ -196,10 +196,12 @@ featureFlags:
     specificTargeting: Specific Targeting
     toTargetGroups: To Target Groups
     toTargets: To Targets
+    searchTargetGroups: 'Search Target Groups'
+    searchTargets: 'Search Targets'
     validation:
       selectTargetGroup: Please select a Target Group
       valueRequired: Please enter a value
-      valueMustAddTo100: Values must add up to 100
+      valueMustAddTo100: Values must add up to 100%
   flagFilters:
     environment: '{{ $.environment }}'
     envDefault: Production (Default)

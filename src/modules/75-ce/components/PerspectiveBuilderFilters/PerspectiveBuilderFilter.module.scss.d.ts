@@ -8,6 +8,8 @@
 // this is an auto-generated file, do not update this manually
 declare const styles: {
   readonly checkbox: string
+  readonly conditionInput: string
+  readonly conditionInputWrapper: string
   readonly disabledSelect: string
   readonly fetchingMoreLoader: string
   readonly groupByLabel: string

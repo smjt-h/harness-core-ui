@@ -11,6 +11,17 @@ import { TestWrapper } from '@common/utils/testUtils'
 import mockImport from 'framework/utils/mockImport'
 import { ThirdPartyIntegrations } from '../ThirdPartyIntegrations'
 
+beforeAll(() => {
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+  // @ts-ignore
+  delete global.window.location
+  global.window = Object.create(window)
+  global.window.location = {
+    ...window.location,
+    hostname: 'app.harness.io'
+  }
+})
+
 describe('<ThirdPartyIntegrations /> tests', () => {
   test('Should integrate HotJar when deploymentType is COMMUNITY', () => {
     const injectHotJar = jest.fn()

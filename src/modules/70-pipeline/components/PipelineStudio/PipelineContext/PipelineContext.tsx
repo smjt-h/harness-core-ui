@@ -123,8 +123,8 @@ export const getTemplateTypesByRef = (
       })
       return templateTypes
     })
-    .catch(_error => {
-      return {}
+    .catch(error => {
+      return error
     })
 }
 
@@ -771,7 +771,8 @@ const _deletePipelineCache = async (
 
 export enum PipelineContextType {
   Pipeline = 'Pipeline',
-  Template = 'Template'
+  StageTemplate = 'StageTemplate',
+  PipelineTemplate = 'PipelineTemplate'
 }
 
 export const PipelineContext = React.createContext<PipelineContextInterface>({

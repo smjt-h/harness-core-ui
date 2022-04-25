@@ -196,7 +196,8 @@ export const defaultArtifactInitialValues = (selectedArtifact: ArtifactType): an
       }
     case ENABLED_ARTIFACT_TYPES.CustomArtifact:
       return {
-        identifier: ''
+        identifier: '',
+        version: RUNTIME_INPUT_VALUE
       }
     case ENABLED_ARTIFACT_TYPES.DockerRegistry:
     case ENABLED_ARTIFACT_TYPES.Gcr:

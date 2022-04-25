@@ -6102,12 +6102,13 @@ export interface PipelineInfoConfig {
   orgIdentifier?: string
   projectIdentifier?: string
   properties?: NGProperties
-  stages: StageElementWrapperConfig[]
+  stages?: StageElementWrapperConfig[]
   tags?: {
     [key: string]: string
   }
   timeout?: string
   variables?: NGVariable[]
+  template?: TemplateLinkConfig
 }
 
 export interface PipelineInfrastructure {
@@ -9607,7 +9608,7 @@ export interface UserInfo {
   token?: string
   twoFactorAuthenticationEnabled?: boolean
   utmInfo?: UtmInfo
-  uuid?: string
+  uuid: string
 }
 
 export interface UserLockoutInfo {

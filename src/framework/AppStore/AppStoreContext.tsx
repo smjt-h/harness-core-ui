@@ -54,7 +54,7 @@ export interface AppStoreContextProps {
 
 export const AppStoreContext = React.createContext<AppStoreContextProps>({
   featureFlags: {},
-  currentUserInfo: {},
+  currentUserInfo: { uuid: '' },
   isGitSyncEnabled: false,
   connectivityMode: undefined,
   updateAppStore: () => void 0
@@ -68,7 +68,7 @@ export function AppStoreProvider(props: React.PropsWithChildren<unknown>): React
   const { accountId, projectIdentifier, orgIdentifier } = useParams<ProjectPathProps>()
   const [state, setState] = React.useState<Omit<AppStoreContextProps, 'updateAppStore' | 'strings'>>({
     featureFlags: {},
-    currentUserInfo: {},
+    currentUserInfo: { uuid: '' },
     isGitSyncEnabled: false,
     connectivityMode: undefined
   })

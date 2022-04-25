@@ -21,6 +21,7 @@ import {
   getActiveStep,
   addServiceDependenciesFromLiteTaskEngine
 } from '@pipeline/utils/executionUtils'
+import useRBACError from '@rbac/utils/useRBACError/useRBACError'
 import { useQueryParams, useDeepCompareEffect } from '@common/hooks'
 import { joinAsASentence } from '@common/utils/StringUtils'
 import { String, useStrings } from 'framework/strings'
@@ -100,6 +101,7 @@ export default function ExecutionLandingPage(props: React.PropsWithChildren<unkn
 
   /* cache token required for retrieving logs */
   const [logsToken, setLogsToken] = React.useState('')
+  const { getRBACErrorMessage } = useRBACError()
 
   /* These are used when auto updating selected stage/step when a pipeline is running */
   const [autoSelectedStageId, setAutoSelectedStageId] = React.useState<string>('')
@@ -256,7 +258,7 @@ export default function ExecutionLandingPage(props: React.PropsWithChildren<unkn
     >
       {loading && !data ? <PageSpinner /> : null}
       {error ? (
-        <PageError message={(error?.data as any)?.message?.replace('"', '')} />
+        <PageError message={getRBACErrorMessage(error) as string} />
       ) : (
         <main className={css.main}>
           <div className={css.lhs}>

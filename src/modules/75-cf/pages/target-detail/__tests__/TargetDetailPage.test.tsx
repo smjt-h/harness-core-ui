@@ -7,7 +7,7 @@
 
 /* eslint-disable react/display-name */
 import React from 'react'
-import { render, RenderResult, screen, waitFor } from '@testing-library/react'
+import { getByRole, getByText, render, RenderResult, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import { TestWrapper } from '@common/utils/testUtils'
 import * as cfServices from 'services/cf'
@@ -157,17 +157,23 @@ describe('TargetDetailPage', () => {
   })
 
   describe('header', () => {
+    function getHeader(): HTMLElement {
+      return document.querySelector('.PageHeader--container') as HTMLElement
+    }
+
     test('it should display the name and created date of the Target', async () => {
       renderComponent()
+      const header = getHeader()
 
-      expect(screen.getByText('Target 1')).toBeInTheDocument()
-      expect(screen.getByText('cf.targetDetail.createdOnDate')).toBeInTheDocument()
+      expect(getByText(header, 'Target 1')).toBeInTheDocument()
+      expect(getByText(header, 'cf.targetDetail.createdOnDate')).toBeInTheDocument()
     })
 
     test('it should include a link back to the Target listing page', async () => {
       renderComponent()
+      const header = getHeader()
 
-      expect(screen.getByRole('link', { name: 'cf.shared.targetManagement: cf.shared.targets' })).toBeInTheDocument()
+      expect(getByRole(header, 'link', { name: 'cf.shared.targetManagement: cf.shared.targets' })).toBeInTheDocument()
     })
   })
 })

@@ -11,8 +11,8 @@ import { Color } from '@harness/design-system'
 import { useStrings } from 'framework/strings'
 import StringWithTooltip from '@common/components/StringWithTooltip/StringWithTooltip'
 import type { Target } from 'services/cf'
+import TargetAttributes from '@cf/pages/target-detail/components/TargetAttributes/TargetAttributes'
 import { DetailHeading } from '../DetailHeading'
-import TabAttributes from '../attributes/TabAttributes'
 import { TabSegments } from '../segments/TabSegments'
 
 import css from './TargetSettings.module.scss'
@@ -45,7 +45,7 @@ export const TargetSettings: FC<TargetSettingsProps> = ({ target }) => {
                 {getString('cf.targetDetail.attributes', { counter: Object.keys(target?.attributes || {}).length + 2 })}
               </Text>
             }
-            panel={<TabAttributes target={target} />}
+            panel={<TargetAttributes target={target} />}
           />
           <Tab
             id="segments"

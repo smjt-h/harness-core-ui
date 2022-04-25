@@ -7,10 +7,10 @@
 
 import React, { useState, useEffect } from 'react'
 import cx from 'classnames'
-import { Icon, Layout, Text } from '@wings-software/uicore'
+import { Icon, Layout, Text, TextInput } from '@wings-software/uicore'
 import { Popover, PopoverInteractionKind, Position } from '@blueprintjs/core'
 import { useStrings } from 'framework/strings'
-import type { QlceViewFilterOperator, Maybe } from 'services/ce/services'
+import { QlceViewFilterOperator, Maybe } from 'services/ce/services'
 import MultiValueSelectorComponent from '@ce/components/MultiValueSelectorComponent/MultiValueSelectorComponent'
 import type { ProviderType } from '../PerspectiveBuilderFilter'
 
@@ -40,7 +40,8 @@ const ValuesSelector: React.FC<ValuesSelectorProps> = ({
   fetchMore,
   shouldFetchMore,
   onInputChange,
-  searchText
+  searchText,
+  operator
 }) => {
   const [selectedValues, setSelectedValues] = useState<Record<string, boolean>>({})
 
@@ -56,7 +57,17 @@ const ValuesSelector: React.FC<ValuesSelectorProps> = ({
     setSelectedValues(newSelectedVals)
   }, [selectedVal])
 
-  return (
+  return operator === QlceViewFilterOperator.Like ? (
+    <TextInput
+      wrapperClassName={css.conditionInputWrapper}
+      className={css.conditionInput}
+      placeholder={getString('ce.perspectives.createPerspective.filters.enterCondition')}
+      defaultValue={selectedVal[0]}
+      onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+        onValueChange([e.target.value])
+      }}
+    />
+  ) : (
     <Popover
       disabled={isDisabled}
       interactionKind={PopoverInteractionKind.CLICK}

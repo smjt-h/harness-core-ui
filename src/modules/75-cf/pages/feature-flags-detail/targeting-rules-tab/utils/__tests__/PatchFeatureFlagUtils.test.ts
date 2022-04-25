@@ -5,7 +5,7 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import { FormVariationMap, TargetingRuleItemType, TargetingRulesFormValues } from '../../../Types.types'
+import { FormVariationMap, TargetingRuleItemStatus, TargetingRuleItemType, TargetingRulesFormValues } from '../../types'
 import { PatchFeatureFlagUtils } from '../PatchFeatureFlagUtils'
 
 describe('PatchFeatureFlagUtils', async () => {
@@ -15,6 +15,7 @@ describe('PatchFeatureFlagUtils', async () => {
     offVariation: '',
     targetingRuleItems: [
       {
+        status: TargetingRuleItemStatus.LOADED,
         priority: 101,
         type: TargetingRuleItemType.VARIATION,
         variationIdentifier: 'TEST2',
@@ -31,6 +32,7 @@ describe('PatchFeatureFlagUtils', async () => {
     offVariation: '',
     targetingRuleItems: [
       {
+        status: TargetingRuleItemStatus.LOADED,
         priority: 101,
         type: TargetingRuleItemType.VARIATION,
         variationIdentifier: 'TEST2',
@@ -42,6 +44,7 @@ describe('PatchFeatureFlagUtils', async () => {
   }
 
   const formVariation: FormVariationMap = {
+    status: TargetingRuleItemStatus.LOADED,
     priority: 101,
     type: TargetingRuleItemType.VARIATION,
     variationIdentifier: 'TEST',

@@ -85,20 +85,19 @@ const DEFAULT_MOVE_STAGE_DETAILS: MoveStageDetailsType = {
   direction: MoveDirection.AHEAD,
   event: undefined
 }
-export const initializeStageStateMap = (pipeline: PipelineInfoConfig, mapState: StageStateMap): void => {
-  /* istanbul ignore else */ if (pipeline?.stages) {
-    pipeline.stages.forEach?.(node => {
-      if (node?.stage && node.stage.name !== EmptyStageName) {
-        mapState.set(node.stage.identifier, { isConfigured: true, stage: node })
-      } /* istanbul ignore else */ else if (node?.parallel) {
-        node.parallel.forEach?.(parallelNode => {
-          /* istanbul ignore else */ if (parallelNode.stage && parallelNode.stage.name !== EmptyStageName) {
-            mapState.set(parallelNode.stage.identifier, { isConfigured: true, stage: parallelNode })
-          }
-        })
-      }
-    })
-  }
+export const initializeStageStateMap = (stages: StageElementWrapperConfig[], mapState: StageStateMap): void => {
+  /* istanbul ignore else */
+  stages.forEach?.(node => {
+    if (node?.stage && node.stage.name !== EmptyStageName) {
+      mapState.set(node.stage.identifier, { isConfigured: true, stage: node })
+    } /* istanbul ignore else */ else if (node?.parallel) {
+      node.parallel.forEach?.(parallelNode => {
+        /* istanbul ignore else */ if (parallelNode.stage && parallelNode.stage.name !== EmptyStageName) {
+          mapState.set(parallelNode.stage.identifier, { isConfigured: true, stage: parallelNode })
+        }
+      })
+    }
+  })
 }
 
 export const renderPopover = ({
@@ -355,12 +354,12 @@ function StageBuilder(): React.ReactElement {
   }, [selectedStageId, isSplitViewOpen])
 
   React.useEffect(() => {
-    if (isInitialized && !isSplitViewOpen) {
+    if (isInitialized && !isSplitViewOpen && pipeline.stages) {
       const map = new Map<string, StageState>()
-      initializeStageStateMap(pipeline, map)
+      initializeStageStateMap(pipeline.stages, map)
       setStageMap(map)
     }
-  }, [isInitialized, pipeline, isSplitViewOpen])
+  }, [isInitialized, pipeline.stages, isSplitViewOpen])
 
   // updates stages when stage is dragged to add stage link
   const updateStageOnAddLink = (event: any, dropNode: StageElementWrapper | undefined, current: any): void => {

@@ -343,7 +343,7 @@ function RunPipelineFormBasic({
 
   useEffect(() => {
     if (inputSetsError) {
-      showError(inputSetsError.message)
+      showError(getRBACErrorMessage(inputSetsError))
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [inputSetsError])

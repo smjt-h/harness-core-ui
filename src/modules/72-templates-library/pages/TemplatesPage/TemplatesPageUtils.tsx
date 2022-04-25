@@ -22,18 +22,18 @@ export const templateColorStyleMap: { [keyof in TemplateType]: React.CSSProperti
   },
   [TemplateType.Stage]: {
     color: '#06B7C3',
-    stroke: '#C3ECEE',
+    stroke: '#C0FBFE',
     fill: '#D3FCFE'
+  },
+  [TemplateType.Pipeline]: {
+    color: '#004BA4',
+    stroke: '#CCCBFF',
+    fill: '#E8E8FF'
   },
   [TemplateType.Service]: {
     color: '#299B2C',
     stroke: '#D4E7D1',
     fill: '#E4F7E1'
-  },
-  [TemplateType.Pipeline]: {
-    color: '#004BA4',
-    stroke: '#E4E6EF',
-    fill: '#F4F6FF'
   },
   [TemplateType.StepGroup]: {
     color: '#299B2C',
@@ -64,9 +64,9 @@ export const templateStudioColorStyleMap: { [keyof in TemplateType]: React.CSSPr
     fill: '#7D4DD3'
   },
   [TemplateType.Stage]: {
-    color: '#06B7C3',
-    stroke: '#C3ECEE',
-    fill: '#D3FCFE'
+    color: '#E8E8FF',
+    stroke: '#03C0CD',
+    fill: '#0BC8D6'
   },
   [TemplateType.Service]: {
     color: '#299B2C',
@@ -74,9 +74,9 @@ export const templateStudioColorStyleMap: { [keyof in TemplateType]: React.CSSPr
     fill: '#E4F7E1'
   },
   [TemplateType.Pipeline]: {
-    color: '#004BA4',
-    stroke: '#E4E6EF',
-    fill: '#F4F6FF'
+    color: '#E8E8FF',
+    stroke: '#5452F6',
+    fill: '#6563F0'
   },
   [TemplateType.StepGroup]: {
     color: '#299B2C',
@@ -139,21 +139,25 @@ export const getIconForTemplate = (
   getString: UseStringsReturn['getString'],
   template?: NGTemplateInfoConfigWithGitDetails | TemplateSummaryResponse
 ): IconName | undefined => {
-  const childType =
-    (template as TemplateSummaryResponse)?.childType || get(template as NGTemplateInfoConfigWithGitDetails, 'spec.type')
-  if (childType) {
-    const templateTye =
-      (template as TemplateSummaryResponse)?.templateEntityType ||
-      (template as NGTemplateInfoConfigWithGitDetails)?.type
-    switch (templateTye) {
-      case TemplateType.Step:
-        return factory.getStepIcon(childType)
-      case TemplateType.Stage:
-        return stagesCollection.getStageAttributes(childType, getString)?.icon
-      default:
-        return undefined
-    }
+  const templateTye =
+    (template as TemplateSummaryResponse)?.templateEntityType || (template as NGTemplateInfoConfigWithGitDetails)?.type
+  if (templateTye === TemplateType.Pipeline) {
+    return 'pipeline'
   } else {
-    return undefined
+    const childType =
+      (template as TemplateSummaryResponse)?.childType ||
+      get(template as NGTemplateInfoConfigWithGitDetails, 'spec.type')
+    if (childType) {
+      switch (templateTye) {
+        case TemplateType.Step:
+          return factory.getStepIcon(childType)
+        case TemplateType.Stage:
+          return stagesCollection.getStageAttributes(childType, getString)?.icon
+        default:
+          return undefined
+      }
+    } else {
+      return undefined
+    }
   }
 }

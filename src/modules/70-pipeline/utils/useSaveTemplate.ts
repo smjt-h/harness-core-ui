@@ -6,7 +6,7 @@
  */
 
 import React from 'react'
-import { cloneDeep, defaultTo, get, isEmpty, omit } from 'lodash-es'
+import { cloneDeep, defaultTo, isEmpty, omit } from 'lodash-es'
 import { parse } from 'yaml'
 import { useHistory, useParams } from 'react-router-dom'
 import { VisualYamlSelectedView as SelectedView } from '@wings-software/uicore'
@@ -19,6 +19,7 @@ import {
 } from 'services/template-ng'
 import { AppStoreContext } from 'framework/AppStore/AppStoreContext'
 import { useStrings } from 'framework/strings'
+import useRBACError from '@rbac/utils/useRBACError/useRBACError'
 import { useToaster } from '@common/exports'
 import { UseSaveSuccessResponse, useSaveToGitDialog } from '@common/modals/SaveToGitDialog/useSaveToGitDialog'
 import type { SaveToGitFormInterface } from '@common/components/SaveToGitForm/SaveToGitForm'
@@ -86,6 +87,7 @@ export function useSaveTemplate(TemplateContextMetadata: TemplateContextMetadata
   const { branch } = useQueryParams<GitQueryParams>()
   const { getString } = useStrings()
   const { showSuccess, showError, clear } = useToaster()
+  const { getRBACErrorMessage } = useRBACError()
   const history = useHistory()
   const isYaml = view === SelectedView.YAML
 
@@ -152,11 +154,7 @@ export function useSaveTemplate(TemplateContextMetadata: TemplateContextMetadata
     } catch (error) {
       clear()
       if (!isGitSyncEnabled) {
-        showError(
-          get(error, 'data.error', get(error, 'data.message', error?.message)),
-          undefined,
-          'template.update.template.error'
-        )
+        showError(getRBACErrorMessage(error), undefined, 'template.update.template.error')
         return { status: 'FAILURE' }
       } else {
         throw error
@@ -208,11 +206,7 @@ export function useSaveTemplate(TemplateContextMetadata: TemplateContextMetadata
       } catch (error) {
         clear()
         if (!isGitSyncEnabled) {
-          showError(
-            get(error, 'data.error', get(error, 'data.message', error?.message)),
-            undefined,
-            'template.save.template.error'
-          )
+          showError(getRBACErrorMessage(error), undefined, 'template.save.template.error')
           return { status: 'FAILURE' }
         } else {
           throw error
@@ -233,7 +227,7 @@ export function useSaveTemplate(TemplateContextMetadata: TemplateContextMetadata
       try {
         latestTemplate = payload?.template || (parse(yamlHandler.getLatestYaml()).pipeline as NGTemplateInfoConfig)
       } /* istanbul ignore next */ catch (err) {
-        showError(err.message || err, undefined, 'template.save.gitinfo.error')
+        showError(getRBACErrorMessage(err), undefined, 'template.save.gitinfo.error')
       }
     }
 

@@ -49,6 +49,7 @@ import {
   buildNexusPayload
 } from '@connectors/pages/connectors/utils/ConnectorUtils'
 import DelegateSelectorStep from '@connectors/components/CreateConnector/commonSteps/DelegateSelectorStep/DelegateSelectorStep'
+import useRBACError from '@rbac/utils/useRBACError/useRBACError'
 import { useDeepCompareEffect, useQueryParams } from '@common/hooks'
 import type { Scope } from '@common/interfaces/SecretsInterface'
 import { useTelemetry } from '@common/hooks/useTelemetry'
@@ -112,6 +113,7 @@ export default function ArtifactsSelection({
   const [fetchedConnectorResponse, setFetchedConnectorResponse] = useState<PageConnectorResponse | undefined>()
 
   const { showError } = useToaster()
+  const { getRBACErrorMessage } = useRBACError()
   const { getString } = useStrings()
   const { trackEvent } = useTelemetry()
   const { expressions } = useVariablesExpression()
@@ -133,10 +135,7 @@ export default function ArtifactsSelection({
     }
 
     if (CUSTOM_ARTIFACT_NG && !allowedArtifactTypes[deploymentType]?.includes(ENABLED_ARTIFACT_TYPES.CustomArtifact)) {
-      allowedArtifactTypes[deploymentType].push(
-        ENABLED_ARTIFACT_TYPES.Nexus3Registry,
-        ENABLED_ARTIFACT_TYPES.ArtifactoryRegistry
-      )
+      allowedArtifactTypes[deploymentType].push(ENABLED_ARTIFACT_TYPES.CustomArtifact)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
@@ -315,7 +314,7 @@ export default function ArtifactsSelection({
         }
       }
     } catch (e) {
-      showError(e.message)
+      showError(getRBACErrorMessage(e))
     }
   }, [fetchConnectors, getPrimaryConnectorList, getSidecarConnectorList, showError])
 
