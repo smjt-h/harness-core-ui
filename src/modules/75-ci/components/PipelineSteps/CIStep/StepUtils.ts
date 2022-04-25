@@ -5,7 +5,7 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import isEmpty from 'lodash/isEmpty'
+import { get, isEmpty } from 'lodash-es'
 import type { FormikErrors } from 'formik'
 import { RUNTIME_INPUT_VALUE, MultiTypeInputType } from '@wings-software/uicore'
 import type { UseFromStageInfraYaml } from 'services/ci'
@@ -61,11 +61,15 @@ export const shouldRenderRunTimeInputView = (value: any): boolean => {
   return false
 }
 
-export const shouldRenderRunTimeInputViewWithAllowedValues = (value: string): boolean => {
-  if (shouldRenderRunTimeInputView(value)) {
-    return RegExAllowedInputExpression.test(value)
+export const shouldRenderRunTimeInputViewWithAllowedValues = (
+  fieldPath: string,
+  template?: Record<string, any>
+): boolean => {
+  if (!template) {
+    return false
   }
-  return false
+  const value = get(template, fieldPath, '')
+  return shouldRenderRunTimeInputView(value) && RegExAllowedInputExpression.test(value)
 }
 
 export const AllMultiTypeInputTypesForStep = [

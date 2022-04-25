@@ -39,7 +39,7 @@ export const DependencyInputSetBasic: React.FC<DependencyProps> = ({
         stepViewType={stepViewType}
         enableFields={{
           ...(getMultiTypeFromValue(template?.description as string) === MultiTypeInputType.RUNTIME && {
-            'spec.description': {}
+            description: {}
           }),
           ...(getMultiTypeFromValue(template?.spec?.connectorRef) === MultiTypeInputType.RUNTIME && {
             'spec.connectorRef': {
