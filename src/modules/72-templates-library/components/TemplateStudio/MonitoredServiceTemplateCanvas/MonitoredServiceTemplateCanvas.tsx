@@ -6,8 +6,8 @@
  */
 
 import React from 'react'
-// eslint-disable-next-line
-import { ConfigurationsWithRef } from '@cv/pages/monitored-service/components/Configurations/Configurations'
+// eslint-disable-next-line no-restricted-imports
+import { ConfigurationsWithRef } from '@cv/pages/monitored-service/components/Configurations/ConfigurationsRef'
 import type { NGTemplateInfoConfigWithMonitoredService } from '@templates-library/components/Templates/MonitoredServiceTemplate/MonitoredServiceTemplate'
 import { TemplateContext } from '../TemplateContext/TemplateContext'
 import type { TemplateFormRef } from '../TemplateStudio'

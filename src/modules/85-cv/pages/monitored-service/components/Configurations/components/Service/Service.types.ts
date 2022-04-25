@@ -5,8 +5,21 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
+import type { NGTemplateInfoConfigWithMonitoredService } from '@templates-library/components/Templates/MonitoredServiceTemplate/MonitoredServiceTemplate'
 import type { MonitoredServiceDTO } from 'services/cv'
 
+export interface ServiceTabInterface {
+  value: MonitoredServiceForm
+  onSuccess: (val: any) => Promise<void>
+  cachedInitialValues?: MonitoredServiceForm | null
+  setDBData?: (val: MonitoredServiceForm) => void
+  onDiscard?: () => void
+  serviceTabformRef?: any
+  onChangeMonitoredServiceType: (updatedValues: MonitoredServiceForm) => void
+  isTemplate?: boolean
+  updateTemplate?: (template: NGTemplateInfoConfigWithMonitoredService) => Promise<void>
+  formikRef?: any
+}
 export interface MonitoredServiceRef {
   name: string
   tags?: { [key: string]: any }
