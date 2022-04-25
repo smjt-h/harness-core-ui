@@ -118,7 +118,6 @@ interface RenderGraphNodesProps<T> {
 export class ExecutionStageDiagramModel extends Diagram.DiagramModel {
   nodeStyle: NodeStyleInterface = { width: 200, height: 200 }
   protected diagConfig: ExecutionStageDiagramConfiguration
-  prevHeight = 300
 
   constructor() {
     super({
@@ -327,10 +326,7 @@ export class ExecutionStageDiagramModel extends Diagram.DiagramModel {
       const { parallel } = node
       const splitSize = defaultTo(diagramContainerHeight, 0)
       const availableNodesRender = Math.floor(splitSize / ((this.gapY * zoomLevel) / 100))
-      if (showParallelStagesGroup && Math.abs(splitSize - this.prevHeight) > (this.gapY * zoomLevel) / 100) {
-        this.removeParallelNodes(parallel)
-        this.prevHeight = splitSize
-      }
+      this.removeParallelNodes(parallel)
       /* istanbul ignore else */ if (parallel.length > 1) {
         if (showParallelStagesGroup && splitSize < this.gapY * parallel.length + 40 && availableNodesRender === 1) {
           const parallelStageNames: Array<string> = []
@@ -372,39 +368,33 @@ export class ExecutionStageDiagramModel extends Diagram.DiagramModel {
             parallel.filter(nodeP => nodeP.item?.identifier === selectedStageId)[0],
             parallel[0]
           )
-          const groupNode = this.getNodeFromId(
-            defaultTo(isSelected ? selectedStageId : node.parallel[0].item?.identifier, '')
-          )
-          const groupedNode =
-            groupNode instanceof Diagram.GroupNodeModel
-              ? groupNode
-              : new Diagram.GroupNodeModel({
-                  customNodeStyle: getNodeStyles(
-                    isSelected,
-                    defaultTo(selectedStage.item?.status, 'NotStarted'),
-                    defaultTo(selectedStage.item?.type, ExecutionPipelineNodeType.NORMAL),
-                    NODE_HAS_BORDER
-                  ),
-                  nodeClassName: cx(
-                    { [css.runningNode]: isExecutionRunning(groupStatus as unknown as ExecutionStatus) },
-                    { [css.selected]: isExecutionRunning(groupStatus as unknown as ExecutionStatus) && isSelected }
-                  ),
-                  ...failedStage,
-                  identifier: isSelected ? selectedStageId : node.parallel[0].item?.identifier,
-                  id: isSelected ? selectedStageId : node.parallel[0].item?.identifier,
-                  parallelNodes: node.parallel.map(nodeP => defaultTo(nodeP?.item?.identifier, '')),
-                  name:
-                    parallelStageNames.length > 2
-                      ? getString('pipeline.parallelSelectedStages', {
-                          selected: parallelStageNames[0],
-                          total: parallelStageNames.length - 1
-                        })
-                      : parallelStageNames.join(', '),
-                  width: GROUP_NODE_WIDTH,
-                  allowAdd: true,
-                  height: 40,
-                  icons: uniq(icons)
-                })
+          const groupedNode = new Diagram.GroupNodeModel({
+            customNodeStyle: getNodeStyles(
+              isSelected,
+              defaultTo(selectedStage.item?.status, 'NotStarted'),
+              defaultTo(selectedStage.item?.type, ExecutionPipelineNodeType.NORMAL),
+              NODE_HAS_BORDER
+            ),
+            nodeClassName: cx(
+              { [css.runningNode]: isExecutionRunning(groupStatus as unknown as ExecutionStatus) },
+              { [css.selected]: isExecutionRunning(groupStatus as unknown as ExecutionStatus) && isSelected }
+            ),
+            ...failedStage,
+            identifier: isSelected ? selectedStageId : node.parallel[0].item?.identifier,
+            id: isSelected ? selectedStageId : node.parallel[0].item?.identifier,
+            parallelNodes: node.parallel.map(nodeP => defaultTo(nodeP?.item?.identifier, '')),
+            name:
+              parallelStageNames.length > 2
+                ? getString('pipeline.parallelSelectedStages', {
+                    selected: parallelStageNames[0],
+                    total: parallelStageNames.length - 1
+                  })
+                : parallelStageNames.join(', '),
+            width: GROUP_NODE_WIDTH,
+            allowAdd: true,
+            height: 40,
+            icons: uniq(icons)
+          })
           startX += isFirstNode ? FIRST_AND_LAST_SEGMENT_LENGTH : SPACE_BETWEEN_ELEMENTS
           this.addNode(groupedNode)
           groupedNode.setPosition(startX, startY)
@@ -528,44 +518,37 @@ export class ExecutionStageDiagramModel extends Diagram.DiagramModel {
               const failedStage = groupStatus
                 ? getStatusProps(groupStatus as unknown as ExecutionStatus, ExecutionPipelineNodeType.NORMAL)
                 : { secondaryIcon: undefined }
-              console.log('failedStage: ', failedStage)
               const selectedStage = defaultTo(
                 parallel.filter(nodePP => nodePP.item?.identifier === selectedStageId)[0],
                 parallel[0]
               )
-              const groupNode = this.getNodeFromId(
-                defaultTo(isSelected ? selectedStageId : parallelNodes[0].item?.identifier, '')
-              )
-              const groupedNode =
-                groupNode instanceof Diagram.GroupNodeModel
-                  ? groupNode
-                  : new Diagram.GroupNodeModel({
-                      customNodeStyle: getNodeStyles(
-                        isSelected,
-                        defaultTo(selectedStage.item?.status, 'NotStarted'),
-                        defaultTo(selectedStage.item?.type, ExecutionPipelineNodeType.NORMAL),
-                        NODE_HAS_BORDER
-                      ),
-                      ...failedStage,
-                      nodeClassName: cx(
-                        { [css.runningNode]: isExecutionRunning(groupStatus as unknown as ExecutionStatus) },
-                        { [css.selected]: isExecutionRunning(groupStatus as unknown as ExecutionStatus) && isSelected }
-                      ),
-                      identifier: isSelected ? selectedStageId : parallelNodes[0].item?.identifier,
-                      id: isSelected ? selectedStageId : parallelNodes[0].item?.identifier,
-                      parallelNodes: parallelNodes.map(nodePP => defaultTo(nodePP?.item?.identifier, '')),
-                      isInComplete: true,
-                      name: isSelected
-                        ? getString('pipeline.parallelSelectedStages', {
-                            selected: parallelStageNames[0],
-                            total: parallelStageNames.length - 1
-                          })
-                        : getString('pipeline.parallelStages', { total: parallelStageNames.length }),
-                      width: GROUP_NODE_WIDTH,
-                      allowAdd: true,
-                      height: 40,
-                      icons: uniq(icons)
+              const groupedNode = new Diagram.GroupNodeModel({
+                customNodeStyle: getNodeStyles(
+                  isSelected,
+                  defaultTo(selectedStage.item?.status, 'NotStarted'),
+                  defaultTo(selectedStage.item?.type, ExecutionPipelineNodeType.NORMAL),
+                  NODE_HAS_BORDER
+                ),
+                ...failedStage,
+                nodeClassName: cx(
+                  { [css.runningNode]: isExecutionRunning(groupStatus as unknown as ExecutionStatus) },
+                  { [css.selected]: isExecutionRunning(groupStatus as unknown as ExecutionStatus) && isSelected }
+                ),
+                identifier: isSelected ? selectedStageId : parallelNodes[0].item?.identifier,
+                id: isSelected ? selectedStageId : parallelNodes[0].item?.identifier,
+                parallelNodes: parallelNodes.map(nodePP => defaultTo(nodePP?.item?.identifier, '')),
+                isInComplete: true,
+                name: isSelected
+                  ? getString('pipeline.parallelSelectedStages', {
+                      selected: parallelStageNames[0],
+                      total: parallelStageNames.length - 1
                     })
+                  : getString('pipeline.parallelStages', { total: parallelStageNames.length }),
+                width: GROUP_NODE_WIDTH,
+                allowAdd: true,
+                height: 40,
+                icons: uniq(icons)
+              })
               this.addNode(groupedNode)
               groupedNode.setPosition(newX + PARALLEL_LINES_WIDTH - 18, newY)
               if (!isEmpty(prevNodes) && prevNodes) {
