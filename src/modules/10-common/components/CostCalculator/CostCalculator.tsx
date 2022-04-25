@@ -240,6 +240,11 @@ export const CostCalculator = (): JSX.Element => {
   const isLoading = limitData.loadingLimit || usageData.loadingUsage
 
   const {data} = useRetrieveProductPrices({queryParams: {accountIdentifier : accountId, moduleType: 'CF'}});
+  if(!data) {
+    return <ContainerSpinner />
+  }
+
+
   // @ts-ignore
   const providedPrices = [...data?.data?.prices]  ;
   const allPrices = {};
