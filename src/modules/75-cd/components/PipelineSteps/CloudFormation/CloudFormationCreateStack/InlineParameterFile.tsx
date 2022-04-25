@@ -7,19 +7,21 @@
 
 import React from 'react'
 import * as Yup from 'yup'
+// import { useParams } from 'react-router-dom'
 import { map, defaultTo } from 'lodash-es'
-import { Layout, Button, Formik, ButtonVariation, DropDown, FormInput, Icon } from '@harness/uicore'
+import { Layout, Button, Formik, ButtonVariation, Select, FormInput, Text } from '@harness/uicore'
 import { Form, FieldArray } from 'formik'
 import { Classes, Dialog } from '@blueprintjs/core'
+// import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
 import { useStrings } from 'framework/strings'
-import { onDragStart, onDragEnd, onDragLeave, onDragOver, onDrop } from '../DragHelper'
+// import { useCFParametersForAws } from 'services/cd-ng'
 import css from '../CloudFormation.module.scss'
 
 interface InlineParameterFileProps {
   onClose: () => void
   onSubmit: (values: any) => void
   isOpen: boolean
-  initialValues: { value: string; name: string }[]
+  initialValues: any
 }
 
 export const InlineParameterFile = ({
@@ -29,21 +31,39 @@ export const InlineParameterFile = ({
   isOpen
 }: InlineParameterFileProps): JSX.Element => {
   const { getString } = useStrings()
+  // const { accountId, projectIdentifier, orgIdentifier } = useParams<ProjectPathProps>()
+  // const [, setRemoteParams] = useState()
+
+  // const { mutate } = useCFParametersForAws({
+  //   queryParams: {
+  //     accountIdentifier: accountId,
+  //     orgIdentifier: orgIdentifier,
+  //     projectIdentifier: projectIdentifier,
+  //     awsConnectorRef: '',
+  //     type: '',
+  //     region: ''
+  //   }
+  // })
+
   return (
     <Dialog
       isOpen={isOpen}
       enforceFocus={false}
-      title={'Add Inline CloudFormation Parameter'}
+      title={
+        <Layout.Horizontal flex={{ alignItems: 'center', justifyContent: 'center' }}>
+          <Text font="medium" style={{ color: 'rgb(11, 11, 13)' }}>
+            CloudFormation Parameter Overrides
+          </Text>
+        </Layout.Horizontal>
+      }
       isCloseButtonShown
       onClose={onClose}
       className={Classes.DIALOG}
     >
-      <Layout.Vertical padding="medium">
+      <Layout.Vertical padding="xxlarge">
         <Formik
           formName="inlineParameterFileForm"
-          initialValues={{
-            parameters: initialValues
-          }}
+          initialValues={initialValues}
           onSubmit={onSubmit}
           validationSchema={Yup.object().shape({
             parameters: Yup.array().of(
@@ -57,50 +77,56 @@ export const InlineParameterFile = ({
         >
           {({ values, setFieldValue }) => {
             const params = defaultTo(values?.parameters, [{ name: '', value: '' }])
+            const items = [{ label: 'test', value: 'test' }]
             return (
               <Form>
+                <Layout.Horizontal flex={{ alignItems: 'flex-start', justifyContent: 'flex-start' }}>
+                  <Layout.Vertical className={css.overrideSelect}>
+                    <Text style={{ color: 'rgb(11, 11, 13)', fontWeight: 'bold' }}>Parameters ({params.length})</Text>
+                  </Layout.Vertical>
+                  <Layout.Vertical>
+                    <a className={css.configPlaceHolder}>Retrieve Names from template</a>
+                  </Layout.Vertical>
+                </Layout.Horizontal>
+                <Layout.Horizontal
+                  className={css.overridesInputHeader}
+                  flex={{ alignItems: 'flex-start', justifyContent: 'flex-start' }}
+                >
+                  <Layout.Vertical className={css.overrideSelect}>
+                    <Text style={{ color: 'rgb(11, 11, 13)' }}>NAME</Text>
+                  </Layout.Vertical>
+                  <Layout.Vertical>
+                    <Text style={{ color: 'rgb(11, 11, 13)' }}>VALUE</Text>
+                  </Layout.Vertical>
+                </Layout.Horizontal>
                 <FieldArray
                   name="parameters"
                   render={arrayHelpers => (
                     <>
                       {map(params, (item: any, index: number) => (
                         <Layout.Horizontal
+                          spacing="medium"
+                          className={css.formContainer}
                           key={`${item}-${index}`}
-                          flex={{ distribution: 'space-between' }}
-                          style={{ alignItems: 'end' }}
+                          draggable={false}
                         >
-                          <Layout.Horizontal
-                            spacing="medium"
-                            style={{ alignItems: 'baseline' }}
-                            className={css.formContainer}
-                            key={`${item}-${index}`}
-                            draggable={true}
-                            onDragEnd={onDragEnd}
-                            onDragOver={onDragOver}
-                            onDragLeave={onDragLeave}
-                            onDragStart={event => onDragStart(event, index)}
-                            onDrop={event => onDrop(event, arrayHelpers, index)}
-                          >
-                            <Icon name="drag-handle-vertical" className={css.drag} />
-                            <DropDown
-                              buttonTestId={`inlineParamKeys[${index}]`}
-                              onChange={({ value }) => {
-                                setFieldValue(`parameters[${index}].name`, value)
-                              }}
-                              items={[{ label: 'test', value: 'test' }]}
-                              placeholder="Select key name"
-                              usePortal={true}
-                              filterable={false}
-                              value={item.name}
-                            />
-                            <FormInput.Text name={`parameters[${index}].value`} label="" placeholder="Value" />
-                            <Button
-                              minimal
-                              icon="main-trash"
-                              data-testid={`remove-header-`}
-                              onClick={() => arrayHelpers.remove(index)}
-                            />
-                          </Layout.Horizontal>
+                          <Select
+                            onChange={({ value }) => {
+                              setFieldValue(`parameters[${index}].name`, value)
+                            }}
+                            items={items}
+                            allowCreatingNewItems
+                            className={css.overrideSelect}
+                            name={`parameters[${index}].name`}
+                            value={items.find(param => param.value === params[index].name)}
+                          />
+                          <FormInput.Text name={`parameters[${index}].value`} label="" placeholder="Value" />
+                          <Button
+                            minimal
+                            icon="main-trash"
+                            data-testid={`remove-header-`}
+                            onClick={() => arrayHelpers.remove(index)}
+                          />
                         </Layout.Horizontal>
                       ))}
                       <Button
@@ -109,7 +135,7 @@ export const InlineParameterFile = ({
                         data-testid="add-header"
                         onClick={() => arrayHelpers.push({ name: '', value: '' })}
                       >
-                        {getString('cd.addTFVarFileLabel')}
+                        {getString('add')}
                       </Button>
                     </>
                   )}
@@ -121,6 +147,7 @@ export const InlineParameterFile = ({
                     text={getString('submit')}
                     rightIcon="chevron-right"
                   />
+                  <Button onClick={onClose} variation={ButtonVariation.TERTIARY} text={getString('cancel')} />
                 </Layout.Horizontal>
               </Form>
             )

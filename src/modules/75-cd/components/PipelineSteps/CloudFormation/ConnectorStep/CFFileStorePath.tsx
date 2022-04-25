@@ -28,6 +28,7 @@ import { useVariablesExpression } from '@pipeline/components/PipelineStudio/Pipl
 import { useStrings } from 'framework/strings'
 import { FormatFilePaths } from '../CloudFormationHelper'
 import { onDragStart, onDragEnd, onDragLeave, onDragOver, onDrop } from '../DragHelper'
+import { ParameterRepoDetails } from './ParameterRepoDetails'
 import stepCss from '@pipeline/components/PipelineSteps/Steps/Steps.module.scss'
 import css from '../CloudFormation.module.scss'
 
@@ -35,15 +36,18 @@ interface CFFileStoreProps {
   isParam: boolean
   allowableTypes: MultiTypeInputType[]
   initialValues: any
-  onSubmit: (values: any) => void
+  onSubmit: (values: any, connector: any) => void
+  index: number
 }
 
 export const CFFileStore: React.FC<StepProps<any> & CFFileStoreProps> = ({
   previousStep,
+  prevStepData,
   allowableTypes,
   isParam,
   initialValues,
-  onSubmit
+  onSubmit,
+  index
 }) => {
   const { getString } = useStrings()
   const { expressions } = useVariablesExpression()
@@ -77,13 +81,10 @@ export const CFFileStore: React.FC<StepProps<any> & CFFileStoreProps> = ({
     spec: Yup.object().shape({
       configuration: Yup.object().shape({
         parameters: Yup.object().shape({
-          parametersFile: Yup.object().shape({
+          identifier: Yup.string().min(1).required(getString('cd.pathCannotBeEmpty')),
+          store: Yup.object().shape({
             spec: Yup.object().shape({
-              store: Yup.object().shape({
-                spec: Yup.object().shape({
-                  paths: pathSchema
-                })
-              })
+              paths: pathSchema
             })
           })
         })
@@ -97,24 +98,38 @@ export const CFFileStore: React.FC<StepProps<any> & CFFileStoreProps> = ({
       </Text>
       <Formik
         formName="cfFileStore"
-        initialValues={FormatFilePaths(initialValues, isParam)}
+        initialValues={FormatFilePaths(initialValues, isParam, index)}
         enableReinitialize
         validationSchema={isParam ? paramSchema : templateSchema}
-        onSubmit={onSubmit}
+        onSubmit={data => {
+          let connector = prevStepData?.spec?.configuration?.templateFile?.spec?.store?.spec?.connectorRef
+          if (isParam) {
+            connector = prevStepData?.spec?.configuration?.parameters[index]?.store?.spec?.connectorRef
+          }
+          onSubmit(data, connector)
+        }}
       >
         {({ values }) => {
-          let name: string
-          let filePaths: { path: string }[] | undefined
+          let name = 'spec.configuration.templateFile.spec.store.spec.paths[0].path'
+          let filePaths = values?.spec?.configuration?.templateFile?.spec?.store?.spec?.paths
+          let connector = prevStepData?.spec?.configuration?.templateFile?.spec?.store?.spec?.connectorRef
           if (isParam) {
-            name = 'spec.configuration.parameters.parametersFile.spec.store.spec.paths'
-            filePaths = values?.spec?.configuration?.parameters?.parametersFile?.spec?.store?.spec?.paths
-          } else {
-            name = 'spec.configuration.templateFile.spec.store.spec.paths[0].path'
-            filePaths = values?.spec?.configuration?.templateFile?.spec?.store?.spec?.paths
+            name = `spec.configuration.parameters.store.spec.paths`
+            filePaths = values?.spec?.configuration?.parameters?.store?.spec?.paths
+            connector = prevStepData?.spec?.configuration?.parameters[index]?.store?.spec?.connectorRef
           }
+
           return (
             <Form>
               <div className={css.tfRemoteForm}>
+                {connector?.connector?.type !== 'Aws' && (
+                  <ParameterRepoDetails
+                    isParam={isParam}
+                    allowableTypes={allowableTypes}
+                    index={index}
+                    values={{ ...values, connector }}
+                  />
+                )}
                 <div className={cx(stepCss.md)}>
                   <MultiTypeFieldSelector
                     name={name}
@@ -136,9 +151,9 @@ export const CFFileStore: React.FC<StepProps<any> & CFFileStoreProps> = ({
                         name={name}
                         render={arrayHelpers => (
                           <>
-                            {map(filePaths, (path: any, index: number) => (
+                            {map(filePaths, (path: any, i: number) => (
                               <Layout.Horizontal
-                                key={`${path}-${index}`}
+                                key={`${path}-${i}`}
                                 flex={{ distribution: 'space-between' }}
                                 style={{ alignItems: 'end' }}
                               >
@@ -146,18 +161,18 @@ export const CFFileStore: React.FC<StepProps<any> & CFFileStoreProps> = ({
                                   spacing="medium"
                                   style={{ alignItems: 'baseline' }}
                                   className={css.formContainer}
-                                  key={`${path}-${index}`}
+                                  key={`${path}-${i}`}
                                   draggable={true}
                                   onDragEnd={onDragEnd}
                                   onDragOver={onDragOver}
                                   onDragLeave={onDragLeave}
-                                  onDragStart={event => onDragStart(event, index)}
-                                  onDrop={event => onDrop(event, arrayHelpers, index)}
+                                  onDragStart={event => onDragStart(event, i)}
+                                  onDrop={event => onDrop(event, arrayHelpers, i)}
                                 >
                                   <Icon name="drag-handle-vertical" className={css.drag} />
-                                  <Text width={12}>{`${index + 1}.`}</Text>
+                                  <Text width={12}>{`${i + 1}.`}</Text>
                                   <FormInput.MultiTextInput
-                                    name={`${name}[${index}].path`}
+                                    name={`${name}[${i}].path`}
                                     label=""
                                     multiTextInputProps={{
                                       expressions,
@@ -165,27 +180,23 @@ export const CFFileStore: React.FC<StepProps<any> & CFFileStoreProps> = ({
                                     }}
                                     style={{ width: 320 }}
                                   />
-                                  {isParam && (
-                                    <Button
-                                      minimal
-                                      icon="main-trash"
-                                      data-testid={`remove-header-${index}`}
-                                      onClick={() => arrayHelpers.remove(index)}
-                                    />
-                                  )}
+                                  <Button
+                                    minimal
+                                    icon="main-trash"
+                                    data-testid={`remove-header-${i}`}
+                                    onClick={() => arrayHelpers.remove(i)}
+                                  />
                                 </Layout.Horizontal>
                               </Layout.Horizontal>
                             ))}
-                            {isParam && (
-                              <Button
-                                icon="plus"
-                                variation={ButtonVariation.LINK}
-                                data-testid="add-header"
-                                onClick={() => arrayHelpers.push({ path: '' })}
-                              >
-                                {getString('cd.addTFVarFileLabel')}
-                              </Button>
-                            )}
+                            <Button
+                              icon="plus"
+                              variation={ButtonVariation.LINK}
+                              data-testid="add-header"
+                              onClick={() => arrayHelpers.push({ path: '' })}
+                            >
+                              {getString('cd.addTFVarFileLabel')}
+                            </Button>
                           </>
                         )}
                       />

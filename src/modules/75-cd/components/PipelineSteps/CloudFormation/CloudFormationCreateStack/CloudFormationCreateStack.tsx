@@ -7,7 +7,7 @@
 
 import React, { forwardRef } from 'react'
 import * as Yup from 'yup'
-import { isEmpty } from 'lodash-es'
+import { isEmpty, map, set } from 'lodash-es'
 import { IconName, MultiTypeInputType, getMultiTypeFromValue } from '@harness/uicore'
 import { yupToFormErrors, FormikErrors } from 'formik'
 import { StepViewType, StepProps, ValidateInputSetProps } from '@pipeline/components/AbstractSteps/Step'
@@ -47,7 +47,7 @@ export class CFCreateStack extends PipelineStep<any> {
   }
 
   protected type = StepType.CloudFormationCreateStack
-  protected stepIcon: IconName = 'cloudformation'
+  protected stepIcon: IconName = 'cloud-formation-create'
   protected stepName = 'Cloud Formation Create Stack'
 
   protected defaultValues = {
@@ -59,13 +59,17 @@ export class CFCreateStack extends PipelineStep<any> {
       provisionerIdentifier: '',
       configuration: {
         stackName: '',
-        awsConnectorRef: '',
-        awsRegion: '',
-        parameters: {},
+        connectorRef: '',
+        region: '',
+        roleArn: '',
+        parameters: [],
         templateFile: {
-          type: '',
+          type: 'Remote',
           spec: {}
-        }
+        },
+        parameterOverrides: [],
+        skipOnStakStatuses: [],
+        capabilities: []
       }
     }
   }
@@ -108,20 +112,118 @@ export class CFCreateStack extends PipelineStep<any> {
   // }
 
   processFormData(data: any) {
-    const awsConnRef = data.spec.configuration.awsConnectorRef.value
+    const awsConnRef = data.spec.configuration.connectorRef.value
+    let templateFile = data.spec.configuration.templateFile
+
+    if (data?.spec?.configuration?.templateFile?.type === 'Remote') {
+      templateFile = {
+        ...data.spec.configuration.templateFile,
+        spec: {
+          store: {
+            spec: {
+              ...data?.spec?.configuration?.templateFile?.spec?.store?.spec,
+              connectorRef: data?.spec?.configuration?.templateFile?.spec?.store?.spec?.connectorRef?.value
+            }
+          }
+        }
+      }
+    }
+    if (!isEmpty(data.spec.configuration.parameters)) {
+      const params = data.spec.configuration.parameters
+      set(
+        data,
+        'spec.configuration.parameters',
+        map(params, param => ({
+          ...param,
+          store: {
+            ...param?.store,
+            spec: {
+              ...param.store.spec,
+              connectorRef: param.store.spec.connectorRef?.value || param.store.spec.connectorRef
+            }
+          }
+        }))
+      )
+    } else {
+      delete data.spec.configuration.parameters
+    }
+
+    if (!isEmpty(data.spec.configuration?.skipBasedOnStackStatuses)) {
+      const statuses = data.spec.configuration.parameters
+      set(
+        data,
+        'spec.configuration.skipBasedOnStackStatuses',
+        map(statuses, status => status.value)
+      )
+    } else {
+      delete data.spec.configuration?.skipBasedOnStackStatuses
+    }
+
+    if (!isEmpty(data.spec.configuration?.capabilities)) {
+      const capabilities = data.spec.configuration.capabilities
+      set(
+        data,
+        'spec.configuration.capabilities',
+        map(capabilities, status => status.value)
+      )
+    } else {
+      delete data.spec.configuration?.capabilities
+    }
+
+    if (isEmpty(data.spec.configuration?.tags)) {
+      delete data.spec.configuration?.tags
+    }
+
+    if (isEmpty(data.spec.configuration?.roleArn)) {
+      delete data.spec.configuration?.roleArn
+    }
+
+    if (isEmpty(data.spec.configuration?.parameterOverrides)) {
+      delete data.spec.configuration?.parameterOverrides
+    }
+
+    if (isEmpty(data.spec.configuration?.skipOnStackStatuses)) {
+      delete data.spec.configuration?.skipOnStackStatuses
+    }
+
     return {
       ...data,
       spec: {
         ...data.spec,
         configuration: {
           ...data.spec.configuration,
-          awsConnectorRef: awsConnRef,
-          templateFile: {
-            ...data.spec.configuration.templateFile
+          connectorRef: awsConnRef,
+          templateFile: templateFile
+        }
+      }
+    }
+  }
+
+  private getInitialValues(data: any): any {
+    const formData = {
+      ...data,
+      spec: {
+        ...data?.spec,
+        provisionerIdentifier: data?.spec?.provisionerIdentifier || '',
+        configuration: {
+          ...data?.spec?.configuration,
+          connectorRef: data?.spec?.configuration?.connectorRef || '',
+          capabilities: data?.spec?.configuration?.capabilities || [],
+          parameterOverrides: data?.spec?.configuration?.parameterOverrides || [],
+          parameters: data?.spec?.configuration?.parameters || [],
+          region: data?.spec?.configuration?.region || '',
+          roleArn: data?.spec?.configuration?.roleArn || '',
+          skipOnStackStatuses: data?.spec?.configuration?.skipOnStackStatuses || [],
+          stackName: data?.spec?.configuration?.stackName || '',
+          tags: data?.spec?.configuration?.tags || '',
+          templateFile: data?.spec?.configuration?.templateFile || {
+            type: 'Remote',
+            spec: {}
           }
         }
       }
     }
+    return formData
   }
 
   renderStep(props: StepProps<any, unknown>): JSX.Element {
@@ -146,7 +248,7 @@ export class CFCreateStack extends PipelineStep<any> {
 
     return (
       <CloudFormationCreateStackWithRef
-        initialValues={initialValues}
+        initialValues={this.getInitialValues(initialValues)}
         onUpdate={(data: any) => onUpdate?.(this.processFormData(data))}
         onChange={(data: any) => onChange?.(this.processFormData(data))}
         allowableTypes={allowableTypes}

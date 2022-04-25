@@ -22,10 +22,11 @@ import {
   MultiSelectOption,
   Text,
   MultiTypeInput,
+  MultiSelectTypeInput,
   Button,
   Icon
 } from '@harness/uicore'
-import { map } from 'lodash-es'
+import { map, find } from 'lodash-es'
 import { useStrings } from 'framework/strings'
 import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
 import {
@@ -39,6 +40,7 @@ import MultiTypeFieldSelector from '@common/components/MultiTypeFieldSelector/Mu
 import { FormMultiTypeConnectorField } from '@connectors/components/ConnectorReferenceField/FormMultiTypeConnectorField'
 import { StepViewType, setFormikRef, StepFormikFowardRef } from '@pipeline/components/AbstractSteps/Step'
 import { useListAwsRegions } from 'services/portal'
+import { useCFCapabilitiesForAws, useCFStatesForAws, useGetIamRolesForAws } from 'services/cd-ng'
 import { Connectors } from '@connectors/constants'
 import { TFMonaco } from '../../Common/Terraform/Editview/TFMonacoEditor'
 import CFRemoteWizard from '../ConnectorStep/CFRemoteWizard'
@@ -58,6 +60,12 @@ interface CloudFormationCreateStackProps {
   stepViewType: StepViewType | undefined
 }
 
+enum TemplateTypes {
+  Remote = 'Remote',
+  S3URL = 'S3URL',
+  Inline = 'inline'
+}
+
 export const CloudFormationCreateStack = (
   {
     allowableTypes,
@@ -75,7 +83,13 @@ export const CloudFormationCreateStack = (
   const [showModal, setShowModal] = useState(false)
   const [showInlineParams, setInlineParams] = useState(false)
   const [showParam, setShowParam] = useState(false)
+  const [paramIndex, setParamIndex] = useState(0)
   const [regions, setRegions] = useState<MultiSelectOption[]>([])
+  const [capabilities, setCapabilities] = useState<MultiSelectOption[]>([])
+  const [awsStates, setAwsStates] = useState<MultiSelectOption[]>([])
+  const [awsRoles, setAwsRoles] = useState<MultiSelectOption[]>([])
+  const [awsTemplateRef, setAwsTemplateRef] = useState<string>('')
+
   const { data: regionData } = useListAwsRegions({
     queryParams: {
       accountId
@@ -89,7 +103,41 @@ export const CloudFormationCreateStack = (
     }
   }, [regionData])
 
-  // const onTemplateChange = (type: string) => {}
+  const { data: capabilitiesData } = useCFCapabilitiesForAws({})
+
+  useEffect(() => {
+    if (capabilitiesData) {
+      const capabilitiesValues = map(capabilitiesData?.data, cap => ({ label: cap, value: cap }))
+      setCapabilities(capabilitiesValues as MultiSelectOption[])
+    }
+  }, [capabilitiesData])
+
+  const { data: awsStatesData } = useCFStatesForAws({})
+
+  useEffect(() => {
+    if (awsStatesData) {
+      const awsStatesValues = map(awsStatesData?.data, cap => ({ label: cap, value: cap }))
+      setAwsStates(awsStatesValues as MultiSelectOption[])
+    }
+  }, [awsStatesData])
+
+  const { data: roleData, refetch } = useGetIamRolesForAws({
+    lazy: true,
+    queryParams: {
+      accountIdentifier: accountId,
+      orgIdentifier: orgIdentifier,
+      projectIdentifier: projectIdentifier,
+      connectorRef: awsTemplateRef
+    }
+  })
+
+  useEffect(() => {
+    if (roleData) {
+      const roleValues = map(roleData?.data, cap => ({ label: cap, value: cap }))
+      setAwsRoles(roleValues as MultiSelectOption[])
+    }
+    refetch()
+  }, [roleData, awsTemplateRef])
 
   return (
     <Formik
@@ -123,7 +171,7 @@ export const CloudFormationCreateStack = (
             return Yup.string().required(getString('common.validation.provisionerIdentifierIsRequired'))
           }),
           configuration: Yup.object().shape({
-            awsRegion: Yup.string().required(getString('cd.cloudFormation.errors.region')),
+            region: Yup.string().required(getString('cd.cloudFormation.errors.region')),
             stackName: Yup.string().required(getString('cd.cloudFormation.errors.stackName'))
           })
         })
@@ -132,15 +180,24 @@ export const CloudFormationCreateStack = (
       {formik => {
         setFormikRef(formikRef, formik)
         const { values, setFieldValue } = formik
+        window.console.log('values: ', values)
+        const awsConnector = values?.spec?.configuration?.awsConnectorRef
+        if (awsConnector?.value !== awsTemplateRef) {
+          setAwsTemplateRef(awsConnector?.value)
+        }
         const config = values?.spec?.configuration
         const templateFileType = config?.templateFile?.type
         const inlineTemplateFile = config?.templateFile?.spec?.content
         const remoteTemplateFile = config?.templateFile?.spec?.store?.spec?.paths?.[0]
-        const remoteParameterFiles = config?.parameters?.parametersFile?.spec?.store?.spec?.paths
+        const remoteParameterFiles = config?.parameters
         const inlineParameters = config?.parameters?.inline
+        const awsRegion = config?.region
+        const stackStatus = config?.skipOnStackStatuses
+        const awsCapabilities = config?.capabilities
+        const awsRole = config?.role
         return (
           <>
-            <div className={cx(stepCss.formGroup, stepCss.md)}>
+            <div className={cx(stepCss.formGroup, stepCss.lg)}>
               <FormInput.InputWithIdentifier
                 inputLabel={getString('name')}
                 isIdentifierEditable={isNewStep}
@@ -157,12 +214,14 @@ export const CloudFormationCreateStack = (
                 disabled={readonly}
               />
             </div>
-            <div className={cx(stepCss.formGroup, stepCss.md)}>
+            <div className={css.divider} />
+            <div className={stepCss.formGroup}>
               <FormInput.MultiTextInput
                 name="spec.provisionerIdentifier"
                 label={getString('pipelineSteps.provisionerIdentifier')}
                 multiTextInputProps={{ expressions, allowableTypes }}
                 disabled={readonly}
+                className={css.inputWidth}
               />
               {getMultiTypeFromValue(values.spec?.provisionerIdentifier) === MultiTypeInputType.RUNTIME && (
                 <ConfigureOptions
@@ -176,93 +235,94 @@ export const CloudFormationCreateStack = (
                     setFieldValue('spec.provisionerIdentifier', value)
                   }}
                   isReadonly={readonly}
+                  className={css.inputWidth}
                 />
               )}
             </div>
-            <div className={css.divider} />
-            <Layout.Vertical>
-              <Layout.Horizontal className={css.horizontalFlex}>
-                <FormMultiTypeConnectorField
-                  label={
-                    <Text style={{ display: 'flex', alignItems: 'center' }} color={Color.GREY_900}>
-                      {getString('pipelineSteps.awsConnectorLabel')}
-                    </Text>
-                  }
-                  type={Connectors.AWS}
-                  width={400}
-                  name="spec.configuration.awsConnectorRef"
-                  placeholder={getString('select')}
-                  accountIdentifier={accountId}
-                  projectIdentifier={projectIdentifier}
-                  orgIdentifier={orgIdentifier}
-                  style={{ marginBottom: 10 }}
-                  multiTypeProps={{ expressions, allowableTypes }}
-                  disabled={readonly}
-                />
-              </Layout.Horizontal>
-            </Layout.Vertical>
+            <div className={stepCss.formGroup}>
+              <FormMultiTypeConnectorField
+                label={<Text color={Color.GREY_900}>{getString('pipelineSteps.awsConnectorLabel')}</Text>}
+                type={Connectors.AWS}
+                name="spec.configuration.connectorRef"
+                placeholder={getString('select')}
+                accountIdentifier={accountId}
+                projectIdentifier={projectIdentifier}
+                orgIdentifier={orgIdentifier}
+                style={{ marginBottom: 10 }}
+                multiTypeProps={{ expressions, allowableTypes }}
+                disabled={readonly}
+                width={300}
+              />
+            </div>
             <Layout.Vertical className={css.addMarginBottom}>
               <Label style={{ color: Color.GREY_900 }} className={css.configLabel}>
                 {getString('regionLabel')}
               </Label>
-              <Layout.Horizontal>
+              <Layout.Horizontal className={stepCss.formGroup}>
                 <MultiTypeInput
-                  name="spec.configuration.awsRegion"
+                  name="spec.configuration.region"
                   selectProps={{
                     addClearBtn: false,
                     items: regions
                   }}
                   disabled={readonly}
-                  onChange={({ value }: any) => setFieldValue('spec.configuration.awsRegion', value)}
+                  onChange={({ value }: any) => setFieldValue('spec.configuration.region', value)}
+                  width={300}
+                  value={find(regions, ['value', awsRegion])}
                 />
               </Layout.Horizontal>
             </Layout.Vertical>
+            <div className={css.divider} />
             <Layout.Vertical>
-              <Label style={{ color: Color.GREY_900 }} className={css.configLabel}>
-                {getString('cd.cloudFormation.templateFile')}
-              </Label>
-              <Layout.Horizontal>
-                <FormInput.Select
-                  className={css.capabilitiesInput}
-                  name="spec.configuration.templateFile.type"
-                  items={[
-                    { label: 'Remote', value: 'Remote' },
-                    { label: 'Inline', value: 'Inline' },
-                    { label: 'S3 URL', value: 'S3' }
-                  ]}
-                  disabled={readonly}
-                  onChange={({ value }) => {
-                    if (value === 'remote') {
-                      setShowParam(false)
-                      setShowModal(true)
-                    }
-                  }}
-                />
+              <Layout.Horizontal flex={{ alignItems: 'flex-start' }}>
+                <Layout.Vertical>
+                  <Label style={{ color: Color.GREY_900 }} className={css.configLabel}>
+                    {(templateFileType === TemplateTypes.Remote || templateFileType === TemplateTypes.S3URL) &&
+                      getString('cd.cloudFormation.templateFile')}
+                  </Label>
+                </Layout.Vertical>
+                <Layout.Vertical>
+                  <select
+                    className={css.templateDropdown}
+                    name="spec.configuration.templateFile.type"
+                    disabled={readonly}
+                    value={templateFileType}
+                    onChange={e => {
+                      // remove any previous template file data
+                      setFieldValue('spec.configuration.templateFile', '')
+                      setFieldValue('spec.configuration.templateFile.type', e.target.value)
+                    }}
+                  >
+                    <option value={TemplateTypes.Remote}>Remote</option>
+                    <option value={TemplateTypes.Inline}>Inline</option>
+                    <option value={TemplateTypes.S3URL}>S3 URL</option>
+                  </select>
+                </Layout.Vertical>
               </Layout.Horizontal>
-              {remoteTemplateFile && (
-                <div className={cx(css.configFile, css.addMarginBottom)}>
-                  <div className={css.configField}>
-                    <>
-                      <Text font="normal" lineClamp={1} width={200}>
-                        /{remoteTemplateFile}
-                      </Text>
-                      <Button
-                        minimal
-                        icon="Edit"
-                        withoutBoxShadow
-                        iconProps={{ size: 16 }}
-                        onClick={() => {
-                          setShowParam(false)
-                          setShowModal(true)
-                        }}
-                        data-name="config-edit"
-                        withoutCurrentColor={true}
-                      />
-                    </>
-                  </div>
+              {templateFileType === TemplateTypes.Remote && (
+                <div
+                  className={cx(css.configFile, css.configField, css.addMarginBottom)}
+                  onClick={() => {
+                    setShowParam(false)
+                    setShowModal(true)
+                  }}
+                >
+                  <>
+                    <a className={css.configPlaceHolder}>
+                      {remoteTemplateFile ? `/${remoteTemplateFile}` : 'Specify template file...'}
+                    </a>
+                    <Button
+                      minimal
+                      icon="Edit"
+                      withoutBoxShadow
+                      iconProps={{ size: 16 }}
+                      data-name="config-edit"
+                      withoutCurrentColor={true}
+                    />
+                  </>
                 </div>
               )}
-              {templateFileType === 'inline' && (
+              {templateFileType === TemplateTypes.Inline && (
                 <div className={cx(stepCss.formGroup, stepCss.alignStart, css.addMarginTop, css.addMarginBottom)}>
                   <MultiTypeFieldSelector
                     name="spec.configuration.templateFile.spec.content"
@@ -303,6 +363,15 @@ export const CloudFormationCreateStack = (
                   )}
                 </div>
               )}
+              {templateFileType === TemplateTypes.S3URL && (
+                <div className={stepCss.formGroup}>
+                  <FormInput.Text
+                    name={'spec.configuration.templateFile.spec.templateUrl'}
+                    label={''}
+                    placeholder="http://www.test.com"
+                  />
+                </div>
+              )}
             </Layout.Vertical>
             <div className={cx(stepCss.formGroup, stepCss.md)}>
               <FormInput.MultiTextInput
@@ -310,6 +379,7 @@ export const CloudFormationCreateStack = (
                 label={getString('cd.cloudFormation.stackName')}
                 multiTextInputProps={{ expressions, allowableTypes }}
                 disabled={readonly}
+                className={css.inputWidth}
               />
               {getMultiTypeFromValue(values.spec?.stackName) === MultiTypeInputType.RUNTIME && (
                 <ConfigureOptions
@@ -320,13 +390,13 @@ export const CloudFormationCreateStack = (
                   showDefaultField={false}
                   showAdvanced={true}
                   onChange={value => {
-                    setFieldValue('values.spec.configuration.stackName', value)
+                    setFieldValue('spec.configuration.stackName', value)
                   }}
                   isReadonly={readonly}
+                  className={css.inputWidth}
                 />
               )}
             </div>
-            <div className={css.divider} />
             <Accordion className={stepCss.accordion}>
               <Accordion.Panel
                 id="step-1"
@@ -337,85 +407,96 @@ export const CloudFormationCreateStack = (
                       <Label style={{ color: Color.GREY_900 }} className={css.configLabel}>
                         {getString('cd.cloudFormation.parameterFiles')}
                       </Label>
-                      {remoteParameterFiles ? (
-                        <div className={cx(css.addMarginBottom)}>
-                          {map(remoteParameterFiles, paramFile => (
-                            <div className={cx(css.configFile)}>
-                              <div className={css.configField}>
-                                <Text font="normal" lineClamp={1} width={200}>
-                                  /{paramFile}
-                                </Text>
-                                <Button
-                                  minimal
-                                  icon="Edit"
-                                  withoutBoxShadow
-                                  iconProps={{ size: 16 }}
-                                  onClick={() => {
-                                    setShowParam(true)
-                                    setShowModal(true)
-                                  }}
-                                  data-name="config-edit"
-                                  withoutCurrentColor={true}
-                                />
-                              </div>
-                            </div>
-                          ))}
-                        </div>
-                      ) : (
-                        <div className={cx(css.configFile, css.addMarginBottom)}>
-                          <div className={css.configField}>
-                            <a
-                              data-testid="remoteParamFiles"
-                              className={css.configPlaceHolder}
-                              data-name="config-edit"
-                              onClick={() => {
-                                setShowParam(true)
-                                setShowModal(true)
-                              }}
-                            >
-                              {getString('cd.cloudFormation.specifyParameterFiles')}
-                            </a>
-                          </div>
-                        </div>
+                      {remoteParameterFiles && (
+                        <FieldArray
+                          name={'spec.configuration.parameters'}
+                          render={arrayHelpers => (
+                            <>
+                              {map(remoteParameterFiles, (param: any, index: number) => (
+                                <Layout.Horizontal
+                                  key={`${param}-${index}`}
+                                  flex={{ distribution: 'space-between' }}
+                                  style={{ alignItems: 'end' }}
+                                >
+                                  <Layout.Horizontal
+                                    spacing="medium"
+                                    style={{ alignItems: 'baseline' }}
+                                    className={css.formContainer}
+                                    key={`${param}-${index}`}
+                                    draggable={true}
+                                    onDragEnd={onDragEnd}
+                                    onDragOver={onDragOver}
+                                    onDragLeave={onDragLeave}
+                                    onDragStart={event => onDragStart(event, index)}
+                                    onDrop={event => onDrop(event, arrayHelpers, index)}
+                                  >
+                                    <Icon name="drag-handle-vertical" className={css.drag} />
+                                    <Text width={12}>{`${index + 1}.`}</Text>
+                                    <div className={css.configField}>
+                                      <Text font="normal" lineClamp={1} width={200}>
+                                        {param?.identifier}
+                                      </Text>
+                                      <Button
+                                        minimal
+                                        icon="Edit"
+                                        withoutBoxShadow
+                                        iconProps={{ size: 16 }}
+                                        onClick={() => {
+                                          setParamIndex(index)
+                                          setShowParam(true)
+                                          setShowModal(true)
+                                        }}
+                                        data-name="config-edit"
+                                        withoutCurrentColor={true}
+                                      />
+                                    </div>
+                                    <Button
+                                      minimal
+                                      icon="main-trash"
+                                      data-testid={`remove-header-${index}`}
+                                      onClick={() => arrayHelpers.remove(index)}
+                                    />
+                                  </Layout.Horizontal>
+                                </Layout.Horizontal>
+                              ))}
+                            </>
+                          )}
+                        />
                       )}
+                      <Layout.Horizontal className={cx(css.configFile, css.addMarginBottom, stepCss.topPadding3)}>
+                        <a
+                          data-testid="remoteParamFiles"
+                          className={css.configPlaceHolder}
+                          data-name="config-edit"
+                          onClick={() => {
+                            setParamIndex(remoteParameterFiles.length)
+                            setShowParam(true)
+                            setShowModal(true)
+                          }}
+                        >
+                          + {getString('add')}
+                        </a>
+                      </Layout.Horizontal>
                     </Layout.Vertical>
-                    <Layout.Vertical>
+                    <Layout.Vertical className={css.addMarginBottom}>
                       <Label style={{ color: Color.GREY_900 }} className={css.configLabel}>
                         {getString('cd.cloudFormation.inlineParameterFiles')}
                       </Label>
                       {inlineParameters?.length ? (
-                        <FieldArray
-                          name="spec.configuration.parameters.inline"
-                          render={arrayHelpers =>
-                            map(inlineParameters, ({ name, value }, index: number) => (
-                              <Layout.Horizontal
-                                spacing="medium"
-                                style={{ alignItems: 'baseline' }}
-                                key={`${name}-${value}-${index}`}
-                                draggable={true}
-                                onDragEnd={onDragEnd}
-                                onDragOver={onDragOver}
-                                onDragLeave={onDragLeave}
-                                onDragStart={event => onDragStart(event, index)}
-                                onDrop={event => onDrop(event, arrayHelpers, index)}
-                              >
-                                <Icon name="drag-handle-vertical" className={css.drag} />
-                                <Text font="normal" lineClamp={1} width={200}>
-                                  {name} : {value}
-                                </Text>
-                                <Button
-                                  minimal
-                                  icon="Edit"
-                                  withoutBoxShadow
-                                  iconProps={{ size: 16 }}
-                                  onClick={() => setInlineParams(true)}
-                                  data-name="config-edit"
-                                  withoutCurrentColor={true}
-                                />
-                              </Layout.Horizontal>
-                            ))
-                          }
-                        />
+                        <div className={css.configField}>
+                          <Text font="normal" lineClamp={1}>
+                            {JSON.stringify(inlineParameters)}
+                          </Text>
+                          <Button
+                            minimal
+                            icon="Edit"
+                            withoutBoxShadow
+                            iconProps={{ size: 16 }}
+                            onClick={() => setInlineParams(true)}
+                            data-name="config-edit"
+                            withoutCurrentColor={true}
+                          />
+                        </div>
                       ) : (
                         <div className={cx(css.configFile, css.addMarginBottom)}>
                           <div className={css.configField}>
@@ -431,40 +512,45 @@ export const CloudFormationCreateStack = (
                         </div>
                       )}
                     </Layout.Vertical>
-                    <div className={cx(stepCss.formGroup, stepCss.md)}>
-                      <FormInput.MultiTextInput
-                        name="spec.configuration.roleArn"
-                        label="Role ARN"
-                        multiTextInputProps={{ expressions, allowableTypes }}
-                        disabled={readonly}
-                      />
-                      {getMultiTypeFromValue(values.spec?.stackName) === MultiTypeInputType.RUNTIME && (
-                        <ConfigureOptions
-                          value={values?.spec?.stackName}
-                          type="String"
-                          variableName="spec.configuration.roleArn"
-                          showRequiredField={false}
-                          showDefaultField={false}
-                          showAdvanced={true}
-                          onChange={value => {
-                            formik.setFieldValue('values.spec.configuration.roleArn', value)
+                    <Layout.Vertical className={css.addMarginBottom}>
+                      <Label style={{ color: Color.GREY_900 }} className={css.configLabel}>
+                        Role ARN
+                      </Label>
+                      <Layout.Horizontal>
+                        <MultiTypeInput
+                          name="spec.configuration.roleARN"
+                          expressions={expressions}
+                          allowableTypes={allowableTypes}
+                          selectProps={{
+                            addClearBtn: false,
+                            items: awsRoles
                           }}
-                          isReadonly={readonly}
+                          disabled={readonly}
+                          width={300}
+                          onChange={value => {
+                            setFieldValue('values.spec.configuration.roleArn', value)
+                          }}
+                          value={find(awsRoles, ['value', awsRole])}
                         />
-                      )}
-                    </div>
+                      </Layout.Horizontal>
+                    </Layout.Vertical>
                     <Layout.Vertical className={css.addMarginBottom}>
                       <Label style={{ color: Color.GREY_900 }} className={css.configLabel}>
                         {getString('cd.cloudFormation.specifyCapabilities')}
                       </Label>
                       <Layout.Horizontal>
-                        <MultiTypeInput
-                          name="spec.configuration.awsCapabilities"
-                          selectProps={{
-                            addClearBtn: false,
-                            items: []
+                        <MultiSelectTypeInput
+                          name="spec.configuration.capabilities"
+                          multiSelectProps={{
+                            items: capabilities,
+                            fill: true
                           }}
+                          value={awsCapabilities}
                           disabled={readonly}
+                          style={{ maxWidth: 500 }}
+                          onChange={value => {
+                            setFieldValue('spec.configuration.capabilities', value)
+                          }}
                         />
                       </Layout.Horizontal>
                     </Layout.Vertical>
@@ -515,13 +601,17 @@ export const CloudFormationCreateStack = (
                         {getString('cd.cloudFormation.continueStatus')}
                       </Label>
                       <Layout.Horizontal>
-                        <MultiTypeInput
-                          name="spec.configuration.skipBasedOnStackStatuses"
-                          selectProps={{
-                            addClearBtn: false,
-                            items: []
+                        <MultiSelectTypeInput
+                          style={{ maxWidth: 500 }}
+                          name="spec.configuration.skipOnStackStatuses"
+                          multiSelectProps={{
+                            items: awsStates
                           }}
+                          value={stackStatus}
                           disabled={readonly}
+                          onChange={value => {
+                            setFieldValue('spec.configuration.skipOnStackStatuses', value)
+                          }}
                         />
                       </Layout.Horizontal>
                     </Layout.Vertical>
@@ -540,9 +630,11 @@ export const CloudFormationCreateStack = (
               isParam={showParam}
               initialValues={values}
               setFieldValue={setFieldValue}
+              index={paramIndex}
+              regions={regions}
             />
             <InlineParameterFile
-              initialValues={inlineParameters}
+              initialValues={values}
               isOpen={showInlineParams}
               onClose={() => setInlineParams(false)}
               onSubmit={inlineValues => {

@@ -215,7 +215,7 @@ cloudFormation:
   parameterFiles: Cloud Formation Parameter Files
   parameterFileDetails: Parameter File Details
   specifyParameterFiles: Specify Parameter Files...
-  inlineParameterFiles: CloudFormation Parameters Inline
+  inlineParameterFiles: CloudFormation Parameters Overrides
   specifyInlineParameterFiles: Specify Inline Parameters...
   continueStatus: Continue Based on Stack Statuses
   paramFileConnector: Parameter File Connector

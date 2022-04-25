@@ -14,7 +14,7 @@ import { useStrings } from 'framework/strings'
 import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
 import ConnectorDetailsStep from '@connectors/components/CreateConnector/commonSteps/ConnectorDetailsStep'
 import VerifyOutOfClusterDelegate from '@connectors/common/VerifyOutOfClusterDelegate/VerifyOutOfClusterDelegate'
-import { Connectors } from '@connectors/constants'
+import GitDetailsStep from '@connectors/components/CreateConnector/commonSteps/GitDetailsStep'
 import DelegateSelectorStep from '@connectors/components/CreateConnector/commonSteps/DelegateSelectorStep/DelegateSelectorStep'
 import {
   ConnectorMap,
@@ -42,26 +42,26 @@ const DIALOG_PROPS = {
     overflow: 'hidden'
   }
 }
-
-interface StepChangeData<SharedObject> {
-  prevStep?: number
-  nextStep?: number
-  prevStepData: SharedObject
-}
-
 interface Path {
   [key: string]: string
+}
+
+interface StepChangeData<SharedObject> {
+  prevStep: number
+  nextStep: number
+  prevStepData: SharedObject
 }
 
 const CFRemoteWizard = ({
   readonly,
   allowableTypes,
   showModal,
-  setShowModal,
   onClose,
   isParam = false,
   initialValues,
-  setFieldValue
+  setFieldValue,
+  index,
+  regions
 }: any) => {
   const { getString } = useStrings()
   const { accountId, projectIdentifier, orgIdentifier } = useParams<ProjectPathProps>()
@@ -74,7 +74,7 @@ const CFRemoteWizard = ({
   )
   const onStepChange = (arg: StepChangeData<any>): void => {
     if (arg?.prevStep && arg?.nextStep && arg.prevStep > arg.nextStep && arg.nextStep <= 2) {
-      setShowModal(false)
+      close()
     }
   }
   const close = () => {
@@ -85,10 +85,16 @@ const CFRemoteWizard = ({
     const connectorType = ConnectorMap[selectedConnector]
     const buildPayload = getBuildPayload(connectorType as ConnectorTypes)
     return (
-      <StepWizard icon="service-aws" iconProps={{ size: 37 }} title={getString('connectors.title.aws')}>
+      <StepWizard iconProps={{ size: 37 }} title={getString('connectors.createNewConnector')}>
         <ConnectorDetailsStep
-          type={Connectors.AWS}
+          type={connectorType}
           name={getString('overview')}
+          isEditMode={isEditMode}
+          connectorInfo={undefined}
+        />
+        <GitDetailsStep
+          type={connectorType}
+          name={getString('details')}
           isEditMode={isEditMode}
           connectorInfo={undefined}
         />
@@ -112,41 +118,44 @@ const CFRemoteWizard = ({
           name={getString('connectors.stepThreeName')}
           connectorInfo={undefined}
           isStep={true}
-          isLastStep={true}
-          type={Connectors.AWS}
+          isLastStep={false}
+          type={connectorType}
         />
       </StepWizard>
     )
   }
-  const addConnector = (values: any) => {
+
+  const onSubmit = (values: any, connector: any) => {
     const config = values?.spec?.configuration
-    let fieldName
-    let connectorRef
+    let paths = config?.templateFile?.spec?.store?.spec?.paths
+    let connectorFieldName = 'spec.configuration.templateFile.spec.store.spec.connectorRef'
+
     if (isParam) {
-      fieldName = 'spec.configuration.parameters.parametersFile.spec.store.spec.connectorRef'
-      connectorRef = config?.parameters?.parametersFile?.spec?.store?.spec?.connectorRef
+      paths = config?.parameters?.store?.spec?.paths
+      connectorFieldName = `spec.configuration.parameters[${index}].store.spec.connectorRef`
+      setFieldValue(
+        `spec.configuration.parameters[${index}].identifier`,
+        values.spec.configuration.parameters.identifier
+      )
+      setFieldValue(`spec.configuration.parameters[${index}].store.type`, connector?.connector?.type)
+      setFieldValue(`spec.configuration.parameters[${index}].store.spec`, {
+        ...values.spec.configuration.parameters.store.spec,
+        paths: paths.map((filePath: Path) => filePath.path)
+      })
     } else {
-      fieldName = 'spec.configuration.templateFile.spec.store.spec.connectorRef'
-      connectorRef = config?.templateFile?.spec?.store?.spec?.connectorRef
+      setFieldValue(`spec.configuration.templateFile.spec.store.spec`, {
+        ...values.spec.configuration.templateFile.spec.store.spec,
+        paths: paths.map((filePath: Path) => filePath.path)
+      })
+      setFieldValue(
+        'spec.configuration.templateFile.spec.store.spec.paths',
+        paths.map((filePath: Path) => filePath.path)
+      )
     }
-    setFieldValue(fieldName, connectorRef)
-  }
-  const addPaths = (values: any) => {
-    let fieldName
-    let paths
-    if (isParam) {
-      fieldName = 'spec.configuration.parameters.parametersFile.spec.store.spec.paths'
-      paths = values?.spec?.configuration?.parameters?.parametersFile?.spec?.store?.spec?.paths
-    } else {
-      fieldName = 'spec.configuration.templateFile.spec.store.spec.paths'
-      paths = values?.spec?.configuration?.templateFile?.spec?.store?.spec?.paths
-    }
-    setFieldValue(
-      fieldName,
-      paths.map((filePath: Path) => filePath.path)
-    )
+    setFieldValue(connectorFieldName, connector)
     close()
   }
+
   return (
     <Dialog
       {...(DIALOG_PROPS as IDialogProps)}
@@ -174,17 +183,19 @@ const CFRemoteWizard = ({
             selectedConnector={selectedConnector}
             setSelectedConnector={setSelectedConnector}
             initialValues={initialValues}
-            onSubmit={addConnector}
             isParam={isParam}
+            index={index}
+            regions={regions}
           />
           {showNewConnector ? newConnector() : null}
-            <CFFileStore
-              name={fileStoreTitle}
-              allowableTypes={allowableTypes}
-              isParam={isParam}
-              initialValues={initialValues}
-              onSubmit={addPaths}
-            />
+          <CFFileStore
+            name={fileStoreTitle}
+            allowableTypes={allowableTypes}
+            isParam={isParam}
+            initialValues={initialValues}
+            onSubmit={onSubmit}
+            index={index}
+          />
         </StepWizard>
       </div>
       <Button

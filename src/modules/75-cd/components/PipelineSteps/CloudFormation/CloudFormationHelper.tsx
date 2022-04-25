@@ -23,15 +23,15 @@ import StepGitlabAuthentication from '@connectors/components/CreateConnector/Git
 import StepGithubAuthentication from '@connectors/components/CreateConnector/GithubConnector/StepAuth/StepGithubAuthentication'
 import StepBitbucketAuthentication from '@connectors/components/CreateConnector/BitbucketConnector/StepAuth/StepBitbucketAuthentication'
 import StepAWSAuthentication from '@connectors/components/CreateConnector/AWSConnector/StepAuth/StepAWSAuthentication'
-export const AllowedTypes = ['Git', 'Github', 'GitLab', 'Bitbucket', 'AWS']
-export type ConnectorTypes = 'Git' | 'Github' | 'GitLab' | 'Bitbucket' | 'AWS'
+export const AllowedTypes = ['Git', 'Github', 'GitLab', 'Bitbucket', 'S3']
+export type ConnectorTypes = 'Git' | 'Github' | 'GitLab' | 'Bitbucket' | 'S3'
 
 export const ConnectorIcons: any = {
   Git: 'service-github',
   Github: 'github',
   GitLab: 'service-gotlab',
   Bitbucket: 'bitbucket',
-  AWS: 'service-aws'
+  S3: 's3-step'
 }
 
 export const ConnectorMap: Record<string, ConnectorInfoDTO['type']> = {
@@ -39,7 +39,7 @@ export const ConnectorMap: Record<string, ConnectorInfoDTO['type']> = {
   Github: Connectors.GITHUB,
   GitLab: Connectors.GITLAB,
   Bitbucket: Connectors.BITBUCKET,
-  AWS: Connectors.AWS
+  S3: Connectors.AWS
 }
 
 export const ConnectorLabelMap: Record<ConnectorTypes, StringKeys> = {
@@ -47,7 +47,7 @@ export const ConnectorLabelMap: Record<ConnectorTypes, StringKeys> = {
   Github: 'common.repo_provider.githubLabel',
   GitLab: 'common.repo_provider.gitlabLabel',
   Bitbucket: 'pipeline.manifestType.bitBucketLabel',
-  AWS: 'pipelineSteps.awsConnectorLabel'
+  S3: 'pipelineSteps.awsConnectorLabel'
 }
 
 export const getBuildPayload = (type: ConnectorTypes) => {
@@ -77,7 +77,8 @@ export const GetNewConnector = (
   projectIdentifier: string,
   orgIdentifier: string,
   name: string
-) => {
+): JSX.Element | null => {
+  console.log('connectorType', connectorType)
   switch (connectorType) {
     case Connectors.GIT:
       return (
@@ -157,23 +158,23 @@ export const GetNewConnector = (
 }
 
 const formatPaths = (paths: any) => map(paths, (item: string) => ({ path: item }))
-export const FormatFilePaths = (values: any, isParam: boolean) => {
+
+export const FormatFilePaths = (values: any, isParam: boolean, index: number) => {
   if (isParam) {
-    const params = get(values, 'spec.configuration.parameters.parametersFile.spec.store.spec.paths')
+    let param = get(values, `spec.configuration.parameters[${index}]`)
+    param = {
+      identifier: param?.identifier,
+      store: {
+        spec: {
+          ...param?.store?.spec,
+          paths: param?.store?.spec?.paths.length > 0 ? formatPaths(param?.store?.spec?.paths) : [{ path: '' }]
+        }
+      }
+    }
     return {
       spec: {
         configuration: {
-          parameters: {
-            parametersFile: {
-              spec: {
-                store: {
-                  spec: {
-                    paths: formatPaths(params || { path: '' })
-                  }
-                }
-              }
-            }
-          }
+          parameters: param
         }
       }
     }

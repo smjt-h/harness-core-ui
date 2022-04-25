@@ -5,7 +5,7 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import { Form } from 'formik'
 import { useParams } from 'react-router-dom'
 import {
@@ -20,7 +20,9 @@ import {
   ButtonVariation,
   ButtonSize,
   StepProps,
-  MultiTypeInputType
+  MultiTypeInputType,
+  MultiTypeInput,
+  MultiSelectOption
 } from '@harness/uicore'
 import * as Yup from 'yup'
 import { useStrings } from 'framework/strings'
@@ -29,6 +31,7 @@ import { FormMultiTypeConnectorField } from '@connectors/components/ConnectorRef
 import { useVariablesExpression } from '@pipeline/components/PipelineStudio/PiplineHooks/useVariablesExpression'
 import { AllowedTypes, ConnectorIcons, ConnectorMap, ConnectorLabelMap, ConnectorTypes } from '../CloudFormationHelper'
 
+import stepCss from '@pipeline/components/PipelineSteps/Steps/Steps.module.scss'
 import css from './AWSConnector.module.scss'
 
 interface ConnectorStepOneProps {
@@ -39,8 +42,9 @@ interface ConnectorStepOneProps {
   selectedConnector: string
   setSelectedConnector: (type: string) => void
   initialValues: any
-  onSubmit: (values: any) => void
   isParam: boolean
+  index: number
+  regions: MultiSelectOption[]
 }
 
 const ConnectorStepOne: React.FC<StepProps<any> & ConnectorStepOneProps> = ({
@@ -52,43 +56,46 @@ const ConnectorStepOne: React.FC<StepProps<any> & ConnectorStepOneProps> = ({
   selectedConnector,
   setSelectedConnector,
   initialValues,
-  onSubmit,
-  isParam
+  isParam,
+  index,
+  regions
 }) => {
   const { getString } = useStrings()
   const { expressions } = useVariablesExpression()
   const { accountId, projectIdentifier, orgIdentifier } = useParams<ProjectPathProps>()
   const title = isParam ? 'cd.cloudFormation.paramFileConnector' : 'cd.cloudFormation.templateFileConnector'
-
+  const [allowedTypes, setAllowedTypes] = useState<string[]>(AllowedTypes)
   const newConnectorLabel = `${getString('newLabel')} ${
     !!selectedConnector && getString(ConnectorLabelMap[selectedConnector as ConnectorTypes])
   } ${getString('connector')}`
 
   useEffect(() => {
+    if (!isParam) {
+      setAllowedTypes(AllowedTypes.filter(item => item !== 'S3'))
+    }
+  }, [isParam])
+  useEffect(() => {
     if (showNewConnector) {
-      setSelectedConnector('')
       nextStep?.()
     }
   }, [showNewConnector])
 
   const errorMsg = Yup.string().required(getString('pipelineSteps.build.create.connectorRequiredError'))
   const connectorSchema = {
-    spec: Yup.object().shape({
-      store: Yup.object().shape({
-        spec: Yup.object().shape({
-          connectorRef: errorMsg
-        })
+    store: Yup.object().shape({
+      spec: Yup.object().shape({
+        connectorRef: errorMsg
       })
     })
   }
   const paramSchema = {
     spec: Yup.object().shape({
       configuration: Yup.object().shape({
-        parameters: Yup.object().shape({
-          parametersFile: Yup.object().shape({
+        parameters: Yup.array(
+          Yup.object().shape({
             ...connectorSchema
           })
-        })
+        )
       })
     })
   }
@@ -111,25 +118,21 @@ const ConnectorStepOne: React.FC<StepProps<any> & ConnectorStepOneProps> = ({
         formName="awsConnector"
         enableReinitialize={true}
         onSubmit={data => {
-          onSubmit(data)
           setSelectedConnector('')
-          nextStep?.()
+          nextStep?.(data)
         }}
         initialValues={initialValues}
         validationSchema={validationSchema}
       >
         {() => {
-          let name: string
+          let name = 'spec.configuration.templateFile.spec.store.spec.connectorRef'
           if (isParam) {
-            name = 'spec.configuration.parameters.parametersFile.spec.store.spec.connectorRef'
-          } else {
-            name = 'spec.configuration.templateFile.spec.store.spec.connectorRef'
+            name = `spec.configuration.parameters[${index}].store.spec.connectorRef`
           }
-
           return (
             <>
               <Layout.Horizontal className={css.horizontalFlex} margin={{ top: 'xlarge', bottom: 'xlarge' }}>
-                {AllowedTypes.map(item => (
+                {allowedTypes.map(item => (
                   <div key={item} className={css.squareCardContainer}>
                     <Card
                       className={css.connectorIcon}
@@ -183,6 +186,20 @@ const ConnectorStepOne: React.FC<StepProps<any> & ConnectorStepOneProps> = ({
                       />
                     )}
                   </Layout.Horizontal>
+                  {selectedConnector && selectedConnector === 'S3' && (
+                    <Layout.Horizontal>
+                      <Layout.Horizontal className={stepCss.formGroup}>
+                        <MultiTypeInput
+                          name={`spec.configuration.parameters[${index}].store.spec.region`}
+                          selectProps={{
+                            addClearBtn: false,
+                            items: regions
+                          }}
+                          width={300}
+                        />
+                      </Layout.Horizontal>
+                    </Layout.Horizontal>
+                  )}
                 </div>
                 <Layout.Horizontal spacing="xxlarge">
                   <Button
