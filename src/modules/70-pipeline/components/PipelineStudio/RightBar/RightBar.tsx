@@ -149,7 +149,7 @@ export function RightBar(): JSX.Element {
 
   const [isCodebaseDialogOpen, setIsCodebaseDialogOpen] = React.useState(false)
   const [codebaseRuntimeInputs, setCodebaseRuntimeInputs] = React.useState({
-    ...(isRuntimeInput(codebase?.connectorRef) && { connectorRef: true })
+    ...(isRuntimeInput(codebase?.connectorRef) && { connectorRef: true, repoName: true })
   })
   const codebaseInitialValues: CodebaseValues = {
     connectorRef: codebase?.connectorRef,
@@ -509,7 +509,7 @@ export function RightBar(): JSX.Element {
             initialValues={codebaseInitialValues}
             validationSchema={Yup.object().shape({
               connectorRef: Yup.mixed().required(getString('fieldRequired', { field: getString('connector') })),
-              ...((connectionType === 'Account' || codebaseRuntimeInputs.connectorRef) && {
+              ...(connectionType === 'Account' && {
                 repoName: Yup.string().required(getString('common.validation.repositoryName'))
               })
             })}
@@ -608,32 +608,37 @@ export function RightBar(): JSX.Element {
                         orgIdentifier={orgIdentifier}
                         gitScope={{ repo: repoIdentifier || '', branch, getDefaultFromOtherRepo: true }}
                         multiTypeProps={{ expressions, disabled: isReadonly, allowableTypes }}
-                        onChange={(
-                          value?: { record?: { spec?: { type?: string; url?: string } } },
-                          _valueType,
-                          type
-                        ) => {
-                          console.log(value, _valueType, type)
-                          if (type === MultiTypeInputType.FIXED) {
-                            if (value?.record?.spec?.type === 'Account') {
+                        onChange={(value, _valueType, connectorRefType) => {
+                          const newConnectorRef = value as {
+                            record?: { spec?: { type?: string; url?: string; connectionType?: string } }
+                          }
+                          if (connectorRefType === MultiTypeInputType.FIXED) {
+                            if (newConnectorRef.record?.spec?.type === 'Account') {
                               setConnectionType('Account')
-                              // setting the reponame to this
-                              setConnectorUrl(value?.record?.spec?.url || '')
+                              setConnectorUrl(newConnectorRef.record?.spec?.url || '')
                               setFieldValue('repoName', '')
-                            } else if (value?.record?.spec?.type === 'Repo') {
+                            } else if (
+                              newConnectorRef.record?.spec?.type === 'Repo' ||
+                              newConnectorRef.record?.spec?.connectionType === 'Repo'
+                            ) {
                               setConnectionType('Repo')
-                              setConnectorUrl(value?.record?.spec?.url || '')
-                              setFieldValue('repoName', value?.record?.spec?.url || '')
+                              setConnectorUrl(newConnectorRef.record?.spec?.url || '')
+                              setFieldValue('repoName', newConnectorRef.record?.spec?.url || '')
                             } else {
                               setConnectionType('')
                               setConnectorUrl('')
                               setFieldValue('repoName', '')
-                              // set repo name also to nothing
                             }
+                          } else {
+                            setConnectionType('')
+                            setConnectorUrl('')
+                            setFieldValue('repoName', connectorRefType === MultiTypeInputType.RUNTIME ? '<+input>' : '')
                           }
+
                           setCodebaseRuntimeInputs({
                             ...codebaseRuntimeInputs,
-                            connectorRef: isRuntimeInput(value)
+                            connectorRef: isRuntimeInput(newConnectorRef),
+                            repoName: connectorRefType === MultiTypeInputType.RUNTIME
                           })
                         }}
                       />
@@ -648,6 +653,7 @@ export function RightBar(): JSX.Element {
                       <>
                         <Container className={css.bottomMargin3}>
                           <MultiTypeTextField
+                            key={`connector-runtimeinput-${codebaseRuntimeInputs.connectorRef}`}
                             label={
                               <Text
                                 font={{ variation: FontVariation.FORM_LABEL }}
@@ -658,15 +664,16 @@ export function RightBar(): JSX.Element {
                               </Text>
                             }
                             name="repoName"
-                            // style={{ width: 300, marginBottom: 'var(--spacing-xsmall)' }}
                             multiTextInputProps={{
                               multiTextInputProps: { expressions, allowableTypes },
-                              disabled: isReadonly
-                              // placeholder: '1000'
+                              disabled:
+                                isReadonly || (isRuntimeInput(values.connectorRef) && isRuntimeInput(values.repoName)) // connector is a runtime input
                             }}
                           />
                         </Container>
-                        {!isRuntimeInput(values.connectorRef) && connectorUrl?.length > 0 ? (
+                        {!isRuntimeInput(values.connectorRef) &&
+                        !isRuntimeInput(values.repoName) &&
+                        connectorUrl?.length > 0 ? (
                           <div className={css.predefinedValue}>
                             <Text lineClamp={1} width="460px">
                               {(connectorUrl[connectorUrl.length - 1] === '/' ? connectorUrl : connectorUrl + '/') +
