@@ -35,6 +35,8 @@ export const GCSStepInputSet: React.FC<GCSStepProps> = ({ template, path, readon
           })
         }}
         path={path || ''}
+        isInputSetView={true}
+        template={template}
       />
       <CIStepOptionalConfig
         stepViewType={stepViewType}

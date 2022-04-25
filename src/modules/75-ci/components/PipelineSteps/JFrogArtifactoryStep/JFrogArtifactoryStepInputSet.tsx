@@ -30,7 +30,7 @@ export const JFrogArtifactoryStepInputSet: React.FC<JFrogArtifactoryStepProps> =
           }),
           ...(getMultiTypeFromValue(template?.spec?.connectorRef) === MultiTypeInputType.RUNTIME && {
             'spec.connectorRef': {
-              label: { labelKey: 'pipelineSteps.connectorLabel', tooltipId: 'gcrConnector' },
+              label: { labelKey: 'ci.artifactoryConnectorLabel', tooltipId: 'gcrConnector' },
               type: Connectors.ARTIFACTORY
             }
           }),
@@ -42,6 +42,8 @@ export const JFrogArtifactoryStepInputSet: React.FC<JFrogArtifactoryStepProps> =
           })
         }}
         path={path || ''}
+        isInputSetView={true}
+        template={template}
       />
       <StepCommonFieldsInputSet path={path} readonly={readonly} template={template} stepViewType={stepViewType} />
     </FormikForm>
