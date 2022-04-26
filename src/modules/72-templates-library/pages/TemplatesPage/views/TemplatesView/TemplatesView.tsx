@@ -30,7 +30,7 @@ export default function TemplatesView(props: TemplatesViewProps & { view: Views 
 
   const content = React.useMemo(
     () => (view === Views.GRID ? <TemplatesGridView {...rest} /> : <TemplatesListView {...rest} />),
-    [rest]
+    [view, rest]
   )
 
   if (isGitSyncEnabled) {

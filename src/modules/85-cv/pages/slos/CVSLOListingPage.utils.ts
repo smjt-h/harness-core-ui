@@ -153,14 +153,16 @@ export const getSLOAndErrorBudgetGraphOptions = ({
   maxXLimit,
   serviceLevelObjective,
   startTime,
+  endTime,
   isCardView
 }: GetSLOAndErrorBudgetGraphOptions): Highcharts.Options => {
   const { unit, interval } = getDateUnitAndInterval(serviceLevelObjective)
 
   return {
-    chart: { height: 200, spacing: [30, 0, 20, 0] },
+    chart: { height: 200, spacing: [20, 0, 20, 0] },
     xAxis: {
       min: startTime,
+      max: endTime,
       tickInterval: interval,
       tickWidth: isCardView ? 0 : 1,
       labels: {

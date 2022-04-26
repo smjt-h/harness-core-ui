@@ -38,7 +38,7 @@ import { DeleteTemplateModal } from '@templates-library/components/DeleteTemplat
 import routes from '@common/RouteDefinitions'
 import { useMutateAsGet } from '@common/hooks'
 import NoResultsView from '@templates-library/pages/TemplatesPage/views/NoResultsView/NoResultsView'
-import TemplatesView from '@templates-library/pages/TemplatesPage/views/TemplatesView'
+import TemplatesView from '@templates-library/pages/TemplatesPage/views/TemplatesView/TemplatesView'
 import ResultsViewHeader from '@templates-library/pages/TemplatesPage/views/ResultsViewHeader/ResultsViewHeader'
 import { GitSyncStoreProvider } from 'framework/GitRepoStore/GitSyncStoreContext'
 import { useAppStore } from 'framework/AppStore/AppStoreContext'

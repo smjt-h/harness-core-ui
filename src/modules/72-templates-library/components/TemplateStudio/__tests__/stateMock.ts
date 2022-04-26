@@ -117,7 +117,7 @@ export const getTemplateContextMock = (type: TemplateType): TemplateContextInter
       templateView: {
         isDrawerOpened: false,
         isYamlEditable: false,
-        drawerData: { type: DrawerTypes.AddStep, data: { paletteData: { onSelection: () => undefined } } }
+        drawerData: { type: DrawerTypes.AddStep, data: { paletteData: { onSelection: jest.fn() } } }
       },
       isLoading: false,
       isBETemplateUpdated: false,

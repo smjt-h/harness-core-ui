@@ -64,8 +64,6 @@ describe('Test Infra Provisioning Carousel', () => {
       'bp3-icon bp3-icon-dot StyledProps--main StyledProps--color StyledProps--color-blue600'
     )
 
-    expect(dialog).toMatchSnapshot()
-
     rerender(<InfraProvisioningCarousel onClose={jest.fn} provisioningStatus="FAILED" show={true} />)
     expect(getByTextBody(dialog, 'ci.getStartedWithCI.infraProvisioningFailed')).toBeTruthy()
   })

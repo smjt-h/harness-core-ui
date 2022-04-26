@@ -32,10 +32,10 @@ export interface GetErrorResponse extends Omit<Failure, 'errors'> {
   errors?: FormikErrors<unknown>
 }
 export interface SaveTemplatePopoverProps {
-  getErrors?: () => Promise<GetErrorResponse>
+  getErrors: () => Promise<GetErrorResponse>
 }
 
-export function SaveTemplatePopover(props: SaveTemplatePopoverProps): React.ReactElement {
+export function SaveTemplatePopover({ getErrors }: SaveTemplatePopoverProps): React.ReactElement {
   const {
     state: { template, yamlHandler, gitDetails, isUpdated, stableVersion, lastPublishedVersion },
     setLoading,
@@ -45,7 +45,6 @@ export function SaveTemplatePopover(props: SaveTemplatePopoverProps): React.Reac
     isReadonly
   } = React.useContext(TemplateContext)
   const { getString } = useStrings()
-  const { getErrors } = props
   const { templateIdentifier } = useParams<TemplateStudioPathProps & ModulePathParams>()
   const [modalProps, setModalProps] = React.useState<ModalProps>()
   const [menuOpen, setMenuOpen] = React.useState(false)
@@ -85,7 +84,7 @@ export function SaveTemplatePopover(props: SaveTemplatePopoverProps): React.Reac
 
   const checkErrors = React.useCallback(
     (callback: () => void) => {
-      getErrors?.().then(response => {
+      getErrors().then(response => {
         if (response.status === 'SUCCESS' && isEmpty(response.errors)) {
           callback()
         }
@@ -104,7 +103,7 @@ export function SaveTemplatePopover(props: SaveTemplatePopoverProps): React.Reac
                   name: template.name,
                   version: template.versionLabel
                 }),
-                stableVersion === template.versionLabel ? getString('pipeline.commentModal.info') : undefined
+                getString('pipeline.commentModal.info')
               )
             : ''
           await saveAndPublish(template, { isEdit, comment })

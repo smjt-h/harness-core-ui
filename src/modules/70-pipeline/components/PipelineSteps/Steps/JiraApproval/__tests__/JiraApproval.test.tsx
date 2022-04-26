@@ -41,7 +41,6 @@ describe('Jira Approval fetch projects', () => {
   beforeEach(() => {
     factory.registerStep(new JiraApproval())
   })
-
   test('show error if failed to fetch projects', () => {
     const ref = React.createRef<StepFormikRef<unknown>>()
     const props = getJiraApprovalEditModePropsWithConnectorId()

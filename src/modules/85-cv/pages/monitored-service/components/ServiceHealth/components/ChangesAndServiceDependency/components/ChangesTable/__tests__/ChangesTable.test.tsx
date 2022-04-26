@@ -109,8 +109,7 @@ describe('Change table', () => {
           changeSourceTypes: [],
           changeCategories: []
         },
-        queryParamStringifyOptions: { arrayFormat: 'repeat' },
-        debounce: 500
+        queryParamStringifyOptions: { arrayFormat: 'repeat' }
       })
     )
 

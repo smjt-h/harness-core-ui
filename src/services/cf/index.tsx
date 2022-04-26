@@ -369,6 +369,18 @@ export interface FeatureMetrics {
   metrics?: FeatureMetric[]
 }
 
+export interface FeatureResponseMetadata {
+  /**
+   * Additional metadata about the request
+   */
+  details?: {
+    /**
+     * Summary of governance checks including any warnings
+     */
+    governanceMetadata?: { [key: string]: any }
+  }
+}
+
 /**
  * The state of a flag either off or on
  */
@@ -1126,6 +1138,11 @@ export interface EnvironmentsResponseResponse {
   metaData?: { [key: string]: any }
   status: Status
 }
+
+/**
+ * OK
+ */
+export type FeatureEditResponseResponse = FeatureResponseMetadata
 
 /**
  * OK
@@ -2672,7 +2689,7 @@ export interface CreateFeatureFlagQueryParams {
 
 export type CreateFeatureFlagProps = Omit<
   MutateProps<
-    void,
+    FeatureEditResponseResponse,
     | BadRequestResponse
     | UnauthenticatedResponse
     | UnauthorizedResponse
@@ -2693,7 +2710,7 @@ export type CreateFeatureFlagProps = Omit<
  */
 export const CreateFeatureFlag = (props: CreateFeatureFlagProps) => (
   <Mutate<
-    void,
+    FeatureEditResponseResponse,
     | BadRequestResponse
     | UnauthenticatedResponse
     | UnauthorizedResponse
@@ -2713,7 +2730,7 @@ export const CreateFeatureFlag = (props: CreateFeatureFlagProps) => (
 
 export type UseCreateFeatureFlagProps = Omit<
   UseMutateProps<
-    void,
+    FeatureEditResponseResponse,
     | BadRequestResponse
     | UnauthenticatedResponse
     | UnauthorizedResponse
@@ -2734,7 +2751,7 @@ export type UseCreateFeatureFlagProps = Omit<
  */
 export const useCreateFeatureFlag = (props: UseCreateFeatureFlagProps) =>
   useMutate<
-    void,
+    FeatureEditResponseResponse,
     | BadRequestResponse
     | UnauthenticatedResponse
     | UnauthorizedResponse
@@ -2753,7 +2770,7 @@ export const useCreateFeatureFlag = (props: UseCreateFeatureFlagProps) =>
  */
 export const createFeatureFlagPromise = (
   props: MutateUsingFetchProps<
-    void,
+    FeatureEditResponseResponse,
     | BadRequestResponse
     | UnauthenticatedResponse
     | UnauthorizedResponse
@@ -2767,7 +2784,7 @@ export const createFeatureFlagPromise = (
   signal?: RequestInit['signal']
 ) =>
   mutateUsingFetch<
-    void,
+    FeatureEditResponseResponse,
     | BadRequestResponse
     | UnauthenticatedResponse
     | UnauthorizedResponse
@@ -3341,7 +3358,7 @@ export interface PatchFeaturePathParams {
 
 export type PatchFeatureProps = Omit<
   MutateProps<
-    FeatureResponseResponse,
+    FeatureEditResponseResponse,
     | BadRequestResponse
     | UnauthenticatedResponse
     | UnauthorizedResponse
@@ -3374,7 +3391,7 @@ export type PatchFeatureProps = Omit<
  */
 export const PatchFeature = ({ identifier, ...props }: PatchFeatureProps) => (
   <Mutate<
-    FeatureResponseResponse,
+    FeatureEditResponseResponse,
     | BadRequestResponse
     | UnauthenticatedResponse
     | UnauthorizedResponse
@@ -3395,7 +3412,7 @@ export const PatchFeature = ({ identifier, ...props }: PatchFeatureProps) => (
 
 export type UsePatchFeatureProps = Omit<
   UseMutateProps<
-    FeatureResponseResponse,
+    FeatureEditResponseResponse,
     | BadRequestResponse
     | UnauthenticatedResponse
     | UnauthorizedResponse
@@ -3428,7 +3445,7 @@ export type UsePatchFeatureProps = Omit<
  */
 export const usePatchFeature = ({ identifier, ...props }: UsePatchFeatureProps) =>
   useMutate<
-    FeatureResponseResponse,
+    FeatureEditResponseResponse,
     | BadRequestResponse
     | UnauthenticatedResponse
     | UnauthorizedResponse
@@ -3465,7 +3482,7 @@ export const patchFeaturePromise = (
     identifier,
     ...props
   }: MutateUsingFetchProps<
-    FeatureResponseResponse,
+    FeatureEditResponseResponse,
     | BadRequestResponse
     | UnauthenticatedResponse
     | UnauthorizedResponse
@@ -3485,7 +3502,7 @@ export const patchFeaturePromise = (
   signal?: RequestInit['signal']
 ) =>
   mutateUsingFetch<
-    FeatureResponseResponse,
+    FeatureEditResponseResponse,
     | BadRequestResponse
     | UnauthenticatedResponse
     | UnauthorizedResponse

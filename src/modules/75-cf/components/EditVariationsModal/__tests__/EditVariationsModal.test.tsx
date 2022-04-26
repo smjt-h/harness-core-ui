@@ -37,6 +37,7 @@ const renderComponent = (): void => {
         feature={mockFeature}
         permission={mockPermission}
         onSuccess={jest.fn()}
+        setGovernanceMetadata={jest.fn()}
       />
     </TestWrapper>
   )

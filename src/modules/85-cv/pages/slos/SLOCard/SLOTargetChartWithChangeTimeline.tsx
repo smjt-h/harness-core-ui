@@ -23,7 +23,13 @@ const SLOTargetChartWithChangeTimeline: React.FC<SLOTargetChartWithChangeTimelin
   isCardView,
   sliderTimeRange,
   setSliderTimeRange,
-  serviceLevelObjective
+  serviceLevelObjective,
+  chartTimeRange,
+  setChartTimeRange,
+  resetSlider,
+  showTimelineSlider,
+  setShowTimelineSlider,
+  setCustomTimeFilter
 }) => {
   const {
     sloPerformanceTrend,
@@ -34,16 +40,16 @@ const SLOTargetChartWithChangeTimeline: React.FC<SLOTargetChartWithChangeTimelin
     environmentIdentifier
   } = serviceLevelObjective
 
-  const [showTimelineSlider, setShowTimelineSlider] = useState(false)
-  const startTime = currentPeriodStartTime
   const SLOEndTime = sloPerformanceTrend[sloPerformanceTrend.length - 1]?.timestamp
   const errorBudgetEndTime = errorBudgetBurndown[errorBudgetBurndown.length - 1]?.timestamp
-  const endTime = (type === SLOCardToggleViews.SLO ? SLOEndTime : errorBudgetEndTime) ?? startTime
+  const _endTime = (type === SLOCardToggleViews.SLO ? SLOEndTime : errorBudgetEndTime) ?? currentPeriodStartTime
   const [changeTimelineSummary, setChangeTimelineSummary] = useState<ChangesInfoCardData[] | null>(null)
 
+  const { startTime = currentPeriodStartTime, endTime = _endTime } = chartTimeRange ?? {}
+
   const onFocusTimeRange = useCallback(
-    (_startTime: number, _endTime: number) => {
-      setSliderTimeRange?.({ startTime: _startTime, endTime: _endTime })
+    (xTimeRange: number, yTimeRange: number) => {
+      setSliderTimeRange?.({ startTime: xTimeRange, endTime: yTimeRange })
     },
     [setSliderTimeRange]
   )
@@ -58,10 +64,11 @@ const SLOTargetChartWithChangeTimeline: React.FC<SLOTargetChartWithChangeTimelin
     [onFocusTimeRange, startTime, endTime]
   )
 
-  const resetSlider = useCallback(() => {
-    setSliderTimeRange?.()
-    setShowTimelineSlider(false)
-  }, [setSliderTimeRange])
+  const onZoom = useCallback(() => {
+    setCustomTimeFilter(true)
+    setChartTimeRange?.(sliderTimeRange)
+    resetSlider()
+  }, [setCustomTimeFilter, setChartTimeRange, sliderTimeRange, resetSlider])
 
   const { dataPoints, minXLimit, maxXLimit } = useMemo(
     () => getDataPointsWithMinMaxXLimit(type === SLOCardToggleViews.SLO ? sloPerformanceTrend : errorBudgetBurndown),
@@ -71,8 +78,11 @@ const SLOTargetChartWithChangeTimeline: React.FC<SLOTargetChartWithChangeTimelin
   return (
     <Container
       style={{ position: 'relative' }}
-      className={css.flexGrowOne}
-      onClick={() => setShowTimelineSlider(true)}
+      onClick={() => {
+        if (!showTimelineSlider) {
+          setShowTimelineSlider(true)
+        }
+      }}
       data-testid="timeline-slider-container"
     >
       <Container padding={{ left: isCardView ? 'huge' : 'none' }}>
@@ -110,6 +120,7 @@ const SLOTargetChartWithChangeTimeline: React.FC<SLOTargetChartWithChangeTimelin
             />
           }
           onSliderDragEnd={onSliderDragEnd}
+          onZoom={onZoom}
         />
       )}
       <ChangeTimeline

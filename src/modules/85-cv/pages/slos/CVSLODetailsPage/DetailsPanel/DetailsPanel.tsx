@@ -15,12 +15,19 @@ import type { DetailsPanelProps } from './DetailsPanel.types'
 import SLOCardContent from '../../SLOCard/SLOCardContent'
 import css from './DetailsPanel.module.scss'
 
-const DetailsPanel: React.FC<DetailsPanelProps> = ({ loading, errorMessage, retryOnError, sloDashboardWidget }) => {
+const DetailsPanel: React.FC<DetailsPanelProps> = ({
+  loading,
+  errorMessage,
+  retryOnError,
+  sloDashboardWidget,
+  timeRangeFilters
+}) => {
   const { getString } = useStrings()
+  const { currentPeriodStartTime = 0, currentPeriodEndTime = 0 } = sloDashboardWidget ?? {}
+  const [chartTimeRange, setChartTimeRange] = useState<{ startTime: number; endTime: number }>()
   const [sliderTimeRange, setSliderTimeRange] = useState<{ startTime: number; endTime: number }>()
 
-  const { currentPeriodStartTime = 0, currentPeriodEndTime = 0 } = sloDashboardWidget ?? {}
-  const { startTime, endTime } = sliderTimeRange ?? { startTime: currentPeriodStartTime, endTime: currentPeriodEndTime }
+  const { startTime = currentPeriodStartTime, endTime = currentPeriodEndTime } = sliderTimeRange ?? chartTimeRange ?? {}
 
   return (
     <Page.Body
@@ -37,9 +44,12 @@ const DetailsPanel: React.FC<DetailsPanelProps> = ({ loading, errorMessage, retr
           <ServiceDetails sloDashboardWidget={sloDashboardWidget} />
           <SLOCardContent
             isCardView
+            chartTimeRange={chartTimeRange}
+            setChartTimeRange={setChartTimeRange}
             sliderTimeRange={sliderTimeRange}
             setSliderTimeRange={setSliderTimeRange}
             serviceLevelObjective={sloDashboardWidget}
+            timeRangeFilters={timeRangeFilters}
           />
 
           <Container padding={{ bottom: 'xlarge' }} />

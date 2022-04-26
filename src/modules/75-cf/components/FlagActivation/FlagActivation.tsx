@@ -12,6 +12,7 @@ import type { FormikActions } from 'formik'
 import { cloneDeep, get, isEqual } from 'lodash-es'
 import {
   Button,
+  ButtonVariation,
   Container,
   FlexExpander,
   Formik,
@@ -329,7 +330,11 @@ const FlagActivation: React.FC<FlagActivationProps> = props => {
                 }
               : data
           )
-            .then(async () => {
+            .then(async response => {
+              if (isGovernanceError(response)) {
+                handleGovernanceError(response)
+              }
+
               if (!gitSync?.isAutoCommitEnabled && values.autoCommit) {
                 await gitSync?.handleAutoCommit(values.autoCommit)
               }
@@ -344,7 +349,7 @@ const FlagActivation: React.FC<FlagActivationProps> = props => {
               if (err.status === GIT_SYNC_ERROR_CODE) {
                 gitSync.handleError(err.data as GitSyncErrorResponse)
               } else {
-                if (isGovernanceError(err)) {
+                if (isGovernanceError(err?.data)) {
                   handleGovernanceError(err.data)
                 } else {
                   showError(get(err, 'data.message', err?.message), 0)
@@ -548,6 +553,7 @@ const FlagActivation: React.FC<FlagActivationProps> = props => {
                       type="submit"
                       intent="primary"
                       text={getString('save')}
+                      variation={ButtonVariation.PRIMARY}
                       onClick={event => {
                         if (gitSync?.isGitSyncEnabled && !gitSync?.isAutoCommitEnabled) {
                           event.preventDefault()
@@ -558,6 +564,7 @@ const FlagActivation: React.FC<FlagActivationProps> = props => {
                     <Button
                       minimal
                       text={getString('cancel')}
+                      variation={ButtonVariation.SECONDARY}
                       onClick={(e: MouseEvent) => {
                         e.preventDefault()
                         onCancelEditHandler()

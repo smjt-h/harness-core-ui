@@ -4369,6 +4369,7 @@ export interface StringsMap {
   'cf.environments.apiKeys.serverType': string
   'cf.environments.apiKeys.title': string
   'cf.environments.create.description': string
+  'cf.environments.create.duplicateName': string
   'cf.environments.create.envTypeLabel': string
   'cf.environments.create.nameLabel': string
   'cf.environments.create.title': string
@@ -4635,6 +4636,7 @@ export interface StringsMap {
   'cf.planEnforcement.upgradeRequiredDev': string
   'cf.planEnforcement.upgradeRequiredMau': string
   'cf.policyEvaluations.failedToSave': string
+  'cf.policyEvaluations.warning': string
   'cf.rbac.category': string
   'cf.rbac.featureflag.delete': string
   'cf.rbac.featureflag.edit': string
@@ -4824,6 +4826,8 @@ export interface StringsMap {
   'ci.executionLabel': string
   'ci.fileStore': string
   'ci.getStartedWithCI.accessTokenLabel': string
+  'ci.getStartedWithCI.apiUrlLabel': string
+  'ci.getStartedWithCI.appPassword': string
   'ci.getStartedWithCI.authMethod': string
   'ci.getStartedWithCI.authMethodLabel': string
   'ci.getStartedWithCI.awsBuildLocation': string
@@ -4872,6 +4876,7 @@ export interface StringsMap {
   'ci.getStartedWithCI.k8sBuildLocation': string
   'ci.getStartedWithCI.languageAgnostic': string
   'ci.getStartedWithCI.languageAgnosticHelpText': string
+  'ci.getStartedWithCI.learnMoreAboutPermissions': string
   'ci.getStartedWithCI.oAuthLabel': string
   'ci.getStartedWithCI.onCloudLabel': string
   'ci.getStartedWithCI.onPremLabel': string
@@ -4893,6 +4898,7 @@ export interface StringsMap {
   'ci.getStartedWithCI.tiHelpText': string
   'ci.getStartedWithCI.troubleShootFailedProvisioning': string
   'ci.getStartedWithCI.tryASamplePipeline': string
+  'ci.getStartedWithCI.verifyConnection': string
   'ci.gradleNote1': string
   'ci.gradleNote2': string
   'ci.gradleNotesTitle': string
@@ -5671,6 +5677,7 @@ export interface StringsMap {
   'cv.windowEndsDay': string
   'cv.windowsEndIsRequired': string
   'cv.yourExistingErrorBudgetIs': string
+  'cv.zoom': string
   'stoSteps.securityStage.description': string
   'stoSteps.stepDescription.ZeroNorth': string
   'stoSteps.zeroNorthImagePlaceholder': string

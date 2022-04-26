@@ -30,7 +30,12 @@ const renderComponent = (): void => {
       path="/account/:accountId/cf/orgs/:orgIdentifier/projects/:projectIdentifier/feature-flags"
       pathParams={{ accountId: 'dummy', orgIdentifier: 'dummy', projectIdentifier: 'dummy' }}
     >
-      <FlagPrerequisites gitSync={mockGitSync} featureFlag={mockFeature} refetchFlag={jest.fn()} />
+      <FlagPrerequisites
+        gitSync={mockGitSync}
+        featureFlag={mockFeature}
+        refetchFlag={jest.fn()}
+        setGovernanceMetadata={jest.fn()}
+      />
     </TestWrapper>
   )
 }

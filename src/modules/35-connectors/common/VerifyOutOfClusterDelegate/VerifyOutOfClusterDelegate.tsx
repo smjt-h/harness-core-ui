@@ -210,6 +210,16 @@ const VerifyOutOfClusterDelegate: React.FC<StepProps<VerifyOutOfClusterStepProps
           return 'https://ngdocs.harness.io/article/a0jotsvsi7'
         case Connectors.DATADOG:
           return 'https://ngdocs.harness.io/article/g21fb5kfkg-connect-to-monitoring-and-logging-systems#step_add_datadog'
+        case Connectors.AZURE_KEY_VAULT:
+          return 'https://ngdocs.harness.io/article/53jrd1cv4i-azure-key-vault#step_1_create_azure_reader_role'
+        case Connectors.AWS_SECRET_MANAGER:
+          return 'https://ngdocs.harness.io/article/a73o2cg3pe-add-an-aws-secret-manager#permissions_test_aws_permissions'
+        case Connectors.GCP_KMS:
+          return 'https://ngdocs.harness.io/article/cyyym9tbqt-add-google-kms-secrets-manager#before_you_begin'
+        case Connectors.VAULT:
+          return 'https://ngdocs.harness.io/article/s65mzbyags-add-hashicorp-vault#permissions'
+        case Connectors.AWS_KMS:
+          return 'https://ngdocs.harness.io/article/pt52h8sb6z-add-an-aws-kms-secrets-manager'
         default:
           return ''
       }

@@ -25,7 +25,6 @@ export class StepTemplate extends Template<NGTemplateInfoConfig> {
   }
 
   renderTemplateCanvas(props: TemplateProps<NGTemplateInfoConfig>): JSX.Element {
-    const { formikRef } = props
-    return <StepTemplateCanvasWithRef ref={formikRef} />
+    return <StepTemplateCanvasWithRef ref={props.formikRef} />
   }
 }

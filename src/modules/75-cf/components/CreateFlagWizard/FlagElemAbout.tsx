@@ -14,6 +14,7 @@ import {
   Container,
   StepProps,
   Button,
+  ButtonVariation,
   Collapse,
   Text,
   Utils
@@ -93,6 +94,7 @@ const AboutForm: React.FC<AboutFormProps> = props => {
           <Button
             type="button"
             text={getString('back')}
+            variation={ButtonVariation.SECONDARY}
             onMouseDown={e => {
               Utils.stopEvent(e)
               props.goBackToTypeSelections()
@@ -103,6 +105,7 @@ const AboutForm: React.FC<AboutFormProps> = props => {
             intent="primary"
             rightIcon="chevron-right"
             text={getString('next')}
+            variation={ButtonVariation.PRIMARY}
             onClick={() => props.handleSubmit()}
           />
         </Layout.Horizontal>

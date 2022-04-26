@@ -1486,6 +1486,11 @@ export default function BuildInfraSpecifications({ children }: React.PropsWithCh
                                       const infraType = val as K8sDirectInfraYaml['type']
                                       setFieldValue('buildInfraType', infraType)
                                       setBuildInfraType(val as K8sDirectInfraYaml['type'])
+                                      if (infraType === 'KubernetesDirect') {
+                                        setFieldValue('automountServiceAccountToken', true)
+                                      } else {
+                                        setFieldValue('automountServiceAccountToken', undefined)
+                                      }
                                     }}
                                   />
                                 </>

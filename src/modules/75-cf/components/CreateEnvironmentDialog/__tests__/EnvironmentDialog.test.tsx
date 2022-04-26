@@ -22,7 +22,7 @@ const renderComponent = (props: Partial<EnvironmentDialogProps> = {}): RenderRes
       path="/account/:accountId/cf/orgs/:orgIdentifier/projects/:projectIdentifier/feature-flags"
       pathParams={{ accountId: 'dummy', orgIdentifier: 'dummy', projectIdentifier: 'dummy' }}
     >
-      <EnvironmentDialog onCreate={jest.fn()} {...props} />
+      <EnvironmentDialog onCreate={jest.fn()} environments={[]} {...props} />
     </TestWrapper>
   )
 }
@@ -124,6 +124,39 @@ describe('EnvironmentDialog', () => {
       await waitFor(() => {
         expect(screen.queryByText('common.validation.namePatternIsNotValid')).not.toBeInTheDocument()
         expect(screen.queryByText('fieldRequired')).not.toBeInTheDocument()
+      })
+    })
+
+    test('it should show error message if there is a duplicated Environment name', async () => {
+      // preexisting environment passed in as props
+      renderComponent({
+        environments: [
+          {
+            accountId: 'AQ8xhfNCRtGIUjq5bSM8Fg',
+            orgIdentifier: 'default',
+            projectIdentifier: 'asdasd',
+            identifier: 'mockIdentifier',
+            name: 'myEnvName',
+            description: undefined,
+            color: '#0063F7',
+            type: 'PreProduction',
+            deleted: false,
+            tags: {},
+            version: 1
+          }
+        ]
+      })
+
+      // open the modal
+      userEvent.click(screen.getByRole('button', { name: '+ newEnvironment' }))
+
+      const environmentNameInputField = screen.getByRole('textbox', { name: '' })
+
+      userEvent.type(environmentNameInputField, 'myEnvName')
+      userEvent.click(screen.getByRole('button', { name: 'createSecretYAML.create' }))
+
+      await waitFor(() => {
+        expect(screen.queryByText('cf.environments.create.duplicateName')).toBeInTheDocument()
       })
     })
   })

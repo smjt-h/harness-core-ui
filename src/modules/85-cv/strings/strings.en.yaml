@@ -849,3 +849,4 @@ somethingWentWrongWhileParsingTheData: Something went wrong while parsing the da
 fetchingDataFrom: Fetching data from
 serviceDetails: Service Details
 theTrendIsDeterminedForTheSelectedPeriodOverPeriod: The trend % is determined for the selected period over period.
+zoom: Zoom

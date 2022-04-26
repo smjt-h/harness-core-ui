@@ -11,6 +11,7 @@ declare const styles: {
   readonly cardSloAndSliForCardView: string
   readonly clearButton: string
   readonly createSloInMonitoredService: string
+  readonly currentTimeRange: string
   readonly errorBudgetGaugeContainer: string
   readonly errorBudgetRemaining: string
   readonly flexGrowOne: string

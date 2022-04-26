@@ -19,6 +19,7 @@ import {
   Select,
   SelectOption,
   Button,
+  ButtonVariation,
   Container,
   ModalErrorHandler,
   FlexExpander
@@ -293,12 +294,13 @@ const FlagElemMultivariate: React.FC<FlagElemMultivariateProps> = props => {
             </Container>
 
             <Layout.Horizontal spacing="small" margin={{ top: 'large' }} width="100%">
-              <Button text={getString('back')} onClick={onClickBack} />
+              <Button text={getString('back')} onClick={onClickBack} variation={ButtonVariation.SECONDARY} />
               <Button
                 type="submit"
                 intent="primary"
                 rightIcon={isLastStep ? undefined : 'chevron-right'}
                 text={isLastStep ? getString('cf.creationModal.saveAndClose') : getString('next')}
+                variation={ButtonVariation.PRIMARY}
                 disabled={isLoadingCreateFeatureFlag}
                 loading={isLoadingCreateFeatureFlag}
               />

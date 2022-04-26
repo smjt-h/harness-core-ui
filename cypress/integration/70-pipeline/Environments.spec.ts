@@ -93,9 +93,7 @@ describe('Environment for Pipeline', () => {
     cy.intercept('GET', envUpdateList, { fixture: 'ng/api/environments/environmentListUpdate.json' }).as(
       'environmentListUpdate'
     )
-    cy.wait(1000)
     cy.wait('@environmentListUpdate')
-    cy.wait(1000)
 
     //check if list updated
     cy.contains('p', 'New testEnv').should('be.visible')

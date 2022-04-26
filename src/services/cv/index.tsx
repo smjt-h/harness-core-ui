@@ -4487,8 +4487,11 @@ export interface SLIRecord {
 }
 
 export interface SLODashboardDetail {
+  createdAt?: number
   description?: string
+  lastModifiedAt?: number
   sloDashboardWidget?: SLODashboardWidget
+  timeRangeFilters?: TimeRangeFilter[]
 }
 
 export interface SLODashboardWidget {
@@ -4699,6 +4702,7 @@ export interface ServiceLevelObjective {
   sloTarget?: SLOTarget
   sloTargetPercentage?: number
   tags: NGTag[]
+  timeRangeFilters?: TimeRangeFilter[]
   type?: 'Availability' | 'Latency'
   userJourneyIdentifier?: string
   uuid?: string
@@ -4883,6 +4887,11 @@ export interface TimeRangeDetail {
   count?: number
   endTime?: number
   startTime?: number
+}
+
+export interface TimeRangeFilter {
+  displayName?: string
+  durationMilliSeconds?: number
 }
 
 export interface TimeRangeParams {
@@ -10458,6 +10467,8 @@ export const getServiceLevelObjectivesRiskCountPromise = (
   )
 
 export interface GetSLODetailsQueryParams {
+  startTime?: number
+  endTime?: number
   accountId: string
   orgIdentifier: string
   projectIdentifier: string

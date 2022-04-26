@@ -6,7 +6,7 @@
  */
 
 import type { JiraFieldNG } from 'services/cd-ng'
-import { getInitialValueForSelectedField, processFormData } from '../helper'
+import { getInitialValueForSelectedField, processFormData, resetForm } from '../helper'
 import type { JiraCreateData, JiraCreateFieldType } from '../types'
 
 describe('Jira Create process form data tests', () => {
@@ -249,5 +249,35 @@ describe('Jira Create process form data tests', () => {
     savedFields[2].value = '<+input>'
     returned = getInitialValueForSelectedField(savedFields, multiselectOptionfield)
     expect(returned).toStrictEqual('<+input>')
+  })
+})
+
+describe('Reset Form tests', () => {
+  test('reset form test for connectorRef, projectKey and issueType', () => {
+    const formValues = {
+      values: {
+        name: 'jiraCreate',
+        identifier: 'jcr',
+        timeout: '10m',
+        type: 'JiraCreate',
+        spec: {
+          connectorRef: '',
+          delegateSelectors: undefined,
+          projectKey: '',
+          issueType: '',
+          fields: [
+            {
+              name: 'f1',
+              value: ''
+            }
+          ]
+        }
+      },
+      setFieldValue: jest.fn()
+    } as any
+
+    expect(resetForm(formValues, 'connectorRef')).toBe(undefined)
+    expect(resetForm(formValues, 'projectKey')).toBe(undefined)
+    expect(resetForm(formValues, 'issueType')).toBe(undefined)
   })
 })
