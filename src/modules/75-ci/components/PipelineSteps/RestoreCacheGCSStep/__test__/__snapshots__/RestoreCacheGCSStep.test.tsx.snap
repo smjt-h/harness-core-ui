@@ -133,17 +133,12 @@ exports[`Restore Cache GCS Step Edit View edit mode works 1`] = `
                 class="Tooltip--acenter bp3-label"
                 data-tooltip-id="restoreCacheGcs_spec.connectorRef"
               >
-                <div
-                  class="Text--withDocsTooltip"
-                  data-tooltip-id="restoreCacheGcpConnector"
+                <p
+                  class="StyledProps--font StyledProps--main inpLabel StyledProps--color StyledProps--color-grey600 StyledProps--font-size-small StyledProps--font-weight-semi-bold"
+                  style="display: flex; align-items: center;"
                 >
-                  <p
-                    class="StyledProps--font StyledProps--main inpLabel StyledProps--color StyledProps--color-grey600 StyledProps--font-size-small StyledProps--font-weight-semi-bold"
-                    style="display: flex; align-items: center;"
-                  >
-                    pipelineSteps.gcpConnectorLabel
-                  </p>
-                </div>
+                  pipelineSteps.gcpConnectorLabel
+                </p>
               </span>
             </div>
             <div
@@ -600,17 +595,12 @@ exports[`Restore Cache GCS Step Edit View renders runtime inputs 1`] = `
                 class="Tooltip--acenter bp3-label"
                 data-tooltip-id="restoreCacheGcs_spec.connectorRef"
               >
-                <div
-                  class="Text--withDocsTooltip"
-                  data-tooltip-id="restoreCacheGcpConnector"
+                <p
+                  class="StyledProps--font StyledProps--main inpLabel StyledProps--color StyledProps--color-grey600 StyledProps--font-size-small StyledProps--font-weight-semi-bold"
+                  style="display: flex; align-items: center;"
                 >
-                  <p
-                    class="StyledProps--font StyledProps--main inpLabel StyledProps--color StyledProps--color-grey600 StyledProps--font-size-small StyledProps--font-weight-semi-bold"
-                    style="display: flex; align-items: center;"
-                  >
-                    pipelineSteps.gcpConnectorLabel
-                  </p>
-                </div>
+                  pipelineSteps.gcpConnectorLabel
+                </p>
               </span>
             </div>
             <div
@@ -1065,17 +1055,12 @@ exports[`Restore Cache GCS Step Edit View should render edit view as new step 1`
                 class="Tooltip--acenter bp3-label"
                 data-tooltip-id="restoreCacheGcs_spec.connectorRef"
               >
-                <div
-                  class="Text--withDocsTooltip"
-                  data-tooltip-id="restoreCacheGcpConnector"
+                <p
+                  class="StyledProps--font StyledProps--main inpLabel StyledProps--color StyledProps--color-grey600 StyledProps--font-size-small StyledProps--font-weight-semi-bold"
+                  style="display: flex; align-items: center;"
                 >
-                  <p
-                    class="StyledProps--font StyledProps--main inpLabel StyledProps--color StyledProps--color-grey600 StyledProps--font-size-small StyledProps--font-weight-semi-bold"
-                    style="display: flex; align-items: center;"
-                  >
-                    pipelineSteps.gcpConnectorLabel
-                  </p>
-                </div>
+                  pipelineSteps.gcpConnectorLabel
+                </p>
               </span>
             </div>
             <div
@@ -1418,7 +1403,7 @@ exports[`Restore Cache GCS Step InputSet View should render all fields 1`] = `
                     class="StyledProps--font StyledProps--main inpLabel StyledProps--color StyledProps--color-grey600 StyledProps--font-size-small StyledProps--font-weight-semi-bold"
                     style="display: flex; align-items: center;"
                   >
-                    pipelineSteps.gcpConnectorLabel
+                    pipelineSteps.dockerHubCgcpConnectorLabelonnectorLabel
                   </p>
                 </div>
               </span>
@@ -1848,7 +1833,8 @@ exports[`Restore Cache GCS Step InputSet View should render all fields 1`] = `
             </p>
           </div>
           <div
-            class="Layout--horizontal Layout--layout-spacing-medium StyledProps--main formGroup lgOverride"
+            class="Layout--horizontal Layout--layout-spacing-medium StyledProps--main formGroup lgOverride lg StyledProps--margin-top-xsmall StyledProps--margin-bottom-small"
+            style="align-items: baseline;"
           >
             <div
               class="StyledProps--font StyledProps--main"

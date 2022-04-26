@@ -133,17 +133,12 @@ exports[`Save Cache S3 Step Edit View edit mode works 1`] = `
                 class="Tooltip--acenter bp3-label"
                 data-tooltip-id="savedS3Cache_spec.connectorRef"
               >
-                <div
-                  class="Text--withDocsTooltip"
-                  data-tooltip-id="saveCacheS3Connector"
+                <p
+                  class="StyledProps--font StyledProps--main inpLabel StyledProps--color StyledProps--color-grey600 StyledProps--font-size-small StyledProps--font-weight-semi-bold"
+                  style="display: flex; align-items: center;"
                 >
-                  <p
-                    class="StyledProps--font StyledProps--main inpLabel StyledProps--color StyledProps--color-grey600 StyledProps--font-size-small StyledProps--font-weight-semi-bold"
-                    style="display: flex; align-items: center;"
-                  >
-                    pipelineSteps.awsConnectorLabel
-                  </p>
-                </div>
+                  pipelineSteps.awsConnectorLabel
+                </p>
               </span>
             </div>
             <div
@@ -851,17 +846,12 @@ exports[`Save Cache S3 Step Edit View renders runtime inputs 1`] = `
                 class="Tooltip--acenter bp3-label"
                 data-tooltip-id="savedS3Cache_spec.connectorRef"
               >
-                <div
-                  class="Text--withDocsTooltip"
-                  data-tooltip-id="saveCacheS3Connector"
+                <p
+                  class="StyledProps--font StyledProps--main inpLabel StyledProps--color StyledProps--color-grey600 StyledProps--font-size-small StyledProps--font-weight-semi-bold"
+                  style="display: flex; align-items: center;"
                 >
-                  <p
-                    class="StyledProps--font StyledProps--main inpLabel StyledProps--color StyledProps--color-grey600 StyledProps--font-size-small StyledProps--font-weight-semi-bold"
-                    style="display: flex; align-items: center;"
-                  >
-                    pipelineSteps.awsConnectorLabel
-                  </p>
-                </div>
+                  pipelineSteps.awsConnectorLabel
+                </p>
               </span>
             </div>
             <div
@@ -1595,17 +1585,12 @@ exports[`Save Cache S3 Step Edit View should render properly 1`] = `
                 class="Tooltip--acenter bp3-label"
                 data-tooltip-id="savedS3Cache_spec.connectorRef"
               >
-                <div
-                  class="Text--withDocsTooltip"
-                  data-tooltip-id="saveCacheS3Connector"
+                <p
+                  class="StyledProps--font StyledProps--main inpLabel StyledProps--color StyledProps--color-grey600 StyledProps--font-size-small StyledProps--font-weight-semi-bold"
+                  style="display: flex; align-items: center;"
                 >
-                  <p
-                    class="StyledProps--font StyledProps--main inpLabel StyledProps--color StyledProps--color-grey600 StyledProps--font-size-small StyledProps--font-weight-semi-bold"
-                    style="display: flex; align-items: center;"
-                  >
-                    pipelineSteps.awsConnectorLabel
-                  </p>
-                </div>
+                  pipelineSteps.awsConnectorLabel
+                </p>
               </span>
             </div>
             <div
@@ -2939,7 +2924,8 @@ exports[`Save Cache S3 Step InputSet View should render all fields 1`] = `
             </p>
           </div>
           <div
-            class="Layout--horizontal Layout--layout-spacing-medium StyledProps--main formGroup lgOverride"
+            class="Layout--horizontal Layout--layout-spacing-medium StyledProps--main formGroup lgOverride lg StyledProps--margin-top-xsmall StyledProps--margin-bottom-small"
+            style="align-items: baseline;"
           >
             <div
               class="StyledProps--font StyledProps--main"
