@@ -1,4 +1,4 @@
-import React, {useState} from 'react'
+import React, {useEffect, useState} from 'react'
 import {Color, FontVariation} from '@harness/design-system'
 import {Button, ButtonSize, Layout, PillToggle, Text, Toggle} from '@harness/uicore'
 import cx from 'classnames'
@@ -98,6 +98,7 @@ const InfoBox = ({ title, units, using, recommended, planned }: InfoBoxParams) =
 interface CostSliderParams {
   title: string
   summary: string
+  inputUnit: string
   plannedUsage?: number
   currentUsage: number
   recommended: number
@@ -116,9 +117,13 @@ interface EditionBox {
 }
 
 export const GetEditionBox = ({editionType}: EditionBox) => {
-  return (<Text font={{variation: FontVariation.BLOCKQUOTE}} color={Color.PRIMARY_7} className={cx(css.subscriptionType)}>
-    {editionType}
-  </Text>)
+  return (
+      <Container className={cx(css.subscriptionType)}>
+        <Text font={{variation: FontVariation.TABLE_HEADERS}} color={Color.WHITE} >
+          {editionType}
+        </Text>
+      </Container>
+  );
 }
 
 
@@ -151,8 +156,10 @@ const CostSlider = (costSliderParms: CostSliderParams) => {
           stepSize={costSliderParms.tickSize}
           majorStepSize={costSliderParms.labelTickSize}
         />
+        <Text font={{variation: FontVariation.BODY2}} color={Color.GREY_800}>
+          {costSliderParms.inputUnit}
+        </Text>
       </Layout.Horizontal>
-
       <Container className={css.topSliderDots}>
         {   costSliderParms.plannedUsage !== undefined && (
           <Container
@@ -176,7 +183,6 @@ const CostSlider = (costSliderParms: CostSliderParams) => {
         </Container>
       </Container>
       <Slider
-        className={cx(css.bp3SliderHandle, css.bp3SliderLabel)}
         min={costSliderParms.minVal}
         max={costSliderParms.maxVal}
         stepSize={costSliderParms.tickSize}
@@ -235,10 +241,20 @@ export const CostCalculator = (): JSX.Element => {
   const [mausSelected, setMausSelected] = useState<number>(mauRecommendedSeats)
   const [shownPage, setShownPage] = useState<CalcPage>(CalcPage.Calculator)
   const [premiumSupport, setPremiumSupport] = useState<boolean>(true);
+  const [premiumSupportDisabled, setPremiumSupportDisabled] = useState<boolean>(false);
+
   const { accountId } = useParams<AccountPathProps>();
 
-
   const isLoading = limitData.loadingLimit || usageData.loadingUsage
+
+  useEffect(() => {
+    if(editionSelected === Editions.ENTERPRISE) {
+      setPremiumSupport(true);
+      setPremiumSupportDisabled(true);
+    } else {
+      setPremiumSupportDisabled(false);
+    }
+  },[editionSelected]);
 
   const {data} = useRetrieveProductPrices({queryParams: {accountIdentifier : accountId, moduleType: 'CF'}});
   if(!data) {
@@ -246,9 +262,20 @@ export const CostCalculator = (): JSX.Element => {
   }
 
 
+
+
   // @ts-ignore
   const providedPrices = [...data?.data?.prices]  ;
-  const allPrices = {};
+  const allPrices = {
+    FF_TEAM_DEVELOPERS_MONTHLY: undefined,
+    FF_TEAM_MAU_MONTHLY: undefined,
+    FF_TEAM_DEVELOPERS_YEARLY: undefined,
+    FF_TEAM_MAU_YEARLY: undefined,
+    FF_ENTERPRISE_DEVELOPERS_MONTHLY: undefined,
+    FF_ENTERPRISE_DEVELOPERS_YEARLY: undefined,
+    FF_ENTERPRISE_MAU_MONTHLY: undefined,
+    FF_ENTERPRISE_MAU_YEARLY: undefined
+  };
   providedPrices.forEach(metaData => {
       // @ts-ignore
     allPrices[metaData.lookupKey] = metaData.unitAmount;
@@ -280,7 +307,6 @@ export const CostCalculator = (): JSX.Element => {
   }
 
   const currentDate = moment(new Date())
-  const timeStampAsDate = moment(currentDate)
 
 
 
@@ -289,8 +315,10 @@ export const CostCalculator = (): JSX.Element => {
       case Editions.FREE:
         return 0
       case Editions.TEAM:
+        // @ts-ignore
         return pricesSelected["TEAM"][planType][unitType] * units / 100;
       case Editions.ENTERPRISE:
+        // @ts-ignore
         return pricesSelected["ENTERPRISE"][planType][unitType] * units / 100;
       default:
         return 0
@@ -380,8 +408,9 @@ export const CostCalculator = (): JSX.Element => {
                   planned={developerPlannedSeats}
                 />
                 <CostSlider
-                  title={'Developers'}
+                  title={'How many developers do you need'}
                   summary={`1 developer = $ ${totalDeveloperRate / developerSelected}/ ${monthYear}`}
+                  inputUnit={'Developers'}
                   plannedUsage={developerPlannedSeats}
                   currentUsage={developerUsageSeats}
                   recommended={developerRecommendedSeats}
@@ -404,8 +433,9 @@ export const CostCalculator = (): JSX.Element => {
                   planned={mauPlannedSeats}
                 />
                 <CostSlider
-                  title={'MAUs Usage'}
+                  title={'How many monthly active units do you need'}
                   summary={`25k MAUs = $ ${totalMauRate / (mausSelected / 25)}/ ${monthYear} `}
+                  inputUnit={'K MAUs'}
                   plannedUsage={mauPlannedSeats}
                   currentUsage={mauUsageSeats}
                   recommended={mauRecommendedSeats}
@@ -480,7 +510,7 @@ export const CostCalculator = (): JSX.Element => {
                 <Layout.Horizontal flex={{ alignItems: 'baseline' }} className={cx(css.supportInfoBoxText)}>
                   <Text font={{ size: 'medium' }}>{`$ ${supportCost}`}</Text>
                 </Layout.Horizontal>
-                <Toggle label={premiumSupport ? 'Premium Support': 'Standard support'} checked={premiumSupport} onToggle={(toggleState => setPremiumSupport(toggleState))}/>
+                <Toggle label={premiumSupport ? 'Premium Support': 'Standard support'} disabled={premiumSupportDisabled} checked={premiumSupport} onToggle={(toggleState => setPremiumSupport(toggleState))}/>
               </Layout.Vertical>
               <Layout.Vertical
                 flex={{ justifyContent: 'center' }}

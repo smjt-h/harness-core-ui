@@ -88,9 +88,13 @@
 }
 
 .subscriptionType {
-  color: white;
   border-radius: 4px;
-  background: var(--primary-7);
+  min-height: 20px !important;
+  min-width: 38px !important;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  background: var(--primary-7) !important;
 }
 
 
