@@ -776,7 +776,7 @@ function StageBuilder(): JSX.Element {
 
   const stageType = selectedStage?.stage?.stage?.template ? StageType.Template : selectedStage?.stage?.stage?.type
   const stageData = useMemo(() => {
-    return getPipelineGraphData(pipeline.stages)
+    return getPipelineGraphData(pipeline.stages, templateTypes)
   }, [pipeline])
 
   return (

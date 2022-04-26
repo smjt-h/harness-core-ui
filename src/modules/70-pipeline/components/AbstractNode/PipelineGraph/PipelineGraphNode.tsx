@@ -41,6 +41,7 @@ export interface PipelineGraphRecursiveProps {
   optimizeRender?: boolean
   parentSelector?: string
   createNodeTitle?: string
+  showEndNode: boolean
 }
 export function PipelineGraphRecursive({
   nodes,
@@ -57,7 +58,8 @@ export function PipelineGraphRecursive({
   isDragging,
   optimizeRender = true,
   parentSelector,
-  createNodeTitle
+  createNodeTitle,
+  showEndNode
 }: PipelineGraphRecursiveProps): React.ReactElement {
   const StartNode: React.FC<BaseReactComponentProps> | undefined = getNode(NodeType.StartNode)?.component
   const CreateNode: React.FC<BaseReactComponentProps> | undefined = getNode(NodeType.CreateNode)?.component
@@ -101,7 +103,7 @@ export function PipelineGraphRecursive({
           getNode={getNode}
         />
       )}
-      {EndNode && startEndNodeNeeded && (
+      {EndNode && showEndNode && startEndNodeNeeded && (
         <EndNode id={uniqueNodeIds?.endNode as string} className={classNames(css.graphNode)} />
       )}
       <div></div>

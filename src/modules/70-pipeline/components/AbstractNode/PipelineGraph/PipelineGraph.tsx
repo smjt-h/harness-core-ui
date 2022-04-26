@@ -43,6 +43,7 @@ export interface PipelineGraphProps {
   parentSelector?: string
   panZoom?: boolean
   createNodeTitle?: string
+  showEndNode?: boolean
 }
 
 function PipelineGraph({
@@ -56,7 +57,8 @@ function PipelineGraph({
   loaderComponent,
   parentSelector,
   panZoom = true,
-  createNodeTitle
+  createNodeTitle,
+  showEndNode = true
 }: PipelineGraphProps): React.ReactElement {
   const [svgPath, setSvgPath] = useState<SVGPathRecord[]>([])
   const [isLoading, setLoading] = useState<boolean>(false)
@@ -189,6 +191,7 @@ function PipelineGraph({
                 isDragging={isDragging}
                 parentSelector={parentSelector}
                 createNodeTitle={createNodeTitle}
+                showEndNode={showEndNode}
               />
             </div>
           </div>

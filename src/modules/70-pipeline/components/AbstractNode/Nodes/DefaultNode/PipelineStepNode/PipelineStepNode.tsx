@@ -23,6 +23,7 @@ import defaultCss from '../DefaultNode.module.scss'
 
 const CODE_ICON: IconName = 'command-echo'
 
+const TEMPLATE_ICON: IconName = 'template-library'
 interface PipelineStepNodeProps extends BaseReactComponentProps {
   status: string
 }
@@ -54,6 +55,7 @@ function PipelineStepNode(props: PipelineStepNodeProps): JSX.Element {
   }
   const stepIcon = defaultTo(defaultTo(stepData?.icon, props?.icon), props?.data?.step?.icon)
   const isPrevNodeParallel = !!defaultTo(props.prevNode?.children?.length, 1)
+  const isTemplateNode = props.data.isTemplateNode
   return (
     <div
       className={cx(defaultCss.defaultNode, 'default-node', {
@@ -212,6 +214,15 @@ function PipelineStepNode(props: PipelineStepNodeProps): JSX.Element {
             </Text>
           </div>
         )}
+        {isTemplateNode && (
+          <Icon
+            {...(isSelectedNode()
+              ? { color: Color.WHITE, className: cx(defaultCss.primaryIcon, defaultCss.templateIcon), inverse: true }
+              : { className: defaultCss.templateIcon })}
+            size={8}
+            name={TEMPLATE_ICON}
+          />
+        )}
         {CODE_ICON && (
           <Icon
             className={defaultCss.codeIcon}
@@ -220,7 +231,6 @@ function PipelineStepNode(props: PipelineStepNodeProps): JSX.Element {
             name={CODE_ICON}
           />
         )}
-
         <Button
           className={cx(defaultCss.closeNode, { [defaultCss.readonly]: props.readonly })}
           minimal

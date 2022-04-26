@@ -139,6 +139,7 @@ export class DiagramFactory {
     parentSelector?: string
     panZoom?: boolean
     createNodeTitle?: string
+    showEndNode?: boolean
   }> {
     function PipelineStudioHOC(
       this: DiagramFactory,
@@ -152,6 +153,7 @@ export class DiagramFactory {
         parentSelector?: string
         panZoom?: boolean
         createNodeTitle?: string
+        showEndNode?: boolean
       }
     ): React.ReactElement {
       return (

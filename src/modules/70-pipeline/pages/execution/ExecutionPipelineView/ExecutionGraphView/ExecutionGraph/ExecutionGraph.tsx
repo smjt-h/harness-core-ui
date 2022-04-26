@@ -264,6 +264,8 @@ export default function ExecutionGraph(props: ExecutionGraphProps): React.ReactE
               data={data.items as PipelineGraphState[]}
               selectedNodeId={selectedStageId}
               panZoom={false}
+              parentSelector=".Pane1"
+              collapsibleProps={{ percentageNodeVisible: 0.8, bottomMarginInPixels: 120 }}
             />
           ) : (
             <ExecutionStageDiagram

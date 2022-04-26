@@ -114,6 +114,7 @@ export type FireEventMethod = (arg0: {
     allowAdd?: boolean
     entityType?: string
     identifier?: string
+    id?: string
     parentIdentifier?: string
     prevNodeIdentifier?: string
     node?: any

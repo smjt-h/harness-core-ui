@@ -261,7 +261,6 @@ function ExecutionGraphRef<T extends StageElementConfig>(
     pathToStage,
     templateTypes
   } = props
-
   const templatesEnabled: boolean = useFeatureFlag(FeatureFlag.NG_TEMPLATES)
 
   // NOTE: we are using ref as DynamicPopover use memo
@@ -981,8 +980,8 @@ function ExecutionGraphRef<T extends StageElementConfig>(
       stage?.stage?.type === StageType.BUILD ? get(stage, 'stage.spec.serviceDependencies') : undefined
 
     return state?.isRollback
-      ? getPipelineGraphData(stage?.stage?.spec?.execution?.rollbackSteps)
-      : getPipelineGraphData(stage?.stage?.spec?.execution?.steps, serviceDependencies)
+      ? getPipelineGraphData(stage?.stage?.spec?.execution?.rollbackSteps, templateTypes)
+      : getPipelineGraphData(stage?.stage?.spec?.execution?.steps, templateTypes, serviceDependencies)
   }, [stage, state?.isRollback])
 
   return (
@@ -1058,7 +1057,7 @@ function ExecutionGraphRef<T extends StageElementConfig>(
         {localStorage.getItem('IS_NEW_PIP_STUDIO_ACTIVE') === 'true' ? (
           <>
             <CDPipelineStudioNew
-              parentSelector=".Pane2"
+              parentSelector=".Pane1"
               selectedNodeId={selectedStepId}
               loaderComponent={DiagramLoader}
               data={stepsData}

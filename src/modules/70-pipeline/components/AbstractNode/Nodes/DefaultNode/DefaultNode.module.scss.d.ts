@@ -57,6 +57,7 @@ declare const styles: {
   readonly stepMarkerLeft: string
   readonly stepMarkerRight: string
   readonly template: string
+  readonly templateIcon: string
   readonly tertiaryIcon: string
   readonly visible: string
 }

@@ -1,4 +1,3 @@
-event
 /*
  * Copyright 2021 Harness Inc. All rights reserved.
  * Use of this source code is governed by the PolyForm Shield 1.0.0 license
@@ -15,13 +14,14 @@ import { DiagramDrag, DiagramType, Event } from '@pipeline/components/Diagram'
 import { ExecutionPipelineNodeType } from '@pipeline/components/ExecutionStageDiagram/ExecutionPipelineModel'
 import { getStatusProps } from '@pipeline/components/ExecutionStageDiagram/ExecutionStageDiagramUtils'
 import { ExecutionStatus, ExecutionStatusEnum } from '@pipeline/utils/statusHelpers'
+import { useStrings } from 'framework/strings'
 import SVGMarker from '../../SVGMarker'
 import AddLinkNode from '../AddLinkNode/AddLinkNode'
 import { FireEventMethod, NodeType } from '../../../types'
 import defaultCss from '../DefaultNode.module.scss'
-import { useStrings } from 'framework/strings'
 
 const CODE_ICON: IconName = 'command-echo'
+const TEMPLATE_ICON: IconName = 'template-library'
 interface PipelineStageNodeProps {
   getNode: (node: NodeType) => { component: React.FC<any> }
   fireEvent: FireEventMethod
@@ -60,6 +60,7 @@ function PipelineStageNode(props: PipelineStageNodeProps): JSX.Element {
     setVisibilityOfAdd(visibility)
   }
   const isSelectedNode = (): boolean => props.isSelected || props.id === props?.selectedNodeId
+  const isTemplateNode = props.data.isTemplateNode
   return (
     <div
       className={cx(defaultCss.defaultNode, 'default-node', {
@@ -186,7 +187,24 @@ function PipelineStageNode(props: PipelineStageNodeProps): JSX.Element {
         {props?.data?.tertiaryIcon && (
           <Icon name={props?.data?.tertiaryIcon} size={13} className={defaultCss.tertiaryIcon} />
         )}
-        {CODE_ICON && <Icon className={defaultCss.codeIcon} size={8} name={CODE_ICON} />}
+        {isTemplateNode && (
+          <Icon
+            {...(isSelectedNode()
+              ? { color: Color.WHITE, className: cx(defaultCss.primaryIcon, defaultCss.templateIcon), inverse: true }
+              : { className: defaultCss.templateIcon })}
+            size={8}
+            name={TEMPLATE_ICON}
+          />
+        )}
+        {CODE_ICON && (
+          <Icon
+            {...(isSelectedNode()
+              ? { color: Color.WHITE, className: cx(defaultCss.primaryIcon, defaultCss.codeIcon), inverse: true }
+              : { className: defaultCss.codeIcon })}
+            size={8}
+            name={CODE_ICON}
+          />
+        )}
         <Button
           className={cx(defaultCss.closeNode, { [defaultCss.readonly]: props.readonly })}
           minimal

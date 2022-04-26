@@ -17,7 +17,7 @@ import { useExecutionLayoutContext } from '@pipeline/components/ExecutionLayout/
 import ExecutionStageDiagram from '@pipeline/components/ExecutionStageDiagram/ExecutionStageDiagram'
 import type { DynamicPopoverHandlerBinding } from '@common/components/DynamicPopover/DynamicPopover'
 import { StepType } from '@pipeline/components/PipelineSteps/PipelineStepInterface'
-import { isExecutionPaused, isExecutionRunning } from '@pipeline/utils/statusHelpers'
+import { ExecutionStatusEnum, isExecutionPaused, isExecutionRunning } from '@pipeline/utils/statusHelpers'
 import { DynamicPopover } from '@common/exports'
 import HoverCard from '@pipeline/components/HoverCard/HoverCard'
 import type { ExecutionPathProps } from '@common/interfaces/RouteInterfaces'
@@ -257,6 +257,7 @@ export default function ExecutionStageDetails(props: ExecutionStageDetailsProps)
           data={data.items}
           selectedNodeId={selectedStepId}
           panZoom={false}
+          showEndNode={stage?.status !== ExecutionStatusEnum.Running}
         />
       ) : (
         <ExecutionStageDiagram

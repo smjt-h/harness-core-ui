@@ -16,7 +16,10 @@ import {
 import { stageTypeToIconMap } from '@pipeline/utils/constants'
 import type { DependencyElement } from 'services/ci'
 import { getDefaultBuildDependencies } from '@pipeline/utils/stageHelpers'
+import type { KVPair } from '@pipeline/components/PipelineVariablesContext/PipelineVariablesContext'
+import { getIdentifierFromValue } from '@common/components/EntityReference/EntityReference'
 import { NodeType, PipelineGraphState, SVGPathRecord, PipelineGraphType } from '../types'
+import type { TemplateStepNode } from 'services/pipeline-ng'
 
 const INITIAL_ZOOM_LEVEL = 1
 const ZOOM_INC_DEC_LEVEL = 0.1
@@ -28,6 +31,8 @@ const getScaledValue = (value: number, scalingFactor: number): number => {
 
   if (scalingFactor === 1) {
     finalValue = value
+  } else if (scalingFactor > 1) {
+    finalValue = value / scalingFactor
   } else {
     finalValue = valueMultiplied + mulFactor
   }
@@ -155,11 +160,11 @@ const getComputedPosition = (
     let updatedLeft = childPos.left - parentPos.left
     updatedLeft = getScaledValue(updatedLeft, scalingFactor)
     // console.log({ original: childPos.left - parentPos.left, updated: updatedLeft, dim: 'left' })
-    let updatedRight = updatedLeft + childPos.width
-    updatedRight = getScaledValue(updatedRight, scalingFactor)
+    const updatedRight = updatedLeft + childPos.width
+    //updatedRight = getScaledValue(updatedRight, scalingFactor)
     // console.log({ original: updatedLeft + childPos.width, updated: updatedRight, dim: 'right' })
-    let updatedBottom = updatedTop + childPos.height
-    updatedBottom = getScaledValue(updatedBottom, scalingFactor)
+    const updatedBottom = updatedTop + childPos.height
+    // updatedBottom = getScaledValue(updatedBottom, scalingFactor)
     // console.log({ original: updatedTop + childPos.height, updated: updatedBottom, dim: 'bottom' })
 
     const updatedPos: DOMRect = {
@@ -299,14 +304,15 @@ const NodeTypeToNodeMap: Record<string, string> = {
 
 const getPipelineGraphData = (
   data: StageElementWrapperConfig[] | ExecutionWrapperConfig[] = [],
+  templateTypes?: KVPair,
   serviceDependencies?: DependencyElement[] | undefined
 ): PipelineGraphState[] => {
   let graphState: PipelineGraphState[] = []
   const pipGraphDataType = getPipelineGraphDataType(data)
   if (pipGraphDataType === PipelineGraphType.STAGE_GRAPH) {
-    graphState = trasformStageData(data, pipGraphDataType)
+    graphState = trasformStageData(data, pipGraphDataType, templateTypes)
   } else {
-    graphState = trasformStepsData(data, pipGraphDataType)
+    graphState = trasformStepsData(data, pipGraphDataType, templateTypes)
 
     if (Array.isArray(serviceDependencies)) {
       //CI module
@@ -317,17 +323,24 @@ const getPipelineGraphData = (
 
   return graphState
 }
-const trasformStageData = (stages: StageElementWrapperConfig[], graphType: PipelineGraphType): PipelineGraphState[] => {
+
+const trasformStageData = (
+  stages: StageElementWrapperConfig[],
+  graphType: PipelineGraphType,
+  templateTypes?: KVPair
+): PipelineGraphState[] => {
   const finalData: PipelineGraphState[] = []
 
   stages.forEach((stage: StageElementWrapperConfig) => {
     if (stage?.stage) {
-      const { nodeType, iconName } = getNodeInfo(defaultTo(stage.stage.type, ''), graphType)
+      const templateRef = getIdentifierFromValue(stage.stage?.template?.templateRef as string)
+      const type = templateRef ? (templateTypes?.[templateRef] as string) : (stage.stage.type as string)
+      const { nodeType, iconName } = getNodeInfo(defaultTo(type, ''), graphType)
       finalData.push({
         id: uuid() as string,
         identifier: stage.stage.identifier as string,
         name: stage.stage.name as string,
-        type: stage.stage.type as string,
+        type: type,
         nodeType: nodeType as string,
         icon: iconName,
         graphType,
@@ -335,25 +348,29 @@ const trasformStageData = (stages: StageElementWrapperConfig[], graphType: Pipel
           ...stage,
           conditionalExecutionEnabled: stage.stage.when
             ? stage.stage.when?.pipelineStatus !== 'Success' || !!stage.stage.when?.condition?.trim()
-            : false
+            : false,
+          isTemplateNode: Boolean(templateRef)
         }
       })
     } else if (stage?.parallel?.length) {
       const [first, ...rest] = stage.parallel
-      const { nodeType, iconName } = getNodeInfo(defaultTo(first?.stage?.type, ''), graphType)
+      const templateRef = getIdentifierFromValue(first.stage?.template?.templateRef as string)
+      const type = templateRef ? (templateTypes?.[templateRef] as string) : (first?.stage?.type as string)
+      const { nodeType, iconName } = getNodeInfo(defaultTo(type, ''), graphType)
       finalData.push({
         id: uuid() as string,
         identifier: first?.stage?.identifier as string,
         name: first?.stage?.name as string,
         nodeType: nodeType as string,
-        type: first?.stage?.type as string,
+        type,
         icon: iconName,
         graphType,
         data: {
           ...stage,
           conditionalExecutionEnabled: first?.stage?.when
             ? first?.stage?.when?.pipelineStatus !== 'Success' || !!first?.stage.when?.condition?.trim()
-            : false
+            : false,
+          isTemplateNode: Boolean(templateRef)
         },
         children: trasformStageData(rest, graphType)
       })
@@ -365,17 +382,25 @@ const trasformStageData = (stages: StageElementWrapperConfig[], graphType: Pipel
 const getuniqueIdForStep = (step: ExecutionWrapperConfig): string =>
   defaultTo(get(step, 'step.uuid') || get(step, 'step.id'), uuid() as string)
 
-const trasformStepsData = (steps: ExecutionWrapperConfig[], graphType: PipelineGraphType): PipelineGraphState[] => {
+const trasformStepsData = (
+  steps: ExecutionWrapperConfig[],
+  graphType: PipelineGraphType,
+  templateTypes?: KVPair
+): PipelineGraphState[] => {
   const finalData: PipelineGraphState[] = []
   steps.forEach((step: ExecutionWrapperConfig) => {
     if (step?.step) {
-      const { nodeType, iconName } = getNodeInfo(defaultTo(step.step.type, ''), graphType)
+      const templateRef = getIdentifierFromValue(
+        (step?.step as unknown as TemplateStepNode)?.template?.templateRef as string
+      )
+      const type = templateRef ? (templateTypes?.[templateRef] as string) : (step?.step?.type as string)
+      const { nodeType, iconName } = getNodeInfo(defaultTo(type, ''), graphType)
 
       finalData.push({
         id: getuniqueIdForStep(step),
         identifier: step.step.identifier as string,
         name: step.step.name as string,
-        type: step.step.type as string,
+        type,
         nodeType: nodeType as string,
         icon: iconName,
         graphType,
@@ -384,7 +409,8 @@ const trasformStepsData = (steps: ExecutionWrapperConfig[], graphType: PipelineG
           isInComplete: isCustomGeneratedString(step.step.identifier),
           conditionalExecutionEnabled: step.step?.when
             ? step.step?.when?.stageStatus !== 'Success' || !!step.step?.when?.condition?.trim()
-            : false
+            : false,
+          isTemplateNode: Boolean(templateRef)
         }
       })
     } else if (step?.parallel?.length) {
@@ -406,12 +432,16 @@ const trasformStepsData = (steps: ExecutionWrapperConfig[], graphType: PipelineG
           graphType
         })
       } else {
-        const { nodeType, iconName } = getNodeInfo(first?.step?.type || '', graphType)
+        const templateRef = getIdentifierFromValue(
+          (first?.step as unknown as TemplateStepNode)?.template?.templateRef as string
+        )
+        const type = templateRef ? (templateTypes?.[templateRef] as string) : (first?.step?.type as string)
+        const { nodeType, iconName } = getNodeInfo(defaultTo(type, ''), graphType)
         finalData.push({
           id: getuniqueIdForStep(first),
           identifier: first?.step?.identifier as string,
           name: first?.step?.name as string,
-          type: first?.step?.type as string,
+          type,
           nodeType: nodeType as string,
           icon: iconName,
           data: {
@@ -419,7 +449,8 @@ const trasformStepsData = (steps: ExecutionWrapperConfig[], graphType: PipelineG
             isInComplete: isCustomGeneratedString(first?.step?.identifier as string),
             conditionalExecutionEnabled: first.step?.when
               ? first.step?.when?.stageStatus !== 'Success' || !!first.step?.when?.condition?.trim()
-              : false
+              : false,
+            isTemplateNode: Boolean(templateRef)
           },
           children: trasformStepsData(rest, graphType),
           graphType

@@ -44,7 +44,7 @@ function GroupNode(props: GroupNodeProps): React.ReactElement {
       }
       nodesArr = [firstNodeData, ...props?.children]
     } else {
-      nodesArr = props?.children?.slice(props.intersectingIndex)
+      nodesArr = props?.children?.slice(props.intersectingIndex - 1)
     }
 
     const nodesFinal: Node[] = []
@@ -178,7 +178,7 @@ function GroupNode(props: GroupNodeProps): React.ReactElement {
           </Text>
         </div>
       </div>
-      {allowAdd && CreateNode && (
+      {allowAdd && !props.readonly && CreateNode && (
         <CreateNode
           id={props.id}
           onMouseOver={() => setAddVisibility(true)}
