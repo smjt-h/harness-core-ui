@@ -11,6 +11,7 @@ import type {Editions} from '@common/constants/SubscriptionTypes'
 import {useStrings} from "framework/strings";
 import css from '@common/components/CostCalculator/CostCalculator.module.scss'
 import {Elements} from '@stripe/react-stripe-js';
+import {GetEditionBox} from "@common/components/CostCalculator/CostCalculator";
 
 const stripePromise = loadStripe('pk_live_51IykZ0Iqk5P9Eha39LKDxAE4molfPO3dN5ucM9MqiIBIohtP9F80QNOqxT2YUej1d4N6J6hfCK4uUEmoCQx2tkQ300TajVoKTt');
 
@@ -143,7 +144,7 @@ export const ReviewPage = ({
   const reviewTitle = `Feature Flag Subscription`
 
   return (
-    <Layout.Vertical padding={{ left: 'huge', right: 'huge' }}>
+    <Layout.Vertical padding={{ left: 'huge', right: 'huge' }} flex>
       <Text
         icon={'ff-solid'}
         iconProps={{ size: 24 }}
@@ -155,9 +156,13 @@ export const ReviewPage = ({
       <Layout.Horizontal>
         <Layout.Vertical>
           <Container className={cx(css.reviewContainer)}>
-            <Text font={{ variation: FontVariation.H4 }} className={cx(css.currentPlanContainer)}>
-              {`Current Plan (${previousEdition},${previousPlan})`}
-            </Text>
+            <Layout.Horizontal className={cx(css.currentPlanContainer)}>
+              <Text font={{ variation: FontVariation.H4 }} >
+                {`Current Plan`}
+              </Text>
+              <GetEditionBox editionType={previousEdition}/>
+              {previousPlan && <GetEditionBox editionType={previousPlan}/>}
+            </Layout.Horizontal>
             <Text font={{ size: 'medium' }} className={cx(css.currentDeveloperPlan, css.reviewText)}>
               Developers
             </Text>
@@ -170,9 +175,14 @@ export const ReviewPage = ({
             <Text font={{ size: 'medium' }} className={cx(css.currentMauPlan, css.reviewItems)}>
               {previousMau}
             </Text>
-            <Text font={{ variation: FontVariation.H4 }} className={cx(css.changingText)}>
-              {`Changing to ${newEdition},${newPlan}`}
-            </Text>
+            <Layout.Horizontal className={cx(css.changingText)}>
+              <Text font={{ variation: FontVariation.H4 }} >
+                {`New plan`}
+              </Text>
+              <GetEditionBox editionType={newEdition}/>
+              <GetEditionBox editionType={newPlan}/>
+            </Layout.Horizontal>
+
             <Text font={{ size: 'medium' }} className={cx(css.changedDevelopers, css.reviewText)}>
               Developers
             </Text>
@@ -216,11 +226,10 @@ export const ReviewPage = ({
               {total}
             </Text>
           </Container>
-
-          <Button variation={ButtonVariation.SECONDARY} onClick={backButtonClick}>
-            Back
-          </Button>
         </Layout.Vertical>
+
+
+
         <Layout.Vertical>
           <Text font={{ variation: FontVariation.H4 }} className={cx(css.textwrap)}>
             Payment Methods
@@ -237,6 +246,9 @@ export const ReviewPage = ({
           <Button variation={ButtonVariation.PRIMARY}>Make a Payment</Button>
         </Layout.Vertical>
       </Layout.Horizontal>
+      <Button variation={ButtonVariation.SECONDARY} onClick={backButtonClick}>
+        Back
+      </Button>
     </Layout.Vertical>
   )
 }

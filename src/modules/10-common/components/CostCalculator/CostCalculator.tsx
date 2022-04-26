@@ -120,7 +120,7 @@ export const GetEditionBox = ({editionType}: EditionBox) => {
   return (
       <Container className={cx(css.subscriptionType)}>
         <Text font={{variation: FontVariation.TABLE_HEADERS}} color={Color.WHITE} >
-          {editionType}
+          {editionType.toUpperCase()}
         </Text>
       </Container>
   );
@@ -143,9 +143,8 @@ const CostSlider = (costSliderParms: CostSliderParams) => {
           {costSliderParms.summary}
         </Text>
       </Layout.Horizontal>
-      <Layout.Horizontal>
+      <Layout.Horizontal flex={{alignItems: 'flex-start',justifyContent: 'flex-start'}}>
         <NumericInput
-          className={cx(css.subscriptionType)}
           value={costSliderParms.currentSliderValue}
           onValueChange={valueProvided => costSliderParms.onSliderChange(valueProvided)}
           width={'50px'}
@@ -156,7 +155,7 @@ const CostSlider = (costSliderParms: CostSliderParams) => {
           stepSize={costSliderParms.tickSize}
           majorStepSize={costSliderParms.labelTickSize}
         />
-        <Text font={{variation: FontVariation.BODY2}} color={Color.GREY_800}>
+        <Text font={{variation: FontVariation.BODY2}} color={Color.GREY_800} padding={{left: 'small'}}>
           {costSliderParms.inputUnit}
         </Text>
       </Layout.Horizontal>
