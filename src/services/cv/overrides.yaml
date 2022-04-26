@@ -147,6 +147,7 @@ allowpaths:
   - /verify-step/{verifyStepExecutionId}/deployment-log-analysis-data-v2
   - /verify-step/{verifyStepExecutionId}/deployment-log-analysis-radar-chart-clusters
   - /verify-step/{verifyStepExecutionId}/deployment-log-analysis-radar-chart-data
+  - /notification-rule
 operationIdOverrides:
   /appdynamics/applications.get: getAppDynamicsApplications
   /appdynamics/metric-data.post: getAppDynamicsMetricData

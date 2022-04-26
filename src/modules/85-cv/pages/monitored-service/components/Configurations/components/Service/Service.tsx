@@ -22,6 +22,7 @@ import type { ChangeSourceDTO } from 'services/cv'
 import { useDrawer } from '@cv/hooks/useDrawerHook/useDrawerHook'
 import { ChangeSourceDrawer } from '@cv/pages/ChangeSource/ChangeSourceDrawer/ChangeSourceDrawer'
 import SaveAndDiscardButton from '@cv/components/SaveAndDiscardButton/SaveAndDiscardButton'
+import NotificationsContainer from '@cv/components/Notifications/NotificationsContainer'
 import HealthSourceTableContainer from './components/HealthSourceTableContainer/HealthSourceTableContainer'
 import type { MonitoredServiceForm } from './Service.types'
 import MonitoredServiceOverview from './components/MonitoredServiceOverview/MonitoredServiceOverview'
@@ -211,6 +212,7 @@ function Service({
                   healthSourceListFromAPI={initialValues.sources?.healthSources}
                   serviceFormFormik={formik}
                 />
+                <NotificationsContainer />
               </>
             )}
           </div>
