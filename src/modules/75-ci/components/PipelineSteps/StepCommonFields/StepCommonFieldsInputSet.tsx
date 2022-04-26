@@ -23,8 +23,10 @@ import {
 import type { InputSetData } from '@pipeline/components/AbstractSteps/Step'
 import { StepViewType } from '@pipeline/components/AbstractSteps/Step'
 import { useVariablesExpression } from '@pipeline/components/PipelineStudio/PiplineHooks/useVariablesExpression'
-import { getOptionalSubLabel } from '@ci/components/PipelineSteps/CIStep/CIStepOptionalConfig'
-import { renderMultiTypeInputWithAllowedValues } from '../CIStep/CIStep'
+import {
+  getOptionalSubLabel,
+  renderMultiTypeInputWithAllowedValues
+} from '@ci/components/PipelineSteps/CIStep/CIStepOptionalConfig'
 import { AllMultiTypeInputTypesForInputSet, shouldRenderRunTimeInputViewWithAllowedValues } from '../CIStep/StepUtils'
 import css from '@pipeline/components/PipelineSteps/Steps/Steps.module.scss'
 

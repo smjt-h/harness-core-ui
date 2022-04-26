@@ -26,9 +26,14 @@ import {
   shouldRenderRunTimeInputView,
   shouldRenderRunTimeInputViewWithAllowedValues
 } from '../CIStep/StepUtils'
-import { CIStep, renderMultiTypeInputWithAllowedValues } from '../CIStep/CIStep'
+import { CIStep } from '../CIStep/CIStep'
 import { ConnectorRefWithImage } from '../CIStep/ConnectorRefWithImage'
-import { CIStepOptionalConfig, getOptionalSubLabel, renderMultiTypeListInputSet } from '../CIStep/CIStepOptionalConfig'
+import {
+  CIStepOptionalConfig,
+  getOptionalSubLabel,
+  renderMultiTypeListInputSet,
+  renderMultiTypeInputWithAllowedValues
+} from '../CIStep/CIStepOptionalConfig'
 import css from '@pipeline/components/PipelineSteps/Steps/Steps.module.scss'
 
 export const RunTestsStepInputSetBasic: React.FC<RunTestsStepProps> = ({

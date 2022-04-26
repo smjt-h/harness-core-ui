@@ -18,8 +18,7 @@ import { MultiTypeTextField } from '@common/components/MultiTypeText/MultiTypeTe
 import { useVariablesExpression } from '@pipeline/components/PipelineStudio/PiplineHooks/useVariablesExpression'
 import { useGitScope } from '@pipeline/utils/CIUtils'
 import { StepViewType } from '@pipeline/components/AbstractSteps/Step'
-import { renderMultiTypeInputWithAllowedValues } from './CIStep'
-import { getOptionalSubLabel } from './CIStepOptionalConfig'
+import { renderMultiTypeInputWithAllowedValues, getOptionalSubLabel } from './CIStepOptionalConfig'
 import { AllMultiTypeInputTypesForStep, shouldRenderRunTimeInputViewWithAllowedValues } from './StepUtils'
 import css from '@pipeline/components/PipelineSteps/Steps/Steps.module.scss'
 

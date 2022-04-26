@@ -6,11 +6,11 @@
  */
 
 import React from 'react'
-import { get, isEmpty } from 'lodash-es'
+import { isEmpty } from 'lodash-es'
 import { useParams } from 'react-router-dom'
 import cx from 'classnames'
 import type { FormikProps } from 'formik'
-import { FormInput, Text, Container, MultiTypeInputType, SelectOption } from '@wings-software/uicore'
+import { FormInput, Text, Container, MultiTypeInputType } from '@wings-software/uicore'
 import { Color } from '@harness/design-system'
 import { MultiTypeTextField, MultiTypeTextProps } from '@common/components/MultiTypeText/MultiTypeText'
 import MultiTypeList from '@common/components/MultiTypeList/MultiTypeList'
@@ -19,7 +19,6 @@ import { useGitScope } from '@pipeline/utils/CIUtils'
 import { StepViewType } from '@pipeline/components/AbstractSteps/Step'
 import { ConnectorRefWidth } from '@pipeline/utils/constants'
 import { useVariablesExpression } from '@pipeline/components/PipelineStudio/PiplineHooks/useVariablesExpression'
-import { RegExAllowedInputExpression } from '@pipeline/components/PipelineSteps/Steps/CustomVariables/CustomVariableInputSet'
 import { FormMultiTypeConnectorField } from '@connectors/components/ConnectorReferenceField/FormMultiTypeConnectorField'
 import { useStrings } from 'framework/strings'
 import type { StringsMap } from 'stringTypes'
@@ -28,7 +27,7 @@ import {
   AllMultiTypeInputTypesForStep,
   shouldRenderRunTimeInputViewWithAllowedValues
 } from './StepUtils'
-import { renderMultiTypeListInputSet } from './CIStepOptionalConfig'
+import { renderMultiTypeInputWithAllowedValues, renderMultiTypeListInputSet } from './CIStepOptionalConfig'
 import css from '@pipeline/components/PipelineSteps/Steps/Steps.module.scss'
 
 interface CIStepProps {
@@ -44,59 +43,6 @@ interface CIStepProps {
   isInputSetView?: boolean
   allowableTypes?: MultiTypeInputType[]
   template?: Record<string, any>
-}
-
-export const renderMultiTypeInputWithAllowedValues = ({
-  name,
-  tooltipId,
-  labelKey,
-  fieldPath,
-  template,
-  expressions,
-  readonly,
-  getString,
-  showOptionalSublabel
-}: {
-  name: string
-  tooltipId?: string
-  labelKey: keyof StringsMap
-  fieldPath: string
-  template?: Record<string, any>
-  expressions: string[]
-  readonly?: boolean
-  getString: (key: keyof StringsMap, vars?: Record<string, any> | undefined) => string
-  showOptionalSublabel?: boolean
-}) => {
-  if (!name) {
-    return
-  }
-  if (template && fieldPath) {
-    const value = get(template, fieldPath, '')
-    const items: SelectOption[] = []
-    if (RegExAllowedInputExpression.test(value as string)) {
-      // This separates out "<+input>.allowedValues(a, b, c)" to ["<+input>", ["a", "b", "c"]]
-      const match = (value as string).match(RegExAllowedInputExpression)
-      if (match && match?.length > 1) {
-        const allowedValues = match[1]
-        items.push(...allowedValues.split(',').map(item => ({ label: item, value: item })))
-      }
-    }
-    return (
-      <FormInput.MultiTypeInput
-        name={name}
-        label={getString(labelKey).concat(showOptionalSublabel ? ` ${getString('titleOptional')}` : '')}
-        useValue
-        selectItems={items}
-        multiTypeInputProps={{
-          allowableTypes: AllMultiTypeInputTypesForInputSet,
-          expressions,
-          selectProps: { disabled: readonly, items }
-        }}
-        disabled={readonly}
-        tooltipProps={{ dataTooltipId: tooltipId ?? '' }}
-      />
-    )
-  }
 }
 
 export const CIStep: React.FC<CIStepProps> = props => {

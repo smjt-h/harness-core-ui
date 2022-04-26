@@ -19,8 +19,12 @@ import { useVariablesExpression } from '@pipeline/components/PipelineStudio/Pipl
 import StepCommonFieldsInputSet from '@ci/components/PipelineSteps/StepCommonFields/StepCommonFieldsInputSet'
 import { StepViewType } from '@pipeline/components/AbstractSteps/Step'
 import type { RunStepProps } from './RunStep'
-import { CIStep, renderMultiTypeInputWithAllowedValues } from '../CIStep/CIStep'
-import { CIStepOptionalConfig, renderMultiTypeListInputSet } from '../CIStep/CIStepOptionalConfig'
+import { CIStep } from '../CIStep/CIStep'
+import {
+  CIStepOptionalConfig,
+  renderMultiTypeListInputSet,
+  renderMultiTypeInputWithAllowedValues
+} from '../CIStep/CIStepOptionalConfig'
 import { ConnectorRefWithImage } from '../CIStep/ConnectorRefWithImage'
 import {
   AllMultiTypeInputTypesForInputSet,
