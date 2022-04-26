@@ -71,6 +71,7 @@ export const ArtifactStepCommon: React.FC<ArtifactStepCommonProps> = ({
       path={path || ''}
       formik={formik}
       isInputSetView={true}
+      template={template}
     />
   )
 }

@@ -76,6 +76,7 @@ export const PluginStepInputSetBasic: React.FC<PluginStepProps> = ({
         path={path || ''}
         formik={formik}
         isInputSetView={true}
+        template={template}
       />
       <StepCommonFieldsInputSet path={path} readonly={readonly} template={template} stepViewType={stepViewType} />
     </FormikForm>

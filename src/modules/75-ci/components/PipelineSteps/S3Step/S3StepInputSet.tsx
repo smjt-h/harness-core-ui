@@ -51,6 +51,7 @@ export const S3StepInputSet: React.FC<S3StepProps> = ({ template, path, readonly
           })
         }}
         path={path || ''}
+        template={template}
       />
       <StepCommonFieldsInputSet path={path} readonly={readonly} template={template} stepViewType={stepViewType} />
     </FormikForm>

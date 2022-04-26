@@ -70,6 +70,7 @@ export const SaveCacheS3StepInputSetBasic: React.FC<SaveCacheS3StepProps> = ({
           })
         }}
         path={path || ''}
+        template={template}
       />
       <StepCommonFieldsInputSet path={path} readonly={readonly} template={template} stepViewType={stepViewType} />
     </FormikForm>

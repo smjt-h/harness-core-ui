@@ -90,6 +90,7 @@ export const DependencyInputSetBasic: React.FC<DependencyProps> = ({
         path={path || ''}
         formik={formik}
         isInputSetView={true}
+        template={template}
       />
       <StepCommonFieldsInputSet
         path={path}

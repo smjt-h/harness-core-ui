@@ -47,6 +47,7 @@ export const GCSStepInputSet: React.FC<GCSStepProps> = ({ template, path, readon
           })
         }}
         path={path || ''}
+        template={template}
       />
       <StepCommonFieldsInputSet path={path} readonly={readonly} template={template} stepViewType={stepViewType} />
     </FormikForm>

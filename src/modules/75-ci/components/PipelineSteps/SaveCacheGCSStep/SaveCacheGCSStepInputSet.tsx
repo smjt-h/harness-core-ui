@@ -59,6 +59,7 @@ export const SaveCacheGCSStepInputSetBasic: React.FC<SaveCacheGCSStepProps> = ({
           ...(getMultiTypeFromValue(template?.spec?.override) === MultiTypeInputType.RUNTIME && { 'spec.override': {} })
         }}
         path={path || ''}
+        template={template}
       />
       <StepCommonFieldsInputSet path={path} readonly={readonly} template={template} stepViewType={stepViewType} />
     </FormikForm>
