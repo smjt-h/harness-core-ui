@@ -7,6 +7,7 @@
 
 import React, { useState } from 'react'
 import cx from 'classnames'
+import { isNumber } from 'lodash-es'
 import { useParams } from 'react-router-dom'
 import { Button, ButtonVariation, StepWizard, MultiTypeInputType, SelectOption } from '@harness/uicore'
 import { Classes, Dialog, IDialogProps } from '@blueprintjs/core'
@@ -24,8 +25,8 @@ import {
   GetNewConnector,
   ConnectorStepTitle
 } from '../CloudFormationHelper'
-import ConnectorStepOne from './ConnectorStepOne'
-import { CFFileStore } from './CFFileStorePath'
+import ConnectorStepOne from './RemoteStepOne'
+import { CFFileStore } from './RemoteStepTwo'
 import css from '../CloudFormation.module.scss'
 
 const DIALOG_PROPS = {
@@ -52,10 +53,9 @@ interface CFRemoteWizardProps {
   allowableTypes: MultiTypeInputType[]
   showModal: boolean
   onClose: () => void
-  isParam: boolean
   initialValues: any
   setFieldValue: (field: string, data: any) => void
-  index?: number
+  index: number | undefined
   regions: SelectOption[]
 }
 
@@ -64,10 +64,9 @@ const CFRemoteWizard = ({
   allowableTypes,
   showModal,
   onClose,
-  isParam = false,
   initialValues,
   setFieldValue,
-  index,
+  index = undefined,
   regions
 }: CFRemoteWizardProps): JSX.Element => {
   const { getString } = useStrings()
@@ -75,9 +74,9 @@ const CFRemoteWizard = ({
   const [isEditMode, setIsEditMode] = useState(false)
   const [showNewConnector, setShowNewConnector] = useState(false)
   const [selectedConnector, setSelectedConnector] = useState('')
-  const connectorStepTitle = getString(ConnectorStepTitle(isParam))
+  const connectorStepTitle = getString(ConnectorStepTitle(!!index))
   const fileStoreTitle = getString(
-    isParam ? 'cd.cloudFormation.parameterFileDetails' : 'cd.cloudFormation.templateFileStore'
+    isNumber(index) ? 'cd.cloudFormation.parameterFileDetails' : 'cd.cloudFormation.templateFileStore'
   )
   // const onStepChange = (arg: StepChangeData<any>): void => {
   //   if (arg?.prevStep && arg?.nextStep && arg.prevStep > arg.nextStep && arg.nextStep <= 2) {
@@ -137,11 +136,11 @@ const CFRemoteWizard = ({
     let paths = config?.templateFile?.spec?.store?.spec?.paths
     let connectorFieldName = 'spec.configuration.templateFile.spec.store.spec.connectorRef'
     let connectorRef = connector?.spec?.configuration?.templateFile?.spec?.store?.spec?.connectorRef
-    if (isParam) {
+    if (isNumber(index)) {
       connectorRef = connector?.spec?.configuration?.parameters?.store?.spec?.connectorRef
     }
 
-    if (isParam) {
+    if (isNumber(index)) {
       paths = config?.parameters?.store?.spec?.paths
       connectorFieldName = `spec.configuration.parameters[${index}].store.spec.connectorRef`
       setFieldValue(
@@ -204,7 +203,6 @@ const CFRemoteWizard = ({
             selectedConnector={selectedConnector}
             setSelectedConnector={setSelectedConnector}
             initialValues={initialValues}
-            isParam={isParam}
             index={index}
             regions={regions}
           />
@@ -212,7 +210,6 @@ const CFRemoteWizard = ({
           <CFFileStore
             name={fileStoreTitle}
             allowableTypes={allowableTypes}
-            isParam={isParam}
             initialValues={initialValues}
             onSubmit={onSubmit}
             index={index}

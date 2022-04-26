@@ -3308,6 +3308,7 @@ export interface StringsMap {
   'cd.cloudFormation.cfTemplateFile': string
   'cd.cloudFormation.continueStatus': string
   'cd.cloudFormation.errors.awsURL': string
+  'cd.cloudFormation.errors.getParam': string
   'cd.cloudFormation.errors.name': string
   'cd.cloudFormation.errors.region': string
   'cd.cloudFormation.errors.stackName': string

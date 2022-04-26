@@ -8,7 +8,7 @@
 import React from 'react'
 import * as Yup from 'yup'
 import cx from 'classnames'
-import { map } from 'lodash-es'
+import { map, isNumber } from 'lodash-es'
 import { FieldArray, Form } from 'formik'
 import {
   Button,
@@ -34,7 +34,6 @@ import stepCss from '@pipeline/components/PipelineSteps/Steps/Steps.module.scss'
 import css from '../CloudFormation.module.scss'
 
 interface CFFileStoreProps {
-  isParam: boolean
   allowableTypes: MultiTypeInputType[]
   initialValues: any
   onSubmit: (values: any, connector: any) => void
@@ -45,25 +44,24 @@ export const CFFileStore: React.FC<StepProps<any> & CFFileStoreProps> = ({
   previousStep,
   prevStepData,
   allowableTypes,
-  isParam,
   initialValues,
   onSubmit,
   index
 }) => {
   const { getString } = useStrings()
   const { expressions } = useVariablesExpression()
-  const title = getString(isParam ? 'filePaths' : 'common.git.filePath')
+  const title = getString(isNumber(index) ? 'filePaths' : 'common.git.filePath')
   const pathSchema = Yup.lazy((value): Yup.Schema<unknown> => {
     if (getMultiTypeFromValue(value as any) === MultiTypeInputType.FIXED) {
       return Yup.array().of(
         Yup.object().shape({
-          path: Yup.string().min(1).required(getString('cd.pathCannotBeEmpty'))
+          path: Yup.string().required(getString('cd.pathCannotBeEmpty'))
         })
       )
     }
     return Yup.string().required(getString('cd.pathCannotBeEmpty'))
   })
-  const templateSchema = {
+  const templateSchema = Yup.object().shape({
     spec: Yup.object().shape({
       configuration: Yup.object().shape({
         templateFile: Yup.object().shape({
@@ -86,21 +84,30 @@ export const CFFileStore: React.FC<StepProps<any> & CFFileStoreProps> = ({
         })
       })
     })
-  }
-  const paramSchema = {
+  })
+  const paramSchema = Yup.object().shape({
     spec: Yup.object().shape({
       configuration: Yup.object().shape({
         parameters: Yup.object().shape({
-          identifier: Yup.string().min(1).required(getString('cd.pathCannotBeEmpty')),
+          identifier: Yup.string().required(getString('cd.pathCannotBeEmpty')),
           store: Yup.object().shape({
             spec: Yup.object().shape({
+              gitFetchType: Yup.string().required(getString('cd.gitFetchTypeRequired')),
+              branch: Yup.string().when('gitFetchType', {
+                is: 'Branch',
+                then: Yup.string().trim().required(getString('validation.branchName'))
+              }),
+              commitId: Yup.string().when('gitFetchType', {
+                is: 'Commit',
+                then: Yup.string().trim().required(getString('validation.commitId'))
+              }),
               paths: pathSchema
             })
           })
         })
       })
     })
-  }
+  })
   return (
     <Layout.Vertical spacing="xxlarge" padding="small" className={css.filePath}>
       <Text font="large" color={Color.GREY_800}>
@@ -108,16 +115,16 @@ export const CFFileStore: React.FC<StepProps<any> & CFFileStoreProps> = ({
       </Text>
       <Formik
         formName="cfFileStore"
-        initialValues={FormatFilePaths(initialValues, isParam, index)}
+        initialValues={FormatFilePaths(initialValues, index)}
         enableReinitialize
-        validationSchema={isParam ? paramSchema : templateSchema}
+        validationSchema={isNumber(index) ? paramSchema : templateSchema}
         onSubmit={data => onSubmit(data, prevStepData)}
       >
         {({ values }) => {
           let name = 'spec.configuration.templateFile.spec.store.spec.paths[0].path'
           let filePaths = values?.spec?.configuration?.templateFile?.spec?.store?.spec?.paths
           let connector = prevStepData?.spec?.configuration?.templateFile?.spec?.store?.spec?.connectorRef
-          if (isParam) {
+          if (isNumber(index)) {
             name = `spec.configuration.parameters.store.spec.paths`
             filePaths = values?.spec?.configuration?.parameters?.store?.spec?.paths
             connector = prevStepData?.spec?.configuration?.parameters?.store?.spec?.connectorRef
@@ -125,14 +132,15 @@ export const CFFileStore: React.FC<StepProps<any> & CFFileStoreProps> = ({
           return (
             <Form>
               <div className={css.filePathForm}>
-                {isParam && (
+                {isNumber(index) && (
                   <div className={cx(stepCss.formGroup, stepCss.md)}>
                     <FormInput.MultiTextInput
                       label={getString('identifier')}
                       name={`spec.configuration.parameters.identifier`}
                       multiTextInputProps={{ expressions, allowableTypes }}
                     />
-                    {getMultiTypeFromValue(values?.spec?.configuration?.parameters?.identifier) === MultiTypeInputType.RUNTIME && (
+                    {getMultiTypeFromValue(values?.spec?.configuration?.parameters?.identifier) ===
+                      MultiTypeInputType.RUNTIME && (
                       <ConfigureOptions
                         style={{ alignSelf: 'center', marginTop: 1 }}
                         value={values?.spec?.configuration?.parameters?.identifier as string}
@@ -147,7 +155,6 @@ export const CFFileStore: React.FC<StepProps<any> & CFFileStoreProps> = ({
                 )}
                 {connector?.connector?.type !== 'Aws' && (
                   <ParameterRepoDetails
-                    isParam={isParam}
                     allowableTypes={allowableTypes}
                     index={index}
                     values={{ ...values, connector }}
@@ -160,7 +167,7 @@ export const CFFileStore: React.FC<StepProps<any> & CFFileStoreProps> = ({
                     allowedTypes={allowableTypes.filter(item => item !== MultiTypeInputType.EXPRESSION)}
                     label={<Text flex={{ inline: true }}>{title}</Text>}
                   >
-                    {!isParam ? (
+                    {!isNumber(index) ? (
                       <FormInput.MultiTextInput
                         name={name}
                         label=""

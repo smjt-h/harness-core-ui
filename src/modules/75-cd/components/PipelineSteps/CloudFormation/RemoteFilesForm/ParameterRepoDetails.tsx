@@ -7,7 +7,7 @@
 
 import React from 'react'
 import cx from 'classnames'
-
+import { isNumber } from 'lodash-es'
 import { StepProps, MultiTypeInputType, getMultiTypeFromValue, FormInput, SelectOption } from '@harness/uicore'
 import { useVariablesExpression } from '@pipeline/components/PipelineStudio/PiplineHooks/useVariablesExpression'
 import { ConfigureOptions } from '@common/components/ConfigureOptions/ConfigureOptions'
@@ -15,7 +15,6 @@ import { useStrings } from 'framework/strings'
 import stepCss from '@pipeline/components/PipelineSteps/Steps/Steps.module.scss'
 
 interface CFFileStoreProps {
-  isParam: boolean
   allowableTypes: MultiTypeInputType[]
   index?: number
   values: any
@@ -24,8 +23,7 @@ interface CFFileStoreProps {
 export const ParameterRepoDetails: React.FC<StepProps<any> & CFFileStoreProps> = ({
   allowableTypes,
   index,
-  values,
-  isParam
+  values
 }) => {
   const { getString } = useStrings()
   const { expressions } = useVariablesExpression()
@@ -37,22 +35,23 @@ export const ParameterRepoDetails: React.FC<StepProps<any> & CFFileStoreProps> =
   const template = values?.spec?.configuration?.templateFile
   const connector = values?.connector
   let param
-  if (isParam && index !== undefined) {
+  if (index !== undefined) {
     param = values?.spec?.configuration?.parameters
   }
-
-  const repoName = isParam
-    ? `spec.configuration.parameters.store.spec.repoName`
-    : 'spec.configuration.templateFile.spec.store.spec.repoName'
-  const gitFetchType = isParam
-    ? `spec.configuration.parameters.store.spec.gitFetchType`
-    : 'spec.configuration.templateFile.spec.store.spec.gitFetchType'
-  const branch = isParam
-    ? `spec.configuration.parameters.store.spec.branch`
-    : 'spec.configuration.templateFile.spec.store.spec.branch'
-  const commitId = isParam
-    ? `spec.configuration.parameters.store.spec.commitId`
-    : 'spec.configuration.templateFile.spec.store.spec.commitId'
+  const fieldNames = (isParam: boolean) => ({
+    repoName: isParam
+      ? 'spec.configuration.parameters.store.spec.repoName'
+      : 'spec.configuration.templateFile.spec.store.spec.repoName',
+    gitFetchType: isParam
+      ? 'spec.configuration.parameters.store.spec.gitFetchType'
+      : 'spec.configuration.templateFile.spec.store.spec.gitFetchType',
+    branch: isParam
+      ? 'spec.configuration.parameters.store.spec.branch'
+      : 'spec.configuration.templateFile.spec.store.spec.branch',
+    commitId: isParam
+      ? 'spec.configuration.parameters.store.spec.commitId'
+      : 'spec.configuration.templateFile.spec.store.spec.commitId'
+  })
 
   return (
     <>
@@ -60,7 +59,7 @@ export const ParameterRepoDetails: React.FC<StepProps<any> & CFFileStoreProps> =
         <div className={cx(stepCss.formGroup, stepCss.md)}>
           <FormInput.MultiTextInput
             label={getString('pipelineSteps.repoName')}
-            name={repoName}
+            name={fieldNames(isNumber(index)).repoName}
             placeholder={getString('pipelineSteps.repoName')}
             multiTextInputProps={{ expressions, allowableTypes }}
           />
@@ -69,7 +68,7 @@ export const ParameterRepoDetails: React.FC<StepProps<any> & CFFileStoreProps> =
               style={{ alignSelf: 'center', marginTop: 1 }}
               value={param?.store?.spec?.repoName as string}
               type="String"
-              variableName={repoName}
+              variableName={fieldNames(isNumber(index)).repoName}
               showRequiredField={false}
               showDefaultField={false}
               showAdvanced={true}
@@ -80,7 +79,7 @@ export const ParameterRepoDetails: React.FC<StepProps<any> & CFFileStoreProps> =
       <div className={cx(stepCss.formGroup, stepCss.md)}>
         <FormInput.Select
           items={gitFetchTypes}
-          name={gitFetchType}
+          name={fieldNames(isNumber(index)).gitFetchType}
           label={getString('pipeline.manifestType.gitFetchTypeLabel')}
           placeholder={getString('pipeline.manifestType.gitFetchTypeLabel')}
         />
@@ -91,7 +90,7 @@ export const ParameterRepoDetails: React.FC<StepProps<any> & CFFileStoreProps> =
           <FormInput.MultiTextInput
             label={getString('pipelineSteps.deploy.inputSet.branch')}
             placeholder={getString('pipeline.manifestType.branchPlaceholder')}
-            name={branch}
+            name={fieldNames(isNumber(index)).branch}
             multiTextInputProps={{ expressions, allowableTypes }}
           />
           {getMultiTypeFromValue(param?.store?.spec?.branch) === MultiTypeInputType.RUNTIME && (
@@ -99,7 +98,7 @@ export const ParameterRepoDetails: React.FC<StepProps<any> & CFFileStoreProps> =
               style={{ alignSelf: 'center', marginTop: 1 }}
               value={param?.store?.spec?.branch as string}
               type="String"
-              variableName={branch}
+              variableName={fieldNames(isNumber(index)).branch}
               showRequiredField={false}
               showDefaultField={false}
               showAdvanced={true}
@@ -107,13 +106,13 @@ export const ParameterRepoDetails: React.FC<StepProps<any> & CFFileStoreProps> =
           )}
         </div>
       )}
-      {param?.store?.spec?.gitFetchType === gitFetchTypes[1].value ||
-        (template?.spec?.store?.spec?.gitFetchType === gitFetchTypes[1].value && (
+      {(param?.store?.spec?.gitFetchType === gitFetchTypes[1].value ||
+        template?.spec?.store?.spec?.gitFetchType === gitFetchTypes[1].value) && (
           <div className={cx(stepCss.formGroup, stepCss.md)}>
             <FormInput.MultiTextInput
               label={getString('pipeline.manifestType.commitId')}
               placeholder={getString('pipeline.manifestType.commitPlaceholder')}
-              name={commitId}
+              name={fieldNames(isNumber(index)).commitId}
               multiTextInputProps={{ expressions, allowableTypes }}
             />
             {getMultiTypeFromValue(param?.store?.spec?.commitId) === MultiTypeInputType.RUNTIME && (
@@ -121,14 +120,14 @@ export const ParameterRepoDetails: React.FC<StepProps<any> & CFFileStoreProps> =
                 style={{ alignSelf: 'center', marginTop: 1 }}
                 value={param?.store?.spec?.commitId as string}
                 type="String"
-                variableName={commitId}
+                variableName={fieldNames(isNumber(index)).commitId}
                 showRequiredField={false}
                 showDefaultField={false}
                 showAdvanced={true}
               />
             )}
           </div>
-        ))}
+        )}
     </>
   )
 }
