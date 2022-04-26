@@ -179,63 +179,61 @@ function StepCommonFieldsInputSet<T>(props: StepCommonFieldsInputSetProps<T>): J
         </Container>
       )}
       {(isLimitMemoryRuntime || isLimitCPURuntime) && (
-        <>
-          <Container className={css.bottomMargin5}>
-            <Text
-              className={css.inpLabel}
-              color={Color.GREY_600}
-              font={{ size: 'small', weight: 'semi-bold' }}
-              tooltipProps={{ dataTooltipId: 'setContainerResources' }}
-            >
-              {getString('pipelineSteps.setContainerResources')}
-            </Text>
-
-            <Layout.Horizontal
-              className={cx(
-                css.formGroup,
-                { [css.lgOverride]: isLimitMemoryRuntime && isLimitCPURuntime },
-                { [stepCss]: isLimitMemoryRuntime || isLimitCPURuntime }
-              )}
-              style={{ marginTop: 'small', marginBottom: 'small', alignItems: 'baseline' }}
-              spacing="medium"
-            >
-              {isLimitMemoryRuntime && (
-                <Container style={{ flex: 1 }}>
-                  {renderMultiTypeTextField({
-                    name: `${isEmpty(path) ? '' : `${path}.`}spec.resources.limits.memory`,
-                    tooltipId: 'limitMemory',
-                    labelKey: 'pipelineSteps.limitMemoryLabel',
-                    inputProps: {
-                      multiTextInputProps: {
-                        expressions,
-                        allowableTypes: AllMultiTypeInputTypesForInputSet
-                      },
-                      disabled: readonly
+        <Container className={css.bottomMargin5}>
+          <Text
+            className={css.inpLabel}
+            color={Color.GREY_600}
+            font={{ size: 'small', weight: 'semi-bold' }}
+            tooltipProps={{ dataTooltipId: 'setContainerResources' }}
+          >
+            {getString('pipelineSteps.setContainerResources')}
+          </Text>
+          <Layout.Horizontal
+            className={cx(
+              css.formGroup,
+              { [css.lgOverride]: isLimitMemoryRuntime && isLimitCPURuntime },
+              { [stepCss]: isLimitMemoryRuntime || isLimitCPURuntime }
+            )}
+            style={{ alignItems: 'baseline' }}
+            margin={{ top: 'xsmall', bottom: 'small' }}
+            spacing="medium"
+          >
+            {isLimitMemoryRuntime && (
+              <Container style={{ flex: 1 }}>
+                {renderMultiTypeTextField({
+                  name: `${isEmpty(path) ? '' : `${path}.`}spec.resources.limits.memory`,
+                  tooltipId: 'limitMemory',
+                  labelKey: 'pipelineSteps.limitMemoryLabel',
+                  inputProps: {
+                    multiTextInputProps: {
+                      expressions,
+                      allowableTypes: AllMultiTypeInputTypesForInputSet
                     },
-                    fieldPath: 'spec.resources.limits.memory'
-                  })}
-                </Container>
-              )}
-              {isLimitCPURuntime && (
-                <Container style={{ flex: 1 }}>
-                  {renderMultiTypeTextField({
-                    name: `${isEmpty(path) ? '' : `${path}.`}spec.resources.limits.cpu`,
-                    tooltipId: 'limitCPULabel',
-                    labelKey: 'pipelineSteps.limitCPULabel',
-                    inputProps: {
-                      multiTextInputProps: {
-                        expressions,
-                        allowableTypes: AllMultiTypeInputTypesForInputSet
-                      },
-                      disabled: readonly
+                    disabled: readonly
+                  },
+                  fieldPath: 'spec.resources.limits.memory'
+                })}
+              </Container>
+            )}
+            {isLimitCPURuntime && (
+              <Container style={{ flex: 1 }}>
+                {renderMultiTypeTextField({
+                  name: `${isEmpty(path) ? '' : `${path}.`}spec.resources.limits.cpu`,
+                  tooltipId: 'limitCPULabel',
+                  labelKey: 'pipelineSteps.limitCPULabel',
+                  inputProps: {
+                    multiTextInputProps: {
+                      expressions,
+                      allowableTypes: AllMultiTypeInputTypesForInputSet
                     },
-                    fieldPath: 'spec.resources.limits.cpu'
-                  })}
-                </Container>
-              )}
-            </Layout.Horizontal>
-          </Container>
-        </>
+                    disabled: readonly
+                  },
+                  fieldPath: 'spec.resources.limits.cpu'
+                })}
+              </Container>
+            )}
+          </Layout.Horizontal>
+        </Container>
       )}
       {!withoutTimeout && isTimeoutRuntime && (
         <Container className={cx(css.formGroup, css.sm, css.bottomMargin5)}>
