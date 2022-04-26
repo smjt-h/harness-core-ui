@@ -1060,6 +1060,7 @@ export interface StringsMap {
   'governance.permissions.governancePolicies': string
   'governance.permissions.governancePolicySets': string
   'filestore.editFileDetails': string
+  'filestore.fileSuccessCreated': string
   'filestore.folderSuccessCreated': string
   'filestore.newFile': string
   'filestore.newFolder': string
