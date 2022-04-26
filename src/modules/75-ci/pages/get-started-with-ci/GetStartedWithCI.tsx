@@ -96,7 +96,7 @@ export default function GetStartedWithCI(): React.ReactElement {
 
   const renderCatalogueItem = React.useCallback(
     ({ icon, label, helptext }: { icon: IconName; label: keyof StringsMap; helptext: keyof StringsMap }) => (
-      <Layout.Vertical padding={{ bottom: 'xxxlarge' }}>
+      <Layout.Vertical padding={{ bottom: 'xxxlarge' }} key={label}>
         <Icon name={icon} size={50} />
         <Text font={{ variation: FontVariation.CARD_TITLE }}>{getString(label)}</Text>
         <Text font={{ variation: FontVariation.SMALL }}>{getString(helptext)}</Text>

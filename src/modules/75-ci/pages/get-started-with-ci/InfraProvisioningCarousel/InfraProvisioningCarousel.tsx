@@ -95,6 +95,7 @@ export const InfraProvisioningCarousel: React.FC<InfraProvisioningCarouselProps>
             setActiveSlide(i)
             setEnableTransition(false)
           }}
+          style={{ cursor: 'pointer' }}
         />
       )
     }
@@ -114,7 +115,10 @@ export const InfraProvisioningCarousel: React.FC<InfraProvisioningCarouselProps>
       <Layout.Horizontal padding={{ top: 'small', bottom: 'small' }}>
         {provisioningStatus === 'IN_PROGRESS' ? (
           <>
-            <Layout.Vertical style={{ flex: 1, alignItems: 'center' }} padding="xlarge">
+            <Layout.Vertical
+              style={{ flex: 1, alignItems: 'center' }}
+              padding={{ top: 'xxlarge', right: 'xxxlarge', bottom: 'xxlarge', left: 'xxxlarge' }}
+            >
               <Icon name="harness" size={34} padding="large" />
               <Text font={{ variation: FontVariation.H4 }} style={{ textAlign: 'center' }}>
                 {getString('ci.getStartedWithCI.provisionSecureEnv')}
@@ -132,7 +136,7 @@ export const InfraProvisioningCarousel: React.FC<InfraProvisioningCarouselProps>
                 })}
               </Text>
             </Layout.Vertical>
-            <Layout.Vertical style={{ flex: 1, alignItems: 'center' }} padding="xlarge">
+            <Layout.Vertical style={{ flex: 1, alignItems: 'center' }} padding="xxxlarge" className={css.rightBg}>
               <Layout.Vertical spacing="medium">
                 <Container padding={{ top: 'large' }}>
                   <Container

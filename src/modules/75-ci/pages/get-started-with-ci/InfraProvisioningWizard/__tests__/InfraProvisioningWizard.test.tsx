@@ -7,20 +7,22 @@
 
 import React from 'react'
 import { act, fireEvent, render, getByText as getByTextBody } from '@testing-library/react'
-import { findDialogContainer } from '@common/utils/testUtils'
+import { StringsContext } from 'framework/strings'
+import { findDialogContainer, TestWrapper } from '@common/utils/testUtils'
+import routes from '@common/RouteDefinitions'
 import { HostedByHarnessBuildLocation, InfraProvisiongWizardStepId, AllBuildLocations } from '../Constants'
 import { InfraProvisioningWizard } from '../InfraProvisioningWizard'
 import { SelectBuildLocation } from '../SelectBuildLocation'
 
-jest.mock('framework/strings', () => ({
-  useStrings: () => ({
-    getString: (key: string) => key
-  })
-}))
+const pathParams = { accountId: 'accountId', orgIdentifier: 'orgId', projectIdentifier: 'projectId' }
 
 describe('Render and test InfraProvisioningWizard', () => {
   test('Initial render for SelectBuildLocation', async () => {
-    const { container } = render(<SelectBuildLocation selectedBuildLocation={HostedByHarnessBuildLocation} />)
+    const { container } = render(
+      <StringsContext.Provider value={{ data: {} as any, getString: (key: string) => key as string }}>
+        <SelectBuildLocation selectedBuildLocation={HostedByHarnessBuildLocation} />
+      </StringsContext.Provider>
+    )
     expect(container.getElementsByClassName('div[class*="MultiStepProgressIndicator"]'))
 
     // All build infra type cards should be visible
@@ -46,7 +48,11 @@ describe('Render and test InfraProvisioningWizard', () => {
   })
 
   test('Test Wizard Navigation with Select Build Location as first step', async () => {
-    const { container, getByText } = render(<InfraProvisioningWizard />)
+    const { container, getByText } = render(
+      <TestWrapper path={routes.toCIGetStarted({ ...pathParams, module: 'ci' })} pathParams={pathParams}>
+        <InfraProvisioningWizard />
+      </TestWrapper>
+    )
 
     // Infra provisioning carousel dialog should not be visible before button click
     let dialog = findDialogContainer() as HTMLElement
@@ -85,8 +91,11 @@ describe('Render and test InfraProvisioningWizard', () => {
 
   test('Test Wizard Navigation with Select Git Provider as first step', async () => {
     const { getByText } = render(
-      <InfraProvisioningWizard lastConfiguredWizardStepId={InfraProvisiongWizardStepId.SelectGitProvider} />
+      <TestWrapper path={routes.toCIGetStarted({ ...pathParams, module: 'ci' })} pathParams={pathParams}>
+        <InfraProvisioningWizard lastConfiguredWizardStepId={InfraProvisiongWizardStepId.SelectGitProvider} />
+      </TestWrapper>
     )
+
     expect(getByText('ci.getStartedWithCI.codeRepo')).toBeTruthy()
     expect(getByText('next: ci.getStartedWithCI.selectRepo')).toBeTruthy()
     // Going back to SelectBuildLocation

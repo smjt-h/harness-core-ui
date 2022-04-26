@@ -67,5 +67,6 @@ export enum PAGE_NAME {
   AccountConfiguration = 'AccountConfiguration',
   AccountOverview = 'AccountOverview',
   SubscriptionsPage = 'SubscriptionsPage',
-  PlanPage = 'PlanPage'
+  PlanPage = 'PlanPage',
+  GetStartedWithCI = 'GetStartedWithCI'
 }

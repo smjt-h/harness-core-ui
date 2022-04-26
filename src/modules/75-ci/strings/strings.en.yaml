@@ -164,6 +164,8 @@ getStartedWithCI:
   createPipeline: Create Pipeline
   codebaseHelptext: Harness will clone your codebase to your build infrastructure at Pipeline runtime.
   searchRepo: Search Repository
+  learnMoreAboutPermissions: Learn more about the required permissions
+  verifyConnection: Verify connection before you can continue
   carousel:
     labels:
       harnessCIFeatures: Harness CI

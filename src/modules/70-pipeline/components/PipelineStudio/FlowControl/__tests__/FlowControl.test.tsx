@@ -43,15 +43,19 @@ jest.mock('@common/hooks', () => ({
   })
 }))
 
+const initial = () => {
+  pipelineContextMock.stepsFactory.getStepData = () => undefined
+  pipelineContextMock.state.pipelineView.drawerData.type = DrawerTypes.FlowControl
+  pipelineContextMock.state.pipelineView?.drawerData?.data &&
+    (pipelineContextMock.state.pipelineView.drawerData.data.paletteData = {
+      isRollback: false,
+      isParallelNodeClicked: false
+    } as any)
+}
+
 describe('FlowControl tests', () => {
   test('should render fine', async () => {
-    pipelineContextMock.stepsFactory.getStepData = () => undefined
-    pipelineContextMock.state.pipelineView.drawerData.type = DrawerTypes.FlowControl
-    pipelineContextMock.state.pipelineView?.drawerData?.data &&
-      (pipelineContextMock.state.pipelineView.drawerData.data.paletteData = {
-        isRollback: false,
-        isParallelNodeClicked: false
-      } as any)
+    initial()
 
     const { findByText, container } = render(
       <PipelineContext.Provider value={pipelineContextMock}>
@@ -67,13 +71,7 @@ describe('FlowControl tests', () => {
   })
 
   test('should call createItem when add barrier is clicked', async () => {
-    pipelineContextMock.stepsFactory.getStepData = () => undefined
-    pipelineContextMock.state.pipelineView.drawerData.type = DrawerTypes.FlowControl
-    pipelineContextMock.state.pipelineView?.drawerData?.data &&
-      (pipelineContextMock.state.pipelineView.drawerData.data.paletteData = {
-        isRollback: false,
-        isParallelNodeClicked: false
-      } as any)
+    initial()
     pipelineContextMock.updatePipeline = jest.fn()
 
     const { container, findByText, getByText } = render(
@@ -101,13 +99,7 @@ describe('FlowControl tests', () => {
   })
 
   test('should call deleteItem when delete icon is clicked', async () => {
-    pipelineContextMock.stepsFactory.getStepData = () => undefined
-    pipelineContextMock.state.pipelineView.drawerData.type = DrawerTypes.FlowControl
-    pipelineContextMock.state.pipelineView?.drawerData?.data &&
-      (pipelineContextMock.state.pipelineView.drawerData.data.paletteData = {
-        isRollback: false,
-        isParallelNodeClicked: false
-      } as any)
+    initial()
     pipelineContextMock.state.pipeline.flowControl = {
       barriers: mockBarriers
     }
@@ -131,13 +123,7 @@ describe('FlowControl tests', () => {
   })
 
   test('discard button should exist', async () => {
-    pipelineContextMock.stepsFactory.getStepData = () => undefined
-    pipelineContextMock.state.pipelineView.drawerData.type = DrawerTypes.FlowControl
-    pipelineContextMock.state.pipelineView?.drawerData?.data &&
-      (pipelineContextMock.state.pipelineView.drawerData.data.paletteData = {
-        isRollback: false,
-        isParallelNodeClicked: false
-      } as any)
+    initial()
 
     const { findByText } = render(
       <PipelineContext.Provider value={pipelineContextMock}>
@@ -152,5 +138,80 @@ describe('FlowControl tests', () => {
     act(() => {
       fireEvent.click(discardButton)
     })
+  })
+
+  test('should render with no stages and delete', async () => {
+    initial()
+    pipelineContextMock.state.pipeline.flowControl = {
+      barriers: [
+        {
+          identifier: 'demoId',
+          name: 'demoName'
+        },
+        {
+          identifier: 'demoId1',
+          name: 'demoName1'
+        }
+      ]
+    }
+    const { container } = render(
+      <PipelineContext.Provider value={pipelineContextMock}>
+        <TestWrapper>
+          <RightDrawer />
+        </TestWrapper>
+      </PipelineContext.Provider>
+    )
+
+    //delete
+    const listTrash = container.querySelectorAll('[data-icon="main-trash"]')
+    await act(() => {
+      fireEvent.click(listTrash[1])
+    })
+
+    //check if deleted
+    expect(container.querySelectorAll('[data-icon="main-trash"]').length).toBe(1)
+  })
+  test('should render barrier list with mode', async () => {
+    initial()
+    pipelineContextMock.state.pipeline.flowControl = {
+      barriers: [
+        {
+          identifier: 'demoId',
+          name: 'demoName',
+          stages: [
+            {
+              name: 'demoStageName'
+            },
+            {
+              name: 'demoStageName2'
+            }
+          ]
+        },
+        {
+          identifier: 'demoId1',
+          name: 'demoName1',
+          mode: 'Add'
+        } as any
+      ]
+    }
+    const { container, getByText } = render(
+      <PipelineContext.Provider value={pipelineContextMock}>
+        <TestWrapper>
+          <RightDrawer />
+        </TestWrapper>
+      </PipelineContext.Provider>
+    )
+    //delete
+    const listTrash = container.querySelectorAll('[data-icon="main-trash"]')
+    fireEvent.click(listTrash[1])
+
+    expect(container.querySelectorAll('[data-icon="main-trash"]').length).toBe(1)
+
+    //add new barrier
+    fireEvent.click(getByText('pipeline.barriers.addBarrier'))
+    fireEvent.change(container.querySelector('input[name="barriers[1].name"]')!, { target: { value: 'demoId' } })
+    await waitFor(() => fireEvent.click(getByText('pipeline.barriers.syncBarriers')))
+
+    expect(container.querySelectorAll('[data-icon="main-trash"]').length).toBe(2)
   })
 })

@@ -113,12 +113,14 @@ describe('SLOCardContent', () => {
 
   test('it should call setSliderTimeRange when toggle triggered', () => {
     const setSliderTimeRange = jest.fn()
+    const setChartTimeRange = jest.fn()
 
     render(
       <TestWrapper {...testWrapperProps}>
         <SLOCardContent
           isCardView
           setSliderTimeRange={setSliderTimeRange}
+          setChartTimeRange={setChartTimeRange}
           serviceLevelObjective={dashboardWidgetsContent}
         />
       </TestWrapper>
@@ -126,7 +128,10 @@ describe('SLOCardContent', () => {
 
     userEvent.click(screen.getByText('cv.errorBudget'))
 
-    expect(setSliderTimeRange).toBeCalled()
+    expect(screen.getByText('cv.errorBudget')).toHaveClass('PillToggle--selected')
+
+    expect(setSliderTimeRange).toBeCalledTimes(1)
+    expect(setChartTimeRange).toBeCalledTimes(1)
   })
 
   test('it should show the SLI recalculation in progress warning', () => {
@@ -139,24 +144,30 @@ describe('SLOCardContent', () => {
     expect(screen.getByText('cv.sloRecalculationInProgress')).toBeInTheDocument()
   })
 
-  test('it should handle resetSlider', () => {
+  test('it should handle resetSlider for type SLO', () => {
+    const setSliderTimeRange = jest.fn()
+
     render(
       <TestWrapper {...testWrapperProps}>
-        <SLOCardContent isCardView serviceLevelObjective={dashboardWidgetsContent} />
+        <SLOCardContent
+          isCardView
+          serviceLevelObjective={dashboardWidgetsContent}
+          setSliderTimeRange={setSliderTimeRange}
+        />
       </TestWrapper>
     )
 
-    userEvent.click(screen.getByText('cv.errorBudget'))
-    expect(screen.queryByTestId('error-budget-gauge')).toBeInTheDocument()
-
     expect(screen.getByTestId('timeline-slider-container')).toBeInTheDocument()
     userEvent.click(screen.getByTestId('timeline-slider-container'))
+
+    expect(setSliderTimeRange).toBeCalledTimes(1)
 
     expect(screen.getByText('reset')).toBeInTheDocument()
 
     userEvent.click(screen.getByText('reset'))
 
     expect(screen.queryByText('reset')).not.toBeInTheDocument()
+    expect(setSliderTimeRange).toBeCalledTimes(2)
   })
 
   test('it should handle resetSlider for type Error Budget', () => {
@@ -172,6 +183,9 @@ describe('SLOCardContent', () => {
         />
       </TestWrapper>
     )
+
+    userEvent.click(screen.getByText('cv.errorBudget'))
+    expect(screen.queryByTestId('error-budget-gauge')).toBeInTheDocument()
 
     expect(screen.getByTestId('timeline-slider-container')).toBeInTheDocument()
     userEvent.click(screen.getByTestId('timeline-slider-container'))

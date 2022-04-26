@@ -32,7 +32,7 @@ import css from './TemplateStudioSubHeader.module.scss'
 
 export interface TemplateStudioSubHeaderProps {
   onViewChange: (view: SelectedView) => boolean
-  getErrors?: () => Promise<GetErrorResponse>
+  getErrors: () => Promise<GetErrorResponse>
   onGitBranchChange: (selectedFilter: GitFilterScope) => void
 }
 

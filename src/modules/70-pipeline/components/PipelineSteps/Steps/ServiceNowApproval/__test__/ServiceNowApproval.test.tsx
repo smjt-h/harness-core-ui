@@ -50,7 +50,6 @@ describe('ServiceNow Approval tests', () => {
         inputSetData={props.inputSetData}
       />
     )
-
     fireEvent.click(getByText('Submit'))
     await waitFor(() => queryByText('Errors'))
     expect(container).toMatchSnapshot('input set with errors')

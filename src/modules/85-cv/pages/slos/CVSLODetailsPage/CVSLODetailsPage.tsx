@@ -86,7 +86,7 @@ const CVSLODetailsPage: React.FC = () => {
     }
   }
 
-  const { description, sloDashboardWidget } = data?.data ?? {}
+  const { description, sloDashboardWidget, timeRangeFilters } = data?.data ?? {}
   const loading = sloDetailsLoading || resetErrorBudgetLoading || deleteSLOLoading
 
   const breadcrumbLinks = [
@@ -118,6 +118,7 @@ const CVSLODetailsPage: React.FC = () => {
                   errorMessage={getErrorMessage(error)}
                   retryOnError={() => refetch()}
                   sloDashboardWidget={sloDashboardWidget}
+                  timeRangeFilters={timeRangeFilters}
                 />
               )
             },

@@ -53,11 +53,6 @@
   border-bottom: 1px solid var(--grey-200);
 }
 
-.testConnectionBtnWithError {
-  padding-top: var(--spacing-4) !important;
-  padding-bottom: var(--spacing-xxlarge) !important;
-}
-
 .comingSoonPill {
   background: linear-gradient(152.65deg, var(--purple-200) 5.9%, var(--purple-400) 89.46%) !important;
   border-radius: 4px;
@@ -103,4 +98,18 @@
     border-radius: 6px;
     padding-left: var(--spacing-xxxlarge) !important;
   }
+}
+
+.authMethodBtn {
+  border: 1px solid var(--grey-100) !important;
+  box-sizing: border-box;
+  box-shadow: 0px 0px 1px rgba(40, 41, 61, 0.04), 0px 2px 4px rgba(96, 97, 112, 0.16) !important;
+}
+
+.learnMore {
+  padding: 0 !important;
+}
+
+.testConnectionBtn {
+  width: fit-content;
 }

@@ -84,7 +84,6 @@ export const AllBuildLocations: BuildLocationDetails[] = [
 export enum InfraProvisiongWizardStepId {
   SelectBuildLocation = 'SELECT_BUILD_LOCATION',
   SelectGitProvider = 'SELECT_GIT_PROVIDER',
-  SelectGitProviderWithAuthenticationMethod = 'SELECT_GIT_PROVIDER_WITH_AUTHENTICATION_METHOD',
   SelectRepository = 'SELECT_REPOSITORY'
 }
 
@@ -113,3 +112,14 @@ export enum GitAuthenticationMethod {
   OAuth = 'OAUTH',
   AccessToken = 'ACCESS_TOKEN'
 }
+
+export interface GitProviderPermission {
+  type: ConnectorInfoDTO['type']
+  permissions: string[]
+}
+
+export const GitProviderPermissions: GitProviderPermission[] = [
+  { type: 'Github', permissions: ['repo', 'admin:repo_hook', 'user'] },
+  { type: 'Bitbucket', permissions: ['Issues:read', 'Webhooks:read and write', 'Pull requests:write'] },
+  { type: 'Gitlab', permissions: ['api', 'read_repository', 'write_repository'] }
+]

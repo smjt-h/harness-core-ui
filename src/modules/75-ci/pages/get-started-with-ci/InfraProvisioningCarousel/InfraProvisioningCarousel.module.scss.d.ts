@@ -9,6 +9,7 @@
 declare const styles: {
   readonly fixedMinHeight: string
   readonly main: string
+  readonly rightBg: string
   readonly samplePipeline: string
 }
 export default styles

@@ -69,7 +69,10 @@ export const mergeTemplateWithInputSetData = (
 
   const toBeUpdated = cloneDeep(templatePipeline)
   if (toBeUpdated.pipeline.template) {
-    set(toBeUpdated, 'pipeline.template.templateInputs.stages', mergedStages)
+    if (Array.isArray(mergedStages)) {
+      set(toBeUpdated, 'pipeline.template.templateInputs.stages', mergedStages)
+    }
+
     if ((inputSetPortion.pipeline?.template?.templateInputs as PipelineInfoConfig).properties?.ci) {
       set(
         toBeUpdated,
@@ -88,7 +91,10 @@ export const mergeTemplateWithInputSetData = (
       )
     }
   } else {
-    toBeUpdated.pipeline.stages = mergedStages
+    if (Array.isArray(mergedStages)) {
+      toBeUpdated.pipeline.stages = mergedStages
+    }
+
     if (inputSetPortion.pipeline?.properties?.ci) {
       if (!toBeUpdated.pipeline.properties) {
         toBeUpdated.pipeline.properties = {}

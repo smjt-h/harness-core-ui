@@ -6,8 +6,14 @@
  */
 
 import React, { useState } from 'react'
+import { useHistory, useParams } from 'react-router-dom'
 import { Container, Button, ButtonVariation, Layout, MultiStepProgressIndicator } from '@harness/uicore'
 import { useStrings } from 'framework/strings'
+import routes from '@common/RouteDefinitions'
+import { createPipelineV2Promise, ResponsePipelineSaveResponse } from 'services/pipeline-ng'
+import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
+import { DEFAULT_PIPELINE_PAYLOAD } from '@common/utils/CIConstants'
+import { yamlStringify } from '@common/utils/YamlHelperMethods'
 import { InfraProvisioningCarousel } from '../InfraProvisioningCarousel/InfraProvisioningCarousel'
 import {
   InfraProvisioningWizardProps,
@@ -33,6 +39,8 @@ export const InfraProvisioningWizard: React.FC<InfraProvisioningWizardProps> = p
   const selectGitProviderRef = React.useRef<SelectGitProviderRef | null>(null)
   const selectRepositoryRef = React.useRef<SelectRepositoryRef | null>(null)
   const [showError, setShowError] = useState<boolean>(false)
+  const { accountId, projectIdentifier, orgIdentifier } = useParams<ProjectPathProps>()
+  const history = useHistory()
 
   const [wizardStepStatus, setWizardStepStatus] = useState<Map<InfraProvisiongWizardStepId, StepStatus>>(
     new Map<InfraProvisiongWizardStepId, StepStatus>([
@@ -52,6 +60,17 @@ export const InfraProvisioningWizard: React.FC<InfraProvisioningWizardProps> = p
     }
   }, [])
 
+  const constructPipelinePayload = React.useCallback(() => {
+    const payload = { ...DEFAULT_PIPELINE_PAYLOAD }
+    payload.pipeline.projectIdentifier = projectIdentifier
+    payload.pipeline.orgIdentifier = orgIdentifier
+    try {
+      return yamlStringify(payload)
+    } catch (e) {
+      // Ignore error
+    }
+  }, [projectIdentifier, orgIdentifier])
+
   const WizardSteps: Map<InfraProvisiongWizardStepId, WizardStep> = new Map([
     [
       InfraProvisiongWizardStepId.SelectBuildLocation,
@@ -67,20 +86,34 @@ export const InfraProvisioningWizard: React.FC<InfraProvisioningWizardProps> = p
     [
       InfraProvisiongWizardStepId.SelectGitProvider,
       {
-        stepRender: <SelectGitProvider ref={selectGitProviderRef} />,
+        stepRender: (
+          <SelectGitProvider
+            ref={selectGitProviderRef}
+            disableNextBtn={() => setDisable(true)}
+            enableNextBtn={() => setDisable(false)}
+          />
+        ),
         onClickNext: () => {
           const { values, setFieldTouched } = selectGitProviderRef.current || {}
-          const { gitProvider } = values || {}
+          const { accessToken, gitProvider, gitAuthenticationMethod } = values || {}
           if (!gitProvider) {
             setFieldTouched?.('gitProvider', true)
+            return
           }
-          if (gitProvider) {
-            setFieldTouched?.('gitAuthenticationMethod', false)
-            setCurrentWizardStepId(InfraProvisiongWizardStepId.SelectGitProviderWithAuthenticationMethod)
-            updateStepStatus(
-              [InfraProvisiongWizardStepId.SelectGitProviderWithAuthenticationMethod],
-              StepStatus.InProgress
-            )
+          if (!gitAuthenticationMethod) {
+            setFieldTouched?.('gitAuthenticationMethod', true)
+            return
+          }
+          if (!accessToken) {
+            setFieldTouched?.('accessToken', true)
+          }
+          if (
+            (gitAuthenticationMethod === GitAuthenticationMethod.AccessToken && accessToken && gitProvider) ||
+            (gitAuthenticationMethod === GitAuthenticationMethod.OAuth && gitProvider)
+          ) {
+            setCurrentWizardStepId(InfraProvisiongWizardStepId.SelectRepository)
+            updateStepStatus([InfraProvisiongWizardStepId.SelectGitProvider], StepStatus.Success)
+            updateStepStatus([InfraProvisiongWizardStepId.SelectRepository], StepStatus.InProgress)
           }
         },
         onClickBack: () => {
@@ -95,64 +128,13 @@ export const InfraProvisioningWizard: React.FC<InfraProvisioningWizardProps> = p
       }
     ],
     [
-      InfraProvisiongWizardStepId.SelectGitProviderWithAuthenticationMethod,
-      {
-        stepRender: (
-          <SelectGitProvider
-            ref={selectGitProviderRef}
-            selectedGitProvider={selectGitProviderRef.current?.values.gitProvider}
-          />
-        ),
-        onClickNext: () => {
-          const { values, setFieldTouched } = selectGitProviderRef.current || {}
-          const { accessToken, gitProvider, gitAuthenticationMethod } = values || {}
-          if (!gitAuthenticationMethod) {
-            setFieldTouched?.('gitAuthenticationMethod', true)
-            return
-          }
-          if (!accessToken) {
-            setFieldTouched?.('accessToken', true)
-          }
-          if (
-            (gitAuthenticationMethod === GitAuthenticationMethod.AccessToken && accessToken && gitProvider) ||
-            (gitAuthenticationMethod === GitAuthenticationMethod.OAuth && gitProvider)
-          ) {
-            setCurrentWizardStepId(InfraProvisiongWizardStepId.SelectRepository)
-            updateStepStatus(
-              [
-                InfraProvisiongWizardStepId.SelectGitProvider,
-                InfraProvisiongWizardStepId.SelectGitProviderWithAuthenticationMethod
-              ],
-              StepStatus.Success
-            )
-            updateStepStatus([InfraProvisiongWizardStepId.SelectRepository], StepStatus.InProgress)
-          }
-        },
-        onClickBack: () => {
-          setDisable(false)
-          setCurrentWizardStepId(InfraProvisiongWizardStepId.SelectGitProvider)
-          updateStepStatus(
-            [
-              InfraProvisiongWizardStepId.SelectGitProvider,
-              InfraProvisiongWizardStepId.SelectGitProviderWithAuthenticationMethod
-            ],
-            StepStatus.ToDo
-          )
-        },
-        stepFooterLabel: 'ci.getStartedWithCI.selectRepo'
-      }
-    ],
-    [
       InfraProvisiongWizardStepId.SelectRepository,
       {
         stepRender: <SelectRepository ref={selectRepositoryRef} showError={showError} />,
         onClickBack: () => {
-          setCurrentWizardStepId(InfraProvisiongWizardStepId.SelectGitProviderWithAuthenticationMethod)
+          setCurrentWizardStepId(InfraProvisiongWizardStepId.SelectGitProvider)
           updateStepStatus(
-            [
-              InfraProvisiongWizardStepId.SelectGitProviderWithAuthenticationMethod,
-              InfraProvisiongWizardStepId.SelectRepository
-            ],
+            [InfraProvisiongWizardStepId.SelectGitProvider, InfraProvisiongWizardStepId.SelectRepository],
             StepStatus.ToDo
           )
         },
@@ -161,6 +143,32 @@ export const InfraProvisioningWizard: React.FC<InfraProvisioningWizardProps> = p
           setShowError(shouldShowError)
           if (!shouldShowError) {
             updateStepStatus([InfraProvisiongWizardStepId.SelectRepository], StepStatus.Success)
+            setDisable(true)
+            createPipelineV2Promise({
+              body: constructPipelinePayload() || '',
+              queryParams: {
+                accountIdentifier: accountId,
+                orgIdentifier,
+                projectIdentifier
+              },
+              requestOptions: { headers: { 'Content-Type': 'application/yaml' } }
+            })
+              .then((createPipelineResponse: ResponsePipelineSaveResponse) => {
+                setDisable(false)
+                const { status, data } = createPipelineResponse
+                if (status === 'SUCCESS' && data?.identifier) {
+                  history.push(
+                    routes.toPipelineStudio({
+                      accountId: accountId,
+                      module: 'ci',
+                      orgIdentifier,
+                      projectIdentifier,
+                      pipelineIdentifier: data?.identifier
+                    })
+                  )
+                }
+              })
+              .catch(() => setDisable(false))
           }
         },
         stepFooterLabel: 'ci.getStartedWithCI.createPipeline'

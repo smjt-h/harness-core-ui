@@ -29,7 +29,7 @@ exports[`Test Infra Provisioning Carousel Initial render 1`] = `
       class="Layout--horizontal StyledProps--main StyledProps--padding-top-small StyledProps--padding-bottom-small"
     >
       <div
-        class="Layout--vertical StyledProps--main StyledProps--padding-xlarge"
+        class="Layout--vertical StyledProps--main StyledProps--padding-top-xxlarge StyledProps--padding-right-xxxlarge StyledProps--padding-bottom-xxlarge StyledProps--padding-left-xxxlarge"
         style="flex: 1; align-items: center;"
       >
         <span
@@ -69,7 +69,7 @@ exports[`Test Infra Provisioning Carousel Initial render 1`] = `
         </p>
       </div>
       <div
-        class="Layout--vertical StyledProps--main StyledProps--padding-xlarge"
+        class="Layout--vertical StyledProps--main rightBg StyledProps--padding-xxxlarge"
         style="flex: 1; align-items: center;"
       >
         <div
@@ -106,6 +106,7 @@ exports[`Test Infra Provisioning Carousel Initial render 1`] = `
           <span
             class="bp3-icon bp3-icon-dot StyledProps--main StyledProps--color StyledProps--color-blue100"
             icon="dot"
+            style="cursor: pointer;"
           >
             <svg
               data-icon="dot"
@@ -125,6 +126,7 @@ exports[`Test Infra Provisioning Carousel Initial render 1`] = `
           <span
             class="bp3-icon bp3-icon-dot StyledProps--main StyledProps--color StyledProps--color-blue100"
             icon="dot"
+            style="cursor: pointer;"
           >
             <svg
               data-icon="dot"
@@ -144,6 +146,7 @@ exports[`Test Infra Provisioning Carousel Initial render 1`] = `
           <span
             class="bp3-icon bp3-icon-dot StyledProps--main StyledProps--color StyledProps--color-blue600"
             icon="dot"
+            style="cursor: pointer;"
           >
             <svg
               data-icon="dot"
@@ -163,6 +166,7 @@ exports[`Test Infra Provisioning Carousel Initial render 1`] = `
           <span
             class="bp3-icon bp3-icon-dot StyledProps--main StyledProps--color StyledProps--color-blue100"
             icon="dot"
+            style="cursor: pointer;"
           >
             <svg
               data-icon="dot"
@@ -182,6 +186,7 @@ exports[`Test Infra Provisioning Carousel Initial render 1`] = `
           <span
             class="bp3-icon bp3-icon-dot StyledProps--main StyledProps--color StyledProps--color-blue100"
             icon="dot"
+            style="cursor: pointer;"
           >
             <svg
               data-icon="dot"
@@ -201,6 +206,7 @@ exports[`Test Infra Provisioning Carousel Initial render 1`] = `
           <span
             class="bp3-icon bp3-icon-dot StyledProps--main StyledProps--color StyledProps--color-blue100"
             icon="dot"
+            style="cursor: pointer;"
           >
             <svg
               data-icon="dot"
@@ -220,6 +226,7 @@ exports[`Test Infra Provisioning Carousel Initial render 1`] = `
           <span
             class="bp3-icon bp3-icon-dot StyledProps--main StyledProps--color StyledProps--color-blue100"
             icon="dot"
+            style="cursor: pointer;"
           >
             <svg
               data-icon="dot"
@@ -239,6 +246,7 @@ exports[`Test Infra Provisioning Carousel Initial render 1`] = `
           <span
             class="bp3-icon bp3-icon-dot StyledProps--main StyledProps--color StyledProps--color-blue100"
             icon="dot"
+            style="cursor: pointer;"
           >
             <svg
               data-icon="dot"

@@ -11,6 +11,7 @@ import cx from 'classnames'
 import { cloneDeep, debounce, defaultTo, isEmpty, isNil, noop } from 'lodash-es'
 import type { NodeModelListener, LinkModelListener } from '@projectstorm/react-diagrams-core'
 import SplitPane from 'react-split-pane'
+import produce from 'immer'
 import { DynamicPopover, DynamicPopoverHandlerBinding } from '@common/components/DynamicPopover/DynamicPopover'
 import { useTelemetry } from '@common/hooks/useTelemetry'
 import { StageActions } from '@common/constants/TrackingConstants'
@@ -245,7 +246,9 @@ function StageBuilder(): React.ReactElement {
     if (event?.entity && event.entity instanceof DefaultLinkModel) {
       let node = event.entity.getSourcePort().getNode() as DefaultNodeModel
       if (node instanceof NodeStartModel) {
-        pipeline.stages.unshift(newStage)
+        pipeline.stages = produce(pipeline.stages, draft => {
+          draft.unshift(newStage)
+        })
       } else {
         let { stage } = getStageFromPipeline(node.getIdentifier())
         let next = 1
@@ -257,7 +260,9 @@ function StageBuilder(): React.ReactElement {
         if (stage) {
           const index = pipeline.stages.indexOf(stage)
           if (index > -1) {
-            pipeline.stages.splice(index + next, 0, newStage)
+            pipeline.stages = produce(pipeline.stages, draft => {
+              draft.splice(index + next, 0, newStage)
+            })
           }
         } else {
           // parallel next parallel case
@@ -277,7 +282,9 @@ function StageBuilder(): React.ReactElement {
           if (stage) {
             const index = pipeline.stages.indexOf(stage)
             if (index > -1) {
-              pipeline.stages.splice(index + next, 0, newStage)
+              pipeline.stages = produce(pipeline.stages, draft => {
+                draft.splice(index + next, 0, newStage)
+              })
             }
           }
         }
@@ -287,21 +294,29 @@ function StageBuilder(): React.ReactElement {
       const parentTemp = parent as StageElementWrapperConfig
       if (stage) {
         if (parentTemp && parentTemp.parallel && parentTemp.parallel.length > 0) {
-          parentTemp.parallel.push(newStage)
+          parentTemp.parallel = produce(parentTemp.parallel, draft => {
+            draft.push(newStage)
+          })
         } else {
           const index = pipeline.stages.indexOf(stage)
           if (index > -1) {
-            pipeline.stages.splice(index, 1, {
-              parallel: [stage, newStage]
+            pipeline.stages = produce(pipeline.stages, draft => {
+              draft.splice(index, 1, {
+                parallel: [stage, newStage]
+              })
             })
           }
         }
       }
     } else {
       if (!isNil(insertAt) && insertAt > -1) {
-        pipeline.stages.splice(insertAt, 0, newStage)
+        pipeline.stages = produce(pipeline.stages, draft => {
+          draft.splice(insertAt, 0, newStage)
+        })
       } else {
-        pipeline.stages.push(newStage)
+        pipeline.stages = produce(pipeline.stages, draft => {
+          draft.push(newStage)
+        })
       }
     }
     dynamicPopoverHandler?.hide()

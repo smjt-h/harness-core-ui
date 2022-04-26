@@ -99,8 +99,7 @@ export default function ChangesTable({
     queryParams: changeEventListQueryParams,
     queryParamStringifyOptions: {
       arrayFormat: 'repeat'
-    },
-    debounce: 500
+    }
   })
 
   const { content = [], pageSize = 0, pageIndex = 0, totalPages = 0, totalItems = 0 } = data?.resource ?? {}

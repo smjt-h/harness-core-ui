@@ -4872,6 +4872,7 @@ export interface StringsMap {
   'ci.getStartedWithCI.k8sBuildLocation': string
   'ci.getStartedWithCI.languageAgnostic': string
   'ci.getStartedWithCI.languageAgnosticHelpText': string
+  'ci.getStartedWithCI.learnMoreAboutPermissions': string
   'ci.getStartedWithCI.oAuthLabel': string
   'ci.getStartedWithCI.onCloudLabel': string
   'ci.getStartedWithCI.onPremLabel': string
@@ -4893,6 +4894,7 @@ export interface StringsMap {
   'ci.getStartedWithCI.tiHelpText': string
   'ci.getStartedWithCI.troubleShootFailedProvisioning': string
   'ci.getStartedWithCI.tryASamplePipeline': string
+  'ci.getStartedWithCI.verifyConnection': string
   'ci.gradleNote1': string
   'ci.gradleNote2': string
   'ci.gradleNotesTitle': string
@@ -5671,6 +5673,7 @@ export interface StringsMap {
   'cv.windowEndsDay': string
   'cv.windowsEndIsRequired': string
   'cv.yourExistingErrorBudgetIs': string
+  'cv.zoom': string
   'stoSteps.securityStage.description': string
   'stoSteps.stepDescription.ZeroNorth': string
   'stoSteps.zeroNorthImagePlaceholder': string

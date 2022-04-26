@@ -34,6 +34,7 @@ import { PermissionsProvider } from 'framework/rbac/PermissionsContext'
 import { FeaturesProvider } from 'framework/featureStore/FeaturesContext'
 import { ThirdPartyIntegrations } from '3rd-party/ThirdPartyIntegrations'
 import { useGlobalEventListener } from '@common/hooks'
+import { global401HandlerUtils } from '@common/utils/global401HandlerUtils'
 
 const RouteDestinations = React.lazy(() => import('modules/RouteDestinations'))
 
@@ -136,11 +137,7 @@ export function AppWithAuthentication(props: AppProps): React.ReactElement {
           }
         )
       }
-      AppStorage.clear()
-      history.push({
-        pathname: routes.toRedirect(),
-        search: returnUrlParams(getLoginPageURL({ returnUrl: window.location.href }))
-      })
+      global401HandlerUtils(history)
       return
     }
 

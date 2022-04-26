@@ -5,23 +5,31 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import React, { useState } from 'react'
+import React, { useCallback, useState } from 'react'
 import { Layout, Container, Heading, PillToggle, PillToggleProps, Text, Card } from '@harness/uicore'
 import { Color, FontVariation } from '@harness/design-system'
 import { PageSpinner } from '@common/components'
 import { useStrings } from 'framework/strings'
 import { getErrorBudgetGaugeOptions } from '../CVSLOListingPage.utils'
 import { SLOCardContentProps, SLOCardToggleViews } from '../CVSLOsListingPage.types'
+import TimeRangeFilter from './TimeRangeFilter'
 import ErrorBudgetGauge from './ErrorBudgetGauge'
 import SLOTargetChartWithChangeTimeline from './SLOTargetChartWithChangeTimeline'
 import css from '../CVSLOsListingPage.module.scss'
 
 const SLOCardContent: React.FC<SLOCardContentProps> = props => {
   const { getString } = useStrings()
-  const { isCardView, serviceLevelObjective, setSliderTimeRange } = props
+  const { isCardView, serviceLevelObjective, setChartTimeRange, setSliderTimeRange } = props
   const { sloPerformanceTrend, sloTargetPercentage } = serviceLevelObjective
 
   const [toggle, setToggle] = useState(SLOCardToggleViews.SLO)
+  const [showTimelineSlider, setShowTimelineSlider] = useState(false)
+  const [customTimeFilter, setCustomTimeFilter] = useState(false)
+
+  const resetSlider = useCallback(() => {
+    setShowTimelineSlider(false)
+    setSliderTimeRange?.()
+  }, [setSliderTimeRange])
 
   const toggleProps: PillToggleProps<SLOCardToggleViews> = {
     options: [
@@ -35,8 +43,10 @@ const SLOCardContent: React.FC<SLOCardContentProps> = props => {
       }
     ],
     onChange: view => {
+      resetSlider()
+      setCustomTimeFilter(false)
+      setChartTimeRange?.()
       setToggle(view)
-      setSliderTimeRange?.()
     },
     selectedView: toggle,
     className: css.pillToggle
@@ -60,16 +70,27 @@ const SLOCardContent: React.FC<SLOCardContentProps> = props => {
       <SLOAndErrorBudgetChartContainer style={{ position: 'relative' }}>
         {toggle === SLOCardToggleViews.SLO && (
           <>
+            {serviceLevelObjective.recalculatingSLI && (
+              <PageSpinner className={css.sloCardSpinner} message={getString('cv.sloRecalculationInProgress')} />
+            )}
             <Container flex>
               <Heading level={2} font={{ variation: headingVariation }} data-tooltip-id={'SLOPerformanceTrend'}>
                 {getString('cv.SLOPerformanceTrend')}
               </Heading>
-              {serviceLevelObjective.recalculatingSLI && (
-                <PageSpinner className={css.sloCardSpinner} message={getString('cv.sloRecalculationInProgress')} />
+              {isCardView && (
+                <TimeRangeFilter
+                  {...props}
+                  type={SLOCardToggleViews.SLO}
+                  resetSlider={resetSlider}
+                  showTimelineSlider={showTimelineSlider}
+                  setShowTimelineSlider={setShowTimelineSlider}
+                  customTimeFilter={customTimeFilter}
+                  setCustomTimeFilter={setCustomTimeFilter}
+                />
               )}
             </Container>
-            <Layout.Horizontal spacing="medium">
-              <Layout.Vertical spacing="medium" margin={{ top: 'large' }}>
+            <Layout.Horizontal spacing="medium" margin={{ top: 'small' }}>
+              <Layout.Vertical spacing="medium" margin={{ top: 'small' }}>
                 <Container background={Color.GREY_100} className={stylesSLOAndSLICard}>
                   <Text font={{ variation: FontVariation.FORM_LABEL }} tooltipProps={{ dataTooltipId: 'SLO' }}>
                     {getString('cv.SLO')}
@@ -87,7 +108,17 @@ const SLOCardContent: React.FC<SLOCardContentProps> = props => {
                   </Heading>
                 </Container>
               </Layout.Vertical>
-              <SLOTargetChartWithChangeTimeline {...props} type={SLOCardToggleViews.SLO} />
+              <Container style={{ overflow: 'auto' }} className={css.flexGrowOne}>
+                <SLOTargetChartWithChangeTimeline
+                  {...props}
+                  type={SLOCardToggleViews.SLO}
+                  resetSlider={resetSlider}
+                  showTimelineSlider={showTimelineSlider}
+                  setShowTimelineSlider={setShowTimelineSlider}
+                  customTimeFilter={customTimeFilter}
+                  setCustomTimeFilter={setCustomTimeFilter}
+                />
+              </Container>
             </Layout.Horizontal>
           </>
         )}
@@ -109,11 +140,32 @@ const SLOCardContent: React.FC<SLOCardContentProps> = props => {
                 <span style={{ display: 'block' }}>{getString('cv.minutesRemaining')}</span>
               </Text>
             </Container>
-            <Container className={css.flexGrowOne}>
-              <Heading font={{ variation: headingVariation }} data-tooltip-id={'errorBudgetBurnDown'}>
-                {getString('cv.errorBudgetBurnDown')}
-              </Heading>
-              <SLOTargetChartWithChangeTimeline {...props} type={SLOCardToggleViews.ERROR_BUDGET} />
+            <Container className={css.flexGrowOne} style={{ overflow: 'auto' }}>
+              <Container flex={{ alignItems: 'flex-start' }} margin={{ bottom: 'small' }}>
+                <Heading font={{ variation: headingVariation }} data-tooltip-id={'errorBudgetBurnDown'}>
+                  {getString('cv.errorBudgetBurnDown')}
+                </Heading>
+                {isCardView && (
+                  <TimeRangeFilter
+                    {...props}
+                    type={SLOCardToggleViews.ERROR_BUDGET}
+                    resetSlider={resetSlider}
+                    showTimelineSlider={showTimelineSlider}
+                    setShowTimelineSlider={setShowTimelineSlider}
+                    customTimeFilter={customTimeFilter}
+                    setCustomTimeFilter={setCustomTimeFilter}
+                  />
+                )}
+              </Container>
+              <SLOTargetChartWithChangeTimeline
+                {...props}
+                type={SLOCardToggleViews.ERROR_BUDGET}
+                resetSlider={resetSlider}
+                showTimelineSlider={showTimelineSlider}
+                setShowTimelineSlider={setShowTimelineSlider}
+                customTimeFilter={customTimeFilter}
+                setCustomTimeFilter={setCustomTimeFilter}
+              />
             </Container>
           </Layout.Horizontal>
         )}

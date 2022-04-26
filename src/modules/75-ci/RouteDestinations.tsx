@@ -122,7 +122,7 @@ import CIPipelineStudio from './pages/pipeline-studio/CIPipelineStudio'
 import CISideNav from './components/CISideNav/CISideNav'
 import BuildCommits from './pages/build/sections/commits/BuildCommits'
 import CITrialHomePage from './pages/home/CITrialHomePage'
-// import GetStartedWithCI from './pages/get-started-with-ci/GetStartedWithCI'
+import GetStartedWithCI from './pages/get-started-with-ci/GetStartedWithCI'
 import { CIExecutionCardSummary } from './components/CIExecutionCardSummary/CIExecutionCardSummary'
 import { CIExecutionSummary } from './components/CIExecutionSummary/CIExecutionSummary'
 import { CIStageDetails } from './components/CIStageDetails/CIStageDetails'
@@ -727,15 +727,15 @@ export default (
     >
       <DeploymentsList />
     </RouteWithLayout>
-    {/* This is still WIP */}
-    {/* <RouteWithLayout
+    <RouteWithLayout
       exact
       licenseRedirectData={licenseRedirectData}
       sidebarProps={CISideNavProps}
+      pageName={PAGE_NAME.GetStartedWithCI}
       path={routes.toCIGetStarted({ ...accountPathProps, ...projectPathProps, ...pipelineModuleParams })}
     >
       <GetStartedWithCI />
-    </RouteWithLayout> */}
+    </RouteWithLayout>
     <RouteWithLayout
       exact
       licenseRedirectData={licenseRedirectData}
