@@ -21,8 +21,12 @@ import { MultiTypeTextField } from '@common/components/MultiTypeText/MultiTypeTe
 import { StepViewType } from '@pipeline/components/AbstractSteps/Step'
 import { useVariablesExpression } from '@pipeline/components/PipelineStudio/PiplineHooks/useVariablesExpression'
 import type { RunTestsStepProps } from './RunTestsStep'
-import { AllMultiTypeInputTypesForInputSet, shouldRenderRunTimeInputView } from '../CIStep/StepUtils'
-import { CIStep } from '../CIStep/CIStep'
+import {
+  AllMultiTypeInputTypesForInputSet,
+  shouldRenderRunTimeInputView,
+  shouldRenderRunTimeInputViewWithAllowedValues
+} from '../CIStep/StepUtils'
+import { CIStep, renderMultiTypeInputWithAllowedValues } from '../CIStep/CIStep'
 import { ConnectorRefWithImage } from '../CIStep/ConnectorRefWithImage'
 import { CIStepOptionalConfig, getOptionalSubLabel, renderMultiTypeListInputSet } from '../CIStep/CIStepOptionalConfig'
 import css from '@pipeline/components/PipelineSteps/Steps/Steps.module.scss'
@@ -198,10 +202,42 @@ export const RunTestsStepInputSetBasic: React.FC<RunTestsStepProps> = ({
           />
         </Container>
       )}
-      {getMultiTypeFromValue(template?.spec?.preCommand) === MultiTypeInputType.RUNTIME &&
-        renderCommandEditor(`${prefix}spec.preCommand`, 'ci.preCommandLabel', 'runTestsPreCommand')}
-      {getMultiTypeFromValue(template?.spec?.preCommand) === MultiTypeInputType.RUNTIME &&
-        renderCommandEditor(`${prefix}spec.postCommand`, 'ci.postCommandLabel', 'runTestsPostCommand')}
+      {getMultiTypeFromValue(template?.spec?.preCommand) === MultiTypeInputType.RUNTIME ? (
+        shouldRenderRunTimeInputViewWithAllowedValues('spec.preCommand', template) ? (
+          <Container className={cx(css.formGroup, stepCss)}>
+            {renderMultiTypeInputWithAllowedValues({
+              name: `${prefix}spec.preCommand`,
+              labelKey: 'ci.preCommandLabel',
+              tooltipId: 'runTestsPreCommand',
+              fieldPath: 'spec.preCommand',
+              getString,
+              readonly,
+              expressions,
+              template
+            })}
+          </Container>
+        ) : (
+          renderCommandEditor(`${prefix}spec.preCommand`, 'ci.preCommandLabel', 'runTestsPreCommand')
+        )
+      ) : null}
+      {getMultiTypeFromValue(template?.spec?.postCommand) === MultiTypeInputType.RUNTIME ? (
+        shouldRenderRunTimeInputViewWithAllowedValues('spec.postCommand', template) ? (
+          <Container className={cx(css.formGroup, stepCss)}>
+            {renderMultiTypeInputWithAllowedValues({
+              name: `${prefix}spec.postCommand`,
+              labelKey: 'ci.postCommandLabel',
+              tooltipId: 'runTestsPostCommand',
+              fieldPath: 'spec.postCommand',
+              getString,
+              readonly,
+              expressions,
+              template
+            })}
+          </Container>
+        ) : (
+          renderCommandEditor(`${prefix}spec.postCommand`, 'ci.postCommandLabel', 'runTestsPostCommand')
+        )
+      ) : null}
       {shouldRenderRunTimeInputView(template?.spec?.reports?.spec?.paths) && (
         <Container className={cx(css.formGroup, stepCss, css.bottomMargin5)}>
           {renderMultiTypeListInputSet({

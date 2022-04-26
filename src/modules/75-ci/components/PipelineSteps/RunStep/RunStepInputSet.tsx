@@ -19,10 +19,14 @@ import { useVariablesExpression } from '@pipeline/components/PipelineStudio/Pipl
 import StepCommonFieldsInputSet from '@ci/components/PipelineSteps/StepCommonFields/StepCommonFieldsInputSet'
 import { StepViewType } from '@pipeline/components/AbstractSteps/Step'
 import type { RunStepProps } from './RunStep'
-import { CIStep } from '../CIStep/CIStep'
+import { CIStep, renderMultiTypeInputWithAllowedValues } from '../CIStep/CIStep'
 import { CIStepOptionalConfig, renderMultiTypeListInputSet } from '../CIStep/CIStepOptionalConfig'
 import { ConnectorRefWithImage } from '../CIStep/ConnectorRefWithImage'
-import { AllMultiTypeInputTypesForInputSet, shouldRenderRunTimeInputView } from '../CIStep/StepUtils'
+import {
+  AllMultiTypeInputTypesForInputSet,
+  shouldRenderRunTimeInputView,
+  shouldRenderRunTimeInputViewWithAllowedValues
+} from '../CIStep/StepUtils'
 import css from '@pipeline/components/PipelineSteps/Steps/Steps.module.scss'
 
 export const RunStepInputSetBasic: React.FC<RunStepProps> = ({
@@ -61,44 +65,59 @@ export const RunStepInputSetBasic: React.FC<RunStepProps> = ({
       />
       {getMultiTypeFromValue(template?.spec?.command) === MultiTypeInputType.RUNTIME && (
         <div className={cx(css.fieldsGroup, css.withoutSpacing, css.topPadding3, css.bottomPadding3, stepCss)}>
-          <MultiTypeFieldSelector
-            name={`${prefix}spec.command`}
-            label={
-              <Text
-                color={Color.GREY_800}
-                font={{ size: 'normal', weight: 'bold' }}
-                className={css.inpLabel}
-                style={{ display: 'flex', alignItems: 'center' }}
-                tooltipProps={{ dataTooltipId: 'runCommand' }}
-              >
-                {getString('commandLabel')}
-              </Text>
-            }
-            defaultValueToReset=""
-            skipRenderValueInExpressionLabel
-            allowedTypes={allowableTypes}
-            expressionRender={() => {
-              return (
-                <ShellScriptMonacoField
-                  title={getString('commandLabel')}
-                  name={`${prefix}spec.command`}
-                  scriptType="Bash"
-                  expressions={expressions}
-                  disabled={readonly}
-                />
-              )
-            }}
-            style={{ flexGrow: 1, marginBottom: 0 }}
-            disableTypeSelection={readonly}
-          >
-            <ShellScriptMonacoField
-              title={getString('commandLabel')}
+          {shouldRenderRunTimeInputViewWithAllowedValues('spec.command', template) ? (
+            <Container className={cx(css.formGroup, stepCss)}>
+              {renderMultiTypeInputWithAllowedValues({
+                name: `${prefix}spec.command`,
+                labelKey: 'commandLabel',
+                tooltipId: 'runCommand',
+                fieldPath: 'spec.command',
+                getString,
+                readonly,
+                expressions,
+                template
+              })}
+            </Container>
+          ) : (
+            <MultiTypeFieldSelector
               name={`${prefix}spec.command`}
-              scriptType="Bash"
-              disabled={readonly}
-              expressions={expressions}
-            />
-          </MultiTypeFieldSelector>
+              label={
+                <Text
+                  color={Color.GREY_800}
+                  font={{ size: 'normal', weight: 'bold' }}
+                  className={css.inpLabel}
+                  style={{ display: 'flex', alignItems: 'center' }}
+                  tooltipProps={{ dataTooltipId: 'runCommand' }}
+                >
+                  {getString('commandLabel')}
+                </Text>
+              }
+              defaultValueToReset=""
+              skipRenderValueInExpressionLabel
+              allowedTypes={allowableTypes}
+              expressionRender={() => {
+                return (
+                  <ShellScriptMonacoField
+                    title={getString('commandLabel')}
+                    name={`${prefix}spec.command`}
+                    scriptType="Bash"
+                    expressions={expressions}
+                    disabled={readonly}
+                  />
+                )
+              }}
+              style={{ flexGrow: 1, marginBottom: 0 }}
+              disableTypeSelection={readonly}
+            >
+              <ShellScriptMonacoField
+                title={getString('commandLabel')}
+                name={`${prefix}spec.command`}
+                scriptType="Bash"
+                disabled={readonly}
+                expressions={expressions}
+              />
+            </MultiTypeFieldSelector>
+          )}
         </div>
       )}
       {getMultiTypeFromValue(template?.spec?.privileged) === MultiTypeInputType.RUNTIME && (
