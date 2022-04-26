@@ -14,7 +14,10 @@ import {
   Text,
   getMultiTypeFromValue,
   Container,
-  Color
+  Color,
+  RUNTIME_INPUT_VALUE,
+  SelectOption,
+  FormInput
 } from '@wings-software/uicore'
 import { connect } from 'formik'
 import { FontVariation } from '@harness/design-system'
@@ -56,6 +59,7 @@ import type { StepViewType } from '../AbstractSteps/Step'
 import { useVariablesExpression } from '../PipelineStudio/PiplineHooks/useVariablesExpression'
 import stepCss from '@pipeline/components/PipelineSteps/Steps/Steps.module.scss'
 import css from './PipelineInputSetForm.module.scss'
+import { RegExAllowedInputExpression } from '../PipelineSteps/Steps/CustomVariables/CustomVariableInputSet'
 
 function ServiceDependencyForm({
   template,
@@ -427,37 +431,132 @@ export function StageInputSetFormInternal({
     deploymentStageTemplateInfraKeys.includes(field)
   )
 
+  const shouldRenderRunTimeInputView = (value: any): boolean => {
+    if (value) {
+      if (typeof value === 'object') {
+        return Object.keys(value).some(
+          key => typeof value[key] === 'string' && value[key].startsWith(RUNTIME_INPUT_VALUE)
+        )
+      } else {
+        return typeof value === 'string' && value.startsWith(RUNTIME_INPUT_VALUE)
+      }
+    }
+    return false
+  }
+
+  const shouldRenderRunTimeInputViewWithAllowedValues = (
+    fieldPath: string,
+    template?: Record<string, any>
+  ): boolean => {
+    if (!template) {
+      return false
+    }
+    const value = get(template, fieldPath, '')
+    return shouldRenderRunTimeInputView(value) && RegExAllowedInputExpression.test(value)
+  }
+
+  const renderMultiTypeInputWithAllowedValues = ({
+    name,
+    tooltipId,
+    labelKey,
+    fieldPath,
+    template,
+    expressions,
+    readonly,
+    getString,
+    showOptionalSublabel
+  }: {
+    name: string
+    tooltipId?: string
+    labelKey: keyof StringsMap
+    fieldPath: string
+    template?: Record<string, any>
+    expressions: string[]
+    readonly?: boolean
+    getString: (key: keyof StringsMap, vars?: Record<string, any> | undefined) => string
+    showOptionalSublabel?: boolean
+  }) => {
+    if (!name) {
+      return
+    }
+    if (template && fieldPath) {
+      const value = get(template, fieldPath, '')
+      const items: SelectOption[] = []
+      if (RegExAllowedInputExpression.test(value as string)) {
+        // This separates out "<+input>.allowedValues(a, b, c)" to ["<+input>", ["a", "b", "c"]]
+        const match = (value as string).match(RegExAllowedInputExpression)
+        if (match && match?.length > 1) {
+          const allowedValues = match[1]
+          items.push(...allowedValues.split(',').map(item => ({ label: item, value: item })))
+        }
+      }
+      return (
+        <FormInput.MultiTypeInput
+          name={name}
+          label={getString(labelKey).concat(showOptionalSublabel ? ` ${getString('titleOptional')}` : '')}
+          useValue
+          selectItems={items}
+          multiTypeInputProps={{
+            allowableTypes: [MultiTypeInputType.FIXED, MultiTypeInputType.EXPRESSION],
+            expressions,
+            selectProps: { disabled: readonly, items }
+          }}
+          disabled={readonly}
+          tooltipProps={{ dataTooltipId: tooltipId ?? '' }}
+        />
+      )
+    }
+  }
+
   const renderMultiTypeTextField = React.useCallback(
     ({
       name,
       tooltipId,
       labelKey,
-      inputProps
+      inputProps,
+      fieldPath,
+      template
     }: {
       name: string
       tooltipId: string
       labelKey: keyof StringsMap
       inputProps: MultiTypeTextProps['multiTextInputProps']
-    }) => (
-      <MultiTypeTextField
-        name={name}
-        label={
-          <Text
-            className={stepCss.inpLabel}
-            color={Color.GREY_600}
-            font={{ size: 'small', weight: 'semi-bold' }}
-            tooltipProps={{
-              dataTooltipId: tooltipId
-            }}
-          >
-            {getString(labelKey)}
-          </Text>
-        }
-        style={{ width: 300 }}
-        multiTextInputProps={inputProps}
-      />
-    ),
-    []
+      fieldPath: string
+      template?: Record<string, any>
+    }) => {
+      if (shouldRenderRunTimeInputViewWithAllowedValues(fieldPath, template)) {
+        return renderMultiTypeInputWithAllowedValues({
+          name,
+          tooltipId: tooltipId,
+          labelKey: labelKey,
+          fieldPath,
+          getString,
+          readonly,
+          expressions,
+          template
+        })
+      }
+      return (
+        <MultiTypeTextField
+          name={name}
+          label={
+            <Text
+              className={stepCss.inpLabel}
+              color={Color.GREY_600}
+              font={{ size: 'small', weight: 'semi-bold' }}
+              tooltipProps={{
+                dataTooltipId: tooltipId
+              }}
+            >
+              {getString(labelKey)}
+            </Text>
+          }
+          style={{ width: 300 }}
+          multiTextInputProps={inputProps}
+        />
+      )
+    },
+    [deploymentStageTemplate]
   )
 
   const renderMultiTypeMapInputSet = React.useCallback(
@@ -650,7 +749,8 @@ export function StageInputSetFormInternal({
                           allowableTypes: allowableTypes
                         },
                         disabled: readonly
-                      }
+                      },
+                      fieldPath: ''
                     })}
                   </Container>
                 )}
@@ -668,7 +768,8 @@ export function StageInputSetFormInternal({
                         allowableTypes: allowableTypes
                       },
                       disabled: readonly
-                    }
+                    },
+                    fieldPath: ''
                   })}
                 </Container>
               )
@@ -685,7 +786,9 @@ export function StageInputSetFormInternal({
                       allowableTypes: allowableTypes
                     },
                     disabled: readonly
-                  }
+                  },
+                  fieldPath: 'spec.serviceAccountName',
+                  template: deploymentStageTemplate
                 })}
               </Container>
             )}
@@ -732,7 +835,8 @@ export function StageInputSetFormInternal({
                       allowableTypes: allowableTypes
                     },
                     disabled: readonly
-                  }
+                  },
+                  fieldPath: ''
                 })}
               </Container>
             )}
@@ -801,7 +905,8 @@ export function StageInputSetFormInternal({
                       placeholder: '1000'
                     },
                     disabled: readonly
-                  }
+                  },
+                  fieldPath: ''
                 })}
               </Container>
             )}
