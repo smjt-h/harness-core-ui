@@ -297,7 +297,7 @@ export const CostCalculator = (): JSX.Element => {
 
 
   const currentDeveloperUsageCost = calculateCostTotal(
-    developerUsageSeats,
+      developerPlannedSeats,
     getCostForUnits(
       developerPlannedSeats ? developerPlannedSeats : 0,
       ffUnitTypes.DEVELOPER,
@@ -305,9 +305,9 @@ export const CostCalculator = (): JSX.Element => {
       PlanType.MONTHLY
     ),
     developerPlannedSeats,
-    0.2
+    0
   )
-  const currentMauUsageCost = getCostForUnits(developerSelected, ffUnitTypes.MAU, edition, plan)
+  const currentMauUsageCost = getCostForUnits(mauPlannedSeats, ffUnitTypes.MAU, edition, plan) / 25
 
   const totalDeveloperRate = getCostForUnits(
     developerSelected,
@@ -315,21 +315,19 @@ export const CostCalculator = (): JSX.Element => {
     editionSelected,
     paymentFrequencySelected
   )
-  const totalMauRate = getCostForUnits(mausSelected, ffUnitTypes.MAU, editionSelected, paymentFrequencySelected)
+  const totalMauRate = getCostForUnits(mausSelected, ffUnitTypes.MAU, editionSelected, paymentFrequencySelected) / 25
 
   const moneySavedYearly =
     paymentFrequencySelected === PlanType.MONTHLY
       ? totalDeveloperRate * 12 -
         getCostForUnits(developerSelected, ffUnitTypes.DEVELOPER, editionSelected, PlanType.YEARLY) +
         (totalMauRate * 12 -
-          getCostForUnits(mausSelected / 25, ffUnitTypes.MAU, editionSelected, PlanType.YEARLY))
+          getCostForUnits(mausSelected, ffUnitTypes.MAU, editionSelected, PlanType.YEARLY) / 25)
       : 0
   const supportCost = 160
   const totalCost = totalDeveloperRate + totalMauRate + supportCost
   const dueTodayCost = edition !== Editions.FREE ? currentDeveloperUsageCost + currentMauUsageCost : totalCost
 
-  const editionChecked = edition !== Editions.FREE ? edition : editionSelected
-  const titleString = editionChecked === Editions.TEAM ? 'Team' : 'Enterprise'
   const title = `Feature Flag Subscription`
   const monthYear = frequencyString(paymentFrequencySelected)
 
