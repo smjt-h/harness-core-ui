@@ -273,8 +273,8 @@ export interface StringsMap {
   'common.git.APIAuthentication': string
   'common.git.addUserCredentialLabel': string
   'common.git.applicationId': string
-  'common.git.azureReposAccountUrl': string
   'common.git.azureReposPlaceholderSSH': string
+  'common.git.azureReposProjectUrl': string
   'common.git.azureReposRepoUrl': string
   'common.git.azureReposUrlPlaceholder': string
   'common.git.bitbucketAccountUrl': string
