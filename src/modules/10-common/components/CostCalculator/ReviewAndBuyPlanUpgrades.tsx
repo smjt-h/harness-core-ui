@@ -31,23 +31,23 @@ interface ReviewPageParams {
 }
 
 
-const JustStripeData = () => {
-
-  const CL = 'pk_test_51IykZ0Iqk5P9Eha3uhZUAnFuUWzaLLSa2elWpGBCF7uGpDU5rOcuX8PQew7hI947J9Lefh4qmQniY11HyXcUyBXD00aayEoMmU';
-  const options = {
-    // passing the client secret obtained from the server
-    clientSecret: CL,
-  };
-
-  return (
-      <Elements stripe={stripePromise} options={options}>
-        <CheckoutForm />
-      </Elements>
-  );
-
-
-
-}
+// const JustStripeData = () => {
+//
+//   const CL = 'pk_test_51IykZ0Iqk5P9Eha3uhZUAnFuUWzaLLSa2elWpGBCF7uGpDU5rOcuX8PQew7hI947J9Lefh4qmQniY11HyXcUyBXD00aayEoMmU';
+//   const options = {
+//     // passing the client secret obtained from the server
+//     clientSecret: CL,
+//   };
+//
+//   return (
+//       <Elements stripe={stripePromise} options={options}>
+//         <CheckoutForm />
+//       </Elements>
+//   );
+//
+//
+//
+// }
 
 
 
@@ -140,7 +140,7 @@ export const ReviewPage = ({
   total,
   backButtonClick
 }: ReviewPageParams) => {
-  const reviewTitle = `Feature Flag ${newEdition} Subscription`
+  const reviewTitle = `Feature Flag Subscription`
 
   return (
     <Layout.Vertical padding={{ left: 'huge', right: 'huge' }}>

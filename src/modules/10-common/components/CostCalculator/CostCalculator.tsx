@@ -7,6 +7,7 @@ import {useModalHook} from '@harness/use-modal'
 import {ButtonVariation, Container} from '@wings-software/uicore'
 import {useParams} from "react-router-dom";
 import moment from "moment";
+import {isNaN} from "lodash-es";
 import {Editions} from '@common/constants/SubscriptionTypes'
 import {
   acquireCurrentPlan,
@@ -49,7 +50,7 @@ const InfoBox = ({ title, units, using, recommended, planned }: InfoBoxParams) =
         {title}
       </Text>
       <Layout.Horizontal flex={{ justifyContent: 'space-around' }} padding={{ bottom: 'xxlarge' }}>
-        {planned && (
+        { !isNaN(planned as number) && (
           <Layout.Vertical>
             <Text font={{ variation: FontVariation.SMALL }}>Current</Text>
             <Layout.Horizontal
@@ -110,8 +111,12 @@ interface CostSliderParams {
   labelSummary: string
 }
 
-const GetEditionBox = (editionType : string) => {
-  return (<Text font={{variation: FontVariation.BLOCKQUOTE}} color={Color.WHITE} className={cx(css.subscriptionType)}>
+interface EditionBox {
+  editionType: string;
+}
+
+export const GetEditionBox = ({editionType}: EditionBox) => {
+  return (<Text font={{variation: FontVariation.BLOCKQUOTE}} color={Color.PRIMARY_7} className={cx(css.subscriptionType)}>
     {editionType}
   </Text>)
 }
@@ -119,6 +124,9 @@ const GetEditionBox = (editionType : string) => {
 
 const CostSlider = (costSliderParms: CostSliderParams) => {
   const [thumbMoved, setThumbMoved] = useState<boolean>(false)
+
+  const shownPlannedUsage = Math.max(Math.min(costSliderParms.plannedUsage || 0 , costSliderParms.maxVal), costSliderParms.minVal)
+
 
   return (
     <Layout.Vertical padding={{ top: 'xlarge' }}>
@@ -146,9 +154,9 @@ const CostSlider = (costSliderParms: CostSliderParams) => {
       </Layout.Horizontal>
 
       <Container className={css.topSliderDots}>
-        {costSliderParms.plannedUsage && (
+        {   costSliderParms.plannedUsage !== undefined && (
           <Container
-            width={`${(costSliderParms.plannedUsage * 100) / costSliderParms.maxVal}%`}
+            width={`${(shownPlannedUsage * 100) / costSliderParms.maxVal}%`}
             className={css.sliderDotContainer}
           >
             <img src={plannedUsageIcon} height={'10px'} width={'10px'} />
@@ -209,12 +217,8 @@ export const CostCalculator = (): JSX.Element => {
 
   const { limitData, usageData } = useGetUsageAndLimit(ModuleName.CF);
 
-  const { usageErrorMsg, refetchUsage, usage } = usageData
-  const { limitErrorMsg, refetchLimit, limit } = limitData
-
-  //  const developerUsageSeats = 1
-  //  const developerPlannedSeats = edition !== Editions.FREE ? 2 : undefined
-  //  const developerRecommendedSeats = 3
+  const { usage } = usageData
+  const { limit } = limitData
 
 
   const developerPlannedSeats=limit?.ff?.totalFeatureFlagUnits || 0
@@ -224,11 +228,6 @@ export const CostCalculator = (): JSX.Element => {
   const mauPlannedSeats = limit?.ff?.totalFeatureFlagUnits || 0
   const mauUsageSeats = usage?.ff?.activeClientMAUs?.count || 0
   const mauRecommendedSeats = Math.ceil((mauUsageSeats/25 + 1)*1.1)*25
-
-
-  // const mauUsageSeats = 25
-  // const mauPlannedSeats = edition !== Editions.FREE ? 50 : undefined
-  // const mauRecommendedSeats = 75
 
   const [paymentFrequencySelected, setPaymentFrequencySelected] = useState<PlanType>(PlanType.YEARLY)
   const [editionSelected, setEditionSelected] = useState<Editions>(Editions.TEAM)
@@ -253,8 +252,6 @@ export const CostCalculator = (): JSX.Element => {
     allPrices[metaData.lookupKey] = metaData.unitAmount;
   });
 
-
-  console.log(allPrices);
   const pricesSelected = {
     TEAM : {
       monthly : {
@@ -285,34 +282,14 @@ export const CostCalculator = (): JSX.Element => {
 
 
 
-
-  //
-  // const asd = useListSubscriptions({queryParams : {accountIdentifier : accountId, moduleType: 'CF'}});
-  // console.log(asd);
-
-  // const subs = ListSubscriptions({queryParams : {accountIdentifier : accountId, moduleType: 'CF'}});
-  // console.log(subs);
-
-  // useEffect(() => {
-  //
-  //   const dataProvided = {prices : ['CD_ENTERPRISE_SERVICE_MONTHLY']} as ListPricesDTO;
-  //   console.log(stuff);
-  //   stuff(dataProvided).then((yes) => {
-  //     console.log(yes);
-  //   });
-  // },[]);
-
-
-
-
   const getCostForUnits = (units: number, unitType: ffUnitTypes, editionProvided: Editions, planType: PlanType) => {
     switch (editionProvided) {
       case Editions.FREE:
         return 0
       case Editions.TEAM:
-        return pricesSelected["TEAM"][planType][unitType] * units;
+        return pricesSelected["TEAM"][planType][unitType] * units / 100;
       case Editions.ENTERPRISE:
-        return pricesSelected["ENTERPRISE"][planType][unitType] * units;
+        return pricesSelected["ENTERPRISE"][planType][unitType] * units / 100;
       default:
         return 0
     }
@@ -345,7 +322,7 @@ export const CostCalculator = (): JSX.Element => {
       ? totalDeveloperRate * 12 -
         getCostForUnits(developerSelected, ffUnitTypes.DEVELOPER, editionSelected, PlanType.YEARLY) +
         (totalMauRate * 12 -
-          getCostForUnits(developerSelected, ffUnitTypes.DEVELOPER, editionSelected, PlanType.YEARLY))
+          getCostForUnits(mausSelected / 25, ffUnitTypes.MAU, editionSelected, PlanType.YEARLY))
       : 0
   const supportCost = 160
   const totalCost = totalDeveloperRate + totalMauRate + supportCost
@@ -353,7 +330,7 @@ export const CostCalculator = (): JSX.Element => {
 
   const editionChecked = edition !== Editions.FREE ? edition : editionSelected
   const titleString = editionChecked === Editions.TEAM ? 'Team' : 'Enterprise'
-  const title = `Feature Flag ${titleString} Subscription`
+  const title = `Feature Flag Subscription`
   const monthYear = frequencyString(paymentFrequencySelected)
 
   return (
@@ -369,6 +346,7 @@ export const CostCalculator = (): JSX.Element => {
             >
               {title}
             </Text>
+            <GetEditionBox editionType={edition as string}/>
             <div style={{ width: '100%' }} />
             <Text
               font={{ variation: FontVariation.SMALL }}
