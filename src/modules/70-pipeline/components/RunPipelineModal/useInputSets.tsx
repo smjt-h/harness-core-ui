@@ -56,6 +56,8 @@ export function useInputSets(props: UseInputSetsProps): UseInputSetsReturn {
     rerunInputSetYaml,
     accountId,
     orgIdentifier,
+    branch,
+    repoIdentifier,
     projectIdentifier,
     pipelineIdentifier,
     selectedStageData
@@ -76,7 +78,9 @@ export function useInputSets(props: UseInputSetsProps): UseInputSetsReturn {
       accountIdentifier: accountId,
       orgIdentifier,
       projectIdentifier,
-      pipelineIdentifier
+      pipelineIdentifier,
+      branch,
+      repoIdentifier
     }
   })
 
@@ -94,6 +98,8 @@ export function useInputSets(props: UseInputSetsProps): UseInputSetsReturn {
       accountIdentifier: accountId,
       orgIdentifier,
       projectIdentifier,
+      branch,
+      repoIdentifier,
       pipelineIdentifier
     }
   })
