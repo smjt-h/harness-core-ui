@@ -1,6 +1,6 @@
 import React, {useState} from 'react'
 import {Color, FontVariation} from '@harness/design-system'
-import {Button, ButtonSize, Layout, PillToggle, Text} from '@harness/uicore'
+import {Button, ButtonSize, Layout, PillToggle, Text, Toggle} from '@harness/uicore'
 import cx from 'classnames'
 import {Classes, Dialog, IDialogProps, NumericInput, Slider} from '@blueprintjs/core'
 import {useModalHook} from '@harness/use-modal'
@@ -77,7 +77,7 @@ const InfoBox = ({ title, units, using, recommended, planned }: InfoBoxParams) =
           </Layout.Horizontal>
         </Layout.Vertical>
         <Layout.Vertical>
-          <Text font={{ variation: FontVariation.SMALL }} rightIcon={'info'}>
+          <Text font={{ variation: FontVariation.SMALL }} >
             Recommended
           </Text>
           <Layout.Horizontal
@@ -234,7 +234,9 @@ export const CostCalculator = (): JSX.Element => {
   const [developerSelected, setDeveloperSelected] = useState<number>(developerRecommendedSeats)
   const [mausSelected, setMausSelected] = useState<number>(mauRecommendedSeats)
   const [shownPage, setShownPage] = useState<CalcPage>(CalcPage.Calculator)
+  const [premiumSupport, setPremiumSupport] = useState<boolean>(true);
   const { accountId } = useParams<AccountPathProps>();
+
 
   const isLoading = limitData.loadingLimit || usageData.loadingUsage
 
@@ -324,7 +326,7 @@ export const CostCalculator = (): JSX.Element => {
         (totalMauRate * 12 -
           getCostForUnits(mausSelected, ffUnitTypes.MAU, editionSelected, PlanType.YEARLY) / 25)
       : 0
-  const supportCost = 160
+  const supportCost = premiumSupport ?  160 : 0
   const totalCost = totalDeveloperRate + totalMauRate + supportCost
   const dueTodayCost = edition !== Editions.FREE ? currentDeveloperUsageCost + currentMauUsageCost : totalCost
 
@@ -403,7 +405,7 @@ export const CostCalculator = (): JSX.Element => {
                 />
                 <CostSlider
                   title={'MAUs Usage'}
-                  summary={`25k MAUs = $ ${totalMauRate / mausSelected}/ ${monthYear} `}
+                  summary={`25k MAUs = $ ${totalMauRate / (mausSelected / 25)}/ ${monthYear} `}
                   plannedUsage={mauPlannedSeats}
                   currentUsage={mauUsageSeats}
                   recommended={mauRecommendedSeats}
@@ -419,7 +421,7 @@ export const CostCalculator = (): JSX.Element => {
               </Layout.Vertical>
             </Layout.Horizontal>
           </Container>
-          <Layout.Horizontal padding={{ top: 'xxxlarge', bottom: 'xxxlarge' }} className={cx(css.pillboxgap)}>
+          <Layout.Horizontal padding={{ top: 'xxlarge', bottom: 'xxlarge' }} className={cx(css.pillboxgap)}>
             <PillToggle
               onChange={planFrequency => setPaymentFrequencySelected(planFrequency)}
               options={[
@@ -478,9 +480,7 @@ export const CostCalculator = (): JSX.Element => {
                 <Layout.Horizontal flex={{ alignItems: 'baseline' }} className={cx(css.supportInfoBoxText)}>
                   <Text font={{ size: 'medium' }}>{`$ ${supportCost}`}</Text>
                 </Layout.Horizontal>
-                <Text font={{ variation: FontVariation.SMALL }} padding={{ top: 'small' }}>
-                  {'Premium 24x7'}
-                </Text>
+                <Toggle label={premiumSupport ? 'Premium Support': 'Standard support'} checked={premiumSupport} onToggle={(toggleState => setPremiumSupport(toggleState))}/>
               </Layout.Vertical>
               <Layout.Vertical
                 flex={{ justifyContent: 'center' }}
