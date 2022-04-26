@@ -8,13 +8,13 @@
 import React from 'react'
 import {
   Label,
-  FormInput,
   MultiTypeInputType,
   Icon,
   Layout,
   Text,
   getMultiTypeFromValue,
-  Container
+  Container,
+  Color
 } from '@wings-software/uicore'
 import { connect } from 'formik'
 import { FontVariation } from '@harness/design-system'
@@ -34,7 +34,7 @@ import type {
 } from 'services/cd-ng'
 import { useStrings } from 'framework/strings'
 import { FormMultiTypeCheckboxField, Separator } from '@common/components'
-import { MultiTypeTextField } from '@common/components/MultiTypeText/MultiTypeText'
+import { MultiTypeTextField, MultiTypeTextProps } from '@common/components/MultiTypeText/MultiTypeText'
 import MultiTypeListInputSet from '@common/components/MultiTypeListInputSet/MultiTypeListInputSet'
 import MultiTypeDelegateSelector from '@common/components/MultiTypeDelegateSelector/MultiTypeDelegateSelector'
 import { MultiTypeMapInputSet } from '@common/components/MultiTypeMapInputSet/MultiTypeMapInputSet'
@@ -426,6 +426,40 @@ export function StageInputSetFormInternal({
   const hasContainerSecurityContextFields = containerSecurityContextFields.some(field =>
     deploymentStageTemplateInfraKeys.includes(field)
   )
+
+  const renderMultiTypeTextField = React.useCallback(
+    ({
+      name,
+      tooltipId,
+      labelKey,
+      inputProps
+    }: {
+      name: string
+      tooltipId: string
+      labelKey: keyof StringsMap
+      inputProps: MultiTypeTextProps['multiTextInputProps']
+    }) => (
+      <MultiTypeTextField
+        name={name}
+        label={
+          <Text
+            className={stepCss.inpLabel}
+            color={Color.GREY_600}
+            font={{ size: 'small', weight: 'semi-bold' }}
+            tooltipProps={{
+              dataTooltipId: tooltipId
+            }}
+          >
+            {getString(labelKey)}
+          </Text>
+        }
+        style={{ width: 300 }}
+        multiTextInputProps={inputProps}
+      />
+    ),
+    []
+  )
+
   const renderMultiTypeMapInputSet = React.useCallback(
     (fieldName: string, stringKey: keyof StringsMap): React.ReactElement => (
       <MultiTypeMapInputSet
@@ -587,7 +621,7 @@ export function StageInputSetFormInternal({
                 {(deploymentStageTemplate.infrastructure as any).spec?.connectorRef && (
                   <Container className={stepCss.bottomMargin3}>
                     <FormMultiTypeConnectorField
-                      width={ConnectorRefWidth.DefaultView}
+                      width={ConnectorRefWidth.InputSetView}
                       name={`${isEmpty(path) ? '' : `${path}.`}infrastructure.spec.connectorRef`}
                       label={
                         <Text font={{ variation: FontVariation.FORM_LABEL }}>
@@ -605,73 +639,72 @@ export function StageInputSetFormInternal({
                   </Container>
                 )}
                 {(deploymentStageTemplate.infrastructure as any).spec?.namespace && (
-                  <FormInput.MultiTextInput
-                    label={
-                      <Text
-                        font={{ variation: FontVariation.FORM_LABEL }}
-                        tooltipProps={{ dataTooltipId: 'namespace' }}
-                      >
-                        {getString('pipelineSteps.build.infraSpecifications.namespace')}
-                      </Text>
-                    }
-                    name={`${isEmpty(path) ? '' : `${path}.`}infrastructure.spec.namespace`}
-                    multiTextInputProps={{
-                      expressions,
-                      allowableTypes: allowableTypes
-                    }}
-                    disabled={readonly}
-                  />
+                  <Container className={stepCss.bottomMargin3}>
+                    {renderMultiTypeTextField({
+                      name: `${isEmpty(path) ? '' : `${path}.`}infrastructure.spec.namespace`,
+                      tooltipId: 'namespace',
+                      labelKey: 'pipelineSteps.build.infraSpecifications.namespace',
+                      inputProps: {
+                        multiTextInputProps: {
+                          expressions,
+                          allowableTypes: allowableTypes
+                        },
+                        disabled: readonly
+                      }
+                    })}
+                  </Container>
                 )}
               </>
             ) : (deploymentStageTemplate.infrastructure as any).type === 'VM' ? (
               (deploymentStageTemplate.infrastructure as any).spec?.spec?.identifier && (
-                <MultiTypeTextField
-                  label={
-                    <Text
-                      tooltipProps={{ dataTooltipId: 'poolId' }}
-                      font={{ variation: FontVariation.FORM_LABEL }}
-                      margin={{ bottom: 'xsmall' }}
-                    >
-                      {getString('pipeline.buildInfra.poolId')}
-                    </Text>
-                  }
-                  name={`${isEmpty(path) ? '' : `${path}.`}infrastructure.spec.spec.identifier`}
-                  multiTextInputProps={{
-                    multiTextInputProps: { expressions, allowableTypes },
-                    disabled: readonly
-                  }}
-                />
+                <Container className={cx(stepCss.formGroup, stepCss.sm)}>
+                  {renderMultiTypeTextField({
+                    name: `${isEmpty(path) ? '' : `${path}.`}infrastructure.spec.spec.identifier`,
+                    tooltipId: 'poolId',
+                    labelKey: 'pipeline.buildInfra.poolId',
+                    inputProps: {
+                      multiTextInputProps: {
+                        expressions,
+                        allowableTypes: allowableTypes
+                      },
+                      disabled: readonly
+                    }
+                  })}
+                </Container>
               )
             ) : null}
             {(deploymentStageTemplate.infrastructure as any).spec?.serviceAccountName && (
-              <FormInput.MultiTextInput
-                label={
-                  <Text font={{ variation: FontVariation.FORM_LABEL }}>
-                    {getString('pipeline.infraSpecifications.serviceAccountName')}
-                  </Text>
-                }
-                name={`${isEmpty(path) ? '' : `${path}.`}infrastructure.spec.serviceAccountName`}
-                multiTextInputProps={{
-                  expressions,
-                  allowableTypes: allowableTypes
-                }}
-                disabled={readonly}
-              />
+              <Container className={cx(stepCss.formGroup, stepCss.sm, stepCss.bottomMargin3)}>
+                {renderMultiTypeTextField({
+                  name: `${isEmpty(path) ? '' : `${path}.`}infrastructure.spec.serviceAccountName`,
+                  tooltipId: 'serviceAccountName',
+                  labelKey: 'pipeline.infraSpecifications.serviceAccountName',
+                  inputProps: {
+                    multiTextInputProps: {
+                      expressions,
+                      allowableTypes: allowableTypes
+                    },
+                    disabled: readonly
+                  }
+                })}
+              </Container>
             )}
             {(deploymentStageTemplate.infrastructure as any).spec?.initTimeout && (
-              <FormMultiTypeDurationField
-                label={
-                  <Text font={{ variation: FontVariation.FORM_LABEL }} tooltipProps={{ dataTooltipId: 'timeout' }}>
-                    {getString('pipeline.infraSpecifications.initTimeout')}
-                  </Text>
-                }
-                name={`${isEmpty(path) ? '' : `${path}.`}infrastructure.spec.initTimeout`}
-                multiTypeDurationProps={{
-                  expressions,
-                  allowableTypes: allowableTypes
-                }}
-                disabled={readonly}
-              />
+              <Container className={cx(stepCss.formGroup, stepCss.xlg, stepCss.bottomMargin3)}>
+                <FormMultiTypeDurationField
+                  label={
+                    <Text font={{ variation: FontVariation.FORM_LABEL }} tooltipProps={{ dataTooltipId: 'timeout' }}>
+                      {getString('pipeline.infraSpecifications.initTimeout')}
+                    </Text>
+                  }
+                  name={`${isEmpty(path) ? '' : `${path}.`}infrastructure.spec.initTimeout`}
+                  multiTypeDurationProps={{
+                    expressions,
+                    allowableTypes: allowableTypes
+                  }}
+                  disabled={readonly}
+                />
+              </Container>
             )}
             {(deploymentStageTemplate.infrastructure as any).spec?.annotations &&
               renderMultiTypeMapInputSet(
@@ -688,22 +721,19 @@ export function StageInputSetFormInternal({
                 defaultTrue: true
               })}
             {(deploymentStageTemplate.infrastructure as any).spec?.priorityClassName && (
-              <Container className={stepCss.bottomMargin3}>
-                <MultiTypeTextField
-                  label={
-                    <Text font={{ variation: FontVariation.FORM_LABEL }} margin={{ bottom: 'xsmall' }}>
-                      {getString('pipeline.buildInfra.priorityClassName')}
-                    </Text>
-                  }
-                  name={`${isEmpty(path) ? '' : `${path}.`}infrastructure.spec.priorityClassName`}
-                  multiTextInputProps={{
+              <Container className={cx(stepCss.formGroup, stepCss.sm, stepCss.bottomMargin3)}>
+                {renderMultiTypeTextField({
+                  name: `${isEmpty(path) ? '' : `${path}.`}infrastructure.spec.priorityClassName`,
+                  tooltipId: 'priorityClassName',
+                  labelKey: 'pipeline.buildInfra.priorityClassName',
+                  inputProps: {
                     multiTextInputProps: {
                       expressions,
                       allowableTypes: allowableTypes
                     },
                     disabled: readonly
-                  }}
-                />
+                  }
+                })}
               </Container>
             )}
             {hasContainerSecurityContextFields && (
@@ -759,23 +789,20 @@ export function StageInputSetFormInternal({
               })}
             {((deploymentStageTemplate.infrastructure as any).spec?.runAsUser ||
               (deploymentStageTemplate.infrastructure as any).spec?.containerSecurityContext?.runAsUser) && (
-              <Container className={stepCss.bottomMargin3}>
-                <MultiTypeTextField
-                  label={
-                    <Text font={{ variation: FontVariation.FORM_LABEL }} margin={{ bottom: 'xsmall' }}>
-                      {getString('pipeline.stepCommonFields.runAsUser')}
-                    </Text>
-                  }
-                  name={`${isEmpty(path) ? '' : `${path}.`}infrastructure.spec.containerSecurityContext.runAsUser`}
-                  multiTextInputProps={{
+              <Container className={cx(stepCss.formGroup, stepCss.sm, stepCss.bottomMargin3)}>
+                {renderMultiTypeTextField({
+                  name: `${isEmpty(path) ? '' : `${path}.`}infrastructure.spec.containerSecurityContext.runAsUser`,
+                  tooltipId: 'runAsUser',
+                  labelKey: 'pipeline.stepCommonFields.runAsUser',
+                  inputProps: {
                     multiTextInputProps: {
                       expressions,
-                      allowableTypes: allowableTypes
+                      allowableTypes: allowableTypes,
+                      placeholder: '1000'
                     },
-                    disabled: readonly,
-                    placeholder: '1000'
-                  }}
-                />
+                    disabled: readonly
+                  }
+                })}
               </Container>
             )}
             {hasContainerSecurityContextFields && <Separator topSeparation={16} bottomSeparation={16} />}
