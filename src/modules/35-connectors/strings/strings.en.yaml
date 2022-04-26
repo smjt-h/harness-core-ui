@@ -158,6 +158,7 @@ testConnectionStep:
     vault: Validating HashiCorp Vault authentication and permissions
     awsSecretManager: Validating AWS Secret Manager authentication and permissions
     bitbucket: Validating Bitbucket authentication and permissions
+    azureRepos: Validating Azure Repos authentication and permissions
     gitlab: Validating GitLab authentication and permissions
     github: Validating GitHub authentication and permissions
     git: Validating Git authentication and permissions

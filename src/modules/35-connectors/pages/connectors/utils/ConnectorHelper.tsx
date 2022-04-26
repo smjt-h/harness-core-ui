@@ -195,6 +195,7 @@ export const getConnectorIconByType = (type: string): IconName => {
     case Connectors.AWS_KMS:
       return 'aws-kms'
     case Connectors.CE_AZURE:
+    case Connectors.AZURE_REPO:
       return 'service-azure'
     case Connectors.DATADOG:
       return 'service-datadog'

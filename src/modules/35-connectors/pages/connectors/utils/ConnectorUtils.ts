@@ -1769,6 +1769,8 @@ export const getIconByType = (type: ConnectorInfoDTO['type'] | undefined): IconN
       return 'service-gotlab'
     case Connectors.BITBUCKET:
       return 'bitbucket-selected'
+    case Connectors.AZURE_REPO:
+      return 'service-azure'
     case Connectors.VAULT: // TODO: use enum when backend fixes it
       return 'hashiCorpVault'
     case Connectors.LOCAL: // TODO: use enum when backend fixes it
@@ -1843,6 +1845,8 @@ export const getConnectorDisplayName = (type: string) => {
       return 'GitLab'
     case Connectors.BITBUCKET:
       return 'Bitbucket'
+    case Connectors.AZURE_REPO:
+      return 'Azure Repos'
     case Connectors.DOCKER:
       return 'Docker Registry'
     case Connectors.GCP:
@@ -1966,6 +1970,8 @@ export function GetTestConnectionValidationTextByType(type: ConnectorConfigDTO['
       return getString('connectors.testConnectionStep.validationText.gcpKms')
     case Connectors.BITBUCKET:
       return getString('connectors.testConnectionStep.validationText.bitbucket')
+    case Connectors.AZURE_REPO:
+      return getString('connectors.testConnectionStep.validationText.azureRepos')
     case Connectors.GITLAB:
       return getString('connectors.testConnectionStep.validationText.gitlab')
     case Connectors.GITHUB:
