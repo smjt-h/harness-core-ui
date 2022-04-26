@@ -29,7 +29,7 @@ export const RestoreCacheGCSStepInputSet: React.FC<RestoreCacheGCSStepProps> = (
           ...(getMultiTypeFromValue(template?.spec?.connectorRef) === MultiTypeInputType.RUNTIME && {
             'spec.connectorRef': {
               label: {
-                labelKey: 'pipelineSteps.dockerHubCgcpConnectorLabelonnectorLabel',
+                labelKey: 'pipelineSteps.gcpConnectorLabel',
                 tooltipId: 'restoreCacheGcpConnector'
               },
               type: Connectors.GCP

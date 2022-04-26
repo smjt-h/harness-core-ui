@@ -42,7 +42,7 @@ export const DependencyInputSetBasic: React.FC<DependencyProps> = ({
           }),
           ...(getMultiTypeFromValue(template?.spec?.connectorRef) === MultiTypeInputType.RUNTIME && {
             'spec.connectorRef': {
-              label: { labelKey: 'pipelineSteps.connectorLabel', tooltipId: 'dependencyConnector' },
+              label: { labelKey: 'pipelineSteps.connectorLabel', tooltipId: 'dependencyConnectorInfo' },
               type: [Connectors.GCP, Connectors.AWS, Connectors.DOCKER]
             }
           }),

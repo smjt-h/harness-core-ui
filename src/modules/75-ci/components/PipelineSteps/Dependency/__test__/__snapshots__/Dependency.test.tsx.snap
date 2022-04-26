@@ -2491,7 +2491,7 @@ exports[`Dependency InputSet View should render all fields 1`] = `
               >
                 <div
                   class="Text--withDocsTooltip"
-                  data-tooltip-id="dependencyConnector"
+                  data-tooltip-id="dependencyConnectorInfo"
                 >
                   <p
                     class="StyledProps--font StyledProps--main inpLabel StyledProps--color StyledProps--color-grey600 StyledProps--font-size-small StyledProps--font-weight-semi-bold"

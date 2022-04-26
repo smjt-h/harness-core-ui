@@ -97,7 +97,7 @@ export const RestoreCacheGCSStepBase = (
               enableFields={{
                 name: {},
                 'spec.connectorRef': {
-                  label: { labelKey: 'pipelineSteps.gcpConnectorLabel' },
+                  label: { labelKey: 'pipelineSteps.gcpConnectorLabel', tooltipId: 'restoreCacheGcpConnector' },
                   type: Connectors.GCP
                 },
                 'spec.bucket': { tooltipId: 'gcsBucket' },

@@ -93,7 +93,7 @@ export const SaveCacheS3StepBase = (
               enableFields={{
                 name: {},
                 'spec.connectorRef': {
-                  label: { labelKey: 'pipelineSteps.awsConnectorLabel' },
+                  label: { labelKey: 'pipelineSteps.awsConnectorLabel', tooltipId: 'saveCacheS3Connector' },
                   type: Connectors.AWS
                 },
                 'spec.region': {},
