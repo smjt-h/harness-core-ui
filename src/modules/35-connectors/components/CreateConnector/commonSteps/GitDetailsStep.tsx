@@ -125,7 +125,7 @@ const GitDetailsStep: React.FC<StepProps<ConnectorConfigDTO> & ConnectorDetailsS
           : getString('common.git.bitbucketRepoUrl')
       case Connectors.AZURE_REPO:
         return urlType === GitUrlType.ACCOUNT
-          ? getString('common.git.azureReposAccountUrl')
+          ? getString('common.git.azureReposProjectUrl')
           : getString('common.git.azureReposRepoUrl')
       default:
         return ''
