@@ -23,8 +23,9 @@ import {
 import type { InputSetData } from '@pipeline/components/AbstractSteps/Step'
 import { StepViewType } from '@pipeline/components/AbstractSteps/Step'
 import { useVariablesExpression } from '@pipeline/components/PipelineStudio/PiplineHooks/useVariablesExpression'
+import { renderMultiTypeInputWithAllowedValues } from '../CIStep/CIStep'
 import { getOptionalSubLabel } from '@ci/components/PipelineSteps/CIStep/CIStepOptionalConfig'
-import { AllMultiTypeInputTypesForInputSet } from '../CIStep/StepUtils'
+import { AllMultiTypeInputTypesForInputSet, shouldRenderRunTimeInputViewWithAllowedValues } from '../CIStep/StepUtils'
 import css from '@pipeline/components/PipelineSteps/Steps/Steps.module.scss'
 
 interface StepCommonFieldsInputSetProps<T> extends Omit<InputSetData<T>, 'path' | 'template'> {
@@ -54,32 +55,48 @@ function StepCommonFieldsInputSet<T>(props: StepCommonFieldsInputSetProps<T>): J
     name,
     tooltipId,
     labelKey,
-    inputProps
+    inputProps,
+    fieldPath
   }: {
     name: string
     tooltipId: string
     labelKey: keyof StringsMap
     inputProps: MultiTypeTextProps['multiTextInputProps']
-  }) => (
-    <MultiTypeTextField
-      name={name}
-      label={
-        <Layout.Horizontal flex={{ justifyContent: 'flex-start', alignItems: 'baseline' }}>
-          <Text
-            style={{ display: 'flex', alignItems: 'center' }}
-            className={css.inpLabel}
-            color={Color.GREY_800}
-            font={{ size: 'small', weight: 'semi-bold' }}
-          >
-            {getString(labelKey)}
-          </Text>
-          &nbsp;
-          {getOptionalSubLabel(getString, tooltipId)}
-        </Layout.Horizontal>
-      }
-      multiTextInputProps={inputProps}
-    />
-  )
+    fieldPath: string
+  }) => {
+    if (shouldRenderRunTimeInputViewWithAllowedValues(fieldPath, template)) {
+      return renderMultiTypeInputWithAllowedValues({
+        name,
+        tooltipId: tooltipId,
+        labelKey: labelKey,
+        fieldPath,
+        getString,
+        readonly,
+        expressions,
+        template
+      })
+    }
+    return (
+      <MultiTypeTextField
+        name={name}
+        label={
+          <Layout.Horizontal flex={{ justifyContent: 'flex-start', alignItems: 'baseline' }}>
+            <Text
+              style={{ display: 'flex', alignItems: 'center' }}
+              className={css.inpLabel}
+              color={Color.GREY_800}
+              font={{ size: 'small', weight: 'semi-bold' }}
+            >
+              {getString(labelKey)}
+            </Text>
+            &nbsp;
+            {getOptionalSubLabel(getString, tooltipId)}
+          </Layout.Horizontal>
+        }
+        multiTextInputProps={inputProps}
+      />
+    )
+  }
 
   return (
     <>
@@ -155,7 +172,8 @@ function StepCommonFieldsInputSet<T>(props: StepCommonFieldsInputSetProps<T>): J
               },
               disabled: readonly,
               placeholder: '1000'
-            }
+            },
+            fieldPath: 'spec.runAsUser'
           })}
         </Container>
       )}
@@ -192,7 +210,8 @@ function StepCommonFieldsInputSet<T>(props: StepCommonFieldsInputSetProps<T>): J
                         allowableTypes: AllMultiTypeInputTypesForInputSet
                       },
                       disabled: readonly
-                    }
+                    },
+                    fieldPath: 'spec.resources.limits.memory'
                   })}
                 </Container>
               )}
@@ -208,7 +227,8 @@ function StepCommonFieldsInputSet<T>(props: StepCommonFieldsInputSetProps<T>): J
                         allowableTypes: AllMultiTypeInputTypesForInputSet
                       },
                       disabled: readonly
-                    }
+                    },
+                    fieldPath: 'spec.resources.limits.cpu'
                   })}
                 </Container>
               )}
@@ -218,25 +238,38 @@ function StepCommonFieldsInputSet<T>(props: StepCommonFieldsInputSetProps<T>): J
       )}
       {!withoutTimeout && isTimeoutRuntime && (
         <Container className={cx(css.formGroup, css.sm, css.bottomMargin5)}>
-          <FormMultiTypeDurationField
-            className={css.removeBpLabelMargin}
-            label={
-              <Layout.Horizontal flex={{ justifyContent: 'flex-start', alignItems: 'baseline' }}>
-                <Text className={css.inpLabel} color={Color.GREY_600} font={{ size: 'small', weight: 'semi-bold' }}>
-                  {getString('pipelineSteps.timeoutLabel')}
-                </Text>
-                &nbsp;
-                {getOptionalSubLabel(getString, 'timeout')}
-              </Layout.Horizontal>
-            }
-            name={`${isEmpty(path) ? '' : `${path}.`}timeout`}
-            placeholder={getString('pipelineSteps.timeoutPlaceholder')}
-            multiTypeDurationProps={{
+          {shouldRenderRunTimeInputViewWithAllowedValues('timeout', template) ? (
+            renderMultiTypeInputWithAllowedValues({
+              name: `${isEmpty(path) ? '' : `${path}.`}timeout`,
+              tooltipId: 'timeout',
+              labelKey: 'pipelineSteps.timeoutLabel',
+              fieldPath: 'timeout',
+              getString,
+              readonly,
               expressions,
-              allowableTypes: AllMultiTypeInputTypesForInputSet
-            }}
-            disabled={readonly}
-          />
+              template
+            })
+          ) : (
+            <FormMultiTypeDurationField
+              className={css.removeBpLabelMargin}
+              label={
+                <Layout.Horizontal flex={{ justifyContent: 'flex-start', alignItems: 'baseline' }}>
+                  <Text className={css.inpLabel} color={Color.GREY_600} font={{ size: 'small', weight: 'semi-bold' }}>
+                    {getString('pipelineSteps.timeoutLabel')}
+                  </Text>
+                  &nbsp;
+                  {getOptionalSubLabel(getString, 'timeout')}
+                </Layout.Horizontal>
+              }
+              name={`${isEmpty(path) ? '' : `${path}.`}timeout`}
+              placeholder={getString('pipelineSteps.timeoutPlaceholder')}
+              multiTypeDurationProps={{
+                expressions,
+                allowableTypes: AllMultiTypeInputTypesForInputSet
+              }}
+              disabled={readonly}
+            />
+          )}
         </Container>
       )}
     </>
