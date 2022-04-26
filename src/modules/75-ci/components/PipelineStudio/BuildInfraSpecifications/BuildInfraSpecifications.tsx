@@ -776,7 +776,7 @@ export default function BuildInfraSpecifications({ children }: React.PropsWithCh
     return (
       <>
         <Container className={css.bottomMargin7}>
-          <FormInput.MultiTextInput
+          <MultiTypeTextField
             label={
               <Text
                 font={{ variation: FontVariation.FORM_LABEL }}
@@ -787,11 +787,11 @@ export default function BuildInfraSpecifications({ children }: React.PropsWithCh
               </Text>
             }
             name="serviceAccountName"
-            placeholder={getString('pipeline.infraSpecifications.serviceAccountNamePlaceholder')}
-            style={{
-              width: 300
+            style={{ width: 300 }}
+            multiTextInputProps={{
+              multiTextInputProps: { expressions, allowableTypes },
+              disabled: isReadonly
             }}
-            multiTextInputProps={{ expressions, disabled: isReadonly, allowableTypes }}
           />
         </Container>
         {renderTimeOutFields()}
