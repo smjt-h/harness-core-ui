@@ -14,13 +14,12 @@ import {
   Text,
   getMultiTypeFromValue,
   Container,
-  Color,
   RUNTIME_INPUT_VALUE,
   SelectOption,
   FormInput
 } from '@wings-software/uicore'
 import { connect } from 'formik'
-import { FontVariation } from '@harness/design-system'
+import { FontVariation, Color } from '@harness/design-system'
 import { get, set, isEmpty, pickBy, identity, isNil } from 'lodash-es'
 import cx from 'classnames'
 import { useParams } from 'react-router-dom'
@@ -50,7 +49,7 @@ import { FormMultiTypeConnectorField } from '@connectors/components/ConnectorRef
 import type { StringsMap } from 'stringTypes'
 import factory from '../PipelineSteps/PipelineStepFactory'
 import { StepType } from '../PipelineSteps/PipelineStepInterface'
-
+import { RegExAllowedInputExpression } from '../PipelineSteps/Steps/CustomVariables/CustomVariableInputSet'
 import { CollapseForm } from './CollapseForm'
 import { getStepFromStage } from '../PipelineStudio/StepUtil'
 import { StepWidget } from '../AbstractSteps/StepWidget'
@@ -59,7 +58,6 @@ import type { StepViewType } from '../AbstractSteps/Step'
 import { useVariablesExpression } from '../PipelineStudio/PiplineHooks/useVariablesExpression'
 import stepCss from '@pipeline/components/PipelineSteps/Steps/Steps.module.scss'
 import css from './PipelineInputSetForm.module.scss'
-import { RegExAllowedInputExpression } from '../PipelineSteps/Steps/CustomVariables/CustomVariableInputSet'
 
 function ServiceDependencyForm({
   template,
@@ -431,7 +429,7 @@ export function StageInputSetFormInternal({
     deploymentStageTemplateInfraKeys.includes(field)
   )
 
-  const shouldRenderRunTimeInputView = (value: any): boolean => {
+  const shouldRenderRunTimeInputView = React.useCallback((value: any): boolean => {
     if (value) {
       if (typeof value === 'object') {
         return Object.keys(value).some(
@@ -442,71 +440,70 @@ export function StageInputSetFormInternal({
       }
     }
     return false
-  }
+  }, [])
 
-  const shouldRenderRunTimeInputViewWithAllowedValues = (
-    fieldPath: string,
-    template?: Record<string, any>
-  ): boolean => {
-    if (!template) {
-      return false
-    }
-    const value = get(template, fieldPath, '')
-    return shouldRenderRunTimeInputView(value) && RegExAllowedInputExpression.test(value)
-  }
-
-  const renderMultiTypeInputWithAllowedValues = ({
-    name,
-    tooltipId,
-    labelKey,
-    fieldPath,
-    template,
-    expressions,
-    readonly,
-    getString,
-    showOptionalSublabel
-  }: {
-    name: string
-    tooltipId?: string
-    labelKey: keyof StringsMap
-    fieldPath: string
-    template?: Record<string, any>
-    expressions: string[]
-    readonly?: boolean
-    getString: (key: keyof StringsMap, vars?: Record<string, any> | undefined) => string
-    showOptionalSublabel?: boolean
-  }) => {
-    if (!name) {
-      return
-    }
-    if (template && fieldPath) {
-      const value = get(template, fieldPath, '')
-      const items: SelectOption[] = []
-      if (RegExAllowedInputExpression.test(value as string)) {
-        // This separates out "<+input>.allowedValues(a, b, c)" to ["<+input>", ["a", "b", "c"]]
-        const match = (value as string).match(RegExAllowedInputExpression)
-        if (match && match?.length > 1) {
-          const allowedValues = match[1]
-          items.push(...allowedValues.split(',').map(item => ({ label: item, value: item })))
-        }
+  const shouldRenderRunTimeInputViewWithAllowedValues = React.useCallback(
+    (fieldPath: string, template?: Record<string, any>): boolean => {
+      if (!template || !fieldPath) {
+        return false
       }
-      return (
-        <FormInput.MultiTypeInput
-          name={name}
-          label={getString(labelKey).concat(showOptionalSublabel ? ` ${getString('titleOptional')}` : '')}
-          useValue
-          selectItems={items}
-          multiTypeInputProps={{
-            allowableTypes: [MultiTypeInputType.FIXED, MultiTypeInputType.EXPRESSION],
-            expressions,
-            selectProps: { disabled: readonly, items }
-          }}
-          disabled={readonly}
-          tooltipProps={{ dataTooltipId: tooltipId ?? '' }}
-        />
-      )
-    }
-  }
+      const value = get(template, fieldPath, '')
+      return shouldRenderRunTimeInputView(value) && RegExAllowedInputExpression.test(value)
+    },
+    []
+  )
+
+  const renderMultiTypeInputWithAllowedValues = React.useCallback(
+    ({
+      name,
+      tooltipId,
+      labelKey,
+      placeholderKey,
+      fieldPath,
+      showOptionalSublabel
+    }: {
+      name: string
+      tooltipId?: string
+      labelKey: keyof StringsMap
+      placeholderKey?: keyof StringsMap
+      fieldPath: string
+      showOptionalSublabel?: boolean
+    }) => {
+      if (!name) {
+        return
+      }
+      if (deploymentStageTemplate.infrastructure && fieldPath) {
+        const value = get(deploymentStageTemplate.infrastructure, fieldPath, '')
+        const items: SelectOption[] = []
+        if (RegExAllowedInputExpression.test(value as string)) {
+          // This separates out "<+input>.allowedValues(a, b, c)" to ["<+input>", ["a", "b", "c"]]
+          const match = (value as string).match(RegExAllowedInputExpression)
+          if (match && match?.length > 1) {
+            const allowedValues = match[1]
+            items.push(...allowedValues.split(',').map(item => ({ label: item, value: item })))
+          }
+        }
+        return (
+          <FormInput.MultiTypeInput
+            name={name}
+            label={getString(labelKey).concat(showOptionalSublabel ? ` ${getString('titleOptional')}` : '')}
+            useValue
+            selectItems={items}
+            placeholder={placeholderKey ? getString(placeholderKey) : ''}
+            multiTypeInputProps={{
+              allowableTypes: [MultiTypeInputType.FIXED, MultiTypeInputType.EXPRESSION],
+              expressions,
+              selectProps: { disabled: readonly, items }
+            }}
+            disabled={readonly}
+            tooltipProps={{ dataTooltipId: tooltipId ?? '' }}
+            style={{ width: 300 }}
+          />
+        )
+      }
+    },
+    [deploymentStageTemplate.infrastructure]
+  )
 
   const renderMultiTypeTextField = React.useCallback(
     ({
@@ -514,26 +511,20 @@ export function StageInputSetFormInternal({
       tooltipId,
       labelKey,
       inputProps,
-      fieldPath,
-      template
+      fieldPath
     }: {
       name: string
       tooltipId: string
       labelKey: keyof StringsMap
       inputProps: MultiTypeTextProps['multiTextInputProps']
       fieldPath: string
-      template?: Record<string, any>
     }) => {
-      if (shouldRenderRunTimeInputViewWithAllowedValues(fieldPath, template)) {
+      if (shouldRenderRunTimeInputViewWithAllowedValues(fieldPath, deploymentStageTemplate.infrastructure)) {
         return renderMultiTypeInputWithAllowedValues({
           name,
           tooltipId: tooltipId,
           labelKey: labelKey,
-          fieldPath,
-          getString,
-          readonly,
-          expressions,
-          template
+          fieldPath
         })
       }
       return (
@@ -556,7 +547,7 @@ export function StageInputSetFormInternal({
         />
       )
     },
-    [deploymentStageTemplate]
+    [deploymentStageTemplate.infrastructure]
   )
 
   const renderMultiTypeMapInputSet = React.useCallback(
@@ -717,26 +708,39 @@ export function StageInputSetFormInternal({
           <div className={css.nestedAccordions} style={{ width: '50%' }}>
             {(deploymentStageTemplate.infrastructure as any).type === 'KubernetesDirect' ? (
               <>
-                {(deploymentStageTemplate.infrastructure as any).spec?.connectorRef && (
-                  <Container className={stepCss.bottomMargin3}>
-                    <FormMultiTypeConnectorField
-                      width={ConnectorRefWidth.InputSetView}
-                      name={`${isEmpty(path) ? '' : `${path}.`}infrastructure.spec.connectorRef`}
-                      label={
-                        <Text font={{ variation: FontVariation.FORM_LABEL }}>
-                          {getString('connectors.title.k8sCluster')}
-                        </Text>
-                      }
-                      placeholder={getString('pipelineSteps.build.infraSpecifications.kubernetesClusterPlaceholder')}
-                      accountIdentifier={accountId}
-                      projectIdentifier={projectIdentifier}
-                      orgIdentifier={orgIdentifier}
-                      gitScope={gitScope}
-                      multiTypeProps={{ expressions, disabled: readonly, allowableTypes }}
-                      setRefValue
-                    />
-                  </Container>
-                )}
+                {(deploymentStageTemplate.infrastructure as any).spec?.connectorRef ? (
+                  shouldRenderRunTimeInputViewWithAllowedValues(
+                    'spec.connectorRef',
+                    deploymentStageTemplate.infrastructure
+                  ) ? (
+                    renderMultiTypeInputWithAllowedValues({
+                      name: `${isEmpty(path) ? '' : `${path}.`}infrastructure.spec.connectorRef`,
+                      tooltipId: 'connectorRef',
+                      labelKey: 'connectors.title.k8sCluster',
+                      placeholderKey: 'pipelineSteps.build.infraSpecifications.kubernetesClusterPlaceholder',
+                      fieldPath: 'spec.connectorRef'
+                    })
+                  ) : (
+                    <Container className={stepCss.bottomMargin3}>
+                      <FormMultiTypeConnectorField
+                        width={ConnectorRefWidth.InputSetView}
+                        name={`${isEmpty(path) ? '' : `${path}.`}infrastructure.spec.connectorRef`}
+                        label={
+                          <Text font={{ variation: FontVariation.FORM_LABEL }}>
+                            {getString('connectors.title.k8sCluster')}
+                          </Text>
+                        }
+                        placeholder={getString('pipelineSteps.build.infraSpecifications.kubernetesClusterPlaceholder')}
+                        accountIdentifier={accountId}
+                        projectIdentifier={projectIdentifier}
+                        orgIdentifier={orgIdentifier}
+                        gitScope={gitScope}
+                        multiTypeProps={{ expressions, disabled: readonly, allowableTypes }}
+                        setRefValue
+                      />
+                    </Container>
+                  )
+                ) : null}
                 {(deploymentStageTemplate.infrastructure as any).spec?.namespace && (
                   <Container className={stepCss.bottomMargin3}>
                     {renderMultiTypeTextField({
@@ -750,7 +754,7 @@ export function StageInputSetFormInternal({
                         },
                         disabled: readonly
                       },
-                      fieldPath: ''
+                      fieldPath: 'spec.namespace'
                     })}
                   </Container>
                 )}
@@ -769,7 +773,7 @@ export function StageInputSetFormInternal({
                       },
                       disabled: readonly
                     },
-                    fieldPath: ''
+                    fieldPath: 'spec.spec.identifier'
                   })}
                 </Container>
               )
@@ -787,26 +791,37 @@ export function StageInputSetFormInternal({
                     },
                     disabled: readonly
                   },
-                  fieldPath: 'spec.serviceAccountName',
-                  template: deploymentStageTemplate
+                  fieldPath: 'spec.serviceAccountName'
                 })}
               </Container>
             )}
             {(deploymentStageTemplate.infrastructure as any).spec?.initTimeout && (
               <Container className={cx(stepCss.formGroup, stepCss.xlg, stepCss.bottomMargin3)}>
-                <FormMultiTypeDurationField
-                  label={
-                    <Text font={{ variation: FontVariation.FORM_LABEL }} tooltipProps={{ dataTooltipId: 'timeout' }}>
-                      {getString('pipeline.infraSpecifications.initTimeout')}
-                    </Text>
-                  }
-                  name={`${isEmpty(path) ? '' : `${path}.`}infrastructure.spec.initTimeout`}
-                  multiTypeDurationProps={{
-                    expressions,
-                    allowableTypes: allowableTypes
-                  }}
-                  disabled={readonly}
-                />
+                {shouldRenderRunTimeInputViewWithAllowedValues(
+                  'spec.initTimeout',
+                  deploymentStageTemplate.infrastructure
+                ) ? (
+                  renderMultiTypeInputWithAllowedValues({
+                    name: `${isEmpty(path) ? '' : `${path}.`}infrastructure.spec.initTimeout`,
+                    tooltipId: 'timeout',
+                    labelKey: 'pipeline.infraSpecifications.initTimeout',
+                    fieldPath: 'spec.initTimeout'
+                  })
+                ) : (
+                  <FormMultiTypeDurationField
+                    label={
+                      <Text font={{ variation: FontVariation.FORM_LABEL }} tooltipProps={{ dataTooltipId: 'timeout' }}>
+                        {getString('pipeline.infraSpecifications.initTimeout')}
+                      </Text>
+                    }
+                    name={`${isEmpty(path) ? '' : `${path}.`}infrastructure.spec.initTimeout`}
+                    multiTypeDurationProps={{
+                      expressions,
+                      allowableTypes: allowableTypes
+                    }}
+                    disabled={readonly}
+                  />
+                )}
               </Container>
             )}
             {(deploymentStageTemplate.infrastructure as any).spec?.annotations &&
@@ -836,7 +851,7 @@ export function StageInputSetFormInternal({
                     },
                     disabled: readonly
                   },
-                  fieldPath: ''
+                  fieldPath: 'spec.priorityClassName'
                 })}
               </Container>
             )}
@@ -906,7 +921,7 @@ export function StageInputSetFormInternal({
                     },
                     disabled: readonly
                   },
-                  fieldPath: ''
+                  fieldPath: 'spec.containerSecurityContext.runAsUser'
                 })}
               </Container>
             )}
