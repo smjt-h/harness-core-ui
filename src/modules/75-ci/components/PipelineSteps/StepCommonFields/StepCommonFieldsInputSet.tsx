@@ -23,8 +23,8 @@ import {
 import type { InputSetData } from '@pipeline/components/AbstractSteps/Step'
 import { StepViewType } from '@pipeline/components/AbstractSteps/Step'
 import { useVariablesExpression } from '@pipeline/components/PipelineStudio/PiplineHooks/useVariablesExpression'
-import { renderMultiTypeInputWithAllowedValues } from '../CIStep/CIStep'
 import { getOptionalSubLabel } from '@ci/components/PipelineSteps/CIStep/CIStepOptionalConfig'
+import { renderMultiTypeInputWithAllowedValues } from '../CIStep/CIStep'
 import { AllMultiTypeInputTypesForInputSet, shouldRenderRunTimeInputViewWithAllowedValues } from '../CIStep/StepUtils'
 import css from '@pipeline/components/PipelineSteps/Steps/Steps.module.scss'
 
@@ -73,7 +73,8 @@ function StepCommonFieldsInputSet<T>(props: StepCommonFieldsInputSetProps<T>): J
         getString,
         readonly,
         expressions,
-        template
+        template,
+        showOptionalSublabel: true
       })
     }
     return (
@@ -195,7 +196,7 @@ function StepCommonFieldsInputSet<T>(props: StepCommonFieldsInputSetProps<T>): J
                 { [css.lgOverride]: isLimitMemoryRuntime && isLimitCPURuntime },
                 { [stepCss]: isLimitMemoryRuntime || isLimitCPURuntime }
               )}
-              style={{ marginTop: 'small', marginBottom: 'small' }}
+              style={{ marginTop: 'small', marginBottom: 'small', alignItems: 'baseline' }}
               spacing="medium"
             >
               {isLimitMemoryRuntime && (
@@ -247,7 +248,8 @@ function StepCommonFieldsInputSet<T>(props: StepCommonFieldsInputSetProps<T>): J
               getString,
               readonly,
               expressions,
-              template
+              template,
+              showOptionalSublabel: true
             })
           ) : (
             <FormMultiTypeDurationField

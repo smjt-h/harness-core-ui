@@ -54,7 +54,8 @@ export const renderMultiTypeInputWithAllowedValues = ({
   template,
   expressions,
   readonly,
-  getString
+  getString,
+  showOptionalSublabel
 }: {
   name: string
   tooltipId?: string
@@ -64,6 +65,7 @@ export const renderMultiTypeInputWithAllowedValues = ({
   expressions: string[]
   readonly?: boolean
   getString: (key: keyof StringsMap, vars?: Record<string, any> | undefined) => string
+  showOptionalSublabel?: boolean
 }) => {
   if (!name) {
     return
@@ -82,7 +84,7 @@ export const renderMultiTypeInputWithAllowedValues = ({
     return (
       <FormInput.MultiTypeInput
         name={name}
-        label={getString(labelKey)}
+        label={getString(labelKey).concat(showOptionalSublabel ? ` ${getString('titleOptional')}` : '')}
         useValue
         selectItems={items}
         multiTypeInputProps={{
