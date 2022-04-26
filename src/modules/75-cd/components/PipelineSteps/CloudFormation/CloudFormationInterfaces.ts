@@ -15,6 +15,24 @@ export const StoreTypes = {
   Remote: 'Remote'
 }
 
+export interface CreateStackProps<T = CreateStackData> {
+  initialValues: T
+  onUpdate?: (data: T) => void
+  onChange?: (data: T) => void
+  allowableTypes: MultiTypeInputType[]
+  stepViewType?: StepViewType
+  configTypes?: SelectOption[]
+  isNewStep?: boolean
+  inputSetData?: {
+    template?: T
+    path?: string
+  }
+  readonly?: boolean
+  path?: string
+  stepType?: string
+  allValues?: T
+}
+
 export interface Connector {
   label: string
   value: string
@@ -51,14 +69,19 @@ export interface CreateStackData extends StepElementConfig {
   spec: {
     provisionerIdentifier: string
     configuration: {
-      tags?: string | CloudformationTags
+      tags?: {
+        spec?: {
+          content?: string
+        }
+      } | CloudformationTags
       stackName: string
       connectorRef: string | Connector
       region: string
       parameterOverrides?: NGVariable[]
-      skipOnStackStatuses?: SelectOption[]
-      capabilities?: SelectOption[]
+      skipOnStackStatuses?: SelectOption[] | string[] | string
+      capabilities?: SelectOption[] | string[] | string
       parameters?: Parameter[]
+      roleArn?: string
       templateFile: {
           type: string
           spec: {

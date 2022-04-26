@@ -88,15 +88,15 @@ export const InlineParameterFile = ({
 
   const getParameters = async (): Promise<void> => {
     if (isEmpty(awsConnectorRef) || isEmpty(type) || isEmpty(region)) {
-      showError('AWS Connector, Region and Template File cannot be empty')
+      showError(getString('cd.cloudFormation.errors.getParam'))
     } else {
       try {
-        const result = await getParamsFromAWS(git ? {} : JSON.parse(body))
+        const result = await getParamsFromAWS(git ? '' : body)
         if (result?.data) {
           setRemoteParams(map(result?.data, param => ({ label: param.paramKey!, value: param.paramKey! })))
         }
       } catch (e) {
-        showError(e.message)
+        showError(e?.message)
       }
     }
   }
@@ -124,8 +124,8 @@ export const InlineParameterFile = ({
           validationSchema={Yup.object().shape({
             parameterOverrides: Yup.array().of(
               Yup.object().shape({
-                name: Yup.string(),
-                value: Yup.string()
+                name: Yup.string().required(getString('validation.nameRequired')),
+                value: Yup.string().required(getString('validation.valueRequired'))
               })
             )
           })}
@@ -133,7 +133,7 @@ export const InlineParameterFile = ({
         >
           {({ values, setFieldValue }) => {
             const params =
-              values?.parameterOverrides.length > 0 ? values?.parameterOverrides : [{ name: '', value: '' }]
+              values?.parameterOverrides?.length > 0 ? values?.parameterOverrides : [{ name: '', value: '' }]
             return (
               <Form>
                 <Layout.Horizontal flex={{ alignItems: 'flex-start', justifyContent: 'flex-start' }}>

@@ -230,3 +230,4 @@ cloudFormation:
     value: Value cannot be empty
     templateBody: Template body required
     awsURL: S3 url required
+    getParam: AWS Connector, Region and Template File are required to retrieve parameters
