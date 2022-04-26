@@ -46,6 +46,57 @@ interface CIStepProps {
   template?: Record<string, any>
 }
 
+export const renderMultiTypeInputWithAllowedValues = ({
+  name,
+  tooltipId,
+  labelKey,
+  fieldPath,
+  template,
+  expressions,
+  readonly,
+  getString
+}: {
+  name: string
+  tooltipId?: string
+  labelKey: keyof StringsMap
+  fieldPath: string
+  template?: Record<string, any>
+  expressions: string[]
+  readonly?: boolean
+  getString: (key: keyof StringsMap, vars?: Record<string, any> | undefined) => string
+}) => {
+  if (!name) {
+    return
+  }
+  if (template && fieldPath) {
+    const value = get(template, fieldPath, '')
+    const items: SelectOption[] = []
+    if (RegExAllowedInputExpression.test(value as string)) {
+      // This separates out "<+input>.allowedValues(a, b, c)" to ["<+input>", ["a", "b", "c"]]
+      const match = (value as string).match(RegExAllowedInputExpression)
+      if (match && match?.length > 1) {
+        const allowedValues = match[1]
+        items.push(...allowedValues.split(',').map(item => ({ label: item, value: item })))
+      }
+    }
+    return (
+      <FormInput.MultiTypeInput
+        name={name}
+        label={getString(labelKey)}
+        useValue
+        selectItems={items}
+        multiTypeInputProps={{
+          allowableTypes: AllMultiTypeInputTypesForInputSet,
+          expressions,
+          selectProps: { disabled: readonly, items }
+        }}
+        disabled={readonly}
+        tooltipProps={{ dataTooltipId: tooltipId ?? '' }}
+      />
+    )
+  }
+}
+
 export const CIStep: React.FC<CIStepProps> = props => {
   const { isNewStep, readonly, stepLabel, enableFields, stepViewType, path, isInputSetView, formik, template } = props
   const { accountId, projectIdentifier, orgIdentifier } = useParams<{
@@ -59,52 +110,6 @@ export const CIStep: React.FC<CIStepProps> = props => {
   const prefix = isEmpty(path) ? '' : `${path}.`
 
   const stepCss = stepViewType === StepViewType.DeploymentForm ? css.sm : css.lg
-
-  const renderMultiTypeInputWithAllowedValues = React.useCallback(
-    ({
-      name,
-      tooltipId,
-      labelKey,
-      fieldPath
-    }: {
-      name: string
-      tooltipId?: string
-      labelKey: keyof StringsMap
-      fieldPath: string
-    }) => {
-      if (!name) {
-        return
-      }
-      if (template && fieldPath) {
-        const value = get(template, fieldPath, '')
-        const items: SelectOption[] = []
-        if (RegExAllowedInputExpression.test(value as string)) {
-          // This separates out "<+input>.allowedValues(a, b, c)" to ["<+input>", ["a", "b", "c"]]
-          const match = (value as string).match(RegExAllowedInputExpression)
-          if (match && match?.length > 1) {
-            const allowedValues = match[1]
-            items.push(...allowedValues.split(',').map(item => ({ label: item, value: item })))
-          }
-        }
-        return (
-          <FormInput.MultiTypeInput
-            name={name}
-            label={getString(labelKey)}
-            useValue
-            selectItems={items}
-            multiTypeInputProps={{
-              allowableTypes: AllMultiTypeInputTypesForInputSet,
-              expressions,
-              selectProps: { disabled: readonly, items }
-            }}
-            disabled={readonly}
-            tooltipProps={{ dataTooltipId: tooltipId ?? '' }}
-          />
-        )
-      }
-    },
-    [template]
-  )
 
   const renderMultiTypeTextField = React.useCallback(
     ({
@@ -125,7 +130,11 @@ export const CIStep: React.FC<CIStepProps> = props => {
           name,
           tooltipId: tooltipId,
           labelKey: labelKey,
-          fieldPath
+          fieldPath,
+          getString,
+          readonly,
+          expressions,
+          template
         })
       }
       return (
@@ -217,7 +226,11 @@ export const CIStep: React.FC<CIStepProps> = props => {
             renderMultiTypeInputWithAllowedValues({
               name: `${prefix}description`,
               labelKey: 'description',
-              fieldPath: 'description'
+              fieldPath: 'description',
+              getString,
+              readonly,
+              expressions,
+              template
             })
           ) : (
             <FormMultiTypeTextAreaField
@@ -244,7 +257,11 @@ export const CIStep: React.FC<CIStepProps> = props => {
               name: `${prefix}spec.connectorRef`,
               labelKey: enableFields['spec.connectorRef'].label.labelKey,
               tooltipId: enableFields['spec.connectorRef'].label?.tooltipId,
-              fieldPath: 'spec.connectorRef'
+              fieldPath: 'spec.connectorRef',
+              getString,
+              readonly,
+              expressions,
+              template
             })}
           </Container>
         ) : (

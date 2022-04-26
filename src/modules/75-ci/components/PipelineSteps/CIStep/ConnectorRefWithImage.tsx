@@ -6,26 +6,21 @@
  */
 
 import React from 'react'
-import { get, isEmpty } from 'lodash-es'
+import { isEmpty } from 'lodash-es'
 import { useParams } from 'react-router-dom'
 import cx from 'classnames'
-import { Text, Container, Layout, SelectOption, FormInput } from '@wings-software/uicore'
+import { Text, Container, Layout } from '@wings-software/uicore'
 import { Color } from '@harness/design-system'
 import { Connectors } from '@connectors/constants'
 import { FormMultiTypeConnectorField } from '@connectors/components/ConnectorReferenceField/FormMultiTypeConnectorField'
 import { useStrings } from 'framework/strings'
-import type { StringsMap } from 'stringTypes'
 import { MultiTypeTextField } from '@common/components/MultiTypeText/MultiTypeText'
 import { useVariablesExpression } from '@pipeline/components/PipelineStudio/PiplineHooks/useVariablesExpression'
 import { useGitScope } from '@pipeline/utils/CIUtils'
 import { StepViewType } from '@pipeline/components/AbstractSteps/Step'
-import { RegExAllowedInputExpression } from '@pipeline/components/PipelineSteps/Steps/CustomVariables/CustomVariableInputSet'
+import { renderMultiTypeInputWithAllowedValues } from './CIStep'
 import { getOptionalSubLabel } from './CIStepOptionalConfig'
-import {
-  AllMultiTypeInputTypesForInputSet,
-  AllMultiTypeInputTypesForStep,
-  shouldRenderRunTimeInputViewWithAllowedValues
-} from './StepUtils'
+import { AllMultiTypeInputTypesForStep, shouldRenderRunTimeInputViewWithAllowedValues } from './StepUtils'
 import css from '@pipeline/components/PipelineSteps/Steps/Steps.module.scss'
 
 interface ConnectorRefWithImageProps {
@@ -62,52 +57,6 @@ export const ConnectorRefWithImage: React.FC<ConnectorRefWithImageProps> = props
   const stepCss = stepViewType === StepViewType.DeploymentForm ? css.sm : css.lg
   const prefix = isEmpty(path) ? '' : `${path}.`
 
-  const renderMultiTypeInputWithAllowedValues = React.useCallback(
-    ({
-      name,
-      tooltipId,
-      labelKey,
-      fieldPath
-    }: {
-      name: string
-      tooltipId?: string
-      labelKey: keyof StringsMap
-      fieldPath: string
-    }) => {
-      if (!name) {
-        return
-      }
-      if (template && fieldPath) {
-        const value = get(template, fieldPath, '')
-        const items: SelectOption[] = []
-        if (RegExAllowedInputExpression.test(value as string)) {
-          // This separates out "<+input>.allowedValues(a, b, c)" to ["<+input>", ["a", "b", "c"]]
-          const match = (value as string).match(RegExAllowedInputExpression)
-          if (match && match?.length > 1) {
-            const allowedValues = match[1]
-            items.push(...allowedValues.split(',').map(item => ({ label: item, value: item })))
-          }
-        }
-        return (
-          <FormInput.MultiTypeInput
-            name={name}
-            label={getString(labelKey)}
-            useValue
-            selectItems={items}
-            multiTypeInputProps={{
-              allowableTypes: AllMultiTypeInputTypesForInputSet,
-              expressions,
-              selectProps: { disabled: readonly, items }
-            }}
-            disabled={readonly}
-            tooltipProps={{ dataTooltipId: tooltipId ?? '' }}
-          />
-        )
-      }
-    },
-    [template]
-  )
-
   return (
     <>
       {showConnectorRef ? (
@@ -117,7 +66,11 @@ export const ConnectorRefWithImage: React.FC<ConnectorRefWithImageProps> = props
               {renderMultiTypeInputWithAllowedValues({
                 name: `${prefix}spec.connectorRef`,
                 labelKey: 'pipelineSteps.connectorLabel',
-                fieldPath: 'spec.connectorRef'
+                fieldPath: 'spec.connectorRef',
+                getString,
+                readonly,
+                expressions,
+                template
               })}
             </Container>
           ) : (
@@ -161,7 +114,11 @@ export const ConnectorRefWithImage: React.FC<ConnectorRefWithImageProps> = props
               name: `${prefix}spec.image`,
               labelKey: 'imageLabel',
               tooltipId: showOptionalSublabel ? '' : 'image',
-              fieldPath: 'spec.image'
+              fieldPath: 'spec.image',
+              getString,
+              readonly,
+              expressions,
+              template
             })
           ) : (
             <MultiTypeTextField
