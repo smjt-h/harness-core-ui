@@ -323,22 +323,25 @@ export const useModuleSelectModal = ({
     [showModal]
   )
   const communityEditionCDHomeRedirect = (projectDataLocal: Project): void => {
-    history.push(
-      getModuleLink({
-        module: ModuleName.CD,
-        orgIdentifier: projectDataLocal?.orgIdentifier || '',
-        projectIdentifier: projectDataLocal.identifier,
-        accountId
-      })
-    )
+    if (projectDataLocal?.orgIdentifier) {
+      history.push(
+        getModuleLink({
+          module: ModuleName.CD,
+          orgIdentifier: projectDataLocal?.orgIdentifier,
+          projectIdentifier: projectDataLocal.identifier,
+          accountId
+        })
+      )
+    }
   }
 
   return {
     openModuleSelectModal: (projectDataLocal: Project) => {
       if (isCDCommunity(licenseInformation)) {
-        return communityEditionCDHomeRedirect(projectDataLocal)
+        communityEditionCDHomeRedirect(projectDataLocal)
+      } else {
+        open(projectDataLocal)
       }
-      return open(projectDataLocal)
     },
     closeModuleSelectModal: hideModal
   }
