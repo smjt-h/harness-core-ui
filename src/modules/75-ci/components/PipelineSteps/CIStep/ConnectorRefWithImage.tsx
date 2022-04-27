@@ -108,7 +108,7 @@ export const ConnectorRefWithImage: React.FC<ConnectorRefWithImageProps> = props
       ) : null}
       {showImage ? (
         <Container className={cx(css.formGroup, stepCss, css.bottomMargin5)}>
-          {isInputSetView && shouldRenderRunTimeInputViewWithAllowedValues('spec.connectorRef', template) ? (
+          {isInputSetView && shouldRenderRunTimeInputViewWithAllowedValues('spec.image', template) ? (
             renderMultiTypeInputWithAllowedValues({
               name: `${prefix}spec.image`,
               labelKey: 'imageLabel',

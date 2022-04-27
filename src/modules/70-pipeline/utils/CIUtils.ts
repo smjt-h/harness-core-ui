@@ -92,7 +92,7 @@ export const shouldRenderRunTimeInputViewWithAllowedValues = (
   fieldPath: string,
   template?: Record<string, any>
 ): boolean => {
-  if (!template) {
+  if (!template || !fieldPath) {
     return false
   }
   const value = get(template, fieldPath, '')

@@ -5,7 +5,11 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import { shouldRenderRunTimeInputView } from '../CIUtils'
+import {
+  shouldRenderRunTimeInputView,
+  shouldRenderRunTimeInputViewWithAllowedValues,
+  getAllowedValuesFromTemplate
+} from '../CIUtils'
 
 describe('Test StepUtils', () => {
   test('Test shouldRenderRunTimeInputView method', () => {
@@ -22,5 +26,54 @@ describe('Test StepUtils', () => {
     expect(shouldRenderRunTimeInputView(123)).not.toBeTruthy()
     expect(shouldRenderRunTimeInputView(null)).not.toBeTruthy()
     expect(shouldRenderRunTimeInputView(undefined)).not.toBeTruthy()
+  })
+
+  test('Test shouldRenderRunTimeInputViewWithAllowedValues method', () => {
+    expect(
+      shouldRenderRunTimeInputViewWithAllowedValues('a.b.c', {
+        a: { b: { c: '<+input>.allowedValues(val1,val2,val3)' } }
+      })
+    ).toBeTruthy()
+    expect(shouldRenderRunTimeInputViewWithAllowedValues('')).not.toBeTruthy()
+    expect(shouldRenderRunTimeInputViewWithAllowedValues('a.b.c')).not.toBeTruthy()
+    expect(
+      shouldRenderRunTimeInputViewWithAllowedValues('a.b.c', {
+        a: { b: { c: '<+input>' } }
+      })
+    ).not.toBeTruthy()
+    expect(
+      shouldRenderRunTimeInputViewWithAllowedValues('a.b.c', {
+        a: { b: { c: 'some-value' } }
+      })
+    ).not.toBeTruthy()
+  })
+
+  test('Test getAllowedValuesFromTemplate method', () => {
+    expect(
+      getAllowedValuesFromTemplate(
+        {
+          a: { b: { c: '<+input>.allowedValues(val1,val2,val3)' } }
+        },
+        'a.b.c'
+      ).length
+    ).toBe(3)
+    expect(
+      getAllowedValuesFromTemplate(
+        {
+          a: { b: { c: '<+input>' } }
+        },
+        'a.b.c'
+      ).length
+    ).toBe(0)
+    expect(
+      JSON.stringify(
+        getAllowedValuesFromTemplate(
+          {
+            a: { b: { c: '<+input>.allowedValues(val1)' } }
+          },
+          'a.b.c'
+        )
+      )
+    ).toBe(JSON.stringify([{ label: 'val1', value: 'val1' }]))
   })
 })
