@@ -5,26 +5,38 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import React, { useState, useEffect, useRef } from 'react'
+import React, { useState, useEffect, useRef, Dispatch, SetStateAction } from 'react'
 import { useParams } from 'react-router-dom'
 import { get, isEmpty, isUndefined } from 'lodash-es'
-import { FormInput, MultiTypeInputType, Container, Layout, Text, Radio, Icon } from '@wings-software/uicore'
+import { FormInput, MultiTypeInputType, Container, Layout, Text, Radio, Icon, TextInput } from '@wings-software/uicore'
 import { FontVariation } from '@harness/design-system'
-import { connect, FormikContext } from 'formik'
+import { connect } from 'formik'
 import { useStrings } from 'framework/strings'
 import { getIdentifierFromValue, getScopeFromValue } from '@common/components/EntityReference/EntityReference'
 import { Scope } from '@common/interfaces/SecretsInterface'
 import { useVariablesExpression } from '@pipeline/components/PipelineStudio/PiplineHooks/useVariablesExpression'
 import { ConnectorInfoDTO, PipelineInfoConfig, useGetConnector } from 'services/cd-ng'
-
+import { ConnectorRefWidth } from '@pipeline/utils/constants'
+import { FormMultiTypeConnectorField } from '@connectors/components/ConnectorReferenceField/FormMultiTypeConnectorField'
+import { MultiTypeTextField } from '@common/components/MultiTypeText/MultiTypeText'
+import type { GitQueryParams } from '@common/interfaces/RouteInterfaces'
+import { useQueryParams } from '@common/hooks'
+import { isRuntimeInput } from '../PipelineStudio/RightBar/RightBarUtils'
+import css from './CICodebaseInputSetForm.module.scss'
 export interface CICodebaseInputSetFormProps {
   path: string
   readonly?: boolean
-  formik?: FormikContext<any>
+  formik?: any
+  template?: PipelineInfoConfig
   originalPipeline: PipelineInfoConfig
 }
 
 type CodeBaseType = 'branch' | 'tag' | 'PR'
+
+export enum ConnectionType {
+  Repo = 'Repo',
+  Account = 'Account'
+}
 
 const inputNames = {
   branch: 'branch',
@@ -44,10 +56,67 @@ const placeholderValues = {
   PR: defaultValues['PR']
 }
 
+interface ConnectorRefInterface {
+  record?: { spec?: { type?: string; url?: string; connectionType?: string } }
+}
+
+export const handleCIConnectorRefOnChange = ({
+  value,
+  connectorRefType,
+  setConnectionType,
+  setConnectorUrl,
+  setFieldValue,
+  setIsConnectorExpression,
+  codeBaseInputFieldFormName
+}: {
+  value: ConnectorRefInterface | undefined
+  connectorRefType: MultiTypeInputType
+  setConnectionType: Dispatch<SetStateAction<string>>
+  setConnectorUrl: Dispatch<SetStateAction<string>>
+  setFieldValue: (field: string, value: any) => void
+  setIsConnectorExpression?: Dispatch<SetStateAction<boolean>> // used in inputset form
+  codeBaseInputFieldFormName?: { [key: string]: string } // only used when setting nested values in input set
+}): void => {
+  const newConnectorRef = value as ConnectorRefInterface
+  if (connectorRefType === MultiTypeInputType.FIXED) {
+    if (newConnectorRef?.record?.spec?.type === ConnectionType.Account) {
+      setConnectionType(ConnectionType.Account)
+      setConnectorUrl(newConnectorRef.record?.spec?.url || '')
+      setFieldValue(codeBaseInputFieldFormName?.repoName || 'repoName', '')
+    } else if (
+      newConnectorRef?.record?.spec?.type === ConnectionType.Repo ||
+      newConnectorRef?.record?.spec?.connectionType === ConnectionType.Repo
+    ) {
+      setConnectionType(ConnectionType.Repo)
+      setConnectorUrl(newConnectorRef.record?.spec?.url || '')
+      //  clear repoName from yaml
+      setFieldValue(codeBaseInputFieldFormName?.repoName || 'repoName', undefined)
+    } else {
+      setConnectionType('')
+      setConnectorUrl('')
+    }
+    setIsConnectorExpression?.(false)
+  } else if (connectorRefType === MultiTypeInputType.EXPRESSION) {
+    setConnectionType('')
+    setConnectorUrl('')
+    setIsConnectorExpression?.(true)
+  } else {
+    setConnectionType('')
+    setConnectorUrl('')
+    setIsConnectorExpression?.(false)
+
+    setFieldValue(
+      codeBaseInputFieldFormName?.repoName || 'repoName',
+      connectorRefType === MultiTypeInputType.RUNTIME ? '<+input>' : ''
+    )
+  }
+}
+
 function CICodebaseInputSetFormInternal({
   path,
   readonly,
   formik,
+  template,
   originalPipeline
 }: CICodebaseInputSetFormProps): JSX.Element {
   const { triggerIdentifier, accountId, projectIdentifier, orgIdentifier } = useParams<Record<string, string>>()
@@ -58,11 +127,16 @@ function CICodebaseInputSetFormInternal({
   const [connectorRef, setConnectorRef] = useState<string>('')
   const [codeBaseType, setCodeBaseType] = useState<CodeBaseType>()
 
+  const [connectionType, setConnectionType] = React.useState('')
+  const [connectorUrl, setConnectorUrl] = React.useState('')
+  const isConnectorRuntimeInput = template?.properties?.ci?.codebase?.connectorRef
+  const [isConnectorExpression, setIsConnectorExpression] = useState<boolean>(false)
   const savedValues = useRef<Record<string, string>>({
     branch: '',
     tag: '',
     PR: ''
   })
+  const { repoIdentifier, branch } = useQueryParams<GitQueryParams>()
 
   const { getString } = useStrings()
   const { expressions } = useVariablesExpression()
@@ -85,7 +159,9 @@ function CICodebaseInputSetFormInternal({
   const codeBaseInputFieldFormName = {
     branch: `${formattedPath}properties.ci.codebase.build.spec.branch`,
     tag: `${formattedPath}properties.ci.codebase.build.spec.tag`,
-    PR: `${formattedPath}properties.ci.codebase.build.spec.number`
+    PR: `${formattedPath}properties.ci.codebase.build.spec.number`,
+    connectorRef: `${formattedPath}properties.ci.codebase.connectorRef`,
+    repoName: `${formattedPath}properties.ci.codebase.repoName`
   }
 
   const {
@@ -117,6 +193,15 @@ function CICodebaseInputSetFormInternal({
     if (!loadingConnectorDetails && !isUndefined(connectorDetails)) {
       setConnectorType(get(connectorDetails, 'data.connector.type', '') as ConnectorInfoDTO['type'])
     }
+
+    if (connectorDetails?.data?.connector) {
+      setConnectionType(
+        connectorDetails?.data?.connector?.type === 'Git'
+          ? connectorDetails?.data?.connector.spec.connectionType
+          : connectorDetails?.data?.connector.spec.type
+      )
+      setConnectorUrl(connectorDetails?.data?.connector.spec.url)
+    }
   }, [loadingConnectorDetails, connectorDetails])
 
   useEffect(() => {
@@ -128,7 +213,14 @@ function CICodebaseInputSetFormInternal({
     if (typeOfConnector) {
       setConnectorType(typeOfConnector)
     } else {
-      const ctrRef = get(originalPipeline, 'properties.ci.codebase.connectorRef') as string
+      let ctrRef = get(originalPipeline, 'properties.ci.codebase.connectorRef') as string
+      if (isConnectorExpression) {
+        return
+      }
+      if (isRuntimeInput(ctrRef)) {
+        ctrRef = get(formik?.values, codeBaseInputFieldFormName.connectorRef, '')
+      }
+
       setConnectorRef(ctrRef)
       setConnectorId(getIdentifierFromValue(ctrRef))
     }
@@ -185,39 +277,133 @@ function CICodebaseInputSetFormInternal({
         </Container>
       ) : (
         <>
-          <Layout.Horizontal
-            flex={{ justifyContent: 'start' }}
-            padding={{ top: 'small', left: 'xsmall', bottom: 'xsmall' }}
-            margin={{ left: 'large' }}
-            spacing="huge"
-          >
-            <Radio
-              label={radioLabels['branch']}
-              onClick={() => handleTypeChange('branch')}
-              checked={codeBaseType === 'branch'}
-              disabled={readonly}
-              font={{ variation: FontVariation.FORM_LABEL }}
-              key="branch-radio-option"
-            />
-            <Radio
-              label={radioLabels['tag']}
-              onClick={() => handleTypeChange('tag')}
-              checked={codeBaseType === 'tag'}
-              disabled={readonly}
-              font={{ variation: FontVariation.FORM_LABEL }}
-              key="tag-radio-option"
-            />
-            {connectorType && connectorType !== 'Codecommit' ? (
+          {isConnectorRuntimeInput && (
+            <Container className={css.bottomMargin3}>
+              <FormMultiTypeConnectorField
+                name={codeBaseInputFieldFormName.connectorRef}
+                width={ConnectorRefWidth.DefaultView}
+                error={formik?.errors?.connectorRef}
+                type={['Git', 'Github', 'Gitlab', 'Bitbucket', 'Codecommit']}
+                label={<Text font={{ variation: FontVariation.FORM_LABEL }}>{getString('connector')}</Text>}
+                placeholder={loadingConnectorDetails ? getString('loading') : getString('connectors.selectConnector')}
+                accountIdentifier={accountId}
+                projectIdentifier={projectIdentifier}
+                orgIdentifier={orgIdentifier}
+                gitScope={{ repo: repoIdentifier || '', branch, getDefaultFromOtherRepo: true }}
+                setRefValue={true}
+                multiTypeProps={{
+                  expressions,
+                  disabled: readonly,
+                  allowableTypes: [MultiTypeInputType.FIXED, MultiTypeInputType.EXPRESSION]
+                }}
+                onChange={(value, _valueType, connectorRefType) =>
+                  handleCIConnectorRefOnChange({
+                    value: value as ConnectorRefInterface,
+                    connectorRefType,
+                    setConnectionType,
+                    setConnectorUrl,
+                    setFieldValue: formik?.setFieldValue as (field: string, value: any) => void,
+                    codeBaseInputFieldFormName,
+                    setIsConnectorExpression
+                  })
+                }
+              />
+            </Container>
+          )}
+          {isConnectorRuntimeInput &&
+            (!isRuntimeInput(formik?.values.connectorRef) && connectionType === ConnectionType.Repo ? (
+              <>
+                <Text
+                  font={{ variation: FontVariation.FORM_LABEL }}
+                  margin={{ bottom: 'xsmall' }}
+                  tooltipProps={{ dataTooltipId: 'rightBarForm_repoName' }}
+                >
+                  {getString('common.repositoryName')}
+                </Text>
+                <TextInput
+                  name={codeBaseInputFieldFormName.repoName}
+                  value={connectorUrl}
+                  style={{ flexGrow: 1 }}
+                  disabled
+                />
+              </>
+            ) : (
+              <>
+                <Container className={css.bottomMargin3}>
+                  <MultiTypeTextField
+                    label={
+                      <Text
+                        font={{ variation: FontVariation.FORM_LABEL }}
+                        margin={{ bottom: 'xsmall' }}
+                        tooltipProps={{ dataTooltipId: 'rightBarForm_repoName' }}
+                      >
+                        {getString('common.repositoryName')}
+                      </Text>
+                    }
+                    name={codeBaseInputFieldFormName.repoName}
+                    multiTextInputProps={{
+                      multiTextInputProps: {
+                        expressions,
+                        allowableTypes: [MultiTypeInputType.FIXED, MultiTypeInputType.EXPRESSION]
+                      },
+                      disabled: readonly
+                    }}
+                  />
+                </Container>
+                {!isRuntimeInput(formik?.values.connectorRef) &&
+                !isRuntimeInput(formik?.values.repoName) &&
+                connectorUrl?.length > 0 ? (
+                  <div className={css.predefinedValue}>
+                    <Text lineClamp={1} width="460px">
+                      {(connectorUrl[connectorUrl.length - 1] === '/' ? connectorUrl : connectorUrl + '/') +
+                        get(formik?.values, codeBaseInputFieldFormName.repoName, '')}
+                    </Text>
+                  </div>
+                ) : null}
+              </>
+            ))}
+          {(!isConnectorRuntimeInput ||
+            (isConnectorRuntimeInput && get(formik?.values, codeBaseInputFieldFormName.connectorRef))) && (
+            <Layout.Horizontal
+              flex={{ justifyContent: 'start' }}
+              padding={{ top: 'small', left: 'xsmall', bottom: 'xsmall' }}
+              margin={{ left: 'large' }}
+            >
               <Radio
-                label={radioLabels['PR']}
-                onClick={() => handleTypeChange('PR')}
-                checked={codeBaseType === 'PR'}
+                label={radioLabels['branch']}
+                width={110}
+                // margin={{ left: 'medium' }}
+                onClick={() => handleTypeChange('branch')}
+                checked={codeBaseType === 'branch'}
                 disabled={readonly}
                 font={{ variation: FontVariation.FORM_LABEL }}
-                key="pr-radio-option"
+                key="branch-radio-option"
               />
-            ) : null}
-          </Layout.Horizontal>
+              <Radio
+                label={radioLabels['tag']}
+                width={110}
+                margin={{ left: 'huge' }}
+                onClick={() => handleTypeChange('tag')}
+                checked={codeBaseType === 'tag'}
+                disabled={readonly}
+                font={{ variation: FontVariation.FORM_LABEL }}
+                key="tag-radio-option"
+              />
+              {connectorType !== 'Codecommit' ? (
+                <Radio
+                  label={radioLabels['PR']}
+                  width={110}
+                  margin={{ left: 'huge' }}
+                  onClick={() => handleTypeChange('PR')}
+                  checked={codeBaseType === 'PR'}
+                  disabled={readonly}
+                  font={{ variation: FontVariation.FORM_LABEL }}
+                  key="pr-radio-option"
+                />
+              ) : null}
+            </Layout.Horizontal>
+          )}
+
           <Container width={'50%'}>
             {codeBaseType === 'branch' ? renderCodeBaseTypeInput('branch') : null}
             {codeBaseType === 'tag' ? renderCodeBaseTypeInput('tag') : null}

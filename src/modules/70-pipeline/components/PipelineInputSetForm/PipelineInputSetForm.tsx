@@ -314,6 +314,7 @@ export function PipelineInputSetFormInternal(props: PipelineInputSetFormProps): 
                     path={finalPath}
                     readonly={readonly}
                     originalPipeline={props.originalPipeline}
+                    template={template}
                   />
                 </div>
               </div>

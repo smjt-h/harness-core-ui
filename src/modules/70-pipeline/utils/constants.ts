@@ -18,7 +18,10 @@ export enum CardVariant {
 export const ConnectorRefWidth = {
   DeploymentFormView: 320,
   InputSetView: 310,
-  DefaultView: 385
+  DefaultView: 385,
+  EditStageView: 366,
+  EditStageViewInputSet: 308,
+  RightBarView: 460
 }
 
 export const connectorTypes: { [key: string]: ConnectorInfoDTO['type'] } = {

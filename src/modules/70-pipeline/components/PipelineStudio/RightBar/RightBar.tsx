@@ -5,7 +5,7 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import React from 'react'
+import React, { SetStateAction, Dispatch } from 'react'
 import * as Yup from 'yup'
 import cx from 'classnames'
 import {
@@ -31,7 +31,7 @@ import { FontVariation } from '@harness/design-system'
 
 import { Classes, Dialog } from '@blueprintjs/core'
 import produce from 'immer'
-import { useStrings } from 'framework/strings'
+import { useStrings, UseStringsReturn } from 'framework/strings'
 import type { MultiTypeSelectOption } from '@pipeline/components/PipelineSteps/Steps/StepsTypes'
 import {
   ConnectorInfoDTO,
@@ -51,6 +51,11 @@ import {
   getScopeFromValue
 } from '@common/components/EntityReference/EntityReference'
 import { useVariablesExpression } from '@pipeline/components/PipelineStudio/PiplineHooks/useVariablesExpression'
+import { ConnectorRefWidth } from '@pipeline/utils/constants'
+import {
+  handleCIConnectorRefOnChange,
+  ConnectionType
+} from '@pipeline/components/PipelineInputSetForm/CICodebaseInputSetForm'
 import type { PipelineType, GitQueryParams } from '@common/interfaces/RouteInterfaces'
 import { Scope } from '@common/interfaces/SecretsInterface'
 import { useFeatureFlag } from '@common/hooks/useFeatureFlag'
@@ -66,6 +71,10 @@ import { DrawerTypes } from '../PipelineContext/PipelineActions'
 import { RightDrawer } from '../RightDrawer/RightDrawer'
 import css from './RightBar.module.scss'
 
+interface CodebaseRuntimeInputsInterface {
+  connectorRef?: boolean
+  repoName?: boolean
+}
 interface CodebaseValues {
   connectorRef?: ConnectorReferenceFieldProps['selected']
   repoName?: string
@@ -114,6 +123,141 @@ declare global {
   }
 }
 
+const getConnectorWidth = ({
+  connectorWidth,
+  connectorRef
+}: {
+  connectorWidth?: number
+  connectorRef?: string
+}): number | undefined => {
+  if (connectorWidth) {
+    return !isRuntimeInput(connectorRef) ? ConnectorRefWidth.EditStageView : ConnectorRefWidth.EditStageViewInputSet
+  }
+  return (!isRuntimeInput(connectorRef) && ConnectorRefWidth.RightBarView) || undefined
+}
+
+export const renderConnectorAndRepoName = ({
+  values,
+  setFieldValue,
+  connectorUrl,
+  connectionType,
+  setConnectionType,
+  setConnectorUrl,
+  getString,
+  errors,
+  loading,
+  accountId,
+  projectIdentifier,
+  orgIdentifier,
+  repoIdentifier,
+  branch,
+  expressions,
+  isReadonly,
+  setCodebaseRuntimeInputs,
+  codebaseRuntimeInputs,
+  connectorWidth
+}: {
+  values: { [key: string]: any }
+  setFieldValue: (field: string, value: any) => void
+  connectorUrl: string
+  connectionType: string
+  setConnectionType: Dispatch<SetStateAction<string>>
+  setConnectorUrl: Dispatch<SetStateAction<string>>
+  getString: UseStringsReturn['getString']
+  errors: { [key: string]: any }
+  loading: boolean
+  accountId: string
+  projectIdentifier: string
+  orgIdentifier: string
+  repoIdentifier?: string
+  branch?: string
+  expressions: string[]
+  isReadonly: boolean
+  setCodebaseRuntimeInputs: Dispatch<SetStateAction<CodebaseRuntimeInputsInterface>>
+  codebaseRuntimeInputs: CodebaseRuntimeInputsInterface
+  connectorWidth?: number
+}): JSX.Element => (
+  <>
+    <Container className={css.bottomMargin3}>
+      <FormMultiTypeConnectorField
+        name="connectorRef"
+        type={['Git', 'Github', 'Gitlab', 'Bitbucket', 'Codecommit']}
+        // selected={values.connectorRef}
+        label={getString('connector')}
+        width={getConnectorWidth({ connectorWidth, connectorRef: values.connectorRef })}
+        error={errors?.connectorRef}
+        placeholder={loading ? getString('loading') : getString('connectors.selectConnector')}
+        accountIdentifier={accountId}
+        projectIdentifier={projectIdentifier}
+        orgIdentifier={orgIdentifier}
+        gitScope={{ repo: repoIdentifier || '', branch, getDefaultFromOtherRepo: true }}
+        multiTypeProps={{
+          expressions,
+          disabled: isReadonly,
+          allowableTypes: [MultiTypeInputType.FIXED, MultiTypeInputType.RUNTIME] // BE does not support expressions
+        }}
+        onChange={(value, _valueType, connectorRefType) => {
+          handleCIConnectorRefOnChange({
+            value,
+            connectorRefType,
+            setConnectionType,
+            setConnectorUrl,
+            setFieldValue
+          })
+
+          setCodebaseRuntimeInputs({
+            ...codebaseRuntimeInputs,
+            connectorRef: isRuntimeInput(value),
+            repoName: connectorRefType === MultiTypeInputType.RUNTIME
+          })
+        }}
+      />
+    </Container>
+
+    {!isRuntimeInput(values.connectorRef) && connectionType === ConnectionType.Repo ? (
+      <>
+        <Text font={{ variation: FontVariation.FORM_LABEL }} margin={{ bottom: 'xsmall' }}>
+          {getString('common.repositoryName')}
+        </Text>
+        <TextInput name="repoName" value={connectorUrl} style={{ flexGrow: 1 }} disabled />
+      </>
+    ) : (
+      <>
+        <Container className={css.bottomMargin3}>
+          <MultiTypeTextField
+            key={`connector-runtimeinput-${codebaseRuntimeInputs.connectorRef}`} // handle reload RepoName from ConnectorRef as Runtime to Fixed
+            label={
+              <Text
+                font={{ variation: FontVariation.FORM_LABEL }}
+                margin={{ bottom: 'xsmall' }}
+                tooltipProps={{ dataTooltipId: 'rightBarForm_repoName' }}
+              >
+                {getString('common.repositoryName')}
+              </Text>
+            }
+            name="repoName"
+            multiTextInputProps={{
+              multiTextInputProps: {
+                expressions,
+                allowableTypes: [MultiTypeInputType.FIXED, MultiTypeInputType.EXPRESSION, MultiTypeInputType.RUNTIME]
+              },
+              disabled: isReadonly || (isRuntimeInput(values.connectorRef) && isRuntimeInput(values.repoName)) // connector is a runtime input
+            }}
+          />
+        </Container>
+        {!isRuntimeInput(values.connectorRef) && !isRuntimeInput(values.repoName) && connectorUrl?.length > 0 ? (
+          <div className={css.predefinedValue}>
+            <Text lineClamp={1} width="460px">
+              {(connectorUrl[connectorUrl.length - 1] === '/' ? connectorUrl : connectorUrl + '/') +
+                (values.repoName ? values.repoName : '')}
+            </Text>
+          </div>
+        ) : null}
+      </>
+    )}
+  </>
+)
+
 export function RightBar(): JSX.Element {
   const {
     state: {
@@ -126,7 +270,6 @@ export function RightBar(): JSX.Element {
       isUpdated
     },
     contextType,
-    allowableTypes,
     isReadonly,
     view,
     updatePipeline,
@@ -148,7 +291,8 @@ export function RightBar(): JSX.Element {
   const { repoIdentifier, branch } = useQueryParams<GitQueryParams>()
 
   const [isCodebaseDialogOpen, setIsCodebaseDialogOpen] = React.useState(false)
-  const [codebaseRuntimeInputs, setCodebaseRuntimeInputs] = React.useState({
+
+  const [codebaseRuntimeInputs, setCodebaseRuntimeInputs] = React.useState<CodebaseRuntimeInputsInterface>({
     ...(isRuntimeInput(codebase?.connectorRef) && { connectorRef: true, repoName: true })
   })
   const codebaseInitialValues: CodebaseValues = {
@@ -187,8 +331,8 @@ export function RightBar(): JSX.Element {
     debounce: 300
   })
 
-  const [connectionType, setConnectionType] = React.useState('')
-  const [connectorUrl, setConnectorUrl] = React.useState('')
+  const [connectionType, setConnectionType] = React.useState<string>('')
+  const [connectorUrl, setConnectorUrl] = React.useState<string>('')
 
   if (connector?.data?.connector) {
     const scope = getScopeFromDTO<ConnectorInfoDTO>(connector?.data?.connector)
@@ -240,7 +384,7 @@ export function RightBar(): JSX.Element {
           }
         })
 
-        if (connectorResult?.data?.connector?.spec.type === 'Account') {
+        if (connectorResult?.data?.connector?.spec.type === ConnectionType.Account) {
           try {
             const response = await getTestGitRepoConnectionResultPromise({
               identifier: connectorId,
@@ -509,7 +653,7 @@ export function RightBar(): JSX.Element {
             initialValues={codebaseInitialValues}
             validationSchema={Yup.object().shape({
               connectorRef: Yup.mixed().required(getString('fieldRequired', { field: getString('connector') })),
-              ...(connectionType === 'Account' && {
+              ...(connectionType === ConnectionType.Account && {
                 repoName: Yup.string().required(getString('common.validation.repositoryName'))
               })
             })}
@@ -549,7 +693,10 @@ export function RightBar(): JSX.Element {
                 })
 
                 // Repo level connectors should not have repoName
-                if (connectionType === 'Repo' && (draft as PipelineInfoConfig)?.properties?.ci?.codebase?.repoName) {
+                if (
+                  connectionType === ConnectionType.Repo &&
+                  (draft as PipelineInfoConfig)?.properties?.ci?.codebase?.repoName
+                ) {
                   unset(draft, 'properties.ci.codebase.repoName')
                 }
 
@@ -594,95 +741,26 @@ export function RightBar(): JSX.Element {
               <>
                 <div className={Classes.DIALOG_BODY}>
                   <FormikForm>
-                    <Container className={css.bottomMargin3}>
-                      <FormMultiTypeConnectorField
-                        name="connectorRef"
-                        type={['Git', 'Github', 'Gitlab', 'Bitbucket', 'Codecommit']}
-                        // selected={values.connectorRef}
-                        label={getString('connector')}
-                        width={(!isRuntimeInput(values.connectorRef) && 460) || undefined}
-                        error={errors?.connectorRef}
-                        placeholder={loading ? getString('loading') : getString('connectors.selectConnector')}
-                        accountIdentifier={accountId}
-                        projectIdentifier={projectIdentifier}
-                        orgIdentifier={orgIdentifier}
-                        gitScope={{ repo: repoIdentifier || '', branch, getDefaultFromOtherRepo: true }}
-                        multiTypeProps={{ expressions, disabled: isReadonly, allowableTypes }}
-                        onChange={(value, _valueType, connectorRefType) => {
-                          const newConnectorRef = value as {
-                            record?: { spec?: { type?: string; url?: string; connectionType?: string } }
-                          }
-                          if (connectorRefType === MultiTypeInputType.FIXED) {
-                            if (newConnectorRef.record?.spec?.type === 'Account') {
-                              setConnectionType('Account')
-                              setConnectorUrl(newConnectorRef.record?.spec?.url || '')
-                              setFieldValue('repoName', '')
-                            } else if (
-                              newConnectorRef.record?.spec?.type === 'Repo' ||
-                              newConnectorRef.record?.spec?.connectionType === 'Repo'
-                            ) {
-                              setConnectionType('Repo')
-                              setConnectorUrl(newConnectorRef.record?.spec?.url || '')
-                              setFieldValue('repoName', newConnectorRef.record?.spec?.url || '')
-                            } else {
-                              setConnectionType('')
-                              setConnectorUrl('')
-                              setFieldValue('repoName', '')
-                            }
-                          } else {
-                            setConnectionType('')
-                            setConnectorUrl('')
-                            setFieldValue('repoName', connectorRefType === MultiTypeInputType.RUNTIME ? '<+input>' : '')
-                          }
-
-                          setCodebaseRuntimeInputs({
-                            ...codebaseRuntimeInputs,
-                            connectorRef: isRuntimeInput(newConnectorRef),
-                            repoName: connectorRefType === MultiTypeInputType.RUNTIME
-                          })
-                        }}
-                      />
-                    </Container>
-
-                    {!isRuntimeInput(values.connectorRef) && connectionType === 'Repo' ? (
-                      <>
-                        <Text margin={{ bottom: 'xsmall' }}>{getString('common.repositoryName')}</Text>
-                        <TextInput name="repoName" value={connectorUrl} style={{ flexGrow: 1 }} disabled />
-                      </>
-                    ) : (
-                      <>
-                        <Container className={css.bottomMargin3}>
-                          <MultiTypeTextField
-                            key={`connector-runtimeinput-${codebaseRuntimeInputs.connectorRef}`}
-                            label={
-                              <Text
-                                font={{ variation: FontVariation.FORM_LABEL }}
-                                margin={{ bottom: 'xsmall' }}
-                                tooltipProps={{ dataTooltipId: 'rightBarForm_repoName' }}
-                              >
-                                {getString('common.repositoryName')}
-                              </Text>
-                            }
-                            name="repoName"
-                            multiTextInputProps={{
-                              multiTextInputProps: { expressions, allowableTypes },
-                              disabled:
-                                isReadonly || (isRuntimeInput(values.connectorRef) && isRuntimeInput(values.repoName)) // connector is a runtime input
-                            }}
-                          />
-                        </Container>
-                        {!isRuntimeInput(values.connectorRef) &&
-                        !isRuntimeInput(values.repoName) &&
-                        connectorUrl?.length > 0 ? (
-                          <div className={css.predefinedValue}>
-                            <Text lineClamp={1} width="460px">
-                              {(connectorUrl[connectorUrl.length - 1] === '/' ? connectorUrl : connectorUrl + '/') +
-                                (values.repoName ? values.repoName : '')}
-                            </Text>
-                          </div>
-                        ) : null}
-                      </>
-                    )}
+                    {renderConnectorAndRepoName({
+                      values,
+                      setFieldValue,
+                      connectorUrl,
+                      connectionType,
+                      setConnectionType,
+                      setConnectorUrl,
+                      getString,
+                      errors,
+                      loading,
+                      accountId,
+                      projectIdentifier,
+                      orgIdentifier,
+                      repoIdentifier,
+                      branch,
+                      expressions,
+                      isReadonly,
+                      setCodebaseRuntimeInputs,
+                      codebaseRuntimeInputs
+                    })}
                     <Accordion>
                       <Accordion.Panel
                         id="advanced"
