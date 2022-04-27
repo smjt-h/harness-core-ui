@@ -17,8 +17,12 @@ import {
   Text,
   Color,
   MultiSelectOption,
-  SelectOption
+  MultiSelectTypeInput,
+  SelectOption,
+  Label,
+  Layout
 } from '@harness/uicore'
+import { connect, FormikContext } from 'formik'
 import { useStrings } from 'framework/strings'
 import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
 import { FormMultiTypeDurationField } from '@common/components/MultiTypeDuration/MultiTypeDuration'
@@ -27,17 +31,19 @@ import { Connectors } from '@connectors/constants'
 import { useVariablesExpression } from '@pipeline/components/PipelineStudio/PiplineHooks/useVariablesExpression'
 import { useListAwsRegions } from 'services/portal'
 import { useCFCapabilitiesForAws, useCFStatesForAws, useGetIamRolesForAws } from 'services/cd-ng'
+import MultiTypeFieldSelector from '@common/components/MultiTypeFieldSelector/MultiTypeFieldSelector'
+import { TFMonaco } from '../../Common/Terraform/Editview/TFMonacoEditor'
+import TemplateFileInputs from './TemplateFile'
 import type { CreateStackData, CreateStackProps } from '../CloudFormationInterfaces'
 import stepCss from '@pipeline/components/PipelineSteps/Steps/Steps.module.scss'
 
 const isRuntime = (value: string | undefined | SelectOption[]): boolean =>
   getMultiTypeFromValue(value) === MultiTypeInputType.RUNTIME
 
-export default function CloudFormationCreateStackInputStep<T extends CreateStackData = CreateStackData>(
-  props: CreateStackProps<T>
+function CloudFormationCreateStackInputStepRef<T extends CreateStackData = CreateStackData>(
+  props: CreateStackProps<T> & { formik?: FormikContext<any> }
 ): React.ReactElement {
-  const { inputSetData, readonly, path, allowableTypes } = props
-  console.log('inputSetData: ', inputSetData)
+  const { inputSetData, readonly, path, allowableTypes, formik } = props
   const { getString } = useStrings()
   const { expressions } = useVariablesExpression()
   const { accountId, projectIdentifier, orgIdentifier } = useParams<ProjectPathProps>()
@@ -45,16 +51,30 @@ export default function CloudFormationCreateStackInputStep<T extends CreateStack
   const [awsRoles, setAwsRoles] = useState<MultiSelectOption[]>([])
   const [awsStatuses, setAwsStates] = useState<MultiSelectOption[]>([])
   const [capabilities, setCapabilities] = useState<MultiSelectOption[]>([])
+  const [selectedCapabilities, setSelectedCapabilities] = useState<MultiSelectOption[]>([])
+  const [selectedStackStatus, setSelectedStackStatus] = useState<MultiSelectOption[]>([])
   const awsRef = inputSetData?.template?.spec?.configuration?.connectorRef
-  // const onUpdateRef = (arg: any): void => {
-  //   onUpdate?.(arg)
-  // }
-  // const onChangeRef = (arg: any): void => {
-  //   onChange?.(arg)
-  // }
+
+  useEffect(() => {
+    if (selectedCapabilities.length > 0) {
+      formik?.setFieldValue(
+        `${path}.spec.configuration.capabilities`,
+        map(selectedCapabilities, cap => cap.value)
+      )
+    }
+  }, [selectedCapabilities])
+
+  useEffect(() => {
+    if (selectedStackStatus.length > 0) {
+      formik?.setFieldValue(
+        `${path}.spec.configuration.skipOnStackStatuses`,
+        map(selectedStackStatus, status => status.value)
+      )
+    }
+  }, [selectedStackStatus])
 
   const capabilitiesRequired = isRuntime(inputSetData?.template?.spec?.configuration?.capabilities as string)
-  const { data: capabilitiesData, refetch: getAwsCapabilities } = useCFCapabilitiesForAws({})
+  const { data: capabilitiesData, refetch: getAwsCapabilities } = useCFCapabilitiesForAws({ lazy: true })
   useEffect(() => {
     if (capabilitiesData) {
       const capabilitiesValues = map(capabilitiesData?.data, cap => ({ label: cap, value: cap }))
@@ -67,7 +87,7 @@ export default function CloudFormationCreateStackInputStep<T extends CreateStack
   }, [capabilitiesData, capabilitiesRequired])
 
   const awsStatusRequired = isRuntime(inputSetData?.template?.spec?.configuration?.skipOnStackStatuses as string)
-  const { data: awsStatusData, refetch: getAwsStatuses } = useCFStatesForAws({})
+  const { data: awsStatusData, refetch: getAwsStatuses } = useCFStatesForAws({ lazy: true })
   useEffect(() => {
     if (awsStatusData) {
       const awsStatesValues = map(awsStatusData?.data, cap => ({ label: cap, value: cap }))
@@ -84,6 +104,7 @@ export default function CloudFormationCreateStackInputStep<T extends CreateStack
     loading: regionsLoading,
     refetch: getRegions
   } = useListAwsRegions({
+    lazy: true,
     queryParams: {
       accountId
     }
@@ -110,7 +131,7 @@ export default function CloudFormationCreateStackInputStep<T extends CreateStack
       connectorRef: awsRef as string
     }
   })
-  
+
   const roleRequired = isRuntime(inputSetData?.template?.spec?.configuration?.roleArn)
   useEffect(() => {
     if (roleData) {
@@ -193,6 +214,7 @@ export default function CloudFormationCreateStackInputStep<T extends CreateStack
           />
         </div>
       )}
+      <TemplateFileInputs {...props} />
       {getMultiTypeFromValue((inputSetData?.template as CreateStackData)?.spec?.configuration?.stackName) ===
         MultiTypeInputType.RUNTIME && (
         <div className={cx(stepCss.formGroup, stepCss.md)}>
@@ -227,52 +249,69 @@ export default function CloudFormationCreateStackInputStep<T extends CreateStack
           />
         </div>
       )}
-      {getMultiTypeFromValue((inputSetData?.template as CreateStackData)?.spec?.configuration?.capabilities) ===
+      {getMultiTypeFromValue(inputSetData?.template?.spec?.configuration?.capabilities) ===
         MultiTypeInputType.RUNTIME && (
-        <div className={cx(stepCss.formGroup, stepCss.md)}>
-          <FormInput.MultiSelectTypeInput
+        <Layout.Vertical>
+          <Label style={{ color: Color.GREY_900 }}>{getString('cd.cloudFormation.specifyCapabilities')}</Label>
+          <MultiSelectTypeInput
             name={`${path}.spec.configuration.capabilities`}
-            label={getString('cd.cloudFormation.specifyCapabilities')}
             disabled={readonly}
-            style={{ maxWidth: 500 }}
-            selectItems={capabilities ? capabilities : []}
-            multiSelectTypeInputProps={{
-              allowableTypes,
-              expressions
+            multiSelectProps={{
+              items: capabilities
             }}
+            width={500}
+            value={selectedCapabilities}
+            onChange={values => setSelectedCapabilities(values as MultiSelectOption[])}
           />
-        </div>
+        </Layout.Vertical>
       )}
       {getMultiTypeFromValue((inputSetData?.template as CreateStackData)?.spec?.configuration?.tags?.spec?.content) ===
         MultiTypeInputType.RUNTIME && (
         <div className={cx(stepCss.formGroup, stepCss.md)}>
-          <FormInput.MultiTextInput
+          <MultiTypeFieldSelector
             name={`${path}.spec.configuration.tags.spec.content`}
             label={getString('tagsLabel')}
+            defaultValueToReset=""
+            allowedTypes={allowableTypes}
+            skipRenderValueInExpressionLabel
             disabled={readonly}
-            multiTextInputProps={{
-              expressions,
-              allowableTypes
-            }}
-          />
+            expressionRender={() => (
+              <TFMonaco
+                name={`${path}.spec.configuration.tags.spec.content`}
+                formik={formik!}
+                expressions={expressions}
+                title={getString('tagsLabel')}
+              />
+            )}
+          >
+            <TFMonaco
+              name={`${path}.spec.configuration.tags.spec.content`}
+              formik={formik!}
+              expressions={expressions}
+              title={getString('tagsLabel')}
+            />
+          </MultiTypeFieldSelector>
         </div>
       )}
       {getMultiTypeFromValue((inputSetData?.template as CreateStackData)?.spec?.configuration?.skipOnStackStatuses) ===
         MultiTypeInputType.RUNTIME && (
-        <div className={cx(stepCss.formGroup, stepCss.md)}>
-          <FormInput.MultiSelectTypeInput
+        <Layout.Vertical>
+          <Label style={{ color: Color.GREY_900 }}>{getString('cd.cloudFormation.continueStatus')}</Label>
+          <MultiSelectTypeInput
             name={`${path}.spec.configuration.skipOnStackStatuses`}
-            label={getString('cd.cloudFormation.continueStatus')}
             disabled={readonly}
-            style={{ maxWidth: 500 }}
-            selectItems={awsStatuses ? awsStatuses : []}
-            multiSelectTypeInputProps={{
-              allowableTypes,
-              expressions
+            multiSelectProps={{
+              items: awsStatuses
             }}
+            width={500}
+            value={selectedStackStatus}
+            onChange={values => setSelectedStackStatus(values as MultiSelectOption[])}
           />
-        </div>
+        </Layout.Vertical>
       )}
     </FormikForm>
   )
 }
+
+const CloudFormationCreateStackInputStep = connect(CloudFormationCreateStackInputStepRef)
+export default CloudFormationCreateStackInputStep

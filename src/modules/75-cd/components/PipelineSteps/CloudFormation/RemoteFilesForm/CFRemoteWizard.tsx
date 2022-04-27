@@ -9,7 +9,7 @@ import React, { useState } from 'react'
 import cx from 'classnames'
 import { isNumber } from 'lodash-es'
 import { useParams } from 'react-router-dom'
-import { Button, ButtonVariation, StepWizard, MultiTypeInputType, SelectOption } from '@harness/uicore'
+import { Button, ButtonVariation, StepWizard, MultiTypeInputType, SelectOption, getMultiTypeFromValue } from '@harness/uicore'
 import { Classes, Dialog, IDialogProps } from '@blueprintjs/core'
 import { useStrings } from 'framework/strings'
 import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
@@ -134,45 +134,36 @@ const CFRemoteWizard = ({
   const onSubmit = (values: any, connector: any) => {
     const config = values?.spec?.configuration
     let paths = config?.templateFile?.spec?.store?.spec?.paths
-    let connectorFieldName = 'spec.configuration.templateFile.spec.store.spec.connectorRef'
     let connectorRef = connector?.spec?.configuration?.templateFile?.spec?.store?.spec?.connectorRef
-    if (isNumber(index)) {
-      connectorRef = connector?.spec?.configuration?.parameters?.store?.spec?.connectorRef
-    }
 
     if (isNumber(index)) {
+      connectorRef = connector?.spec?.configuration?.parameters?.store?.spec?.connectorRef
       paths = config?.parameters?.store?.spec?.paths
-      connectorFieldName = `spec.configuration.parameters[${index}].store.spec.connectorRef`
-      setFieldValue(
-        `spec.configuration.parameters[${index}].identifier`,
-        values.spec.configuration.parameters.identifier
-      )
-      setFieldValue(
-        `spec.configuration.parameters[${index}].store.type`,
-        connectorRef?.connector?.type === Connectors.AWS ? 'S3Url' : connector?.connector?.type
-      )
-      setFieldValue(`spec.configuration.parameters[${index}].store.spec`, {
-        ...values.spec.configuration.parameters.store.spec,
-        paths: paths.map((filePath: Path) => filePath.path)
-      })
-      if (connector?.spec.configuration.parameters.store.spec?.region) {
-        setFieldValue(
-          `spec.configuration.parameters[${index}].store.spec.region`,
-          connector?.spec.configuration.parameters.store.spec?.region
-        )
+      const data = {
+        identifier: values.spec.configuration.parameters.identifier,
+        store: {
+          type: connector?.selectedConnector === Connectors.AWS ? 'S3Url' : connector?.selectedConnector,
+          spec: {
+            ...values.spec.configuration.templateFile.spec.store.spec,
+            region: connector?.spec.configuration.parameters.store.spec?.region,
+            paths: paths.map((filePath: Path) => filePath.path),
+            connectorRef
+          }
+        }
       }
+      setFieldValue(`spec.configuration.parameters[${index}]`, data)
     } else {
-      setFieldValue(`spec.configuration.templateFile.spec.store.spec`, {
-        ...values.spec.configuration.templateFile.spec.store.spec,
-        paths: paths.map((filePath: Path) => filePath.path)
-      })
-      setFieldValue(`spec.configuration.templateFile.spec.store.type`, connectorRef?.connector?.type)
-      setFieldValue(
-        'spec.configuration.templateFile.spec.store.spec.paths',
-        paths.map((filePath: Path) => filePath.path)
-      )
+      paths = getMultiTypeFromValue(paths[0]?.path) === MultiTypeInputType.RUNTIME ? paths[0]?.path : [paths[0]?.path]
+      const data = {
+        type: connector?.selectedConnector,
+        spec: {
+          ...values.spec.configuration.templateFile.spec.store.spec,
+          paths,
+          connectorRef
+        }
+      }
+      setFieldValue(`spec.configuration.templateFile.spec.store`, data)
     }
-    setFieldValue(connectorFieldName, connectorRef)
     close()
   }
 

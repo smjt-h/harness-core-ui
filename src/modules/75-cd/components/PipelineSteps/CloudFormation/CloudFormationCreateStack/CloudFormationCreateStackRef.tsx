@@ -199,8 +199,7 @@ export const CloudFormationCreateStack = (
       {formik => {
         setFormikRef(formikRef, formik)
         const { values, setFieldValue, errors } = formik
-        console.log('errors: ', errors)
-        console.log('values: ', values)
+        window.console.log({ values, errors })
         const awsConnector = values?.spec?.configuration?.connectorRef
         if (awsConnector?.value !== awsRef) {
           setAwsRef(awsConnector?.value)
@@ -280,7 +279,7 @@ export const CloudFormationCreateStack = (
               <Layout.Horizontal className={stepCss.formGroup}>
                 <FormInput.MultiTypeInput
                   label={getString('regionLabel')}
-                  name='spec.configuration.region'
+                  name="spec.configuration.region"
                   disabled={readonly}
                   useValue
                   multiTypeInputProps={{
@@ -290,7 +289,7 @@ export const CloudFormationCreateStack = (
                     },
                     expressions,
                     allowableTypes,
-                    width:300
+                    width: 300
                   }}
                   selectItems={regions ? regions : []}
                 />

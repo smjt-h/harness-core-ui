@@ -74,7 +74,12 @@ const ConnectorStepOne: React.FC<StepProps<any> & ConnectorStepOneProps> = ({
     const connectorType = isNumber(index)
       ? initialValues.spec.configuration.parameters[index!]?.store?.type
       : initialValues?.spec?.configuration?.templateFile?.spec?.store?.type
-    setSelectedConnector(connectorType === 'S3Url' ? 'S3' : connectorType)
+      if (connectorType) {
+        setSelectedConnector(connectorType === 'S3Url' ? 'S3' : connectorType)
+      } else {
+        setSelectedConnector(allowedTypes[0])
+      }
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialValues])
 
@@ -132,7 +137,7 @@ const ConnectorStepOne: React.FC<StepProps<any> & ConnectorStepOneProps> = ({
         enableReinitialize={true}
         onSubmit={data => {
           setSelectedConnector('')
-          nextStep?.(data)
+          nextStep?.({...data, selectedConnector})
         }}
         initialValues={
           isNumber(index)
@@ -198,6 +203,7 @@ const ConnectorStepOne: React.FC<StepProps<any> & ConnectorStepOneProps> = ({
                       style={{ marginBottom: 10 }}
                       multiTypeProps={{ expressions, allowableTypes }}
                       disabled={!selectedConnector}
+                      setRefValue
                     />
                     {selectedConnector && (
                       <Button
