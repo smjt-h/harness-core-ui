@@ -6,23 +6,96 @@
  */
 
 import React from 'react'
-import { Card, Layout, Text } from '@wings-software/uicore'
-import { Color } from '@harness/design-system'
+import { useParams } from 'react-router-dom'
+import { Card, Layout, Tab, Tabs } from '@wings-software/uicore'
 import { useStrings } from 'framework/strings'
 import { ActiveServiceInstancesHeader } from '@cd/components/ServiceDetails/ActiveServiceInstances/ActiveServiceInstancesHeader'
+import {
+  GetEnvArtifactDetailsByServiceIdQueryParams,
+  GetEnvBuildInstanceCountQueryParams,
+  useGetEnvArtifactDetailsByServiceId,
+  useGetEnvBuildInstanceCount
+} from 'services/cd-ng'
+import type { ProjectPathProps, ServicePathProps } from '@common/interfaces/RouteInterfaces'
 import { ActiveServiceInstancesContent } from '@cd/components/ServiceDetails/ActiveServiceInstances/ActiveServiceInstancesContent'
+import { Deployments } from '../DeploymentView/DeploymentView'
 import css from '@cd/components/ServiceDetails/ActiveServiceInstances/ActiveServiceInstances.module.scss'
+
+export enum ServiceDetailTabs {
+  ACTIVE = 'Active Service Instances',
+  DEPLOYMENT = 'Deployments'
+}
 
 export const ActiveServiceInstances: React.FC = () => {
   const { getString } = useStrings()
+  const { accountId, orgIdentifier, projectIdentifier, serviceId } = useParams<ProjectPathProps & ServicePathProps>()
+  const queryParams: GetEnvBuildInstanceCountQueryParams = {
+    accountIdentifier: accountId,
+    orgIdentifier,
+    projectIdentifier,
+    serviceId
+  }
+
+  const {
+    data: activeInstancedata,
+    loading: loadingActiveInstance,
+    error: errorActiveInstance
+  } = useGetEnvBuildInstanceCount({ queryParams })
+
+  const queryParamsDeployments: GetEnvArtifactDetailsByServiceIdQueryParams = {
+    accountIdentifier: accountId,
+    orgIdentifier,
+    projectIdentifier,
+    serviceId
+  }
+
+  const {
+    data: deploymentData,
+    loading: loadingDeployment,
+    error: errorDeployment
+  } = useGetEnvArtifactDetailsByServiceId({ queryParams: queryParamsDeployments })
+
+  const deploymentState = (): boolean => {
+    if (loadingDeployment || errorDeployment || !(deploymentData?.data?.environmentInfoByServiceId || []).length)
+      return false
+    return true
+  }
+
+  const activeInstanceState = (): boolean => {
+    if (
+      loadingActiveInstance ||
+      errorActiveInstance ||
+      !(activeInstancedata?.data?.envBuildIdAndInstanceCountInfoList || []).length
+    )
+      return false
+    return true
+  }
+
+  const activeState = (): boolean => {
+    if (deploymentState() && !activeInstanceState()) {
+      return false
+    }
+    return true
+  }
   return (
     <Card className={css.activeServiceInstances}>
-      <Layout.Vertical height={'100%'}>
-        <Text font={{ weight: 'bold' }} color={Color.GREY_600} margin={{ bottom: 'medium' }}>
-          {getString('cd.serviceDashboard.activeServiceInstancesLabel')}
-        </Text>
-        <ActiveServiceInstancesHeader />
-        <ActiveServiceInstancesContent />
+      <Layout.Vertical className={css.tabsStyle}>
+        <Tabs
+          id="ServiceDetailTabs"
+          defaultSelectedTabId={activeState() ? ServiceDetailTabs.ACTIVE : ServiceDetailTabs.DEPLOYMENT}
+        >
+          <Tab
+            id={ServiceDetailTabs.ACTIVE}
+            title={getString('cd.serviceDashboard.activeServiceInstancesLabel')}
+            panel={
+              <>
+                <ActiveServiceInstancesHeader />
+                <ActiveServiceInstancesContent />
+              </>
+            }
+          />
+          <Tab id={ServiceDetailTabs.DEPLOYMENT} title={getString('deploymentsText')} panel={<Deployments />} />
+        </Tabs>
       </Layout.Vertical>
     </Card>
   )

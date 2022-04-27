@@ -96,6 +96,21 @@ export const ActiveServiceInstancesHeader: React.FC = () => {
       }
     }
   }
+  const labelsHtml = (
+    <Layout.Vertical height="100%" padding={{ top: 'xsmall', bottom: 'xsmall', right: 'large' }}>
+      <ul>
+        {pieChartProps.items.map(({ label, formattedValue, value, color }) => (
+          <li style={{ fontWeight: 500, fontSize: 15, color }} key={`${label}_${value}`}>
+            <Text font={{ size: 'xsmall' }} color={Color.GREY_500} key={label}>{`${label} (${
+              formattedValue ? formattedValue : value
+            })`}</Text>
+          </li>
+        ))}
+      </ul>
+    </Layout.Vertical>
+  )
+
+  pieChartProps['labelsContent'] = labelsHtml
 
   const isBoostMode = changeRate === INVALID_CHANGE_RATE
   const tickerColor = isBoostMode || changeRate > 0 ? Color.GREEN_600 : Color.RED_500
@@ -140,7 +155,7 @@ export const ActiveServiceInstancesHeader: React.FC = () => {
       </Layout.Horizontal>
       <Layout.Horizontal>
         {trendData.length ? (
-          <Container margin={{ right: 'medium' }}>
+          <Container>
             <TrendPopover
               title={getString('cd.serviceDashboard.serviceInstancesInLast', {
                 period: getString('common.duration.6months')
@@ -150,7 +165,7 @@ export const ActiveServiceInstancesHeader: React.FC = () => {
               <SparklineChart
                 title={getString('cd.serviceDashboard.6monthTrend')}
                 data={trendData}
-                options={{ chart: { width: 80, height: 50 } }}
+                options={{ chart: { width: 122, height: 54 } }}
                 sparklineChartContainerStyles={css.hover}
               />
             </TrendPopover>
@@ -158,8 +173,8 @@ export const ActiveServiceInstancesHeader: React.FC = () => {
         ) : (
           <></>
         )}
-        {totalInstances ? <PieChart {...pieChartProps} /> : <></>}
       </Layout.Horizontal>
+      <Layout.Horizontal>{totalInstances ? <PieChart {...pieChartProps} /> : <></>}</Layout.Horizontal>
     </Layout.Horizontal>
   )
 }

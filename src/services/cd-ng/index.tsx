@@ -2382,6 +2382,9 @@ export interface Environment {
   type: 'PreProduction' | 'Production'
 }
 
+export interface EnvironmentDeploymentInfo {
+  environmentInfoByServiceId?: EnvironmentInfoByServiceId[]
+}
 export interface EnvironmentGroupDeleteResponse {
   accountId?: string
   deleted?: boolean
@@ -2421,6 +2424,16 @@ export interface EnvironmentGroupResponseDTO {
   version?: number
 }
 
+export interface EnvironmentInfoByServiceId {
+  artifactImage?: string
+  environmentId?: string
+  environmentName?: string
+  serviceId?: string
+  serviceName?: string
+  service_endTs?: number
+  service_startTs?: number
+  tag?: string
+}
 export interface EnvironmentRequestDTO {
   color?: string
   description?: string
@@ -6612,6 +6625,12 @@ export interface ResponseEnvCount {
   status?: 'SUCCESS' | 'FAILURE' | 'ERROR'
 }
 
+export interface ResponseEnvironmentDeploymentInfo {
+  correlationId?: string
+  data?: EnvironmentDeploymentInfo
+  metaData?: { [key: string]: any }
+  status?: 'SUCCESS' | 'FAILURE' | 'ERROR'
+}
 export interface ResponseEnvironmentGroupDeleteResponse {
   correlationId?: string
   data?: EnvironmentGroupDeleteResponse
@@ -16226,6 +16245,61 @@ export const getDeploymentsByServiceIdPromise = (
     signal
   )
 
+export interface GetEnvArtifactDetailsByServiceIdQueryParams {
+  accountIdentifier: string
+  orgIdentifier: string
+  projectIdentifier: string
+  serviceId: string
+}
+
+export type GetEnvArtifactDetailsByServiceIdProps = Omit<
+  GetProps<ResponseEnvironmentDeploymentInfo, Failure | Error, GetEnvArtifactDetailsByServiceIdQueryParams, void>,
+  'path'
+>
+
+/**
+ * Get list of unique environment and Artifact version filter by service_id
+ */
+export const GetEnvArtifactDetailsByServiceId = (props: GetEnvArtifactDetailsByServiceIdProps) => (
+  <Get<ResponseEnvironmentDeploymentInfo, Failure | Error, GetEnvArtifactDetailsByServiceIdQueryParams, void>
+    path={`/dashboard/getEnvArtifactDetailsByServiceId`}
+    base={getConfig('ng/api')}
+    {...props}
+  />
+)
+
+export type UseGetEnvArtifactDetailsByServiceIdProps = Omit<
+  UseGetProps<ResponseEnvironmentDeploymentInfo, Failure | Error, GetEnvArtifactDetailsByServiceIdQueryParams, void>,
+  'path'
+>
+
+/**
+ * Get list of unique environment and Artifact version filter by service_id
+ */
+export const useGetEnvArtifactDetailsByServiceId = (props: UseGetEnvArtifactDetailsByServiceIdProps) =>
+  useGet<ResponseEnvironmentDeploymentInfo, Failure | Error, GetEnvArtifactDetailsByServiceIdQueryParams, void>(
+    `/dashboard/getEnvArtifactDetailsByServiceId`,
+    { base: getConfig('ng/api'), ...props }
+  )
+
+/**
+ * Get list of unique environment and Artifact version filter by service_id
+ */
+export const getEnvArtifactDetailsByServiceIdPromise = (
+  props: GetUsingFetchProps<
+    ResponseEnvironmentDeploymentInfo,
+    Failure | Error,
+    GetEnvArtifactDetailsByServiceIdQueryParams,
+    void
+  >,
+  signal?: RequestInit['signal']
+) =>
+  getUsingFetch<ResponseEnvironmentDeploymentInfo, Failure | Error, GetEnvArtifactDetailsByServiceIdQueryParams, void>(
+    getConfig('ng/api'),
+    `/dashboard/getEnvArtifactDetailsByServiceId`,
+    props,
+    signal
+  )
 export interface GetEnvBuildInstanceCountQueryParams {
   accountIdentifier: string
   orgIdentifier: string
