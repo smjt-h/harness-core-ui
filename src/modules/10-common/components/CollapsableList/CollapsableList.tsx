@@ -66,7 +66,7 @@ export function CollapsableList<T>(props: CollapsableTableProps<T>): JSX.Element
           </Collapse>
         ))}
       </div>
-      <Pagination {...props.pagination} hidePageNumbers />
+      <Pagination {...props.pagination} />
     </>
   )
 }
