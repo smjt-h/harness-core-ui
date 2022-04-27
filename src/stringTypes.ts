@@ -918,6 +918,12 @@ export interface StringsMap {
   'rbac.resourceGroup.summary': string
   'rbac.resourceGroup.updateResourceGroupDialogTitle': string
   'rbac.resourceGroup.updateSuccess': string
+  'rbac.resourceScope.includeAccResources': string
+  'rbac.resourceScope.includeProjResources': string
+  'rbac.resourceScope.label': string
+  'rbac.resourceScope.select': string
+  'rbac.resourceScope.selectOrg': string
+  'rbac.resourceScope.selectOrgsandProjects': string
   'rbac.resourceSelectorErrorMessage': string
   'rbac.roleAssignment.assignmentValidation': string
   'rbac.roleAssignment.deleteFailure': string
@@ -934,9 +940,12 @@ export interface StringsMap {
   'rbac.roleForm.updateSuccess': string
   'rbac.scopeItems.accountAll': string
   'rbac.scopeItems.accountOnly': string
+  'rbac.scopeItems.allProjects': string
   'rbac.scopeItems.orgAll': string
   'rbac.scopeItems.orgOnly': string
   'rbac.scopeItems.projectOnly': string
+  'rbac.scopeItems.specificOrgsAndProjects': string
+  'rbac.scopeItems.specificProjects': string
   'rbac.serviceAccounts.confirmDelete': string
   'rbac.serviceAccounts.confirmDeleteTitle': string
   'rbac.serviceAccounts.email': string

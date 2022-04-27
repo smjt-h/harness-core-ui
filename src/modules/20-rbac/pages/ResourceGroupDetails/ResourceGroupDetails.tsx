@@ -6,19 +6,8 @@
  */
 
 import React, { useEffect, useState } from 'react'
-import {
-  Text,
-  Layout,
-  Container,
-  Icon,
-  ButtonVariation,
-  useToaster,
-  Page,
-  Card,
-  Button,
-  DropDown
-} from '@wings-software/uicore'
-import { Color, FontVariation } from '@harness/design-system'
+import { Text, Layout, Container, Icon, ButtonVariation, useToaster, Page, Card, Button } from '@wings-software/uicore'
+import { Color } from '@harness/design-system'
 
 import { useParams } from 'react-router-dom'
 import ReactTimeago from 'react-timeago'
@@ -44,7 +33,6 @@ import { PermissionIdentifier } from '@rbac/interfaces/PermissionIdentifier'
 import { usePermission } from '@rbac/hooks/usePermission'
 import { SelectionType } from '@rbac/utils/utils'
 import useRBACError from '@rbac/utils/useRBACError/useRBACError'
-import { getScopeFromDTO } from '@common/components/EntityReference/EntityReference'
 import ResourcesCardList from '@rbac/components/ResourcesCardList/ResourcesCardList'
 import {
   cleanUpResourcesMap,
@@ -53,15 +41,14 @@ import {
   getDefaultIncludedScope,
   getFilteredResourceTypes,
   getFormattedDataForApi,
-  getIncludedScopes,
   getResourceSelectorsfromMap,
-  getScopeDropDownItems,
   getScopeType,
   getSelectedResourcesMap,
   getSelectionType,
   SelectorScope,
   validateResourceSelectors
 } from './utils'
+import ResourceGroupScope from './views/ResourceGroupScope'
 import css from './ResourceGroupDetails.module.scss'
 
 const ResourceGroupDetails: React.FC = () => {
@@ -79,7 +66,6 @@ const ResourceGroupDetails: React.FC = () => {
   const [resourceTypes, setResourceTypes] = useState<ResourceType[]>([])
   const [resourceCategoryMap, setResourceCategoryMap] =
     useState<Map<ResourceType | ResourceCategory, ResourceType[] | undefined>>()
-  const scope = getScopeFromDTO({ accountIdentifier: accountId, orgIdentifier, projectIdentifier })
 
   const [canEdit] = usePermission(
     {
@@ -327,20 +313,11 @@ const ResourceGroupDetails: React.FC = () => {
               flex={{ justifyContent: 'flex-start' }}
               padding={{ top: 'xlarge', left: 'xlarge', bottom: 'small' }}
             >
-              <Text font={{ variation: FontVariation.H6 }} color={Color.GREY_800}>
-                {getString('common.scope')}
-              </Text>
-              <DropDown
-                items={getScopeDropDownItems(scope, getString)}
-                icon="settings"
-                value={selectedScope}
-                onChange={item => {
-                  setIsUpdated(true)
-                  setSelectedScope(item.value as SelectorScope)
-                  setIncludedScopes(getIncludedScopes(item.value as SelectorScope, resourceGroup))
-                }}
-                width={300}
-                filterable={false}
+              <ResourceGroupScope
+                resourceGroup={resourceGroup}
+                includedScopes={includedScopes}
+                setIncludedScopes={setIncludedScopes}
+                setIsUpdated={setIsUpdated}
               />
             </Layout.Horizontal>
             <ResourcesCardList
