@@ -11,9 +11,12 @@ import type { SidebarContext } from '@common/navigation/SidebarProvider'
 import routes from '@common/RouteDefinitions'
 import { RouteWithLayout } from '@common/router'
 import { accountPathProps, projectPathProps } from '@common/utils/routeUtils'
-import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
+import type { ModulePathParams, ProjectPathProps } from '@common/interfaces/RouteInterfaces'
+import { PAGE_NAME } from '@common/pages/pageContext/PageName'
+import DeploymentsList from '@pipeline/pages/deployments-list/DeploymentsList'
 import CardRailView from '@pipeline/components/Dashboards/CardRailView/CardRailView'
 import ExecutionCard from '@pipeline/components/ExecutionCard/ExecutionCard'
+import PipelinesPage from '@pipeline/pages/pipelines/PipelinesPage'
 import { useAppStore } from 'framework/AppStore/AppStoreContext'
 import ChildAppMounter from 'microfrontends/ChildAppMounter'
 import STOSideNav from '@sto-steps/components/STOSideNav/STOSideNav'
@@ -25,6 +28,10 @@ const STOSideNavProps: SidebarContext = {
   navComponent: STOSideNav,
   title: 'Security Tests',
   icon: 'sto-color-filled'
+}
+
+const pipelineModuleParams: ModulePathParams = {
+  module: ':module(sto)'
 }
 
 const RedirectToProjectOverviewPage = (): React.ReactElement => {
@@ -49,14 +56,15 @@ const RedirectToProjectOverviewPage = (): React.ReactElement => {
 export default (
   <>
     <RouteWithLayout
+      exact
       // licenseRedirectData={licenseRedirectData}
       path={routes.toSTO({ ...accountPathProps })}
-      exact
     >
       <RedirectToProjectOverviewPage />
     </RouteWithLayout>
 
     <RouteWithLayout
+      exact
       // licenseRedirectData={licenseRedirectData}
       sidebarProps={STOSideNavProps}
       path={[
@@ -65,6 +73,25 @@ export default (
       ]}
     >
       <ChildAppMounter ChildApp={STOApp} customComponents={{ ExecutionCard, CardRailView }} />
+    </RouteWithLayout>
+
+    <RouteWithLayout
+      exact
+      // licenseRedirectData={licenseRedirectData}
+      sidebarProps={STOSideNavProps}
+      path={routes.toDeployments({ ...accountPathProps, ...projectPathProps, ...pipelineModuleParams })}
+    >
+      <DeploymentsList />
+    </RouteWithLayout>
+
+    <RouteWithLayout
+      exact
+      // licenseRedirectData={licenseRedirectData}
+      sidebarProps={STOSideNavProps}
+      path={routes.toPipelines({ ...accountPathProps, ...projectPathProps, ...pipelineModuleParams })}
+      pageName={PAGE_NAME.PipelinesPage}
+    >
+      <PipelinesPage />
     </RouteWithLayout>
   </>
 )
