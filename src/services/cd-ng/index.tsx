@@ -30610,48 +30610,48 @@ export interface RetrieveProductPricesQueryParams {
 }
 
 export type RetrieveProductPricesProps = Omit<
-    GetProps<ResponsePriceCollectionDTO, Failure | Error, RetrieveProductPricesQueryParams, void>,
-    'path'
-    >
+  GetProps<ResponsePriceCollectionDTO, Failure | Error, RetrieveProductPricesQueryParams, void>,
+  'path'
+>
 
 /**
  * Retrieves product prices
  */
 export const RetrieveProductPrices = (props: RetrieveProductPricesProps) => (
-    <Get<ResponsePriceCollectionDTO, Failure | Error, RetrieveProductPricesQueryParams, void>
-        path={`/subscriptions/prices`}
-        base={getConfig('ng/api')}
-        {...props}
-    />
+  <Get<ResponsePriceCollectionDTO, Failure | Error, RetrieveProductPricesQueryParams, void>
+    path={`/subscriptions/prices`}
+    base={getConfig('ng/api')}
+    {...props}
+  />
 )
 
 export type UseRetrieveProductPricesProps = Omit<
-    UseGetProps<ResponsePriceCollectionDTO, Failure | Error, RetrieveProductPricesQueryParams, void>,
-    'path'
-    >
+  UseGetProps<ResponsePriceCollectionDTO, Failure | Error, RetrieveProductPricesQueryParams, void>,
+  'path'
+>
 
 /**
  * Retrieves product prices
  */
 export const useRetrieveProductPrices = (props: UseRetrieveProductPricesProps) =>
-    useGet<ResponsePriceCollectionDTO, Failure | Error, RetrieveProductPricesQueryParams, void>(`/subscriptions/prices`, {
-      base: getConfig('ng/api'),
-      ...props
-    })
+  useGet<ResponsePriceCollectionDTO, Failure | Error, RetrieveProductPricesQueryParams, void>(`/subscriptions/prices`, {
+    base: getConfig('ng/api'),
+    ...props
+  })
 
 /**
  * Retrieves product prices
  */
 export const retrieveProductPricesPromise = (
-    props: GetUsingFetchProps<ResponsePriceCollectionDTO, Failure | Error, RetrieveProductPricesQueryParams, void>,
-    signal?: RequestInit['signal']
+  props: GetUsingFetchProps<ResponsePriceCollectionDTO, Failure | Error, RetrieveProductPricesQueryParams, void>,
+  signal?: RequestInit['signal']
 ) =>
-    getUsingFetch<ResponsePriceCollectionDTO, Failure | Error, RetrieveProductPricesQueryParams, void>(
-        getConfig('ng/api'),
-        `/subscriptions/prices`,
-        props,
-        signal
-    )
+  getUsingFetch<ResponsePriceCollectionDTO, Failure | Error, RetrieveProductPricesQueryParams, void>(
+    getConfig('ng/api'),
+    `/subscriptions/prices`,
+    props,
+    signal
+  )
 
 export type SyncStripeEventProps = Omit<
   MutateProps<RestResponseVoid, Failure | Error, void, StripeEventDTO, void>,
