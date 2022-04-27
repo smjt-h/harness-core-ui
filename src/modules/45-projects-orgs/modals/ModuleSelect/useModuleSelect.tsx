@@ -27,9 +27,10 @@ import {
   ResponseModuleLicenseDTO
 } from 'services/cd-ng'
 import ModuleSelectionFactory from '@projects-orgs/factories/ModuleSelectionFactory'
-import { handleUpdateLicenseStore, useLicenseStore } from 'framework/LicenseStore/LicenseStoreContext'
+import { handleUpdateLicenseStore, isCDCommunity, useLicenseStore } from 'framework/LicenseStore/LicenseStoreContext'
 import { Editions, ModuleLicenseType } from '@common/constants/SubscriptionTypes'
 import routes from '@common/RouteDefinitions'
+import { useAppStore } from 'framework/AppStore/AppStoreContext'
 import css from './useModuleSelect.module.scss'
 
 export interface UseModuleSelectModalProps {
@@ -106,6 +107,7 @@ const GoToModuleBtn: React.FC<GoToModuleBtnProps> = props => {
   const { licenseInformation, updateLicenseStore } = useLicenseStore()
   const { FREE_PLAN_ENABLED } = useFeatureFlags()
   const history = useHistory()
+  const { updateAppStore } = useAppStore()
   const { selectedModuleName, projectData } = props
   const { accountId } = useParams<AccountPathProps>()
   const updateLicenseStoreAndGotoModulePage = ({
@@ -125,6 +127,7 @@ const GoToModuleBtn: React.FC<GoToModuleBtnProps> = props => {
       search: `?experience=${experienceType}&&modal=${experienceType}`,
       freePlanEnabled: FREE_PLAN_ENABLED
     })
+    updateAppStore({ selectedProject: projectData })
     history.push(moudleRoutePathMap.get(selectedModuleName))
   }
   const startFreeLicense = (): void => {
@@ -182,6 +185,7 @@ const GoToModuleBtn: React.FC<GoToModuleBtnProps> = props => {
               selectedModuleName
             ))
         ) {
+          updateAppStore({ selectedProject: projectData })
           history.push(
             getModuleLink({
               module: selectedModuleName,
@@ -206,7 +210,11 @@ export const useModuleSelectModal = ({
   onCloseModal
 }: UseModuleSelectModalProps): UseModuleSelectModalReturn => {
   const { getString } = useStrings()
+  const { updateAppStore } = useAppStore()
+  const history = useHistory()
+  const { accountId } = useParams<AccountPathProps>()
 
+  const { licenseInformation } = useLicenseStore()
   const [selectedModuleName, setSelectedModuleName] = React.useState<ModuleName>()
   const [projectData, setProjectData] = React.useState<Project>()
 
@@ -319,9 +327,25 @@ export const useModuleSelectModal = ({
     },
     [showModal]
   )
+  const ceCDHomeRedirect = (projectDataLocal: Project): void => {
+    updateAppStore({ selectedProject: projectDataLocal })
+    history.push(
+      getModuleLink({
+        module: ModuleName.CD,
+        orgIdentifier: projectDataLocal?.orgIdentifier || '',
+        projectIdentifier: projectDataLocal.identifier,
+        accountId
+      })
+    )
+  }
 
   return {
-    openModuleSelectModal: (projectDataLocal: Project) => open(projectDataLocal),
+    openModuleSelectModal: (projectDataLocal: Project) => {
+      if (isCDCommunity(licenseInformation)) {
+        return ceCDHomeRedirect({ ...projectDataLocal, modules: [ModuleName.CD] })
+      }
+      return open(projectDataLocal)
+    },
     closeModuleSelectModal: hideModal
   }
 }
