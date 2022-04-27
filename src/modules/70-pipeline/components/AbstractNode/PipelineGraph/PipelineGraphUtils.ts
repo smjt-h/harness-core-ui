@@ -18,25 +18,25 @@ import type { DependencyElement } from 'services/ci'
 import { getDefaultBuildDependencies } from '@pipeline/utils/stageHelpers'
 import type { KVPair } from '@pipeline/components/PipelineVariablesContext/PipelineVariablesContext'
 import { getIdentifierFromValue } from '@common/components/EntityReference/EntityReference'
-import { NodeType, PipelineGraphState, SVGPathRecord, PipelineGraphType } from '../types'
 import type { TemplateStepNode } from 'services/pipeline-ng'
+import { NodeType, PipelineGraphState, SVGPathRecord, PipelineGraphType } from '../types'
 
 const INITIAL_ZOOM_LEVEL = 1
 const ZOOM_INC_DEC_LEVEL = 0.1
-
+const toFixed = (num: number): number => Number(num.toFixed(2))
 const getScaledValue = (value: number, scalingFactor: number): number => {
   let finalValue
   const mulFactor = 1 / scalingFactor
   const valueMultiplied = value * mulFactor
 
-  if (scalingFactor === 1) {
+  if (scalingFactor === 1.0) {
     finalValue = value
   } else if (scalingFactor > 1) {
     finalValue = value / scalingFactor
   } else {
     finalValue = valueMultiplied + mulFactor
   }
-  return finalValue
+  return toFixed(finalValue)
 }
 interface DrawSVGPathOptions {
   isParallelNode?: boolean
@@ -55,19 +55,18 @@ interface DrawSVGPathOptions {
  **/
 const getFinalSVGArrowPath = (id1 = '', id2 = '', options?: DrawSVGPathOptions): SVGPathRecord => {
   const scalingFactor = defaultTo(options?.scalingFactor, 1)
-  const node1 = getComputedPosition(id1, options?.parentElement, scalingFactor)
-  const node2 = getComputedPosition(id2, options?.parentElement, scalingFactor)
+  const node1 = getComputedPosition(id1, options?.parentElement)
+  const node2 = getComputedPosition(id2, options?.parentElement)
   if (!node1 || !node2) {
     return { [id1]: { pathData: '' } }
   }
   let finalSVGPath = ''
-  const node1VerticalMid = node1.top + node1.height / 2
-  const node2VerticalMid = node2.top + node2.height / 2
+  const node1VerticalMid = getScaledValue(node1.top + node1.height / 2, scalingFactor)
+  const node2VerticalMid = getScaledValue(node2.top + node2.height / 2, scalingFactor)
 
-  const startPoint = `${node1.right},${node1VerticalMid}`
+  const startPoint = `${getScaledValue(node1.right, scalingFactor)},${node1VerticalMid}`
   const horizontalMid = Math.abs((node1.right + node2.left) / 2)
-  const endPoint = `${node2.left},${node2VerticalMid}`
-
+  const endPoint = `${getScaledValue(node2.left, scalingFactor)},${node2VerticalMid}`
   const node1Y = Math.round(node1.y * 10) / 10
   const node2Y = Math.round(node2.y * 10) / 10
 
@@ -95,7 +94,7 @@ const getFinalSVGArrowPath = (id1 = '', id2 = '', options?: DrawSVGPathOptions):
     const curveTopToRight = `Q${horizontalMid},${node2VerticalMid} ${horizontalMid + 20},${node2VerticalMid}`
 
     if (options?.isParallelNode) {
-      const updatedStart = node1.left - 45 // new start point
+      const updatedStart = getScaledValue(node1.left, scalingFactor) - 45 // new start point
       const parallelLinkStart = `${
         updatedStart // half of link length
       },${node1VerticalMid}`
@@ -107,7 +106,7 @@ const getFinalSVGArrowPath = (id1 = '', id2 = '', options?: DrawSVGPathOptions):
       ${curveLBparallel} 
       L${updatedStart + 20},${node2VerticalMid - 20} 
       ${curveTRparallel} 
-      L${node2.left},${node2VerticalMid}`
+      L${getScaledValue(node1.left, scalingFactor)},${node2VerticalMid}`
 
       let secondCurve = ''
       if (options?.nextNode && options?.parentNode) {
@@ -121,19 +120,27 @@ const getFinalSVGArrowPath = (id1 = '', id2 = '', options?: DrawSVGPathOptions):
           childEl?.closest('.pipeline-graph-node') as HTMLElement,
           options?.parentElement
         ) as DOMRect
-        const newRight = parentGraphNodeContainer?.right > node2.right ? parentGraphNodeContainer?.right : node2.right
-        const nextNodeVerticalMid = nextNode.top + nextNode.height / 2
-        secondCurve = `M${node2.right},${node2VerticalMid}
+        const newRight = getScaledValue(
+          parentGraphNodeContainer?.right > node2.right ? parentGraphNodeContainer?.right : node2.right,
+          scalingFactor
+        )
+        const nextNodeVerticalMid = getScaledValue(nextNode.top + nextNode.height / 2, scalingFactor)
+
+        secondCurve = `M${getScaledValue(node2.right, scalingFactor)},${node2VerticalMid}
         L${newRight + 10},${node2VerticalMid}
         Q${newRight + 25},${node2VerticalMid} ${newRight + 25},${node2VerticalMid - 20}
         L${newRight + 25},${nextNodeVerticalMid + 20}
         Q${newRight + 25},${nextNodeVerticalMid} ${newRight + 40},${nextNodeVerticalMid}`
       } else {
-        secondCurve = `M${node2.right},${node2VerticalMid}
-        L${node2.right + 10},${node2VerticalMid}
-        Q${node2.right + 25},${node2VerticalMid} ${node2.right + 25},${node2VerticalMid - 20}
-        L${node2.right + 25},${node1VerticalMid + 20}
-        Q${node2.right + 25},${node1VerticalMid} ${node2.right + 40},${node1VerticalMid}`
+        secondCurve = `M${getScaledValue(node2.right, scalingFactor)},${node2VerticalMid}
+        L${getScaledValue(node2.right, scalingFactor) + 10},${node2VerticalMid}
+        Q${getScaledValue(node2.right, scalingFactor) + 25},${node2VerticalMid} ${
+          getScaledValue(node2.right, scalingFactor) + 25
+        },${node2VerticalMid - 20}
+        L${getScaledValue(node2.right, scalingFactor) + 25},${node1VerticalMid + 20}
+        Q${getScaledValue(node2.right, scalingFactor) + 25},${node1VerticalMid} ${
+          getScaledValue(node2.right, scalingFactor) + 40
+        },${node1VerticalMid}`
       }
       finalSVGPath = firstCurve + secondCurve
     } else {
@@ -144,41 +151,31 @@ const getFinalSVGArrowPath = (id1 = '', id2 = '', options?: DrawSVGPathOptions):
   return { [id1]: { pathData: finalSVGPath } }
 }
 
-const getComputedPosition = (
-  childId: string | HTMLElement,
-  parentElement?: HTMLDivElement,
-  scalingFactor = 1
-): DOMRect | null => {
+const getComputedPosition = (childId: string | HTMLElement, parentElement?: HTMLDivElement): DOMRect | null => {
   try {
     const childEl = typeof childId === 'string' ? (document.getElementById(childId) as HTMLDivElement) : childId
     const childPos = childEl?.getBoundingClientRect() as DOMRect
     const parentPos = defaultTo(parentElement, childEl.closest('#tree-container'))?.getBoundingClientRect() as DOMRect
-    // console.log(childId)
-    let updatedTop = childPos.top - parentPos.top
-    updatedTop = getScaledValue(updatedTop, scalingFactor)
-    // console.log({ original: childPos.top - parentPos.top, updated: updatedTop, dim: 'top' })
-    let updatedLeft = childPos.left - parentPos.left
-    updatedLeft = getScaledValue(updatedLeft, scalingFactor)
-    // console.log({ original: childPos.left - parentPos.left, updated: updatedLeft, dim: 'left' })
+
+    const updatedTop = childPos.top - parentPos.top
+
+    const updatedLeft = childPos.left - parentPos.left
+
     const updatedRight = updatedLeft + childPos.width
-    //updatedRight = getScaledValue(updatedRight, scalingFactor)
-    // console.log({ original: updatedLeft + childPos.width, updated: updatedRight, dim: 'right' })
+
     const updatedBottom = updatedTop + childPos.height
-    // updatedBottom = getScaledValue(updatedBottom, scalingFactor)
-    // console.log({ original: updatedTop + childPos.height, updated: updatedBottom, dim: 'bottom' })
 
     const updatedPos: DOMRect = {
       ...childPos,
-      left: updatedLeft,
-      top: updatedTop,
-      right: updatedRight,
+      left: getScaledValue(updatedLeft, 1),
+      top: getScaledValue(updatedTop, 1),
+      right: getScaledValue(updatedRight, 1),
       bottom: updatedBottom,
-      width: childPos.width,
-      height: childPos.height,
+      width: childPos.height, // getScaledValue(childPos.width, scalingFactor),
+      height: childPos.height, // getScaledValue(childPos.height, scalingFactor),
       x: childPos.x,
       y: childPos.y
     }
-    // console.log(updatedPos)
     return updatedPos
   } catch (e) {
     return null
@@ -343,8 +340,8 @@ const trasformStageData = (
         type: type,
         nodeType: nodeType as string,
         icon: iconName,
-        graphType,
         data: {
+          graphType,
           ...stage,
           conditionalExecutionEnabled: stage.stage.when
             ? stage.stage.when?.pipelineStatus !== 'Success' || !!stage.stage.when?.condition?.trim()
@@ -364,15 +361,15 @@ const trasformStageData = (
         nodeType: nodeType as string,
         type,
         icon: iconName,
-        graphType,
         data: {
+          graphType,
           ...stage,
           conditionalExecutionEnabled: first?.stage?.when
             ? first?.stage?.when?.pipelineStatus !== 'Success' || !!first?.stage.when?.condition?.trim()
             : false,
           isTemplateNode: Boolean(templateRef)
         },
-        children: trasformStageData(rest, graphType)
+        children: trasformStageData(rest, graphType, templateTypes)
       })
     }
   })
@@ -403,8 +400,8 @@ const trasformStepsData = (
         type,
         nodeType: nodeType as string,
         icon: iconName,
-        graphType,
         data: {
+          graphType,
           ...step,
           isInComplete: isCustomGeneratedString(step.step.identifier),
           conditionalExecutionEnabled: step.step?.when
@@ -426,10 +423,10 @@ const trasformStepsData = (
           icon: iconName,
           data: {
             ...first,
-            isInComplete: isCustomGeneratedString(first.stepGroup?.identifier)
+            isInComplete: isCustomGeneratedString(first.stepGroup?.identifier),
+            graphType
           },
-          children: trasformStepsData(rest as ExecutionWrapperConfig[], graphType),
-          graphType
+          children: trasformStepsData(rest as ExecutionWrapperConfig[], graphType, templateTypes)
         })
       } else {
         const templateRef = getIdentifierFromValue(
@@ -450,10 +447,10 @@ const trasformStepsData = (
             conditionalExecutionEnabled: first.step?.when
               ? first.step?.when?.stageStatus !== 'Success' || !!first.step?.when?.condition?.trim()
               : false,
-            isTemplateNode: Boolean(templateRef)
+            isTemplateNode: Boolean(templateRef),
+            graphType
           },
-          children: trasformStepsData(rest, graphType),
-          graphType
+          children: trasformStepsData(rest, graphType, templateTypes)
         })
       }
     } else {
@@ -467,9 +464,9 @@ const trasformStepsData = (
         icon: iconName,
         data: {
           ...step,
+          graphType,
           isInComplete: isCustomGeneratedString(step.stepGroup?.identifier as string)
-        },
-        graphType
+        }
       })
     }
   })

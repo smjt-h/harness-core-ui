@@ -95,8 +95,8 @@ function PipelineGraph({
   }, [treeRectangle, data])
 
   useLayoutEffect(() => {
-    !isDragging && redrawSVGLinks()
-  }, [state, isDragging])
+    redrawSVGLinks()
+  }, [state])
 
   const redrawSVGLinks = (): void => {
     setSVGLinks()

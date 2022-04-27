@@ -174,10 +174,10 @@ export function IconNode(props: IconNodeProps): React.ReactElement {
             cssDefault.addNode,
             { [cssDefault.visible]: showAdd },
             {
-              [cssDefault.stepAddNode]: props.graphType === PipelineGraphType.STEP_GRAPH
+              [cssDefault.stepAddNode]: props.data.graphType === PipelineGraphType.STEP_GRAPH
             },
             {
-              [cssDefault.stageAddNode]: props.graphType === PipelineGraphType.STAGE_GRAPH
+              [cssDefault.stageAddNode]: props.data.graphType === PipelineGraphType.STAGE_GRAPH
             }
           )}
           data-nodeid="add-parallel"
@@ -221,10 +221,10 @@ export function IconNode(props: IconNodeProps): React.ReactElement {
             cssDefault.addNodeIcon,
             cssDefault.left,
             {
-              [cssDefault.stepAddIcon]: props.graphType === PipelineGraphType.STEP_GRAPH
+              [cssDefault.stepAddIcon]: props.data.graphType === PipelineGraphType.STEP_GRAPH
             },
             {
-              [cssDefault.stageAddIcon]: props.graphType === PipelineGraphType.STAGE_GRAPH
+              [cssDefault.stageAddIcon]: props.data.graphType === PipelineGraphType.STAGE_GRAPH
             }
           )}
         >
@@ -269,10 +269,10 @@ export function IconNode(props: IconNodeProps): React.ReactElement {
               cssDefault.addNodeIcon,
               cssDefault.right,
               {
-                [cssDefault.stepAddIcon]: props.graphType === PipelineGraphType.STEP_GRAPH
+                [cssDefault.stepAddIcon]: props.data.graphType === PipelineGraphType.STEP_GRAPH
               },
               {
-                [cssDefault.stageAddIcon]: props.graphType === PipelineGraphType.STAGE_GRAPH
+                [cssDefault.stageAddIcon]: props.data.graphType === PipelineGraphType.STAGE_GRAPH
               }
             )}
           >

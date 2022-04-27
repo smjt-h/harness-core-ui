@@ -41,7 +41,7 @@ export interface PipelineGraphRecursiveProps {
   optimizeRender?: boolean
   parentSelector?: string
   createNodeTitle?: string
-  showEndNode: boolean
+  showEndNode?: boolean
 }
 export function PipelineGraphRecursive({
   nodes,

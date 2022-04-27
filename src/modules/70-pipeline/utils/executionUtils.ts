@@ -35,7 +35,7 @@ import {
 import factory from '@pipeline/components/PipelineSteps/PipelineStepFactory'
 import { StepType } from '@pipeline/components/PipelineSteps/PipelineStepInterface'
 import { stagesCollection } from '@pipeline/components/PipelineStudio/Stages/StagesCollection'
-import type { PipelineGraphState } from '@pipeline/components/AbstractNode/types'
+import { PipelineGraphState, PipelineGraphType } from '@pipeline/components/AbstractNode/types'
 import { isApprovalStep } from './stepUtils'
 import { StageType } from './stageHelpers'
 
@@ -867,7 +867,8 @@ export const processExecutionDataForGraph = (stages?: PipelineGraphState[]): Pip
             ? currentStageData.skipInfo.skipCondition
             : undefined,
           disableClick: isExecutionNotStarted(currentStageData?.status) || isExecutionSkipped(currentStageData?.status),
-          when: currentStageData?.nodeRunInfo
+          when: currentStageData?.nodeRunInfo,
+          graphType: PipelineGraphType.STAGE_GRAPH
         }
       }
       currentStage?.children?.forEach?.(currentNode => {
@@ -890,7 +891,8 @@ export const processExecutionDataForGraph = (stages?: PipelineGraphState[]): Pip
                   : ExecutionPipelineNodeType.NORMAL,
               skipCondition: node?.skipInfo?.evaluatedCondition ? node.skipInfo.skipCondition : undefined,
               disableClick: isExecutionNotStarted(node?.status) || isExecutionSkipped(node?.status),
-              when: node?.nodeRunInfo
+              when: node?.nodeRunInfo,
+              graphType: PipelineGraphType.STAGE_GRAPH
             }
           })
       })
@@ -916,7 +918,8 @@ export const processExecutionDataForGraph = (stages?: PipelineGraphState[]): Pip
           skipCondition: stage?.skipInfo?.evaluatedCondition ? stage.skipInfo.skipCondition : undefined,
           disableClick: isExecutionNotStarted(stage?.status) || isExecutionSkipped(stage?.status),
           when: stage?.nodeRunInfo,
-          data: stage
+          data: stage,
+          graphType: PipelineGraphType.STAGE_GRAPH
         }
       })
     }
