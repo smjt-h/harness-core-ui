@@ -123,6 +123,7 @@ import { GovernanceRouteDestinations } from '@governance/RouteDestinations'
 import GitSyncConfigTab from '@gitsync/pages/config/GitSyncConfigTab'
 import FullPageLogView from '@pipeline/pages/full-page-log-view/FullPageLogView'
 import { PAGE_NAME } from '@common/pages/pageContext/PageName'
+import type { ModuleListCardProps } from '@projects-orgs/components/ModuleListCard/ModuleListCard'
 import { Environments } from './components/Environments/Environments'
 import CDTrialHomePage from './pages/home/CDTrialHomePage'
 
@@ -302,14 +303,18 @@ const RedirectToCDProject = (): React.ReactElement => {
 }
 
 const CDDashboardPageOrRedirect = (): React.ReactElement => {
-  const params = useParams<ProjectPathProps>()
+  const params = useParams<ProjectPathProps & ModuleListCardProps>()
+  const { module } = params
   const { selectedProject } = useAppStore()
   const { licenseInformation } = useLicenseStore()
   const isCommunity = isCDCommunity(licenseInformation)
 
   if (!isCommunity) {
     return <CDDashboardPage />
-  } else if (selectedProject?.modules?.includes(ModuleName.CD)) {
+  } else if (
+    selectedProject?.modules?.includes(ModuleName.CD) ||
+    (module && module.toUpperCase() === ModuleName.CD.toUpperCase())
+  ) {
     return <Redirect to={routes.toDeployments({ ...params, module: 'cd' })} />
   } else {
     return <Redirect to={routes.toCDHome(params)} />

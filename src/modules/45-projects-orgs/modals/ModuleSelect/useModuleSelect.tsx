@@ -30,7 +30,6 @@ import ModuleSelectionFactory from '@projects-orgs/factories/ModuleSelectionFact
 import { handleUpdateLicenseStore, isCDCommunity, useLicenseStore } from 'framework/LicenseStore/LicenseStoreContext'
 import { Editions, ModuleLicenseType } from '@common/constants/SubscriptionTypes'
 import routes from '@common/RouteDefinitions'
-import { useAppStore } from 'framework/AppStore/AppStoreContext'
 import css from './useModuleSelect.module.scss'
 
 export interface UseModuleSelectModalProps {
@@ -107,7 +106,6 @@ const GoToModuleBtn: React.FC<GoToModuleBtnProps> = props => {
   const { licenseInformation, updateLicenseStore } = useLicenseStore()
   const { FREE_PLAN_ENABLED } = useFeatureFlags()
   const history = useHistory()
-  const { updateAppStore } = useAppStore()
   const { selectedModuleName, projectData } = props
   const { accountId } = useParams<AccountPathProps>()
   const updateLicenseStoreAndGotoModulePage = ({
@@ -127,7 +125,6 @@ const GoToModuleBtn: React.FC<GoToModuleBtnProps> = props => {
       search: `?experience=${experienceType}&&modal=${experienceType}`,
       freePlanEnabled: FREE_PLAN_ENABLED
     })
-    updateAppStore({ selectedProject: projectData })
     history.push(moudleRoutePathMap.get(selectedModuleName))
   }
   const startFreeLicense = (): void => {
@@ -185,7 +182,6 @@ const GoToModuleBtn: React.FC<GoToModuleBtnProps> = props => {
               selectedModuleName
             ))
         ) {
-          updateAppStore({ selectedProject: projectData })
           history.push(
             getModuleLink({
               module: selectedModuleName,
@@ -210,7 +206,6 @@ export const useModuleSelectModal = ({
   onCloseModal
 }: UseModuleSelectModalProps): UseModuleSelectModalReturn => {
   const { getString } = useStrings()
-  const { updateAppStore } = useAppStore()
   const history = useHistory()
   const { accountId } = useParams<AccountPathProps>()
 
@@ -327,8 +322,7 @@ export const useModuleSelectModal = ({
     },
     [showModal]
   )
-  const ceCDHomeRedirect = (projectDataLocal: Project): void => {
-    updateAppStore({ selectedProject: projectDataLocal })
+  const communityEditionCDHomeRedirect = (projectDataLocal: Project): void => {
     history.push(
       getModuleLink({
         module: ModuleName.CD,
@@ -342,7 +336,7 @@ export const useModuleSelectModal = ({
   return {
     openModuleSelectModal: (projectDataLocal: Project) => {
       if (isCDCommunity(licenseInformation)) {
-        return ceCDHomeRedirect({ ...projectDataLocal, modules: [ModuleName.CD] })
+        return communityEditionCDHomeRedirect(projectDataLocal)
       }
       return open(projectDataLocal)
     },
