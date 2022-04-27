@@ -2911,6 +2911,8 @@ export interface StringsMap {
   'pipeline.serviceNowApprovalStep.validations.connectorRef': string
   'pipeline.serviceNowApprovalStep.validations.issueNumber': string
   'pipeline.serviceNowApprovalStep.validations.ticketType': string
+  'pipeline.serviceNowUpdateStep.fieldType.applyFromTemplate': string
+  'pipeline.serviceNowUpdateStep.fieldType.updateFields': string
   'pipeline.singleStageExecution': string
   'pipeline.sslVerify': string
   'pipeline.stageDependencyError': string

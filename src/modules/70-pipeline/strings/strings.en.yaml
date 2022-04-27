@@ -205,6 +205,10 @@ serviceNowApprovalStep:
     connectorRef: ServiceNow Connector is required
     ticketType: Ticket Type is required
     issueNumber: Ticket Number is required
+serviceNowUpdateStep:
+  fieldType:
+    updateFields: Update Fields
+    applyFromTemplate: Apply From Template
 manifestType:
   manifestTyperequired: Manifest Type is required
   gitConnectorLabel: 'Git'
