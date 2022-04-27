@@ -418,7 +418,7 @@ export const validatePipeline = ({
   getString,
   path
 }: ValidatePipelineProps): FormikErrors<PipelineInfoConfig> => {
-  if (template.template) {
+  if (template?.template) {
     const errors = validatePipeline({
       pipeline: pipeline.template?.templateInputs as PipelineInfoConfig,
       template: template.template?.templateInputs as PipelineInfoConfig,
