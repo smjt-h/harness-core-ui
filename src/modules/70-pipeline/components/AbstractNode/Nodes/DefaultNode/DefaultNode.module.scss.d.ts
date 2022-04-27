@@ -32,6 +32,7 @@ declare const styles: {
   readonly nodeNameText: string
   readonly primaryIcon: string
   readonly readonly: string
+  readonly renderPopover: string
   readonly right: string
   readonly rotate: string
   readonly runningNode: string
@@ -45,6 +46,7 @@ declare const styles: {
   readonly stageMarkerLeft: string
   readonly stageMarkerRight: string
   readonly stageName: string
+  readonly stageRow: string
   readonly stepAddIcon: string
   readonly stepAddNode: string
   readonly stepGroupAddIcon: string

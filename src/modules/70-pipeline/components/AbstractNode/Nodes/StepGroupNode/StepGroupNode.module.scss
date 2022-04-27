@@ -14,8 +14,6 @@
   width: fit-content;
   height: fit-content;
   padding-bottom: var(--spacing-xlarge);
-  margin-right: var(--spacing-xxxlarge);
-  padding-left: var(--spacing-small);
   &.marginBottom {
     margin-bottom: 30px;
   }
@@ -113,7 +111,6 @@
 
   .stepGroupBody {
     padding: var(--spacing-large) var(--spacing-xxxlarge);
-    padding-left: calc(var(--spacing-xxxlarge) + var(--spacing-small));
   }
 
   .conditional {

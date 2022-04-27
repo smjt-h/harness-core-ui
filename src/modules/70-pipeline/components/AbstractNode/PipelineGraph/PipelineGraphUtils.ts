@@ -302,14 +302,16 @@ const NodeTypeToNodeMap: Record<string, string> = {
 const getPipelineGraphData = (
   data: StageElementWrapperConfig[] | ExecutionWrapperConfig[] = [],
   templateTypes?: KVPair,
-  serviceDependencies?: DependencyElement[] | undefined
+  serviceDependencies?: DependencyElement[] | undefined,
+  errorMap?: Map<string, string[]>,
+  parentPath?: string
 ): PipelineGraphState[] => {
   let graphState: PipelineGraphState[] = []
   const pipGraphDataType = getPipelineGraphDataType(data)
   if (pipGraphDataType === PipelineGraphType.STAGE_GRAPH) {
-    graphState = trasformStageData(data, pipGraphDataType, templateTypes)
+    graphState = trasformStageData(data, pipGraphDataType, templateTypes, errorMap, parentPath)
   } else {
-    graphState = trasformStepsData(data, pipGraphDataType, templateTypes)
+    graphState = trasformStepsData(data, pipGraphDataType, templateTypes, errorMap, parentPath)
 
     if (Array.isArray(serviceDependencies)) {
       //CI module
@@ -324,12 +326,17 @@ const getPipelineGraphData = (
 const trasformStageData = (
   stages: StageElementWrapperConfig[],
   graphType: PipelineGraphType,
-  templateTypes?: KVPair
+  templateTypes?: KVPair,
+  errorMap?: Map<string, string[]>,
+  parentPath?: string,
+  offsetIndex = 0
 ): PipelineGraphState[] => {
   const finalData: PipelineGraphState[] = []
-
-  stages.forEach((stage: StageElementWrapperConfig) => {
+  stages.forEach((stage: StageElementWrapperConfig, index: number) => {
     if (stage?.stage) {
+      const updatedStagetPath = `${parentPath}.${index + offsetIndex}`
+      const hasErrors =
+        errorMap && [...errorMap.keys()].some(key => updatedStagetPath && key.startsWith(updatedStagetPath))
       const templateRef = getIdentifierFromValue(stage.stage?.template?.templateRef as string)
       const type = templateRef ? (templateTypes?.[templateRef] as string) : (stage.stage.type as string)
       const { nodeType, iconName } = getNodeInfo(defaultTo(type, ''), graphType)
@@ -343,6 +350,7 @@ const trasformStageData = (
         data: {
           graphType,
           ...stage,
+          isInComplete: isCustomGeneratedString(stage.stage.identifier) || hasErrors,
           conditionalExecutionEnabled: stage.stage.when
             ? stage.stage.when?.pipelineStatus !== 'Success' || !!stage.stage.when?.condition?.trim()
             : false,
@@ -350,6 +358,12 @@ const trasformStageData = (
         }
       })
     } else if (stage?.parallel?.length) {
+      const updatedStagetPath = `${parentPath}.${index}.parallel`
+      const currentStagetPath = `${updatedStagetPath}.0`
+
+      const hasErrors =
+        errorMap && [...errorMap.keys()].some(key => updatedStagetPath && key.startsWith(currentStagetPath))
+
       const [first, ...rest] = stage.parallel
       const templateRef = getIdentifierFromValue(first.stage?.template?.templateRef as string)
       const type = templateRef ? (templateTypes?.[templateRef] as string) : (first?.stage?.type as string)
@@ -364,12 +378,13 @@ const trasformStageData = (
         data: {
           graphType,
           ...stage,
+          isInComplete: isCustomGeneratedString(first?.stage?.identifier as string) || hasErrors,
           conditionalExecutionEnabled: first?.stage?.when
             ? first?.stage?.when?.pipelineStatus !== 'Success' || !!first?.stage.when?.condition?.trim()
             : false,
           isTemplateNode: Boolean(templateRef)
         },
-        children: trasformStageData(rest, graphType, templateTypes)
+        children: trasformStageData(rest, graphType, templateTypes, errorMap, updatedStagetPath, 1)
       })
     }
   })
@@ -382,11 +397,19 @@ const getuniqueIdForStep = (step: ExecutionWrapperConfig): string =>
 const trasformStepsData = (
   steps: ExecutionWrapperConfig[],
   graphType: PipelineGraphType,
-  templateTypes?: KVPair
+  templateTypes?: KVPair,
+  errorMap?: Map<string, string[]>,
+  parentPath?: string,
+  offsetIndex = 0
 ): PipelineGraphState[] => {
   const finalData: PipelineGraphState[] = []
-  steps.forEach((step: ExecutionWrapperConfig) => {
+  steps.forEach((step: ExecutionWrapperConfig, index: number) => {
     if (step?.step) {
+      const updatedStagetPath = `${parentPath}.${index + offsetIndex}`
+
+      const hasErrors =
+        errorMap && [...errorMap.keys()].some(key => updatedStagetPath && key.startsWith(updatedStagetPath))
+
       const templateRef = getIdentifierFromValue(
         (step?.step as unknown as TemplateStepNode)?.template?.templateRef as string
       )
@@ -403,7 +426,7 @@ const trasformStepsData = (
         data: {
           graphType,
           ...step,
-          isInComplete: isCustomGeneratedString(step.step.identifier),
+          isInComplete: isCustomGeneratedString(step.step.identifier) || hasErrors,
           conditionalExecutionEnabled: step.step?.when
             ? step.step?.when?.stageStatus !== 'Success' || !!step.step?.when?.condition?.trim()
             : false,
@@ -411,6 +434,12 @@ const trasformStepsData = (
         }
       })
     } else if (step?.parallel?.length) {
+      const updatedStagetPath = `${parentPath}.${index}.parallel`
+      const currentStagetPath = `${updatedStagetPath}.0`
+
+      const hasErrors =
+        errorMap && [...errorMap.keys()].some(key => currentStagetPath && key.startsWith(currentStagetPath))
+
       const [first, ...rest] = step.parallel
       if (first.stepGroup) {
         const { iconName } = getNodeInfo('', graphType)
@@ -423,10 +452,17 @@ const trasformStepsData = (
           icon: iconName,
           data: {
             ...first,
-            isInComplete: isCustomGeneratedString(first.stepGroup?.identifier),
+            isInComplete: isCustomGeneratedString(first.stepGroup?.identifier) || hasErrors,
             graphType
           },
-          children: trasformStepsData(rest as ExecutionWrapperConfig[], graphType, templateTypes)
+          children: trasformStepsData(
+            rest as ExecutionWrapperConfig[],
+            graphType,
+            templateTypes,
+            errorMap,
+            updatedStagetPath,
+            1
+          )
         })
       } else {
         const templateRef = getIdentifierFromValue(
@@ -443,18 +479,22 @@ const trasformStepsData = (
           icon: iconName,
           data: {
             ...first,
-            isInComplete: isCustomGeneratedString(first?.step?.identifier as string),
+            isInComplete: isCustomGeneratedString(first?.step?.identifier as string) || hasErrors,
             conditionalExecutionEnabled: first.step?.when
               ? first.step?.when?.stageStatus !== 'Success' || !!first.step?.when?.condition?.trim()
               : false,
             isTemplateNode: Boolean(templateRef),
             graphType
           },
-          children: trasformStepsData(rest, graphType, templateTypes)
+          children: trasformStepsData(rest, graphType, templateTypes, errorMap, updatedStagetPath, 1)
         })
       }
     } else {
       const { iconName } = getNodeInfo('', graphType)
+      const updatedStagetPath = `${parentPath}.${index}.stepGroup.steps`
+      const hasErrors =
+        errorMap && [...errorMap.keys()].some(key => updatedStagetPath && key.startsWith(updatedStagetPath))
+
       finalData.push({
         id: getuniqueIdForStep(step),
         identifier: step.stepGroup?.identifier as string,
@@ -465,7 +505,7 @@ const trasformStepsData = (
         data: {
           ...step,
           graphType,
-          isInComplete: isCustomGeneratedString(step.stepGroup?.identifier as string)
+          isInComplete: isCustomGeneratedString(step.stepGroup?.identifier as string) || hasErrors
         }
       })
     }

@@ -8,9 +8,10 @@
 import React, { CSSProperties } from 'react'
 import cx from 'classnames'
 import { defaultTo } from 'lodash-es'
-import { Icon, IconName, Text } from '@wings-software/uicore'
+import { Icon, IconName, Text, Layout } from '@wings-software/uicore'
 import { Color } from '@harness/design-system'
 import { DiagramDrag, DiagramType, Event } from '@pipeline/components/Diagram'
+import { DynamicPopover, DynamicPopoverHandlerBinding } from '@common/exports'
 import { NodeType, BaseReactComponentProps } from '../../types'
 import css from '../DefaultNode/DefaultNode.module.scss'
 
@@ -31,6 +32,9 @@ function GroupNode(props: GroupNodeProps): React.ReactElement {
   const allowAdd = defaultTo(props.allowAdd, false)
   const [showAdd, setVisibilityOfAdd] = React.useState(false)
   const CreateNode: React.FC<BaseReactComponentProps> | undefined = props?.getNode?.(NodeType.CreateNode)?.component
+  const [dynamicPopoverHandler, setDynamicPopoverHandler] = React.useState<
+    DynamicPopoverHandlerBinding<{ nodesInfo: Node[] }> | undefined
+  >()
 
   const nodesInfo = React.useMemo(() => {
     let nodesArr
@@ -73,6 +77,39 @@ function GroupNode(props: GroupNodeProps): React.ReactElement {
     return nodesFinal
   }, [props?.children, props.intersectingIndex, props.selectedNodeId])
 
+  const renderPopover = ({ nodesInfo: stageList }: any): JSX.Element => {
+    return (
+      <>
+        {stageList.map((node: any) => (
+          <Layout.Horizontal
+            style={{ cursor: 'pointer' }}
+            spacing="small"
+            padding="small"
+            key={node.identifier}
+            onClick={(event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+              event.stopPropagation()
+              props?.fireEvent?.({
+                type: Event.ClickNode,
+                target: event.target,
+                data: {
+                  entityType: DiagramType.GroupNode,
+                  identifier: props?.identifier,
+                  node,
+                  ...props
+                }
+              })
+            }}
+          >
+            <Icon name={node.icon} />
+            <Text lineClamp={1} width={200}>
+              {node.name}
+            </Text>
+          </Layout.Horizontal>
+        ))}
+      </>
+    )
+  }
+
   const getGroupNodeName = (): string => {
     return `${defaultTo(nodesInfo?.[0]?.name, '')} +  ${nodesInfo.length - 1} more stages`
   }
@@ -90,16 +127,15 @@ function GroupNode(props: GroupNodeProps): React.ReactElement {
         onClick={(event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
           event.preventDefault()
           event.stopPropagation()
-          props?.fireEvent?.({
-            type: Event.ClickNode,
-            target: event.target,
-            data: {
-              entityType: DiagramType.GroupNode,
-              identifier: props?.identifier,
-              nodesInfo,
-              ...props
+          dynamicPopoverHandler?.show(
+            event?.target as Element,
+            { nodesInfo },
+            {
+              useArrows: true,
+              darkMode: false,
+              fixedPosition: false
             }
-          })
+          )
         }}
         onMouseOver={() => setAddVisibility(true)}
         onMouseLeave={() => setAddVisibility(false)}
@@ -173,6 +209,18 @@ function GroupNode(props: GroupNodeProps): React.ReactElement {
             color={props.defaultSelected ? Color.GREY_900 : Color.GREY_600}
             padding={'small'}
             lineClamp={2}
+            onClick={(event: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
+              event.stopPropagation()
+              dynamicPopoverHandler?.show(
+                event?.target as Element,
+                { nodesInfo },
+                {
+                  useArrows: true,
+                  darkMode: false,
+                  fixedPosition: false
+                }
+              )
+            }}
           >
             {getGroupNodeName()}
           </Text>
@@ -200,6 +248,12 @@ function GroupNode(props: GroupNodeProps): React.ReactElement {
           data-nodeid="add-parallel"
         />
       )}
+      <DynamicPopover
+        darkMode={false}
+        className={css.renderPopover}
+        render={renderPopover}
+        bind={setDynamicPopoverHandler}
+      />
     </div>
   )
 }

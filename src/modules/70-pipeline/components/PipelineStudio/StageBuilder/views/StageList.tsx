@@ -18,7 +18,7 @@ interface StageListProps {
   onClick?: (stageId: string, type: StageType) => void
 }
 
-export const StageList: React.FC<StageListProps> = ({ stages, onClick }): JSX.Element => {
+export function StageList({ stages, onClick }: StageListProps): JSX.Element {
   return (
     <>
       {stages.map((node: any) => (

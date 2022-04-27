@@ -9,6 +9,8 @@ import React, { useEffect, useLayoutEffect, useRef, useState } from 'react'
 import cx from 'classnames'
 import { defaultTo, get } from 'lodash-es'
 import { DiagramType, Event } from '@pipeline/components/Diagram'
+import { useValidationErrors } from '@pipeline/components/PipelineStudio/PiplineHooks/useValidationErrors'
+import { usePipelineContext } from '@pipeline/components/PipelineStudio/PipelineContext/PipelineContext'
 import { SVGComponent } from '../../PipelineGraph/PipelineGraph'
 import { PipelineGraphRecursive } from '../../PipelineGraph/PipelineGraphNode'
 import {
@@ -33,6 +35,7 @@ interface StepGroupGraphProps {
   identifier?: string
   isNodeCollapsed: boolean
   updateGraphLinks: () => void
+  parentIdentifier?: string
   readonly?: boolean
   hideLinks?: boolean
   hideAdd?: boolean
@@ -86,10 +89,22 @@ function StepGroupGraph(props: StepGroupGraphProps): React.ReactElement {
     const rectBoundary = treeContainer?.getBoundingClientRect()
     setTreeRectangle(rectBoundary)
   }
+  const { errorMap } = useValidationErrors()
+  const { getStagePathFromPipeline } = usePipelineContext()
+
+  const stagePath = getStagePathFromPipeline(props?.identifier || '', 'pipeline.stages')
 
   useLayoutEffect(() => {
     if (props?.data?.length) {
-      setState(getPipelineGraphData(props.data))
+      setState(
+        getPipelineGraphData(
+          props.data,
+          undefined,
+          undefined,
+          errorMap,
+          `${stagePath}.stage.spec.execution.steps.stepGroup.steps` //index after step missing - getStepPathFromPipeline??
+        )
+      )
     }
   }, [treeRectangle, props.data])
 

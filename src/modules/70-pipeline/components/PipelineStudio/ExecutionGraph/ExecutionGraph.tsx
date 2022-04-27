@@ -88,6 +88,7 @@ import {
   StepsType
 } from '../../Diagram'
 import { CanvasButtons } from '../../CanvasButtons/CanvasButtons'
+import { usePipelineContext } from '../PipelineContext/PipelineContext'
 import css from './ExecutionGraph.module.scss'
 
 const diagram = new DiagramFactory('graph')
@@ -261,6 +262,7 @@ function ExecutionGraphRef<T extends StageElementConfig>(
     pathToStage,
     templateTypes
   } = props
+  const { getStagePathFromPipeline } = usePipelineContext()
   const templatesEnabled: boolean = useFeatureFlag(FeatureFlag.NG_TEMPLATES)
 
   // NOTE: we are using ref as DynamicPopover use memo
@@ -979,9 +981,23 @@ function ExecutionGraphRef<T extends StageElementConfig>(
     const serviceDependencies: DependencyElement[] | undefined =
       stage?.stage?.type === StageType.BUILD ? get(stage, 'stage.spec.serviceDependencies') : undefined
 
+    const stagePath = getStagePathFromPipeline(stage?.stage?.identifier || '', 'pipeline.stages')
+
     return state?.isRollback
-      ? getPipelineGraphData(stage?.stage?.spec?.execution?.rollbackSteps, templateTypes)
-      : getPipelineGraphData(stage?.stage?.spec?.execution?.steps, templateTypes, serviceDependencies)
+      ? getPipelineGraphData(
+          stage?.stage?.spec?.execution?.rollbackSteps,
+          templateTypes,
+          undefined,
+          errorMap,
+          `${stagePath}.stage.spec.execution.rollbackSteps`
+        )
+      : getPipelineGraphData(
+          stage?.stage?.spec?.execution?.steps,
+          templateTypes,
+          serviceDependencies,
+          errorMap,
+          `${stagePath}.stage.spec.execution.steps`
+        )
   }, [stage, state?.isRollback])
 
   return (
