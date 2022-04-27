@@ -25,9 +25,12 @@
 // eslint-disable-next-line no-unused-vars
 const fs = require('fs')
 const _ = require('lodash')
+const { addMatchImageSnapshotPlugin } = require('cypress-image-snapshot/plugin')
 
 const cypressTypeScriptPreprocessor = require('./cy-ts-preprocessor')
 module.exports = (on: Cypress.PluginEvents, config: Cypress.PluginConfigOptions) => {
+  // we register our plugin using its register method:
+  addMatchImageSnapshotPlugin(on, config)
   // Deleting retried screenshots if test passes eventually
   on('after:spec', (spec, results) => {
     const deleteScrenshots = []
@@ -35,7 +38,7 @@ module.exports = (on: Cypress.PluginEvents, config: Cypress.PluginConfigOptions)
       // Checking for any success attempt and storing screenshot name
       results.tests.forEach(test => {
         if (_.some(test.attempts, { state: 'failed' }) && test.state === 'passed') {
-          const screenshotName = test.title.join(' -- ').replace('/', '') // cypress fileName creation
+          const screenshotName = test.title.join(' -- ').replace(/\/|\.$/gi, '') // cypress fileName creation
           deleteScrenshots.push(screenshotName)
         }
       })
@@ -43,7 +46,7 @@ module.exports = (on: Cypress.PluginEvents, config: Cypress.PluginConfigOptions)
     deleteScrenshots.forEach(file => {
       ;(results as any)?.screenshots.forEach(screenshot => {
         // Matching screenshot path with substring formed by spec+test name
-        if (screenshot.path.includes(file)) {
+        if (screenshot.path.includes(file) && file) {
           console.log('file deleted successfully: ', screenshot.path)
           fs.unlinkSync(screenshot.path)
         }
