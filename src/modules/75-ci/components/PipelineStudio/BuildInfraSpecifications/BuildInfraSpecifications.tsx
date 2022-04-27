@@ -790,7 +790,8 @@ export default function BuildInfraSpecifications({ children }: React.PropsWithCh
             style={{ width: 300 }}
             multiTextInputProps={{
               multiTextInputProps: { expressions, allowableTypes },
-              disabled: isReadonly
+              disabled: isReadonly,
+              placeholder: getString('pipeline.infraSpecifications.serviceAccountNamePlaceholder')
             }}
           />
         </Container>
