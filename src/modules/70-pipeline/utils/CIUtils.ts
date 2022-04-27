@@ -76,16 +76,14 @@ export const getAllowedValuesFromTemplate = (template: Record<string, any>, fiel
 }
 
 export const shouldRenderRunTimeInputView = (value: any): boolean => {
-  if (value) {
-    if (typeof value === 'object') {
-      return Object.keys(value).some(
-        key => typeof value[key] === 'string' && value[key].startsWith(RUNTIME_INPUT_VALUE)
-      )
-    } else {
-      return typeof value === 'string' && value.startsWith(RUNTIME_INPUT_VALUE)
-    }
+  if (!value) {
+    return false
   }
-  return false
+  if (typeof value === 'object') {
+    return Object.keys(value).some(key => typeof value[key] === 'string' && value[key].startsWith(RUNTIME_INPUT_VALUE))
+  } else {
+    return typeof value === 'string' && value.startsWith(RUNTIME_INPUT_VALUE)
+  }
 }
 
 export const shouldRenderRunTimeInputViewWithAllowedValues = (
@@ -95,6 +93,6 @@ export const shouldRenderRunTimeInputViewWithAllowedValues = (
   if (!template || !fieldPath) {
     return false
   }
-  const value = get(template, fieldPath, '')
-  return shouldRenderRunTimeInputView(value) && RegExAllowedInputExpression.test(value)
+  const allowedValues = get(template, fieldPath, '')
+  return shouldRenderRunTimeInputView(allowedValues) && RegExAllowedInputExpression.test(allowedValues)
 }

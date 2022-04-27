@@ -488,7 +488,7 @@ export function StageInputSetFormInternal({
       if (shouldRenderRunTimeInputViewWithAllowedValues(fieldPath, deploymentStageTemplate.infrastructure)) {
         return renderMultiTypeInputWithAllowedValues({
           name,
-          tooltipId: tooltipId,
+          tooltipId,
           labelKey: labelKey,
           fieldPath
         })

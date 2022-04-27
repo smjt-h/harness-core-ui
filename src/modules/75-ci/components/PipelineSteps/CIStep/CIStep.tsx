@@ -72,8 +72,8 @@ export const CIStep: React.FC<CIStepProps> = props => {
       if (isInputSetView && shouldRenderRunTimeInputViewWithAllowedValues(fieldPath, template)) {
         return renderMultiTypeInputWithAllowedValues({
           name,
-          tooltipId: tooltipId,
-          labelKey: labelKey,
+          tooltipId,
+          labelKey,
           fieldPath,
           getString,
           readonly,
