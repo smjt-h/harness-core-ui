@@ -102,9 +102,16 @@ function CustomVariableInputSetBasic(props: CustomVariableInputSetProps): React.
           <Text font={{ variation: FontVariation.TABLE_HEADERS }}>{getString('valueLabel')}</Text>
         </section>
       )}
-      {template?.variables?.map?.(variable => {
+      {template?.variables?.map?.((variable, templateIndex) => {
         // find Index from values, not from template variables
-        const index = formikVariables.findIndex((fVar: AllNGVariables) => variable.name === fVar.name)
+        // because the order of the variables might not be the same
+        let index = formikVariables.findIndex((fVar: AllNGVariables) => variable.name === fVar.name)
+
+        // if variable is not found in formik values, we will create a new one
+        if (index === -1) {
+          index = templateIndex
+        }
+
         const value = defaultTo(variable.value, '')
         if (getMultiTypeFromValue(value as string) !== MultiTypeInputType.RUNTIME) {
           return
