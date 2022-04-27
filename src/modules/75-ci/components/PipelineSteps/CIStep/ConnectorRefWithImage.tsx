@@ -16,10 +16,10 @@ import { FormMultiTypeConnectorField } from '@connectors/components/ConnectorRef
 import { useStrings } from 'framework/strings'
 import { MultiTypeTextField } from '@common/components/MultiTypeText/MultiTypeText'
 import { useVariablesExpression } from '@pipeline/components/PipelineStudio/PiplineHooks/useVariablesExpression'
-import { useGitScope } from '@pipeline/utils/CIUtils'
+import { useGitScope, shouldRenderRunTimeInputViewWithAllowedValues } from '@pipeline/utils/CIUtils'
 import { StepViewType } from '@pipeline/components/AbstractSteps/Step'
 import { renderMultiTypeInputWithAllowedValues, getOptionalSubLabel } from './CIStepOptionalConfig'
-import { AllMultiTypeInputTypesForStep, shouldRenderRunTimeInputViewWithAllowedValues } from './StepUtils'
+import { AllMultiTypeInputTypesForStep } from './StepUtils'
 import css from '@pipeline/components/PipelineSteps/Steps/Steps.module.scss'
 
 interface ConnectorRefWithImageProps {

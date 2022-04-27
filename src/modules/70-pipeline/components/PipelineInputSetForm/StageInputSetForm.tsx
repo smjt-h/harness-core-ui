@@ -14,7 +14,6 @@ import {
   Text,
   getMultiTypeFromValue,
   Container,
-  RUNTIME_INPUT_VALUE,
   FormInput
 } from '@wings-software/uicore'
 import { connect } from 'formik'
@@ -42,13 +41,16 @@ import { MultiTypeMapInputSet } from '@common/components/MultiTypeMapInputSet/Mu
 import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
 import type { TemplateStepNode } from 'services/pipeline-ng'
 import { TEMPLATE_INPUT_PATH } from '@pipeline/utils/templateUtils'
-import { getAllowedValuesFromTemplate, useGitScope } from '@pipeline/utils/CIUtils'
+import {
+  getAllowedValuesFromTemplate,
+  shouldRenderRunTimeInputViewWithAllowedValues,
+  useGitScope
+} from '@pipeline/utils/CIUtils'
 import { ConnectorRefWidth } from '@pipeline/utils/constants'
 import { FormMultiTypeConnectorField } from '@connectors/components/ConnectorReferenceField/FormMultiTypeConnectorField'
 import type { StringsMap } from 'stringTypes'
 import factory from '../PipelineSteps/PipelineStepFactory'
 import { StepType } from '../PipelineSteps/PipelineStepInterface'
-import { RegExAllowedInputExpression } from '../PipelineSteps/Steps/CustomVariables/CustomVariableInputSet'
 import { CollapseForm } from './CollapseForm'
 import { getStepFromStage } from '../PipelineStudio/StepUtil'
 import { StepWidget } from '../AbstractSteps/StepWidget'
@@ -426,30 +428,6 @@ export function StageInputSetFormInternal({
   const deploymentStageTemplateInfraKeys = Object.keys((deploymentStageTemplate.infrastructure as any)?.spec || {})
   const hasContainerSecurityContextFields = containerSecurityContextFields.some(field =>
     deploymentStageTemplateInfraKeys.includes(field)
-  )
-
-  const shouldRenderRunTimeInputView = React.useCallback((value: any): boolean => {
-    if (value) {
-      if (typeof value === 'object') {
-        return Object.keys(value).some(
-          key => typeof value[key] === 'string' && value[key].startsWith(RUNTIME_INPUT_VALUE)
-        )
-      } else {
-        return typeof value === 'string' && value.startsWith(RUNTIME_INPUT_VALUE)
-      }
-    }
-    return false
-  }, [])
-
-  const shouldRenderRunTimeInputViewWithAllowedValues = React.useCallback(
-    (fieldPath: string, template?: Record<string, any>): boolean => {
-      if (!template || !fieldPath) {
-        return false
-      }
-      const value = get(template, fieldPath, '')
-      return shouldRenderRunTimeInputView(value) && RegExAllowedInputExpression.test(value)
-    },
-    []
   )
 
   const renderMultiTypeInputWithAllowedValues = React.useCallback(

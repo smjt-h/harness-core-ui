@@ -23,11 +23,12 @@ import {
 import type { InputSetData } from '@pipeline/components/AbstractSteps/Step'
 import { StepViewType } from '@pipeline/components/AbstractSteps/Step'
 import { useVariablesExpression } from '@pipeline/components/PipelineStudio/PiplineHooks/useVariablesExpression'
+import { shouldRenderRunTimeInputViewWithAllowedValues } from '@pipeline/utils/CIUtils'
 import {
   getOptionalSubLabel,
   renderMultiTypeInputWithAllowedValues
 } from '@ci/components/PipelineSteps/CIStep/CIStepOptionalConfig'
-import { AllMultiTypeInputTypesForInputSet, shouldRenderRunTimeInputViewWithAllowedValues } from '../CIStep/StepUtils'
+import { AllMultiTypeInputTypesForInputSet } from '../CIStep/StepUtils'
 import css from '@pipeline/components/PipelineSteps/Steps/Steps.module.scss'
 
 interface StepCommonFieldsInputSetProps<T> extends Omit<InputSetData<T>, 'path' | 'template'> {

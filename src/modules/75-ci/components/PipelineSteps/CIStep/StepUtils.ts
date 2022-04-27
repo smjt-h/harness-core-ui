@@ -5,12 +5,11 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import { get, isEmpty } from 'lodash-es'
+import { isEmpty } from 'lodash-es'
 import type { FormikErrors } from 'formik'
-import { RUNTIME_INPUT_VALUE, MultiTypeInputType } from '@wings-software/uicore'
+import { MultiTypeInputType } from '@wings-software/uicore'
 import type { UseFromStageInfraYaml } from 'services/ci'
 import { usePipelineContext } from '@pipeline/components/PipelineStudio/PipelineContext/PipelineContext'
-import { RegExAllowedInputExpression } from '@pipeline/components/PipelineSteps/Steps/CustomVariables/CustomVariableInputSet'
 import type { StringsMap } from 'stringTypes'
 import type { BuildStageElementConfig, StageElementWrapper } from '@pipeline/utils/pipelineTypes'
 
@@ -46,30 +45,6 @@ export const validateConnectorRefAndImageDepdendency = (
     })
   }
   return errors
-}
-
-export const shouldRenderRunTimeInputView = (value: any): boolean => {
-  if (value) {
-    if (typeof value === 'object') {
-      return Object.keys(value).some(
-        key => typeof value[key] === 'string' && value[key].startsWith(RUNTIME_INPUT_VALUE)
-      )
-    } else {
-      return typeof value === 'string' && value.startsWith(RUNTIME_INPUT_VALUE)
-    }
-  }
-  return false
-}
-
-export const shouldRenderRunTimeInputViewWithAllowedValues = (
-  fieldPath: string,
-  template?: Record<string, any>
-): boolean => {
-  if (!template) {
-    return false
-  }
-  const value = get(template, fieldPath, '')
-  return shouldRenderRunTimeInputView(value) && RegExAllowedInputExpression.test(value)
 }
 
 export const AllMultiTypeInputTypesForStep = [

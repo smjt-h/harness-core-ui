@@ -18,6 +18,7 @@ import { FormMultiTypeCheckboxField } from '@common/components/MultiTypeCheckbox
 import { useVariablesExpression } from '@pipeline/components/PipelineStudio/PiplineHooks/useVariablesExpression'
 import StepCommonFieldsInputSet from '@ci/components/PipelineSteps/StepCommonFields/StepCommonFieldsInputSet'
 import { StepViewType } from '@pipeline/components/AbstractSteps/Step'
+import { shouldRenderRunTimeInputView, shouldRenderRunTimeInputViewWithAllowedValues } from '@pipeline/utils/CIUtils'
 import type { RunStepProps } from './RunStep'
 import { CIStep } from '../CIStep/CIStep'
 import {
@@ -26,11 +27,7 @@ import {
   renderMultiTypeInputWithAllowedValues
 } from '../CIStep/CIStepOptionalConfig'
 import { ConnectorRefWithImage } from '../CIStep/ConnectorRefWithImage'
-import {
-  AllMultiTypeInputTypesForInputSet,
-  shouldRenderRunTimeInputView,
-  shouldRenderRunTimeInputViewWithAllowedValues
-} from '../CIStep/StepUtils'
+import { AllMultiTypeInputTypesForInputSet } from '../CIStep/StepUtils'
 import css from '@pipeline/components/PipelineSteps/Steps/Steps.module.scss'
 
 export const RunStepInputSetBasic: React.FC<RunStepProps> = ({
