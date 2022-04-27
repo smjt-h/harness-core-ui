@@ -15,7 +15,12 @@ import produce from 'immer'
 import { DynamicPopover, DynamicPopoverHandlerBinding } from '@common/components/DynamicPopover/DynamicPopover'
 import { useTelemetry } from '@common/hooks/useTelemetry'
 import { StageActions } from '@common/constants/TrackingConstants'
-import type { PipelineInfoConfig, StageElementConfig, StageElementWrapperConfig } from 'services/cd-ng'
+import type {
+  DeploymentStageConfig,
+  PipelineInfoConfig,
+  StageElementConfig,
+  StageElementWrapperConfig
+} from 'services/cd-ng'
 import { useStrings } from 'framework/strings'
 import { CanvasButtons } from '@pipeline/components/CanvasButtons/CanvasButtons'
 import { moveStageToFocusDelayed } from '@pipeline/components/ExecutionStageDiagram/ExecutionStageDiagramUtils'
@@ -852,6 +857,26 @@ function StageBuilder(): React.ReactElement {
 
   const stageType = selectedStage?.stage?.stage?.template ? StageType.Template : selectedStage?.stage?.stage?.type
 
+  let deletionContentText = `${getString('stageConfirmationText', {
+    name: getStageFromPipeline(deleteId || '').stage?.stage?.name || deleteId,
+    id: deleteId
+  })} `
+
+  if (
+    isConfirmDeleteStageOpen &&
+    pipeline.stages?.some(
+      currentStage =>
+        (currentStage.stage?.spec as DeploymentStageConfig)?.serviceConfig?.useFromStage?.stage === deleteId ||
+        currentStage.parallel?.some(
+          parallelStage =>
+            (parallelStage.stage?.spec as DeploymentStageConfig)?.serviceConfig?.useFromStage?.stage === deleteId
+        )
+    )
+  ) {
+    deletionContentText =
+      'If this stage is deleted, then other stages propagating configuration from this stage will be reset.'
+  }
+
   return (
     <Layout.Horizontal className={cx(css.canvasContainer)} padding="medium">
       <div className={css.canvasWrapper}>
@@ -886,10 +911,7 @@ function StageBuilder(): React.ReactElement {
       <ConfirmationDialog
         isOpen={isConfirmDeleteStageOpen}
         lazy
-        contentText={`${getString('stageConfirmationText', {
-          name: getStageFromPipeline(deleteId || '').stage?.stage?.name || deleteId,
-          id: deleteId
-        })} `}
+        contentText={deletionContentText}
         titleText={getString('deletePipelineStage')}
         confirmButtonText={getString('delete')}
         cancelButtonText={getString('cancel')}
