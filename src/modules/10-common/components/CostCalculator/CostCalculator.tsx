@@ -1,26 +1,28 @@
-import React, {useEffect, useState} from 'react'
-import {Color, FontVariation} from '@harness/design-system'
-import {Button, ButtonSize, Layout, PillToggle, Text, Toggle} from '@harness/uicore'
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
+import React, { useEffect, useState } from 'react'
+import { Color, FontVariation } from '@harness/design-system'
+import { Button, ButtonSize, Layout, PillToggle, Text, Toggle } from '@harness/uicore'
 import cx from 'classnames'
-import {Classes, Dialog, IDialogProps, NumericInput, Slider} from '@blueprintjs/core'
-import {useModalHook} from '@harness/use-modal'
-import {ButtonVariation, Container} from '@wings-software/uicore'
-import {useParams} from "react-router-dom";
-import moment from "moment";
-import {isNaN} from "lodash-es";
-import {Editions} from '@common/constants/SubscriptionTypes'
-import {
-  acquireCurrentPlan,
-  calculateCostTotal,
-  ffUnitTypes,
-  PlanType
-} from '@common/components/CostCalculator/CostCalculatorUtils'
-import {ReviewPage} from '@common/components/CostCalculator/ReviewAndBuyPlanUpgrades'
-import type {AccountPathProps} from "@common/interfaces/RouteInterfaces";
-import {useRetrieveProductPrices} from "services/cd-ng";
-import {useGetUsageAndLimit} from "@common/hooks/useGetUsageAndLimit";
-import {ModuleName} from "framework/types/ModuleName";
-import {ContainerSpinner} from "@common/components/ContainerSpinner/ContainerSpinner";
+import { Classes, Dialog, IDialogProps, NumericInput, Slider } from '@blueprintjs/core'
+import { useModalHook } from '@harness/use-modal'
+import { ButtonVariation, Container } from '@wings-software/uicore'
+import { useParams } from 'react-router-dom'
+import moment from 'moment'
+import { isNaN } from 'lodash-es'
+import { Editions } from '@common/constants/SubscriptionTypes'
+import { acquireCurrentPlan, ffUnitTypes, PlanType } from '@common/components/CostCalculator/CostCalculatorUtils'
+import { ReviewPage } from '@common/components/CostCalculator/ReviewAndBuyPlanUpgrades'
+import type { AccountPathProps } from '@common/interfaces/RouteInterfaces'
+import { useRetrieveProductPrices } from 'services/cd-ng'
+import { useGetUsageAndLimit } from '@common/hooks/useGetUsageAndLimit'
+import { ModuleName } from 'framework/types/ModuleName'
+import { ContainerSpinner } from '@common/components/ContainerSpinner/ContainerSpinner'
 import recommendedIcon from './images/recommendedbig.png'
 import usageIcon from './images/usagebig.png'
 import plannedUsageIcon from './images/currentbig.png'
@@ -50,7 +52,7 @@ const InfoBox = ({ title, units, using, recommended, planned }: InfoBoxParams) =
         {title}
       </Text>
       <Layout.Horizontal flex={{ justifyContent: 'space-around' }} padding={{ bottom: 'xxlarge' }}>
-        { !isNaN(planned as number) && (
+        {!isNaN(planned as number) && (
           <Layout.Vertical>
             <Text font={{ variation: FontVariation.SMALL }}>Current</Text>
             <Layout.Horizontal
@@ -77,9 +79,7 @@ const InfoBox = ({ title, units, using, recommended, planned }: InfoBoxParams) =
           </Layout.Horizontal>
         </Layout.Vertical>
         <Layout.Vertical>
-          <Text font={{ variation: FontVariation.SMALL }} >
-            Recommended
-          </Text>
+          <Text font={{ variation: FontVariation.SMALL }}>Recommended</Text>
           <Layout.Horizontal
             flex={{ alignItems: 'center', justifyContent: 'flex-start' }}
             className={cx(css.infocardItemIcongap)}
@@ -113,25 +113,26 @@ interface CostSliderParams {
 }
 
 interface EditionBox {
-  editionType: string;
+  editionType: string
 }
 
-export const GetEditionBox = ({editionType}: EditionBox) => {
+export const GetEditionBox = ({ editionType }: EditionBox) => {
   return (
-      <Container className={cx(css.subscriptionType)}>
-        <Text font={{variation: FontVariation.TABLE_HEADERS}} color={Color.WHITE} >
-          {editionType.toUpperCase()}
-        </Text>
-      </Container>
-  );
+    <Container className={cx(css.subscriptionType)}>
+      <Text font={{ variation: FontVariation.TABLE_HEADERS }} color={Color.WHITE}>
+        {editionType.toUpperCase()}
+      </Text>
+    </Container>
+  )
 }
-
 
 const CostSlider = (costSliderParms: CostSliderParams) => {
   const [thumbMoved, setThumbMoved] = useState<boolean>(false)
 
-  const shownPlannedUsage = Math.max(Math.min(costSliderParms.plannedUsage || 0 , costSliderParms.maxVal), costSliderParms.minVal)
-
+  const shownPlannedUsage = Math.max(
+    Math.min(costSliderParms.plannedUsage || 0, costSliderParms.maxVal),
+    costSliderParms.minVal
+  )
 
   return (
     <Layout.Vertical padding={{ top: 'xlarge' }}>
@@ -143,7 +144,7 @@ const CostSlider = (costSliderParms: CostSliderParams) => {
           {costSliderParms.summary}
         </Text>
       </Layout.Horizontal>
-      <Layout.Horizontal flex={{alignItems: 'flex-start',justifyContent: 'flex-start'}}>
+      <Layout.Horizontal flex={{ alignItems: 'flex-start', justifyContent: 'flex-start' }}>
         <NumericInput
           value={costSliderParms.currentSliderValue}
           onValueChange={valueProvided => costSliderParms.onSliderChange(valueProvided)}
@@ -155,12 +156,12 @@ const CostSlider = (costSliderParms: CostSliderParams) => {
           stepSize={costSliderParms.tickSize}
           majorStepSize={costSliderParms.labelTickSize}
         />
-        <Text font={{variation: FontVariation.BODY2}} color={Color.GREY_800} padding={{left: 'small'}}>
+        <Text font={{ variation: FontVariation.BODY2 }} color={Color.GREY_800} padding={{ left: 'small' }}>
           {costSliderParms.inputUnit}
         </Text>
       </Layout.Horizontal>
       <Container className={css.topSliderDots}>
-        {   costSliderParms.plannedUsage !== undefined && (
+        {costSliderParms.plannedUsage !== undefined && (
           <Container
             width={`${(shownPlannedUsage * 100) / costSliderParms.maxVal}%`}
             className={css.sliderDotContainer}
@@ -219,52 +220,48 @@ export const CostCalculator = (): JSX.Element => {
   const [edition, plan] = acquireCurrentPlan('')
   const frequencyString = (time: PlanType) => (time === PlanType.MONTHLY ? 'month' : 'year')
 
-
-  const { limitData, usageData } = useGetUsageAndLimit(ModuleName.CF);
+  const { limitData, usageData } = useGetUsageAndLimit(ModuleName.CF)
 
   const { usage } = usageData
   const { limit } = limitData
 
-
-  const developerPlannedSeats=limit?.ff?.totalFeatureFlagUnits || 0
-  const developerUsageSeats=usage?.ff?.activeFeatureFlagUsers?.count || 0
-  const developerRecommendedSeats = Math.ceil((developerUsageSeats + 1)*1.1)
+  const developerPlannedSeats = limit?.ff?.totalFeatureFlagUnits || 0
+  const developerUsageSeats = usage?.ff?.activeFeatureFlagUsers?.count || 0
+  const developerRecommendedSeats = Math.ceil((developerUsageSeats + 1) * 1.1)
 
   const mauPlannedSeats = limit?.ff?.totalFeatureFlagUnits || 0
   const mauUsageSeats = usage?.ff?.activeClientMAUs?.count || 0
-  const mauRecommendedSeats = Math.ceil((mauUsageSeats/25 + 1)*1.1)*25
+  const mauRecommendedSeats = Math.ceil((mauUsageSeats / 25 + 1) * 1.1) * 25
 
   const [paymentFrequencySelected, setPaymentFrequencySelected] = useState<PlanType>(PlanType.YEARLY)
   const [editionSelected, setEditionSelected] = useState<Editions>(Editions.TEAM)
   const [developerSelected, setDeveloperSelected] = useState<number>(developerRecommendedSeats)
   const [mausSelected, setMausSelected] = useState<number>(mauRecommendedSeats)
   const [shownPage, setShownPage] = useState<CalcPage>(CalcPage.Calculator)
-  const [premiumSupport, setPremiumSupport] = useState<boolean>(true);
-  const [premiumSupportDisabled, setPremiumSupportDisabled] = useState<boolean>(false);
+  const [premiumSupport, setPremiumSupport] = useState<boolean>(true)
+  const [premiumSupportDisabled, setPremiumSupportDisabled] = useState<boolean>(false)
 
-  const { accountId } = useParams<AccountPathProps>();
+  const { accountId } = useParams<AccountPathProps>()
 
   const isLoading = limitData.loadingLimit || usageData.loadingUsage
 
   useEffect(() => {
-    if(editionSelected === Editions.ENTERPRISE) {
-      setPremiumSupport(true);
-      setPremiumSupportDisabled(true);
+    if (editionSelected === Editions.ENTERPRISE) {
+      setPremiumSupport(true)
+      setPremiumSupportDisabled(true)
     } else {
-      setPremiumSupportDisabled(false);
+      setPremiumSupportDisabled(false)
     }
-  },[editionSelected]);
+  }, [editionSelected])
 
-  const {data} = useRetrieveProductPrices({queryParams: {accountIdentifier : accountId, moduleType: 'CF'}});
-  if(!data) {
+  const { data } = useRetrieveProductPrices({ queryParams: { accountIdentifier: accountId, moduleType: 'CF' } })
+  if (!data) {
     return <ContainerSpinner />
   }
 
-
-
-
+  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
   // @ts-ignore
-  const providedPrices = [...data?.data?.prices]  ;
+  const providedPrices = [...data?.data?.prices]
   const allPrices = {
     FF_TEAM_DEVELOPERS_MONTHLY: undefined,
     FF_TEAM_MAU_MONTHLY: undefined,
@@ -274,69 +271,77 @@ export const CostCalculator = (): JSX.Element => {
     FF_ENTERPRISE_DEVELOPERS_YEARLY: undefined,
     FF_ENTERPRISE_MAU_MONTHLY: undefined,
     FF_ENTERPRISE_MAU_YEARLY: undefined
-  };
+  }
   providedPrices.forEach(metaData => {
-      // @ts-ignore
-    allPrices[metaData.lookupKey] = metaData.unitAmount;
-  });
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    allPrices[metaData.lookupKey] = metaData.unitAmount
+  })
 
   const pricesSelected = {
-    TEAM : {
-      monthly : {
-        developer: allPrices?.FF_TEAM_DEVELOPERS_MONTHLY, MAU: allPrices?.FF_TEAM_MAU_MONTHLY
+    TEAM: {
+      monthly: {
+        developer: allPrices?.FF_TEAM_DEVELOPERS_MONTHLY,
+        MAU: allPrices?.FF_TEAM_MAU_MONTHLY
       },
       yearly: {
-        developer: allPrices?.FF_TEAM_DEVELOPERS_YEARLY, MAU: allPrices?.FF_TEAM_MAU_YEARLY
+        developer: allPrices?.FF_TEAM_DEVELOPERS_YEARLY,
+        MAU: allPrices?.FF_TEAM_MAU_YEARLY
       }
     },
     ENTERPRISE: {
-      monthly : {
-        developer: allPrices?.FF_ENTERPRISE_DEVELOPERS_MONTHLY, MAU: allPrices?.FF_ENTERPRISE_MAU_MONTHLY
+      monthly: {
+        developer: allPrices?.FF_ENTERPRISE_DEVELOPERS_MONTHLY,
+        MAU: allPrices?.FF_ENTERPRISE_MAU_MONTHLY
       },
       yearly: {
-        developer: allPrices?.FF_ENTERPRISE_DEVELOPERS_YEARLY, MAU: allPrices?.FF_ENTERPRISE_MAU_YEARLY
+        developer: allPrices?.FF_ENTERPRISE_DEVELOPERS_YEARLY,
+        MAU: allPrices?.FF_ENTERPRISE_MAU_YEARLY
       }
     }
-  };
-
-
+  }
 
   if (isLoading) {
     return <ContainerSpinner />
   }
 
-  const currentDate = moment(new Date())
+  const currentDate = moment()
+  const nextMonthStart = moment().add(1, 'month').startOf('month')
+  const nextYearStart = moment().add(1, 'year').startOf('year')
+  const dayDiffMonth = -currentDate.diff(nextMonthStart, 'days')
+  const monthDiffYear = -currentDate.diff(nextMonthStart, 'month')
+  const fractionCostMonth = dayDiffMonth / currentDate.daysInMonth()
+  const fractionCostYear = monthDiffYear / 12
 
-
+  let prorateDate
+  let timeDiff
+  let fractionCost
+  if (paymentFrequencySelected === PlanType.MONTHLY) {
+    prorateDate = nextMonthStart
+    timeDiff = [dayDiffMonth, 'days']
+    fractionCost = fractionCostMonth
+  } else {
+    prorateDate = nextYearStart
+    timeDiff = [monthDiffYear, 'months']
+    fractionCost = fractionCostYear
+  }
 
   const getCostForUnits = (units: number, unitType: ffUnitTypes, editionProvided: Editions, planType: PlanType) => {
     switch (editionProvided) {
       case Editions.FREE:
         return 0
       case Editions.TEAM:
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
-        return pricesSelected["TEAM"][planType][unitType] * units / 100;
+        return (pricesSelected['TEAM'][planType][unitType] * units) / 100
       case Editions.ENTERPRISE:
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-ignore
-        return pricesSelected["ENTERPRISE"][planType][unitType] * units / 100;
+        return (pricesSelected['ENTERPRISE'][planType][unitType] * units) / 100
       default:
         return 0
     }
   }
-
-
-  const currentDeveloperUsageCost = calculateCostTotal(
-      developerPlannedSeats,
-    getCostForUnits(
-      developerPlannedSeats ? developerPlannedSeats : 0,
-      ffUnitTypes.DEVELOPER,
-      edition,
-      PlanType.MONTHLY
-    ),
-    developerPlannedSeats,
-    0
-  )
-  const currentMauUsageCost = getCostForUnits(mauPlannedSeats, ffUnitTypes.MAU, edition, plan) / 25
 
   const totalDeveloperRate = getCostForUnits(
     developerSelected,
@@ -350,12 +355,11 @@ export const CostCalculator = (): JSX.Element => {
     paymentFrequencySelected === PlanType.MONTHLY
       ? totalDeveloperRate * 12 -
         getCostForUnits(developerSelected, ffUnitTypes.DEVELOPER, editionSelected, PlanType.YEARLY) +
-        (totalMauRate * 12 -
-          getCostForUnits(mausSelected, ffUnitTypes.MAU, editionSelected, PlanType.YEARLY) / 25)
+        (totalMauRate * 12 - getCostForUnits(mausSelected, ffUnitTypes.MAU, editionSelected, PlanType.YEARLY) / 25)
       : 0
-  const supportCost = premiumSupport ?  160 : 0
+  const supportCost = premiumSupport ? 160 : 0
   const totalCost = totalDeveloperRate + totalMauRate + supportCost
-  const dueTodayCost = edition !== Editions.FREE ? currentDeveloperUsageCost + currentMauUsageCost : totalCost
+  const dueTodayCost = totalCost * fractionCost
 
   const title = `Feature Flag Subscription`
   const monthYear = frequencyString(paymentFrequencySelected)
@@ -373,7 +377,7 @@ export const CostCalculator = (): JSX.Element => {
             >
               {title}
             </Text>
-            <GetEditionBox editionType={edition as string}/>
+            <GetEditionBox editionType={edition as string} />
             <div style={{ width: '100%' }} />
             <Text
               font={{ variation: FontVariation.SMALL }}
@@ -450,7 +454,7 @@ export const CostCalculator = (): JSX.Element => {
               </Layout.Vertical>
             </Layout.Horizontal>
           </Container>
-          <Layout.Horizontal padding={{ top: 'xxlarge', bottom: 'xxlarge' }} className={cx(css.pillboxgap)}>
+          <Layout.Horizontal padding={{ top: 'xlarge', bottom: 'xlarge' }} className={cx(css.pillboxgap)}>
             <PillToggle
               onChange={planFrequency => setPaymentFrequencySelected(planFrequency)}
               options={[
@@ -509,7 +513,12 @@ export const CostCalculator = (): JSX.Element => {
                 <Layout.Horizontal flex={{ alignItems: 'baseline' }} className={cx(css.supportInfoBoxText)}>
                   <Text font={{ size: 'medium' }}>{`$ ${supportCost}`}</Text>
                 </Layout.Horizontal>
-                <Toggle label={premiumSupport ? 'Premium Support': 'Standard support'} disabled={premiumSupportDisabled} checked={premiumSupport} onToggle={(toggleState => setPremiumSupport(toggleState))}/>
+                <Toggle
+                  label={premiumSupport ? 'Premium Support' : 'Standard support'}
+                  disabled={premiumSupportDisabled}
+                  checked={premiumSupport}
+                  onToggle={toggleState => setPremiumSupport(toggleState)}
+                />
               </Layout.Vertical>
               <Layout.Vertical
                 flex={{ justifyContent: 'center' }}
@@ -528,6 +537,9 @@ export const CostCalculator = (): JSX.Element => {
                     {`$ ${totalCost} per ${frequencyString(paymentFrequencySelected)} `}
                   </Text>
                 </Layout.Horizontal>
+                <Text font={{ size: 'small' }} color={Color.BLACK}>
+                  {`On ${prorateDate.format('MMMM Do YYYY')}`}
+                </Text>
               </Layout.Vertical>
             </Layout.Horizontal>
             <div style={{ width: '100%' }} />
@@ -541,6 +553,9 @@ export const CostCalculator = (): JSX.Element => {
                     {`$ ${dueTodayCost}`}
                   </Text>
                 </Layout.Horizontal>
+                <Text font={{ size: 'small', weight: 'bold' }} color={Color.BLACK}>
+                  {`Prorated for next ${timeDiff[0]} ${timeDiff[1]}`}
+                </Text>
               </Layout.Vertical>
             </Layout.Horizontal>
           </Layout.Horizontal>
