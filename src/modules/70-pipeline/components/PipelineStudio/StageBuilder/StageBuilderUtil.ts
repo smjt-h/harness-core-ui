@@ -599,28 +599,7 @@ export const getNodeEventListerner = (
             { useArrows: true, darkMode: false, fixedPosition: false }
           )
         } else if (event.entityType === DiagramType.GroupNode && event?.identifier) {
-          /* istanbul ignore else */ if (event?.nodesInfo) {
-            dynamicPopoverHandler?.show(
-              domTarget,
-              {
-                isGroupStage: true,
-                groupSelectedStageId: event?.identifier,
-                isStageView: false,
-                groupStages: event?.nodesInfo,
-                onClickGroupStage: (stageId: string) => {
-                  dynamicPopoverHandler?.hide()
-                  setSelectionRef.current({ stageId })
-                  // moveStageToFocusDelayed(engine, stageId, true)
-                },
-                stagesMap,
-                renderPipelineStage,
-                contextType,
-                templateTypes,
-                getTemplate
-              },
-              { useArrows: false, darkMode: false, fixedPosition: false }
-            )
-          }
+          setSelectionRef.current({ stageId: event?.identifier })
         } /* istanbul ignore else */ else if (event.entityType !== DiagramType.StartNode) {
           const data = getStageFromPipelineContext(event.identifier).stage
           if (isSplitViewOpen && data?.stage?.identifier) {

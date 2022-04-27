@@ -93,11 +93,12 @@ function GroupNode(props: GroupNodeProps): React.ReactElement {
                 target: event.target,
                 data: {
                   entityType: DiagramType.GroupNode,
-                  identifier: props?.identifier,
                   node,
-                  ...props
+                  ...props,
+                  identifier: node?.identifier
                 }
               })
+              dynamicPopoverHandler?.hide()
             }}
           >
             <Icon name={node.icon} />
