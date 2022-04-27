@@ -15,7 +15,6 @@ import {
   getMultiTypeFromValue,
   Container,
   RUNTIME_INPUT_VALUE,
-  SelectOption,
   FormInput
 } from '@wings-software/uicore'
 import { connect } from 'formik'
@@ -43,7 +42,7 @@ import { MultiTypeMapInputSet } from '@common/components/MultiTypeMapInputSet/Mu
 import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
 import type { TemplateStepNode } from 'services/pipeline-ng'
 import { TEMPLATE_INPUT_PATH } from '@pipeline/utils/templateUtils'
-import { useGitScope } from '@pipeline/utils/CIUtils'
+import { getAllowedValuesFromTemplate, useGitScope } from '@pipeline/utils/CIUtils'
 import { ConnectorRefWidth } from '@pipeline/utils/constants'
 import { FormMultiTypeConnectorField } from '@connectors/components/ConnectorReferenceField/FormMultiTypeConnectorField'
 import type { StringsMap } from 'stringTypes'
@@ -459,34 +458,23 @@ export function StageInputSetFormInternal({
       tooltipId,
       labelKey,
       placeholderKey,
-      fieldPath,
-      showOptionalSublabel
+      fieldPath
     }: {
       name: string
       tooltipId?: string
       labelKey: keyof StringsMap
       placeholderKey?: keyof StringsMap
       fieldPath: string
-      showOptionalSublabel?: boolean
     }) => {
       if (!name) {
         return
       }
       if (deploymentStageTemplate.infrastructure && fieldPath) {
-        const value = get(deploymentStageTemplate.infrastructure, fieldPath, '')
-        const items: SelectOption[] = []
-        if (RegExAllowedInputExpression.test(value as string)) {
-          // This separates out "<+input>.allowedValues(a, b, c)" to ["<+input>", ["a", "b", "c"]]
-          const match = (value as string).match(RegExAllowedInputExpression)
-          if (match && match?.length > 1) {
-            const allowedValues = match[1]
-            items.push(...allowedValues.split(',').map(item => ({ label: item, value: item })))
-          }
-        }
+        const items = getAllowedValuesFromTemplate(deploymentStageTemplate.infrastructure, fieldPath)
         return (
           <FormInput.MultiTypeInput
             name={name}
-            label={getString(labelKey).concat(showOptionalSublabel ? ` ${getString('titleOptional')}` : '')}
+            label={getString(labelKey)}
             useValue
             selectItems={items}
             placeholder={placeholderKey ? getString(placeholderKey) : ''}

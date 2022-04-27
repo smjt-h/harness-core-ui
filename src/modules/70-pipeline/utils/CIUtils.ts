@@ -5,10 +5,12 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import { isEmpty } from 'lodash-es'
+import { get, isEmpty } from 'lodash-es'
 import moment from 'moment'
+import type { SelectOption } from '@harness/uicore'
 import type { GitFilterScope } from '@common/components/GitFilters/GitFilters'
 import { usePipelineContext } from '@pipeline/components/PipelineStudio/PipelineContext/PipelineContext'
+import { RegExAllowedInputExpression } from '@pipeline/components/PipelineSteps/Steps/CustomVariables/CustomVariableInputSet'
 import type { GitQueryParams } from '@common/interfaces/RouteInterfaces'
 import { useQueryParams } from '@common/hooks'
 
@@ -54,4 +56,21 @@ export function useGitScope(): GitFilterScope | undefined {
       getDefaultFromOtherRepo: true
     }
   }
+}
+
+export const getAllowedValuesFromTemplate = (template: Record<string, any>, fieldPath: string): SelectOption[] => {
+  if (!template || !fieldPath) {
+    return []
+  }
+  const value = get(template, fieldPath, '')
+  const items: SelectOption[] = []
+  if (RegExAllowedInputExpression.test(value as string)) {
+    // This separates out "<+input>.allowedValues(a, b, c)" to ["<+input>", ["a", "b", "c"]]
+    const match = (value as string).match(RegExAllowedInputExpression)
+    if (match && match?.length > 1) {
+      const allowedValues = match[1]
+      items.push(...allowedValues.split(',').map(item => ({ label: item, value: item })))
+    }
+  }
+  return items
 }
