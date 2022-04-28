@@ -157,7 +157,7 @@ export const Deployments: React.FC = () => {
   const tableData: TableRowsData[] = useMemo(() => getTableData(data?.data?.environmentInfoByServiceId), [])
 
   //for dummy data will remove it later
-  // const tableData: TableRowsData[] = useMemo(() => getTableData(dataEnv), [])
+  // const tableData: TableRowsData[] = useMemo(() => getTableData(dataEnnResponse.data.environmentInfoByServiceId), [])
 
   // error, loading, empty handling
   if (loading || error || !(data?.data?.environmentInfoByServiceId || []).length) {
