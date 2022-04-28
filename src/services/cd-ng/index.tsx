@@ -213,6 +213,7 @@ export interface AccessControlCheckError {
     | 'OAUTH_LOGIN_FAILED'
     | 'INVALID_TERRAFORM_TARGETS_REQUEST'
     | 'TERRAFORM_EXECUTION_ERROR'
+    | 'SERVERLESS_EXECUTION_ERROR'
     | 'FILE_READ_FAILED'
     | 'FILE_SIZE_EXCEEDS_LIMIT'
     | 'CLUSTER_NOT_FOUND'
@@ -782,15 +783,7 @@ export interface ArtifactoryAuthentication {
 }
 
 export interface ArtifactoryBuildDetailsDTO {
-  buildUrl?: string
-  imagePath?: string
-  labels?: {
-    [key: string]: string
-  }
-  metadata?: {
-    [key: string]: string
-  }
-  tag?: string
+  [key: string]: any
 }
 
 export type ArtifactoryConnector = ConnectorConfigDTO & {
@@ -800,11 +793,13 @@ export type ArtifactoryConnector = ConnectorConfigDTO & {
 }
 
 export type ArtifactoryRegistryArtifactConfig = ArtifactConfig & {
-  artifactPath: string
+  artifactDirectory?: string
+  artifactPath?: string
+  artifactPathFilter?: string
   connectorRef: string
   metadata?: string
   repository: string
-  repositoryFormat: 'docker'
+  repositoryFormat: 'docker' | 'generic'
   repositoryUrl?: string
   tag?: string
   tagRegex?: string
@@ -2310,6 +2305,8 @@ export interface EntityDetail {
     | 'BuildAndPushGCR'
     | 'BuildAndPushECR'
     | 'BuildAndPushDockerRegistry'
+    | 'ServerlessAwsLambdaDeploy'
+    | 'ServerlessAwsLambdaRollback'
 }
 
 export interface EntityGitDetails {
@@ -2661,6 +2658,7 @@ export interface Error {
     | 'OAUTH_LOGIN_FAILED'
     | 'INVALID_TERRAFORM_TARGETS_REQUEST'
     | 'TERRAFORM_EXECUTION_ERROR'
+    | 'SERVERLESS_EXECUTION_ERROR'
     | 'FILE_READ_FAILED'
     | 'FILE_SIZE_EXCEEDS_LIMIT'
     | 'CLUSTER_NOT_FOUND'
@@ -3048,6 +3046,7 @@ export interface Failure {
     | 'OAUTH_LOGIN_FAILED'
     | 'INVALID_TERRAFORM_TARGETS_REQUEST'
     | 'TERRAFORM_EXECUTION_ERROR'
+    | 'SERVERLESS_EXECUTION_ERROR'
     | 'FILE_READ_FAILED'
     | 'FILE_SIZE_EXCEEDS_LIMIT'
     | 'CLUSTER_NOT_FOUND'
@@ -3653,6 +3652,8 @@ export interface GitEntityBranchFilterSummaryProperties {
     | 'BuildAndPushGCR'
     | 'BuildAndPushECR'
     | 'BuildAndPushDockerRegistry'
+    | 'ServerlessAwsLambdaDeploy'
+    | 'ServerlessAwsLambdaRollback'
   )[]
   moduleType?: 'CD' | 'CI' | 'CV' | 'CF' | 'CE' | 'CORE' | 'PMS' | 'TEMPLATESERVICE'
   searchTerm?: string
@@ -3728,6 +3729,8 @@ export interface GitEntityFilterProperties {
     | 'BuildAndPushGCR'
     | 'BuildAndPushECR'
     | 'BuildAndPushDockerRegistry'
+    | 'ServerlessAwsLambdaDeploy'
+    | 'ServerlessAwsLambdaRollback'
   )[]
   gitSyncConfigIdentifiers?: string[]
   moduleType?: 'CD' | 'CI' | 'CV' | 'CF' | 'CE' | 'CORE' | 'PMS' | 'TEMPLATESERVICE'
@@ -3836,6 +3839,8 @@ export interface GitFullSyncEntityInfoDTO {
     | 'BuildAndPushGCR'
     | 'BuildAndPushECR'
     | 'BuildAndPushDockerRegistry'
+    | 'ServerlessAwsLambdaDeploy'
+    | 'ServerlessAwsLambdaRollback'
   errorMessage?: string
   filePath?: string
   identifier?: string
@@ -3919,6 +3924,8 @@ export interface GitFullSyncEntityInfoFilterKeys {
     | 'BuildAndPushGCR'
     | 'BuildAndPushECR'
     | 'BuildAndPushDockerRegistry'
+    | 'ServerlessAwsLambdaDeploy'
+    | 'ServerlessAwsLambdaRollback'
   )[]
   syncStatus?: 'QUEUED' | 'SUCCESS' | 'FAILED' | 'OVERRIDDEN'
 }
@@ -4079,6 +4086,8 @@ export interface GitSyncEntityDTO {
     | 'BuildAndPushGCR'
     | 'BuildAndPushECR'
     | 'BuildAndPushDockerRegistry'
+    | 'ServerlessAwsLambdaDeploy'
+    | 'ServerlessAwsLambdaRollback'
   entityUrl?: string
   folderPath?: string
   gitConnectorId?: string
@@ -4158,6 +4167,8 @@ export interface GitSyncEntityListDTO {
     | 'BuildAndPushGCR'
     | 'BuildAndPushECR'
     | 'BuildAndPushDockerRegistry'
+    | 'ServerlessAwsLambdaDeploy'
+    | 'ServerlessAwsLambdaRollback'
   gitSyncEntities?: GitSyncEntityDTO[]
 }
 
@@ -4252,6 +4263,8 @@ export interface GitSyncErrorDTO {
     | 'BuildAndPushGCR'
     | 'BuildAndPushECR'
     | 'BuildAndPushDockerRegistry'
+    | 'ServerlessAwsLambdaDeploy'
+    | 'ServerlessAwsLambdaRollback'
   errorType?: 'GIT_TO_HARNESS' | 'CONNECTIVITY_ISSUE' | 'FULL_SYNC'
   failureReason?: string
   repoId?: string
@@ -4658,7 +4671,7 @@ export interface Infrastructure {
 export interface InfrastructureDef {
   provisioner?: ExecutionElementConfig
   spec: Infrastructure
-  type: 'KubernetesDirect' | 'KubernetesGcp' | 'Pdc'
+  type: 'KubernetesDirect' | 'KubernetesGcp' | 'ServerlessAwsLambda' | 'Pdc'
 }
 
 export interface InfrastructureDetails {
@@ -5216,6 +5229,7 @@ export interface ManifestConfig {
     | 'OpenshiftParam'
     | 'OpenshiftTemplate'
     | 'Values'
+    | 'ServerlessAwsLambda'
 }
 
 export interface ManifestConfigWrapper {
@@ -6950,7 +6964,7 @@ export interface ResponseListServiceAccountDTO {
 
 export interface ResponseListServiceDefinitionType {
   correlationId?: string
-  data?: ('Kubernetes' | 'NativeHelm' | 'Ssh' | 'WinRm')[]
+  data?: ('Kubernetes' | 'NativeHelm' | 'ServerlessAwsLambda' | 'Ssh' | 'WinRm')[]
   metaData?: { [key: string]: any }
   status?: 'SUCCESS' | 'FAILURE' | 'ERROR'
 }
@@ -7239,6 +7253,7 @@ export interface ResponseMessage {
     | 'OAUTH_LOGIN_FAILED'
     | 'INVALID_TERRAFORM_TARGETS_REQUEST'
     | 'TERRAFORM_EXECUTION_ERROR'
+    | 'SERVERLESS_EXECUTION_ERROR'
     | 'FILE_READ_FAILED'
     | 'FILE_SIZE_EXCEEDS_LIMIT'
     | 'CLUSTER_NOT_FOUND'
@@ -8593,6 +8608,32 @@ export interface Serve {
   variation?: string
 }
 
+export type ServerlessAwsLambdaDeployStepInfo = StepSpecType & {
+  commandOptions?: string
+  delegateSelectors?: string[]
+}
+
+export type ServerlessAwsLambdaInfrastructure = Infrastructure & {
+  connectorRef: string
+  metadata?: string
+  region: string
+  stage: string
+}
+
+export type ServerlessAwsLambdaManifest = ManifestAttributes & {
+  configOverridePath?: string
+  metadata?: string
+  store?: StoreConfigWrapper
+}
+
+export type ServerlessAwsLambdaRollbackStepInfo = StepSpecType & {
+  delegateSelectors?: string[]
+}
+
+export type ServerlessAwsLambdaServiceSpec = ServiceSpec & {
+  metadata?: string
+}
+
 export interface ServiceAccountAggregateDTO {
   createdAt: number
   lastModifiedAt: number
@@ -8648,7 +8689,7 @@ export interface ServiceDashboardInfo {
 
 export interface ServiceDefinition {
   spec: ServiceSpec
-  type: 'Kubernetes' | 'NativeHelm' | 'Ssh' | 'WinRm'
+  type: 'Kubernetes' | 'NativeHelm' | 'ServerlessAwsLambda' | 'Ssh' | 'WinRm'
 }
 
 export interface ServiceDeployment {
@@ -9129,6 +9170,8 @@ export interface StepData {
     | 'BARRIERS'
     | 'NEW_RELIC_DEPLOYMENT_MAKER'
     | 'TEMPLATIZED_SECRET_MANAGER'
+    | 'ServerlessAwsLambdaDeploy'
+    | 'ServerlessAwsLambdaRollback'
 }
 
 export interface StepElementConfig {
@@ -10467,6 +10510,8 @@ export interface ListActivitiesQueryParams {
     | 'BuildAndPushGCR'
     | 'BuildAndPushECR'
     | 'BuildAndPushDockerRegistry'
+    | 'ServerlessAwsLambdaDeploy'
+    | 'ServerlessAwsLambdaRollback'
   referredByEntityType?:
     | 'Projects'
     | 'Pipelines'
@@ -10536,6 +10581,8 @@ export interface ListActivitiesQueryParams {
     | 'BuildAndPushGCR'
     | 'BuildAndPushECR'
     | 'BuildAndPushDockerRegistry'
+    | 'ServerlessAwsLambdaDeploy'
+    | 'ServerlessAwsLambdaRollback'
 }
 
 export type ListActivitiesProps = Omit<GetProps<ResponsePageActivity, unknown, ListActivitiesQueryParams, void>, 'path'>
@@ -10709,6 +10756,8 @@ export interface GetActivitiesSummaryQueryParams {
     | 'BuildAndPushGCR'
     | 'BuildAndPushECR'
     | 'BuildAndPushDockerRegistry'
+    | 'ServerlessAwsLambdaDeploy'
+    | 'ServerlessAwsLambdaRollback'
   referredByEntityType?:
     | 'Projects'
     | 'Pipelines'
@@ -10778,6 +10827,8 @@ export interface GetActivitiesSummaryQueryParams {
     | 'BuildAndPushGCR'
     | 'BuildAndPushECR'
     | 'BuildAndPushDockerRegistry'
+    | 'ServerlessAwsLambdaDeploy'
+    | 'ServerlessAwsLambdaRollback'
 }
 
 export type GetActivitiesSummaryProps = Omit<
@@ -18448,6 +18499,8 @@ export interface ListReferredByEntitiesQueryParams {
     | 'BuildAndPushGCR'
     | 'BuildAndPushECR'
     | 'BuildAndPushDockerRegistry'
+    | 'ServerlessAwsLambdaDeploy'
+    | 'ServerlessAwsLambdaRollback'
   searchTerm?: string
   branch?: string
   repoIdentifier?: string
@@ -21198,6 +21251,8 @@ export interface ListGitSyncEntitiesByTypePathParams {
     | 'BuildAndPushGCR'
     | 'BuildAndPushECR'
     | 'BuildAndPushDockerRegistry'
+    | 'ServerlessAwsLambdaDeploy'
+    | 'ServerlessAwsLambdaRollback'
 }
 
 export type ListGitSyncEntitiesByTypeProps = Omit<
@@ -21335,6 +21390,8 @@ export const listGitSyncEntitiesByTypePromise = (
       | 'BuildAndPushGCR'
       | 'BuildAndPushECR'
       | 'BuildAndPushDockerRegistry'
+      | 'ServerlessAwsLambdaDeploy'
+      | 'ServerlessAwsLambdaRollback'
   },
   signal?: RequestInit['signal']
 ) =>
@@ -24768,6 +24825,8 @@ export interface GetStepYamlSchemaQueryParams {
     | 'BuildAndPushGCR'
     | 'BuildAndPushECR'
     | 'BuildAndPushDockerRegistry'
+    | 'ServerlessAwsLambdaDeploy'
+    | 'ServerlessAwsLambdaRollback'
   yamlGroup?: string
 }
 
@@ -25102,7 +25161,7 @@ export const getServiceDefinitionTypesPromise = (
   )
 
 export interface GetStepsQueryParams {
-  serviceDefinitionType: 'Kubernetes' | 'NativeHelm' | 'Ssh' | 'WinRm'
+  serviceDefinitionType: 'Kubernetes' | 'NativeHelm' | 'ServerlessAwsLambda' | 'Ssh' | 'WinRm'
 }
 
 export type GetStepsProps = Omit<GetProps<ResponseStepCategory, Failure | Error, GetStepsQueryParams, void>, 'path'>
@@ -25239,7 +25298,7 @@ export const getProvisionerExecutionStrategyYamlPromise = (
   )
 
 export interface GetExecutionStrategyYamlQueryParams {
-  serviceDefinitionType: 'Kubernetes' | 'NativeHelm' | 'Ssh' | 'WinRm'
+  serviceDefinitionType: 'Kubernetes' | 'NativeHelm' | 'ServerlessAwsLambda' | 'Ssh' | 'WinRm'
   strategyType: 'Basic' | 'Canary' | 'BlueGreen' | 'Rolling' | 'Default'
   includeVerify?: boolean
 }
@@ -34069,6 +34128,8 @@ export interface GetYamlSchemaQueryParams {
     | 'BuildAndPushGCR'
     | 'BuildAndPushECR'
     | 'BuildAndPushDockerRegistry'
+    | 'ServerlessAwsLambdaDeploy'
+    | 'ServerlessAwsLambdaRollback'
   subtype?:
     | 'K8sCluster'
     | 'Git'

@@ -357,7 +357,7 @@ exports[`<TemplateDetails /> tests should match snapshot 1`] = `
                           role="tab"
                           tabindex="0"
                         >
-                          templatesLibrary.templateInputs
+                          pipeline.templateInputs
                         </div>
                         <div
                           aria-controls="bp3-tab-panel_template-details_YAML"

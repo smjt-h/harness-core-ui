@@ -54,3 +54,5 @@ exports[`GitPopover should return content when content is not empty 1`] = `
   </div>
 </div>
 `;
+
+exports[`GitPopover should return null when content is empty 1`] = `<div />`;

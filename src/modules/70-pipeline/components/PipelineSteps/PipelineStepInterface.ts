@@ -24,6 +24,9 @@ export enum StepType {
   K8sServiceSpec = 'K8sServiceSpec',
   K8sRollingDeploy = 'K8sRollingDeploy',
   CustomVariable = 'CustomVariable',
+  ServerlessAwsLambda = 'ServerlessAwsLambda',
+  ServerlessGCP = 'ServerlessGCP',
+  ServerlessAzure = 'ServerlessAzure',
   Dependency = 'Service',
   Plugin = 'Plugin',
   Run = 'Run',
@@ -56,5 +59,8 @@ export enum StepType {
   FlagConfiguration = 'FlagConfiguration',
   Template = 'Template',
   Policy = 'Policy',
-  ZeroNorth = 'Security'
+  ZeroNorth = 'Security',
+  ServerlessAwsLambdaDeploy = 'ServerlessAwsLambdaDeploy',
+  ServerlessAwsLambdaRollback = 'ServerlessAwsLambdaRollback',
+  ServerlessAwsInfra = 'ServerlessAwsInfra'
 }

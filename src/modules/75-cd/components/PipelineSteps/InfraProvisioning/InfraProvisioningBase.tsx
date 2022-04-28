@@ -46,7 +46,8 @@ export const InfraProvisioningBase = (
     state: {
       pipelineView,
       selectionState: { selectedStageId = '' },
-      templateTypes
+      templateTypes,
+      pipeline
     },
     updateStage,
     updatePipelineView,
@@ -80,7 +81,12 @@ export const InfraProvisioningBase = (
   } = useMutateAsGet(useGetStepsV2, {
     queryParams: { accountId },
     body: {
-      stepPalleteModuleInfos: getStepPaletteModuleInfosFromStage(selectedStage?.stage?.type, undefined, 'Provisioner')
+      stepPalleteModuleInfos: getStepPaletteModuleInfosFromStage(
+        selectedStage?.stage?.type,
+        undefined,
+        'Provisioner',
+        pipeline.stages
+      )
     },
     lazy: true
   })

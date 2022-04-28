@@ -16,7 +16,7 @@ import { useStrings } from 'framework/strings'
 import { AuditEventDTO, AuditFilterProperties, getAuditEventListPromise } from 'services/audit'
 import type { TemplateSummaryResponse } from 'services/template-ng'
 
-import { useInfiniteScroll } from './InfiniteScroll'
+import { useInfiniteScroll } from '@common/hooks/useInfiniteScroll'
 import css from './TemplateActivityLog.module.scss'
 
 export interface TemplateActivityLogProps {

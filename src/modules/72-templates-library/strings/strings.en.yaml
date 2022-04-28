@@ -1,5 +1,4 @@
 templateStudio: TemplateStudio
-stageTemplate: Stage
 addNewTemplate: New Template
 openEditTemplate: Open/Edit Template
 useTemplate: Use Template
@@ -7,7 +6,6 @@ copyToPipeline: Copy to Pipeline
 deleteTemplate: Delete Template
 copyToNewPipeline: Copy to New Pipeline
 templateSettings: Template Settings
-templateInputs: Template Inputs
 referencedBy: Referenced By
 selectTemplateToPreview: Select a template to preview
 templateTitle: '{{ entity }} Template'

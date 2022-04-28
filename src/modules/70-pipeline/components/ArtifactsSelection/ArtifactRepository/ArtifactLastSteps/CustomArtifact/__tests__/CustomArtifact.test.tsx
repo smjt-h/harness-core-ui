@@ -10,6 +10,7 @@ import { act, fireEvent, render, waitFor } from '@testing-library/react'
 import { MultiTypeInputType, RUNTIME_INPUT_VALUE } from '@wings-software/uicore'
 import { queryByNameAttribute, TestWrapper } from '@common/utils/testUtils'
 import type { ArtifactType, CustomArtifactSource } from '@pipeline/components/ArtifactsSelection/ArtifactInterface'
+import { ServiceDeploymentType } from '@pipeline/utils/stageHelpers'
 import { CustomArtifact } from '../CustomArtifact'
 
 const props = {
@@ -19,7 +20,8 @@ const props = {
   context: 2,
   handleSubmit: jest.fn(),
   artifactIdentifiers: [],
-  selectedArtifact: 'CustomArtifact' as ArtifactType
+  selectedArtifact: 'CustomArtifact' as ArtifactType,
+  selectedDeploymentType: ServiceDeploymentType.Kubernetes
 }
 
 const initialValues = {

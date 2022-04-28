@@ -242,7 +242,7 @@ export const TemplateStageSpecifications = (): JSX.Element => {
                         spacing={'large'}
                       >
                         <Heading level={5} color={Color.BLACK}>
-                          {getString('templatesLibrary.templateInputs')}
+                          {getString('pipeline.templateInputs')}
                         </Heading>
                         <StageForm
                           key={`${formik.values.template?.templateRef}-${defaultTo(

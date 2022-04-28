@@ -71,6 +71,7 @@ interface Barrier {
   stages?: StageDetail[]
 }
 export interface BarrierListProps {
+  isReadonly: boolean
   list: Array<Barrier>
   createItem: (push: (data: Barrier) => void) => void
   deleteItem: (index: number, remove: (a: number) => void) => void
@@ -89,6 +90,7 @@ export function FlowControl(
 ): React.ReactElement {
   const {
     state: { pipeline, originalPipeline },
+    isReadonly,
     updatePipeline
   } = usePipelineContext()
 
@@ -221,6 +223,7 @@ export function FlowControl(
         </div>
         <div className={css.mainActions}>
           <Button
+            disabled={isReadonly}
             variation={ButtonVariation.SECONDARY}
             size={ButtonSize.SMALL}
             text={getString('applyChanges')}
@@ -231,6 +234,7 @@ export function FlowControl(
       </div>
       <div className={css.container}>
         <BarrierList
+          isReadonly={isReadonly}
           list={barriers}
           createItem={addBarrier}
           deleteItem={deleteBarrier}
@@ -246,6 +250,7 @@ export function FlowControl(
 export const FlowControlWithRef = React.forwardRef(FlowControl)
 
 export function BarrierList({
+  isReadonly,
   list,
   createItem,
   deleteItem,
@@ -314,6 +319,7 @@ export function BarrierList({
                                 }
                               >
                                 <RbacButton
+                                  disabled={isReadonly}
                                   permission={{
                                     permission: PermissionIdentifier.EDIT_PIPELINE,
                                     resource: {
@@ -373,6 +379,7 @@ export function BarrierList({
                     </div>
 
                     <RbacButton
+                      disabled={isReadonly}
                       permission={{
                         permission: PermissionIdentifier.EDIT_PIPELINE,
                         resource: {

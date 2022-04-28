@@ -180,7 +180,7 @@ function ConfigSectionRef(props: TerraformPlanProps & { formik?: any }): React.R
       {getMultiTypeFromValue(config?.configFiles?.store?.spec?.folderPath) === MultiTypeInputType.RUNTIME && (
         <div className={cx(stepCss.formGroup, stepCss.md)}>
           <FormInput.MultiTextInput
-            label={getString('cd.folderPath')}
+            label={getString('common.git.folderPath')}
             name={`${path}.spec.configuration.configFiles.store.spec.folderPath`}
             placeholder={getString('pipeline.manifestType.pathPlaceholder')}
             disabled={readonly}

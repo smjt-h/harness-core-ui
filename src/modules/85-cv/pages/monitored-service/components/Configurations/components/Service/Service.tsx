@@ -5,8 +5,8 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import React, { useCallback } from 'react'
-import { noop } from 'lodash-es'
+import React, { useCallback, useRef } from 'react'
+import { defaultTo, noop } from 'lodash-es'
 import * as Yup from 'yup'
 import type { FormikContext } from 'formik'
 import { useParams } from 'react-router-dom'
@@ -14,11 +14,11 @@ import { Formik, Text } from '@wings-software/uicore'
 import { Color } from '@harness/design-system'
 import { useStrings } from 'framework/strings'
 import { PageSpinner } from '@common/components'
-import type { NGTemplateInfoConfigWithMonitoredService } from '@templates-library/components/Templates/MonitoredServiceTemplate/MonitoredServiceTemplate'
 import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
 import { ResourceType } from '@rbac/interfaces/ResourceType'
 import { PermissionIdentifier } from '@rbac/interfaces/PermissionIdentifier'
 import type { ChangeSourceDTO } from 'services/cv'
+import type { TemplateFormRef } from '@templates-library/components/TemplateStudio/TemplateStudio'
 import { useDrawer } from '@cv/hooks/useDrawerHook/useDrawerHook'
 import { ChangeSourceDrawer } from '@cv/pages/ChangeSource/ChangeSourceDrawer/ChangeSourceDrawer'
 import SaveAndDiscardButton from '@cv/components/SaveAndDiscardButton/SaveAndDiscardButton'
@@ -26,35 +26,52 @@ import HealthSourceTableContainer from './components/HealthSourceTableContainer/
 import type { MonitoredServiceForm } from './Service.types'
 import MonitoredServiceOverview from './components/MonitoredServiceOverview/MonitoredServiceOverview'
 import { onSave, updateMonitoredServiceDTOOnTypeChange } from './Service.utils'
-import { isUpdated } from '../../Configurations.utils'
+import { getImperativeHandleRef, isUpdated } from '../../Configurations.utils'
 import ChangeSourceTableContainer from './components/ChangeSourceTableContainer/ChangeSourceTableContainer'
 import css from './Service.module.scss'
 
-function Service({
-  value: initialValues,
-  onSuccess,
-  cachedInitialValues,
-  setDBData,
-  onDiscard,
-  serviceTabformRef,
-  onChangeMonitoredServiceType,
-  isTemplate,
-  updateTemplate
-}: {
-  value: MonitoredServiceForm
-  onSuccess: (val: any) => Promise<void>
-  cachedInitialValues?: MonitoredServiceForm | null
-  setDBData?: (val: MonitoredServiceForm) => void
-  onDiscard?: () => void
-  serviceTabformRef?: any
-  onChangeMonitoredServiceType: (updatedValues: MonitoredServiceForm) => void
-  isTemplate?: boolean
-  updateTemplate?: (template: NGTemplateInfoConfigWithMonitoredService) => Promise<void>
-}): JSX.Element {
+function Service(
+  {
+    value: initialValues,
+    onSuccess,
+    cachedInitialValues,
+    setDBData,
+    onDiscard,
+    serviceTabformRef,
+    onChangeMonitoredServiceType,
+    isTemplate,
+    updateTemplate
+  }: {
+    value: MonitoredServiceForm
+    onSuccess: (val: any) => Promise<void>
+    cachedInitialValues?: MonitoredServiceForm | null
+    setDBData?: (val: MonitoredServiceForm) => void
+    onDiscard?: () => void
+    serviceTabformRef?: any
+    onChangeMonitoredServiceType: (updatedValues: MonitoredServiceForm) => void
+    isTemplate?: boolean
+    updateTemplate?: (template: MonitoredServiceForm) => void
+  },
+  formikRef?: TemplateFormRef
+): JSX.Element {
   const { getString } = useStrings()
-  const { projectIdentifier, identifier, orgIdentifier } = useParams<ProjectPathProps & { identifier: string }>()
+  const { projectIdentifier, identifier } = useParams<ProjectPathProps & { identifier: string }>()
 
   const isEdit = !!identifier
+
+  const ref = useRef<any | null>()
+
+  React.useImperativeHandle(getImperativeHandleRef(isTemplate, formikRef), () => ({
+    resetForm() {
+      return ref?.current?.resetForm()
+    },
+    submitForm() {
+      return ref?.current?.submitForm()
+    },
+    getErrors() {
+      return defaultTo(ref?.current.errors, {})
+    }
+  }))
 
   const updateChangeSource = useCallback(
     (data: any, formik: FormikContext<MonitoredServiceForm>): void => {
@@ -131,8 +148,9 @@ function Service({
     >
       {formik => {
         serviceTabformRef.current = formik
+        ref.current = formik
         const { serviceRef, environmentRef } = formik?.values
-        if (formik.dirty) {
+        if (formik.dirty && !isTemplate) {
           setDBData?.(formik.values)
         }
         const onSuccessChangeSource = (data: ChangeSourceDTO[]): void => {
@@ -140,20 +158,7 @@ function Service({
           hideDrawer()
         }
         if (isTemplate && formik.dirty) {
-          updateTemplate?.({
-            identifier,
-            name: 'Test Template',
-            orgIdentifier,
-            projectIdentifier,
-            spec: {
-              spec: { serviceRef: serviceRef, environmentRef: environmentRef },
-              timeout: '2m',
-              type: 'Http'
-            } as any,
-            tags: {},
-            type: 'MonitoredService',
-            versionLabel: 'v1'
-          })
+          updateTemplate?.(formik.values)
         }
 
         return (
@@ -221,3 +226,4 @@ function Service({
 }
 
 export default Service
+export const ServiceWithRef = React.forwardRef(Service)

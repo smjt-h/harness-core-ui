@@ -15,7 +15,8 @@ import { TemplatePipelineProvider } from '@pipeline/components/TemplatePipelineC
 import { sanitize } from '@common/utils/JSONUtils'
 import type { PipelineInfoConfig } from 'services/cd-ng'
 import { PipelineContextType } from '@pipeline/components/PipelineStudio/PipelineContext/PipelineContext'
-import { DrawerTypes } from '@templates-library/components/TemplateStudio/TemplateContext/TemplateActions'
+import { DrawerTypes as PipelineDrawerTypes } from '@pipeline/components/PipelineStudio/PipelineContext/PipelineActions'
+import { DrawerTypes as TemplateDrawerTypes } from '@templates-library/components/TemplateStudio/TemplateContext/TemplateActions'
 import { RightDrawer } from '@templates-library/components/TemplateStudio/RightDrawer/RightDrawer'
 import StageBuilder from '@pipeline/components/PipelineStudio/StageBuilder/StageBuilder'
 import { RightBar as PipelineStudioRightBar } from '@pipeline/components/PipelineStudio/RightBar/RightBar'
@@ -23,6 +24,13 @@ import { TemplateDrawer } from '@templates-library/components/TemplateDrawer/Tem
 
 export const DefaultNewPipelineName = 'Pipeline Name'
 export const DefaultNewPipelineId = 'pipeline_name'
+
+const PIPELINE_TO_TEMPLATE_DRAWER_TYPE_MAP = {
+  [PipelineDrawerTypes.PipelineVariables]: TemplateDrawerTypes.TemplateVariables,
+  [PipelineDrawerTypes.TemplateInputs]: TemplateDrawerTypes.TemplateInputs
+} as const
+
+type EventDetailType = PipelineDrawerTypes.PipelineVariables | PipelineDrawerTypes.TemplateInputs
 
 const PipelineTemplateCanvas = () => {
   const {
@@ -60,12 +68,15 @@ const PipelineTemplateCanvas = () => {
     await updateTemplate(template)
   }
 
-  useGlobalEventListener('OPEN_PIPELINE_TEMPLATE_VARIABLES', () => {
-    updateTemplateView({
-      ...templateView,
-      isDrawerOpened: true,
-      drawerData: { type: DrawerTypes.TemplateVariables }
-    })
+  useGlobalEventListener('OPEN_PIPELINE_TEMPLATE_RIGHT_DRAWER', event => {
+    const adaptedDrawerType = PIPELINE_TO_TEMPLATE_DRAWER_TYPE_MAP[event.detail as EventDetailType]
+    if (adaptedDrawerType) {
+      updateTemplateView({
+        ...templateView,
+        isDrawerOpened: true,
+        drawerData: { type: adaptedDrawerType }
+      })
+    }
   })
 
   if (pipeline) {

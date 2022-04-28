@@ -12,8 +12,9 @@ import * as Yup from 'yup'
 import { IconName, GroupedThumbnailSelect } from '@wings-software/uicore'
 import { useStrings, UseStringsReturn } from 'framework/strings'
 import { StageErrorContext } from '@pipeline/context/StageErrorContext'
-import { DeployTabs } from '@cd/components/PipelineStudio/DeployStageSetupShell/DeployStageSetupShellUtils'
+import { DeployTabs } from '@pipeline/components/PipelineStudio/CommonUtils/DeployStageSetupShellUtils'
 import { InfraDeploymentType } from '@cd/components/PipelineSteps/PipelineStepsUtil'
+import { isServerlessDeploymentType } from '@pipeline/utils/stageHelpers'
 import css from './SelectInfrastructureType.module.scss'
 
 export function getInfraDeploymentTypeSchema(
@@ -34,39 +35,66 @@ interface InfrastructureItem {
 interface InfrastructureGroup {
   groupLabel: string
   items: InfrastructureItem[]
+  disabled?: boolean
 }
 
-interface SelectDeploymentTypeProps {
+interface SelectInfrastructureTypeProps {
+  deploymentType: string
   selectedInfrastructureType?: string
   onChange: (deploymentType: string | undefined) => void
   isReadonly: boolean
 }
 
-export default function SelectDeploymentType(props: SelectDeploymentTypeProps): JSX.Element {
-  const { selectedInfrastructureType, onChange, isReadonly } = props
+export default function SelectInfrastructureType(props: SelectInfrastructureTypeProps): JSX.Element {
+  const { selectedInfrastructureType, onChange, isReadonly, deploymentType } = props
   const { getString } = useStrings()
-  const infraGroups: InfrastructureGroup[] = [
-    {
-      groupLabel: getString('pipelineSteps.deploy.infrastructure.directConnection'),
-      items: [
+  const infraGroups: InfrastructureGroup[] = isServerlessDeploymentType(deploymentType)
+    ? [
         {
-          label: getString('pipelineSteps.deploymentTypes.kubernetes'),
-          icon: 'service-kubernetes',
-          value: InfraDeploymentType.KubernetesDirect
+          groupLabel: '',
+          items: [
+            {
+              label: getString('common.aws'),
+              icon: 'service-aws',
+              value: InfraDeploymentType.ServerlessAwsLambda
+            },
+            {
+              label: getString('common.gcp'),
+              icon: 'gcp',
+              value: InfraDeploymentType.ServerlessGoogleFunctions,
+              disabled: true
+            },
+            {
+              label: getString('common.azure'),
+              icon: 'service-azure',
+              value: InfraDeploymentType.ServerlessAzureFunctions,
+              disabled: true
+            }
+          ]
         }
       ]
-    },
-    {
-      groupLabel: getString('pipelineSteps.deploy.infrastructure.viaCloudProvider'),
-      items: [
+    : [
         {
-          label: getString('pipelineSteps.deploymentTypes.gk8engine'),
-          icon: 'google-kubernetes-engine',
-          value: InfraDeploymentType.KubernetesGcp
+          groupLabel: getString('pipelineSteps.deploy.infrastructure.directConnection'),
+          items: [
+            {
+              label: getString('pipelineSteps.deploymentTypes.kubernetes'),
+              icon: 'service-kubernetes',
+              value: InfraDeploymentType.KubernetesDirect
+            }
+          ]
+        },
+        {
+          groupLabel: getString('pipelineSteps.deploy.infrastructure.viaCloudProvider'),
+          items: [
+            {
+              label: getString('pipelineSteps.deploymentTypes.gk8engine'),
+              icon: 'google-kubernetes-engine',
+              value: InfraDeploymentType.KubernetesGcp
+            }
+          ]
         }
       ]
-    }
-  ]
 
   const { subscribeForm, unSubscribeForm } = React.useContext(StageErrorContext)
 
@@ -94,7 +122,7 @@ export default function SelectDeploymentType(props: SelectDeploymentTypeProps): 
             className={css.thumbnailSelect}
             name={'deploymentType'}
             onChange={onChange}
-            groups={infraGroups}
+            groups={infraGroups.filter(item => !item.disabled)}
             isReadonly={isReadonly}
           />
         )

@@ -379,7 +379,7 @@ exports[`<TemplateStageSpecifications /> tests snapshot test with template input
                   class="StyledProps--font StyledProps--font-h5 StyledProps--main StyledProps--color StyledProps--color-black"
                   level="5"
                 >
-                  templatesLibrary.templateInputs
+                  pipeline.templateInputs
                 </h5>
                 <div
                   id="Stage.Stage_1"

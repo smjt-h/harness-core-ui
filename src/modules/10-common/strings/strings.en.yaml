@@ -124,6 +124,7 @@ namespace: Namespace
 cluster: Cluster
 clusters: Clusters
 releaseName: Release name
+stage: Stage
 seeDetails: See details
 errorCount: 'Error(s): {{count}}'
 datePickerShortcuts:
@@ -334,6 +335,7 @@ git:
   saveResourceLabel: 'Save {{resource}} to Git'
   selectRepoLabel: Repository Display Name
   filePath: File Path
+  folderPath: Folder Path
   commitMessage: Commit message
   confirmDelete: Are you sure you want to delete {{entity}} {{name}}
   branchSelectHeader: Select Branch to Commit
@@ -652,6 +654,7 @@ comingSoon2: Coming Soon!
 recommended: 'Recommended'
 azure: Azure
 aws: AWS
+gcp: GCP
 module:
   cd: CD
   ci: CI

@@ -28,6 +28,7 @@ import type { FeatureIdentifier } from 'framework/featureStore/FeatureIdentifier
 import './testUtils.scss'
 import { PermissionsContext, PermissionsContextProps } from 'framework/rbac/PermissionsContext'
 import { Editions } from '@common/constants/SubscriptionTypes'
+import type { FeatureFlag } from '@common/featureFlags'
 
 export type UseGetMockData<TData, TError = undefined, TQueryParams = undefined, TPathParams = undefined> = Required<
   UseGetProps<TData, TError, TQueryParams, TPathParams>
@@ -60,6 +61,7 @@ export interface TestWrapperProps {
   defaultLicenseStoreValues?: Partial<LicenseStoreContextProps>
   defaultPermissionValues?: Partial<PermissionsContextProps>
   defaultFeaturesValues?: Partial<FeaturesContextProps>
+  defaultFeatureFlagValues?: Partial<Record<FeatureFlag, boolean>>
   projects?: Project[]
   enableBrowserView?: boolean
   stringsData?: Record<string, string>
@@ -120,6 +122,7 @@ export const TestWrapper: React.FC<TestWrapperProps> = props => {
     defaultLicenseStoreValues,
     defaultPermissionValues,
     defaultFeaturesValues,
+    defaultFeatureFlagValues = {},
     stringsData = {},
     getString = (key: string) => key
   } = props
@@ -145,7 +148,8 @@ export const TestWrapper: React.FC<TestWrapperProps> = props => {
       <AppStoreContext.Provider
         value={{
           featureFlags: {
-            FEATURE_ENFORCEMENT_ENABLED: true
+            FEATURE_ENFORCEMENT_ENABLED: true,
+            ...defaultFeatureFlagValues
           },
           updateAppStore: () => void 0,
           currentUserInfo: { uuid: '' },

@@ -14,13 +14,14 @@ import { usePipelineVariables } from '@pipeline/components/PipelineVariablesCont
 import css from '../PipelineVariables.module.scss'
 
 export interface VariablesHeaderProps {
+  isReadonly?: boolean
   enableSearch?: boolean
   applyChanges(): void
   discardChanges(): void
 }
 
 export function VariablesHeader(props: VariablesHeaderProps): JSX.Element {
-  const { enableSearch = true, applyChanges, discardChanges } = props
+  const { enableSearch = true, isReadonly, applyChanges, discardChanges } = props
   const {
     onSearchInputChange,
     searchIndex = 0,
@@ -58,6 +59,7 @@ export function VariablesHeader(props: VariablesHeaderProps): JSX.Element {
         </div>
         <div className={css.mainActions}>
           <Button
+            disabled={isReadonly}
             variation={ButtonVariation.SECONDARY}
             size={ButtonSize.SMALL}
             text={getString('applyChanges')}

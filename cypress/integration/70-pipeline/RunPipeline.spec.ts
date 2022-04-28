@@ -5,8 +5,11 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import { cdFailureStrategiesYaml } from '../../support/70-pipeline/constants'
-import { invalidYAMLErrorMsgOnEmptyStageSave, pipelineSaveCall } from '../../support/70-pipeline/constants'
+import {
+  cdFailureStrategiesYaml,
+  invalidYAMLErrorMsgOnEmptyStageSave,
+  pipelineSaveCall
+} from '../../support/70-pipeline/constants'
 
 describe('RUN PIPELINE MODAL', () => {
   const gitSyncCall =

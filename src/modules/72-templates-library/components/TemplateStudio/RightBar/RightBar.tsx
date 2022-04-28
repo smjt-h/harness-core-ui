@@ -53,7 +53,7 @@ export const RightBar = (): JSX.Element => {
         icon="template-inputs"
         withoutCurrentColor={true}
         iconProps={{ size: 28 }}
-        text={getString('templatesLibrary.templateInputs')}
+        text={getString('pipeline.templateInputs')}
         data-testid="template-inputs"
         disabled={isUpdated}
       />

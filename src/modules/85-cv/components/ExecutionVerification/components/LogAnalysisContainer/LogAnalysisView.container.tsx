@@ -6,7 +6,7 @@
  */
 
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { Container } from '@wings-software/uicore'
+import { Container, NoDataCard } from '@wings-software/uicore'
 import cx from 'classnames'
 import { useParams } from 'react-router-dom'
 import {
@@ -16,6 +16,7 @@ import {
   GetVerifyStepDeploymentRadarChartLogAnalysisClustersQueryParams
 } from 'services/cv'
 import type { AccountPathProps } from '@common/interfaces/RouteInterfaces'
+import noDataImage from '@cv/assets/noData.svg'
 import { useQueryParams } from '@common/hooks'
 import { useStrings } from 'framework/strings'
 import LogAnalysis from './LogAnalysis'
@@ -28,6 +29,7 @@ import { getQueryParamForHostname, getQueryParamFromFilters } from '../Deploymen
 import { RadarChartAngleLimits } from './LogAnalysisView.container.constants'
 import ClusterTypeFiltersForLogs from './components/ClusterTypeFiltersForLogs'
 import css from './LogAnalysisView.container.module.scss'
+import logAnalysisStyles from './LogAnalysis.module.scss'
 
 export default function LogAnalysisContainer({
   step,
@@ -242,17 +244,25 @@ export default function LogAnalysisContainer({
     [logsDataQueryParams]
   )
 
-  return (
-    <Container className={cx(css.main, { [css.logAnalysis]: !isErrorTracking })}>
-      <ClusterTypeFiltersForLogs
-        nodeNames={nodeNames}
-        clusterTypeFilters={clusterTypeFilters}
-        onFilterChange={handleClustersFilterChange}
-        selectedNodeName={selectedNodeName}
-        handleNodeNameChange={handleNodeNameChange}
-        nodeNamesError={nodeNamesError}
-        nodeNamesLoading={nodeNamesLoading}
-      />
+  const renderContent = (): JSX.Element => {
+    if (
+      !logsData?.resource?.logAnalysisRadarCharts?.content?.length &&
+      !clusterChartData?.resource?.length &&
+      !clusterChartLoading &&
+      !logsLoading &&
+      !logsError &&
+      !clusterChartError
+    ) {
+      return (
+        <Container className={css.noDataContainer}>
+          <Container className={logAnalysisStyles.noData} data-testid="LogAnalysis_common_noData">
+            <NoDataCard message={getString('cv.monitoredServices.noMatchingData')} image={noDataImage} />
+          </Container>
+        </Container>
+      )
+    }
+
+    return (
       <LogAnalysis
         data={logsData}
         clusterChartData={clusterChartData}
@@ -268,6 +278,21 @@ export default function LogAnalysisContainer({
         isErrorTracking={isErrorTracking}
         handleAngleChange={handleMinMaxChange}
       />
+    )
+  }
+
+  return (
+    <Container className={cx(css.main, { [css.logAnalysis]: !isErrorTracking })}>
+      <ClusterTypeFiltersForLogs
+        nodeNames={nodeNames}
+        clusterTypeFilters={clusterTypeFilters}
+        onFilterChange={handleClustersFilterChange}
+        selectedNodeName={selectedNodeName}
+        handleNodeNameChange={handleNodeNameChange}
+        nodeNamesError={nodeNamesError}
+        nodeNamesLoading={nodeNamesLoading}
+      />
+      {renderContent()}
     </Container>
   )
 }

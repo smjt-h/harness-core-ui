@@ -24,6 +24,7 @@ import css from './PipelineNotifications.module.scss'
 const PAGE_SIZE = 10
 
 interface NotificationsHeaderProps {
+  isReadonly: boolean
   discardChanges: () => void
   applyChanges: () => void
   pipeline: PipelineInfoConfig
@@ -37,7 +38,7 @@ export interface PipelineNotificationsRef {
 export const PipelineNotifications = React.forwardRef(PipelineNotificationsWithRef)
 
 function NotificationsHeader(props: NotificationsHeaderProps) {
-  const { applyChanges, discardChanges, pipeline, isPipelineUpdated } = props
+  const { applyChanges, discardChanges, pipeline, isPipelineUpdated, isReadonly } = props
   const { getString } = useStrings()
   return (
     <Layout.Horizontal
@@ -54,7 +55,7 @@ function NotificationsHeader(props: NotificationsHeaderProps) {
           size={ButtonSize.SMALL}
           text={getString('applyChanges')}
           onClick={applyChanges}
-          disabled={!isPipelineUpdated}
+          disabled={!isPipelineUpdated || isReadonly}
         />
         <Button
           minimal
@@ -160,6 +161,7 @@ function PipelineNotificationsWithRef(
   return (
     <>
       <NotificationsHeader
+        isReadonly={isReadonly}
         applyChanges={applyChanges}
         discardChanges={discardChanges}
         pipeline={pipelineAsState}

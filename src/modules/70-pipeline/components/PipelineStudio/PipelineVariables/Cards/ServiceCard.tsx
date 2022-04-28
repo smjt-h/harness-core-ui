@@ -22,7 +22,8 @@ import type { PipelineVariablesData } from '../types'
 import css from '../PipelineVariables.module.scss'
 
 const StepsMap: Record<string, StepType> = {
-  Kubernetes: StepType.K8sServiceSpec
+  Kubernetes: StepType.K8sServiceSpec,
+  ServerlessAwsLambda: StepType.ServerlessAwsLambda
 }
 
 export interface ServiceCardProps {

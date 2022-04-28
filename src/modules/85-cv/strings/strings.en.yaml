@@ -837,6 +837,7 @@ download: Download
 lastOneHour: Last 1 hour
 last12Hours: Last 12 hours
 showingLogsFor: Showing logs for
+showingLogs: Showing logs
 logs:
   priorityOrRiskSelectionRequired: 'Priority or Risk selection is required'
   eventMarkedAs: This event was marked as
@@ -850,3 +851,4 @@ fetchingDataFrom: Fetching data from
 serviceDetails: Service Details
 theTrendIsDeterminedForTheSelectedPeriodOverPeriod: The trend % is determined for the selected period over period.
 zoom: Zoom
+selectTimeRange: Select time range

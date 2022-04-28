@@ -36,8 +36,12 @@ export const ThirdPartyIntegrations: React.FC = () => {
 
   useEffect(() => {
     if (shouldIntegrateHotJar && currentUserInfo) {
-      const { email } = currentUserInfo
-      identifyHotJarUser(email, { email })
+      const { email, name, accounts } = currentUserInfo
+      identifyHotJarUser(email, {
+        email,
+        name: name || email?.split('@')[0] || '',
+        accountId: accounts?.find(({ uuid }) => location.hash.includes(uuid as string))?.uuid || ''
+      })
     }
   }, [shouldIntegrateHotJar, currentUserInfo])
 
