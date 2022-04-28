@@ -27,14 +27,14 @@ import type { ModulePathParams, ResourceGroupDetailsPathProps } from '@common/in
 import { useStrings } from 'framework/strings'
 import ResourceTypeList from '@rbac/components/ResourceTypeList/ResourceTypeList'
 import {
-  useUpdateResourceGroupV2,
-  ResourceGroupV2,
-  useGetResourceTypes,
-  ScopeSelector,
-  useGetResourceGroupV2,
-  ResourceGroupV2Request
+  useGetResourceGroup,
+  useUpdateResourceGroup,
+  ResourceGroupRequestRequestBody,
+  ResourceGroupDTO,
+  useGetResourceTypes
 } from 'services/resourcegroups'
 import { ResourceType, ResourceCategory } from '@rbac/interfaces/ResourceType'
+import ResourcesCard from '@rbac/components/ResourcesCard/ResourcesCard'
 import { NGBreadcrumbs } from '@common/components/NGBreadcrumbs/NGBreadcrumbs'
 import routes from '@common/RouteDefinitions'
 import RbacFactory from '@rbac/factories/RbacFactory'
@@ -45,19 +45,17 @@ import { usePermission } from '@rbac/hooks/usePermission'
 import { SelectionType } from '@rbac/utils/utils'
 import useRBACError from '@rbac/utils/useRBACError/useRBACError'
 import { getScopeFromDTO } from '@common/components/EntityReference/EntityReference'
-import ResourcesCardList from '@rbac/components/ResourcesCardList/ResourcesCardList'
 import {
   cleanUpResourcesMap,
   computeResourceMapOnChange,
   computeResourceMapOnMultiChange,
   getFilteredResourceTypes,
   getFormattedDataForApi,
-  getIncludedScopes,
+  getResourceSelectionType,
   getResourceSelectorsfromMap,
   getScopeDropDownItems,
-  getScopeType,
+  getScopeForResourceGroup,
   getSelectedResourcesMap,
-  getSelectionType,
   SelectorScope,
   validateResourceSelectors
 } from './utils'
@@ -71,7 +69,6 @@ const ResourceGroupDetails: React.FC = () => {
   const { showError, showSuccess } = useToaster()
   const { getRBACErrorMessage } = useRBACError()
   const [isUpdated, setIsUpdated] = useState<boolean>(false)
-  const [includedScopes, setIncludedScopes] = useState<ScopeSelector[]>([])
   const [selectedScope, setSelectedScope] = useState<SelectorScope>(SelectorScope.CURRENT)
   const [selectionType, setSelectionType] = useState<SelectionType>(SelectionType.SPECIFIED)
   const [selectedResourcesMap, setSelectedResourceMap] = useState<Map<ResourceType, string[] | string>>(new Map())
@@ -96,7 +93,7 @@ const ResourceGroupDetails: React.FC = () => {
     error: errorInGettingResourceGroup,
     loading,
     refetch
-  } = useGetResourceGroupV2({
+  } = useGetResourceGroup({
     identifier: resourceGroupIdentifier,
     queryParams: {
       accountIdentifier: accountId,
@@ -114,13 +111,13 @@ const ResourceGroupDetails: React.FC = () => {
   })
 
   useEffect(() => {
+    const selectors = resourceGroupDetails?.data?.resourceGroup.resourceSelectors
     setSelectedResourceMap(
-      getSelectedResourcesMap(resourceTypes, resourceGroupDetails?.data?.resourceGroup.resourceFilter)
+      getSelectedResourcesMap(resourceTypes, resourceGroupDetails?.data?.resourceGroup.resourceSelectors)
     )
     setIsUpdated(false)
-    setIncludedScopes(defaultTo(resourceGroupDetails?.data?.resourceGroup.includedScopes, []))
-    setSelectionType(getSelectionType(resourceGroupDetails?.data?.resourceGroup))
-    setSelectedScope(getScopeType(resourceGroupDetails?.data?.resourceGroup))
+    setSelectionType(getResourceSelectionType(selectors))
+    setSelectedScope(getScopeForResourceGroup(selectors))
   }, [resourceGroupDetails?.data?.resourceGroup])
 
   useEffect(() => {
@@ -130,7 +127,7 @@ const ResourceGroupDetails: React.FC = () => {
     setSelectedResourceMap(_selectedResourcesMap => cleanUpResourcesMap(types, _selectedResourcesMap, selectionType))
   }, [selectedScope, resourceTypeData])
 
-  const { mutate: updateResourceGroup, loading: updating } = useUpdateResourceGroupV2({
+  const { mutate: updateResourceGroup, loading: updating } = useUpdateResourceGroup({
     identifier: defaultTo(resourceGroupIdentifier, ''),
     queryParams: {
       accountIdentifier: accountId,
@@ -139,8 +136,8 @@ const ResourceGroupDetails: React.FC = () => {
     }
   })
 
-  const updateResourceGroupData = async (data: ResourceGroupV2): Promise<void> => {
-    const resourceSelectors = getResourceSelectorsfromMap(selectedResourcesMap)
+  const updateResourceGroupData = async (data: ResourceGroupDTO): Promise<void> => {
+    const resourceSelectors = getResourceSelectorsfromMap(selectedResourcesMap, selectedScope)
     const invalidResources = validateResourceSelectors(resourceSelectors)?.map(val =>
       getString(defaultTo(RbacFactory.getResourceTypeLabelKey(val), 'string'))
     )
@@ -148,10 +145,10 @@ const ResourceGroupDetails: React.FC = () => {
       showError(getString('rbac.resourceSelectorErrorMessage', { resources: invalidResources.toString() }))
       return
     }
-    const dataToSubmit: ResourceGroupV2Request = getFormattedDataForApi(
+    const dataToSubmit: ResourceGroupRequestRequestBody = getFormattedDataForApi(
       data,
       selectionType,
-      includedScopes,
+      selectedScope,
       resourceSelectors
     )
 
@@ -313,37 +310,65 @@ const ResourceGroupDetails: React.FC = () => {
               onSelectionTypeChange={onSelectionTypeChange}
             />
           </Container>
-          <Layout.Vertical spacing="small">
-            <Layout.Horizontal
-              spacing="small"
-              flex={{ justifyContent: 'flex-start' }}
-              padding={{ top: 'xlarge', left: 'xlarge', bottom: 'small' }}
-            >
-              <Text font={{ variation: FontVariation.H6 }} color={Color.GREY_800}>
-                {getString('common.scope')}
-              </Text>
-              <DropDown
-                items={getScopeDropDownItems(scope, getString)}
-                icon="settings"
-                value={selectedScope}
-                onChange={item => {
-                  setIsUpdated(true)
-                  setSelectedScope(item.value as SelectorScope)
-                  setIncludedScopes(getIncludedScopes(item.value as SelectorScope, resourceGroup))
-                }}
-                width={300}
-                filterable={false}
-              />
-            </Layout.Horizontal>
-            <ResourcesCardList
-              selectedResourcesMap={selectedResourcesMap}
-              resourceCategoryMap={resourceCategoryMap}
-              onResourceSelectionChange={onResourceSelectionChange}
-              onResourceCategorySelect={onResourceCategorySelect}
-              disableAddingResources={isHarnessManaged}
-              disableSelection={disableSelection()}
-            />
-          </Layout.Vertical>
+          <Container
+            padding="xlarge"
+            onDrop={event => {
+              const resourceCategory: ResourceType | ResourceCategory = event.dataTransfer.getData('text/plain') as
+                | ResourceType
+                | ResourceCategory
+              const types = resourceCategoryMap?.get(resourceCategory)
+              if (types) {
+                onResourceCategorySelect(types, true)
+              } else onResourceSelectionChange(resourceCategory as ResourceType, true)
+
+              event.preventDefault()
+              event.stopPropagation()
+            }}
+            onDragOver={event => {
+              event.dataTransfer.dropEffect = 'copy'
+              event.preventDefault()
+            }}
+          >
+            <Layout.Vertical spacing="small">
+              <Layout.Horizontal spacing="small" flex={{ justifyContent: 'flex-start' }} padding={{ bottom: 'small' }}>
+                <Text font={{ variation: FontVariation.H6 }} color={Color.GREY_800}>
+                  {getString('common.scope')}
+                </Text>
+                <DropDown
+                  items={getScopeDropDownItems(scope, getString)}
+                  icon="settings"
+                  value={selectedScope}
+                  onChange={item => {
+                    setIsUpdated(true)
+                    setSelectedScope(item.value as SelectorScope)
+                  }}
+                  width={300}
+                  filterable={false}
+                />
+              </Layout.Horizontal>
+
+              {Array.from(selectedResourcesMap.keys()).length === 0 && (
+                <Page.NoDataCard
+                  message={getString('rbac.resourceGroup.dragAndDropData')}
+                  icon="drag-handle-horizontal"
+                  iconSize={100}
+                />
+              )}
+              {Array.from(selectedResourcesMap.keys()).length !== 0 &&
+                Array.from(selectedResourcesMap.keys()).map(resourceType => {
+                  return (
+                    <ResourcesCard
+                      key={resourceType}
+                      resourceType={resourceType}
+                      resourceValues={defaultTo(selectedResourcesMap.get(resourceType), [])}
+                      onResourceSelectionChange={onResourceSelectionChange}
+                      disableAddingResources={isHarnessManaged}
+                      disableSelection={disableSelection()}
+                    />
+                  )
+                })}
+            </Layout.Vertical>
+          </Container>
         </Container>
       </Page.Body>
     </>

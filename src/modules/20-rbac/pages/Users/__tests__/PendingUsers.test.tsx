@@ -52,7 +52,7 @@ jest.mock('services/rbac', () => ({
 }))
 
 jest.mock('services/resourcegroups', () => ({
-  useGetResourceGroupListV2: jest.fn().mockImplementation(() => {
+  useGetResourceGroupList: jest.fn().mockImplementation(() => {
     return { data: resourceGroupsMockData, refetch: jest.fn(), error: null }
   })
 }))

@@ -31,12 +31,12 @@ const updateResourceMock = (): Promise<{ status: string }> => {
   return Promise.resolve({ status: 'SUCCESS' })
 }
 jest.mock('services/resourcegroups', () => ({
-  useGetResourceGroupListV2: jest.fn().mockImplementation(() => {
+  useGetResourceGroupList: jest.fn().mockImplementation(() => {
     return { data: resourceGroupListResponse, refetch: jest.fn(), error: null }
   }),
-  useDeleteResourceGroupV2: jest.fn().mockImplementation(() => ({ mutate: deleteResourceMock })),
-  useCreateResourceGroupV2: jest.fn().mockImplementation(() => ({ mutate: createResourceMock })),
-  useUpdateResourceGroupV2: jest.fn().mockImplementation(() => ({ mutate: updateResourceMock }))
+  useDeleteResourceGroup: jest.fn().mockImplementation(() => ({ mutate: deleteResourceMock })),
+  useCreateResourceGroup: jest.fn().mockImplementation(() => ({ mutate: createResourceMock })),
+  useUpdateResourceGroup: jest.fn().mockImplementation(() => ({ mutate: updateResourceMock }))
 }))
 
 describe('Resource Groups Page', () => {

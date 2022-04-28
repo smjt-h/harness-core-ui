@@ -12,20 +12,20 @@ import ReactTimeago from 'react-timeago'
 import { Layout, Text, Button, ButtonVariation, NoDataCard, TableV2 } from '@wings-software/uicore'
 import { Color, FontVariation } from '@harness/design-system'
 import { useHistory, useParams } from 'react-router-dom'
-import { defaultTo, get } from 'lodash-es'
+import { get } from 'lodash-es'
 import { useStrings } from 'framework/strings'
 import type {
   PageResourceGroupResponse,
-  ResourceFilter,
-  ResourceGroupV2Response,
+  ResourceGroupResponse,
+  ResourceSelector,
   StaticResourceSelector
 } from 'services/resourcegroups'
 import routes from '@common/RouteDefinitions'
 import RbacFactory from '@rbac/factories/RbacFactory'
 import type { ModulePathParams, ProjectPathProps } from '@common/interfaces/RouteInterfaces'
+import { isDynamicResourceSelector, isScopeResourceSelector } from '@rbac/utils/utils'
 import { getScopeLabelFromApi } from '@rbac/pages/ResourceGroupDetails/utils'
 import { getScopeFromDTO } from '@common/components/EntityReference/EntityReference'
-import type { ResourceType } from '@rbac/interfaces/ResourceType'
 import ResourceGroupColumnMenu from './ResourceGroupColumnMenu'
 import css from './ResourceGroupList.module.scss'
 
@@ -36,7 +36,7 @@ interface ResourceGroupListViewProps {
   goToPage: (pageNumber: number) => void
 }
 
-export const RenderColumnDetails: Renderer<CellProps<ResourceGroupV2Response>> = ({ row }) => {
+export const RenderColumnDetails: Renderer<CellProps<ResourceGroupResponse>> = ({ row }) => {
   const data = row.original.resourceGroup
   const { getString } = useStrings()
   return (
@@ -54,7 +54,7 @@ export const RenderColumnDetails: Renderer<CellProps<ResourceGroupV2Response>> =
   )
 }
 
-export const RenderColumnLastUpdated: Renderer<CellProps<ResourceGroupV2Response>> = ({ row }) => {
+export const RenderColumnLastUpdated: Renderer<CellProps<ResourceGroupResponse>> = ({ row }) => {
   const { getString } = useStrings()
   const data = row?.original
   if (data.harnessManaged) {
@@ -71,51 +71,43 @@ export const RenderColumnLastUpdated: Renderer<CellProps<ResourceGroupV2Response
   ) : null
 }
 
-const RenderColumnSummary: Renderer<CellProps<ResourceGroupV2Response>> = ({ row, column }) => {
+const RenderColumnSummary: Renderer<CellProps<ResourceGroupResponse>> = ({ row, column }) => {
   const { getString } = useStrings()
   const { resourceGroup, harnessManaged } = row.original
   const scope = getScopeFromDTO(resourceGroup)
-  const resourceFilter = resourceGroup.resourceFilter
-  const resourceTypeName = (data: ResourceFilter): string => {
-    if (data.includeAllResources) {
+  const resourceSelectors = resourceGroup.resourceSelectors
+  const resourceTypeName = (resource: ResourceSelector): string => {
+    if (isScopeResourceSelector(get(resource, 'type'))) {
       return getString('rbac.resourceGroup.all')
     } else {
-      return defaultTo(
-        data.resources
-          ?.map(resource => {
-            const label = RbacFactory.getResourceTypeHandler(resource?.resourceType as ResourceType)?.label
-            if (label) {
-              if (!resource.identifiers?.length) {
-                return getString('rbac.resourceGroup.all', {
-                  name: getString(label)
-                })
-              }
-              return `${(resource as StaticResourceSelector).identifiers?.length || 0} ${getString(label)}`
-            }
-            return get(resource, 'resourceType')
+      const label = RbacFactory.getResourceTypeHandler(resource?.resourceType)?.label
+      if (label) {
+        if (isDynamicResourceSelector(get(resource, 'type'))) {
+          return getString('rbac.resourceGroup.all', {
+            name: getString(label)
           })
-          .join(', '),
-        ''
-      )
+        }
+        return `${(resource as StaticResourceSelector).identifiers?.length || 0} ${getString(label)}`
+      }
+      return get(resource, 'resourceType')
     }
   }
-
   if (harnessManaged) {
     return <Text color={Color.BLACK}>{resourceGroup.name}</Text>
   }
-  return resourceFilter ? (
+  return resourceSelectors?.length ? (
     <Layout.Vertical padding={{ right: 'medium' }}>
       <Layout.Horizontal flex={{ alignItems: 'center', justifyContent: 'flex-start' }} spacing="small">
         <Text color={Color.BLACK} font={{ variation: FontVariation.BODY2 }}>
           {getString('resources')}:
         </Text>
-        <Text lineClamp={1}>{resourceTypeName(resourceFilter)}</Text>
+        <Text lineClamp={1}>{resourceSelectors.map(ele => resourceTypeName(ele)).join(', ')}</Text>
       </Layout.Horizontal>
       <Layout.Horizontal flex={{ alignItems: 'center', justifyContent: 'flex-start' }} spacing="small">
         <Text font={{ variation: FontVariation.BODY2 }} color={Color.BLACK}>
           {getString('common.scope')}:
         </Text>
-        <Text>{getScopeLabelFromApi(getString, scope, resourceGroup)}</Text>
+        <Text>{getScopeLabelFromApi(getString, scope, resourceSelectors)}</Text>
       </Layout.Horizontal>
     </Layout.Vertical>
   ) : (
@@ -134,7 +126,7 @@ const RenderColumnSummary: Renderer<CellProps<ResourceGroupV2Response>> = ({ row
 const ResourceGroupListView: React.FC<ResourceGroupListViewProps> = props => {
   const { data, reload, openResourceGroupModal, goToPage } = props
   const { accountId, projectIdentifier, orgIdentifier, module } = useParams<ProjectPathProps & ModulePathParams>()
-  const listData: ResourceGroupV2Response[] = data?.content || []
+  const listData: ResourceGroupResponse[] = data?.content || []
   const { getString } = useStrings()
   const history = useHistory()
   const openResourceSelector = (resourceGroupIdentifier: string): void => {
@@ -148,7 +140,7 @@ const ResourceGroupListView: React.FC<ResourceGroupListViewProps> = props => {
       })
     )
   }
-  const columns: Column<ResourceGroupV2Response>[] = useMemo(
+  const columns: Column<ResourceGroupResponse>[] = useMemo(
     () => [
       {
         Header: getString('common.resourceGroupLabel'),
@@ -159,7 +151,7 @@ const ResourceGroupListView: React.FC<ResourceGroupListViewProps> = props => {
       },
       {
         Header: getString('rbac.resourceGroup.summary'),
-        accessor: row => row?.resourceGroup?.resourceFilter,
+        accessor: row => row?.resourceGroup?.resourceSelectors,
         id: 'summary',
         width: '50%',
         Cell: RenderColumnSummary,
@@ -186,7 +178,7 @@ const ResourceGroupListView: React.FC<ResourceGroupListViewProps> = props => {
     [props.data]
   )
   return listData.length ? (
-    <TableV2<ResourceGroupV2Response>
+    <TableV2<ResourceGroupResponse>
       className={css.tablePadding}
       columns={columns}
       data={listData}

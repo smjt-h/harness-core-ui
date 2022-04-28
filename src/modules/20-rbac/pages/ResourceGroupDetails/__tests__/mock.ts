@@ -5,8 +5,6 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import type { ResponseResourceGroupV2Response } from 'services/resourcegroups'
-
 export const resourceTypes = {
   status: 'SUCCESS',
   data: {
@@ -25,23 +23,16 @@ export const resourceTypes = {
   metaData: null,
   correlationId: '31eb8018-a8b5-4c6a-bf9f-2b378e020f5e'
 }
-export const resourceGroupDetails: ResponseResourceGroupV2Response = {
+export const resourceGroupDetails = {
   status: 'SUCCESS',
   data: {
     resourceGroup: {
       accountIdentifier: 'kmpySmUISimoRrJL6NL73w',
+      orgIdentifier: null,
+      projectIdentifier: null,
       identifier: 'ewrewew',
       name: 'nameewrewew',
-      includedScopes: [
-        {
-          filter: 'EXCLUDING_CHILD_SCOPES',
-          accountIdentifier: 'kmpySmUISimoRrJL6NL73w'
-        }
-      ],
-      resourceFilter: {
-        includeAllResources: false,
-        resources: [{ resourceType: 'SECRET' }]
-      },
+      resourceSelectors: [{ type: 'DynamicResourceSelector', resourceType: 'SECRET', includeChildScopes: false }],
       tags: {},
       description: '',
       color: '#0063f7'
@@ -50,25 +41,19 @@ export const resourceGroupDetails: ResponseResourceGroupV2Response = {
     lastModifiedAt: 1614689892647,
     harnessManaged: false
   },
+  metaData: null,
   correlationId: '8e547da2-ed72-4327-a74d-874a825f8a20'
 }
-export const resourceGroupDetailsWithHarnessManaged: ResponseResourceGroupV2Response = {
+export const resourceGroupDetailsWithHarnessManaged = {
   status: 'SUCCESS',
   data: {
     resourceGroup: {
       accountIdentifier: 'kmpySmUISimoRrJL6NL73w',
+      orgIdentifier: null,
+      projectIdentifier: null,
       identifier: 'ewrewew',
       name: 'nameewrewew',
-      includedScopes: [
-        {
-          filter: 'EXCLUDING_CHILD_SCOPES',
-          accountIdentifier: 'kmpySmUISimoRrJL6NL73w'
-        }
-      ],
-      resourceFilter: {
-        includeAllResources: false,
-        resources: [{ resourceType: 'SECRET' }]
-      },
+      resourceSelectors: [{ type: 'DynamicResourceSelector', resourceType: 'SECRET', includeChildScopes: false }],
       tags: {},
       description: '',
       color: '#0063f7'
@@ -77,5 +62,6 @@ export const resourceGroupDetailsWithHarnessManaged: ResponseResourceGroupV2Resp
     lastModifiedAt: 1614689892647,
     harnessManaged: true
   },
+  metaData: null,
   correlationId: '8e547da2-ed72-4327-a74d-874a825f8a20'
 }

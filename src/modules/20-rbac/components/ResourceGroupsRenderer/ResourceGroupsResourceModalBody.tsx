@@ -13,10 +13,10 @@ import ResourceHandlerTable from '@rbac/components/ResourceHandlerTable/Resource
 import { PageSpinner } from '@common/components'
 import type { RbacResourceModalProps } from '@rbac/factories/RbacFactory'
 import { useStrings } from 'framework/strings'
-import { ResourceGroupV2Response, useGetFilterResourceGroupList } from 'services/resourcegroups'
+import { ResourceGroupResponse, useGetFilterResourceGroupList } from 'services/resourcegroups'
 import { useMutateAsGet } from '@common/hooks/useMutateAsGet'
 
-export type ResourceGroupColumn = ResourceGroupV2Response & { identifier: string }
+export type ResourceGroupColumn = ResourceGroupResponse & { identifier: string }
 
 const ResourceGroupsResourceModalBody: React.FC<RbacResourceModalProps> = ({
   searchTerm,
