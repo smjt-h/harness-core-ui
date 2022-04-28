@@ -365,9 +365,20 @@ export const buildAzureRepoPayload = (formData: FormData) => {
         formData.apiAccessUsername.type === ValueType.ENCRYPTED ? formData.apiAccessUsername.value : undefined,
       tokenRef: formData.accessToken.referenceString
     }
+
+    if (formData.sameCredentialsAsAbove) {
+      const authData = savedData?.spec?.authentication
+      const authDataSpec = authData.spec.spec
+      savedData.spec.apiAccess.spec = {
+        username: authDataSpec.username,
+        usernameRef: authDataSpec.usernameRef,
+        tokenRef: authDataSpec.tokenRef
+      }
+    }
   } else {
     delete savedData.spec.apiAccess
   }
+
   return { connector: savedData }
 }
 

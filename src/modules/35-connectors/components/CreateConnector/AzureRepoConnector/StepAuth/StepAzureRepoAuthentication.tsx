@@ -23,14 +23,18 @@ import {
 import * as Yup from 'yup'
 import { FontVariation } from '@harness/design-system'
 import type { FormikProps } from 'formik'
-import { setupAzureRepoFormData, GitConnectionType } from '@connectors/pages/connectors/utils/ConnectorUtils'
+import {
+  setupAzureRepoFormData,
+  GitConnectionType,
+  saveCurrentStepData
+} from '@connectors/pages/connectors/utils/ConnectorUtils'
 import type { SecretReferenceInterface } from '@secrets/utils/SecretField'
 import type { ConnectorConfigDTO, ConnectorRequestBody, ConnectorInfoDTO } from 'services/cd-ng'
-import SSHSecretInput from '@secrets/components/SSHSecretInput/SSHSecretInput'
 import SecretInput from '@secrets/components/SecretInput/SecretInput'
+import SSHSecretInput from '@secrets/components/SSHSecretInput/SSHSecretInput'
 import TextReference, { TextReferenceInterface, ValueType } from '@secrets/components/TextReference/TextReference'
 import { useStrings } from 'framework/strings'
-import { GitAuthTypes } from '@connectors/pages/connectors/utils/ConnectorHelper'
+import { GitAuthTypes, GitAPIAuthTypes } from '@connectors/pages/connectors/utils/ConnectorHelper'
 import { getCommonConnectorsValidationSchema } from '../../CreateConnectorUtils'
 import commonStyles from '@connectors/components/CreateConnector/commonSteps/ConnectorCommonStyles.module.scss'
 import css from './StepAzureRepoAuthentication.module.scss'
@@ -56,38 +60,51 @@ interface AzureRepoFormInterface {
   connectionType: string
   authType: string
   username: TextReferenceInterface | void
-  password: SecretReferenceInterface | void
-  sshKey: SecretReferenceInterface | void
-  enableAPIAccess: boolean
-  apiAuthType: string
-  apiAccessUsername: TextReferenceInterface | void
   accessToken: SecretReferenceInterface | void
+  installationId: string
+  applicationId: string
+  privateKey: SecretReferenceInterface | void
+  sshKey: SecretReferenceInterface | void
+  apiAccessUsername: TextReferenceInterface | void
+  apiAccessToken: SecretReferenceInterface | void
+  enableAPIAccess: boolean
+  sameCredentialsAsAbove: boolean
+  apiAuthType: string
 }
 
 const defaultInitialFormData: AzureRepoFormInterface = {
   connectionType: GitConnectionType.HTTP,
-  authType: GitAuthTypes.USER_PASSWORD,
+  authType: GitAuthTypes.USER_TOKEN,
   username: undefined,
-  password: undefined,
+  accessToken: undefined,
+  installationId: '',
+  applicationId: '',
+  privateKey: undefined,
   sshKey: undefined,
-  enableAPIAccess: false,
-  apiAuthType: GitAuthTypes.USER_TOKEN,
   apiAccessUsername: undefined,
-  accessToken: undefined
+  apiAccessToken: undefined,
+  enableAPIAccess: false,
+  sameCredentialsAsAbove: false,
+  apiAuthType: GitAPIAuthTypes.TOKEN
 }
 
 const RenderAzureRepoAuthForm: React.FC<FormikProps<AzureRepoFormInterface>> = props => {
   const { getString } = useStrings()
-  return (
-    <>
-      <TextReference
-        name="username"
-        stringId="username"
-        type={props.values.username ? props.values.username?.type : ValueType.TEXT}
-      />
-      <SecretInput name="password" label={getString('password')} />
-    </>
-  )
+  switch (props.values.authType) {
+    case GitAuthTypes.USER_TOKEN:
+      return (
+        <>
+          <TextReference
+            name="username"
+            stringId="username"
+            type={props.values.username ? props.values.username?.type : ValueType.TEXT}
+          />
+          <SecretInput name="accessToken" label={getString('personalAccessToken')} />
+        </>
+      )
+    default:
+      return null
+  }
 }
 
 const RenderAPIAccessFormWrapper: React.FC<FormikProps<AzureRepoFormInterface>> = props => {
@@ -115,12 +132,21 @@ const RenderAPIAccessFormWrapper: React.FC<FormikProps<AzureRepoFormInterface>> 
           value={apiAuthOptions[0]}
         />
       </Container>
-      <TextReference
-        name="apiAccessUsername"
-        stringId="username"
-        type={props.values.apiAccessUsername ? props.values.apiAccessUsername?.type : ValueType.TEXT}
+      <FormInput.CheckBox
+        name="sameCredentialsAsAbove"
+        label={'Same credentials as above' || getString('common.git.enableAPIAccess')}
+        padding={{ left: 'xxlarge' }}
       />
-      <SecretInput name="accessToken" label={getString('personalAccessToken')} />
+      {!props.values.sameCredentialsAsAbove && (
+        <>
+          <TextReference
+            name="apiAccessUsername"
+            stringId="username"
+            type={props.values.apiAccessUsername ? props.values.apiAccessUsername?.type : ValueType.TEXT}
+          />
+          <SecretInput name="accessToken" label={getString('personalAccessToken')} />
+        </>
+      )}
     </>
   )
 }
@@ -131,26 +157,24 @@ const StepAzureRepoAuthentication: React.FC<
   const { getString } = useStrings()
   const { prevStepData, nextStep, accountId } = props
   const [initialValues, setInitialValues] = useState(defaultInitialFormData)
-  const [loadingConnectorSecrets, setLoadingConnectorSecrets] = useState(true && props.isEditMode)
+  const [loadingConnectorSecrets, setLoadingConnectorSecrets] = useState(props.isEditMode)
 
   const authOptions: Array<SelectOption> = [
     {
-      label: getString('usernamePassword'),
-      value: GitAuthTypes.USER_PASSWORD
+      label: getString('usernameToken'),
+      value: GitAuthTypes.USER_TOKEN
     }
   ]
 
   useEffect(() => {
-    if (loadingConnectorSecrets) {
-      if (props.isEditMode) {
-        if (props.connectorInfo) {
-          setupAzureRepoFormData(props.connectorInfo, accountId).then(data => {
-            setInitialValues(data as AzureRepoFormInterface)
-            setLoadingConnectorSecrets(false)
-          })
-        } else {
+    if (loadingConnectorSecrets && props.isEditMode) {
+      if (props.connectorInfo) {
+        setupAzureRepoFormData(props.connectorInfo, accountId).then(data => {
+          setInitialValues(data as AzureRepoFormInterface)
           setLoadingConnectorSecrets(false)
-        }
+        })
+      } else {
+        setLoadingConnectorSecrets(false)
       }
     }
   }, [loadingConnectorSecrets])
@@ -170,7 +194,7 @@ const StepAzureRepoAuthentication: React.FC<
           ...initialValues,
           ...prevStepData
         }}
-        formName="azureRepoAuthForm"
+        formName="stepAzureRepoAuthForm"
         validationSchema={getCommonConnectorsValidationSchema(getString).concat(
           Yup.object().shape({
             apiAuthType: Yup.string().when('enableAPIAccess', {
@@ -192,52 +216,75 @@ const StepAzureRepoAuthentication: React.FC<
         )}
         onSubmit={handleSubmit}
       >
-        {formikProps => (
-          <Form className={cx(commonCss.fullHeight, commonCss.fullHeightDivsWithFlex)}>
-            <Container className={cx(css.stepFormWrapper, commonCss.paddingTop8)}>
-              {formikProps.values.connectionType === GitConnectionType.SSH ? (
-                <Layout.Horizontal spacing="medium" flex={{ alignItems: 'baseline' }}>
-                  <Text font={{ variation: FontVariation.H6 }}>{getString('authentication')}</Text>
-                  <SSHSecretInput name="sshKey" label={getString('SSH_KEY')} />
-                </Layout.Horizontal>
-              ) : (
-                <Container>
-                  <Container className={css.authHeaderRow} flex={{ alignItems: 'baseline' }}>
-                    <Text font={{ variation: FontVariation.H6 }}>{getString('authentication')}</Text>
-                    <FormInput.Select name="authType" items={authOptions} className={commonStyles.authTypeSelect} />
-                  </Container>
-                  <RenderAzureRepoAuthForm {...formikProps} />
-                </Container>
-              )}
+        {formikProps => {
+          saveCurrentStepData<ConnectorInfoDTO>(
+            props.getCurrentStepData,
+            formikProps.values as unknown as ConnectorInfoDTO
+          )
+          return (
+            <Form className={cx(commonCss.fullHeight, commonCss.fullHeightDivsWithFlex)}>
+              <Container className={cx(css.stepFormWrapper, commonCss.paddingTop8)}>
+                {formikProps.values.connectionType === GitConnectionType.SSH ? (
+                  <Layout.Horizontal spacing="medium" flex={{ alignItems: 'baseline' }}>
+                    <Text
+                      tooltipProps={{ dataTooltipId: 'azureRepoAuthentication' }}
+                      font={{ variation: FontVariation.H6 }}
+                    >
+                      {getString('authentication')}
+                    </Text>
+                    <SSHSecretInput name="sshKey" label={getString('SSH_KEY')} />
+                  </Layout.Horizontal>
+                ) : (
+                  <Container>
+                    <Container className={css.authHeaderRow} flex={{ alignItems: 'baseline' }}>
+                      <Text
+                        font={{ variation: FontVariation.H6 }}
+                        tooltipProps={{ dataTooltipId: 'azureRepoAuthentication' }}
+                      >
+                        {getString('authentication')}
+                      </Text>
+                      <FormInput.Select
+                        name="authType"
+                        items={authOptions}
+                        disabled={false}
+                        className={commonStyles.authTypeSelect}
+                      />
+                    </Container>
 
-              <FormInput.CheckBox
-                name="enableAPIAccess"
-                label={getString('common.git.enableAPIAccess')}
-                padding={{ left: 'xxlarge' }}
-              />
-              <Text font="small" className={commonCss.bottomMargin4}>
-                {getString('common.git.APIAccessDescription')}
-              </Text>
-              {formikProps.values.enableAPIAccess ? <RenderAPIAccessFormWrapper {...formikProps} /> : null}
-            </Container>
-            <Layout.Horizontal spacing="medium">
-              <Button
-                text={getString('back')}
-                icon="chevron-left"
-                onClick={() => props?.previousStep?.(props?.prevStepData)}
-                data-name="azureRepoBackButton"
-                variation={ButtonVariation.SECONDARY}
-              />
-              <Button
-                type="submit"
-                intent="primary"
-                text={getString('continue')}
-                rightIcon="chevron-right"
-                variation={ButtonVariation.PRIMARY}
-              />
-            </Layout.Horizontal>
-          </Form>
-        )}
+                    <RenderAzureRepoAuthForm {...formikProps} />
+                  </Container>
+                )}
+
+                <FormInput.CheckBox
+                  name="enableAPIAccess"
+                  label={getString('common.git.enableAPIAccess')}
+                  padding={{ left: 'xxlarge' }}
+                />
+                <Text font="small" className={commonCss.bottomMargin4}>
+                  {getString('common.git.APIAccessDescription')}
+                </Text>
+                {formikProps.values.enableAPIAccess ? <RenderAPIAccessFormWrapper {...formikProps} /> : null}
+              </Container>
+
+              <Layout.Horizontal padding={{ top: 'small' }} spacing="medium">
+                <Button
+                  text={getString('back')}
+                  icon="chevron-left"
+                  onClick={() => props?.previousStep?.(props?.prevStepData)}
+                  data-name="azureRepoBackButton"
+                  variation={ButtonVariation.SECONDARY}
+                />
+                <Button
+                  type="submit"
+                  intent="primary"
+                  text={getString('continue')}
+                  rightIcon="chevron-right"
+                  variation={ButtonVariation.PRIMARY}
+                />
+              </Layout.Horizontal>
+            </Form>
+          )
+        }}
       </Formik>
     </Layout.Vertical>
   )
