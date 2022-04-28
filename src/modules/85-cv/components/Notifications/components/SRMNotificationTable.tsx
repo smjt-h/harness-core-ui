@@ -15,28 +15,30 @@ import {
   Container,
   Icon,
   ButtonVariation,
-  TableV2
+  TableV2,
+  NoDataCard
 } from '@wings-software/uicore'
 import { Color } from '@harness/design-system'
 import type { CellProps, Renderer, Column } from 'react-table'
-import { Classes, Menu, PopoverInteractionKind, Position, Tag } from '@blueprintjs/core'
-import { startCase } from 'lodash-es'
+import { Classes, Menu, Position } from '@blueprintjs/core'
 import produce from 'immer'
+import { useParams } from 'react-router-dom'
 import { useStrings } from 'framework/strings'
-import type { NotificationRules, PipelineEvent } from 'services/pipeline-ng'
 import { getIconByNotificationMethod } from '@notifications/Utils/Utils'
 import type { NotificationType } from '@notifications/interfaces/Notifications'
 import { Actions } from '@pipeline/components/Notifications/NotificationUtils'
+import type { NotificationRuleResponse } from 'services/cv'
+import { PermissionIdentifier } from '@rbac/interfaces/PermissionIdentifier'
+import { ResourceType } from '@rbac/interfaces/ResourceType'
+import RbacButton from '@rbac/components/Button/Button'
+import noDataNotifications from '@cv/assets/noDataNotifications.svg'
+import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
 import { useSRMNotificationModal } from './useSRMNotificationModal'
+import type { NotificationRulesItem, SRMNotificationRules } from './SRMNotificationTable.types'
 import css from './SRMNotificationTable.module.scss'
 
-export interface NotificationRulesItem {
-  index: number
-  notificationRules: NotificationRules
-}
-
 export interface SRMNotificationTableProps {
-  data: NotificationRulesItem[]
+  data: NotificationRuleResponse[]
   onUpdate?: (data?: NotificationRulesItem, action?: Actions, closeModal?: () => void) => void
   gotoPage: (index: number) => void
   totalPages: number
@@ -49,26 +51,6 @@ export interface SRMNotificationTableProps {
 
 type CustomColumn<T extends Record<string, any>> = Column<T> & {
   onUpdate?: (data: NotificationRulesItem) => void
-}
-
-export const getPipelineEventColor = (option?: Required<PipelineEvent>['type']): Color => {
-  switch (option) {
-    case PipelineEventType.ALL_EVENTS:
-      return Color.BLUE_500
-    case PipelineEventType.PipelineSuccess:
-      return Color.BLUE_300
-    case PipelineEventType.StageSuccess:
-      return Color.BLUE_300
-    case PipelineEventType.StageFailed:
-      return Color.BLUE_300
-    case PipelineEventType.StageStart:
-      return Color.BLUE_300
-    case PipelineEventType.PipelineEnd:
-      return Color.BLUE_300
-    case PipelineEventType.PipelineStart:
-      return Color.BLUE_300
-  }
-  return Color.GREY_200
 }
 
 // eslint-disable-next-line react/function-component-definition
@@ -96,36 +78,6 @@ const RenderColumnName: Renderer<CellProps<NotificationRulesItem>> = ({ row }) =
     <Text color={Color.BLACK} lineClamp={1}>
       {data.notificationRules.name}
     </Text>
-  )
-}
-
-// eslint-disable-next-line react/function-component-definition
-const RenderColumnEvents: Renderer<CellProps<NotificationRulesItem>> = ({ row }) => {
-  const data = row.original.notificationRules.pipelineEvents?.map(event => event.type)
-  const baseData = data?.slice(0, 3)
-  const popoverData = data?.slice(3, data.length)
-  return (
-    <Layout.Horizontal spacing="xsmall">
-      {baseData?.map(event => (
-        <Tag round={true} key={event} style={{ backgroundColor: getPipelineEventColor(event) }}>
-          {startCase(event)}
-        </Tag>
-      ))}
-      {popoverData?.length ? (
-        <Popover interactionKind={PopoverInteractionKind.HOVER}>
-          <Layout.Horizontal flex={{ align: 'center-center' }} spacing="xsmall">
-            <Icon name="main-tags" size={15} />
-          </Layout.Horizontal>
-          <Layout.Vertical padding="small" spacing="small">
-            {popoverData?.map(event => (
-              <Tag round={true} key={event} style={{ backgroundColor: getPipelineEventColor(event) }}>
-                {startCase(event)}
-              </Tag>
-            ))}
-          </Layout.Vertical>
-        </Popover>
-      ) : null}
-    </Layout.Horizontal>
   )
 }
 
@@ -201,21 +153,39 @@ function SRMNotificationTable(props: SRMNotificationTableProps): React.ReactElem
     getExistingNotificationNames = (_skipIndex?: number) => []
   } = props
   const { getString } = useStrings()
+  const { projectIdentifier } = useParams<ProjectPathProps & { identifier: string }>()
 
   const { openNotificationModal, closeNotificationModal } = useSRMNotificationModal({
-    onCreateOrUpdate: (_data?: NotificationRules, _index?: number, _action?: Actions) => {
+    onCreateOrUpdate: (_data?: SRMNotificationRules, _index?: number, _action?: Actions) => {
       onUpdate?.({ notificationRules: _data!, index: _index! }, _action, closeNotificationModal)
     },
     getExistingNotificationNames
   })
 
-  const columns: CustomColumn<NotificationRulesItem>[] = useMemo(
+  const getAddNotificationButton = (): JSX.Element => (
+    <RbacButton
+      icon="plus"
+      text={'New Notification Rule'}
+      variation={ButtonVariation.PRIMARY}
+      onClick={() => openNotificationModal()}
+      // className={getClassNameForMonitoredServicePage(css.createSloInMonitoredService, monitoredService?.identifier)}
+      permission={{
+        permission: PermissionIdentifier.EDIT_MONITORED_SERVICE,
+        resource: {
+          resourceType: ResourceType.MONITOREDSERVICE,
+          resourceIdentifier: projectIdentifier
+        }
+      }}
+    />
+  )
+
+  const columns: CustomColumn<NotificationRuleResponse>[] = useMemo(
     () => [
       {
         Header: getString('enabledLabel').toUpperCase(),
         id: 'enabled',
         className: css.notificationTableHeader,
-        accessor: row => row.notificationRules.enabled,
+        accessor: row => row.notificationRule.enabled,
         onUpdate: onUpdate,
         width: '15%',
         Cell: RenderColumnEnabled,
@@ -225,25 +195,16 @@ function SRMNotificationTable(props: SRMNotificationTableProps): React.ReactElem
         Header: getString('notifications.nameOftheRule').toUpperCase(),
         id: 'name',
         className: css.notificationTableHeader,
-        accessor: row => row.notificationRules.name,
+        accessor: row => row.notificationRule.name,
         width: '20%',
         Cell: RenderColumnName,
-        disableSortBy: true
-      },
-      {
-        Header: getString('notifications.pipelineEvents').toUpperCase(),
-        id: 'events',
-        className: css.notificationTableHeader,
-        accessor: row => row.notificationRules.pipelineEvents,
-        width: '35%',
-        Cell: RenderColumnEvents,
         disableSortBy: true
       },
       {
         Header: getString('notifications.notificationMethod').toUpperCase(),
         id: 'methods',
         className: css.notificationTableHeader,
-        accessor: row => row.notificationRules.notificationMethod?.type,
+        accessor: row => row.notificationRule.type,
         width: '28%',
         Cell: RenderColumnMethod,
         disableSortBy: true
@@ -251,7 +212,7 @@ function SRMNotificationTable(props: SRMNotificationTableProps): React.ReactElem
       {
         Header: '',
         id: 'menu',
-        accessor: row => row.notificationRules.notificationMethod?.spec,
+        accessor: row => row.notificationRule.spec,
         className: css.notificationTableHeader,
         width: '2%',
         Cell: RenderColumnMenu,
@@ -262,6 +223,19 @@ function SRMNotificationTable(props: SRMNotificationTableProps): React.ReactElem
     ],
     [onUpdate, openNotificationModal, data]
   )
+
+  if (!data.length) {
+    return (
+      <>
+        <NoDataCard
+          image={noDataNotifications}
+          containerClassName={css.notificationsNoData}
+          message={'There are no notifications'}
+          button={getAddNotificationButton()}
+        />
+      </>
+    )
+  }
 
   return (
     <>
@@ -277,7 +251,7 @@ function SRMNotificationTable(props: SRMNotificationTableProps): React.ReactElem
         </Layout.Horizontal>
       </Container>
       <Container padding={{ bottom: 'huge' }} className={css.content}>
-        <TableV2<NotificationRulesItem>
+        <TableV2<NotificationRuleResponse>
           columns={columns}
           data={data}
           className={css.notificationTable}

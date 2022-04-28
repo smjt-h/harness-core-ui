@@ -8,7 +8,6 @@
 // this is an auto-generated file, do not update this manually
 declare const styles: {
   readonly notificationsContainer: string
-  readonly notificationsNoData: string
   readonly tableTitle: string
 }
 export default styles

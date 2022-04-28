@@ -11,23 +11,24 @@ import { StepWizard, Button } from '@wings-software/uicore'
 import { useModalHook } from '@harness/use-modal'
 import { Dialog, Classes } from '@blueprintjs/core'
 import cx from 'classnames'
-import type { NotificationRules } from 'services/pipeline-ng'
 import { useStrings } from 'framework/strings'
 import NotificationMethods from '@pipeline/components/Notifications/Steps/NotificationMethods'
 import { NotificationTypeSelectOptions } from '@notifications/constants'
 import { Actions } from '@pipeline/components/Notifications/NotificationUtils'
 
 import Overview from '@pipeline/components/Notifications/Steps/Overview'
+import ConfigureAlertConditions from './ConfigureAlertConditions/ConfigureAlertConditions'
+import type { SRMNotificationRules } from './SRMNotificationTable.types'
 import css from './useSRMNotificationModal.module.scss'
 
 export interface UseNotificationModalProps {
   onCloseModal?: () => void
-  onCreateOrUpdate?: (data?: NotificationRules, index?: number, action?: Actions) => void
+  onCreateOrUpdate?: (data?: SRMNotificationRules, index?: number, action?: Actions) => void
   getExistingNotificationNames?: (skipIndex?: number) => string[]
 }
 
 export interface UseNotificationModalReturn {
-  openNotificationModal: (NotificationRules?: NotificationRules, index?: number) => void
+  openNotificationModal: (NotificationRules?: SRMNotificationRules, index?: number) => void
   closeNotificationModal: () => void
 }
 
@@ -43,9 +44,9 @@ export const useSRMNotificationModal = ({
 }: UseNotificationModalProps): UseNotificationModalReturn => {
   const [view, setView] = useState(Views.CREATE)
   const [index, setIndex] = useState<number>()
-  const [notificationRules, setNotificationRules] = useState<NotificationRules>()
+  const [notificationRules, setNotificationRules] = useState<SRMNotificationRules>()
   const { getString } = useStrings()
-  const wizardCompleteHandler = async (wizardData?: NotificationRules): Promise<void> => {
+  const wizardCompleteHandler = async (wizardData?: SRMNotificationRules): Promise<void> => {
     onCreateOrUpdate?.(wizardData, index, view === Views.CREATE ? Actions.Added : Actions.Update)
   }
 
@@ -61,7 +62,7 @@ export const useSRMNotificationModal = ({
         }}
         className={cx(Classes.DIALOG, css.dialog)}
       >
-        <StepWizard<NotificationRules>
+        <StepWizard<SRMNotificationRules>
           onCompleteWizard={wizardCompleteHandler}
           icon="new-notification"
           iconProps={{ color: 'white', size: 50 }}
@@ -73,7 +74,7 @@ export const useSRMNotificationModal = ({
             data={notificationRules}
             existingNotificationNames={getExistingNotificationNames?.(index)}
           />
-          {/* <PipelineEvents name={getString('notifications.pipelineEvents')} stagesOptions={stagesOptions} /> */}
+          <ConfigureAlertConditions name={'Conditions'} />
           <NotificationMethods
             name={getString('notifications.notificationMethod')}
             typeOptions={NotificationTypeSelectOptions}
@@ -96,7 +97,7 @@ export const useSRMNotificationModal = ({
   )
 
   const open = useCallback(
-    (_notification?: NotificationRules, _index?: number) => {
+    (_notification?: SRMNotificationRules, _index?: number) => {
       setNotificationRules(_notification)
       setIndex(_index)
       if (_notification) {
@@ -108,7 +109,7 @@ export const useSRMNotificationModal = ({
   )
 
   return {
-    openNotificationModal: (_notificationRules?: NotificationRules, _index?: number) =>
+    openNotificationModal: (_notificationRules?: SRMNotificationRules, _index?: number) =>
       open(_notificationRules, _index),
     closeNotificationModal: hideModal
   }

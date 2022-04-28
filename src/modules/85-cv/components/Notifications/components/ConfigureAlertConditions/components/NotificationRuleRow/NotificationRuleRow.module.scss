@@ -1,0 +1,11 @@
+.field {
+  max-width: 120px !important;
+}
+
+.separator {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0.34;
+  border: 0.5px solid #cdd3dd;
+}

@@ -7,11 +7,7 @@
  **/
 // this is an auto-generated file, do not update this manually
 declare const styles: {
-  readonly content: string
-  readonly filterDropdown: string
-  readonly headerActions: string
-  readonly notificationTable: string
-  readonly notificationTableHeader: string
-  readonly notificationsNoData: string
+  readonly configureConditionsContainer: string
+  readonly notificationRulesContainer: string
 }
 export default styles
