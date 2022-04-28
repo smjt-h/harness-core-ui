@@ -309,7 +309,7 @@ export const CostCalculator = (): JSX.Element => {
   const nextMonthStart = moment().add(1, 'month').startOf('month')
   const nextYearStart = moment().add(1, 'year').startOf('year')
   const dayDiffMonth = -currentDate.diff(nextMonthStart, 'days')
-  const monthDiffYear = -currentDate.diff(nextMonthStart, 'month')
+  const monthDiffYear = -currentDate.diff(nextYearStart, 'month')
   const fractionCostMonth = dayDiffMonth / currentDate.daysInMonth()
   const fractionCostYear = monthDiffYear / 12
 
@@ -359,7 +359,7 @@ export const CostCalculator = (): JSX.Element => {
       : 0
   const supportCost = premiumSupport ? 160 : 0
   const totalCost = totalDeveloperRate + totalMauRate + supportCost
-  const dueTodayCost = totalCost * fractionCost
+  const dueTodayCost = Math.round(totalCost * fractionCost)
 
   const title = `Feature Flag Subscription`
   const monthYear = frequencyString(paymentFrequencySelected)
