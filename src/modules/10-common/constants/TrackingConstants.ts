@@ -12,31 +12,31 @@ export enum PageNames {
 }
 
 export enum PurposeActions {
-  ModuleContinue = 'Purpose Continue click',
+  ModuleContinue = 'Purpose Continue clicked',
   CDModuleContinue = 'CD Welcome Page Continue Clicked',
   CDCGModuleSelected = 'CD Current Gen Continue Clicked'
 }
 
 export enum TrialActions {
-  StartTrialClick = 'Start a trial click',
-  TrialModalPipelineSetupSubmit = 'Trial modal pipeline setup submit',
-  TrialModalPipelineSetupCancel = 'Trial modal pipeline setup cancel'
+  StartTrialClick = 'Start a trial clicked',
+  TrialModalPipelineSetupSubmit = 'Trial modal pipeline setup submited',
+  TrialModalPipelineSetupCancel = 'Trial modal pipeline setup canceled'
 }
 
 export enum PlanActions {
-  StartFreeClick = 'Start a free plan click'
+  StartFreeClick = 'Start a free plan clicked'
 }
 
 export enum StageActions {
   SelectStage = 'Select a Stage',
   SetupStage = 'Setup Stage',
   DeleteStage = 'Delete Stage',
-  LoadSelectStageTypeView = 'Load Select Stage Type View',
-  LoadEditStageView = 'Load Edit Stage View',
-  LoadCreateOrSelectConnectorView = 'Load Create or Select a Connector View',
+  LoadSelectStageTypeView = 'Select Stage Type View loaded',
+  LoadEditStageView = 'Edit Stage View loaded',
+  LoadCreateOrSelectConnectorView = 'Create or Select a Connector View loaded',
   ApplySelectedConnector = 'Apply Selected Connector',
   CancelSelectConnector = 'Cancel Select Connector',
-  LoadSelectConnectorTypeView = 'Load Select Connector Type View',
+  LoadSelectConnectorTypeView = 'Select Connector Type View loaded',
   SelectConnectorType = 'Select Connector Type'
 }
 
@@ -126,41 +126,41 @@ export enum ArtifactActions {
 }
 
 export enum ProjectActions {
-  OpenCreateProjectModal = 'Open Create Project modal',
-  SaveCreateProject = 'Save Create project',
-  LoadInviteCollaborators = 'Load Invite Collaborators',
-  SaveInviteCollaborators = 'Save Invite Collaborators',
-  ClickBackToProject = 'Click Back to Project',
-  LoadSelectOrCreateProjectModal = 'Load Select Or Create Project Modal',
-  ClickSelectProject = 'Select Project from Project Selector'
+  OpenCreateProjectModal = 'Create Project modal loaded',
+  SaveCreateProject = 'Create project saved',
+  LoadInviteCollaborators = 'Invite Collaborators loaded',
+  SaveInviteCollaborators = 'Invite Collaborators saved',
+  ClickBackToProject = 'Back to Project clicked',
+  LoadSelectOrCreateProjectModal = 'Select Or Create Project Modal loaded',
+  ClickSelectProject = 'Select Project from Project Selector clicked'
 }
 
 export enum ExitModalActions {
-  ExitByCancel = 'ExitByCancel',
-  ExitByClose = 'ExitByClose',
-  ExitByClick = 'ExitByClick'
+  ExitByCancel = 'Exit By Cancel',
+  ExitByClose = 'Exit By Close',
+  ExitByClick = 'Exit By Click Outside'
 }
 
 export enum EnvironmentActions {
-  StartCreateEnvironment = 'Start Create Environment',
-  SaveCreateEnvironment = 'Save Create Environment'
+  StartCreateEnvironment = 'Create Environment loaded',
+  SaveCreateEnvironment = 'Save Create Environment saved'
 }
 
 export enum ContactSalesActions {
-  LoadContactSales = 'Load Contact Sales',
-  SubmitContactSales = 'Submit Contact Sales'
+  LoadContactSales = 'Contact Sales loaded',
+  SubmitContactSales = 'Contact Sales submitted'
 }
 
 export enum FeedbackActions {
-  LoadFeedback = 'Load Feedback',
-  SubmitFeedback = 'Submit Feedback'
+  LoadFeedback = 'Feedback loaded',
+  SubmitFeedback = 'Feedback submitted'
 }
 
 export enum LicenseActions {
   ExtendTrial = 'Extend Trial',
-  LoadExtendedTrial = 'Load Extended Trial'
+  LoadExtendedTrial = 'Extended Trial loaded'
 }
 
 export enum FeatureActions {
-  DismissFeatureBanner = 'Dismiss Feature Banner'
+  DismissFeatureBanner = 'Feature Banner dismissed'
 }

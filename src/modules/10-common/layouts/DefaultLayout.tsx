@@ -29,8 +29,8 @@ export function DefaultLayout(props: React.PropsWithChildren<unknown>): React.Re
   const { currentUserInfo } = useAppStore()
 
   useEffect(() => {
+    identifyUser(currentUserInfo.email)
     if (pageName) {
-      identifyUser(currentUserInfo.email)
       trackPage(pageName, { module: module || '' })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
