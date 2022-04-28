@@ -53,6 +53,7 @@ import DelegatesEmptyState from '@delegates/images/DelegatesEmptyState.svg'
 import RbacButton from '@rbac/components/Button/Button'
 import { PermissionIdentifier } from '@rbac/interfaces/PermissionIdentifier'
 import { ResourceType } from '@rbac/interfaces/ResourceType'
+import useRBACError from '@rbac/utils/useRBACError/useRBACError'
 import DelegateListingItem, { DelegateListingHeader } from './DelegateListingItem'
 
 import css from './DelegatesPage.module.scss'
@@ -71,6 +72,7 @@ interface DelegatesListProps {
 }
 
 export const DelegateListing: React.FC<DelegatesListProps> = ({ filtersMockData }) => {
+  const { getRBACErrorMessage } = useRBACError()
   const { getString } = useStrings()
   const { accountId, projectIdentifier, orgIdentifier, module } = useParams<Record<string, string>>()
   const [searchTerm, setSearchTerm] = useState('')
@@ -182,7 +184,7 @@ export const DelegateListing: React.FC<DelegatesListProps> = ({ filtersMockData 
         }
       } catch (e) {
         if (shouldShowError(e)) {
-          showError(e.data?.message || e.message)
+          showError(getRBACErrorMessage(e))
         }
         setDelegateFetchError(e)
       } finally {

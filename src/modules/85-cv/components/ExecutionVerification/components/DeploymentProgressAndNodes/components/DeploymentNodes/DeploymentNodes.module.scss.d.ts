@@ -11,6 +11,7 @@ declare const styles: {
   readonly hexagonContainer: string
   readonly hexagonList: string
   readonly main: string
+  readonly mainContainer: string
   readonly nodeHealth: string
   readonly nodeHealthPopoverContent: string
   readonly popoverNodeHealth: string

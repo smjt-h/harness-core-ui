@@ -1,0 +1,17 @@
+{
+  "status": "SUCCESS",
+  "data": [
+    {
+      "id": "10244",
+      "key": "ART",
+      "name": "ART"
+    },
+    {
+      "id": "10321",
+      "key": "BUG",
+      "name": "Bugathon"
+    }
+  ],
+  "metaData": null,
+  "correlationId": "4b622a4e-bd86-45c9-a2b9-ada3a9042518"
+}

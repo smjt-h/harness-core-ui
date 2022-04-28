@@ -5,6 +5,8 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
+import type { GetDataError } from 'restful-react'
+import type { Failure } from 'services/cd-ng'
 import type { EntityGitDetails, EntityValidityDetails, NGTemplateInfoConfig } from 'services/template-ng'
 import type { TemplateViewData } from '@templates-library/components/TemplateStudio/TemplateContext/TemplateReducer'
 import type { YamlBuilderHandlerBinding } from '@common/interfaces/YAMLBuilderProps'
@@ -48,6 +50,7 @@ export interface ActionResponse {
   gitDetails?: EntityGitDetails
   entityValidityDetails?: EntityValidityDetails
   templateYaml?: string
+  templateError?: GetDataError<Failure | Error> | null
 }
 
 export interface ActionReturnType {

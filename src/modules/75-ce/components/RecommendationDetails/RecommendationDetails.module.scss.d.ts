@@ -9,6 +9,7 @@
 declare const styles: {
   readonly actionText: string
   readonly astericSign: string
+  readonly containerHidden: string
   readonly containerNameCard: string
   readonly copyIcon: string
   readonly diff: string

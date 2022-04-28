@@ -33,6 +33,7 @@ declare const styles: {
   readonly line: string
   readonly minNodeContainer: string
   readonly minNodeInput: string
+  readonly modalContainer: string
   readonly noBgColor: string
   readonly noShadow: string
   readonly pointer: string

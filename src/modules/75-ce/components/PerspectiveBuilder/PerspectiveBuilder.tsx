@@ -298,6 +298,7 @@ const PerspectiveBuilder: React.FC<{ perspectiveData?: CEView; onNext: (resource
                   setGroupBy={(groupBy: QlceViewFieldInputInput) => {
                     formikProps.setFieldValue('viewVisualization.groupBy', groupBy)
                   }}
+                  showBusinessMappingButton={true}
                   formValues={formikProps.values}
                   groupBy={formikProps.values.viewVisualization?.groupBy as any}
                   chartType={formikProps.values.viewVisualization?.chartType as any}

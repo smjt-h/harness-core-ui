@@ -5,6 +5,8 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
+import type { Distribution } from 'services/cf'
+import { PERCENTAGE_ROLLOUT_VALUE } from '@cf/constants'
 import type { Instruction } from '@cf/utils/instructions'
 import type { FlagSettingsFormData, FlagSettingsFormRow, TargetGroupFlagsMap } from '../../TargetGroupDetailPage.types'
 
@@ -63,10 +65,10 @@ export function getUpdateFlagsInstruction(
   return {
     kind: 'addRule',
     parameters: {
-      features: flags.map(({ identifier, variation }) => ({
-        identifier,
-        variation,
-        ruleID: targetGroupFlagsMap[identifier].ruleId as string
+      features: flags.map(row => ({
+        identifier: row.identifier,
+        ...getVariationOrServe(row),
+        ruleID: targetGroupFlagsMap[row.identifier].ruleId as string
       }))
     }
   } as any as Instruction
@@ -76,10 +78,27 @@ export function getAddFlagsInstruction(flags: FlagSettingsFormRow[]): Instructio
   return {
     kind: 'addRule',
     parameters: {
-      features: flags.map(({ identifier, variation }) => ({
-        identifier,
-        variation
+      features: flags.map(row => ({
+        identifier: row.identifier,
+        ...getVariationOrServe(row)
       }))
     }
   } as any as Instruction
+}
+
+export function getVariationOrServe(
+  row: FlagSettingsFormRow
+): { variation: string } | { serve: { distribution: Distribution } } {
+  if (row.variation === PERCENTAGE_ROLLOUT_VALUE) {
+    return {
+      serve: {
+        distribution: {
+          bucketBy: 'identifier',
+          variations: row.percentageRollout?.variations || []
+        }
+      }
+    }
+  }
+
+  return { variation: row.variation }
 }

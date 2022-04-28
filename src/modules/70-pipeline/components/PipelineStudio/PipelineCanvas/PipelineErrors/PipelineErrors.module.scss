@@ -1,0 +1,65 @@
+/*
+ * Copyright 2021 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+.pipelineErrorList {
+  --card-icon-size: 74px;
+  max-height: 650px;
+  min-height: 400px;
+  overflow-y: auto;
+  padding: var(--spacing-xlarge) var(--spacing-xxxlarge) 0;
+  margin-top: var(--spacing-large);
+}
+.cardWithIcon {
+  width: var(--card-icon-size);
+  height: var(--card-icon-size);
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.cardContent {
+  width: calc(100% - var(--card-icon-size)) !important;
+}
+
+.fix-button {
+  width: 88px;
+}
+
+.tooltipbg {
+  :global(.bp3-popover) {
+    background: var(--primary-9-dark) !important;
+  }
+}
+
+.list {
+  background: var(--primary-9-dark) !important;
+  margin: 0;
+  padding: var(--spacing-medium);
+  border-radius: var(--spacing-2);
+  max-width: 432px;
+}
+.moreText {
+  background: var(--primary-1) !important;
+  padding-left: var(--spacing-small) !important;
+  cursor: pointer;
+}
+
+.errorDialog {
+  width: 765px;
+  padding: var(--spacing-large) 0 0;
+  :global {
+    .bp3-dialog-header {
+      padding-left: 40px;
+      padding-right: 25px;
+    }
+    .bp3-dialog-close-button {
+      position: relative;
+      top: -20px;
+      right: -12px;
+    }
+  }
+}

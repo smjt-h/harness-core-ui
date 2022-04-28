@@ -21,7 +21,8 @@ import {
   HarnessDocTooltip,
   ButtonVariation,
   Container,
-  Popover
+  Popover,
+  useToaster
 } from '@wings-software/uicore'
 import cx from 'classnames'
 import { Color, FontVariation } from '@harness/design-system'
@@ -37,7 +38,8 @@ import {
   ConnectorFilterProperties,
   useGetConnector,
   EntityGitDetails,
-  ResponsePageConnectorResponse
+  ResponsePageConnectorResponse,
+  getTestConnectionResultPromise
 } from 'services/cd-ng'
 import {
   EntityReferenceResponse,
@@ -197,7 +199,12 @@ export function getEditRenderer(
     </Popover>
   )
 }
-export function getSelectedRenderer(selected: ConnectorSelectedValue): JSX.Element {
+export function getSelectedRenderer(
+  selected: ConnectorSelectedValue,
+  status = selected?.live,
+  connectorStatusCheckInProgress = false
+): JSX.Element {
+  const icon = connectorStatusCheckInProgress ? 'spinner' : 'full-circle'
   return (
     <Layout.Horizontal spacing="small" flex={{ distribution: 'space-between' }} className={css.selectWrapper}>
       <Text tooltip={selected?.label} className={css.label} color={Color.GREY_800}>
@@ -206,11 +213,15 @@ export function getSelectedRenderer(selected: ConnectorSelectedValue): JSX.Eleme
 
       <div className={css.rightStatus}>
         <Icon
-          className={cx(css.status, { [css.redStatus]: !selected?.live }, { [css.greenStatus]: selected?.live })}
+          className={cx(
+            css.status,
+            { [css.redStatus]: !connectorStatusCheckInProgress && !status },
+            { [css.greenStatus]: !connectorStatusCheckInProgress && status }
+          )}
           data-testid={`crf-status`}
-          name="full-circle"
+          name={icon}
           size={6}
-          style={{ paddingRight: 'var(--spacing-xsmall)' }}
+          {...(connectorStatusCheckInProgress && { color: Color.BLUE_500 })}
         />
         <Tag minimal id={css.tag}>
           {getScopeFromValue(selected?.value || '')}
@@ -548,6 +559,33 @@ export function getReferenceFieldProps({
     }
   }
 }
+export const getConnectorStatusCall = async (
+  selected: ConnectorSelectedValue,
+  accountIdentifier: string
+): Promise<boolean | any> => {
+  const connector = selected.connector
+  try {
+    const { data } = await getTestConnectionResultPromise({
+      identifier: connector.identifier,
+      queryParams: {
+        accountIdentifier: accountIdentifier,
+        orgIdentifier: connector.orgIdentifier,
+        projectIdentifier: connector.projectIdentifier,
+        branch: connector.gitDetails?.branch,
+        repoIdentifier: connector.gitDetails?.repoIdentifier
+      },
+      requestOptions: {
+        headers: {
+          'content-type': 'application/json'
+        }
+      },
+      body: undefined
+    })
+    return data?.status === 'SUCCESS'
+  } catch (err) {
+    return Promise.reject(err)
+  }
+}
 
 export const ConnectorReferenceField: React.FC<ConnectorReferenceFieldProps> = props => {
   const {
@@ -570,6 +608,7 @@ export const ConnectorReferenceField: React.FC<ConnectorReferenceFieldProps> = p
 
   const [pagedConnectorData, setPagedConnectorData] = useState<ResponsePageConnectorResponse>({})
   const [page, setPage] = useState(0)
+  const [isConnectorEdited, setIsConnectorEdited] = useState(false)
   const [inlineSelection, setInlineSelection] = React.useState<InlineSelectionInterface>({
     selected: false,
     inlineModalClosed: false
@@ -577,6 +616,7 @@ export const ConnectorReferenceField: React.FC<ConnectorReferenceFieldProps> = p
   const { openConnectorModal } = useCreateConnectorModal({
     onSuccess: (data?: ConnectorConfigDTO) => {
       if (data) {
+        setIsConnectorEdited(true)
         props.onChange?.({ ...data.connector, status: data.status }, Scope.PROJECT)
         setInlineSelection({
           selected: true,
@@ -621,6 +661,9 @@ export const ConnectorReferenceField: React.FC<ConnectorReferenceFieldProps> = p
 
   const [selectedValue, setSelectedValue] = React.useState(selected)
 
+  const { showError } = useToaster()
+  const [connectorStatusCheckInProgress, setConnectorStatusCheckInProgress] = React.useState(false)
+  const [connectorStatus, setConnectorStatus] = React.useState(typeof selected !== 'string' && selected?.live)
   const scopeFromSelected = typeof selected === 'string' && getScopeFromValue(selected || '')
   const selectedRef = typeof selected === 'string' && getIdentifierFromValue(selected || '')
   const {
@@ -643,7 +686,25 @@ export const ConnectorReferenceField: React.FC<ConnectorReferenceFieldProps> = p
     },
     lazy: true
   })
-
+  const getConnectorStatus = (): void => {
+    if (typeof selected !== 'string') {
+      setConnectorStatusCheckInProgress(true)
+      getConnectorStatusCall(selected as ConnectorSelectedValue, accountIdentifier)
+        .then(
+          status => {
+            setConnectorStatus(status)
+          },
+          err => {
+            setConnectorStatus(false)
+            showError(err)
+          }
+        )
+        .finally(() => {
+          setConnectorStatusCheckInProgress(false)
+          setIsConnectorEdited(false)
+        })
+    }
+  }
   React.useEffect(() => {
     if (
       typeof selected == 'string' &&
@@ -652,6 +713,13 @@ export const ConnectorReferenceField: React.FC<ConnectorReferenceFieldProps> = p
     ) {
       refetch()
     } else {
+      if (selected && (selected as ConnectorSelectedValue).connector) {
+        if (isConnectorEdited) {
+          getConnectorStatus()
+        } else {
+          setConnectorStatus((selected as ConnectorSelectedValue).live)
+        }
+      }
       setSelectedValue(selected)
     }
   }, [selected, refetch])
@@ -675,6 +743,7 @@ export const ConnectorReferenceField: React.FC<ConnectorReferenceFieldProps> = p
         live: connectorData?.data?.status?.status === 'SUCCESS',
         connector: connectorData?.data?.connector
       }
+      setConnectorStatus(value.live)
       setSelectedValue(value)
     }
   }, [
@@ -776,7 +845,11 @@ export const ConnectorReferenceField: React.FC<ConnectorReferenceFieldProps> = p
         })}
         hideModal={inlineSelection.selected && inlineSelection.inlineModalClosed}
         isNewConnectorLabelVisible={canUpdate}
-        selectedRenderer={getSelectedRenderer(selectedValue as ConnectorSelectedValue)}
+        selectedRenderer={getSelectedRenderer(
+          selectedValue as ConnectorSelectedValue,
+          !!connectorStatus,
+          connectorStatusCheckInProgress
+        )}
         {...optionalReferenceSelectProps}
         disabled={disabled || loading}
         componentName="Connector"

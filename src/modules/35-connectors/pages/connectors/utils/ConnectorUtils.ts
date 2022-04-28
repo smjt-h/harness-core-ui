@@ -973,6 +973,25 @@ export const buildHelmPayload = (formData: FormData) => {
   return { connector: savedData }
 }
 
+export const buildPdcPayload = (formData: FormData) => {
+  const savedData = {
+    name: formData.name,
+    description: formData.description,
+    projectIdentifier: formData.projectIdentifier,
+    identifier: formData.identifier,
+    orgIdentifier: formData.orgIdentifier,
+    tags: formData.tags,
+    type: Connectors.PDC,
+    spec: {
+      ...(formData?.delegateSelectors ? { delegateSelectors: formData.delegateSelectors } : {}),
+      hosts: formData.hosts,
+      sshKeyRef: formData.sshKeyRef
+    }
+  }
+
+  return { connector: savedData }
+}
+
 export const buildGcpPayload = (formData: FormData) => {
   const savedData = {
     name: formData.name,
@@ -1373,7 +1392,6 @@ export const buildErrorTrackingPayload = (formData: FormData): Connector => {
     projectIdentifier,
     orgIdentifier,
     delegateSelectors,
-    url,
     apiKeyRef: { referenceString: apiReferenceKey },
     description,
     tags
@@ -1388,7 +1406,7 @@ export const buildErrorTrackingPayload = (formData: FormData): Connector => {
       description,
       tags,
       spec: {
-        url,
+        url: window.location.href.split('#')[0],
         apiKeyRef: apiReferenceKey,
         delegateSelectors: delegateSelectors || {}
       } as ErrorTrackingConnectorDTO
@@ -1620,6 +1638,8 @@ export const getIconByType = (type: ConnectorInfoDTO['type'] | undefined): IconN
       return 'service-artifactory'
     case Connectors.GCP:
       return 'service-gcp'
+    case Connectors.PDC:
+      return 'pdc'
     case Connectors.Jira:
       return 'service-jira'
     case Connectors.AWS_KMS:
@@ -1671,6 +1691,8 @@ export const getConnectorDisplayName = (type: string) => {
       return 'Docker Registry'
     case Connectors.GCP:
       return 'GCP'
+    case Connectors.PDC:
+      return 'Physical Data Center'
     case Connectors.APP_DYNAMICS:
       return 'AppDynamics'
     case Connectors.SPLUNK:

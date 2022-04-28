@@ -25,7 +25,7 @@ const commonProps = {
   orgIdentifier: '',
   projectIdentifier: '',
   setIsEditMode: noop,
-  onClose: noop,
+  onClose: jest.fn(),
   onSuccess: noop
 }
 
@@ -330,6 +330,14 @@ describe('Create Azure connector Wizard', () => {
     expect(getByText('connectors.ceAzure.testConnection.heading')).toBeDefined()
     // connection is verified
     expect(testConnection).toBeCalled()
+
+    const finishBtn = getByText('finish')
+    expect(finishBtn).toBeDefined()
+    act(() => {
+      fireEvent.click(finishBtn!)
+    })
+    expect(commonProps.onClose).toBeCalled()
+
     expect(container).toMatchSnapshot()
   })
 })

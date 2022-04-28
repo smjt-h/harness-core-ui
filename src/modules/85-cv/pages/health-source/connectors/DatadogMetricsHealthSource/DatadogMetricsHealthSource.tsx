@@ -46,11 +46,13 @@ import type { SelectedWidgetMetricData } from '@cv/components/CloudMetricsHealth
 import DatadogMetricsDetailsContent from '@cv/pages/health-source/connectors/DatadogMetricsHealthSource/components/DatadogMetricsDetailsContent/DatadogMetricsDetailsContent'
 import { FieldNames } from '@cv/pages/health-source/connectors/GCOMetricsHealthSource/GCOMetricsHealthSource.constants'
 import { getPlaceholderForIdentifier } from '@cv/pages/health-source/connectors/GCOMetricsHealthSource/GCOMetricsHealthSource.utils'
+import useRBACError from '@rbac/utils/useRBACError/useRBACError'
 import { DatadogMetricsQueryExtractor } from './components/DatadogMetricsDetailsContent/DatadogMetricsDetailsContent.utils'
 
 export default function DatadogMetricsHealthSource(props: DatadogMetricsHealthSourceProps): JSX.Element {
   const { data } = props
   const { getString } = useStrings()
+  const { getRBACErrorMessage } = useRBACError()
   const { showError } = useToaster()
   const transformedData = useMemo(() => mapDatadogMetricHealthSourceToDatadogMetricSetupSource(data), [data])
   const [metricHealthDetailsData, setMetricHealthDetailsData] = useState(transformedData.metricDefinition)
@@ -119,7 +121,7 @@ export default function DatadogMetricsHealthSource(props: DatadogMetricsHealthSo
           }
         })
       } catch (e) {
-        showError(e.data?.message || e.message)
+        showError(getRBACErrorMessage(e))
       }
     }, 1000),
     [data.connectorRef, activeMetricsTracingId]
@@ -143,7 +145,7 @@ export default function DatadogMetricsHealthSource(props: DatadogMetricsHealthSo
           })
         }
       } catch (e) {
-        showError(e.data?.message || e.message)
+        showError(getRBACErrorMessage(e))
       }
     }, 2000),
     [selectedMetricData]

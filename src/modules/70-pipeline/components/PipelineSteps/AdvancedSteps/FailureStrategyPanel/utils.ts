@@ -10,8 +10,6 @@ import type { FormikErrors, FormikProps } from 'formik'
 import { isEmpty } from 'lodash-es'
 import { Intent } from '@blueprintjs/core'
 
-import { StepMode as Modes } from '@pipeline/utils/stepUtils'
-import { StageType } from '@pipeline/utils/stageHelpers'
 import type {
   RetryFailureActionConfig,
   IgnoreFailureActionConfig,
@@ -35,10 +33,6 @@ export type AllActions =
 
 export interface AllFailureStrategyConfig extends FailureStrategyConfig {
   onFailure: OnFailureConfig & { action: AllActions }
-}
-
-export function isDefaultStageStrategy(mode: Modes, stageType: StageType, selectedStrategyNum: number): boolean {
-  return mode === Modes.STAGE && stageType === StageType.DEPLOY && selectedStrategyNum === 0
 }
 
 export function hasItems<T>(data?: T[]): boolean {

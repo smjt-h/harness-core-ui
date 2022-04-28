@@ -19,19 +19,11 @@ const LogContentToolbar: React.FC<LogContentToolbarProps> = ({
   isFullScreen,
   setIsFullScreen,
   isVerifyStep,
-  timeRange
+  timeRange,
+  isMonitoredService,
+  handleDownloadLogs
 }) => {
   const { getString } = useStrings()
-
-  /* istanbul ignore next */
-  const handleDownloadLogs = (): void => {
-    const jsonString = `data:text/json;chatset=utf-8,${encodeURIComponent(JSON.stringify(data))}`
-    const link = document.createElement('a')
-
-    link.href = jsonString
-    link.download = `${logType}-${Date.now()}.json`
-    link.click()
-  }
 
   return (
     <Container
@@ -41,7 +33,7 @@ const LogContentToolbar: React.FC<LogContentToolbarProps> = ({
       border={{ bottom: true, color: logType === LogTypes.ExecutionLog ? Color.GREY_700 : Color.GREY_200 }}
     >
       <Container padding={{ left: 'medium' }}>
-        {!isVerifyStep && (
+        {!isVerifyStep && !isMonitoredService && (
           <Text
             icon="info"
             color={Color.GREY_400}

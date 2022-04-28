@@ -38,7 +38,7 @@ const transformCloudCost = (data: Record<string, any>[], providers: Record<strin
   return data.map((d, idx) => {
     return {
       label: d.name as string,
-      value: d.actualCost,
+      value: d.anomalousCost,
       count: d.count,
       trend: 0,
       legendColor: CE_COLOR_CONST[idx % CE_COLOR_CONST.length],
@@ -84,7 +84,7 @@ const AnomaliesSummary: React.FC<AnomaliesOverviewProps> = ({
             {getString('ce.anomalyDetection.summary.costImpacted')}
           </Text>
           <Text color={Color.RED_500} font={{ variation: FontVariation.H4 }}>
-            {formatCost(costData?.actualCost || 0)}
+            {formatCost(costData?.anomalousCost || 0)}
           </Text>
         </Card>
       </Layout.Vertical>

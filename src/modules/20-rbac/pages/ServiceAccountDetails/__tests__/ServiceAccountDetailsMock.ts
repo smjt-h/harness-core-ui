@@ -129,7 +129,7 @@ export const tokenListAggregate: ResponsePageTokenAggregateDTO = {
           identifier: 'new_token',
           name: 'new token',
           validFrom: 1625557240664,
-          validTo: 1628274600000,
+          validTo: 7265937168000,
           valid: true,
           accountIdentifier: 'kmpySmUISimoRrJL6NL73w',
           apiKeyIdentifier: 'New_Api_Key',

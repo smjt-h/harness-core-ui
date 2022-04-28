@@ -1,3 +1,10 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import gql from 'graphql-tag'
 import * as Urql from 'urql'
 export type Maybe<T> = T | null
@@ -80,6 +87,13 @@ export const RecommendationsDocument = gql`
         resourceName
         monthlyCost
         monthlySaving
+        recommendationDetails {
+          ... on NodeRecommendationDTO {
+            recommended {
+              provider
+            }
+          }
+        }
       }
     }
   }
@@ -1218,6 +1232,13 @@ export type RecommendationsQuery = {
       resourceName: string | null
       monthlyCost: number | null
       monthlySaving: number | null
+      recommendationDetails:
+        | {
+            __typename?: 'NodeRecommendationDTO'
+            recommended: { __typename?: 'RecommendationResponse'; provider: string | null } | null
+          }
+        | { __typename?: 'WorkloadRecommendationDTO' }
+        | null
     } | null> | null
   } | null
 }

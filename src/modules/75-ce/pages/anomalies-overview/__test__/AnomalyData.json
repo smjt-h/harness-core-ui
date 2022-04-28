@@ -7,7 +7,7 @@
       "anomalyRelativeTime": "since 6 days",
       "actualAmount": 284.570867,
       "expectedAmount": 150.404737,
-      "trend": 0.89,
+      "anomalousSpendPercentage": 0.89,
       "resourceName": "project/product",
       "resourceInfo": "gcpProjectId/gcpProduct",
       "entity": {
@@ -40,7 +40,7 @@
       "anomalyRelativeTime": "since 6 days",
       "actualAmount": 284.570867,
       "expectedAmount": 150.404737,
-      "trend": 0.89,
+      "anomalousSpendPercentage": 0.89,
       "resourceName": "project/product",
       "resourceInfo": "gcpProjectId/gcpProduct",
       "entity": {
@@ -73,7 +73,7 @@
       "anomalyRelativeTime": "since 6 days",
       "actualAmount": 284.570867,
       "expectedAmount": 150.404737,
-      "trend": 0.89,
+      "anomalousSpendPercentage": 0.89,
       "resourceName": "project/product",
       "resourceInfo": "gcpProjectId/gcpProduct",
       "entity": {

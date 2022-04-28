@@ -8,7 +8,7 @@
 import React from 'react'
 import { render, screen } from '@testing-library/react'
 import { TestWrapper } from '@common/utils/testUtils'
-import type { InterruptEffect } from 'services/pipeline-ng'
+import type { InterruptEffectDTO } from 'services/pipeline-ng'
 import InterruptedHistory from '../InterruptedHistory'
 import { interruptedHistories } from './InterruptedHistory.mock'
 
@@ -16,7 +16,7 @@ describe('Unit tests for InterruptedHistory', () => {
   test('should show the selected interruped action taken by User', () => {
     const { getByText } = render(
       <TestWrapper>
-        <InterruptedHistory interruptedHistories={interruptedHistories as InterruptEffect[]} />
+        <InterruptedHistory interruptedHistories={interruptedHistories as InterruptEffectDTO[]} />
       </TestWrapper>
     )
     expect(getByText('Set to IGNORE on 22-Feb-2022 2:21:58 AM')).toBeInTheDocument()

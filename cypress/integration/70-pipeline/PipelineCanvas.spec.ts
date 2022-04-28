@@ -23,7 +23,13 @@ import {
   stepsData,
   StepResourceObject,
   pipelineStudioRoute,
-  inputSetsRoute
+  inputSetsRoute,
+  pipelinesRoute,
+  featureFlagsCall,
+  cdFailureStrategiesYaml,
+  approvalStageYamlSnippet,
+  jiraApprovalStageYamlSnippet,
+  snowApprovalStageYamlSnippet
 } from '../../support/70-pipeline/constants'
 import { getIdentifierFromName } from '../../utils/stringHelpers'
 
@@ -43,15 +49,14 @@ describe('GIT SYNC DISABLED', () => {
 
     cy.clickSubmit()
 
-    cy.get('[icon="plus"]').click()
-    cy.findByTestId('stage-Deployment').click()
-
-    cy.fillName('testStage_Cypress')
-    cy.clickSubmit()
+    cy.createDeploymentStage()
   })
 
   it('should display the error returned by pipeline save API', () => {
     cy.intercept('POST', pipelineSaveCall, { fixture: 'pipeline/api/pipelines.post' }).as('pipelineSaveCall')
+    cy.intercept('GET', cdFailureStrategiesYaml, { fixture: 'pipeline/api/pipelines/failureStrategiesYaml' }).as(
+      'cdFailureStrategiesYaml'
+    )
     cy.contains('span', 'New Service').click()
 
     cy.fillName('testService')
@@ -89,6 +94,7 @@ describe('GIT SYNC DISABLED', () => {
     cy.contains('span', 'Save').click({ force: true })
 
     cy.wait('@pipelineSaveCall')
+    cy.wait('@cdFailureStrategiesYaml')
     cy.wait(500)
     cy.contains(
       'span',
@@ -102,6 +108,89 @@ describe('GIT SYNC DISABLED', () => {
     cy.wait('@pipelineSaveCall')
     cy.wait(500)
     cy.contains('span', 'Pipeline published successfully').should('be.visible')
+  })
+})
+
+describe('APPROVAL STAGE', () => {
+  beforeEach(() => {
+    cy.on('uncaught:exception', () => {
+      // returning false here prevents Cypress from
+      // failing the test
+      return false
+    })
+    cy.intercept('GET', gitSyncEnabledCall, { connectivityMode: null, gitSyncEnabled: false })
+    cy.login('test', 'test')
+
+    cy.visitCreatePipeline()
+
+    cy.fillName('testPipeline_Cypress')
+
+    cy.clickSubmit()
+
+    cy.get('[icon="plus"]').click()
+    cy.findByTestId('stage-Approval').click()
+  })
+
+  it('should add harness approval stage with default when condition and no default failure strategy', () => {
+    cy.intercept('GET', approvalStageYamlSnippet, { fixture: 'pipeline/api/approvals/stageYamlSnippet' })
+    cy.fillName('testApprovalStage_Cypress')
+    cy.clickSubmit()
+
+    cy.contains('span', 'Approval type is required').should('be.visible').should('have.class', 'FormError--error')
+
+    cy.get('[data-icon="nav-harness"]').click()
+
+    cy.clickSubmit()
+
+    cy.get('[data-icon="harness-with-color"]').should('be.visible')
+
+    cy.contains('span', 'Advanced').click({ force: true })
+
+    // By default no input for failure strategy should be present
+    cy.get('input[placeholder="Search..."]').should('not.exist')
+
+    // By default the when condition selected should be 'execute this stage if pipeline execution is successful thus far'
+    cy.get('[value="Success"]').should('be.checked')
+  })
+
+  it('should add jira approval stage with default when condition and no default failure strategy', () => {
+    cy.intercept('GET', jiraApprovalStageYamlSnippet, { fixture: 'pipeline/api/approvals/jiraStageYamlSnippet' })
+    cy.fillName('testJiraApprovalStage_Cypress')
+    cy.get('[data-icon="service-jira"]').click()
+
+    cy.clickSubmit()
+
+    cy.get('[data-icon="jira-create"]').should('be.visible')
+    cy.get('[data-icon="jira-approve"]').should('be.visible')
+    cy.get('[data-icon="jira-update"]').should('be.visible')
+
+    cy.contains('span', 'Advanced').click({ force: true })
+
+    // By default no input for failure strategy should be present
+    cy.get('input[placeholder="Search..."]').should('not.exist')
+
+    // By default the when condition selected should be 'execute this stage if pipeline execution is successful thus far'
+    cy.get('[value="Success"]').should('be.checked')
+  })
+
+  it('should add servicenow approval stage with default when condition and no default failure strategy', () => {
+    cy.intercept('GET', snowApprovalStageYamlSnippet, {
+      fixture: 'pipeline/api/approvals/snowApprovalStageYamlSnippet'
+    })
+    cy.fillName('testSnowApprovalStage_Cypress')
+    cy.get('[data-icon="service-servicenow"]').click()
+
+    cy.clickSubmit()
+
+    cy.get('[data-icon="servicenow-approve"]').should('be.visible')
+
+    cy.contains('span', 'Advanced').click({ force: true })
+
+    // By default no input for failure strategy should be present
+    cy.get('input[placeholder="Search..."]').should('not.exist')
+
+    // By default the when condition selected should be 'execute this stage if pipeline execution is successful thus far'
+    cy.get('[value="Success"]').should('be.checked')
   })
 })
 
@@ -125,11 +214,7 @@ describe('GIT SYNC ENABLED', () => {
 
     cy.clickSubmit()
 
-    cy.get('[icon="plus"]').click()
-    cy.findByTestId('stage-Deployment').click()
-
-    cy.fillName('testStage_Cypress')
-    cy.clickSubmit()
+    cy.createDeploymentStage()
   })
 
   it('should display the git sync dialog on save', () => {
@@ -264,7 +349,7 @@ describe('Input Sets', () => {
     cy.wait(2000)
   })
 
-  it.skip('Input Set Creation & Deletion', () => {
+  it('Input Set Creation & Deletion', () => {
     cy.wait('@emptyInputSetList')
     cy.wait(1000)
     cy.contains('span', '+ New Input Set').should('be.visible')
@@ -326,5 +411,87 @@ describe('Input Sets', () => {
     cy.contains('span', 'Delete').click({ force: true })
     cy.contains('span', 'Input Set "testService" deleted').should('be.visible')
     cy.contains('p', 'testService').should('not.exist')
+  })
+})
+
+describe('Add stage view with enabled licences', () => {
+  beforeEach(() => {
+    cy.on('uncaught:exception', () => {
+      // returning false here prevents Cypress from
+      // failing the test
+      return false
+    })
+    cy.intercept('GET', gitSyncEnabledCall, { connectivityMode: null, gitSyncEnabled: false })
+    cy.initializeRoute()
+    cy.visit(pipelinesRoute, {
+      timeout: 30000
+    })
+    cy.contains('span', 'Create a Pipeline').click()
+    cy.fillName('testPipeline_Cypress')
+    cy.clickSubmit()
+  })
+
+  it('should display the stage thumbnails when the all licenses are present', () => {
+    cy.get('[icon="plus"]').click()
+    cy.findByTestId('stage-Deployment').should('be.visible')
+    cy.get('[data-icon="template-library"]').should('be.visible')
+    cy.contains('span', 'Use template').should('be.visible')
+    cy.findByTestId('stage-CI').should('be.visible')
+    cy.findByTestId('stage-Approval').should('be.visible')
+    cy.findByTestId('stage-Security').should('be.visible')
+  })
+})
+
+describe('Add stage view with disabled licences', () => {
+  beforeEach(() => {
+    cy.on('uncaught:exception', () => {
+      // returning false here prevents Cypress from
+      // failing the test
+      return false
+    })
+    cy.intercept('GET', gitSyncEnabledCall, { connectivityMode: null, gitSyncEnabled: false })
+
+    cy.fixture('api/users/feature-flags/accountId').then(featureFlagsData => {
+      const disabledLicenses = ['NG_TEMPLATES', 'SECURITY_STAGE', 'CING_ENABLED']
+
+      const updatedFeatureFlagsList = featureFlagsData.resource.reduce((acc, currentFlagData) => {
+        if (disabledLicenses.includes(currentFlagData.name)) {
+          acc.push({
+            uuid: null,
+            name: currentFlagData.name,
+            enabled: false,
+            lastUpdatedAt: 0
+          })
+          return acc
+        }
+
+        acc.push(currentFlagData)
+        return acc
+      }, [])
+
+      cy.intercept('GET', featureFlagsCall, {
+        ...featureFlagsData,
+        resource: updatedFeatureFlagsList
+      })
+    })
+
+    cy.initializeRoute()
+    cy.visit(pipelinesRoute, {
+      timeout: 30000
+    })
+    cy.contains('span', 'Create a Pipeline').click()
+    cy.fillName('testPipeline_Cypress')
+    cy.clickSubmit()
+  })
+
+  it('should not display the stage thumbnails for the disabled licenses', () => {
+    cy.get('[icon="plus"]').click()
+    cy.findByTestId('stage-Deployment').should('be.visible')
+    cy.findByTestId('stage-Approval').should('be.visible')
+
+    cy.get('[data-icon="template-library"]').should('not.exist')
+    cy.contains('span', 'Use template').should('not.exist')
+    cy.findByTestId('stage-CI').should('not.exist')
+    cy.findByTestId('stage-Security').should('not.exist')
   })
 })

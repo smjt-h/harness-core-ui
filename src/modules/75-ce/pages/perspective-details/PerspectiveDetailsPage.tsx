@@ -10,16 +10,7 @@ import { useParams, useHistory } from 'react-router-dom'
 import cronstrue from 'cronstrue'
 import qs from 'qs'
 import cx from 'classnames'
-import {
-  Button,
-  Container,
-  Text,
-  PageHeader,
-  PageBody,
-  Icon,
-  useToaster,
-  getErrorInfoFromErrorObject
-} from '@wings-software/uicore'
+import { Button, Container, Text, PageHeader, PageBody, Icon, useToaster } from '@wings-software/uicore'
 import { FontVariation, Color } from '@harness/design-system'
 import routes from '@common/RouteDefinitions'
 import {
@@ -76,6 +67,7 @@ import { FeatureFlag } from '@common/featureFlags'
 import { useDeepCompareEffect, useQueryParams, useUpdateQueryParams } from '@common/hooks'
 import type { PerspectiveQueryParams, TimeRangeFilterType } from '@ce/types'
 import { useQueryParamsState } from '@common/hooks/useQueryParamsState'
+import useRBACError from '@rbac/utils/useRBACError/useRBACError'
 import css from './PerspectiveDetailsPage.module.scss'
 
 const PAGE_SIZE = 10
@@ -184,6 +176,7 @@ const PerspectiveDetailsPage: React.FC = () => {
   const { perspectiveId, accountId, perspectiveName } = useParams<PerspectiveParams>()
   const { getString } = useStrings()
   const isAnomaliesEnabled = useFeatureFlag(FeatureFlag.CCM_ANOMALY_DETECTION_NG)
+  const { getRBACErrorMessage } = useRBACError()
   const { showError } = useToaster()
 
   const { updateQueryParams } = useUpdateQueryParams()
@@ -269,7 +262,7 @@ const PerspectiveDetailsPage: React.FC = () => {
         })
         setAnomaliesCountData(response?.data as PerspectiveAnomalyData[])
       } catch (error: any) {
-        showError(getErrorInfoFromErrorObject(error))
+        showError(getRBACErrorMessage(error))
       }
     }
     if (isAnomaliesEnabled) {

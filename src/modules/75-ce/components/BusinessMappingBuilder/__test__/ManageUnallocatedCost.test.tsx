@@ -14,7 +14,11 @@ describe('test cases for ManageUnallocatedCost', () => {
   test('should be able to render component', () => {
     const { container } = render(
       <TestWrapper>
-        <ManageUnallocatedCost />
+        <ManageUnallocatedCost
+          data={{
+            label: 'Others'
+          }}
+        />
       </TestWrapper>
     )
     expect(container).toMatchSnapshot()

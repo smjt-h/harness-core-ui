@@ -28,6 +28,8 @@ import { NameSchema } from '@common/utils/Validation'
 import CopyToClipboard from '@common/components/CopyToClipBoard/CopyToClipBoard'
 import { useStrings } from 'framework/strings'
 import { useCreateDelegateToken, CreateDelegateTokenQueryParams } from 'services/cd-ng'
+import { useTelemetry } from '@common/hooks/useTelemetry'
+import { Category, DelegateActions } from '@common/constants/TrackingConstants'
 
 import css from '../DelegateTokens.module.scss'
 
@@ -58,6 +60,7 @@ export const useCreateTokenModal = ({ onSuccess }: CreateTokenModalProps): Creat
       height: 368
     }
   }
+  const { trackEvent } = useTelemetry()
 
   const { mutate: createToken, loading } = useCreateDelegateToken({
     queryParams: {
@@ -72,6 +75,10 @@ export const useCreateTokenModal = ({ onSuccess }: CreateTokenModalProps): Creat
 
   const onSubmit = async (values: FormikProps, formikActions: FormikActions<any>) => {
     try {
+      trackEvent(DelegateActions.SaveCreateToken, {
+        category: Category.DELEGATE,
+        data: values
+      })
       const createTokenResponse = await createToken(undefined, {
         headers: { 'content-type': 'application/json' },
         queryParams: {
@@ -143,6 +150,9 @@ export const useCreateTokenModal = ({ onSuccess }: CreateTokenModalProps): Creat
                         onClick={e => {
                           e.preventDefault()
                           hideModal()
+                          trackEvent(DelegateActions.CloseCreateToken, {
+                            category: Category.DELEGATE
+                          })
                         }}
                         variation={ButtonVariation.TERTIARY}
                       >

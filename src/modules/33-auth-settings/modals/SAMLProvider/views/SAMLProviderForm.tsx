@@ -24,7 +24,6 @@ import {
   ButtonVariation,
   ThumbnailSelect,
   Label,
-  getErrorInfoFromErrorObject,
   Page
 } from '@wings-software/uicore'
 import { Color, FontVariation } from '@harness/design-system'
@@ -44,6 +43,7 @@ import {
   Providers,
   getSelectedSAMLProvider
 } from '@auth-settings/modals/SAMLProvider/utils'
+import useRBACError from '@rbac/utils/useRBACError/useRBACError'
 import css from '../useSAMLProvider.module.scss'
 
 interface Props {
@@ -72,6 +72,7 @@ const defaultInitialData = {
   samlProviderType: undefined
 }
 const SAMLProviderForm: React.FC<Props> = ({ onSubmit, onCancel, samlProvider }) => {
+  const { getRBACErrorMessage } = useRBACError()
   const { getString } = useStrings()
   const { showSuccess } = useToaster()
   const { AZURE_SAML_150_GROUPS_SUPPORT } = useFeatureFlags()
@@ -161,7 +162,7 @@ const SAMLProviderForm: React.FC<Props> = ({ onSubmit, onCancel, samlProvider })
         onSubmit?.()
       }
     } catch (e) {
-      /* istanbul ignore next */ modalErrorHandler?.showDanger(getErrorInfoFromErrorObject(e))
+      /* istanbul ignore next */ modalErrorHandler?.showDanger(getRBACErrorMessage(e))
     }
   }
 

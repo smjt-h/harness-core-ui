@@ -5,57 +5,60 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import type { FormVariationMap, TargetingRulesFormValues } from '../../../Types.types'
+import { FormVariationMap, TargetingRuleItemType, TargetingRulesFormValues } from '../../../Types.types'
 import { PatchFeatureFlagUtils } from '../PatchFeatureFlagUtils'
 
 describe('PatchFeatureFlagUtils', async () => {
   const submittedValues: TargetingRulesFormValues = {
     state: '',
     onVariation: '',
-    formVariationMap: [
+    offVariation: '',
+    targetingRuleItems: [
       {
+        priority: 101,
+        type: TargetingRuleItemType.VARIATION,
         variationIdentifier: 'TEST2',
         variationName: 'TEST2',
         targetGroups: [],
-        targets: [],
-        isVisible: false
+        targets: []
       }
-    ],
-    variationPercentageRollouts: []
+    ]
   }
 
   const initialValues: TargetingRulesFormValues = {
     state: '',
     onVariation: '',
-    formVariationMap: [
+    offVariation: '',
+    targetingRuleItems: [
       {
+        priority: 101,
+        type: TargetingRuleItemType.VARIATION,
         variationIdentifier: 'TEST2',
         variationName: 'TEST2',
         targetGroups: [],
-        targets: [],
-        isVisible: false
+        targets: []
       }
-    ],
-    variationPercentageRollouts: []
+    ]
   }
 
   const formVariation: FormVariationMap = {
+    priority: 101,
+    type: TargetingRuleItemType.VARIATION,
     variationIdentifier: 'TEST',
     variationName: 'TEST',
     targetGroups: [],
-    targets: [],
-    isVisible: false
+    targets: []
   }
 
   test('it should return empty array if no new target groups found for variation', async () => {
     const componentUnderTest = PatchFeatureFlagUtils(submittedValues, initialValues)
 
-    expect(componentUnderTest.addedTargetGroups(formVariation)).toHaveLength(0)
+    expect(componentUnderTest.addedTargetGroups(formVariation.variationIdentifier)).toHaveLength(0)
   })
 
   test('it should return empty array if no removed target groups found for variation', async () => {
     const componentUnderTest = PatchFeatureFlagUtils(submittedValues, initialValues)
 
-    expect(componentUnderTest.removedTargetGroups(formVariation)).toHaveLength(0)
+    expect(componentUnderTest.removedTargetGroups(formVariation.variationIdentifier)).toHaveLength(0)
   })
 })

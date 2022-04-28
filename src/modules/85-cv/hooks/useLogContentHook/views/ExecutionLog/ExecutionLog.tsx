@@ -26,6 +26,7 @@ const ExecutionLog: React.FC<ExecutionAndAPICallLogProps> = ({
   isFullScreen,
   setIsFullScreen,
   verifyStepExecutionId,
+  monitoredServiceIdentifier,
   serviceName,
   envName,
   resource,
@@ -39,7 +40,9 @@ const ExecutionLog: React.FC<ExecutionAndAPICallLogProps> = ({
   errorLogsOnly,
   setErrorLogsOnly,
   pageNumber,
-  setPageNumber
+  setPageNumber,
+  handleDownloadLogs,
+  showTimelineSlider
 }) => {
   const { getString } = useStrings()
   const [state, dispatch] = React.useReducer<Reducer<State, Action<ActionType>>>(reducer, defaultReducerState)
@@ -51,6 +54,8 @@ const ExecutionLog: React.FC<ExecutionAndAPICallLogProps> = ({
   const length = state.data.length
 
   const { content, totalPages = 0 } = resource ?? {}
+
+  const isMonitoredService = Boolean(monitoredServiceIdentifier)
 
   React.useEffect(() => {
     /* istanbul ignore else */ if (content?.length) {
@@ -103,6 +108,7 @@ const ExecutionLog: React.FC<ExecutionAndAPICallLogProps> = ({
       <LogContentHeader
         logType={LogTypes.ExecutionLog}
         verifyStepExecutionId={verifyStepExecutionId}
+        monitoredServiceIdentifier={monitoredServiceIdentifier}
         serviceName={serviceName}
         envName={envName}
         healthSource={healthSource}
@@ -120,6 +126,8 @@ const ExecutionLog: React.FC<ExecutionAndAPICallLogProps> = ({
         setIsFullScreen={setIsFullScreen}
         isVerifyStep={Boolean(verifyStepExecutionId)}
         timeRange={timeRange}
+        isMonitoredService={isMonitoredService}
+        handleDownloadLogs={handleDownloadLogs}
       />
       <div className={cx(css.main, { [css.fullScreen]: isFullScreen })}>
         <pre className={css.container}>
@@ -144,7 +152,15 @@ const ExecutionLog: React.FC<ExecutionAndAPICallLogProps> = ({
             />
           )}
           {!length && !loading && !errorMessage && (
-            <StrTemplate tagName="div" className={css.noLogs} stringID="common.logs.noLogsText" />
+            <StrTemplate
+              tagName="div"
+              className={css.noLogs}
+              stringID={
+                isMonitoredService && !showTimelineSlider
+                  ? 'cv.monitoredServices.noAvailableLogData'
+                  : 'common.logs.noLogsText'
+              }
+            />
           )}
         </pre>
 

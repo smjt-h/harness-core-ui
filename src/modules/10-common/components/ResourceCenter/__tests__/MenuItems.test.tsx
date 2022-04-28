@@ -37,13 +37,13 @@ describe('MenuItems', () => {
         }
       }
     }
-    const { getByRole, getByText } = render(
+    const { getByText } = render(
       <TestWrapper defaultLicenseStoreValues={defaultLicenseStoreValues}>
         <MenuItems closeResourceCenter={jest.fn} />
       </TestWrapper>
     )
 
-    fireEvent.click(getByRole('button'))
+    fireEvent.focus(getByText('Common.contactsupport'))
     waitFor(() => {
       expect(getByText('common.explorePlans')).toBeInTheDocument()
     })
@@ -79,15 +79,13 @@ describe('MenuItems', () => {
     window.Saber = {
       do: doMock
     }
-    const { getAllByRole } = render(
+    const { getByText } = render(
       <TestWrapper>
         <MenuItems closeResourceCenter={jest.fn} />
       </TestWrapper>
     )
 
-    const buttons = getAllByRole('button')
-
-    fireEvent.click(buttons[0])
+    fireEvent.click(getByText('Common.contactsupport'))
     waitFor(() => {
       expect(doMock).toHaveBeenCalledWith('open')
     })
@@ -97,15 +95,13 @@ describe('MenuItems', () => {
     const doMock = jest.fn()
     moment.now = jest.fn(() => 1482363367071)
     window.open = doMock
-    const { getAllByRole } = render(
+    const { getByText } = render(
       <TestWrapper>
         <MenuItems closeResourceCenter={jest.fn} />
       </TestWrapper>
     )
 
-    const buttons = getAllByRole('button')
-
-    fireEvent.click(buttons[1])
+    fireEvent.click(getByText('common.resourceCenter.ticketmenu.tickets'))
     waitFor(() => {
       expect(doMock).toHaveBeenCalledWith(
         '/sso.html?action=login&brand_id=114095000394&locale_id=1&return_to=https%3A%2F%2Fsupport.harness.io%2Fhc%2Fen-us%2Frequests&src=zendesk&timestamp=1482363367071'

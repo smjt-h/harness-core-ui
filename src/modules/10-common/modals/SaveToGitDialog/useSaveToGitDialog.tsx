@@ -38,6 +38,7 @@ export interface UseSaveToGitDialogProps<T> {
     isEdit?: boolean
   ) => Promise<UseSaveSuccessResponse>
   onClose?: () => void
+  onProgessOverlayClose?: () => void
 }
 
 export interface OpenSaveToGitDialogValue<T> {
@@ -202,6 +203,7 @@ export function useSaveToGitDialog<T = Record<string, string>>(
           onClose={() => {
             hideCreateUpdateWithPRCreationModal()
             handleCreateUpdateSuccess(createUpdateStatus)
+            props.onProgessOverlayClose?.()
           }}
         />
       </Dialog>
@@ -227,6 +229,7 @@ export function useSaveToGitDialog<T = Record<string, string>>(
           onClose={() => {
             hideCreateUpdateModal()
             handleCreateUpdateSuccess(createUpdateStatus)
+            props.onProgessOverlayClose?.()
           }}
         />
       </Dialog>

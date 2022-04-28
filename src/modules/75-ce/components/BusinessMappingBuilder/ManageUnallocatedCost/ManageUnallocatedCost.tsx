@@ -6,28 +6,52 @@
  */
 
 import React from 'react'
-import { Container, FormInput, Layout, RadioButton } from '@harness/uicore'
+import { Container, FontVariation, FormInput, Layout, Text } from '@harness/uicore'
 import { useStrings } from 'framework/strings'
+import type { UnallocatedCost } from 'services/ce'
 import css from './ManageUnallocatedCost.module.scss'
 
-const ManageUnallocatedCost: () => React.ReactElement = () => {
+interface ManageUnallocatedCostProps {
+  data: UnallocatedCost
+}
+
+const ManageUnallocatedCost: (props: ManageUnallocatedCostProps) => React.ReactElement = ({ data }) => {
+  const strategy = data.strategy
+
   const { getString } = useStrings()
   return (
     <Container>
-      <Layout.Horizontal spacing="small" className={css.hContainer}>
-        <RadioButton
-          label={getString('ce.businessMapping.manageUnallocatedCost.defaultUnallocatedCostLabel')}
-          value="default"
-        />
-        <FormInput.Text
-          name="defaultVal"
-          placeholder={getString('ce.businessMapping.manageUnallocatedCost.otherPlaceholder')}
-          className={css.defaultValInputBox}
-          disabled
-        />
-      </Layout.Horizontal>
-      <RadioButton label={getString('ce.businessMapping.manageUnallocatedCost.ignoreCostLabel')} value={'-'} disabled />
-      <RadioButton label={getString('ce.businessMapping.manageUnallocatedCost.shareCosts')} value={'-'} disabled />
+      <FormInput.RadioGroup
+        className={css.radioContainer}
+        name="unallocatedCost.strategy"
+        items={[
+          {
+            label: (
+              <Layout.Horizontal className={css.hContainer} spacing="small">
+                <Text font={{ variation: FontVariation.FORM_LABEL }}>
+                  {getString('ce.businessMapping.manageUnallocatedCost.defaultUnallocatedCostLabel')}
+                </Text>
+                <FormInput.Text
+                  name="unallocatedCost.label"
+                  placeholder={getString('ce.businessMapping.manageUnallocatedCost.otherPlaceholder')}
+                  className={css.defaultValInputBox}
+                  disabled={strategy !== 'DISPLAY_NAME'}
+                />
+              </Layout.Horizontal>
+            ),
+            value: 'DISPLAY_NAME'
+          },
+          {
+            label: (
+              <Text font={{ variation: FontVariation.FORM_LABEL }}>
+                {getString('ce.businessMapping.manageUnallocatedCost.ignoreCostLabel')}
+              </Text>
+            ),
+            value: 'HIDE'
+          },
+          { label: getString('ce.businessMapping.manageUnallocatedCost.shareCosts'), value: 'SHARE', disabled: true }
+        ]}
+      />
     </Container>
   )
 }

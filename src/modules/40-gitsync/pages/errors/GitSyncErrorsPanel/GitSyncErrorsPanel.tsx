@@ -83,7 +83,7 @@ const parseDataForFileView = (
               showDetails: () => {
                 onShowDetails({
                   fileName: defaultTo((item.completeFilePath || '').split('/').pop(), ''),
-                  filePath: item.repoUrl + '/' + item.completeFilePath,
+                  filePath: item.additionalErrorDetails?.entityUrl,
                   type: defaultTo(item.entityType, ''),
                   content: item.additionalErrorDetails?.yamlContent
                 })

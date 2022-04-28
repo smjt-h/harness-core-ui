@@ -8,45 +8,57 @@
 /* eslint-disable react/display-name */
 import React, { FC, useMemo } from 'react'
 import { TableV2 } from '@harness/uicore'
-import type { Cell, Column } from 'react-table'
+import type { Column } from 'react-table'
 import type { Feature } from 'services/cf'
 import { useStrings } from 'framework/strings'
 import FlagDetailsCell from './FlagDetailsCell'
-import AddFlagCheckboxCell from './AddFlagCheckboxCell'
 import VariationsCell from './VariationsCell'
+import AddFlagCheckboxCell from './AddFlagCheckboxCell'
+import DeleteFlagButtonCell from './DeleteFlagButtonCell'
+
+import css from './FlagsListing.module.scss'
 
 export interface FlagsListingProps {
   flags: Feature[]
   includeAddFlagCheckbox?: boolean
-  disableVariationsCell?: (flag: Feature) => boolean
+  disableRowVariations?: (flag: Feature) => boolean
+  onRowDelete?: (flag: Feature) => void
 }
 
 const FlagsListing: FC<FlagsListingProps> = ({
   flags,
   includeAddFlagCheckbox = false,
-  disableVariationsCell = () => false
+  onRowDelete,
+  disableRowVariations = () => false
 }) => {
   const { getString } = useStrings()
 
   const columns = useMemo<Column<Feature>[]>(() => {
-    const cols = [
+    let flagColWidth = 100
+
+    if (includeAddFlagCheckbox) {
+      flagColWidth -= 5
+    }
+
+    if (onRowDelete) {
+      flagColWidth -= 5
+    }
+
+    const cols: Column<Feature>[] = [
       {
         Header: getString('cf.segmentDetail.headingFeatureFlag'),
-        width: '60%',
+        width: `calc(${flagColWidth}% - 300px)`,
         id: 'flag-info',
-        Cell: ({ row }: Cell<Feature>) => <FlagDetailsCell flag={row.original} />
+        Cell: FlagDetailsCell
       },
       {
         Header: getString('cf.segmentDetail.headingVariation'),
         id: 'variation',
-        width: '35%',
-        Cell: ({ row }: Cell<Feature>) => (
-          <VariationsCell
-            flag={row.original}
-            fieldPrefix={`flags.${row.original.identifier}`}
-            disabled={disableVariationsCell(row.original)}
-          />
-        )
+        width: '300px',
+        accessor: (flag: Feature) => ({
+          disabled: disableRowVariations(flag)
+        }),
+        Cell: VariationsCell
       }
     ]
 
@@ -55,16 +67,26 @@ const FlagsListing: FC<FlagsListingProps> = ({
         Header: '',
         width: '5%',
         id: 'checked',
-        Cell: ({ row }: Cell<Feature>) => (
-          <AddFlagCheckboxCell flag={row.original} fieldPrefix={`flags.${row.original.identifier}`} />
-        )
+        Cell: AddFlagCheckboxCell
+      })
+    }
+
+    if (onRowDelete) {
+      cols.push({
+        Header: '',
+        width: '5%',
+        id: 'actions',
+        accessor: (flag: Feature) => ({
+          onRowDelete: () => onRowDelete(flag)
+        }),
+        Cell: DeleteFlagButtonCell
       })
     }
 
     return cols
-  }, [disableVariationsCell, includeAddFlagCheckbox])
+  }, [disableRowVariations, includeAddFlagCheckbox, onRowDelete])
 
-  return <TableV2<Feature> columns={columns} data={flags} />
+  return <TableV2<Feature> getRowClassName={() => css.alignBaseline} columns={columns} data={flags} />
 }
 
 export default FlagsListing

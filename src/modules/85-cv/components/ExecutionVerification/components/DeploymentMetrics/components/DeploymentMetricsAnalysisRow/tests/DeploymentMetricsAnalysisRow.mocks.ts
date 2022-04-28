@@ -354,6 +354,17 @@ export const testDataMock = {
   name: 'harness-deployment-canary-56b5cc7c5b-9rpq7'
 }
 
+export const controlDataMock = {
+  points: [
+    { x: 1642941960000, y: 456.6666666666667 },
+    { x: 1642942020000, y: 10 },
+    { x: 1642942080000, y: 466.6666666666667 },
+    { x: 1642942140000, y: 702 }
+  ],
+  risk: 'HEALTHY',
+  name: 'control host name'
+}
+
 export const expectedChartConfigData = {
   chart: { height: 120, type: 'spline', width: 312.5806451612903 },
   credits: undefined,

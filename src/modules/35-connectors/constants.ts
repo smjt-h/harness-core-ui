@@ -72,6 +72,7 @@ export const Connectors: ConnectorType = {
   GCP_KMS: 'GcpKms',
   LOCAL: 'Local',
   AWS: 'Aws',
+  PDC: 'Pdc',
   AWS_CODECOMMIT: 'Codecommit',
   NEXUS: 'Nexus',
   ARTIFACTORY: 'Artifactory',

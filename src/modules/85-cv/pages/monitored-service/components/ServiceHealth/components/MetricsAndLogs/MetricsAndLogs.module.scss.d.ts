@@ -7,6 +7,7 @@
  **/
 // this is an auto-generated file, do not update this manually
 declare const styles: {
+  readonly header: string
   readonly metricsAndLogsCard: string
   readonly noDataCard: string
   readonly noDataCardContainer: string

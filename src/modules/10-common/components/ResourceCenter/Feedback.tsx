@@ -7,7 +7,7 @@
 
 import React, { useEffect, useState } from 'react'
 import _refiner from 'refiner-js'
-import { Button, ButtonVariation, Layout, Text } from '@wings-software/uicore'
+import { Icon, Layout, Text } from '@wings-software/uicore'
 import { Color, FontVariation } from '@harness/design-system'
 import { useAppStore } from 'framework/AppStore/AppStoreContext'
 import css from './ResourceCenter.module.scss'
@@ -46,29 +46,18 @@ const Feedback = ({ label }: FeedbackProps): React.ReactElement => {
   }
 
   return (
-    <Layout.Horizontal
-      padding={{ bottom: 'medium' }}
-      flex={{ justifyContent: 'space-between' }}
-      className={css.bottomBorder}
-    >
+    <Layout.Horizontal padding={{ bottom: 'medium' }} className={css.menuItem} onClick={refinerSurvey}>
       <Layout.Vertical>
         <Text
           font={{ variation: FontVariation.H4 }}
           padding={{ bottom: 'xsmall' }}
-          color={buttonDisabled ? Color.GREY_300 : Color.PRIMARY_3}
+          color={buttonDisabled ? Color.GREY_300 : Color.GREY_0}
         >
           {label}
         </Text>
       </Layout.Vertical>
       <Layout.Horizontal flex={{ alignItems: 'center' }} spacing={'medium'}>
-        <Button
-          disabled={buttonDisabled}
-          icon="chevron-right"
-          variation={ButtonVariation.ICON}
-          iconProps={buttonDisabled ? { color: Color.GREY_300 } : { color: Color.PRIMARY_4 }}
-          onClick={refinerSurvey}
-          data-testid="feedback"
-        />
+        <Icon name="chevron-right" color={buttonDisabled ? Color.GREY_300 : Color.GREY_0} data-testid="feedback" />
       </Layout.Horizontal>
     </Layout.Horizontal>
   )

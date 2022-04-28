@@ -7,20 +7,24 @@
     "pageSize": 10,
     "content": [
       {
-        "accountId": "px7xd_BFRCi-pfWPYXVjvw",
-        "orgIdentifier": "default",
-        "projectIdentifier": "project1",
-        "identifier": "testEnv",
-        "name": "testEnv",
-        "description": "Test Environment Description",
-        "color": "#0063F7",
-        "type": "Production",
-        "deleted": false,
-        "tags": {
-          "env": ""
+        "environment": {
+          "accountId": "px7xd_BFRCi-pfWPYXVjvw",
+          "orgIdentifier": "default",
+          "projectIdentifier": "project1",
+          "identifier": "testEnv",
+          "name": "testEnv",
+          "description": "Test Environment Description",
+          "color": "#0063F7",
+          "type": "Production",
+          "deleted": false,
+          "tags": {
+            "env": ""
+          },
+          "version": 0,
+          "yaml": "environment:\n  orgIdentifier: \"default\"\n  projectIdentifier: \"project1\"\n  identifier: \"testEnv\"\n  tags:\n    env: \"\"\n  name: \"testEnv\"\n  description: \"Test Environment Description\"\n  type: \"Production\"\n"
         },
-        "version": 0,
-        "yaml": "environment:\n  orgIdentifier: \"default\"\n  projectIdentifier: \"project1\"\n  identifier: \"testEnv\"\n  tags:\n    env: \"\"\n  name: \"testEnv\"\n  description: \"Test Environment Description\"\n  type: \"Production\"\n"
+        "createdAt": 1641916426164,
+        "lastModifiedAt": 1645722417382
       }
     ],
     "pageIndex": 0,

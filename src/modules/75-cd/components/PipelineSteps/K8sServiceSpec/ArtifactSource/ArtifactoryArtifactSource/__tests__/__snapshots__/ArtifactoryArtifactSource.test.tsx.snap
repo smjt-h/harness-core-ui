@@ -36,9 +36,9 @@ exports[`Artifactory Artifact Source tests snapshot test for Sidecar Artifactory
         >
           <label
             class="bp3-label"
-            for="undefined.artifacts.sidecars[0].sidecar.spec.artifactPath"
+            for="undefined.artifacts.sidecars[0].sidecar.spec.repository"
           >
-            pipeline.artifactPathLabel
+            repository
              
             <span
               class="bp3-text-muted"
@@ -56,7 +56,7 @@ exports[`Artifactory Artifact Source tests snapshot test for Sidecar Artifactory
                 <input
                   autocomplete="off"
                   class="bp3-input"
-                  name="undefined.artifacts.sidecars[0].sidecar.spec.artifactPath"
+                  name="undefined.artifacts.sidecars[0].sidecar.spec.repository"
                   type="text"
                   value=""
                 />
@@ -97,9 +97,9 @@ exports[`Artifactory Artifact Source tests snapshot test for Sidecar Artifactory
         >
           <label
             class="bp3-label"
-            for="undefined.artifacts.sidecars[0].sidecar.spec.repository"
+            for="undefined.artifacts.sidecars[0].sidecar.spec.artifactPath"
           >
-            repository
+            pipeline.artifactPathLabel
              
             <span
               class="bp3-text-muted"
@@ -117,7 +117,7 @@ exports[`Artifactory Artifact Source tests snapshot test for Sidecar Artifactory
                 <input
                   autocomplete="off"
                   class="bp3-input"
-                  name="undefined.artifacts.sidecars[0].sidecar.spec.repository"
+                  name="undefined.artifacts.sidecars[0].sidecar.spec.artifactPath"
                   type="text"
                   value=""
                 />

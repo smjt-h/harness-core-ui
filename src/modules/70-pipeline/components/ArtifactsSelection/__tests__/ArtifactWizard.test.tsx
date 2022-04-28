@@ -59,6 +59,7 @@ describe('Artifact WizardStep tests', () => {
           types={[]}
           expressions={[]}
           isReadonly={false}
+          showConnectorStep={true}
           labels={{
             firstStepName: 'first step',
             secondStepName: 'second step'
@@ -87,6 +88,7 @@ describe('Artifact WizardStep tests', () => {
           types={[]}
           expressions={[]}
           allowableTypes={[MultiTypeInputType.FIXED, MultiTypeInputType.RUNTIME, MultiTypeInputType.EXPRESSION]}
+          showConnectorStep={true}
           isReadonly={false}
           labels={{
             firstStepName: 'first step',
@@ -115,6 +117,7 @@ describe('Artifact WizardStep tests', () => {
           types={['DockerRegistry', 'Gcr', 'Ecr']}
           expressions={[]}
           allowableTypes={[MultiTypeInputType.FIXED, MultiTypeInputType.RUNTIME, MultiTypeInputType.EXPRESSION]}
+          showConnectorStep={true}
           isReadonly={false}
           labels={{
             firstStepName: 'first step',
@@ -135,7 +138,7 @@ describe('Artifact WizardStep tests', () => {
     const initialValues = {
       connectorId: 'connectorId'
     }
-    const { container, debug } = render(
+    const { container } = render(
       <TestWrapper>
         <ArtifactWizard
           handleViewChange={jest.fn()}
@@ -143,6 +146,7 @@ describe('Artifact WizardStep tests', () => {
           types={['DockerRegistry', 'Gcr', 'Ecr']}
           expressions={[]}
           allowableTypes={[MultiTypeInputType.FIXED, MultiTypeInputType.RUNTIME, MultiTypeInputType.EXPRESSION]}
+          showConnectorStep={true}
           isReadonly={false}
           labels={{
             firstStepName: 'first step',
@@ -178,7 +182,6 @@ describe('Artifact WizardStep tests', () => {
     expect(newConnectorLabel).toBeDefined()
 
     fireEvent.click(newConnectorLabel)
-    debug(container)
     const gcrHostname = await findByText(container, 'connectors.GCR.registryHostname')
     expect(gcrHostname).toBeDefined()
     fireEvent.click(gcrHostname)
@@ -198,6 +201,7 @@ describe('Artifact WizardStep tests', () => {
           types={['DockerRegistry', 'Gcr', 'Ecr']}
           expressions={[]}
           allowableTypes={[MultiTypeInputType.FIXED, MultiTypeInputType.RUNTIME, MultiTypeInputType.EXPRESSION]}
+          showConnectorStep={true}
           isReadonly={false}
           labels={{
             firstStepName: 'first step',
@@ -256,6 +260,7 @@ describe('Artifact WizardStep tests', () => {
           types={['DockerRegistry', 'Gcr', 'Ecr']}
           expressions={[]}
           allowableTypes={[MultiTypeInputType.FIXED, MultiTypeInputType.RUNTIME, MultiTypeInputType.EXPRESSION]}
+          showConnectorStep={true}
           isReadonly={false}
           labels={{
             firstStepName: 'first step',

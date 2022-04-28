@@ -24,6 +24,7 @@ import { useGetOrganizationAggregateDTOList, useCopyUserGroup, useGetProjectAggr
 import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
 import { useStrings } from 'framework/strings'
 import { generateScopeList } from '@rbac/utils/utils'
+import useRBACError from '@rbac/utils/useRBACError/useRBACError'
 import type { ProjectSelectOption } from '@audit-trail/components/FilterDrawer/FilterDrawer'
 import { getOrgDropdownList, getProjectDropdownList } from '@audit-trail/utils/RequestUtil'
 import css from './CopyGroupForm.module.scss'
@@ -42,6 +43,7 @@ interface CopyGroupFormProps {
 const CopyGroupForm: React.FC<CopyGroupFormProps> = ({ closeModal, identifier }) => {
   const [projectsQuery, setProjectsQuery] = useState('')
   const { accountId } = useParams<ProjectPathProps>()
+  const { getRBACErrorMessage } = useRBACError()
   const [modalErrorHandler, setModalErrorHandler] = useState<ModalErrorHandlerBinding>()
   const { getString } = useStrings()
 
@@ -85,7 +87,7 @@ const CopyGroupForm: React.FC<CopyGroupFormProps> = ({ closeModal, identifier })
       }
       closeModal()
     } catch (e) {
-      modalErrorHandler?.showDanger(e.data?.message || e.message)
+      modalErrorHandler?.showDanger(getRBACErrorMessage(e))
     }
   }
 

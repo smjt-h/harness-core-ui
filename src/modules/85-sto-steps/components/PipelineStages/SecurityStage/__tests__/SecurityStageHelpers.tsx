@@ -39,11 +39,7 @@ export const getPropsForMinimalStage = (): PipelineStagesProps => ({
       type: '',
       key: 'security'
     }
-  ],
-  templateTypes: {},
-  setTemplateTypes: jest.fn(),
-  openTemplateSelector: jest.fn(),
-  closeTemplateSelector: jest.fn()
+  ]
 })
 
 export const approvalStageTemplateMock = {

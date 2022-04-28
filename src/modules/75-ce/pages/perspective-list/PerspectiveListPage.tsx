@@ -17,8 +17,7 @@ import {
   FlexExpander,
   Page,
   Icon,
-  IconName,
-  getErrorInfoFromErrorObject
+  IconName
 } from '@wings-software/uicore'
 import { Color, FontVariation } from '@harness/design-system'
 import { defaultTo, pick, sortBy } from 'lodash-es'
@@ -46,6 +45,7 @@ import { Utils } from '@ce/common/Utils'
 import { PAGE_NAMES, USER_JOURNEY_EVENTS } from '@ce/TrackingEventsConstants'
 import { NGBreadcrumbs } from '@common/components/NGBreadcrumbs/NGBreadcrumbs'
 import RbacButton from '@rbac/components/Button/Button'
+import useRBACError from '@rbac/utils/useRBACError/useRBACError'
 import bgImage from './images/perspectiveBg.png'
 import css from './PerspectiveListPage.module.scss'
 
@@ -365,6 +365,7 @@ const PerspectiveListPage: React.FC = () => {
   }>()
   const [searchParam, setSearchParam] = useState<string>('')
   const { getString } = useStrings()
+  const { getRBACErrorMessage } = useRBACError()
   const { showError, showSuccess } = useToaster()
   const [view, setView] = useState(Views.GRID)
   const [quickFilters, setQuickFilters] = useState<Record<string, boolean>>({})
@@ -456,7 +457,7 @@ const PerspectiveListPage: React.FC = () => {
         )
       }
     } catch (e: any) {
-      showError(getErrorInfoFromErrorObject(e))
+      showError(getRBACErrorMessage(e))
     }
   }
 

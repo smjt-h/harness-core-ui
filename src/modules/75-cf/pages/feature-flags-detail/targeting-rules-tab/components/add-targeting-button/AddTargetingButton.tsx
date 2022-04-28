@@ -5,63 +5,80 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import { PopoverPosition } from '@blueprintjs/core'
-import { FontVariation } from '@harness/design-system'
-import { ButtonVariation, Layout, Button, Text } from '@harness/uicore'
+import { Icon, PopoverPosition } from '@blueprintjs/core'
+import { ButtonVariation } from '@harness/uicore'
 import React, { ReactElement } from 'react'
 import { useStrings } from 'framework/strings'
-import type { FormVariationMap } from '../../Types.types'
+import { FeatureIdentifier } from 'framework/featureStore/FeatureIdentifier'
+import RbacOptionsMenuButton from '@rbac/components/RbacOptionsMenuButton/RbacOptionsMenuButton'
+import { ResourceType } from '@rbac/interfaces/ResourceType'
 
-interface AddTargetingButtonProps {
-  addTargetingDropdownVariations: FormVariationMap[]
-  addVariation: (newVariation: FormVariationMap) => void
+import { PermissionIdentifier } from '@rbac/interfaces/PermissionIdentifier'
+
+import type { Variation } from 'services/cf'
+import type { VariationColorMap } from '../../Types.types'
+export interface AddTargetingButtonProps {
+  targetingDropdownVariations: Variation[]
+  addVariation: (newVariation: Variation) => void
+  variationColorMap: VariationColorMap
   addPercentageRollout: () => void
+  featureDisabled?: boolean
+  disabled?: boolean
 }
 
 const AddTargetingButton = ({
-  addTargetingDropdownVariations,
+  targetingDropdownVariations,
+  variationColorMap,
   addVariation,
   addPercentageRollout
 }: AddTargetingButtonProps): ReactElement => {
   const { getString } = useStrings()
 
+  const items = [
+    ...targetingDropdownVariations.map(variation => ({
+      'data-testid': `variation_option_${variation.identifier}`,
+      onClick: () => addVariation(variation),
+      icon: <Icon icon="full-circle" color={variationColorMap[variation.identifier]} />,
+      text: variation.name || variation.identifier,
+      permission: {
+        resource: { resourceType: ResourceType.FEATUREFLAG },
+        permission: PermissionIdentifier.EDIT_FF_FEATUREFLAG
+      },
+      featuresProps: {
+        featuresRequest: {
+          featureNames: [FeatureIdentifier.MAUS]
+        }
+      }
+    })),
+    {
+      'data-testid': 'variation_option_percentage_rollout',
+      onClick: () => addPercentageRollout(),
+      icon: <Icon icon="percentage" />,
+      text: getString('cf.featureFlags.percentageRollout'),
+      permission: {
+        resource: { resourceType: ResourceType.FEATUREFLAG },
+        permission: PermissionIdentifier.EDIT_FF_FEATUREFLAG
+      },
+      featuresProps: {
+        featuresRequest: {
+          featureNames: [FeatureIdentifier.MAUS]
+        }
+      }
+    }
+  ]
+
   return (
-    <Button
+    <RbacOptionsMenuButton
       icon="plus"
       rightIcon="chevron-down"
       variation={ButtonVariation.SECONDARY}
       text={getString('cf.featureFlags.rules.addTargeting')}
+      items={items}
       tooltipProps={{
-        fill: true,
         interactionKind: 'click',
         minimal: true,
         position: PopoverPosition.BOTTOM_LEFT
       }}
-      tooltip={
-        <Layout.Vertical padding="small" spacing="small">
-          {addTargetingDropdownVariations.map(variation => (
-            <Text
-              data-testid={`variation_option_${variation.variationIdentifier}`}
-              inline
-              onClick={() => addVariation(variation)}
-              key={variation.variationIdentifier}
-              font={{ variation: FontVariation.BODY }}
-              icon="full-circle"
-            >
-              {variation.variationName}
-            </Text>
-          ))}
-          <Text
-            data-testid="variation_option_percentage_rollout"
-            inline
-            onClick={() => addPercentageRollout()}
-            font={{ variation: FontVariation.BODY }}
-            icon="percentage"
-          >
-            {getString('cf.featureFlags.percentageRollout')}
-          </Text>
-        </Layout.Vertical>
-      }
     />
   )
 }

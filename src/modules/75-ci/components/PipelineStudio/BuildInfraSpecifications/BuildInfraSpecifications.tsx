@@ -85,7 +85,7 @@ interface KubernetesBuildInfraFormValues {
   useFromStage?: string
   annotations?: MultiTypeMapUIType
   labels?: MultiTypeMapUIType
-  priorityClass?: string
+  priorityClassName?: string
   automountServiceAccountToken?: boolean
   privileged?: boolean
   allowPrivilegeEscalation?: boolean
@@ -316,6 +316,8 @@ export default function BuildInfraSpecifications({ children }: React.PropsWithCh
   }
 
   const getKubernetesInfraPayload = useMemo((): BuildInfraFormValues => {
+    const autoServiceAccountToken = (stage?.stage?.spec?.infrastructure as K8sDirectInfraYaml)?.spec
+      ?.automountServiceAccountToken
     return {
       namespace: (stage?.stage?.spec?.infrastructure as K8sDirectInfraYaml)?.spec?.namespace,
       serviceAccountName: (stage?.stage?.spec?.infrastructure as K8sDirectInfraYaml)?.spec?.serviceAccountName,
@@ -329,10 +331,9 @@ export default function BuildInfraSpecifications({ children }: React.PropsWithCh
       ),
       labels: getInitialMapValues((stage?.stage?.spec?.infrastructure as K8sDirectInfraYaml)?.spec?.labels || {}),
       buildInfraType: 'KubernetesDirect',
-      priorityClass: (stage?.stage?.spec?.infrastructure as K8sDirectInfraYaml)?.spec
-        ?.priorityClass as unknown as string,
-      automountServiceAccountToken:
-        (stage?.stage?.spec?.infrastructure as K8sDirectInfraYaml)?.spec?.automountServiceAccountToken || true,
+      priorityClassName: (stage?.stage?.spec?.infrastructure as K8sDirectInfraYaml)?.spec
+        ?.priorityClassName as unknown as string,
+      automountServiceAccountToken: typeof autoServiceAccountToken === 'undefined' ? true : autoServiceAccountToken,
       privileged: (stage?.stage?.spec?.infrastructure as K8sDirectInfraYaml)?.spec?.containerSecurityContext
         ?.privileged,
       allowPrivilegeEscalation: (stage?.stage?.spec?.infrastructure as K8sDirectInfraYaml)?.spec
@@ -512,7 +513,7 @@ export default function BuildInfraSpecifications({ children }: React.PropsWithCh
                     annotations: getMapValues(values.annotations),
                     labels: !isEmpty(filteredLabels) ? filteredLabels : undefined,
                     automountServiceAccountToken: values.automountServiceAccountToken,
-                    priorityClass: values.priorityClass,
+                    priorityClassName: values.priorityClassName,
                     ...additionalKubernetesFields
                   }
                 }
@@ -815,12 +816,12 @@ export default function BuildInfraSpecifications({ children }: React.PropsWithCh
               <Text
                 font={{ variation: FontVariation.FORM_LABEL }}
                 margin={{ bottom: 'xsmall' }}
-                tooltipProps={{ dataTooltipId: 'priorityClass' }}
+                tooltipProps={{ dataTooltipId: 'priorityClassName' }}
               >
-                {getString('pipeline.buildInfra.priorityClass')}
+                {getString('pipeline.buildInfra.priorityClassName')}
               </Text>
             }
-            name="priorityClass"
+            name="priorityClassName"
             style={{ width: 300, marginBottom: 'var(--spacing-xsmall)' }}
             multiTextInputProps={{
               multiTextInputProps: { expressions, allowableTypes },
@@ -828,6 +829,7 @@ export default function BuildInfraSpecifications({ children }: React.PropsWithCh
             }}
           />
         </Container>
+        <Separator topSeparation={12} />
         <div className={css.tabSubHeading} id="containerSecurityContext">
           {getString('pipeline.buildInfra.containerSecurityContext')}
         </div>
@@ -941,6 +943,7 @@ export default function BuildInfraSpecifications({ children }: React.PropsWithCh
             }}
           />
         </Container>
+        <Separator topSeparation={0} />
       </>
     )
   }, [])
@@ -1235,19 +1238,19 @@ export default function BuildInfraSpecifications({ children }: React.PropsWithCh
                                               </>
                                             )}
                                             {(propagatedStage?.stage?.spec?.infrastructure as K8sDirectInfraYaml)?.spec
-                                              ?.priorityClass && (
+                                              ?.priorityClassName && (
                                               <>
                                                 <Text
                                                   font={{ variation: FontVariation.FORM_LABEL }}
                                                   margin={{ bottom: 'xsmall' }}
                                                   tooltipProps={{ dataTooltipId: 'timeout' }}
                                                 >
-                                                  {getString('pipeline.buildInfra.priorityClass')}
+                                                  {getString('pipeline.buildInfra.priorityClassName')}
                                                 </Text>
                                                 <Text color="black" margin={{ bottom: 'medium' }}>
                                                   {
                                                     (propagatedStage?.stage?.spec?.infrastructure as K8sDirectInfraYaml)
-                                                      ?.spec?.priorityClass
+                                                      ?.spec?.priorityClassName
                                                   }
                                                 </Text>
                                               </>

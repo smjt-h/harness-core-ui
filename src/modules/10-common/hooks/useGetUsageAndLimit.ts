@@ -8,13 +8,15 @@
 import { useState } from 'react'
 import moment from 'moment'
 import { useParams } from 'react-router-dom'
-import { useGetLicensesAndSummary } from 'services/cd-ng'
-import type {
+import {
+  useGetLicensesAndSummary,
   GetLicensesAndSummaryQueryParams,
   CILicenseSummaryDTO,
   CFLicenseSummaryDTO,
   CELicenseSummaryDTO,
-  CDLicenseSummaryDTO
+  CDLicenseSummaryDTO,
+  useGetCDLicenseUsageForServiceInstances,
+  useGetCDLicenseUsageForServices
 } from 'services/cd-ng'
 import { useDeepCompareEffect } from '@common/hooks'
 import { useGetLicenseUsage as useGetFFUsage } from 'services/cf'
@@ -51,6 +53,10 @@ interface UsageProps {
   }
   ccm?: {
     activeSpend?: UsageProp
+  }
+  cd?: {
+    activeServices?: UsageProp
+    activeServiceInstances?: UsageProp
   }
 }
 
@@ -199,6 +205,32 @@ function useGetUsage(module: ModuleName): UsageReturn {
     lazy: module !== ModuleName.CE
   })
 
+  const {
+    data: cdSIUsageData,
+    loading: loadingCDSIUsage,
+    error: cdSIUsageError,
+    refetch: refetchCDSIUsage
+  } = useGetCDLicenseUsageForServiceInstances({
+    queryParams: {
+      accountIdentifier: accountId,
+      timestamp
+    },
+    lazy: module !== ModuleName.CD
+  })
+
+  const {
+    data: cdUsageData,
+    loading: loadingCDUsage,
+    error: cdUsageError,
+    refetch: refetchCDUsage
+  } = useGetCDLicenseUsageForServices({
+    queryParams: {
+      accountIdentifier: accountId,
+      timestamp
+    },
+    lazy: module !== ModuleName.CD
+  })
+
   function setUsageByModule(): void {
     switch (module) {
       case ModuleName.CI:
@@ -238,6 +270,22 @@ function useGetUsage(module: ModuleName): UsageReturn {
           refetchUsage: refetchCCMUsage
         })
         break
+      case ModuleName.CD:
+        setUsageData({
+          usage: {
+            cd: {
+              activeServiceInstances: cdSIUsageData?.data?.activeServiceInstances,
+              activeServices: cdUsageData?.data?.activeServices
+            }
+          },
+          loadingUsage: loadingCDSIUsage || loadingCDUsage,
+          usageErrorMsg: cdSIUsageError?.message || cdUsageError?.message,
+          refetchUsage: () => {
+            refetchCDSIUsage()
+            refetchCDUsage()
+          }
+        })
+        break
     }
   }
 
@@ -253,7 +301,13 @@ function useGetUsage(module: ModuleName): UsageReturn {
     loadingFFUsage,
     ccmUsageData,
     ccmUsageError,
-    loadingCCMUsage
+    loadingCCMUsage,
+    cdSIUsageData,
+    cdUsageData,
+    cdSIUsageError,
+    cdUsageError,
+    loadingCDSIUsage,
+    loadingCDUsage
   ])
 
   return usageData

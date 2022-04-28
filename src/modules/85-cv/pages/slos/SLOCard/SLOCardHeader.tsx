@@ -7,6 +7,7 @@
 
 import React, { useState } from 'react'
 import { useHistory, useParams, Link } from 'react-router-dom'
+import { defaultTo } from 'lodash-es'
 import {
   Container,
   Heading,
@@ -19,7 +20,6 @@ import {
   Icon
 } from '@wings-software/uicore'
 import { FontVariation, Color } from '@harness/design-system'
-
 import { Position, Menu, Intent } from '@blueprintjs/core'
 import type { SLOErrorBudgetResetDTO } from 'services/cv'
 import { useStrings } from 'framework/strings'
@@ -33,6 +33,8 @@ import ReviewChangeSVG from '@cv/assets/sloReviewChange.svg'
 import { useErrorBudgetRestHook } from '@cv/hooks/useErrorBudgetRestHook/useErrorBudgetRestHook'
 import { useLogContentHook } from '@cv/hooks/useLogContentHook/useLogContentHook'
 import { LogTypes } from '@cv/hooks/useLogContentHook/useLogContentHook.types'
+import { getSearchString } from '@cv/utils/CommonUtils'
+import { SLODetailsPageTabIds } from '@cv/pages/slos/CVSLODetailsPage/CVSLODetailsPage.types'
 import { PeriodTypes } from '../components/CVCreateSLO/CVCreateSLO.types'
 import type { SLOCardHeaderProps } from '../CVSLOsListingPage.types'
 import css from '../CVSLOsListingPage.module.scss'
@@ -58,16 +60,23 @@ const SLOCardHeader: React.FC<SLOCardHeaderProps> = ({
     module: 'cv'
   })
 
+  const SLODetailsPagePathname =
+    routes.toCVSLODetailsPage({
+      identifier: serviceLevelObjective.sloIdentifier,
+      accountId,
+      orgIdentifier,
+      projectIdentifier
+    }) + getSearchString({ monitoredServiceIdentifier })
+
   const onEdit = (): void => {
     history.push({
-      pathname: routes.toCVEditSLOs({
+      pathname: routes.toCVSLODetailsPage({
         identifier: serviceLevelObjective.sloIdentifier,
         accountId,
         orgIdentifier,
-        projectIdentifier,
-        module: 'cv'
+        projectIdentifier
       }),
-      search: monitoredServiceIdentifier ? `?monitoredServiceIdentifier=${monitoredServiceIdentifier}` : ''
+      search: getSearchString({ tab: SLODetailsPageTabIds.Configurations, monitoredServiceIdentifier })
     })
   }
 
@@ -81,7 +90,7 @@ const SLOCardHeader: React.FC<SLOCardHeaderProps> = ({
     intent: Intent.DANGER,
     buttonIntent: Intent.DANGER,
     onCloseDialog: (isConfirmed: boolean) => {
-      if (isConfirmed) {
+      /* istanbul ignore else */ if (isConfirmed) {
         onDelete(serviceLevelObjective.sloIdentifier, serviceLevelObjective.title)
       }
     }
@@ -101,7 +110,7 @@ const SLOCardHeader: React.FC<SLOCardHeaderProps> = ({
     confirmButtonText: getString('common.ok'),
     cancelButtonText: getString('cancel'),
     onCloseDialog: isConfirmed => {
-      if (isConfirmed && errorBudgetResetData) {
+      /* istanbul ignore else */ if (isConfirmed && errorBudgetResetData) {
         onResetErrorBudget(serviceLevelObjective.sloIdentifier, errorBudgetResetData)
       }
       setErrorBudgetResetData(null)
@@ -124,9 +133,11 @@ const SLOCardHeader: React.FC<SLOCardHeaderProps> = ({
   return (
     <>
       <Container flex margin={{ bottom: 'medium' }}>
-        <Heading level={2} font={{ variation: FontVariation.H4 }} color={Color.GREY_800}>
-          {serviceLevelObjective.title}
-        </Heading>
+        <Link to={SLODetailsPagePathname}>
+          <Heading level={2} font={{ variation: FontVariation.H4 }} color={Color.PRIMARY_7}>
+            {serviceLevelObjective.title}
+          </Heading>
+        </Link>
         <Popover
           isOpen={menuOpen}
           onInteraction={nextOpenState => setMenuOpen(nextOpenState)}
@@ -160,7 +171,15 @@ const SLOCardHeader: React.FC<SLOCardHeaderProps> = ({
                 />
               )}
               <RbacMenuItem
-                icon={<Icon size={20} padding={{ right: 'xsmall' }} name="api-docs" color={Color.GREY_700} />}
+                icon={
+                  <Icon
+                    size={20}
+                    padding={{ right: 'xsmall' }}
+                    name="api-docs"
+                    color={Color.GREY_700}
+                    className={css.menuIcon}
+                  />
+                }
                 text={getString('cv.externalAPICalls')}
                 onClick={() => openLogContentHook(LogTypes.ApiCallLog)}
                 permission={{
@@ -172,7 +191,7 @@ const SLOCardHeader: React.FC<SLOCardHeaderProps> = ({
                 }}
               />
               <RbacMenuItem
-                icon={<Icon size={20} padding={{ right: 'xsmall' }} name="audit-trail" color={Color.GREY_700} />}
+                icon={<Icon size={20} padding={{ right: 'xsmall' }} name="audit-trail" className={css.menuIcon} />}
                 text={getString('cv.executionLogs')}
                 onClick={() => openLogContentHook(LogTypes.ExecutionLog)}
                 permission={{
@@ -265,7 +284,7 @@ const SLOCardHeader: React.FC<SLOCardHeaderProps> = ({
                 : getString('cv.nDays', { n: serviceLevelObjective.currentPeriodLengthDays })}
             </Text>
           </Layout.Horizontal>
-          <TagsRenderer tags={serviceLevelObjective.tags ?? {}} tagClassName={css.sloTags} />
+          <TagsRenderer tags={defaultTo(serviceLevelObjective.tags, {})} tagClassName={css.sloTags} />
         </Layout.Vertical>
 
         <Layout.Horizontal spacing="medium">
@@ -274,7 +293,7 @@ const SLOCardHeader: React.FC<SLOCardHeaderProps> = ({
               {getString('cv.burnRatePerDay')}
             </Text>
             <Heading level={2} color={Color.GREY_800} font={{ variation: FontVariation.H4 }}>
-              {(Number(serviceLevelObjective.burnRate.currentRatePercentage) || 0).toFixed(2)}%
+              {defaultTo(Number(serviceLevelObjective.burnRate.currentRatePercentage), 0).toFixed(2)}%
             </Heading>
           </Container>
           <Container width={120} background={Color.GREY_100} padding="small" className={css.sloGlanceCard}>

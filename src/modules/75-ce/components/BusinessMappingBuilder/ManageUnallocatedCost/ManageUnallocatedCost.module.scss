@@ -7,7 +7,14 @@
 
 .hContainer {
   align-items: center;
-  .defaultValInputBox {
-    margin: 0px;
+}
+
+.radioContainer {
+  label {
+    align-items: center;
   }
+}
+
+.defaultValInputBox {
+  margin: 0px;
 }

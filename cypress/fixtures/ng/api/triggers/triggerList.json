@@ -1,0 +1,31 @@
+{
+  "status": "SUCCESS",
+  "data": {
+    "totalPages": 1,
+    "totalItems": 1,
+    "pageItemCount": 1,
+    "pageSize": 25,
+    "content": [
+      {
+        "name": "testTrigger",
+        "identifier": "testTrigger",
+        "description": "Test Trigger Description",
+        "type": "Scheduled",
+        "triggerStatus": {
+          "pollingSubscriptionStatus": null,
+          "validationStatus": { "statusResult": "SUCCESS", "detailedMessage": null },
+          "webhookAutoRegistrationStatus": null
+        },
+        "tags": { "triggerTag": "" },
+        "executions": [0, 0, 0, 0, 0, 0, 0],
+        "yaml": "trigger:\n    name: testTrigger\n    identifier: testTrigger\n    enabled: true\n    description: Test Trigger Description\n    tags:\n        triggerTag: \"\"\n    orgIdentifier: default\n    projectIdentifier: project1\n    pipelineIdentifier: testPipeline_Cypress\n    source:\n        type: Scheduled\n        spec:\n            type: Cron\n            spec:\n                expression: 0/10 * * * *\n    inputYaml: |\n        pipeline:\n            identifier: testPipeline_Cypress\n            stages:\n                - stage:\n                      identifier: j\n                      type: Deployment\n                      spec:\n                          serviceConfig:\n                              serviceRef: testService\n",
+        "webhookUrl": "",
+        "enabled": true
+      }
+    ],
+    "pageIndex": 0,
+    "empty": false
+  },
+  "metaData": null,
+  "correlationId": "5b63acbf-ed6c-4dfa-b9e0-75a0d13492af"
+}

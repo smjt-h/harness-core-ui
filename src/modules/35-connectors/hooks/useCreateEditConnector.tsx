@@ -7,7 +7,7 @@
 
 import { useState } from 'react'
 import { omit, noop } from 'lodash-es'
-import { getErrorInfoFromErrorObject, shouldShowError } from '@wings-software/uicore'
+import { shouldShowError } from '@wings-software/uicore'
 import { useToaster } from '@common/exports'
 import { UseSaveSuccessResponse, useSaveToGitDialog } from '@common/modals/SaveToGitDialog/useSaveToGitDialog'
 import type { SaveToGitFormInterface } from '@common/components/SaveToGitForm/SaveToGitForm'
@@ -23,6 +23,7 @@ import {
 import type { ConnectorCreateEditProps } from '@connectors/constants'
 import { Entities } from '@common/interfaces/GitSyncInterface'
 import { useStrings } from 'framework/strings'
+import useRBACError from '@rbac/utils/useRBACError/useRBACError'
 
 export interface BuildPayloadProps {
   projectIdentifier?: string
@@ -49,6 +50,7 @@ interface OnInitiateConnectorCreateEditProps<T> {
 export default function useCreateEditConnector<T>(props: UseCreateEditConnector) {
   const { showError, showSuccess } = useToaster()
   const { getString } = useStrings()
+  const { getRBACErrorMessage } = useRBACError()
 
   const [connectorPayload, setConnectorPayload] = useState<Connector>({})
   const [connectorResponse, setConnectorResponse] = useState<UseSaveSuccessResponse>()
@@ -159,7 +161,7 @@ export default function useCreateEditConnector<T>(props: UseCreateEditConnector)
               })
               .catch(e => {
                 if (shouldShowError(e)) {
-                  showError(getErrorInfoFromErrorObject(e))
+                  showError(getRBACErrorMessage(e))
                 }
               })
           }

@@ -63,6 +63,35 @@ export const mockFeatures = [
   }
 ] as Feature[]
 
+export const mockFlagWithPercentageRollout = {
+  identifier: 'fWithPR',
+  name: 'Flag with PR',
+  variations: [
+    { name: 'Variation 1', identifier: 'v1' },
+    { name: 'Variation 2', identifier: 'v2' }
+  ],
+  status: {
+    status: 'never-requested'
+  },
+  envProperties: {
+    rules: [
+      {
+        ruleId: 'ruleId1',
+        clauses: [{ op: 'segmentMatch', values: ['tg1'] }],
+        serve: {
+          distribution: {
+            bucketBy: 'identifier',
+            variations: [
+              { variation: 'v1', weight: 60 },
+              { variation: 'v2', weight: 40 }
+            ]
+          }
+        }
+      }
+    ]
+  }
+} as Feature
+
 export const mockSegmentFlags = [
   {
     identifier: 'f1',

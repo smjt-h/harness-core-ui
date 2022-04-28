@@ -10,8 +10,11 @@ import { Layout, Tabs, Tab, Button, Icon, ButtonVariation } from '@wings-softwar
 import cx from 'classnames'
 import type { HarnessIconName } from '@wings-software/uicore/dist/icons/HarnessIcons'
 import { Expander, IconName } from '@blueprintjs/core'
-import { get, isEmpty, set } from 'lodash-es'
+import { defaultTo, get, isEmpty, set } from 'lodash-es'
 import type { ValidationError } from 'yup'
+import YAML from 'yaml'
+import produce from 'immer'
+import { StageElementConfig, useGetFailureStrategiesYaml } from 'services/cd-ng'
 import ExecutionGraph, {
   ExecutionGraphAddStepEvent,
   ExecutionGraphEditStepEvent,
@@ -118,6 +121,27 @@ export default function DeployStageSetupShell(): JSX.Element {
   }, [selectedTabId])
 
   const { stage: data } = getStageFromPipeline(selectedStageId || '')
+
+  const { data: stageYamlSnippet, loading, refetch } = useGetFailureStrategiesYaml({ lazy: true })
+  React.useEffect(() => {
+    // do the following one if it is a new stage
+    if (!loading && data?.stage && isEmpty(data?.stage?.spec?.execution)) {
+      if (!stageYamlSnippet?.data) {
+        // fetch data on first load of new stage
+        refetch()
+      } else {
+        // update the new stage with the fetched data
+        updateStage(
+          produce(data?.stage as StageElementConfig, draft => {
+            const jsonFromYaml = YAML.parse(defaultTo(stageYamlSnippet?.data, '')) as StageElementConfig
+            if (!draft.failureStrategies) {
+              draft.failureStrategies = jsonFromYaml.failureStrategies
+            }
+          })
+        )
+      }
+    }
+  }, [stageYamlSnippet])
 
   const validate = React.useCallback(() => {
     try {

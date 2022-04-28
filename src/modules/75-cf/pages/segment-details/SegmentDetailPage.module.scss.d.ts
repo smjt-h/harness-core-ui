@@ -7,6 +7,7 @@
  **/
 // this is an auto-generated file, do not update this manually
 declare const styles: {
-  readonly avatar: string
+  readonly fullSizeContentStyle: string
+  readonly gitSyncContainer: string
 }
 export default styles

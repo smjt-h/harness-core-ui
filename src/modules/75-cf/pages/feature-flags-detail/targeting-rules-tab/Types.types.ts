@@ -7,28 +7,41 @@
 
 import type { Clause, TargetMap, WeightedVariation } from 'services/cf'
 
+export enum TargetingRuleItemType {
+  VARIATION = 'VARIATION',
+  PERCENTAGE_ROLLOUT = 'PERCENTAGE_ROLLOUT'
+}
+
 export interface TargetingRulesFormValues {
   state: string
   onVariation: string
-  formVariationMap: FormVariationMap[]
-  variationPercentageRollouts: VariationPercentageRollout[]
+  offVariation: string
+  targetingRuleItems: (FormVariationMap | VariationPercentageRollout)[]
 }
 export interface TargetGroup {
+  priority: number
   identifier: string
   ruleId: string
   name: string
 }
 
 export interface VariationPercentageRollout {
+  priority: number
   variations: WeightedVariation[]
   bucketBy: string
   clauses: Clause[]
   ruleId: string
+  type: string
 }
 export interface FormVariationMap {
+  priority: number
   variationIdentifier: string
   variationName: string
   targetGroups: TargetGroup[]
   targets: TargetMap[]
-  isVisible: boolean
+  type: string
+}
+
+export interface VariationColorMap {
+  [key: string]: string
 }

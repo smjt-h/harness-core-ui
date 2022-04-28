@@ -8,6 +8,8 @@
 import React, { Suspense, lazy } from 'react'
 import { useHistory, useRouteMatch } from 'react-router-dom'
 import { Container } from '@wings-software/uicore'
+import { useSaveToGitDialog } from '@common/modals/SaveToGitDialog/useSaveToGitDialog'
+import GitFilters from '@common/components/GitFilters/GitFilters'
 import routes from '@common/RouteDefinitions'
 import { returnUrlParams } from '@common/utils/routeUtils'
 import { NGBreadcrumbs } from '@common/components/NGBreadcrumbs/NGBreadcrumbs'
@@ -15,11 +17,14 @@ import AppErrorBoundary from 'framework/utils/AppErrorBoundary/AppErrorBoundary'
 import { useStrings } from 'framework/strings'
 import AppStorage from 'framework/utils/AppStorage'
 import { getLoginPageURL } from 'framework/utils/SessionUtils'
+import { GitSyncStoreProvider, GitSyncStoreContext, useGitSyncStore } from 'framework/GitRepoStore/GitSyncStoreContext'
+import { AppStoreContext, useAppStore } from 'framework/AppStore/AppStoreContext'
 import RbacButton from '@rbac/components/Button/Button'
 import RbacOptionsMenuButton from '@rbac/components/RbacOptionsMenuButton/RbacOptionsMenuButton'
 import { usePermission } from '@rbac/hooks/usePermission'
 import { useFeatureFlags } from '@common/hooks/useFeatureFlag'
 import { useGetSchemaYaml } from 'services/pipeline-ng'
+import { useGetListOfBranchesWithStatus } from 'services/cd-ng'
 
 // Due to some typing complexity, governance/App is lazily imported
 // from a .js file for now
@@ -53,12 +58,18 @@ export const GovernanceRemoteComponentMounter = props => {
           hooks={{
             usePermission,
             useGetSchemaYaml,
-            useFeatureFlags
+            useFeatureFlags,
+            useAppStore,
+            useGitSyncStore,
+            useSaveToGitDialog,
+            useGetListOfBranchesWithStatus
           }}
           components={{
             NGBreadcrumbs,
             RbacButton,
-            RbacOptionsMenuButton
+            RbacOptionsMenuButton,
+            GitFilters,
+            GitSyncStoreProvider
           }}
         >
           {component}

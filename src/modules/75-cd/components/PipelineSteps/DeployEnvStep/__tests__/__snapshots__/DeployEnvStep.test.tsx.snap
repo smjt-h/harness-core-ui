@@ -38,8 +38,7 @@ exports[`Test DeployEnvironment Step should render edit Environment view (enviro
       class="StyledProps--font StyledProps--main yamlToggleEnv"
     >
       <div
-        class="Layout--horizontal StyledProps--main StyledProps--flex StyledProps--flex-justifyContent-flex-start"
-        padding-top="8px"
+        class="Layout--horizontal StyledProps--main StyledProps--flex StyledProps--flex-justifyContent-flex-start StyledProps--padding-top-small"
       >
         <div
           class="PillToggle--optionBtns"
@@ -452,8 +451,7 @@ exports[`Test DeployEnvironment Step should render environment view and save 1`]
       class="StyledProps--font StyledProps--main yamlToggleEnv"
     >
       <div
-        class="Layout--horizontal StyledProps--main StyledProps--flex StyledProps--flex-justifyContent-flex-start"
-        padding-top="8px"
+        class="Layout--horizontal StyledProps--main StyledProps--flex StyledProps--flex-justifyContent-flex-start StyledProps--padding-top-small"
       >
         <div
           class="PillToggle--optionBtns"
@@ -764,8 +762,7 @@ exports[`render modal  NewEditEnvironmentModal 1`] = `
     class="StyledProps--font StyledProps--main yamlToggleEnv"
   >
     <div
-      class="Layout--horizontal StyledProps--main StyledProps--flex StyledProps--flex-justifyContent-flex-start"
-      padding-top="8px"
+      class="Layout--horizontal StyledProps--main StyledProps--flex StyledProps--flex-justifyContent-flex-start StyledProps--padding-top-small"
     >
       <div
         class="PillToggle--optionBtns"
@@ -1074,8 +1071,7 @@ exports[`render modal  NewEditEnvironmentModal 2`] = `
     class="StyledProps--font StyledProps--main yamlToggleEnv"
   >
     <div
-      class="Layout--horizontal StyledProps--main StyledProps--flex StyledProps--flex-justifyContent-flex-start"
-      padding-top="8px"
+      class="Layout--horizontal StyledProps--main StyledProps--flex StyledProps--flex-justifyContent-flex-start StyledProps--padding-top-small"
     >
       <div
         class="PillToggle--optionBtns"
@@ -1110,7 +1106,7 @@ exports[`render modal  NewEditEnvironmentModal 2`] = `
       >
         <div />
         <div
-          class="Layout--horizontal StyledProps--main StyledProps--padding-top-large"
+          class="Layout--horizontal Layout--layout-spacing-small StyledProps--main StyledProps--padding-top-large"
         >
           <button
             class="bp3-button bp3-disabled bp3-loading Button--button StyledProps--font StyledProps--main Button--with-current-color Button--variation Button--variation-primary"
@@ -1150,7 +1146,6 @@ exports[`render modal  NewEditEnvironmentModal 2`] = `
               save
             </span>
           </button>
-             
           <button
             class="bp3-button Button--button StyledProps--font StyledProps--main Button--with-current-color Button--variation Button--variation-tertiary"
             type="button"
@@ -1174,8 +1169,7 @@ exports[`render modal  should validate edit mode snapshot 1`] = `
     class="StyledProps--font StyledProps--main yamlToggleEnv"
   >
     <div
-      class="Layout--horizontal StyledProps--main StyledProps--flex StyledProps--flex-justifyContent-flex-start"
-      padding-top="8px"
+      class="Layout--horizontal StyledProps--main StyledProps--flex StyledProps--flex-justifyContent-flex-start StyledProps--padding-top-small"
     >
       <div
         class="PillToggle--optionBtns"

@@ -53,6 +53,7 @@ export function MultiTypePolicySetSelectorInternal(props: MultiTypePolicySetSele
       label={label}
       defaultValueToReset={[]}
       allowedTypes={allowableTypes}
+      supportListOfExpressions={true}
       disableMultiSelectBtn={disabled}
       expressionRender={() => (
         <ExpressionsListInput name={name} value={policySetIds} readOnly={disabled} expressions={expressions} />

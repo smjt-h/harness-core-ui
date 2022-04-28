@@ -10,6 +10,7 @@ import { render, screen } from '@testing-library/react'
 import React from 'react'
 import userEvent from '@testing-library/user-event'
 import { TestWrapper } from '@common/utils/testUtils'
+import type { StringsMap } from 'framework/strings/StringsContext'
 import DefaultRules, { DefaultRulesProps } from '../DefaultRules'
 
 const renderComponent = (props: Partial<DefaultRulesProps> = {}): void => {
@@ -19,11 +20,12 @@ const renderComponent = (props: Partial<DefaultRulesProps> = {}): void => {
       pathParams={{ accountId: 'dummy', orgIdentifier: 'dummy', projectIdentifier: 'dummy' }}
     >
       <DefaultRules
+        inputName="onVariation"
+        titleStringId={'default.serve' as keyof StringsMap}
         featureFlagVariations={[
           { identifier: 'true', name: 'True', value: 'true' },
           { identifier: 'false', name: 'False', value: 'false' }
         ]}
-        isLoading={false}
         {...props}
       />
     </TestWrapper>

@@ -1,0 +1,6 @@
+{
+  "status": "SUCCESS",
+  "data": "failureStrategies:\n  - onFailure:\n      errors:\n        - AllErrors\n      action:\n        type: StageRollback",
+  "metaData": null,
+  "correlationId": "caeb367d-a191-4707-be07-df84212edbd1"
+}

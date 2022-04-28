@@ -12,10 +12,12 @@ import PercentageRollout from '@cf/components/PercentageRollout/PercentageRollou
 import type { Segment, Variation } from 'services/cf'
 import { useStrings } from 'framework/strings'
 import type { VariationPercentageRollout } from '../../Types.types'
+import { DisabledFeatureTooltip } from '../disabled-feature-tooltip/DisabledFeatureTooltip'
 
 interface VariationPercentageRolloutProps {
   variationPercentageRollout: VariationPercentageRollout
   index: number
+  disabled: boolean
   removePercentageRollout: (index: number) => void
   segments: Segment[]
   featureFlagVariations: Variation[]
@@ -24,6 +26,7 @@ interface VariationPercentageRolloutProps {
 const PercentageRolloutItem = ({
   variationPercentageRollout,
   index,
+  disabled,
   removePercentageRollout,
   segments,
   featureFlagVariations
@@ -32,31 +35,32 @@ const PercentageRolloutItem = ({
 
   return (
     <>
-      <Container flex={{ justifyContent: 'space-between', alignItems: 'center' }}>
-        <Heading level={4} font={{ variation: FontVariation.BODY2 }} margin={{ top: 'medium' }}>
-          {getString('cf.featureFlags.percentageRollout')}
-        </Heading>
-        <Button
-          data-testid={`remove_percentage_rollout_${index}`}
-          icon="trash"
-          minimal
-          withoutCurrentColor
-          onClick={() => removePercentageRollout(index)}
-        />
-      </Container>
-
       <Container
-        key={`percentage_rollout_item_${variationPercentageRollout.ruleId}`}
+        flex={{ justifyContent: 'space-between', alignItems: 'center' }}
         data-testid={`percentage_rollout_item_${index}`}
       >
-        <PercentageRollout
-          targetGroups={segments}
-          bucketByAttributes={[variationPercentageRollout.bucketBy]}
-          variations={featureFlagVariations}
-          fieldValues={variationPercentageRollout}
-          prefix={(fieldName: string) => `variationPercentageRollouts[${index}].${fieldName}`}
-        />
+        <Heading level={4} font={{ variation: FontVariation.BODY2 }}>
+          {getString('cf.featureFlags.percentageRollout')}
+        </Heading>
+        <DisabledFeatureTooltip>
+          <Button
+            disabled={disabled}
+            data-testid={`remove_percentage_rollout_${index}`}
+            icon="trash"
+            minimal
+            withoutCurrentColor
+            onClick={() => removePercentageRollout(index)}
+          />
+        </DisabledFeatureTooltip>
       </Container>
+
+      <PercentageRollout
+        targetGroups={segments}
+        variations={featureFlagVariations}
+        fieldValues={variationPercentageRollout}
+        prefix={(fieldName: string) => `targetingRuleItems[${index}].${fieldName}`}
+        hideOverError
+      />
       <Container border={{ bottom: true }} />
     </>
   )

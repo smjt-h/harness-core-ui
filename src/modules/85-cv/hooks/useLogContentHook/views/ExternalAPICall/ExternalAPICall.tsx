@@ -19,6 +19,7 @@ const ExternalAPICall: React.FC<ExecutionAndAPICallLogProps> = props => {
     isFullScreen,
     setIsFullScreen,
     verifyStepExecutionId,
+    monitoredServiceIdentifier,
     serviceName,
     envName,
     healthSource,
@@ -28,7 +29,8 @@ const ExternalAPICall: React.FC<ExecutionAndAPICallLogProps> = props => {
     errorLogsOnly,
     setErrorLogsOnly,
     setPageNumber,
-    resource
+    resource,
+    handleDownloadLogs
   } = props
 
   const handleHealthSource = (_healthSource: SelectOption): void => {
@@ -57,6 +59,7 @@ const ExternalAPICall: React.FC<ExecutionAndAPICallLogProps> = props => {
         envName={envName}
         healthSource={healthSource}
         handleHealthSource={handleHealthSource}
+        monitoredServiceIdentifier={monitoredServiceIdentifier}
         timeRange={timeRange}
         handleTimeRange={handleTimeRange}
         errorLogsOnly={errorLogsOnly}
@@ -69,10 +72,12 @@ const ExternalAPICall: React.FC<ExecutionAndAPICallLogProps> = props => {
         setIsFullScreen={setIsFullScreen}
         isVerifyStep={Boolean(verifyStepExecutionId)}
         timeRange={timeRange}
+        isMonitoredService={Boolean(monitoredServiceIdentifier)}
+        handleDownloadLogs={handleDownloadLogs}
       />
       <div className={cx(css.accordionContainer, { [css.fullScreen]: isFullScreen })}>
         <Layout.Vertical height="100%">
-          <ExternalAPICallContent {...props} />
+          <ExternalAPICallContent {...props} errorLogsOnly={errorLogsOnly} />
         </Layout.Vertical>
       </div>
     </div>

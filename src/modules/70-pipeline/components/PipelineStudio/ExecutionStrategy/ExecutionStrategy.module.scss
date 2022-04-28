@@ -90,7 +90,6 @@
         font-weight: 600 !important;
         color: var(--grey-900) !important;
         line-height: 28px !important;
-        margin-right: 12px;
       }
     }
     .preview {
@@ -163,7 +162,7 @@
             font-size: 12px;
             line-height: 20px;
             letter-spacing: 0.4px;
-            color: black;
+            color: var(--grey-1000);
             margin-bottom: 23px;
             display: flex;
             align-items: center;

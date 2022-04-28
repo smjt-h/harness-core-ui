@@ -66,6 +66,7 @@ export interface FlatInitialValuesInterface {
   }
   pipeline?: string | PipelineInfoConfig
   originalPipeline?: PipelineInfoConfig
+  resolvedPipeline?: PipelineInfoConfig
   inputSetTemplateYamlObj?: {
     pipeline: PipelineInfoConfig | Record<string, never>
   }
@@ -90,6 +91,7 @@ export interface FlatOnEditValuesInterface {
   manifestType?: string
   artifactType?: string
   originalPipeline?: PipelineInfoConfig
+  resolvedPipeline?: PipelineInfoConfig
   // WEBHOOK-SPECIFIC
   sourceRepo?: GetActionsListQueryParams['sourceRepo']
   connectorRef?: ConnectorRefInterface
@@ -855,6 +857,13 @@ const getFilteredManifestsWithOverrides = ({
   manifestType: string
   stages: any
 }): ManifestInterface[] => {
+  if (stageObj?.stage?.template) {
+    return getFilteredManifestsWithOverrides({
+      stageObj: { stage: stageObj?.stage?.template?.templateInputs },
+      manifestType,
+      stages
+    })
+  }
   const filteredManifests =
     stageObj?.stage?.spec?.serviceConfig?.serviceDefinition?.spec?.manifests?.filter(
       (manifestObj: { manifest: ManifestInterface }) => manifestObj?.manifest?.type === manifestType
@@ -903,6 +912,13 @@ const getFilteredArtifactsWithOverrides = ({
   stages: any
   artifactRef?: string
 }): any => {
+  if (stageObj?.stage?.template) {
+    return getFilteredArtifactsWithOverrides({
+      stageObj: { stage: stageObj?.stage?.template?.templateInputs },
+      artifactType,
+      stages
+    })
+  }
   const primaryArtifact =
     stageObj?.stage?.spec?.serviceConfig?.serviceDefinition?.spec?.artifacts?.primary?.type === artifactType
       ? stageObj?.stage?.spec?.serviceConfig?.serviceDefinition?.spec?.artifacts?.primary
@@ -989,7 +1005,9 @@ export const parseArtifactsManifests = ({
             }
           }
           if (filteredManifests?.length) {
-            const filteredStageObj = { ...parStg }
+            const filteredStageObj = parStg?.stage?.template
+              ? { stage: { ...parStg?.stage?.template?.templateInputs, identifier: parStg?.stage?.identifier } }
+              : { ...parStg }
             // adding all manifests to serviceDefinition for UI to render in SelectArtifactModal
             if (filteredStageObj.stage.spec.serviceConfig?.serviceDefinition?.spec?.manifests) {
               filteredStageObj.stage.spec.serviceConfig.serviceDefinition.spec.manifests = filteredManifests
@@ -1019,7 +1037,9 @@ export const parseArtifactsManifests = ({
           }
         }
         if (filteredManifests?.length) {
-          const filteredStageObj = { ...stageObj }
+          const filteredStageObj = stageObj?.stage?.template
+            ? { stage: { ...stageObj?.stage?.template?.templateInputs, identifier: stageObj?.stage?.identifier } }
+            : { ...stageObj }
           // adding all manifests to serviceDefinition for UI to render in SelectArtifactModal
           if (filteredStageObj.stage.spec.serviceConfig?.serviceDefinition?.spec?.manifests) {
             filteredStageObj.stage.spec.serviceConfig.serviceDefinition.spec.manifests = filteredManifests
@@ -1066,7 +1086,9 @@ export const parseArtifactsManifests = ({
             }
           }
           if (filteredArtifacts?.sidecars?.length || filteredArtifacts?.primary?.type) {
-            const filteredStageObj = { ...parStg }
+            const filteredStageObj = parStg?.stage?.template
+              ? { stage: { ...parStg?.stage?.template?.templateInputs, identifier: parStg?.stage?.identifier } }
+              : { ...parStg }
             // adding all manifests to serviceDefinition for UI to render in SelectArtifactModal
 
             filteredStageObj.stage.spec.serviceConfig.serviceDefinition = {
@@ -1097,9 +1119,10 @@ export const parseArtifactsManifests = ({
         }
 
         if (filteredArtifacts?.sidecars?.length || filteredArtifacts?.primary?.type) {
-          const filteredStageObj = { ...stageObj }
+          const filteredStageObj = stageObj?.stage?.template
+            ? { stage: { ...stageObj?.stage?.template?.templateInputs, identifier: stageObj?.stage?.identifier } }
+            : { ...stageObj }
           // adding all manifests to serviceDefinition for UI to render in SelectArtifactModal
-
           filteredStageObj.stage.spec.serviceConfig.serviceDefinition = {
             spec: {
               artifacts: filteredArtifacts
@@ -1439,7 +1462,11 @@ const getManifestTableItem = ({
           getString?.('pipeline.artifactTriggerConfigPanel.runtimeInput')
       )
     } else {
-      return !manifest?.spec?.tag
+      return (
+        !manifest?.spec?.tag ||
+        getRuntimeInputLabel({ str: manifest?.spec?.tag, getString }) !==
+          getString?.('pipeline.artifactTriggerConfigPanel.runtimeInput')
+      )
     }
   }
 
@@ -1864,8 +1891,11 @@ export function updatePipelineManifest({
   const newPipelineObj = { ...pipeline }
   const pipelineStages = getFilteredStage(newPipelineObj?.stages, stageIdentifier)
   // const pipelineStages = newPipelineObj?.stages.find((item: any) => item.stage.identifier === stageIdentifier)
-  const stageArtifacts = pipelineStages?.stage?.spec?.serviceConfig?.serviceDefinition?.spec?.manifests
-  const stageArtifactIdx = pipelineStages?.stage?.spec?.serviceConfig?.serviceDefinition?.spec?.manifests?.findIndex(
+  const isTemplateStage = !!pipelineStages?.stage?.template
+  const stageArtifacts = isTemplateStage
+    ? pipelineStages?.stage?.template?.templateInputs?.spec?.serviceConfig?.serviceDefinition?.spec?.manifests
+    : pipelineStages?.stage?.spec?.serviceConfig?.serviceDefinition?.spec?.manifests
+  const stageArtifactIdx = stageArtifacts?.findIndex(
     (item: any) => item.manifest?.identifier === selectedArtifact?.identifier
   )
 
@@ -1890,8 +1920,13 @@ export function updatePipelineArtifact({
   const newPipelineObj = { ...pipeline }
   const pipelineStages = getFilteredStage(newPipelineObj?.stages, stageIdentifier)
   // const pipelineStages = newPipelineObj?.stages.find((item: any) => item.stage.identifier === stageIdentifier)
-  const stageArtifacts = pipelineStages?.stage?.spec?.serviceConfig?.serviceDefinition?.spec?.artifacts
-  const stageOverrideArtifacts = pipelineStages?.stage?.spec?.serviceConfig?.stageOverrides?.artifacts
+  const isTemplateStage = !!pipelineStages?.stage?.template
+  const stageArtifacts = isTemplateStage
+    ? pipelineStages?.stage?.template?.templateInputs?.spec?.serviceConfig?.serviceDefinition?.spec?.artifacts
+    : pipelineStages?.stage?.spec?.serviceConfig?.serviceDefinition?.spec?.artifacts
+  const stageOverrideArtifacts = isTemplateStage
+    ? pipelineStages?.stage?.template?.templateInputs?.spec?.serviceConfig?.stageOverrides?.artifacts
+    : pipelineStages?.stage?.spec?.serviceConfig?.stageOverrides?.artifacts
 
   const stageArtifactIdx = stageArtifacts?.sidecars?.findIndex(
     (item: any) => item.sidecar?.identifier === selectedArtifact?.identifier

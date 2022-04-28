@@ -6,7 +6,7 @@
  */
 
 import React from 'react'
-import { Icon, IconName, Layout, Text, Button, ButtonVariation } from '@wings-software/uicore'
+import { Icon, IconName, Layout, Text } from '@wings-software/uicore'
 import { Color, FontVariation } from '@harness/design-system'
 import cx from 'classnames'
 import css from './ResourceCenter.module.scss'
@@ -49,23 +49,18 @@ export const getMenuItems = ({
   onClick?: (e: React.MouseEvent<Element, MouseEvent>) => void
 }): React.ReactElement => {
   return (
-    <>
+    <Layout.Horizontal className={css.menuItem} onClick={onClick}>
       <Layout.Vertical>
-        <Text font={{ variation: FontVariation.H4 }} padding={{ bottom: 'xsmall' }} color={Color.PRIMARY_3}>
+        <Text font={{ variation: FontVariation.H4 }} padding={{ bottom: 'xsmall' }} color={Color.GREY_0}>
           {title}
         </Text>
-        <Text font={{ variation: FontVariation.BODY2 }} padding={{ bottom: 'xsmall' }} color={Color.WHITE}>
+        <Text font={{ variation: FontVariation.BODY2 }} padding={{ bottom: 'xsmall' }} color={Color.GREY_100}>
           {description}
         </Text>
       </Layout.Vertical>
       <Layout.Horizontal flex={{ alignItems: 'center' }} spacing={'medium'}>
-        <Button
-          icon="chevron-right"
-          variation={ButtonVariation.ICON}
-          iconProps={{ color: Color.PRIMARY_4 }}
-          onClick={onClick}
-        />
+        <Icon name="chevron-right" color={Color.GREY_0} />
       </Layout.Horizontal>
-    </>
+    </Layout.Horizontal>
   )
 }

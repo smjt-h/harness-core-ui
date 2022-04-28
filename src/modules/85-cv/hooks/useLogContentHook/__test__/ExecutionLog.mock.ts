@@ -71,7 +71,7 @@ export const executionLogs: ExecutionLogDTO[] = [
 export const executionLogState = {
   data: [
     {
-      text: { logLevel: 'INFO', createdAt: '3/16/2022 8:23:10 AM', log: TEXT_LEARNING_ENGINE }
+      text: { logLevel: 'INFO', createdAt: '1647418990020', log: TEXT_LEARNING_ENGINE }
     }
   ],
   searchData: { currentIndex: 0, linesWithResults: [], text: '' }
@@ -80,7 +80,7 @@ export const executionLogState = {
 export const executionLogStateWithSearch = {
   data: [
     {
-      text: { logLevel: 'INFO', createdAt: '3/16/2022 8:23:10 AM', log: TEXT_LEARNING_ENGINE },
+      text: { logLevel: 'INFO', createdAt: '1647418990020', log: TEXT_LEARNING_ENGINE },
       searchIndices: { logLevel: [0], log: [1] }
     }
   ],

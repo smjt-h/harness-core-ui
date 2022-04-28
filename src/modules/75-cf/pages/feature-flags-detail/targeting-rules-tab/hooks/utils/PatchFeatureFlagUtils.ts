@@ -5,34 +5,37 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import { isEqual } from 'lodash-es'
 import { v4 as uuid } from 'uuid'
-import type { FeatureState, TargetMap } from 'services/cf'
+import isEqual from 'lodash-es/isEqual'
+import type { FeatureState } from 'services/cf'
 import patch from '@cf/utils/instructions'
-import type {
+import {
   FormVariationMap,
   TargetGroup,
+  TargetingRuleItemType,
   TargetingRulesFormValues,
   VariationPercentageRollout
 } from '../../Types.types'
 
-// Utils class to help encapsulate the complexity around patch instruction creation and hide this from the components
+// Utils class to help encapsulate the complexity around patch instruction creation and hide this from the components.
 interface PatchFeatureFlagUtilsReturn {
   hasFlagStateChanged: () => boolean
   hasDefaultOnVariationChanged: () => boolean
-  updateFlagState: () => void
-  updateDefaultServe: () => void
-  addedTargetGroups: (formVariation: FormVariationMap) => TargetGroup[]
-  removedTargetGroups: (formVariation: FormVariationMap) => TargetGroup[]
-  addedTargets: (formVariation: FormVariationMap) => string[]
-  removedTargets: (formVariation: FormVariationMap) => string[]
+  hasDefaultOffVariationChanged: () => boolean
+  addedTargetGroups: (variationIdentifier: string) => TargetGroup[]
+  removedTargetGroups: (variationIdentifier: string) => TargetGroup[]
+  addedTargets: (variationIdentifier: string) => string[]
+  removedTargets: (variationIdentifier: string) => string[]
   addedPercentageRollouts: () => VariationPercentageRollout[]
   updatedPercentageRollouts: () => VariationPercentageRollout[]
   removedPercentageRollouts: () => VariationPercentageRollout[]
-  createAddTargetGroupInstructions: (formVariation: FormVariationMap, targetGroups: TargetGroup[]) => void
+  createUpdateFlagStateInstruction: () => void
+  createDefaultServeOnInstruction: () => void
+  createDefaultServeOffInstruction: () => void
+  createAddTargetGroupInstructions: (variationIdentifier: string, targetGroups: TargetGroup[]) => void
   createRemoveTargetGroupsInstructions: (targetGroups: TargetGroup[]) => void
-  createAddTargetsInstructions: (formVariation: FormVariationMap, targetIds: string[]) => void
-  createRemoveTargetsInstructions: (formVariation: FormVariationMap, targetIds: string[]) => void
+  createAddTargetsInstructions: (variationIdentifier: string, targetIds: string[]) => void
+  createRemoveTargetsInstructions: (variationIdentifier: string, targetIds: string[]) => void
   createAddPercentageRolloutInstructions: (percentageRollouts: VariationPercentageRollout[]) => void
   createUpdatePercentageRolloutInstructions: (percentageRollouts: VariationPercentageRollout[]) => void
   createRemovePercentageRolloutInstructions: (percentageRollouts: VariationPercentageRollout[]) => void
@@ -42,90 +45,113 @@ export const PatchFeatureFlagUtils = (
   submittedValues: TargetingRulesFormValues,
   initialValues: TargetingRulesFormValues
 ): PatchFeatureFlagUtilsReturn => {
+  const BASE_PRIORITY = 1000
+
+  const initialPercentageRollouts = initialValues.targetingRuleItems.filter(
+    targetingRule => targetingRule.type === TargetingRuleItemType.PERCENTAGE_ROLLOUT
+  ) as VariationPercentageRollout[]
+
+  const submittedPercentageRollouts = submittedValues.targetingRuleItems.filter(
+    targetingRule => targetingRule.type === TargetingRuleItemType.PERCENTAGE_ROLLOUT
+  ) as VariationPercentageRollout[]
+
+  const initialVariations = initialValues.targetingRuleItems.filter(
+    targetingRule => targetingRule.type === TargetingRuleItemType.VARIATION
+  ) as FormVariationMap[]
+
+  const submittedVariations = submittedValues.targetingRuleItems.filter(
+    targetingRule => targetingRule.type === TargetingRuleItemType.VARIATION
+  ) as FormVariationMap[]
+
   const hasFlagStateChanged = (): boolean => submittedValues.state !== initialValues.state
 
   const hasDefaultOnVariationChanged = (): boolean => submittedValues.onVariation !== initialValues.onVariation
 
-  const createUpdateFlagStateInstruction = (): void =>
-    patch.feature.addInstruction(patch.creators.setFeatureFlagState(submittedValues.state as FeatureState))
+  const hasDefaultOffVariationChanged = (): boolean => submittedValues.offVariation !== initialValues.offVariation
 
-  const createDefaultServeInstruction = (): void =>
-    patch.feature.addInstruction(patch.creators.updateDefaultServeByVariation(submittedValues.onVariation))
-
-  const addedTargetGroups = (formVariation: FormVariationMap): TargetGroup[] => {
-    const intialTargetGroups: TargetGroup[] = formVariation.targetGroups
-
-    // get the submitted target groups for the given formVariation
+  const addedTargetGroups = (variationIdentifier: string): TargetGroup[] => {
+    const initialTargetGroups: TargetGroup[] =
+      initialVariations.find(x => x.variationIdentifier === variationIdentifier)?.targetGroups || []
     const submittedTargetGroups: TargetGroup[] =
-      submittedValues.formVariationMap.find(
-        variation => variation.variationIdentifier === formVariation.variationIdentifier
-      )?.targetGroups || []
+      submittedVariations.find(x => x.variationIdentifier === variationIdentifier)?.targetGroups || []
 
     return submittedTargetGroups.filter(
       submittedTargetGroup =>
-        !intialTargetGroups.map(({ identifier }) => identifier).includes(submittedTargetGroup.identifier)
+        !initialTargetGroups.map(({ identifier }) => identifier).includes(submittedTargetGroup.identifier)
     )
   }
 
-  const removedTargetGroups = (formVariation: FormVariationMap): TargetGroup[] => {
+  const removedTargetGroups = (variationIdentifier: string): TargetGroup[] => {
+    const initialTargetGroups: TargetGroup[] =
+      initialVariations.find(x => x.variationIdentifier === variationIdentifier)?.targetGroups || []
     const submittedTargetGroups: TargetGroup[] =
-      submittedValues.formVariationMap.find(
-        variation => variation.variationIdentifier === formVariation.variationIdentifier
-      )?.targetGroups || []
+      submittedVariations.find(x => x.variationIdentifier === variationIdentifier)?.targetGroups || []
 
-    return formVariation.targetGroups.filter(
+    return initialTargetGroups.filter(
       targetGroup => !submittedTargetGroups.map(({ identifier }) => identifier).includes(targetGroup.identifier)
     )
   }
 
-  const addedTargets = (formVariation: FormVariationMap): string[] => {
-    const initialTargetIds = formVariation.targets.map((target: TargetMap) => target.identifier)
-    const submittedTargetIds = submittedValues.formVariationMap
-      .filter(variation => variation.variationIdentifier === formVariation.variationIdentifier)[0]
-      .targets.map(({ identifier }) => identifier)
+  const addedTargets = (variationIdentifier: string): string[] => {
+    const initialTargetIds: string[] =
+      initialVariations.find(x => x.variationIdentifier === variationIdentifier)?.targets.map(x => x.identifier) || []
+    const submittedTargetIds: string[] =
+      submittedVariations.find(x => x.variationIdentifier === variationIdentifier)?.targets.map(x => x.identifier) || []
 
     return submittedTargetIds.filter(id => !initialTargetIds.includes(id))
   }
 
-  const removedTargets = (formVariation: FormVariationMap): string[] => {
-    const initialTargetIds = formVariation.targets.map((target: TargetMap) => target.identifier)
-    const submittedTargetIds = submittedValues.formVariationMap
-      .filter(variation => variation.variationIdentifier === formVariation.variationIdentifier)[0]
-      .targets.map(({ identifier }) => identifier)
+  const removedTargets = (variationIdentifier: string): string[] => {
+    const initialTargetIds: string[] =
+      initialVariations.find(x => x.variationIdentifier === variationIdentifier)?.targets.map(x => x.identifier) || []
+    const submittedTargetIds: string[] =
+      submittedVariations.find(x => x.variationIdentifier === variationIdentifier)?.targets.map(x => x.identifier) || []
 
     return initialTargetIds.filter(id => !submittedTargetIds.includes(id))
   }
 
   const addedPercentageRollouts = (): VariationPercentageRollout[] => {
-    return submittedValues.variationPercentageRollouts.filter(
+    return submittedPercentageRollouts.filter(
       percentageRollout =>
-        !initialValues.variationPercentageRollouts.map(({ ruleId }) => ruleId).includes(percentageRollout.ruleId)
+        !initialPercentageRollouts.map(targetingRuleItem => targetingRuleItem.ruleId).includes(percentageRollout.ruleId)
     )
   }
 
   const removedPercentageRollouts = (): VariationPercentageRollout[] => {
-    return initialValues.variationPercentageRollouts.filter(
-      percentageRollout =>
-        !submittedValues.variationPercentageRollouts.map(({ ruleId }) => ruleId).includes(percentageRollout.ruleId)
+    return initialPercentageRollouts.filter(
+      percentageRollout => !submittedPercentageRollouts.map(({ ruleId }) => ruleId).includes(percentageRollout.ruleId)
     )
   }
 
   const updatedPercentageRollouts = (): VariationPercentageRollout[] => {
-    return submittedValues.variationPercentageRollouts.length === initialValues.variationPercentageRollouts.length
-      ? submittedValues.variationPercentageRollouts.filter(
-          initial => !initialValues.variationPercentageRollouts.some(submitted => isEqual(initial, submitted))
+    return submittedPercentageRollouts.length === initialPercentageRollouts.length
+      ? submittedPercentageRollouts.filter(
+          initial => !initialPercentageRollouts.some(submitted => isEqual(initial, submitted))
         )
       : []
   }
 
-  const createAddTargetGroupInstructions = (formVariation: FormVariationMap, targetGroups: TargetGroup[]): void => {
+  // INSTRUCTIONS SECTION
+  const createUpdateFlagStateInstruction = (): void =>
+    patch.feature.addInstruction(patch.creators.setFeatureFlagState(submittedValues.state as FeatureState))
+
+  const createDefaultServeOnInstruction = (): void =>
+    patch.feature.addInstruction(patch.creators.updateDefaultServeByVariation(submittedValues.onVariation))
+
+  const createDefaultServeOffInstruction = (): void =>
+    patch.feature.addInstruction(patch.creators.updateOffVariation(submittedValues.offVariation))
+
+  const createAddTargetGroupInstructions = (variationIdentifier: string, targetGroups: TargetGroup[]): void => {
+    const variationIndex = submittedValues.targetingRuleItems.findIndex(
+      rule => (rule as FormVariationMap).variationIdentifier === variationIdentifier
+    )
     patch.feature.addAllInstructions(
-      targetGroups.map(targetGroup =>
+      targetGroups.map((targetGroup, index) =>
         patch.creators.addRule({
           uuid: uuid(),
-          priority: 100,
+          priority: (variationIndex + 1) * BASE_PRIORITY + (index + 1),
           serve: {
-            variation: formVariation.variationIdentifier
+            variation: variationIdentifier
           },
           clauses: [
             {
@@ -142,24 +168,25 @@ export const PatchFeatureFlagUtils = (
     patch.feature.addAllInstructions(targetGroups.map(targetGroup => patch.creators.removeRule(targetGroup.ruleId)))
   }
 
-  const createAddTargetsInstructions = (formVariation: FormVariationMap, targets: string[]): void => {
-    patch.feature.addInstruction(
-      patch.creators.addTargetsToVariationTargetMap(formVariation.variationIdentifier, targets)
-    )
+  const createAddTargetsInstructions = (variationIdentifier: string, targets: string[]): void => {
+    patch.feature.addInstruction(patch.creators.addTargetsToVariationTargetMap(variationIdentifier, targets))
   }
 
-  const createRemoveTargetsInstructions = (formVariation: FormVariationMap, removedTargetIds: string[]): void => {
+  const createRemoveTargetsInstructions = (variationIdentifier: string, removedTargetIds: string[]): void => {
     patch.feature.addInstruction(
-      patch.creators.removeTargetsToVariationTargetMap(formVariation.variationIdentifier, removedTargetIds)
+      patch.creators.removeTargetsToVariationTargetMap(variationIdentifier, removedTargetIds)
     )
   }
 
   const createAddPercentageRolloutInstructions = (percentageRollouts: VariationPercentageRollout[]): void => {
     patch.feature.addAllInstructions(
-      percentageRollouts.map(percentageRollout =>
-        patch.creators.addRule({
+      percentageRollouts.map(percentageRollout => {
+        const percentageRolloutIndex = submittedValues.targetingRuleItems.findIndex(
+          rule => (rule as VariationPercentageRollout).ruleId === percentageRollout.ruleId
+        )
+        return patch.creators.addRule({
           uuid: uuid(),
-          priority: 102,
+          priority: (percentageRolloutIndex + 1) * BASE_PRIORITY + 1,
           serve: {
             distribution: {
               bucketBy: percentageRollout.bucketBy,
@@ -173,7 +200,7 @@ export const PatchFeatureFlagUtils = (
             }
           ]
         })
-      )
+      })
     )
   }
 
@@ -205,8 +232,8 @@ export const PatchFeatureFlagUtils = (
   return {
     hasFlagStateChanged,
     hasDefaultOnVariationChanged,
-    updateFlagState: createUpdateFlagStateInstruction,
-    updateDefaultServe: createDefaultServeInstruction,
+    hasDefaultOffVariationChanged,
+    createUpdateFlagStateInstruction,
     addedTargetGroups,
     removedTargetGroups,
     addedTargets,
@@ -214,6 +241,8 @@ export const PatchFeatureFlagUtils = (
     addedPercentageRollouts,
     updatedPercentageRollouts,
     removedPercentageRollouts,
+    createDefaultServeOnInstruction,
+    createDefaultServeOffInstruction,
     createAddTargetGroupInstructions,
     createRemoveTargetGroupsInstructions,
     createAddTargetsInstructions,

@@ -32,7 +32,9 @@ const BusinessMappingPage: () => React.ReactElement = () => {
   const { getString } = useStrings()
   const [selectedBM, setSelectedBM] = useState<BusinessMapping>({})
   const { data, loading, refetch } = useGetBusinessMappingList({ queryParams: { accountIdentifier: accountId } })
-  const { mutate: deleteBusinessMapping } = useDeleteBusinessMapping({ queryParams: { accountIdentifier: accountId } })
+  const { mutate: deleteBusinessMapping, loading: deleteLoading } = useDeleteBusinessMapping({
+    queryParams: { accountIdentifier: accountId }
+  })
   const [drawerOpen, setDrawerOpen] = useState<boolean>(false)
   const { showError, showSuccess } = useToaster()
 
@@ -102,7 +104,7 @@ const BusinessMappingPage: () => React.ReactElement = () => {
   return (
     <>
       <PageHeader breadcrumbs={<NGBreadcrumbs />} title={getString('ce.businessMapping.sideNavText')} />
-      <PageBody loading={loading}>
+      <PageBody loading={loading || deleteLoading}>
         {ToolBar}
         <Container padding="medium">
           {businessMappingData.length ? (

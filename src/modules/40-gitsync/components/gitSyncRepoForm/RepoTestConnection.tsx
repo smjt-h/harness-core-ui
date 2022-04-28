@@ -6,13 +6,14 @@
  */
 
 import React, { useState, useEffect } from 'react'
-import { Container, getErrorInfoFromErrorObject, ModalErrorHandlerBinding, shouldShowError } from '@harness/uicore'
+import { Container, ModalErrorHandlerBinding, shouldShowError } from '@harness/uicore'
 import { useParams } from 'react-router-dom'
 import { noop } from 'lodash-es'
 import { TestConnectionWidget, TestStatus } from '@common/components/TestConnectionWidget/TestConnectionWidget'
 import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
 import { ResponseConnectorValidationResult, useGetTestGitRepoConnectionResult } from 'services/cd-ng'
 import type { ConnectorSelectedValue } from '@connectors/components/ConnectorReferenceField/ConnectorReferenceField'
+import useRBACError from '@rbac/utils/useRBACError/useRBACError'
 import css from './GitSyncRepoForm.module.scss'
 
 export interface RepoTestConnectionProps {
@@ -25,6 +26,7 @@ export interface RepoTestConnectionProps {
 const RepoTestConnection: React.FC<RepoTestConnectionProps> = props => {
   const { gitConnector, repoURL = '', onTestStatusChange = noop, modalErrorHandler } = props
   const { identifier = '', orgIdentifier, projectIdentifier } = gitConnector?.connector || {}
+  const { getRBACErrorMessage } = useRBACError()
 
   const { accountId } = useParams<ProjectPathProps>()
   const [testStatus, setTestStatus] = useState<TestStatus>(TestStatus.NOT_INITIATED)
@@ -68,7 +70,7 @@ const RepoTestConnection: React.FC<RepoTestConnectionProps> = props => {
         .catch(e => {
           setTestStatus(TestStatus.FAILED)
           if (shouldShowError(e)) {
-            modalErrorHandler?.showDanger(getErrorInfoFromErrorObject(e))
+            modalErrorHandler?.showDanger(getRBACErrorMessage(e))
           }
         })
     }

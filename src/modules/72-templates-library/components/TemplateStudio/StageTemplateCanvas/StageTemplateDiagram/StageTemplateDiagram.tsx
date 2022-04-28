@@ -9,7 +9,7 @@ import React from 'react'
 import { Container, Layout, Text } from '@wings-software/uicore'
 import { Color } from '@harness/design-system'
 import type { NodeModelListener } from '@projectstorm/react-diagrams-core'
-import { defaultTo, noop, set } from 'lodash-es'
+import { defaultTo, set } from 'lodash-es'
 import { useParams } from 'react-router-dom'
 import {
   CreateNewModel,
@@ -55,7 +55,6 @@ export const StageTemplateDiagram = (): JSX.Element => {
     },
     contextType,
     stagesMap,
-    setTemplateTypes,
     updatePipeline,
     updatePipelineView,
     setSelection,
@@ -94,9 +93,7 @@ export const StageTemplateDiagram = (): JSX.Element => {
         stagesMap: stagesMap,
         contextType,
         templateTypes,
-        setTemplateTypes,
-        openTemplateSelector: noop,
-        closeTemplateSelector: noop
+        getTemplate: Promise.reject
       },
       { useArrows: true, darkMode: false, fixedPosition: false, placement: 'bottom-start' }
     )

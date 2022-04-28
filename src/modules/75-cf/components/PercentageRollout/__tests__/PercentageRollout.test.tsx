@@ -49,23 +49,31 @@ const renderComponent = (props: Partial<PercentageRolloutProps> = {}): RenderRes
 }
 
 describe('PercentageRollout', () => {
-  test('it should display a drop down with all target groups', async () => {
-    renderComponent()
+  describe('Target Groups select', () => {
+    test('it should display a drop down with all target groups', async () => {
+      renderComponent()
 
-    expect(screen.getByText('cf.percentageRollout.toTargetGroup')).toBeInTheDocument()
+      expect(screen.getByText('cf.percentageRollout.toTargetGroup')).toBeInTheDocument()
 
-    mockTargetGroups.forEach(({ name }) => {
-      expect(screen.queryByText(name)).not.toBeInTheDocument()
+      mockTargetGroups.forEach(({ name }) => {
+        expect(screen.queryByText(name)).not.toBeInTheDocument()
+      })
+
+      await userEvent.click(
+        document.querySelector('[name$="clauses[0].values[0]"]')?.closest('.bp3-input') as HTMLElement
+      )
+
+      await waitFor(() => {
+        mockTargetGroups.forEach(({ name }) => {
+          expect(screen.getByText(name)).toBeInTheDocument()
+        })
+      })
     })
 
-    await userEvent.click(
-      document.querySelector('[name$="clauses[0].values[0]"]')?.closest('.bp3-input') as HTMLElement
-    )
+    test('it should not display the drop down if targetGroups is undefined', async () => {
+      renderComponent({ targetGroups: undefined })
 
-    await waitFor(() => {
-      mockTargetGroups.forEach(({ name }) => {
-        expect(screen.getByText(name)).toBeInTheDocument()
-      })
+      expect(screen.queryByText('cf.percentageRollout.toTargetGroup')).not.toBeInTheDocument()
     })
   })
 
@@ -98,40 +106,65 @@ describe('PercentageRollout', () => {
     expect(total).toHaveTextContent('100%')
   })
 
-  test('it should display an error message when the total is > 100%', async () => {
-    renderComponent()
+  describe('Over 100% error', () => {
+    test('it should display an error message when the total is > 100%', async () => {
+      renderComponent()
 
-    expect(screen.queryByText('cf.percentageRollout.invalidTotalError')).not.toBeInTheDocument()
+      expect(screen.queryByText('cf.percentageRollout.invalidTotalError')).not.toBeInTheDocument()
 
-    const input = screen.getAllByRole('spinbutton')[0]
+      const input = screen.getAllByRole('spinbutton')[0]
 
-    await userEvent.type(input, '99')
-    expect(screen.queryByText('cf.percentageRollout.invalidTotalError')).not.toBeInTheDocument()
+      await userEvent.type(input, '99')
+      expect(screen.queryByText('cf.percentageRollout.invalidTotalError')).not.toBeInTheDocument()
 
-    await userEvent.clear(input)
-    await userEvent.type(input, '101')
-    expect(screen.getByText('cf.percentageRollout.invalidTotalError')).toBeInTheDocument()
+      await userEvent.clear(input)
+      await userEvent.type(input, '101')
+      expect(screen.getByText('cf.percentageRollout.invalidTotalError')).toBeInTheDocument()
 
-    await userEvent.clear(input)
-    await userEvent.type(input, '100')
-    expect(screen.queryByText('cf.percentageRollout.invalidTotalError')).not.toBeInTheDocument()
-  })
-
-  test('it should display a drop down with with all attributes to bucket by', async () => {
-    const { container } = renderComponent()
-
-    expect(screen.getByText('cf.percentageRollout.bucketBy')).toBeInTheDocument()
-
-    mockAttributes.forEach(attribute => {
-      expect(screen.queryByText(attribute)).not.toBeInTheDocument()
+      await userEvent.clear(input)
+      await userEvent.type(input, '100')
+      expect(screen.queryByText('cf.percentageRollout.invalidTotalError')).not.toBeInTheDocument()
     })
 
-    await userEvent.click(container.querySelector('[name$="bucketBy"]')?.closest('.bp3-input') as HTMLElement)
+    test('it should not display an error message when the total is > 100% and hideOverError is passed', async () => {
+      renderComponent({ hideOverError: true })
 
-    await waitFor(() => {
+      expect(screen.queryByText('cf.percentageRollout.invalidTotalError')).not.toBeInTheDocument()
+
+      const input = screen.getAllByRole('spinbutton')[0]
+
+      await userEvent.type(input, '99')
+      expect(screen.queryByText('cf.percentageRollout.invalidTotalError')).not.toBeInTheDocument()
+
+      await userEvent.clear(input)
+      await userEvent.type(input, '101')
+      expect(screen.queryByText('cf.percentageRollout.invalidTotalError')).not.toBeInTheDocument()
+    })
+  })
+
+  describe('Bucket By select', () => {
+    test('it should display a drop down with with all attributes to bucket by', async () => {
+      const { container } = renderComponent()
+
+      expect(screen.getByText('cf.percentageRollout.bucketBy')).toBeInTheDocument()
+
       mockAttributes.forEach(attribute => {
-        expect(screen.getByText(attribute)).toBeInTheDocument()
+        expect(screen.queryByText(attribute)).not.toBeInTheDocument()
       })
+
+      await userEvent.click(container.querySelector('[name$="bucketBy"]')?.closest('.bp3-input') as HTMLElement)
+
+      await waitFor(() => {
+        mockAttributes.forEach(attribute => {
+          expect(screen.getByText(attribute)).toBeInTheDocument()
+        })
+      })
+    })
+
+    test('it should not display a drop down with attributes to bucket by if bucketByAttributes is undefined', async () => {
+      renderComponent({ bucketByAttributes: undefined })
+
+      expect(screen.queryByText('cf.percentageRollout.bucketBy')).not.toBeInTheDocument()
     })
   })
 })

@@ -14,9 +14,7 @@ exports[`RBACTooltip RBACTooltip component - Org scope 1`] = `
       >
         core_organization_create
       </span>
-      <span
-        class="textToLowercase"
-      >
+      <span>
          orgsText.
       </span>
     </p>
@@ -30,9 +28,7 @@ exports[`RBACTooltip RBACTooltip component - Org scope 1`] = `
     >
       "
       core_organization_create
-      <span
-        class="textToLowercase"
-      >
+      <span>
          orgsText
       </span>
       "
@@ -58,9 +54,7 @@ exports[`RBACTooltip RBACTooltip component - Project scope 1`] = `
       >
         core_project_create
       </span>
-      <span
-        class="textToLowercase"
-      >
+      <span>
          projectsText.
       </span>
     </p>
@@ -74,9 +68,7 @@ exports[`RBACTooltip RBACTooltip component - Project scope 1`] = `
     >
       "
       core_project_create
-      <span
-        class="textToLowercase"
-      >
+      <span>
          projectsText
       </span>
       "
@@ -102,9 +94,7 @@ exports[`RBACTooltip RBACTooltip component 1`] = `
       >
         core_project_create
       </span>
-      <span
-        class="textToLowercase"
-      >
+      <span>
          projectsText.
       </span>
     </p>
@@ -118,9 +108,7 @@ exports[`RBACTooltip RBACTooltip component 1`] = `
     >
       "
       core_project_create
-      <span
-        class="textToLowercase"
-      >
+      <span>
          projectsText
       </span>
       "

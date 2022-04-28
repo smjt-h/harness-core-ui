@@ -16,6 +16,7 @@ import { getErrorsList } from '@pipeline/components/PipelineStudio/StepUtil'
 import { useStrings } from 'framework/strings'
 import type { StringsMap } from 'stringTypes'
 import { useDeepCompareEffect } from '@common/hooks'
+import { focusOnNode } from '@common/utils/utils'
 import css from './ErrorsStrip.module.scss'
 
 interface ErrorStripProps {
@@ -38,7 +39,9 @@ const onNextHandler = (
     } else {
       element = domRef?.current?.querySelector(`[data-name="${nextElementName}"]`)?.parentElement
         ?.previousElementSibling as HTMLInputElement | undefined
-      element?.scrollIntoView()
+
+      // element.scrollIntoView was breaking the UI
+      element && focusOnNode(element)
     }
     setHighlighted(highlighted + offset)
   }
@@ -53,6 +56,7 @@ export function ErrorsStrip(props: ErrorStripProps): React.ReactElement {
 
   const tabList = document.getElementsByClassName('bp3-tab-list')
   const [stickyErrors, setStickyErrors] = React.useState(false)
+  const [stickyWidth, setStickyWidth] = React.useState('100%')
   const errorStripRef = React.useRef<HTMLDivElement | undefined>()
   function handleIntersection(entries: IntersectionObserverEntry[]): void {
     const [entry] = entries
@@ -112,6 +116,15 @@ export function ErrorsStrip(props: ErrorStripProps): React.ReactElement {
     }
   }, [tabList])
 
+  // Set the width of error strip width using js since it is position:fixed
+  // and out of normal flow of the document
+  React.useEffect(() => {
+    if (errorStripRef.current?.parentElement) {
+      const { width } = getComputedStyle(errorStripRef.current?.parentElement)
+      width !== stickyWidth && setStickyWidth(width)
+    }
+  }, [props.formErrors, stickyWidth])
+
   if (!errorCount) {
     return <></>
   }
@@ -122,6 +135,9 @@ export function ErrorsStrip(props: ErrorStripProps): React.ReactElement {
       flex={{ distribution: 'space-between' }}
       ref={ref => {
         errorStripRef.current = ref as HTMLDivElement
+      }}
+      style={{
+        width: stickyErrors ? stickyWidth : ''
       }}
     >
       <Layout.Horizontal>

@@ -43,7 +43,7 @@ const mockFeature: Feature = {
             values: ['random5']
           }
         ],
-        priority: 100,
+        priority: 101,
         ruleId: '3ead64d0-3226-4726-8415-acce803fa34e',
         serve: { variation: 'false' }
       },

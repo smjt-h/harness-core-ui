@@ -11,5 +11,6 @@ declare const styles: {
   readonly disabledRow: string
   readonly selectArtifactTable: string
   readonly textCentered: string
+  readonly textHeading: string
 }
 export default styles

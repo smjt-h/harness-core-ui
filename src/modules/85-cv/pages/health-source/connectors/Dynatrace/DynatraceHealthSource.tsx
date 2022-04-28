@@ -118,7 +118,10 @@ export default function DynatraceHealthSource(props: DynatraceHealthSourceProps)
               </CustomMetric>
             ) : (
               formik.values.selectedService.value && (
-                <CardWithOuterTitle title={getString('cv.healthSource.connectors.customMetrics')}>
+                <CardWithOuterTitle
+                  title={getString('cv.healthSource.connectors.customMetrics')}
+                  dataTooltipId={'customMetricsTitle'}
+                >
                   <Button
                     icon="plus"
                     minimal

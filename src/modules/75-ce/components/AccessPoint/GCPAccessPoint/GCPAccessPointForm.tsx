@@ -174,8 +174,8 @@ const GCPAccessPointForm: React.FC<GCPAccessPointFormProps> = ({
     const loaded: SelectOption[] = _defaultTo(
       machinesData?.response?.map(m => {
         return {
-          label: m,
-          value: m
+          label: m.name as string,
+          value: m.name as string
         }
       }),
       []
@@ -206,9 +206,9 @@ const GCPAccessPointForm: React.FC<GCPAccessPointFormProps> = ({
     <Container>
       <Formik<GcpApFormValue>
         initialValues={{
-          region: loadBalancer.region,
-          zone: loadBalancer.metadata?.zone,
-          vpc: loadBalancer.vpc,
+          region: _defaultTo(loadBalancer.region, selectedRegion),
+          zone: _defaultTo(loadBalancer.metadata?.zone, selectedZone),
+          vpc: _defaultTo(loadBalancer.vpc, selectedVpc),
           securityGroups: _defaultTo(
             loadBalancer.metadata?.security_groups?.map(x => {
               return {
@@ -218,9 +218,13 @@ const GCPAccessPointForm: React.FC<GCPAccessPointFormProps> = ({
             }),
             []
           ),
-          machine_type: _defaultTo(loadBalancer.metadata?.machine_type, 'n1-standard-1'),
+          machine_type: _defaultTo(
+            loadBalancer.metadata?.machine_type,
+            machinesData?.response?.find(m => m.is_default)?.name
+          ),
           subnet_name: loadBalancer.metadata?.subnet_name
         }}
+        enableReinitialize
         formName="lbFormSecond"
         onSubmit={values => handleSubmit?.(values)}
         render={({ submitForm, setFieldValue, values }) => (

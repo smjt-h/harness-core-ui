@@ -124,6 +124,7 @@ AuditTrailFactory.registerResourceHandler(ResourceType.PIPELINE, {
     name: 'cd-main'
   },
   moduleLabel: cdLabel,
+  resourceLabel: 'common.pipeline',
   resourceUrl: (_: ResourceDTO, resourceScope: ResourceScope, module?: Module) => {
     const { accountIdentifier, orgIdentifier, projectIdentifier } = resourceScope
     if (module && orgIdentifier && projectIdentifier) {
@@ -143,6 +144,7 @@ AuditTrailFactory.registerResourceHandler(ResourceType.SERVICE, {
     name: 'cd-main'
   },
   moduleLabel: cdLabel,
+  resourceLabel: 'service',
   resourceUrl: (_: ResourceDTO, resourceScope: ResourceScope, module?: Module) => {
     const { accountIdentifier, orgIdentifier, projectIdentifier } = resourceScope
     if (module && orgIdentifier && projectIdentifier) {
@@ -161,5 +163,6 @@ AuditTrailFactory.registerResourceHandler(ResourceType.ENVIRONMENT, {
   moduleIcon: {
     name: 'cd-main'
   },
-  moduleLabel: cdLabel
+  moduleLabel: cdLabel,
+  resourceLabel: 'environment'
 })

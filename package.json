@@ -1,7 +1,7 @@
 {
   "name": "nextgenui",
   "description": "Harness Inc",
-  "version": "0.294.0",
+  "version": "0.296.0",
   "author": "Harness Inc",
   "license": "Harness Inc",
   "homepage": "http://app.harness.io/",
@@ -19,7 +19,8 @@
     "lint": "eslint  --rulesdir ./scripts/eslint-rules --ext .ts --ext .tsx src",
     "lint:style": "stylelint src/**/*.scss",
     "typecheck": "tsc",
-    "cypress:ci": "cypress run --config videoUploadOnPasses=false --browser chrome",
+    "cypress:ci": "cypress run --env ALLOW_SCREENSHOT=true --config videoUploadOnPasses=false --browser chrome",
+    "cypress:updateSnapshots": "cypress run --env ALLOW_SCREENSHOT=true,updateSnapshots=true --config videoUploadOnPasses=false --browser chrome",
     "cypress:open": "cypress open",
     "cypress:openCoverage": "CYPRESS_COVERAGE=true cypress open",
     "strings-check": "node ./scripts/yaml-strings-check.js",
@@ -50,7 +51,7 @@
     "generate-eslint": "node scripts/generate-eslint-config-for-imports.mjs",
     "build-docker": "sh scripts/docker-build.sh",
     "lighthouse": "node scripts/lighthouse/lighthouse.js",
-    "custom-coverage": "npx new-files-coverage-check --e !**/*.test.tsx !**/*.test.ts !**/*.snap !**/*.js !**/*.scss !**/*.mock.ts !**/*.spec.ts !**/*.d.ts !**/*.json !**/*.types.ts !**/*.yml !**/*.yaml !**cypress/** !**/cypress/** !**/__test*/** !**/*.png !**/*.svg !**/src/services/** !**/src/queries/**"
+    "custom-coverage": "npx new-files-coverage-check --e !**/*.test.tsx !**/*.test.ts !**/*.snap !**/*.js !**/*.scss !**/*.mock.ts !**/*.spec.ts !**/*.d.ts !**/*.json !**/*.types.ts !**/*.yml !**/*.yaml !**cypress/** !**/cypress/** !**/__test*/** !**/*.png !**/*.svg !**/src/services/** !**/src/queries/** !**/src/**/__mocks__/**"
   },
   "dependencies": {
     "@blueprintjs/core": "3.26.1",
@@ -62,7 +63,7 @@
     "@harness/monaco-yaml": "^1.0.0",
     "@harness/ng-tooltip": "^1.30.75",
     "@harness/telemetry": "^1.0.37",
-    "@harness/uicore": "2.54.0",
+    "@harness/uicore": "2.62.0",
     "@harness/use-modal": "1.1.0",
     "@popperjs/core": "^2.4.2",
     "@projectstorm/react-diagrams-core": "^6.6.0",
@@ -81,6 +82,7 @@
     "highcharts-react-official": "3.0.0",
     "idb": "^5.0.4",
     "immer": "^9.0.6",
+    "js-yaml": "^4.1.0",
     "jsonc-parser": "^2.0.2",
     "lodash-es": "^4.17.15",
     "marked": "^4.0.12",
@@ -176,6 +178,7 @@
     "circular-dependency-plugin": "^5.2.2",
     "css-loader": "^6.3.0",
     "cypress": "^9.5.2",
+    "cypress-image-snapshot": "^4.0.1",
     "dotenv": "^10.0.0",
     "eslint": "^7.27.0",
     "eslint-config-prettier": "^8.3.0",

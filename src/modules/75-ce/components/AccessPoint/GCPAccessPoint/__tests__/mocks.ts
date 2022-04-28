@@ -21,7 +21,7 @@ export const mockedRegion = { label: 'us-central-1', name: 'us-central-1' }
 export const mockedZone = 'us-central-1a'
 export const mockedVpn = { name: 'testvpn', id: 'testvpn' }
 export const mockedSubnet = { name: 'subnet-test', id: 'subnet-test' }
-export const mockedMachine = 'a2-highgpu-1g'
+export const mockedMachine = { name: 'a2-highgpu-1g', is_default: true }
 export const mockedSecurityGroup = { name: 'http-server', id: 'http-server' }
 
 export const mockedRegionResponse = { response: [mockedRegion] }

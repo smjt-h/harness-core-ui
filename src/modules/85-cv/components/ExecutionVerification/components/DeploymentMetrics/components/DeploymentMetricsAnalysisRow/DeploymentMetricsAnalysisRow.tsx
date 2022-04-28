@@ -10,7 +10,7 @@ import HighchartsReact from 'highcharts-react-official'
 import Highcharts from 'highcharts'
 import cx from 'classnames'
 import { Container, Button, ButtonVariation } from '@wings-software/uicore'
-import type { NodeRiskCountDTO, TransactionMetric } from 'services/cv'
+import type { NodeRiskCountDTO, TransactionMetric, TransactionMetricInfo } from 'services/cv'
 import { useStrings } from 'framework/strings'
 import { chartsConfig } from './DeeploymentMetricsChartConfig'
 import { filterRenderCharts, transformControlAndTestDataToHighChartsSeries } from './DeploymentMetricsAnalysisRow.utils'
@@ -19,7 +19,7 @@ import { widthPercentagePerGraph, HostTestData, HostControlTestData } from './De
 import css from './DeploymentMetricsAnalysisRow.module.scss'
 
 export interface DeploymentMetricsAnalysisRowProps {
-  healthSourceType: any
+  healthSourceType: TransactionMetricInfo['dataSourceType']
   transactionName: string
   metricName: string
   controlData?: HostControlTestData[]

@@ -133,6 +133,7 @@ AuditTrailFactory.registerResourceHandler('USER_GROUP', {
     name: 'nav-settings'
   },
   moduleLabel: platformLabel,
+  resourceLabel: 'common.userGroup',
   resourceUrl: (resource: ResourceDTO, resourceScope: ResourceScope) => {
     const { orgIdentifier, accountIdentifier, projectIdentifier } = resourceScope
     return routes.toUserGroupDetails({
@@ -149,6 +150,7 @@ AuditTrailFactory.registerResourceHandler('USER', {
     name: 'nav-settings'
   },
   moduleLabel: platformLabel,
+  resourceLabel: 'common.userLabel',
   resourceUrl: (resource: ResourceDTO, resourceScope: ResourceScope) => {
     const { orgIdentifier, accountIdentifier, projectIdentifier } = resourceScope
 
@@ -170,6 +172,7 @@ AuditTrailFactory.registerResourceHandler('ROLE', {
     name: 'nav-settings'
   },
   moduleLabel: platformLabel,
+  resourceLabel: 'common.role',
   resourceUrl: (resource: ResourceDTO, resourceScope: ResourceScope) => {
     const { orgIdentifier, accountIdentifier, projectIdentifier } = resourceScope
 
@@ -186,6 +189,7 @@ AuditTrailFactory.registerResourceHandler('ROLE_ASSIGNMENT', {
   moduleIcon: {
     name: 'nav-settings'
   },
+  resourceLabel: 'common.roleAssignmentLabel',
   moduleLabel: platformLabel
 })
 
@@ -194,6 +198,7 @@ AuditTrailFactory.registerResourceHandler('SERVICE_ACCOUNT', {
     name: 'nav-settings'
   },
   moduleLabel: platformLabel,
+  resourceLabel: 'serviceAccount',
   resourceUrl: (resource: ResourceDTO, resourceScope: ResourceScope) => {
     const { orgIdentifier, accountIdentifier, projectIdentifier } = resourceScope
 
@@ -211,6 +216,7 @@ AuditTrailFactory.registerResourceHandler('RESOURCE_GROUP', {
     name: 'nav-settings'
   },
   moduleLabel: platformLabel,
+  resourceLabel: 'common.resourceGroupLabel',
   resourceUrl: (resource: ResourceDTO, resourceScope: ResourceScope) => {
     const { orgIdentifier, accountIdentifier, projectIdentifier } = resourceScope
 

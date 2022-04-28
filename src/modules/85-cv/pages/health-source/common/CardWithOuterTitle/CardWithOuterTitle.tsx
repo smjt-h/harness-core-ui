@@ -15,14 +15,20 @@ interface CardWithOuterTitleProp {
   title?: string
   children: React.ReactNode
   className?: string
+  dataTooltipId?: string
 }
 
-export default function CardWithOuterTitle({ title, children, className }: CardWithOuterTitleProp): JSX.Element {
+export default function CardWithOuterTitle({
+  title,
+  children,
+  className,
+  dataTooltipId
+}: CardWithOuterTitleProp): JSX.Element {
   return (
     <>
-      <Layout.Vertical margin={'xxlarge'} className={className}>
+      <Layout.Vertical margin={'xxlarge'} className={cx(css.tooltipStyle, className)}>
         {title && (
-          <Text color={Color.BLACK} className={css.header}>
+          <Text color={Color.BLACK} className={css.header} tooltipProps={{ dataTooltipId }}>
             {title}
           </Text>
         )}

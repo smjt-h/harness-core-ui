@@ -21,11 +21,11 @@ exports[`FlagActivation it should render correctly 1`] = `
             <div
               class="Layout--horizontal Layout--layout-spacing-small StyledProps--main container"
             >
-              <span
-                class="label"
+              <p
+                class="StyledProps--font StyledProps--main StyledProps--font-variation-form-label"
               >
                 environment
-              </span>
+              </p>
               <div />
             </div>
           </div>
@@ -112,27 +112,23 @@ exports[`FlagActivation it should render correctly 1`] = `
                   <div
                     class="Layout--horizontal StyledProps--main StyledProps--flex StyledProps--flex-alignItems-center"
                   >
-                    <p
-                      class="StyledProps--font StyledProps--main"
+                    <label
+                      class="bp3-control bp3-switch bp3-align-left bp3-large switch"
                     >
-                      <label
-                        class="bp3-control bp3-switch bp3-align-left bp3-large switch"
+                      <input
+                        checked=""
+                        data-testid="flag-status-switch"
+                        type="checkbox"
+                      />
+                      <span
+                        class="bp3-control-indicator"
+                      />
+                      <span
+                        class="StyledProps--font StyledProps--main StyledProps--inline StyledProps--font-variation-form-input-text"
                       >
-                        <input
-                          checked=""
-                          data-testid="flag-status-switch"
-                          type="checkbox"
-                        />
-                        <span
-                          class="bp3-control-indicator"
-                        />
-                        <span
-                          class="StyledProps--font StyledProps--main StyledProps--inline StyledProps--font-variation-form-input-text"
-                        >
-                          cf.featureFlags.flagOn
-                        </span>
-                      </label>
-                    </p>
+                        cf.featureFlags.flagOn
+                      </span>
+                    </label>
                     <span
                       style="flex-grow: 1;"
                     />

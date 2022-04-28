@@ -119,6 +119,9 @@
     max-height: initial !important;
     padding-right: var(--spacing-xlarge) !important;
   }
+  :global(.bp3-menu) {
+    max-height: 100px !important;
+  }
 }
 .thumbnailSelect {
   cursor: pointer;

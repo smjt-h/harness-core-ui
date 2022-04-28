@@ -15,7 +15,8 @@ import {
   HarnessDocTooltip,
   Container,
   FormError,
-  FormikTooltipContext
+  FormikTooltipContext,
+  useToaster
 } from '@wings-software/uicore'
 import { connect, FormikContext } from 'formik'
 import { Classes, FormGroup, Intent } from '@blueprintjs/core'
@@ -50,8 +51,10 @@ import {
   ConnectorReferenceFieldProps,
   getReferenceFieldProps,
   getEditRenderer,
+  InlineSelectionInterface,
+  ConnectorSelectedValue,
   getSelectedRenderer,
-  InlineSelectionInterface
+  getConnectorStatusCall
 } from './ConnectorReferenceField'
 import css from './ConnectorReferenceField.module.scss'
 
@@ -130,6 +133,30 @@ export const MultiTypeConnectorField = (props: MultiTypeConnectorFieldProps): Re
     props.tooltipProps?.dataTooltipId || (tooltipContext?.formName ? `${tooltipContext?.formName}_${name}` : '')
 
   const [multiType, setMultiType] = React.useState<MultiTypeInputType>(MultiTypeInputType.FIXED)
+  const [connectorStatusCheckInProgress, setConnectorStatusCheckInProgress] = React.useState(false)
+  const [connectorStatus, setConnectorStatus] = React.useState(typeof selected !== 'string' && selected?.live)
+
+  const [isConnectorEdited, setIsConnectorEdited] = useState(false)
+  const { showError } = useToaster()
+  const getConnectorStatus = (): void => {
+    if (typeof selected !== 'string') {
+      setConnectorStatusCheckInProgress(true)
+      getConnectorStatusCall(selected, accountIdentifier)
+        .then(
+          status => {
+            setConnectorStatus(status)
+          },
+          err => {
+            setConnectorStatus(false)
+            showError(err)
+          }
+        )
+        .finally(() => {
+          setConnectorStatusCheckInProgress(false)
+          setIsConnectorEdited(false)
+        })
+    }
+  }
   const {
     data: connectorData,
     loading,
@@ -172,6 +199,13 @@ export const MultiTypeConnectorField = (props: MultiTypeConnectorFieldProps): Re
     } else {
       setSelectedValue(selected)
     }
+    if (typeof selected !== 'string' && selected && (selected as ConnectorSelectedValue).connector) {
+      if (isConnectorEdited) {
+        getConnectorStatus()
+      } else {
+        setConnectorStatus((selected as ConnectorSelectedValue).live)
+      }
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selected])
 
@@ -206,6 +240,7 @@ export const MultiTypeConnectorField = (props: MultiTypeConnectorFieldProps): Re
 
   function onConnectorCreateSuccess(data?: ConnectorConfigDTO): void {
     if (data) {
+      setIsConnectorEdited(true)
       const scope = getScopeFromDTO<ConnectorConfigDTO>(data.connector)
       const val = {
         label: data.connector.name,
@@ -331,7 +366,7 @@ export const MultiTypeConnectorField = (props: MultiTypeConnectorFieldProps): Re
             gotoPage: pageIndex => setPage(pageIndex)
           },
           isNewConnectorLabelVisible: canUpdate && isNewConnectorLabelVisible,
-          selectedRenderer: getSelectedRenderer(selectedValue),
+          selectedRenderer: getSelectedRenderer(selectedValue, !!connectorStatus, connectorStatusCheckInProgress),
           ...optionalReferenceSelectProps,
           disabled: isDisabled,
           hideModal: inlineSelection.selected && inlineSelection.inlineModalClosed,

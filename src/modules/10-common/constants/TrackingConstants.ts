@@ -34,6 +34,8 @@ export enum StageActions {
   LoadSelectStageTypeView = 'Load Select Stage Type View',
   LoadEditStageView = 'Load Edit Stage View',
   LoadCreateOrSelectConnectorView = 'Load Create or Select a Connector View',
+  ApplySelectedConnector = 'Apply Selected Connector',
+  CancelSelectConnector = 'Cancel Select Connector',
   LoadSelectConnectorTypeView = 'Load Select Connector Type View',
   SelectConnectorType = 'Select Connector Type'
 }
@@ -50,7 +52,17 @@ export enum ConnectorActions {
 
 export enum DelegateActions {
   StartCreateDelegate = 'Start Create Delegate',
-  SaveCreateDelegate = 'Save Create Delegate'
+  SaveCreateDelegate = 'Save Create Delegate',
+  SelectDelegateType = 'Select Delegate Type',
+  SetupDelegate = 'Set up Delegate',
+  SetupDelegateBack = 'Set up Delegate Back',
+  VerificationBack = 'Verification Back',
+  DownloadYAML = 'Download YAML File',
+  LoadCreateTokenModal = 'Load Create Token Modal',
+  SaveCreateToken = 'Save Create Token',
+  CloseCreateToken = 'Close Create Token',
+  ReviewScriptContinue = 'Review Script Continue',
+  ReviewScriptBack = 'Review Script Back'
 }
 
 export enum StepActions {
@@ -71,7 +83,10 @@ export enum PipelineActions {
   PipelineUpdatedViaYAML = 'Update a pipeline using YAML editor',
   SetupLater = 'Click Setup later',
   LoadCreateNewPipeline = 'Load Create new Pipeline',
-  CancelCreateNewPipeline = 'Cancel Create new Pipeline'
+  CancelCreateNewPipeline = 'Cancel Create new Pipeline',
+  LoadSelectOrCreatePipeline = 'Load Select or Create Pipeline',
+  SelectAPipeline = 'Select a Pipeline',
+  CreateAPipeline = 'Create a Pipeline'
 }
 
 export enum NavigatedToPage {
@@ -90,7 +105,8 @@ export enum Category {
   STAGE = 'Stage',
   SECRET = 'Secret',
   CONNECTOR = 'Connector',
-  DELEGATE = 'Delegate'
+  DELEGATE = 'Delegate',
+  ENVIRONMENT = 'Environment'
 }
 
 export enum ManifestActions {
@@ -110,5 +126,18 @@ export enum ProjectActions {
   SaveCreateProject = 'Save Create project',
   LoadInviteCollaborators = 'Load Invite Collaborators',
   SaveInviteCollaborators = 'Save Invite Collaborators',
-  ClickBackToProject = 'Click Back to Project'
+  ClickBackToProject = 'Click Back to Project',
+  LoadSelectOrCreateProjectModal = 'Load Select Or Create Project Modal',
+  ClickSelectProject = 'Select Project from Project Selector'
+}
+
+export enum ExitModalActions {
+  ExitByCancel = 'ExitByCancel',
+  ExitByClose = 'ExitByClose',
+  ExitByClick = 'ExitByClick'
+}
+
+export enum EnvironmentActions {
+  StartCreateEnvironment = 'Start Create Environment',
+  SaveCreateEnvironment = 'Save Create Environment'
 }

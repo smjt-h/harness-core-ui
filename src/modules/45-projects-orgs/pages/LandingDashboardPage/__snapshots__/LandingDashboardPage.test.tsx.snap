@@ -372,7 +372,7 @@ exports[`Landing Dashboard Page render landing page and welcome page by swtich 1
                 class="Layout--horizontal StyledProps--main topProjectsWrapper"
               >
                 <div
-                  class="TableV2--table overviewSummary"
+                  class="TableV2--table StackedSummaryTable--overviewSummary"
                 >
                   <div
                     class="TableV2--header TableV2--minimal"
@@ -488,7 +488,7 @@ exports[`Landing Dashboard Page render landing page and welcome page by swtich 1
                           class="Layout--horizontal Layout--layout-spacing-small StyledProps--main"
                         >
                           <p
-                            class="StyledProps--font StyledProps--main summaryCount StyledProps--font-small"
+                            class="StyledProps--font StyledProps--main StackedSummaryBar--summaryCount StyledProps--font-small"
                           >
                             47
                           </p>
@@ -496,11 +496,11 @@ exports[`Landing Dashboard Page render landing page and welcome page by swtich 1
                             class="StyledProps--font StyledProps--main StyledProps--flex"
                           >
                             <div
-                              class="StyledProps--font StyledProps--main barSection StyledProps--background-green500"
+                              class="StyledProps--font StyledProps--main StackedSummaryBar--barSection StyledProps--background-green500"
                               style="width: 85.48936170212767px;"
                             />
                             <div
-                              class="StyledProps--font StyledProps--main barSection StyledProps--background-red500"
+                              class="StyledProps--font StyledProps--main StackedSummaryBar--barSection StyledProps--background-red500"
                               style="width: 12.51063829787234px;"
                             />
                           </div>
@@ -573,7 +573,7 @@ exports[`Landing Dashboard Page render landing page and welcome page by swtich 1
                           class="Layout--horizontal Layout--layout-spacing-small StyledProps--main"
                         >
                           <p
-                            class="StyledProps--font StyledProps--main summaryCount StyledProps--font-small"
+                            class="StyledProps--font StyledProps--main StackedSummaryBar--summaryCount StyledProps--font-small"
                           >
                             5
                           </p>
@@ -581,11 +581,11 @@ exports[`Landing Dashboard Page render landing page and welcome page by swtich 1
                             class="StyledProps--font StyledProps--main StyledProps--flex"
                           >
                             <div
-                              class="StyledProps--font StyledProps--main barSection StyledProps--background-red500"
+                              class="StyledProps--font StyledProps--main StackedSummaryBar--barSection StyledProps--background-red500"
                               style="width: 10.425531914893616px;"
                             />
                             <div
-                              class="StyledProps--font StyledProps--main barSection StyledProps--background-grey100"
+                              class="StyledProps--font StyledProps--main StackedSummaryBar--barSection StyledProps--background-grey100"
                               style="width: 87.57446808510637px;"
                             />
                           </div>
@@ -658,7 +658,7 @@ exports[`Landing Dashboard Page render landing page and welcome page by swtich 1
                           class="Layout--horizontal Layout--layout-spacing-small StyledProps--main"
                         >
                           <p
-                            class="StyledProps--font StyledProps--main summaryCount StyledProps--font-small"
+                            class="StyledProps--font StyledProps--main StackedSummaryBar--summaryCount StyledProps--font-small"
                           >
                             2
                           </p>
@@ -666,11 +666,11 @@ exports[`Landing Dashboard Page render landing page and welcome page by swtich 1
                             class="StyledProps--font StyledProps--main StyledProps--flex"
                           >
                             <div
-                              class="StyledProps--font StyledProps--main barSection StyledProps--background-red500"
+                              class="StyledProps--font StyledProps--main StackedSummaryBar--barSection StyledProps--background-red500"
                               style="width: 4.170212765957447px;"
                             />
                             <div
-                              class="StyledProps--font StyledProps--main barSection StyledProps--background-grey100"
+                              class="StyledProps--font StyledProps--main StackedSummaryBar--barSection StyledProps--background-grey100"
                               style="width: 93.82978723404256px;"
                             />
                           </div>
@@ -743,7 +743,7 @@ exports[`Landing Dashboard Page render landing page and welcome page by swtich 1
                           class="Layout--horizontal Layout--layout-spacing-small StyledProps--main"
                         >
                           <p
-                            class="StyledProps--font StyledProps--main summaryCount StyledProps--font-small"
+                            class="StyledProps--font StyledProps--main StackedSummaryBar--summaryCount StyledProps--font-small"
                           >
                             1
                           </p>
@@ -751,11 +751,11 @@ exports[`Landing Dashboard Page render landing page and welcome page by swtich 1
                             class="StyledProps--font StyledProps--main StyledProps--flex"
                           >
                             <div
-                              class="StyledProps--font StyledProps--main barSection StyledProps--background-red500"
+                              class="StyledProps--font StyledProps--main StackedSummaryBar--barSection StyledProps--background-red500"
                               style="width: 2.0851063829787235px;"
                             />
                             <div
-                              class="StyledProps--font StyledProps--main barSection StyledProps--background-grey100"
+                              class="StyledProps--font StyledProps--main StackedSummaryBar--barSection StyledProps--background-grey100"
                               style="width: 95.91489361702128px;"
                             />
                           </div>

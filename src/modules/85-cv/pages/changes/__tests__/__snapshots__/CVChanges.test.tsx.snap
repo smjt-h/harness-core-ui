@@ -64,9 +64,16 @@ exports[`Unit tests for CVChanges Verify if all the fields are rendered correctl
         </div>
       </div>
     </div>
-    <p>
-      changes
-    </p>
+    <div
+      class="Text--withDocsTooltip"
+      data-tooltip-id="changesDashboardTitle"
+    >
+      <p
+        class="StyledProps--font StyledProps--main StyledProps--font-variation-h4"
+      >
+        changes
+      </p>
+    </div>
   </div>
   <div
     class="css-17ex3p0"
@@ -301,13 +308,18 @@ exports[`Unit tests for CVChanges Verify if all the fields are rendered correctl
     <div
       class="Layout--horizontal StyledProps--main css-1nbi0sg"
     >
-      <p
-        class="timelineText"
+      <div
+        class="Text--withDocsTooltip"
+        data-tooltip-id="changesTimeline"
       >
-        cv.cvChanges.changesTimeline
-      </p>
+        <p
+          class="StyledProps--font StyledProps--main timelineText"
+        >
+          cv.cvChanges.changesTimeline
+        </p>
+      </div>
       <p
-        class="timelineText"
+        class="StyledProps--font StyledProps--main timelineText"
       >
         lastUpdated: Nov 9, 2021 3:25 AM
       </p>
@@ -403,14 +415,19 @@ exports[`Unit tests for CVChanges Verify if all the fields are rendered correctl
     <div
       class="StyledProps--font StyledProps--main"
     >
-      <p
-        class="StyledProps--font StyledProps--main StyledProps--font-weight-bold StyledProps--font-size-normal StyledProps--padding-bottom-medium"
+      <div
+        class="Text--withDocsTooltip"
+        data-tooltip-id="CVChangesTable"
       >
-        changes
-        (
-        4
-        )
-      </p>
+        <p
+          class="StyledProps--font StyledProps--main StyledProps--font-weight-bold StyledProps--font-size-normal StyledProps--padding-bottom-medium"
+        >
+          changes
+          (
+          4
+          )
+        </p>
+      </div>
       <div
         class="StyledProps--font StyledProps--main cardContainer container"
       >

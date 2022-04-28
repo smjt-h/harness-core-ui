@@ -384,7 +384,7 @@ const SetBudgetAmount: React.FC<StepProps<BudgetStepData> & Props> = props => {
         formName="selectPerspective"
         enableReinitialize={true}
         initialValues={{
-          type: type || get(prevStepData, 'type') || 'SPECIFIED_AMOUNT',
+          type: type || get(prevStepData, 'type') || 'PREVIOUS_PERIOD_SPEND',
           budgetAmount: budgetAmount || get(prevStepData, 'budgetAmount') || 0,
           period: period || get(prevStepData, 'period') || 'MONTHLY',
           startTime: startTime || get(prevStepData, 'startTime') || Number(todayInUTC().startOf('month').format('x')),

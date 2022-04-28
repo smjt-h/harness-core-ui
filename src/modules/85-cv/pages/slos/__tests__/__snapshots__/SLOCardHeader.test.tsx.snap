@@ -5,12 +5,16 @@ exports[`SLOCardHeader Render sample card 1`] = `
   <div
     class="StyledProps--font StyledProps--main StyledProps--flex StyledProps--margin-bottom-medium"
   >
-    <h2
-      class="StyledProps--font StyledProps--font-h2 StyledProps--main StyledProps--font-variation-h4 StyledProps--color StyledProps--color-grey800"
-      level="2"
+    <a
+      href="/account/account_id/cv/orgs/org_identifier/projects/project_identifier/slos/slo_identifier"
     >
-      Title
-    </h2>
+      <h2
+        class="StyledProps--font StyledProps--font-h2 StyledProps--main StyledProps--font-variation-h4 StyledProps--color StyledProps--color-primary7"
+        level="2"
+      >
+        Title
+      </h2>
+    </a>
     <span
       class="bp3-popover-wrapper"
     >

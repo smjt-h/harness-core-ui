@@ -126,8 +126,11 @@ export const isActiveStep = (stepEl: HTMLElement, parentEl: HTMLDivElement) => {
 }
 
 export const getSelectedResourceFromGatewayDetails = (gatewayDetails: GatewayDetails) => {
+  const isGcpProvider = Utils.isProviderGcp(gatewayDetails.provider)
   return !_isEmpty(gatewayDetails.selectedInstances)
     ? RESOURCES.INSTANCES
+    : isGcpProvider && !_isEmpty(gatewayDetails.routing?.instance?.scale_group)
+    ? RESOURCES.IG
     : !_isEmpty(gatewayDetails.routing?.instance?.scale_group)
     ? RESOURCES.ASG
     : Utils.isK8sRule(gatewayDetails)

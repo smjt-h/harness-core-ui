@@ -10,7 +10,8 @@ import { FeatureIdentifier } from 'framework/featureStore/FeatureIdentifier'
 import { getFeaturePropsForRunPipelineButton, mergeTemplateWithInputSetData } from '../runPipelineUtils'
 import pipelineTemplate from './mockJson/pipelineTemplate.json'
 import pipelineInputSetPortion from './mockJson/pipelineInputSetPortion.json'
-describe('RunPipelineHelper', () => {
+
+describe('mergeTemplateWithInputSetData tests', () => {
   test('mergeTemplateWithInputSetData works as expected', () => {
     const templatePipeline = {
       pipeline: {
@@ -94,6 +95,141 @@ describe('RunPipelineHelper', () => {
     expect((output.pipeline.stages?.[0].stage?.variables?.[0] as AllNGVariables)?.value).toEqual('<+input>')
     expect((output.pipeline.stages?.[0].stage?.variables?.[1] as AllNGVariables)?.value).toEqual('v2_test')
     expect(output.pipeline.stages?.length).toEqual(1)
+  })
+
+  describe('variables tests', () => {
+    test('merges new variables', () => {
+      const result = mergeTemplateWithInputSetData(
+        {
+          pipeline: {
+            variables: [
+              { name: 'var1', type: 'String', value: '<+input>' },
+              { name: 'var2', type: 'String', value: '<+input>' },
+              { name: 'var3', type: 'String', value: '<+input>' }
+            ]
+          }
+        } as any,
+        {
+          pipeline: {
+            variables: [
+              { name: 'var1', type: 'String', value: '1' },
+              { name: 'var2', type: 'String', value: '2' },
+              { name: 'var3', type: 'String', value: '3' },
+              { name: 'var4', type: 'String', value: '4' }
+            ]
+          }
+        } as any
+      )
+
+      expect(result).toEqual({
+        pipeline: {
+          variables: [
+            { name: 'var1', type: 'String', value: '1' },
+            { name: 'var2', type: 'String', value: '2' },
+            { name: 'var3', type: 'String', value: '3' },
+            { name: 'var4', type: 'String', value: '4' }
+          ]
+        }
+      })
+    })
+
+    test('merges deleted variables', () => {
+      const result = mergeTemplateWithInputSetData(
+        {
+          pipeline: {
+            variables: [
+              { name: 'var1', type: 'String', value: '<+input>' },
+              { name: 'var2', type: 'String', value: '<+input>' },
+              { name: 'var3', type: 'String', value: '<+input>' }
+            ]
+          }
+        } as any,
+        {
+          pipeline: {
+            variables: [
+              { name: 'var1', type: 'String', value: '1' },
+              { name: 'var3', type: 'String', value: '3' }
+            ]
+          }
+        } as any
+      )
+
+      expect(result).toEqual({
+        pipeline: {
+          variables: [
+            { name: 'var1', type: 'String', value: '1' },
+            { name: 'var2', type: 'String', value: '<+input>' },
+            { name: 'var3', type: 'String', value: '3' }
+          ]
+        }
+      })
+    })
+
+    test('maintains order of first object', () => {
+      const result = mergeTemplateWithInputSetData(
+        {
+          pipeline: {
+            variables: [
+              { name: 'var1', type: 'String', value: '<+input>' },
+              { name: 'var3', type: 'String', value: '<+input>' },
+              { name: 'var2', type: 'String', value: '<+input>' }
+            ]
+          }
+        } as any,
+        {
+          pipeline: {
+            variables: [
+              { name: 'var1', type: 'String', value: '1' },
+              { name: 'var2', type: 'String', value: '2' },
+              { name: 'var3', type: 'String', value: '3' }
+            ]
+          }
+        } as any
+      )
+
+      expect(result).toEqual({
+        pipeline: {
+          variables: [
+            { name: 'var1', type: 'String', value: '1' },
+            { name: 'var3', type: 'String', value: '3' },
+            { name: 'var2', type: 'String', value: '2' }
+          ]
+        }
+      })
+    })
+
+    test('handles type change of variables', () => {
+      const result = mergeTemplateWithInputSetData(
+        {
+          pipeline: {
+            variables: [
+              { name: 'var1', type: 'String', value: '<+input>' },
+              { name: 'var2', type: 'Number', value: '<+input>' },
+              { name: 'var3', type: 'String', value: '<+input>' }
+            ]
+          }
+        } as any,
+        {
+          pipeline: {
+            variables: [
+              { name: 'var1', type: 'String', value: '1' },
+              { name: 'var2', type: 'String', value: '2' },
+              { name: 'var3', type: 'String', value: '3' }
+            ]
+          }
+        } as any
+      )
+
+      expect(result).toEqual({
+        pipeline: {
+          variables: [
+            { name: 'var1', type: 'String', value: '1' },
+            { name: 'var2', type: 'Number', value: '<+input>' },
+            { name: 'var3', type: 'String', value: '3' }
+          ]
+        }
+      })
+    })
   })
 })
 

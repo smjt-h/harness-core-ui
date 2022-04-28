@@ -20,6 +20,7 @@ import { ResourceType } from '@rbac/interfaces/ResourceType'
 import type { AccountPathProps } from '@common/interfaces/RouteInterfaces'
 import RbacMenuItem from '@rbac/components/MenuItem/MenuItem'
 import RbacAvatarGroup from '@rbac/components/RbacAvatarGroup/RbacAvatarGroup'
+import useRBACError from '@rbac/utils/useRBACError/useRBACError'
 import css from './OrganizationCard.module.scss'
 
 interface OrganizationCardProps {
@@ -35,6 +36,7 @@ interface OrganizationCardProps {
 export const OrganizationCard: React.FC<OrganizationCardProps> = props => {
   const { data: organizationAggregateDTO, isPreview, onClick, editOrg, reloadOrgs, inviteCollab } = props
   const { accountId } = useParams<AccountPathProps>()
+  const { getRBACErrorMessage } = useRBACError()
   const { showSuccess, showError } = useToaster()
   const {
     organizationResponse: { organization: data, harnessManaged: isHarnessManaged },
@@ -77,7 +79,7 @@ export const OrganizationCard: React.FC<OrganizationCardProps> = props => {
             showSuccess(getString('projectsOrgs.orgDeletedMessage', { name: data.name }))
           reloadOrgs?.()
         } catch (err) {
-          showError(err.data?.message || err.message)
+          showError(getRBACErrorMessage(err))
         }
       }
     }

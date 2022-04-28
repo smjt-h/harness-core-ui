@@ -7,13 +7,14 @@
 
 import React from 'react'
 import { act } from 'react-dom/test-utils'
-import { render, waitFor, fireEvent, getAllByTestId, getByTestId } from '@testing-library/react'
+import { render, waitFor, fireEvent, getAllByTestId, getByTestId, queryByText } from '@testing-library/react'
 import { GitSyncTestWrapper } from '@common/utils/gitSyncTestUtils'
 import GitSyncErrors from '@gitsync/pages/errors/GitSyncErrors'
 import {
   GIT_SYNC_ERROR_TEST_SCOPE,
   defaultQueryParams,
   commitViewData,
+  fileViewData,
   mockData
 } from '@gitsync/pages/errors/__tests__/mockData'
 
@@ -30,7 +31,7 @@ jest.mock('services/cd-ng', () => ({
   },
   useListGitSyncErrors: (...args: any[]) => {
     useListGitSyncErrors(args)
-    return mockDataWithRefetch
+    return args[0]?.gitToHarness ? mockDataWithRefetch : { ...fileViewData, refetch }
   },
   useGetListOfBranchesWithStatus: jest.fn().mockImplementation(() => {
     return mockDataWithRefetch
@@ -176,6 +177,7 @@ describe('GitSyncErrors', () => {
           }
         }
       ])
+      expect(queryByText(container, 'common.viewContent')).toBeInTheDocument()
     })
 
     const connectivityView = container.querySelector('[data-tab-id="CONNECTIVITY_ERRORS"]')

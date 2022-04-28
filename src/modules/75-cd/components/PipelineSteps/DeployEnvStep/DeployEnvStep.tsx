@@ -72,6 +72,8 @@ import { PermissionIdentifier } from '@rbac/interfaces/PermissionIdentifier'
 import { StageErrorContext } from '@pipeline/context/StageErrorContext'
 import { DeployTabs } from '@cd/components/PipelineStudio/DeployStageSetupShell/DeployStageSetupShellUtils'
 import { getEnvironmentRefSchema } from '@cd/components/PipelineSteps/PipelineStepsUtil'
+import { useTelemetry } from '@common/hooks/useTelemetry'
+import { Category, EnvironmentActions, ExitModalActions } from '@common/constants/TrackingConstants'
 import ExperimentalInput from '../K8sServiceSpec/K8sServiceSpecForms/ExperimentalInput'
 import css from './DeployEnvStep.module.scss'
 
@@ -147,6 +149,15 @@ export const NewEditEnvironmentModal: React.FC<NewEditEnvironmentModalProps> = (
     }
   })
   const { showSuccess, showError, clear } = useToaster()
+  const { trackEvent } = useTelemetry()
+
+  React.useEffect(() => {
+    !isEdit &&
+      trackEvent(EnvironmentActions.StartCreateEnvironment, {
+        category: Category.ENVIRONMENT
+      })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
 
   const onSubmit = React.useCallback(
     async (value: Required<EnvironmentRequestDTO>) => {
@@ -231,7 +242,7 @@ export const NewEditEnvironmentModal: React.FC<NewEditEnvironmentModalProps> = (
   return (
     <>
       <Container className={css.yamlToggleEnv}>
-        <Layout.Horizontal flex={{ justifyContent: flexStart }} padding-top="8px">
+        <Layout.Horizontal flex={{ justifyContent: flexStart }} padding={{ top: 'small' }}>
           <VisualYamlToggle
             selectedView={selectedView}
             onChange={nextMode => {
@@ -243,10 +254,13 @@ export const NewEditEnvironmentModal: React.FC<NewEditEnvironmentModalProps> = (
       <Layout.Vertical>
         <Formik<Required<EnvironmentResponseDTO>>
           initialValues={data as Required<EnvironmentResponseDTO>}
-          enableReinitialize={false}
           formName="deployEnv"
           onSubmit={values => {
             onSubmit(values)
+            !isEdit &&
+              trackEvent(EnvironmentActions.SaveCreateEnvironment, {
+                category: Category.ENVIRONMENT
+              })
           }}
           validationSchema={Yup.object().shape({
             name: NameSchema({ requiredErrorMsg: getString?.('fieldRequired', { field: 'Environment' }) }),
@@ -283,7 +297,17 @@ export const NewEditEnvironmentModal: React.FC<NewEditEnvironmentModalProps> = (
                         text={getString('save')}
                         data-id="environment-save"
                       />
-                      <Button variation={ButtonVariation.TERTIARY} text={getString('cancel')} onClick={closeModal} />
+                      <Button
+                        variation={ButtonVariation.TERTIARY}
+                        text={getString('cancel')}
+                        onClick={() => {
+                          !isEdit &&
+                            trackEvent(ExitModalActions.ExitByCancel, {
+                              category: Category.ENVIRONMENT
+                            })
+                          closeModal?.()
+                        }}
+                      />
                     </Layout.Horizontal>
                   </FormikForm>
                 ) : (
@@ -303,7 +327,7 @@ export const NewEditEnvironmentModal: React.FC<NewEditEnvironmentModalProps> = (
                       showSnippetSection={false}
                     />
 
-                    <Layout.Horizontal padding={{ top: 'large' }}>
+                    <Layout.Horizontal spacing="small" padding={{ top: 'large' }}>
                       <Button
                         variation={ButtonVariation.PRIMARY}
                         type="submit"
@@ -313,8 +337,17 @@ export const NewEditEnvironmentModal: React.FC<NewEditEnvironmentModalProps> = (
                           onSubmit(parse(latestYaml)?.environment)
                         }}
                       />
-                      &nbsp; &nbsp;
-                      <Button variation={ButtonVariation.TERTIARY} onClick={closeModal} text={getString('cancel')} />
+                      <Button
+                        variation={ButtonVariation.TERTIARY}
+                        onClick={() => {
+                          !isEdit &&
+                            trackEvent(ExitModalActions.ExitByCancel, {
+                              category: Category.ENVIRONMENT
+                            })
+                          closeModal?.()
+                        }}
+                        text={getString('cancel')}
+                      />
                     </Layout.Horizontal>
                   </Container>
                 )}

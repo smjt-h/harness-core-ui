@@ -12,6 +12,8 @@ token:
     expiryDate: Expiration Date (mm/dd/yyyy)
     tokenMessage: Your new token has been generated. Please make sure to copy and store your token value somewhere safe, you won't be able to see it again.
     rotateTokenExpiryMessage: If the Expiration Date is not set, the current token will expire immediately and will no longer be valid.
+    tokenExpiryDisplay: The token will expire on {{date}}
+    dateRequired: Date is required
   confirmDelete: Are you sure you want to delete the Token '{{name}}'
   confirmDeleteTitle: Delete Token
   successMessage: Token '{{name}}' deleted successfully

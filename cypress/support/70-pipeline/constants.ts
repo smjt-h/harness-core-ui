@@ -5,20 +5,26 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-const projectId = 'project1'
-const accountId = 'accountId'
-const orgIdentifier = 'default'
-const pipelineIdentifier = 'testPipeline_Cypress'
-const executionId = 'executionId'
-const stageNodeId = 'nodeId'
+export const projectId = 'project1'
+export const accountId = 'accountId'
+export const orgIdentifier = 'default'
+export const pipelineIdentifier = 'testPipeline_Cypress'
+export const executionId = 'executionId'
+export const delegateExecutionId = 'delegate-executionId'
+export const stageNodeId = 'nodeId'
 
+// APIs
 export const pipelineListAPI = `/pipeline/api/pipelines/list?routingId=${accountId}&accountIdentifier=${accountId}&projectIdentifier=${projectId}&module=cd&orgIdentifier=${orgIdentifier}&searchTerm=&page=0&sort=lastUpdatedAt%2CDESC&size=20`
 export const pipelineSummaryAPI = `/pipeline/api/pipelines/summary/appdtest?routingId=${accountId}&accountIdentifier=${accountId}&orgIdentifier=${orgIdentifier}&projectIdentifier=${projectId}`
 export const pipelineDetailsAPI = `/pipeline/api/pipelines/appdtest?accountIdentifier=${accountId}&orgIdentifier=${orgIdentifier}&projectIdentifier=${projectId}`
 export const pipelineExecutionSummaryAPI = `/pipeline/api/pipelines/execution/summary?routingId=${accountId}&accountIdentifier=${accountId}&projectIdentifier=${projectId}&orgIdentifier=${orgIdentifier}&module=cd&size=20&pipelineIdentifier=*&page=0&myDeployments=false`
+export const executionSummaryApi = `/pipeline/api/pipelines/execution/summary?routingId=${accountId}&accountIdentifier=${accountId}&projectIdentifier=${projectId}&orgIdentifier=${orgIdentifier}&module=cd&size=20&page=0&myDeployments=false`
 export const pipelineExecutionAPI = `/pipeline/api/pipelines/execution/C9mgNjxSS7-B-qQek27iuA?routingId=${accountId}&orgIdentifier=${orgIdentifier}&projectIdentifier=${projectId}&accountIdentifier=${accountId}`
 export const pipelineExecutionForNodeAPI = `/pipeline/api/pipelines/execution/C9mgNjxSS7-B-qQek27iuA?routingId=${accountId}&orgIdentifier=${orgIdentifier}&projectIdentifier=${projectId}&accountIdentifier=${accountId}&stageNodeId=g_LkakmWRPm-wC6rfC2ufg`
 export const servicesCallV2 = `/ng/api/servicesV2/list/access?routingId=${accountId}&accountIdentifier=${accountId}&orgIdentifier=${orgIdentifier}&projectIdentifier=${projectId}`
+export const delegateSelectionExecutionAPI = `/pipeline/api/pipelines/execution/${delegateExecutionId}?routingId=${accountId}&orgIdentifier=${orgIdentifier}&projectIdentifier=${projectId}&accountIdentifier=${accountId}`
+export const delegateSelectionStageAPI = `/pipeline/api/pipelines/execution/${delegateExecutionId}?routingId=${accountId}&orgIdentifier=${orgIdentifier}&projectIdentifier=${projectId}&accountIdentifier=${accountId}&stageNodeId=Dswl1Ln8T8aBx-8BEbunpQ`
+export const pipelineVariablesCall = `/pipeline/api/pipelines/variables?routingId=${accountId}&accountIdentifier=${accountId}&orgIdentifier=${orgIdentifier}&projectIdentifier=${projectId}`
 
 export const gitSyncEnabledCall = `/ng/api/git-sync/git-sync-enabled?accountIdentifier=${accountId}&orgIdentifier=${orgIdentifier}&projectIdentifier=${projectId}`
 export const pipelineSaveCall = `/pipeline/api/pipelines?accountIdentifier=${accountId}&projectIdentifier=${projectId}&orgIdentifier=${orgIdentifier}`
@@ -26,23 +32,46 @@ export const gitSyncMetaCall = `/ng/api/git-sync?routingId=${accountId}&accountI
 export const gitSyncBranchCall = `/ng/api/git-sync-branch/listBranchesWithStatus?routingId=${accountId}&accountIdentifier=${accountId}&orgIdentifier=${orgIdentifier}&projectIdentifier=${projectId}&yamlGitConfigIdentifier=&page=0&size=20&searchTerm=`
 export const executionStratergies = `ng/api/pipelines/configuration/strategies?routingId=${accountId}`
 export const yamlSnippet = `ng/api/pipelines/configuration/strategies/yaml-snippets?routingId=${accountId}&serviceDefinitionType=Kubernetes&strategyType=Rolling`
+export const approvalStageYamlSnippet = `/pipeline/api/approvals/stage-yaml-snippet?routingId=${accountId}&approvalType=HarnessApproval`
+export const jiraApprovalStageYamlSnippet = `/pipeline/api/approvals/stage-yaml-snippet?routingId=${accountId}&approvalType=JiraApproval`
+export const snowApprovalStageYamlSnippet = `/pipeline/api/approvals/stage-yaml-snippet?routingId=${accountId}&approvalType=SERVICENOW_APPROVAL`
 export const stepLibrary = `/pipeline/api/pipelines/v2/steps?routingId=${accountId}&accountId=${accountId}`
 export const inputSetsTemplateCall = `/pipeline/api/inputSets/template?routingId=${accountId}&accountIdentifier=${accountId}&orgIdentifier=${orgIdentifier}&pipelineIdentifier=${pipelineIdentifier}&projectIdentifier=${projectId}`
 export const pipelineDetails = `/pipeline/api/pipelines/testPipeline_Cypress?accountIdentifier=${accountId}&orgIdentifier=${orgIdentifier}&projectIdentifier=${projectId}`
 export const applyTemplatesCall = `/template/api/templates/applyTemplates?routingId=${accountId}&accountIdentifier=${accountId}&orgIdentifier=${orgIdentifier}&projectIdentifier=${projectId}&getDefaultFromOtherRepo=true`
 export const inputSetsCall = `/pipeline/api/inputSets?routingId=${accountId}&accountIdentifier=${accountId}&orgIdentifier=${orgIdentifier}&projectIdentifier=${projectId}&pipelineIdentifier=${pipelineIdentifier}&pageIndex=0&pageSize=20&searchTerm=`
-export const pipelineDetailsWithRoutingIdCall = `/pipeline/api/pipelines/testPipeline_Cypress?routingId=${accountId}&accountIdentifier=${accountId}&orgIdentifier=${orgIdentifier}&projectIdentifier=${projectId}`
+export const pipelineDetailsWithRoutingIdCall = `/pipeline/api/pipelines/testPipeline_Cypress?routingId=${accountId}&accountIdentifier=${accountId}&orgIdentifier=${orgIdentifier}&projectIdentifier=${projectId}&getTemplatesResolvedPipeline=true`
 export const pipelineInputSetTemplate = `template/api/templates/applyTemplates?routingId=${accountId}&accountIdentifier=${accountId}&orgIdentifier=${orgIdentifier}&pipelineIdentifier=${pipelineIdentifier}&projectIdentifier=${projectId}&getDefaultFromOtherRepo=true`
-export const pipelineStudioRoute = `#/account/accountId/cd/orgs/default/projects/${projectId}/pipelines/${pipelineIdentifier}/pipeline-studio/?stageId=j&sectionId=SERVICE`
-export const inputSetsRoute = `#/account/accountId/cd/orgs/default/projects/${projectId}/pipelines/${pipelineIdentifier}/input-sets`
-export const environmentRoute = `#/account/${accountId}/cd/orgs/${orgIdentifier}/projects/${projectId}/environment`
-export const environmentsCall = `/ng/api/environments?routingId=${accountId}&accountId=${accountId}&orgIdentifier=${orgIdentifier}&projectIdentifier=${projectId}&page=0&size=10`
-export const servicesRoute = `#/account/${accountId}/cd/orgs/${orgIdentifier}/projects/${projectId}/services`
+export const environmentsCall = `/ng/api/environmentsV2?routingId=${accountId}&accountIdentifier=${accountId}&orgIdentifier=${orgIdentifier}&projectIdentifier=${projectId}&page=0&size=10`
 export const servicesCall = `/ng/api/servicesV2?routingId=${accountId}&accountIdentifier=${accountId}&orgIdentifier=${orgIdentifier}&projectIdentifier=${projectId}&size=10&page=0`
-export const pipelinesRoute = `#/account/${accountId}/cd/orgs/${orgIdentifier}/projects/${projectId}/pipelines`
 export const executePipeline = `/pipeline/api/pipeline/execute/${pipelineIdentifier}?routingId=${accountId}&accountIdentifier=${accountId}&projectIdentifier=${projectId}&orgIdentifier=${orgIdentifier}&moduleType=cd`
 export const serviceStepAPI = `/pipeline/api/pipelines/execution/${executionId}?routingId=${accountId}&orgIdentifier=${orgIdentifier}&projectIdentifier=${projectId}&accountIdentifier=${accountId}`
 export const serviceStepStageID = `/pipeline/api/pipelines/execution/${executionId}?routingId=${accountId}&orgIdentifier=${orgIdentifier}&projectIdentifier=${projectId}&accountIdentifier=${accountId}&stageNodeId=${stageNodeId}`
+export const routingDataAPI = `ng/api/projects/${projectId}?routingId=${accountId}&accountIdentifier=${accountId}&orgIdentifier=${orgIdentifier}`
+export const pipelineSummaryCallAPI = `/pipeline/api/pipelines/summary/${pipelineIdentifier}?routingId=${accountId}&accountIdentifier=${accountId}&orgIdentifier=${orgIdentifier}&projectIdentifier=${projectId}`
+export const triggersAPI = `pipeline/api/triggers?routingId=${accountId}&accountIdentifier=${accountId}&orgIdentifier=${orgIdentifier}&projectIdentifier=${projectId}&targetIdentifier=${pipelineIdentifier}&searchTerm=`
+export const triggerPiplelineDetails = `pipeline/api/pipelines/${pipelineIdentifier}?routingId=${accountId}&accountIdentifier=${accountId}&orgIdentifier=${orgIdentifier}&projectIdentifier=${projectId}&getTemplatesResolvedPipeline=true`
+export const inputSetListAPI = `pipeline/api/inputSets?routingId=${accountId}&accountIdentifier=${accountId}&orgIdentifier=${orgIdentifier}&projectIdentifier=${projectId}&pipelineIdentifier=${pipelineIdentifier}`
+export const featureFlagsCall = `/api/users/feature-flags/accountId?routingId=${accountId}`
+export const cdFailureStrategiesYaml = `/ng/api/pipelines/configuration/cd-stage-yaml-snippet?routingId=${accountId}`
+export const servicesUpsertCall = `/ng/api/servicesV2/upsert?routingId=${accountId}&accountIdentifier=${accountId}`
+export const servicesUpdateList = `/ng/api/servicesV2?routingId=${accountId}&accountIdentifier=${accountId}&orgIdentifier=${orgIdentifier}&projectIdentifier=${projectId}&size=10&page=0`
+export const envUpsertCall = `/ng/api/environmentsV2/upsert?routingId=${accountId}&accountIdentifier=${accountId}`
+export const envUpdateList = `/ng/api/environmentsV2?routingId=${accountId}&accountIdentifier=${accountId}&orgIdentifier=${orgIdentifier}&projectIdentifier=${projectId}&page=0&size=10`
+export const pipelineHealthCall = `/pipeline/api/pipelines/pipelineHealth?routingId=${accountId}&accountIdentifier=${accountId}&projectIdentifier=${projectId}&orgIdentifier=${orgIdentifier}*`
+export const pipelineExecutionCall = `/pipeline/api/pipelines/pipelineExecution?routingId=${accountId}&accountIdentifier=${accountId}&projectIdentifier=${projectId}&orgIdentifier=${orgIdentifier}*`
+
+// Routes
+export const executionListRoute = `#/account/${accountId}/cd/orgs/${orgIdentifier}/projects/${projectId}/deployments`
+export const pipelinesExecutionDelegateRoute = `#/account/${accountId}/cd/orgs/${orgIdentifier}/projects/${projectId}/pipelines/${pipelineIdentifier}/executions/${delegateExecutionId}/pipeline`
+export const executionHistoryRoute = `#/account/accountId/cd/orgs/default/projects/${projectId}/pipelines/${pipelineIdentifier}/executions`
+export const pipelineStudioRoute = `#/account/accountId/cd/orgs/default/projects/${projectId}/pipelines/${pipelineIdentifier}/pipeline-studio/?stageId=j&sectionId=SERVICE`
+export const inputSetsRoute = `#/account/accountId/cd/orgs/default/projects/${projectId}/pipelines/${pipelineIdentifier}/input-sets`
+export const environmentRoute = `#/account/${accountId}/cd/orgs/${orgIdentifier}/projects/${projectId}/environment`
+export const servicesRoute = `#/account/${accountId}/cd/orgs/${orgIdentifier}/projects/${projectId}/services`
+export const pipelinesRoute = `#/account/${accountId}/cd/orgs/${orgIdentifier}/projects/${projectId}/pipelines`
+export const triggersRoute = `#/account/${accountId}/cd/orgs/${orgIdentifier}/projects/${projectId}/pipelines/${pipelineIdentifier}/triggers`
+
 export interface ValidObject {
   resourceName: StepResourceObject[]
   warningCheck?: boolean
@@ -229,7 +258,8 @@ export const servicesV2AccessResponse = {
         description: null,
         deleted: false,
         tags: {},
-        version: 18
+        version: 18,
+        yaml: null
       },
       createdAt: 1643080660753,
       lastModifiedAt: 1645703389065
@@ -244,7 +274,8 @@ export const servicesV2AccessResponse = {
         description: null,
         deleted: false,
         tags: {},
-        version: 18
+        version: 18,
+        yaml: null
       },
       createdAt: 1643080660753,
       lastModifiedAt: 1645703389065
@@ -294,3 +325,13 @@ export const stepsData = {
     ]
   }
 }
+
+export const triggersListData = {
+  Webhook: ['GitHub', 'GitLab', 'BitBucket', 'AWS Code Commit', 'Custom'],
+  Artifact: ['GCR', 'ECR', 'Docker Registry'],
+  Manifest: ['Helm Chart'],
+  Scheduled: ['Cron']
+}
+
+export const invalidYAMLErrorMsgOnEmptyStageSave =
+  'Invalid yaml: $.pipeline.stages[0].stage.spec.execution: is missing but it is required\n$.pipeline.stages[0].stage.spec.infrastructure.infrastructureDefinition: is missing but it is required\n$.pipeline.stages[0].stage.tags: is not defined in the schema and the schema does not allow additional properties\n$.pipeline.stages[0].stage.spec.infrastructure.useFromStage: is missing but it is required\n$.pipeline.stages[0].stage.type: is not defined in the schema and the schema does not allow additional properties\n$.pipeline.stages[0].stage.spec: is not defined in the schema and the schema does not allow additional properties\n$.pipeline.stages[0].stage.spec.infrastructure.environmentRef: is missing but it is required\n$.pipeline.stages[0].stage.spec.infrastructure.environment: is missing but it is required\n$.pipeline.stages[0].stage.type: does not have a value in the enumeration [CI, Approval, FeatureFlag]'

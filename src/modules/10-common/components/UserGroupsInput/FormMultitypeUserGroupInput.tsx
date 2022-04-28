@@ -34,7 +34,7 @@ export const FormMultiTypeUserGroupInput: React.FC<Extended> = props => {
   const value = get(formik?.values, name)
 
   // Don't show formError if type is fixed, as that is handled inside UserGroupInput.tsx
-  const [multiType, setMultiType] = useState<MultiTypeInputType>(getMultiTypeFromValue(value))
+  const [multiType, setMultiType] = useState<MultiTypeInputType>(getMultiTypeFromValue(value, allowableTypes, true))
 
   return (
     <MultiTypeFieldSelector
@@ -45,6 +45,7 @@ export const FormMultiTypeUserGroupInput: React.FC<Extended> = props => {
       hideError={multiType === MultiTypeInputType.FIXED}
       skipRenderValueInExpressionLabel
       allowedTypes={allowableTypes}
+      supportListOfExpressions={true}
       disableMultiSelectBtn={disabled}
       expressionRender={() => (
         <ExpressionsListInput name={name} value={value} readOnly={disabled} expressions={expressions} />

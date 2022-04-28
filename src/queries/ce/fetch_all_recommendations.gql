@@ -13,6 +13,13 @@ query Recommendations($filter: K8sRecommendationFilterDTOInput) {
       resourceName
       monthlyCost
       monthlySaving
+      recommendationDetails {
+        ... on NodeRecommendationDTO {
+          recommended {
+            provider
+          }
+        }
+      }
     }
   }
 }

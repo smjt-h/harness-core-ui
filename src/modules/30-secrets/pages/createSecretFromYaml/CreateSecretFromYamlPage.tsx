@@ -13,8 +13,7 @@ import {
   ButtonVariation,
   PageHeader,
   useConfirmationDialog,
-  useToaster,
-  getErrorInfoFromErrorObject
+  useToaster
 } from '@wings-software/uicore'
 import { parse } from 'yaml'
 import { useHistory, useParams } from 'react-router-dom'
@@ -35,9 +34,11 @@ import { getSnippetTags } from '@common/utils/SnippetUtils'
 import { useDocumentTitle } from '@common/hooks/useDocumentTitle'
 import type { ModulePathParams, ProjectPathProps } from '@common/interfaces/RouteInterfaces'
 import { yamlStringify } from '@common/utils/YamlHelperMethods'
+import useRBACError from '@rbac/utils/useRBACError/useRBACError'
 
 const CreateSecretFromYamlPage: React.FC<{ mockSchemaData?: UseGetMockData<ResponseJsonNode> }> = props => {
   const { accountId, projectIdentifier, orgIdentifier, module } = useParams<ProjectPathProps & ModulePathParams>()
+  const { getRBACErrorMessage } = useRBACError()
   const { getString } = useStrings()
   useDocumentTitle(getString('createSecretYAML.createSecret'))
   const [yamlHandler, setYamlHandler] = useState<YamlBuilderHandlerBinding | undefined>()
@@ -93,7 +94,7 @@ const CreateSecretFromYamlPage: React.FC<{ mockSchemaData?: UseGetMockData<Respo
           })
         )
       } catch (err) {
-        showError(getErrorInfoFromErrorObject(err, true))
+        showError(getRBACErrorMessage(err))
       }
     } else {
       showError(getString('createSecretYAML.invalidSecret'))

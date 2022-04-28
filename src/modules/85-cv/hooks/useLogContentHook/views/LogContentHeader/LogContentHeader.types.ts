@@ -19,4 +19,5 @@ export interface LogContentHeaderProps {
   handleTimeRange?: (timeRange: SelectOption) => void
   errorLogsOnly: boolean
   handleDisplayOnlyErrors: (errorLogsOnly: boolean) => void
+  monitoredServiceIdentifier?: string
 }

@@ -7,8 +7,8 @@
 
 import React from 'react'
 import { useParams } from 'react-router-dom'
-import type { SelectOption } from '@harness/uicore'
-import { useGetVerifyStepDeploymentActivitySummary, useGetVerifyStepLogs } from 'services/cv'
+import { SelectOption, useToaster } from '@harness/uicore'
+import { getVerifyStepLogsPromise, useGetVerifyStepDeploymentActivitySummary, useGetVerifyStepLogs } from 'services/cv'
 import { useStrings } from 'framework/strings'
 import type { AccountPathProps } from '@common/interfaces/RouteInterfaces'
 import { getErrorMessage } from '@cv/utils/CommonUtils'
@@ -16,6 +16,7 @@ import { LogTypes, VerifyStepLogContentProps } from '../useLogContentHook.types'
 import ExecutionLog from './ExecutionLog/ExecutionLog'
 import ExternalAPICall from './ExternalAPICall/ExternalAPICall'
 import { PAGE_SIZE } from '../useLogContentHook.constants'
+import { downloadJson, parseResponseBody } from '../useLogContentHook.utils'
 
 const VerifyStepLogContent: React.FC<VerifyStepLogContentProps> = ({
   logType,
@@ -24,6 +25,7 @@ const VerifyStepLogContent: React.FC<VerifyStepLogContentProps> = ({
   verifyStepExecutionId
 }) => {
   const { getString } = useStrings()
+  const { showError } = useToaster()
   const { accountId } = useParams<AccountPathProps>()
   const [healthSource, setHealthSource] = React.useState<SelectOption>({ label: getString('all'), value: '' })
   const [errorLogsOnly, setErrorLogsOnly] = React.useState<boolean>(false)
@@ -55,6 +57,32 @@ const VerifyStepLogContent: React.FC<VerifyStepLogContentProps> = ({
   /* istanbul ignore next */
   const resource = data?.resource
 
+  const handleDownloadLogs = async (): Promise<void> => {
+    const { totalItems } = resource ?? {}
+
+    try {
+      const response = await getVerifyStepLogsPromise({
+        verifyStepExecutionId,
+        queryParams: {
+          accountId,
+          pageSize: totalItems,
+          logType,
+          errorLogsOnly,
+          ...(healthSource.value ? { healthSources: [healthSource.value as string] } : {})
+        }
+      })
+
+      const content = response.resource?.content
+
+      /* istanbul ignore else */ if (content) {
+        const _content = logType === LogTypes.ApiCallLog ? parseResponseBody(content) : content
+        downloadJson(JSON.stringify(_content), `VerifyStep-${logType}`)
+      }
+    } catch (e) {
+      /* istanbul ignore next */ showError(getErrorMessage(e))
+    }
+  }
+
   return logType === LogTypes.ExecutionLog ? (
     <ExecutionLog
       isFullScreen={isFullScreen}
@@ -72,6 +100,7 @@ const VerifyStepLogContent: React.FC<VerifyStepLogContentProps> = ({
       setErrorLogsOnly={setErrorLogsOnly}
       pageNumber={pageNumber}
       setPageNumber={setPageNumber}
+      handleDownloadLogs={handleDownloadLogs}
     />
   ) : (
     <ExternalAPICall
@@ -90,6 +119,7 @@ const VerifyStepLogContent: React.FC<VerifyStepLogContentProps> = ({
       setErrorLogsOnly={setErrorLogsOnly}
       pageNumber={pageNumber}
       setPageNumber={setPageNumber}
+      handleDownloadLogs={handleDownloadLogs}
     />
   )
 }

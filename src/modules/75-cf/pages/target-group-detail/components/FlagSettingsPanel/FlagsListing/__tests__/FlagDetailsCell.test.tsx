@@ -10,12 +10,14 @@ import { render, RenderResult, screen } from '@testing-library/react'
 import { cloneDeep, omit } from 'lodash-es'
 import { TestWrapper } from '@common/utils/testUtils'
 import { mockFeatures } from '@cf/pages/target-group-detail/__tests__/mocks'
-import FlagDetailsCell, { FlagDetailsCellProps } from '../FlagDetailsCell'
+import FlagDetailsCell from '../FlagDetailsCell'
 
-const renderComponent = (props: Partial<FlagDetailsCellProps> = {}): RenderResult =>
+type FlagDetailsCellParams = Parameters<typeof FlagDetailsCell>['0']
+
+const renderComponent = (props: Partial<FlagDetailsCellParams> = {}): RenderResult =>
   render(
     <TestWrapper>
-      <FlagDetailsCell flag={mockFeatures[0]} {...props} />
+      <FlagDetailsCell row={{ original: mockFeatures[0] } as any} {...props} />
     </TestWrapper>
   )
 
@@ -25,7 +27,7 @@ describe('FlagDetailsCell', () => {
     flag.name = 'TEST FLAG NAME'
     flag.description = 'TEST FLAG DESCRIPTION'
 
-    renderComponent({ flag })
+    renderComponent({ row: { original: flag } })
 
     expect(screen.getByText(flag.name)).toBeInTheDocument()
     expect(screen.getByText(flag.description)).toBeInTheDocument()
@@ -35,7 +37,7 @@ describe('FlagDetailsCell', () => {
     const flag = omit(mockFeatures[0], 'description')
     flag.name = 'TEST FLAG NAME'
 
-    renderComponent({ flag })
+    renderComponent({ row: { original: flag } })
 
     expect(screen.getByText(flag.name)).toBeInTheDocument()
     expect(document.querySelectorAll('p')).toHaveLength(1)

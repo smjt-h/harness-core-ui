@@ -66,7 +66,16 @@ exports[`Select Artifact - For Artifact tests initial render 1`] = `
         <p
           class="StyledProps--font StyledProps--main StyledProps--font-variation-table-headers"
         >
-          PIPELINE.ARTIFACTTRIGGERCONFIGPANEL.ARTIFACT
+          <div
+            class="Text--withDocsTooltip"
+            data-tooltip-id="artifactName"
+          >
+            <span
+              class="StyledProps--font StyledProps--main textHeading StyledProps--inline"
+            >
+              PIPELINE.ARTIFACTTRIGGERCONFIGPANEL.ARTIFACT
+            </span>
+          </div>
         </p>
       </div>
       <div
@@ -78,7 +87,16 @@ exports[`Select Artifact - For Artifact tests initial render 1`] = `
         <p
           class="StyledProps--font StyledProps--main StyledProps--font-variation-table-headers"
         >
-          PIPELINE.ARTIFACTTRIGGERCONFIGPANEL.ARTIFACTREPOSITORY
+          <div
+            class="Text--withDocsTooltip"
+            data-tooltip-id="artifactRepository"
+          >
+            <span
+              class="StyledProps--font StyledProps--main textHeading StyledProps--inline"
+            >
+              PIPELINE.ARTIFACTTRIGGERCONFIGPANEL.ARTIFACTREPOSITORY
+            </span>
+          </div>
         </p>
       </div>
       <div
@@ -90,7 +108,16 @@ exports[`Select Artifact - For Artifact tests initial render 1`] = `
         <p
           class="StyledProps--font StyledProps--main StyledProps--font-variation-table-headers"
         >
-          COMMON.LOCATION
+          <div
+            class="Text--withDocsTooltip"
+            data-tooltip-id="artifactManifestLocation"
+          >
+            <span
+              class="StyledProps--font StyledProps--main textHeading StyledProps--inline"
+            >
+              COMMON.LOCATION
+            </span>
+          </div>
         </p>
       </div>
       <div
@@ -102,19 +129,37 @@ exports[`Select Artifact - For Artifact tests initial render 1`] = `
         <p
           class="StyledProps--font StyledProps--main StyledProps--font-variation-table-headers"
         >
-          PIPELINE.ARTIFACTTRIGGERCONFIGPANEL.BUILDTAG
+          <div
+            class="Text--withDocsTooltip"
+            data-tooltip-id="artifactBuildTag"
+          >
+            <span
+              class="StyledProps--font StyledProps--main textHeading StyledProps--inline"
+            >
+              PIPELINE.ARTIFACTTRIGGERCONFIGPANEL.BUILDTAG
+            </span>
+          </div>
         </p>
       </div>
       <div
         class="TableV2--cell"
         colspan="1"
         role="columnheader"
-        style="width: 14%;"
+        style="width: 18%;"
       >
         <p
           class="StyledProps--font StyledProps--main StyledProps--font-variation-table-headers"
         >
-          PIPELINE.ARTIFACTTRIGGERCONFIGPANEL.HASRUNTIMEINPUTS
+          <div
+            class="Text--withDocsTooltip"
+            data-tooltip-id="artifactManifestRuntimeInputs"
+          >
+            <span
+              class="StyledProps--font StyledProps--main textHeading StyledProps--inline"
+            >
+              PIPELINE.ARTIFACTTRIGGERCONFIGPANEL.HASRUNTIMEINPUTS
+            </span>
+          </div>
         </p>
       </div>
     </div>
@@ -216,7 +261,7 @@ exports[`Select Artifact - For Artifact tests initial render 1`] = `
         <div
           class="TableV2--cell"
           role="cell"
-          style="width: 14%;"
+          style="width: 18%;"
         >
           <div
             class="Layout--horizontal Layout--layout-spacing-small StyledProps--main"
@@ -426,7 +471,16 @@ exports[`Select Artifact - For Artifact tests on click of select button 1`] = `
         <p
           class="StyledProps--font StyledProps--main StyledProps--font-variation-table-headers"
         >
-          PIPELINE.ARTIFACTTRIGGERCONFIGPANEL.ARTIFACT
+          <div
+            class="Text--withDocsTooltip"
+            data-tooltip-id="artifactName"
+          >
+            <span
+              class="StyledProps--font StyledProps--main textHeading StyledProps--inline"
+            >
+              PIPELINE.ARTIFACTTRIGGERCONFIGPANEL.ARTIFACT
+            </span>
+          </div>
         </p>
       </div>
       <div
@@ -438,7 +492,16 @@ exports[`Select Artifact - For Artifact tests on click of select button 1`] = `
         <p
           class="StyledProps--font StyledProps--main StyledProps--font-variation-table-headers"
         >
-          PIPELINE.ARTIFACTTRIGGERCONFIGPANEL.ARTIFACTREPOSITORY
+          <div
+            class="Text--withDocsTooltip"
+            data-tooltip-id="artifactRepository"
+          >
+            <span
+              class="StyledProps--font StyledProps--main textHeading StyledProps--inline"
+            >
+              PIPELINE.ARTIFACTTRIGGERCONFIGPANEL.ARTIFACTREPOSITORY
+            </span>
+          </div>
         </p>
       </div>
       <div
@@ -450,7 +513,16 @@ exports[`Select Artifact - For Artifact tests on click of select button 1`] = `
         <p
           class="StyledProps--font StyledProps--main StyledProps--font-variation-table-headers"
         >
-          COMMON.LOCATION
+          <div
+            class="Text--withDocsTooltip"
+            data-tooltip-id="artifactManifestLocation"
+          >
+            <span
+              class="StyledProps--font StyledProps--main textHeading StyledProps--inline"
+            >
+              COMMON.LOCATION
+            </span>
+          </div>
         </p>
       </div>
       <div
@@ -462,19 +534,37 @@ exports[`Select Artifact - For Artifact tests on click of select button 1`] = `
         <p
           class="StyledProps--font StyledProps--main StyledProps--font-variation-table-headers"
         >
-          PIPELINE.ARTIFACTTRIGGERCONFIGPANEL.BUILDTAG
+          <div
+            class="Text--withDocsTooltip"
+            data-tooltip-id="artifactBuildTag"
+          >
+            <span
+              class="StyledProps--font StyledProps--main textHeading StyledProps--inline"
+            >
+              PIPELINE.ARTIFACTTRIGGERCONFIGPANEL.BUILDTAG
+            </span>
+          </div>
         </p>
       </div>
       <div
         class="TableV2--cell"
         colspan="1"
         role="columnheader"
-        style="width: 14%;"
+        style="width: 18%;"
       >
         <p
           class="StyledProps--font StyledProps--main StyledProps--font-variation-table-headers"
         >
-          PIPELINE.ARTIFACTTRIGGERCONFIGPANEL.HASRUNTIMEINPUTS
+          <div
+            class="Text--withDocsTooltip"
+            data-tooltip-id="artifactManifestRuntimeInputs"
+          >
+            <span
+              class="StyledProps--font StyledProps--main textHeading StyledProps--inline"
+            >
+              PIPELINE.ARTIFACTTRIGGERCONFIGPANEL.HASRUNTIMEINPUTS
+            </span>
+          </div>
         </p>
       </div>
     </div>
@@ -576,7 +666,7 @@ exports[`Select Artifact - For Artifact tests on click of select button 1`] = `
         <div
           class="TableV2--cell"
           role="cell"
-          style="width: 14%;"
+          style="width: 18%;"
         >
           <div
             class="Layout--horizontal Layout--layout-spacing-small StyledProps--main"
@@ -686,7 +776,16 @@ exports[`Select Artifact - For Artifact tests when selected tag is not runtime i
         <p
           class="StyledProps--font StyledProps--main StyledProps--font-variation-table-headers"
         >
-          PIPELINE.ARTIFACTTRIGGERCONFIGPANEL.ARTIFACT
+          <div
+            class="Text--withDocsTooltip"
+            data-tooltip-id="artifactName"
+          >
+            <span
+              class="StyledProps--font StyledProps--main textHeading StyledProps--inline"
+            >
+              PIPELINE.ARTIFACTTRIGGERCONFIGPANEL.ARTIFACT
+            </span>
+          </div>
         </p>
       </div>
       <div
@@ -698,7 +797,16 @@ exports[`Select Artifact - For Artifact tests when selected tag is not runtime i
         <p
           class="StyledProps--font StyledProps--main StyledProps--font-variation-table-headers"
         >
-          PIPELINE.ARTIFACTTRIGGERCONFIGPANEL.ARTIFACTREPOSITORY
+          <div
+            class="Text--withDocsTooltip"
+            data-tooltip-id="artifactRepository"
+          >
+            <span
+              class="StyledProps--font StyledProps--main textHeading StyledProps--inline"
+            >
+              PIPELINE.ARTIFACTTRIGGERCONFIGPANEL.ARTIFACTREPOSITORY
+            </span>
+          </div>
         </p>
       </div>
       <div
@@ -710,7 +818,16 @@ exports[`Select Artifact - For Artifact tests when selected tag is not runtime i
         <p
           class="StyledProps--font StyledProps--main StyledProps--font-variation-table-headers"
         >
-          COMMON.LOCATION
+          <div
+            class="Text--withDocsTooltip"
+            data-tooltip-id="artifactManifestLocation"
+          >
+            <span
+              class="StyledProps--font StyledProps--main textHeading StyledProps--inline"
+            >
+              COMMON.LOCATION
+            </span>
+          </div>
         </p>
       </div>
       <div
@@ -722,19 +839,37 @@ exports[`Select Artifact - For Artifact tests when selected tag is not runtime i
         <p
           class="StyledProps--font StyledProps--main StyledProps--font-variation-table-headers"
         >
-          PIPELINE.ARTIFACTTRIGGERCONFIGPANEL.BUILDTAG
+          <div
+            class="Text--withDocsTooltip"
+            data-tooltip-id="artifactBuildTag"
+          >
+            <span
+              class="StyledProps--font StyledProps--main textHeading StyledProps--inline"
+            >
+              PIPELINE.ARTIFACTTRIGGERCONFIGPANEL.BUILDTAG
+            </span>
+          </div>
         </p>
       </div>
       <div
         class="TableV2--cell"
         colspan="1"
         role="columnheader"
-        style="width: 14%;"
+        style="width: 18%;"
       >
         <p
           class="StyledProps--font StyledProps--main StyledProps--font-variation-table-headers"
         >
-          PIPELINE.ARTIFACTTRIGGERCONFIGPANEL.HASRUNTIMEINPUTS
+          <div
+            class="Text--withDocsTooltip"
+            data-tooltip-id="artifactManifestRuntimeInputs"
+          >
+            <span
+              class="StyledProps--font StyledProps--main textHeading StyledProps--inline"
+            >
+              PIPELINE.ARTIFACTTRIGGERCONFIGPANEL.HASRUNTIMEINPUTS
+            </span>
+          </div>
         </p>
       </div>
     </div>
@@ -838,7 +973,7 @@ exports[`Select Artifact - For Artifact tests when selected tag is not runtime i
         <div
           class="TableV2--cell"
           role="cell"
-          style="width: 14%;"
+          style="width: 18%;"
         >
           <div
             class="Layout--horizontal Layout--layout-spacing-small StyledProps--main"

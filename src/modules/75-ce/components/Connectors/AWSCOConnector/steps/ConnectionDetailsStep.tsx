@@ -27,6 +27,7 @@ import { useCreateConnector } from 'services/cd-ng'
 import { DialogWithExtensionContext } from '@ce/common/DialogWithExtension/DialogWithExtension'
 import { useGetCloudFormationTemplate } from 'services/lw'
 import { useStrings } from 'framework/strings'
+import useRBACError from '@rbac/utils/useRBACError/useRBACError'
 import { OPTIMIZATION_FEATURE, CROSS_ACCOUNT_ACCESS, FEATURES_ENABLED } from '../constants'
 import type { feature } from '../constants'
 import css from './Steps.module.scss'
@@ -51,6 +52,7 @@ const ConnectionDetailsStep: React.FC<StepProps<ConnectorInfoDTO>> = props => {
   // const [externalIDEnabled, setExternalIDEnabled] = useState(true)
   const [externalID, setExternalID] = useState(connectorInfo.spec.externalID as string)
   const [saving, setSaving] = useState(false)
+  const { getRBACErrorMessage } = useRBACError()
   const { showError } = useToaster()
   const { mutate: createConnector } = useCreateConnector({ queryParams: { accountIdentifier: accountId } })
   const { data, error } = useGetCloudFormationTemplate({
@@ -107,7 +109,7 @@ const ConnectionDetailsStep: React.FC<StepProps<ConnectorInfoDTO>> = props => {
       nextStep?.(connectorInfo)
     } catch (e) {
       setSaving(false)
-      modalErrorHandler?.showDanger(e.data?.message || e.message)
+      modalErrorHandler?.showDanger(getRBACErrorMessage(e))
     }
   }
 

@@ -13,6 +13,7 @@ import { useParams } from 'react-router-dom'
 import type { CellProps } from 'react-table'
 import { useStrings } from 'framework/strings'
 import { Service, SessionReportRow, useGatewaySessionReport } from 'services/lw'
+import useRBACError from '@rbac/utils/useRBACError/useRBACError'
 import { getTimestamp } from './Utils'
 import css from './COGatewayList.module.scss'
 
@@ -71,6 +72,7 @@ const COGatewayUsageTime: React.FC<COGatewayUsageTimeProps> = props => {
     orgIdentifier: string
     accountId: string
   }>()
+  const { getRBACErrorMessage } = useRBACError()
   const { getString } = useStrings()
   const { mutate: getSessionReport } = useGatewaySessionReport({
     account_id: accountId,
@@ -98,7 +100,7 @@ const COGatewayUsageTime: React.FC<COGatewayUsageTimeProps> = props => {
         setSessionReportRows(result.response.rows)
       }
     } catch (e) {
-      modalErrorHandler?.showDanger(e.data?.message || e.message)
+      modalErrorHandler?.showDanger(getRBACErrorMessage(e))
     }
   }
   return (
