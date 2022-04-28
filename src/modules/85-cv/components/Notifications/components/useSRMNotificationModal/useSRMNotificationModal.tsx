@@ -17,8 +17,8 @@ import { NotificationTypeSelectOptions } from '@notifications/constants'
 import { Actions } from '@pipeline/components/Notifications/NotificationUtils'
 
 import Overview from '@pipeline/components/Notifications/Steps/Overview'
-import ConfigureAlertConditions from './ConfigureAlertConditions/ConfigureAlertConditions'
-import type { SRMNotificationRules } from './SRMNotificationTable.types'
+import ConfigureAlertConditions from '../ConfigureAlertConditions/ConfigureAlertConditions'
+import type { SRMNotificationRules } from '../SRMNotificationTable/SRMNotificationTable.types'
 import css from './useSRMNotificationModal.module.scss'
 
 export interface UseNotificationModalProps {

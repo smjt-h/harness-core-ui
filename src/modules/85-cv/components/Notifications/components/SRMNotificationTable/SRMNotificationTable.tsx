@@ -33,7 +33,7 @@ import { ResourceType } from '@rbac/interfaces/ResourceType'
 import RbacButton from '@rbac/components/Button/Button'
 import noDataNotifications from '@cv/assets/noDataNotifications.svg'
 import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
-import { useSRMNotificationModal } from './useSRMNotificationModal'
+import { useSRMNotificationModal } from '../useSRMNotificationModal/useSRMNotificationModal'
 import type { NotificationRulesItem, SRMNotificationRules } from './SRMNotificationTable.types'
 import css from './SRMNotificationTable.module.scss'
 

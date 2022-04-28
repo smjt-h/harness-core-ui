@@ -1,10 +1,17 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import React, { useState } from 'react'
 import { Text } from '@wings-software/uicore'
 import { useParams } from 'react-router-dom'
 import CardWithOuterTitle from '@cv/pages/health-source/common/CardWithOuterTitle/CardWithOuterTitle'
 import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
 import { useGetNotificationRuleData } from 'services/cv'
-import SRMNotificationTable from './components/SRMNotificationTable'
+import SRMNotificationTable from './components/SRMNotificationTable/SRMNotificationTable'
 import css from './NotificationsContainer.module.scss'
 
 const PAGE_SIZE = 10
