@@ -8,7 +8,17 @@
 import React, { useState, useEffect, useRef, Dispatch, SetStateAction } from 'react'
 import { useParams } from 'react-router-dom'
 import { get, isEmpty, isUndefined } from 'lodash-es'
-import { FormInput, MultiTypeInputType, Container, Layout, Text, Radio, Icon, TextInput } from '@wings-software/uicore'
+import {
+  FormInput,
+  MultiTypeInputType,
+  Container,
+  Layout,
+  Text,
+  Radio,
+  Icon,
+  TextInput,
+  RUNTIME_INPUT_VALUE
+} from '@wings-software/uicore'
 import { FontVariation } from '@harness/design-system'
 import { connect } from 'formik'
 import { useStrings } from 'framework/strings'
@@ -107,7 +117,7 @@ export const handleCIConnectorRefOnChange = ({
 
     setFieldValue(
       codeBaseInputFieldFormName?.repoName || 'repoName',
-      connectorRefType === MultiTypeInputType.RUNTIME ? '<+input>' : ''
+      connectorRefType === MultiTypeInputType.RUNTIME ? RUNTIME_INPUT_VALUE : ''
     )
   }
 }
@@ -250,7 +260,6 @@ function CICodebaseInputSetFormInternal({
       formik?.setFieldValue(buildSpecPath, { [inputNames[newType]]: savedValues.current[newType] })
     }
   }
-
   const renderCodeBaseTypeInput = (type: CodeBaseType): JSX.Element => {
     return (
       <Container>
@@ -312,7 +321,7 @@ function CICodebaseInputSetFormInternal({
           )}
           {isConnectorRuntimeInput &&
             (!isRuntimeInput(formik?.values.connectorRef) && connectionType === ConnectionType.Repo ? (
-              <>
+              <Container width={'50%'}>
                 <Text
                   font={{ variation: FontVariation.FORM_LABEL }}
                   margin={{ bottom: 'xsmall' }}
@@ -326,10 +335,10 @@ function CICodebaseInputSetFormInternal({
                   style={{ flexGrow: 1 }}
                   disabled
                 />
-              </>
+              </Container>
             ) : (
               <>
-                <Container className={css.bottomMargin3}>
+                <Container width={'50%'} className={css.bottomMargin3}>
                   <MultiTypeTextField
                     label={
                       <Text
@@ -381,7 +390,7 @@ function CICodebaseInputSetFormInternal({
               />
               <Radio
                 label={radioLabels['tag']}
-                width={110}
+                width={90}
                 margin={{ left: 'huge' }}
                 onClick={() => handleTypeChange('tag')}
                 checked={codeBaseType === 'tag'}
