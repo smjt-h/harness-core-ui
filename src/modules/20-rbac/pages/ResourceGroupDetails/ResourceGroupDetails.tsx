@@ -50,6 +50,7 @@ import {
   cleanUpResourcesMap,
   computeResourceMapOnChange,
   computeResourceMapOnMultiChange,
+  getDefaultIncludedScope,
   getFilteredResourceTypes,
   getFormattedDataForApi,
   getIncludedScopes,
@@ -118,7 +119,14 @@ const ResourceGroupDetails: React.FC = () => {
       getSelectedResourcesMap(resourceTypes, resourceGroupDetails?.data?.resourceGroup.resourceFilter)
     )
     setIsUpdated(false)
-    setIncludedScopes(defaultTo(resourceGroupDetails?.data?.resourceGroup.includedScopes, []))
+    setIncludedScopes(
+      getDefaultIncludedScope(
+        accountId,
+        orgIdentifier,
+        projectIdentifier,
+        resourceGroupDetails?.data?.resourceGroup.includedScopes
+      )
+    )
     setSelectionType(getSelectionType(resourceGroupDetails?.data?.resourceGroup))
     setSelectedScope(getScopeType(resourceGroupDetails?.data?.resourceGroup))
   }, [resourceGroupDetails?.data?.resourceGroup])
