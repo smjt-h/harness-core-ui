@@ -23,6 +23,7 @@ import GraphActions from '../GraphActions/GraphActions'
 import { PipelineGraphRecursive } from './PipelineGraphNode'
 import type { NodeCollapsibleProps, NodeIds, PipelineGraphState, SVGPathRecord, GetNodeMethod } from '../types'
 import css from './PipelineGraph.module.scss'
+import GraphConfigStore from './GraphConfigStore'
 
 interface ControlPosition {
   x: number
@@ -159,7 +160,7 @@ function PipelineGraph({
   }
   const Loader = loaderComponent
   return (
-    <>
+    <GraphConfigStore.Provider value={{ graphScale, isLoading }}>
       {isLoading && <Loader />}
       <div id="draggable-parent" className={css.draggableParent} ref={draggableRef}>
         <Draggable
@@ -206,7 +207,7 @@ function PipelineGraph({
           graphActionsLayout={graphActionsLayout}
         />
       </div>
-    </>
+    </GraphConfigStore.Provider>
   )
 }
 

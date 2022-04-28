@@ -257,7 +257,7 @@ export default function ExecutionStageDetails(props: ExecutionStageDetailsProps)
           data={data.items}
           selectedNodeId={selectedStepId}
           panZoom={false}
-          showEndNode={stage?.status !== ExecutionStatusEnum.Running}
+          showEndNode={showEndNode}
         />
       ) : (
         <ExecutionStageDiagram

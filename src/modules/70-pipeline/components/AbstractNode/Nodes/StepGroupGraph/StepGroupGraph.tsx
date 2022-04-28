@@ -5,7 +5,7 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import React, { useEffect, useLayoutEffect, useRef, useState } from 'react'
+import React, { useContext, useEffect, useLayoutEffect, useRef, useState } from 'react'
 import cx from 'classnames'
 import { defaultTo, get } from 'lodash-es'
 import { DiagramType, Event } from '@pipeline/components/Diagram'
@@ -21,6 +21,7 @@ import {
 import type { GetNodeMethod, NodeDetails, NodeIds, PipelineGraphState, SVGPathRecord } from '../../types'
 import { NodeType } from '../../types'
 import css from './StepGroupGraph.module.scss'
+import GraphConfigStore from '../../PipelineGraph/GraphConfigStore'
 interface StepGroupGraphProps {
   id?: string
   data?: any[]
@@ -83,7 +84,7 @@ function StepGroupGraph(props: StepGroupGraphProps): React.ReactElement {
   const [state, setState] = useState<PipelineGraphState[]>([])
   const graphRef = useRef<HTMLDivElement>(null)
   const CreateNode: React.FC<any> | undefined = props?.getNode?.(NodeType.CreateNode)?.component
-
+  const { graphScale } = useContext(GraphConfigStore)
   const updateTreeRect = (): void => {
     const treeContainer = document.getElementById('tree-container')
     const rectBoundary = treeContainer?.getBoundingClientRect()
@@ -121,13 +122,12 @@ function StepGroupGraph(props: StepGroupGraphProps): React.ReactElement {
       props?.updateGraphLinks?.()
     }
   }, [layoutStyles])
-
   const setSVGLinks = (): void => {
     if (props.hideLinks) {
       return
     }
     /* direction is required to connect internal nodes to step group terminals */
-    const SVGLinks = getSVGLinksFromPipeline(state)
+    const SVGLinks = getSVGLinksFromPipeline(state, undefined, undefined, undefined, graphScale)
     const firstNodeIdentifier = state?.[0]?.id
     const lastNodeIdentifier = state?.[state?.length - 1]?.id
     const parentElement = graphRef.current?.querySelector('#tree-container') as HTMLDivElement
@@ -135,11 +135,13 @@ function StepGroupGraph(props: StepGroupGraphProps): React.ReactElement {
       ...SVGLinks,
       getFinalSVGArrowPath(props?.id, firstNodeIdentifier as string, {
         direction: 'ltl',
-        parentElement
+        parentElement,
+        scalingFactor: graphScale
       }),
       getFinalSVGArrowPath(lastNodeIdentifier as string, props?.id, {
         direction: 'rtr',
-        parentElement
+        parentElement,
+        scalingFactor: graphScale
       })
     ]
     return setSvgPath(finalPaths)
