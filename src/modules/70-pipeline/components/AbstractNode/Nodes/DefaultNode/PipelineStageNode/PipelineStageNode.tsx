@@ -18,6 +18,7 @@ import { useStrings } from 'framework/strings'
 import SVGMarker from '../../SVGMarker'
 import AddLinkNode from '../AddLinkNode/AddLinkNode'
 import { FireEventMethod, NodeType } from '../../../types'
+import { getPositionOfAddIcon } from '../../utils'
 import defaultCss from '../DefaultNode.module.scss'
 
 const CODE_ICON: IconName = 'command-echo'
@@ -59,6 +60,7 @@ function PipelineStageNode(props: PipelineStageNodeProps): JSX.Element {
     }
     setVisibilityOfAdd(visibility)
   }
+
   const isSelectedNode = (): boolean => props.isSelected || props.id === props?.selectedNodeId
   const isTemplateNode = props.data.isTemplateNode
   return (
@@ -286,6 +288,7 @@ function PipelineStageNode(props: PipelineStageNodeProps): JSX.Element {
           readonly={props.readonly}
           data={props}
           fireEvent={props.fireEvent}
+          style={{ left: getPositionOfAddIcon(props) }}
           identifier={props.identifier}
           prevNodeIdentifier={props.prevNodeIdentifier as string}
           className={cx(defaultCss.addNodeIcon, defaultCss.left, defaultCss.stageAddIcon)}

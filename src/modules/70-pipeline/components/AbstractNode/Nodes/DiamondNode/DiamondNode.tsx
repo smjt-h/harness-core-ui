@@ -13,6 +13,7 @@ import { useStrings } from 'framework/strings'
 import { DiagramDrag, DiagramType, Event } from '@pipeline/components/Diagram'
 import { PipelineGraphType, NodeType } from '../../types'
 import SVGMarker from '../SVGMarker'
+import { getPositionOfAddIcon } from '../utils'
 import cssDefault from '../DefaultNode/DefaultNode.module.scss'
 import css from './DiamondNode.module.scss'
 
@@ -212,9 +213,9 @@ export function DiamondNodeWidget(props: any): JSX.Element {
               destination: props
             })
           }}
+          style={{ left: getPositionOfAddIcon(props) }}
           className={cx(
             cssDefault.addNodeIcon,
-            cssDefault.left,
             {
               [cssDefault.show]: showAddLink
             },
@@ -249,6 +250,7 @@ export function DiamondNodeWidget(props: any): JSX.Element {
               event.stopPropagation()
               event.preventDefault()
             }}
+            style={{ left: getPositionOfAddIcon(props) }}
             onDrop={event => {
               event.stopPropagation()
               props?.fireEvent?.({
@@ -261,7 +263,6 @@ export function DiamondNodeWidget(props: any): JSX.Element {
             }}
             className={cx(
               cssDefault.addNodeIcon,
-              cssDefault.right,
               {
                 [cssDefault.stepAddIcon]: props.data.graphType === PipelineGraphType.STEP_GRAPH
               },

@@ -16,6 +16,7 @@ import { useStrings } from 'framework/strings'
 import StepGroupGraph from '../StepGroupGraph/StepGroupGraph'
 import { NodeType } from '../../types'
 import SVGMarker from '../SVGMarker'
+import { getPositionOfAddIcon } from '../utils'
 import css from './StepGroupNode.module.scss'
 import defaultCss from '../DefaultNode/DefaultNode.module.scss'
 
@@ -186,6 +187,7 @@ export function StepGroupNode(props: any): JSX.Element {
           </div>
           {!props.isParallelNode && !props.readonly && (
             <div
+              style={{ left: getPositionOfAddIcon(props) }}
               data-linkid={props?.identifier}
               onMouseOver={event => event.stopPropagation()}
               onClick={event => {
@@ -226,15 +228,9 @@ export function StepGroupNode(props: any): JSX.Element {
                   }
                 })
               }}
-              className={classnames(
-                defaultCss.addNodeIcon,
-                defaultCss.stepGroupLeft,
-                defaultCss.stepAddIcon,
-                defaultCss.stepGroupAddIcon,
-                {
-                  [defaultCss.show]: showAddLink
-                }
-              )}
+              className={classnames(defaultCss.addNodeIcon, defaultCss.stepAddIcon, defaultCss.stepGroupAddIcon, {
+                [defaultCss.show]: showAddLink
+              })}
             >
               <Icon name="plus" color={Color.WHITE} />
             </div>

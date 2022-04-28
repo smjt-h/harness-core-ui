@@ -19,6 +19,7 @@ import { useStrings } from 'framework/strings'
 import SVGMarker from '../../SVGMarker'
 import { BaseReactComponentProps, NodeType } from '../../../types'
 import AddLinkNode from '../AddLinkNode/AddLinkNode'
+import { getPositionOfAddIcon } from '../../utils'
 import defaultCss from '../DefaultNode.module.scss'
 
 const CODE_ICON: IconName = 'command-echo'
@@ -53,8 +54,9 @@ function PipelineStepNode(props: PipelineStepNodeProps): JSX.Element {
     }
     setVisibilityOfAdd(visibility)
   }
+
   const stepIcon = defaultTo(defaultTo(stepData?.icon, props?.icon), props?.data?.step?.icon)
-  const isPrevNodeParallel = !!defaultTo(props.prevNode?.children?.length, 1)
+  // const isPrevNodeParallel = !!defaultTo(props.prevNode?.children?.length, 1)
   const isTemplateNode = props.data.isTemplateNode
   return (
     <div
@@ -295,17 +297,19 @@ function PipelineStepNode(props: PipelineStepNodeProps): JSX.Element {
           fireEvent={props.fireEvent}
           identifier={props.identifier}
           prevNodeIdentifier={props.prevNodeIdentifier as string}
+          style={{ left: getPositionOfAddIcon(props) }}
           className={cx(
             defaultCss.addNodeIcon,
-            { [defaultCss.left]: !isPrevNodeParallel, [defaultCss.stepGroupLeft]: isPrevNodeParallel },
-            defaultCss.stepAddIcon,
-            { [defaultCss.stepGroupLeftAddLink]: !!props.parentIdentifier }
+            // { [defaultCss.left]: !isPrevNodeParallel, [defaultCss.stepGroupLeft]: isPrevNodeParallel },
+            defaultCss.stepAddIcon
+            // { [defaultCss.stepGroupLeftAddLink]: !!props.parentIdentifier }
           )}
         />
       )}
       {!props?.nextNode && !isServiceStep && props?.parentIdentifier && !props.readonly && !props.isParallelNode && (
         <AddLinkNode<PipelineStepNodeProps>
           nextNode={props?.nextNode}
+          style={{ right: getPositionOfAddIcon(props) }}
           parentIdentifier={props?.parentIdentifier}
           isParallelNode={props.isParallelNode}
           readonly={props.readonly}
@@ -314,9 +318,7 @@ function PipelineStepNode(props: PipelineStepNodeProps): JSX.Element {
           isRightAddIcon={true}
           identifier={props.identifier}
           prevNodeIdentifier={props.prevNodeIdentifier as string}
-          className={cx(defaultCss.addNodeIcon, defaultCss.right, defaultCss.stepAddIcon, {
-            [defaultCss.stepGroupRightAddLink]: !!props.parentIdentifier
-          })}
+          className={cx(defaultCss.addNodeIcon, defaultCss.stepAddIcon)}
         />
       )}
     </div>
