@@ -26,52 +26,6 @@ interface TableRowsData {
   artifactVisible?: string
 }
 
-//dummy data will remove it later
-/*
-export const dataEnv = [
-  {
-    environmentId: 'env1',
-    environmentName: 'env1',
-    tag: 'build #1'
-  },
-  {
-    environmentId: 'env2',
-    environmentName: 'env1',
-    tag: 'build #1'
-  },
-  {
-    environmentId: 'env1',
-    environmentName: 'envenvvvvvvvvvvvvvvv12',
-    tag: 'builddddddddddd #1'
-  },
-  {
-    environmentId: 'env1',
-    environmentName: 'env1',
-    tag: 'builddddddddddddddddddddddddddddddddddddddddddddddddddddddddd #1'
-  },
-  {
-    environmentId: 'env3',
-    environmentName: 'env3',
-    tag: 'build #1'
-  },
-  {
-    environmentId: 'env3',
-    environmentName: 'env3',
-    tag: 'build #1'
-  },
-  {
-    environmentId: 'env3',
-    environmentName: 'env3',
-    tag: 'build #1'
-  },
-  {
-    environmentId: 'env3',
-    environmentName: 'env3',
-    tag: 'build #1'
-  }
-] as EnvironmentInfoByServiceId[]
-*/
-
 const getTableData = (envData?: EnvironmentInfoByServiceId[]): TableRowsData[] => {
   const tableData: TableRowsData[] = []
   if (!envData) {
@@ -154,10 +108,7 @@ export const Deployments: React.FC = () => {
     ]
   }, [])
 
-  const tableData: TableRowsData[] = useMemo(() => getTableData(data?.data?.environmentInfoByServiceId), [])
-
-  //for dummy data will remove it later
-  // const tableData: TableRowsData[] = useMemo(() => getTableData(dataEnnResponse.data.environmentInfoByServiceId), [])
+  const tableData: TableRowsData[] = useMemo(() => getTableData(data?.data?.environmentInfoByServiceId), [data])
 
   // error, loading, empty handling
   if (loading || error || !(data?.data?.environmentInfoByServiceId || []).length) {
