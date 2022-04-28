@@ -627,10 +627,11 @@ exports[`TriggersWizardPage Triggers tests Payload/Values Comparison Existing Tr
                                   class="Layout--vertical Layout--layout-spacing-small StyledProps--main"
                                 >
                                   <div
-                                    class="Layout--horizontal Layout--layout-spacing-huge StyledProps--main StyledProps--flex StyledProps--flex-justifyContent-start StyledProps--padding-top-small StyledProps--padding-left-xsmall StyledProps--padding-bottom-xsmall StyledProps--margin-left-large"
+                                    class="Layout--horizontal StyledProps--main StyledProps--flex StyledProps--flex-justifyContent-start StyledProps--padding-top-small StyledProps--padding-left-xsmall StyledProps--padding-bottom-xsmall StyledProps--margin-left-large"
                                   >
                                     <label
                                       class="bp3-control bp3-radio StyledProps--font Radio--radio StyledProps--main StyledProps--font-variation-form-label"
+                                      style="width: 110px;"
                                     >
                                       <input
                                         type="radio"
@@ -641,7 +642,8 @@ exports[`TriggersWizardPage Triggers tests Payload/Values Comparison Existing Tr
                                       gitBranch
                                     </label>
                                     <label
-                                      class="bp3-control bp3-radio StyledProps--font Radio--radio StyledProps--main StyledProps--font-variation-form-label"
+                                      class="bp3-control bp3-radio StyledProps--font Radio--radio StyledProps--main StyledProps--margin-left-huge StyledProps--font-variation-form-label"
+                                      style="width: 90px;"
                                     >
                                       <input
                                         type="radio"
@@ -652,7 +654,8 @@ exports[`TriggersWizardPage Triggers tests Payload/Values Comparison Existing Tr
                                       gitTag
                                     </label>
                                     <label
-                                      class="bp3-control bp3-radio StyledProps--font Radio--radio StyledProps--main StyledProps--font-variation-form-label"
+                                      class="bp3-control bp3-radio StyledProps--font Radio--radio StyledProps--main StyledProps--margin-left-huge StyledProps--font-variation-form-label"
+                                      style="width: 110px;"
                                     >
                                       <input
                                         type="radio"

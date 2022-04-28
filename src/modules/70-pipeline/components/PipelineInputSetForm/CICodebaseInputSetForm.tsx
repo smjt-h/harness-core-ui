@@ -66,7 +66,7 @@ const placeholderValues = {
   PR: defaultValues['PR']
 }
 
-interface ConnectorRefInterface {
+export interface ConnectorRefInterface {
   record?: { spec?: { type?: string; url?: string; connectionType?: string } }
 }
 

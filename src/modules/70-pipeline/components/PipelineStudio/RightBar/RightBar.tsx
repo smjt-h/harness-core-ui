@@ -54,7 +54,8 @@ import { useVariablesExpression } from '@pipeline/components/PipelineStudio/Pipl
 import { ConnectorRefWidth } from '@pipeline/utils/constants'
 import {
   handleCIConnectorRefOnChange,
-  ConnectionType
+  ConnectionType,
+  ConnectorRefInterface
 } from '@pipeline/components/PipelineInputSetForm/CICodebaseInputSetForm'
 import type { PipelineType, GitQueryParams } from '@common/interfaces/RouteInterfaces'
 import { Scope } from '@common/interfaces/SecretsInterface'
@@ -198,7 +199,7 @@ export const renderConnectorAndRepoName = ({
         }}
         onChange={(value, _valueType, connectorRefType) => {
           handleCIConnectorRefOnChange({
-            value,
+            value: value as ConnectorRefInterface,
             connectorRefType,
             setConnectionType,
             setConnectorUrl,
