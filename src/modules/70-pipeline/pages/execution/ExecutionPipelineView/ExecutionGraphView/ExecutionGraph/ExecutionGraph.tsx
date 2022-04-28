@@ -53,10 +53,11 @@ import EndNodeStage from '@pipeline/components/AbstractNode/Nodes/EndNode/EndNod
 import StartNodeStage from '@pipeline/components/AbstractNode/Nodes/StartNode/StartNodeStage'
 import { getExecutionStageDiagramListeners } from '@pipeline/utils/execUtils'
 import DiagramLoader from '@pipeline/components/DiagramLoader/DiagramLoader'
+import { FeatureFlag } from '@common/featureFlags'
+import { useFeatureFlag } from '@common/hooks/useFeatureFlag'
 import CDInfo from './components/CD/CDInfo/CDInfo'
 import css from './ExecutionGraph.module.scss'
 
-const NEW_PIP_STUDIO = localStorage.getItem('IS_NEW_PIP_STUDIO_ACTIVE') === 'true'
 const diagram = new DiagramFactory('graph')
 diagram.registerNode(['Deployment', 'CI'], PipelineStageNode as unknown as React.FC<BaseReactComponentProps>, true)
 diagram.registerNode(DiagramNodeType.CreateNode, CreateNodeStage as unknown as React.FC<BaseReactComponentProps>)
@@ -131,9 +132,11 @@ export default function ExecutionGraph(props: ExecutionGraphProps): React.ReactE
   const [stageSetupId, setStageSetupIdId] = React.useState('')
   const { pipelineExecutionDetail, selectedStageId } = useExecutionContext()
   const { primaryPaneSize } = useExecutionLayoutContext()
+
+  const newPipelineStudioEnabled: boolean = useFeatureFlag(FeatureFlag.NEW_PIPELINE_STUDIO) || true
   const nodeData = useMemo(
     () =>
-      NEW_PIP_STUDIO
+      newPipelineStudioEnabled
         ? processLayoutNodeMapV1(pipelineExecutionDetail?.pipelineExecutionSummary)
         : processLayoutNodeMap(pipelineExecutionDetail?.pipelineExecutionSummary),
     [pipelineExecutionDetail?.pipelineExecutionSummary]
@@ -141,7 +144,7 @@ export default function ExecutionGraph(props: ExecutionGraphProps): React.ReactE
   const data: any = useMemo(() => {
     //ExecutionPipeline<GraphLayoutNode> | ExecutionPipeline<PipelineGraphState>
     return {
-      items: NEW_PIP_STUDIO
+      items: newPipelineStudioEnabled
         ? processExecutionDataForGraph(nodeData as PipelineGraphState[])
         : processExecutionData(nodeData as ProcessLayoutNodeMapResponse[]),
       identifier:
@@ -257,7 +260,7 @@ export default function ExecutionGraph(props: ExecutionGraphProps): React.ReactE
       ) : null}
       {!isEmpty(pipelineExecutionDetail?.pipelineExecutionSummary?.pipelineIdentifier) && data.items?.length > 0 && (
         <>
-          {NEW_PIP_STUDIO ? (
+          {newPipelineStudioEnabled ? (
             <CDPipelineStudioNew
               readonly
               loaderComponent={DiagramLoader}

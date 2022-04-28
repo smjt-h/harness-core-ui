@@ -78,6 +78,7 @@ export interface PopoverData {
   isHoverView?: boolean
   getTemplate: (data: GetTemplateProps) => Promise<GetTemplateResponse>
   templateTypes: { [key: string]: string }
+  newPipelineStudioEnabled?: boolean
 }
 
 export const getStageIndexByIdentifier = (
@@ -438,7 +439,8 @@ export const getLinkEventListeners = (
   updateMoveStageDetails: (moveStageDetails: MoveStageDetailsType) => void,
   confirmMoveStage: () => void,
   getTemplate: (data: GetTemplateProps) => Promise<GetTemplateResponse>,
-  stageMap: Map<string, StageState>
+  stageMap: Map<string, StageState>,
+  newPipelineStudioEnabled?: boolean
 ): LinkModelListener => {
   const {
     state: { pipeline, templateTypes },
@@ -463,7 +465,8 @@ export const getLinkEventListeners = (
             renderPipelineStage,
             contextType,
             templateTypes,
-            getTemplate
+            getTemplate,
+            newPipelineStudioEnabled
           },
           { useArrows: false, darkMode: false, fixedPosition: openSplitView }
         )
@@ -559,7 +562,8 @@ export const getNodeEventListerner = (
   updateMoveStageDetails: (moveStageDetails: MoveStageDetailsType) => void,
   confirmMoveStage: () => void,
   getTemplate: (data: GetTemplateProps) => Promise<GetTemplateResponse>,
-  stageMap: Map<string, StageState>
+  stageMap: Map<string, StageState>,
+  newPipelineStudioEnabled?: boolean
 ): NodeModelListener => {
   const {
     state: {
@@ -594,7 +598,8 @@ export const getNodeEventListerner = (
               stagesMap,
               contextType,
               templateTypes,
-              getTemplate
+              getTemplate,
+              newPipelineStudioEnabled
             },
             { useArrows: true, darkMode: false, fixedPosition: false }
           )
@@ -620,7 +625,8 @@ export const getNodeEventListerner = (
                   renderPipelineStage,
                   contextType,
                   templateTypes,
-                  getTemplate
+                  getTemplate,
+                  newPipelineStudioEnabled
                 },
                 { useArrows: false, darkMode: false, fixedPosition: false }
               )
@@ -648,7 +654,8 @@ export const getNodeEventListerner = (
                   renderPipelineStage,
                   contextType,
                   templateTypes,
-                  getTemplate
+                  getTemplate,
+                  newPipelineStudioEnabled
                 },
                 { useArrows: false, darkMode: false, fixedPosition: false }
               )
@@ -686,7 +693,8 @@ export const getNodeEventListerner = (
             renderPipelineStage,
             contextType,
             templateTypes,
-            getTemplate
+            getTemplate,
+            newPipelineStudioEnabled
           },
           { useArrows: false, darkMode: false, fixedPosition: false },
           event.callback
@@ -776,7 +784,8 @@ export const getNodeEventListerner = (
             renderPipelineStage,
             contextType,
             templateTypes,
-            getTemplate
+            getTemplate,
+            newPipelineStudioEnabled
           },
           { useArrows: true, darkMode: false, fixedPosition: false, placement: 'top' },
           noop,

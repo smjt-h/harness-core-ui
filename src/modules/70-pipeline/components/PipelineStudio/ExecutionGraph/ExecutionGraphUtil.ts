@@ -437,8 +437,13 @@ export const updateStepsState = (
   }
 }
 
-export const removeStepOrGroup = (state: ExecutionGraphState, entity: any, skipFlatten = false): boolean => {
-  if (localStorage.getItem('IS_NEW_PIP_STUDIO_ACTIVE') === 'true') {
+export const removeStepOrGroup = (
+  state: ExecutionGraphState,
+  entity: any,
+  skipFlatten = false,
+  newPipelineStudioEnabled?: boolean
+): boolean => {
+  if (newPipelineStudioEnabled) {
     return removeStepOrGroupV2(state, entity, skipFlatten)
   }
   // 1. services
@@ -562,9 +567,10 @@ export const addStepOrGroup = (
   data: ExecutionWrapper,
   step: ExecutionWrapperConfig,
   isParallel: boolean,
-  isRollback: boolean
+  isRollback: boolean,
+  newPipelineStudioEnabled?: boolean
 ): void => {
-  if (localStorage.getItem('IS_NEW_PIP_STUDIO_ACTIVE') === 'true') {
+  if (newPipelineStudioEnabled) {
     addStepOrGroupV2(entity, data, step, isParallel, isRollback)
     return
   }

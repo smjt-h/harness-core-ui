@@ -22,8 +22,8 @@ import {
 import GraphActions from '../GraphActions/GraphActions'
 import { PipelineGraphRecursive } from './PipelineGraphNode'
 import type { NodeCollapsibleProps, NodeIds, PipelineGraphState, SVGPathRecord, GetNodeMethod } from '../types'
-import css from './PipelineGraph.module.scss'
 import GraphConfigStore from './GraphConfigStore'
+import css from './PipelineGraph.module.scss'
 
 interface ControlPosition {
   x: number
@@ -223,8 +223,6 @@ export function SVGComponent({ svgPath, className }: SVGComponentProps): React.R
         const [[nodeId, pathDetails]] = Object.entries(path)
         return (
           <path
-            markerStart="url(#link-port)"
-            markerEnd="url(#link-port)"
             className={classNames(css.svgArrow, className)}
             id={`${nodeId}-link`}
             key={idx}

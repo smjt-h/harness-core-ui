@@ -40,6 +40,8 @@ import CreateNodeStep from '@pipeline/components/AbstractNode/Nodes/CreateNode/C
 import EndNodeStep from '@pipeline/components/AbstractNode/Nodes/EndNode/EndNodeStep'
 import StartNodeStep from '@pipeline/components/AbstractNode/Nodes/StartNode/StartNodeStep'
 import DiagramLoader from '@pipeline/components/DiagramLoader/DiagramLoader'
+import { FeatureFlag } from '@common/featureFlags'
+import { useFeatureFlag } from '@common/hooks/useFeatureFlag'
 import BarrierStepTooltip from './components/BarrierStepTooltip/BarrierStepTooltip'
 import ResourceConstraintTooltip from './components/ResourceConstraints/ResourceConstraints'
 import VerifyStepTooltip from './components/VerifyStepTooltip/VerifyStepTooltip'
@@ -66,7 +68,6 @@ export interface ExecutionStageDetailsProps {
   onStageSelect(step: string): void
 }
 
-const NEW_PIP_STUDIO = localStorage.getItem('IS_NEW_PIP_STUDIO_ACTIVE') === 'true'
 export default function ExecutionStageDetails(props: ExecutionStageDetailsProps): React.ReactElement {
   const {
     pipelineExecutionDetail,
@@ -85,6 +86,8 @@ export default function ExecutionStageDetails(props: ExecutionStageDetailsProps)
   const [dynamicPopoverHandler, setDynamicPopoverHandler] = React.useState<
     DynamicPopoverHandlerBinding<unknown> | undefined
   >()
+
+  const newPipelineStudioEnabled: boolean = useFeatureFlag(FeatureFlag.NEW_PIPELINE_STUDIO) || true
   const { executionIdentifier, accountId } = useParams<ExecutionPathProps>()
   const stage = pipelineStagesMap.get(selectedStageId)
   const {
@@ -103,7 +106,7 @@ export default function ExecutionStageDetails(props: ExecutionStageDetailsProps)
   })
   const data: any = {
     //ExecutionPipeline<ExecutionNode> = {
-    items: NEW_PIP_STUDIO
+    items: newPipelineStudioEnabled
       ? processExecutionDataV1(pipelineExecutionDetail?.executionGraph)
       : processExecutionData(pipelineExecutionDetail?.executionGraph),
     identifier: `${executionIdentifier}-${pipelineExecutionDetail?.executionGraph?.rootNodeId}`,
@@ -251,7 +254,7 @@ export default function ExecutionStageDetails(props: ExecutionStageDetailsProps)
   processExecutionDataV1(pipelineExecutionDetail?.executionGraph)
   return (
     <div className={cx(css.main, css.stepGroup)} data-layout={props.layout}>
-      {!isEmpty(selectedStageId) && data.items?.length > 0 && NEW_PIP_STUDIO ? (
+      {!isEmpty(selectedStageId) && data.items?.length > 0 && newPipelineStudioEnabled ? (
         <CDPipelineStudioNew
           readonly
           loaderComponent={DiagramLoader}

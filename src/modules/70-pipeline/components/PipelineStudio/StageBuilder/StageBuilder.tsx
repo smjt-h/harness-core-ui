@@ -37,6 +37,8 @@ import CreateNodeStage from '@pipeline/components/AbstractNode/Nodes/CreateNode/
 import EndNodeStage from '@pipeline/components/AbstractNode/Nodes/EndNode/EndNodeStage'
 import StartNodeStage from '@pipeline/components/AbstractNode/Nodes/StartNode/StartNodeStage'
 import DiagramLoader from '@pipeline/components/DiagramLoader/DiagramLoader'
+import { useFeatureFlag } from '@common/hooks/useFeatureFlag'
+import { FeatureFlag } from '@common/featureFlags'
 import {
   CanvasWidget,
   createEngine,
@@ -80,8 +82,6 @@ diagram.registerNode(NodeType.EndNode, EndNodeStage)
 diagram.registerNode(NodeType.StartNode, StartNodeStage)
 
 const CDPipelineStudioNew = diagram.render()
-
-const IS_NEW_PIP_STUDIO_ACTIVE = localStorage.getItem('IS_NEW_PIP_STUDIO_ACTIVE')
 export type StageStateMap = Map<string, StageState>
 
 declare global {
@@ -132,7 +132,8 @@ export const renderPopover = ({
   isHoverView,
   contextType,
   getTemplate,
-  templateTypes
+  templateTypes,
+  newPipelineStudioEnabled
 }: PopoverData): JSX.Element => {
   if (isStageView && data) {
     const stageData = {
@@ -177,7 +178,7 @@ export const renderPopover = ({
       </HoverCard>
     )
   }
-  if (localStorage.getItem('IS_NEW_PIP_STUDIO_ACTIVE') === 'true') {
+  if (newPipelineStudioEnabled) {
     return renderPipelineStage({
       isParallel,
       showSelectMenu: true,
@@ -239,6 +240,7 @@ function StageBuilder(): JSX.Element {
   const setSelectionRef = React.useRef(setSelection)
   setSelectionRef.current = setSelection
 
+  const newPipelineStudioEnabled: boolean = useFeatureFlag(FeatureFlag.NEW_PIPELINE_STUDIO) || true
   const { getTemplate } = useTemplateSelector()
 
   const { trackEvent } = useTelemetry()
@@ -655,7 +657,8 @@ function StageBuilder(): JSX.Element {
     updateMoveStageDetails,
     confirmMoveStage,
     getTemplate,
-    stageMap
+    stageMap,
+    newPipelineStudioEnabled
   )
 
   const resetPipelineStages = (stages: StageElementWrapperConfig[]): void => {
@@ -691,7 +694,8 @@ function StageBuilder(): JSX.Element {
     updateMoveStageDetails,
     confirmMoveStage,
     getTemplate,
-    stageMap
+    stageMap,
+    newPipelineStudioEnabled
   )
 
   const canvasClick = () => {
@@ -793,7 +797,7 @@ function StageBuilder(): JSX.Element {
           onChange={handleStageResize}
           allowResize={openSplitView}
         >
-          {IS_NEW_PIP_STUDIO_ACTIVE === 'true' ? (
+          {newPipelineStudioEnabled ? (
             <div
               className={css.canvas}
               ref={canvasRef}
