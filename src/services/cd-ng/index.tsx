@@ -18376,7 +18376,6 @@ export interface UpdateEnvironmentGroupPathParams {
   envGroupIdentifier: string
 }
 
-
 export interface CreateEnvironmentGroupQueryParams {
   accountIdentifier: string
   orgIdentifier: string
@@ -34012,10 +34011,7 @@ export interface GetYamlSnippetMetadataQueryParams {
     | 'errortracking'
     | 'azure'
     | 'pdc'
-<<<<<<< HEAD
-=======
     | 'azurerepo'
->>>>>>> CDS-35302-ssh-connection-wizard
   )[]
 }
 
