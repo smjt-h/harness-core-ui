@@ -12,8 +12,10 @@ import type { FormikContext } from 'formik'
 import { getMultiTypeFromValue, MultiTypeInputType, FormInput, Text, Color, Container } from '@harness/uicore'
 import { useStrings } from 'framework/strings'
 import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
+import MultiTypeFieldSelector from '@common/components/MultiTypeFieldSelector/MultiTypeFieldSelector'
 import { FormMultiTypeConnectorField } from '@connectors/components/ConnectorReferenceField/FormMultiTypeConnectorField'
 import { useVariablesExpression } from '@pipeline/components/PipelineStudio/PiplineHooks/useVariablesExpression'
+import { TFMonaco } from '../../Common/Terraform/Editview/TFMonacoEditor'
 import { ConnectorMap } from '../CloudFormationHelper'
 import type { CreateStackData, CreateStackProps } from '../CloudFormationInterfaces'
 import stepCss from '@pipeline/components/PipelineSteps/Steps/Steps.module.scss'
@@ -22,6 +24,7 @@ export default function TemplateFileInputs<T extends CreateStackData = CreateSta
   props: CreateStackProps<T> & { formik?: FormikContext<any> }
 ): React.ReactElement {
   const { inputSetData, readonly, path, allowableTypes, formik } = props
+  console.log('inputSetData: ', inputSetData);
   const { getString } = useStrings()
   const { expressions } = useVariablesExpression()
   const { accountId, projectIdentifier, orgIdentifier } = useParams<ProjectPathProps>()
@@ -58,11 +61,17 @@ export default function TemplateFileInputs<T extends CreateStackData = CreateSta
             />
           </div>
         )}
+      {/*
+        *
+        If a connector type of account is chosen 
+        we need to get the repo name to access the files
+        *
+        */}
       {inputSetData?.template?.spec?.configuration?.templateFile?.type === 'Remote' &&
-        isAccount &&
-        getMultiTypeFromValue(
-          inputSetData?.template?.spec?.configuration?.templateFile?.spec?.store?.spec?.repoName
-        ) === MultiTypeInputType.RUNTIME && (
+        (isAccount ||
+          getMultiTypeFromValue(
+            inputSetData?.template?.spec?.configuration?.templateFile?.spec?.store?.spec?.repoName
+          ) === MultiTypeInputType.RUNTIME) && (
           <div className={cx(stepCss.formGroup, stepCss.sm)}>
             <FormInput.MultiTextInput
               name={`${path}.spec.configuration.templateFile.spec.store.spec.repoName`}
@@ -90,12 +99,6 @@ export default function TemplateFileInputs<T extends CreateStackData = CreateSta
             />
           </div>
         )}
-      {/*
-        *
-        If a connector type of account is chosen 
-        we need to get the repo name to access the files
-        *
-        */}
       {inputSetData?.template?.spec?.configuration?.templateFile?.type === 'Remote' &&
         getMultiTypeFromValue(
           inputSetData?.template?.spec?.configuration?.templateFile?.spec?.store?.spec?.commitId
@@ -127,6 +130,34 @@ export default function TemplateFileInputs<T extends CreateStackData = CreateSta
             />
           </div>
         )}
+      {getMultiTypeFromValue((inputSetData?.template as CreateStackData)?.spec?.configuration?.templateFile?.spec?.templateBody) ===
+        MultiTypeInputType.RUNTIME && (
+        <div className={cx(stepCss.formGroup, stepCss.md)}>
+          <MultiTypeFieldSelector
+            name={`${path}.spec.configuration.templateFile.spec.templateBody`}
+            label={getString('tagsLabel')}
+            defaultValueToReset=""
+            allowedTypes={allowableTypes}
+            skipRenderValueInExpressionLabel
+            disabled={readonly}
+            expressionRender={() => (
+              <TFMonaco
+                name={`${path}.spec.configuration.templateFile.spec.templateBody`}
+                formik={formik!}
+                expressions={expressions}
+                title={getString('tagsLabel')}
+              />
+            )}
+          >
+            <TFMonaco
+              name={`${path}.spec.configuration.templateFile.spec.templateBody`}
+              formik={formik!}
+              expressions={expressions}
+              title={getString('tagsLabel')}
+            />
+          </MultiTypeFieldSelector>
+        </div>
+      )}
     </>
   )
 }

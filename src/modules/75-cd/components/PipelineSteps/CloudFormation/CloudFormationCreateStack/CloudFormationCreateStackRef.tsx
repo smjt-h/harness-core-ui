@@ -354,8 +354,10 @@ export const CloudFormationCreateStack = (
                 >
                   <>
                     <a className={css.configPlaceHolder}>
-                      {remoteTemplateFile?.paths?.[0]
-                        ? `/${remoteTemplateFile?.paths?.[0]}`
+                      {getMultiTypeFromValue(remoteTemplateFile?.paths) === MultiTypeInputType.RUNTIME
+                        ? `/${remoteTemplateFile?.paths}`
+                        : remoteTemplateFile?.paths?.[0]
+                        ? remoteTemplateFile?.paths?.[0]
                         : getString('cd.cloudFormation.specifyTemplateFile')}
                     </a>
                     <Button
@@ -577,7 +579,7 @@ export const CloudFormationCreateStack = (
                           onChange={({ value }: any) => {
                             setFieldValue('spec.configuration.roleArn', value)
                           }}
-                          value={find(awsRoles, ['value', awsRole])}
+                          value={find(awsRoles, ['value', awsRole]) || awsRole}
                         />
                       </Layout.Horizontal>
                     </Layout.Vertical>
