@@ -134,7 +134,7 @@ const RenderAPIAccessFormWrapper: React.FC<FormikProps<AzureRepoFormInterface>> 
       </Container>
       <FormInput.CheckBox
         name="sameCredentialsAsAbove"
-        label={'Same credentials as above' || getString('common.git.enableAPIAccess')}
+        label={getString('connectors.sameCredentialsAsAbove')}
         padding={{ left: 'xxlarge' }}
       />
       {!props.values.sameCredentialsAsAbove && (

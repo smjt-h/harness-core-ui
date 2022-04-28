@@ -2011,6 +2011,7 @@ export interface StringsMap {
   'connectors.reportNameRequired': string
   'connectors.requestMethod': string
   'connectors.roleARN': string
+  'connectors.sameCredentialsAsAbove': string
   'connectors.scopeError': string
   'connectors.secretManagerDetails': string
   'connectors.selectConnectivityMode': string
