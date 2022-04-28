@@ -11,8 +11,19 @@ steps:
     clusterDetails: Cluster Details
     selectOrEnterClusterPlaceholder: Select or add cluster
     releaseNamePlaceholder: Enter Release Name
+    specifyCredentials: Specify Credentials
   kubernetesGcpStep:
     stepName: Specify your GCP Connector
+  pdcStep:
+    no: No.
+    hostsPlaceholder: Specify list of host names here (comma or new line separated)
+    hostNameOption: Host names
+    hostAttributesOption: Host attributes
+    specifyHostsOption: Specify hosts here
+    preconfiguredHostsOption: Select preconfigured hosts from Physical Data Center
+    pdcConnectorLabel: Physical Datacentar Connector
+    deployAllHostsOption: Deploy to All hosts
+    deploySpecificHostsOption: Deploy to specific hosts based on
 folderPath: Folder Path
 filePathPlaceholder: 'Enter path within manifest folder'
 resourceCannotBeEmpty: 'Resource cannot be empty'

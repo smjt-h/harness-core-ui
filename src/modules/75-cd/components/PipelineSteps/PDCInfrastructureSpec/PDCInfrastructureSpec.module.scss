@@ -6,7 +6,7 @@
  */
 
 .inputWidth {
-  width: 450px;
+  width: 50%;
   margin-bottom: var(--spacing-large);
 }
 .marginTop {
@@ -53,4 +53,30 @@
       color: var(--grey-500) !important;
     }
   }
+}
+
+.hostsTextArea {
+  textarea {
+    min-height: var(--spacing-14) !important;
+  }
+}
+
+.specifyHostsRadioGroup {
+  display: flex;
+  label {
+    margin: auto var(--spacing) auto 0;
+  }
+}
+
+.previewHostsLabel {
+  margin-bottom: 0 !important;
+  margin-right: var(--spacing);
+}
+
+.hostSelect {
+  width: 200px !important;
+}
+
+.hostSpecificContainer {
+  align-items: center;
 }

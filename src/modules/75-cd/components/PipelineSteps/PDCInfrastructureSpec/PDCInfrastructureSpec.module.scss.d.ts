@@ -12,9 +12,14 @@ declare const styles: {
   readonly clusterInputWrapper: string
   readonly connectorRef: string
   readonly formRow: string
+  readonly hostSelect: string
+  readonly hostSpecificContainer: string
+  readonly hostsTextArea: string
   readonly inputWidth: string
   readonly lastRow: string
   readonly marginTop: string
+  readonly previewHostsLabel: string
   readonly simultaneousDeployment: string
+  readonly specifyHostsRadioGroup: string
 }
 export default styles

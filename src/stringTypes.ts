@@ -3396,7 +3396,17 @@ export interface StringsMap {
   'cd.steps.common.clusterDetails': string
   'cd.steps.common.releaseNamePlaceholder': string
   'cd.steps.common.selectOrEnterClusterPlaceholder': string
+  'cd.steps.common.specifyCredentials': string
   'cd.steps.kubernetesGcpStep.stepName': string
+  'cd.steps.pdcStep.deployAllHostsOption': string
+  'cd.steps.pdcStep.deploySpecificHostsOption': string
+  'cd.steps.pdcStep.hostAttributesOption': string
+  'cd.steps.pdcStep.hostNameOption': string
+  'cd.steps.pdcStep.hostsPlaceholder': string
+  'cd.steps.pdcStep.no': string
+  'cd.steps.pdcStep.pdcConnectorLabel': string
+  'cd.steps.pdcStep.preconfiguredHostsOption': string
+  'cd.steps.pdcStep.specifyHostsOption': string
   'cd.terraformVarFiles': string
   'cd.testConnectionStepName': string
   'cd.tfVarStore': string

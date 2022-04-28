@@ -28,7 +28,7 @@ export enum ServiceDeploymentType {
   winrm = 'winrm',
   awsLambda = 'awsLambda',
   pcf = 'pcf',
-  ssh = 'ssh'
+  ssh = 'Ssh'
 }
 
 export enum InfraDeploymentType {
