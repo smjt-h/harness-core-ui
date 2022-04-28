@@ -130,3 +130,8 @@ export interface CloudFormationCreateStackProps {
   onChange: (values: any) => void
   stepViewType: StepViewType | undefined
 }
+
+export enum DeleteStackTypes {
+  Inline = 'Inline',
+  Inherited = 'Inherited'
+}
