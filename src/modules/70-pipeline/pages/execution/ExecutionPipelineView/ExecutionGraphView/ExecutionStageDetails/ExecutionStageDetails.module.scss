@@ -27,6 +27,12 @@
     top: var(--spacing-large);
     width: var(--spacing-xxlarge);
   }
+  &.stepGroup {
+    :global(.graphActions) {
+      position: absolute;
+      top: var(--spacing-large);
+    }
+  }
 }
 .popoverHeight {
   min-height: fit-content;

@@ -7,9 +7,11 @@
 
 import React from 'react'
 import { ButtonVariation, ButtonGroup, Button, Layout } from '@harness/uicore'
+import cx from 'classnames'
 import { useStrings } from 'framework/strings'
 import { ZOOM_INC_DEC_LEVEL } from './constants'
 import css from './GraphActions.module.scss'
+
 interface GraphActionProps {
   setGraphScale: (data: number) => void
   graphScale: number
@@ -67,7 +69,7 @@ function GraphActions({
   )
 
   return (
-    <span className={css.canvasButtons}>
+    <span className={cx(css.canvasButtons, 'graphActions')}>
       {graphActionsLayout === 'horizontal' ? (
         <Layout.Horizontal spacing="medium" id="button-group">
           {renderButtons()}

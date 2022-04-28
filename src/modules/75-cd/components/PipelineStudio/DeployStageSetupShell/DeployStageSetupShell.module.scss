@@ -13,6 +13,12 @@
 
   .fullHeight {
     height: 100%;
+    &.stepGroup {
+      :global(.graphActions) {
+        position: fixed;
+        right: calc(64px + var(--spacing-large));
+      }
+    }
   }
 
   :global {

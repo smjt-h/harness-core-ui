@@ -308,7 +308,7 @@ export default function DeployStageSetupShell(): JSX.Element {
               {getString('executionText')}
             </span>
           }
-          className={css.fullHeight}
+          className={cx(css.fullHeight, css.stepGroup)}
           panel={
             <ExecutionGraph
               allowAddGroup={true}

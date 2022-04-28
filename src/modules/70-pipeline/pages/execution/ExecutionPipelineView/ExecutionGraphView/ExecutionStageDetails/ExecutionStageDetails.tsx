@@ -7,6 +7,7 @@
 
 import React from 'react'
 import { isEmpty, debounce, defaultTo } from 'lodash-es'
+import cx from 'classnames'
 import { useParams } from 'react-router-dom'
 import { NodeRunInfo, useGetBarrierInfo, useGetResourceConstraintsExecutionInfo } from 'services/pipeline-ng'
 import type { CDStageModuleInfo } from 'services/cd-ng'
@@ -17,7 +18,7 @@ import { useExecutionLayoutContext } from '@pipeline/components/ExecutionLayout/
 import ExecutionStageDiagram from '@pipeline/components/ExecutionStageDiagram/ExecutionStageDiagram'
 import type { DynamicPopoverHandlerBinding } from '@common/components/DynamicPopover/DynamicPopover'
 import { StepType } from '@pipeline/components/PipelineSteps/PipelineStepInterface'
-import { ExecutionStatusEnum, isExecutionPaused, isExecutionRunning } from '@pipeline/utils/statusHelpers'
+import { isExecutionPaused, isExecutionRunning } from '@pipeline/utils/statusHelpers'
 import { DynamicPopover } from '@common/exports'
 import HoverCard from '@pipeline/components/HoverCard/HoverCard'
 import type { ExecutionPathProps } from '@common/interfaces/RouteInterfaces'
@@ -249,7 +250,7 @@ export default function ExecutionStageDetails(props: ExecutionStageDetailsProps)
 
   processExecutionDataV1(pipelineExecutionDetail?.executionGraph)
   return (
-    <div className={css.main} data-layout={props.layout}>
+    <div className={cx(css.main, css.stepGroup)} data-layout={props.layout}>
       {!isEmpty(selectedStageId) && data.items?.length > 0 && NEW_PIP_STUDIO ? (
         <CDPipelineStudioNew
           readonly

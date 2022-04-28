@@ -11,5 +11,6 @@ declare const styles: {
   readonly main: string
   readonly popoverHeight: string
   readonly stepDetails: string
+  readonly stepGroup: string
 }
 export default styles
