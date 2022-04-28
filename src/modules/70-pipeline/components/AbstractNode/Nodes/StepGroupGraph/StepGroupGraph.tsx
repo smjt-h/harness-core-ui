@@ -61,7 +61,11 @@ const getNestedStepGroupHeight = (steps?: any[]): number => {
 const getCalculatedStyles = (data: PipelineGraphState[]): LayoutStyles => {
   let width = 0
   let maxChildLength = 0
+  let hasStepGroupNode = false
   data.forEach(node => {
+    if (node.type === 'STEP_GROUP') {
+      hasStepGroupNode = true
+    }
     const childSteps = get(node, 'data.step.data.stepGroup.steps')
     if (childSteps) {
       const count = getNestedStepGroupHeight(childSteps)
@@ -74,7 +78,9 @@ const getCalculatedStyles = (data: PipelineGraphState[]): LayoutStyles => {
     width += 150
     maxChildLength = Math.max(maxChildLength, node?.children?.length || 0)
   })
-  return { height: `${(maxChildLength + 1) * 100}px`, width: `${width - 80}px` } // 80 is link gap that we dont need for last stepgroup node
+  let finalHeight = (maxChildLength + 1) * 100
+  finalHeight = hasStepGroupNode ? finalHeight + 30 : finalHeight
+  return { height: `${finalHeight}px`, width: `${width - 80}px` } // 80 is link gap that we dont need for last stepgroup node
 }
 
 function StepGroupGraph(props: StepGroupGraphProps): React.ReactElement {
