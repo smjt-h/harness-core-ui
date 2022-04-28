@@ -44,6 +44,7 @@ export interface PipelineGraphProps {
   panZoom?: boolean
   createNodeTitle?: string
   showEndNode?: boolean
+  graphActionsLayout?: 'horizontal' | 'vertical'
 }
 
 function PipelineGraph({
@@ -58,7 +59,8 @@ function PipelineGraph({
   parentSelector,
   panZoom = true,
   createNodeTitle,
-  showEndNode = true
+  showEndNode = true,
+  graphActionsLayout = 'vertical'
 }: PipelineGraphProps): React.ReactElement {
   const [svgPath, setSvgPath] = useState<SVGPathRecord[]>([])
   const [isLoading, setLoading] = useState<boolean>(false)
@@ -201,6 +203,7 @@ function PipelineGraph({
           setGraphScale={setGraphScale}
           graphScale={graphScale}
           handleScaleToFit={handleScaleToFit}
+          graphActionsLayout={graphActionsLayout}
         />
       </div>
     </>

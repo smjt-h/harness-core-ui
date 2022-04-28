@@ -140,6 +140,7 @@ export class DiagramFactory {
     panZoom?: boolean
     createNodeTitle?: string
     showEndNode?: boolean
+    graphActionsLayout?: 'horizontal' | 'vertical'
   }> {
     function PipelineStudioHOC(
       this: DiagramFactory,
@@ -154,6 +155,7 @@ export class DiagramFactory {
         panZoom?: boolean
         createNodeTitle?: string
         showEndNode?: boolean
+        graphActionsLayout?: 'horizontal' | 'vertical'
       }
     ): React.ReactElement {
       return (

@@ -1078,6 +1078,7 @@ function ExecutionGraphRef<T extends StageElementConfig>(
               loaderComponent={DiagramLoader}
               data={stepsData}
               createNodeTitle={getString('addStep')}
+              graphActionsLayout={canvasButtonsLayout}
             />
             {hasRollback && (
               <RollbackToggleSwitch
