@@ -14,12 +14,12 @@ import { StepViewType, StepProps, ValidateInputSetProps } from '@pipeline/compon
 import { StepType } from '@pipeline/components/PipelineSteps/PipelineStepInterface'
 import { PipelineStep } from '@pipeline/components/PipelineSteps/PipelineStep'
 import { getDurationValidationSchema } from '@common/components/MultiTypeDuration/MultiTypeDuration'
-import { CreateStackStepInfo, DeleteStackTypes } from '../CloudFormationInterfaces'
+import { DeleteStackData, DeleteStackTypes, CFDeleteStackStepInfo } from '../CloudFormationInterfaces'
 import { CloudFormationDeleteStack } from './CloudFormationDeleteStackRef'
 import { CloudFormationDeleteStackInputStepRef } from './DeleteStackInputSteps'
 const CloudFormationDeleteStackWithRef = forwardRef(CloudFormationDeleteStack)
 
-export class CFDeleteStack extends PipelineStep<any> {
+export class CFDeleteStack extends PipelineStep<CFDeleteStackStepInfo> {
   constructor() {
     super()
     this._hasStepVariables = true
@@ -50,7 +50,7 @@ export class CFDeleteStack extends PipelineStep<any> {
     template,
     getString,
     viewType
-  }: ValidateInputSetProps<CreateStackStepInfo>): FormikErrors<CreateStackStepInfo> {
+  }: ValidateInputSetProps<CFDeleteStackStepInfo>): FormikErrors<CFDeleteStackStepInfo> {
     /* istanbul ignore next */
     const errors = {} as any
     /* istanbul ignore next */
@@ -83,7 +83,7 @@ export class CFDeleteStack extends PipelineStep<any> {
     return errors
   }
 
-  processFormData(data: any): any {
+  processFormData(data: DeleteStackData): CFDeleteStackStepInfo {
     if (data?.spec?.configuration?.type === DeleteStackTypes.Inherited) {
       delete data?.spec?.configuration?.spec?.connectorRef
       delete data?.spec?.configuration?.spec?.region
@@ -92,16 +92,16 @@ export class CFDeleteStack extends PipelineStep<any> {
     } else {
       const connectorRef = data?.spec?.configuration?.spec?.connectorRef
       delete data?.spec?.configuration?.spec.provisionerIdentifier
-      set(data, 'spec.configuration.spec.connectorRef', connectorRef?.value || connectorRef)
+      set(data, 'spec.configuration.spec.connectorRef', connectorRef)
     }
     return data
   }
 
-  private getInitialValues(data: any): any {
+  private getInitialValues(data: CFDeleteStackStepInfo): any {
     return data
   }
 
-  renderStep(props: StepProps<any, unknown>): JSX.Element {
+  renderStep(props: StepProps<CFDeleteStackStepInfo>): JSX.Element {
     const {
       initialValues,
       onUpdate,

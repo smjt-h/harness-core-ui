@@ -8,7 +8,14 @@ import type { MultiTypeInputType } from '@harness/uicore'
 import type { Scope } from '@common/interfaces/SecretsInterface'
 import type { StepViewType } from '@pipeline/components/AbstractSteps/Step'
 import type { SelectOption } from '@pipeline/components/PipelineSteps/Steps/StepsTypes'
-import type { StepElementConfig, ExecutionElementConfig, CloudformationCreateStackStepInfo, NGVariable, CloudformationTags } from 'services/cd-ng'
+import type {
+  StepElementConfig,
+  ExecutionElementConfig,
+  CloudformationCreateStackStepInfo,
+  CloudformationDeleteStackStepInfo,
+  NGVariable,
+  CloudformationTags
+} from 'services/cd-ng'
 
 export const StoreTypes = {
   Inline: 'Inline',
@@ -58,7 +65,7 @@ export interface Parameter {
       region?: string
       urls?: string[]
     }
-  };
+  }
 }
 
 export interface CreateStackData extends StepElementConfig {
@@ -69,11 +76,13 @@ export interface CreateStackData extends StepElementConfig {
   spec: {
     provisionerIdentifier: string
     configuration: {
-      tags?: {
-        spec?: {
-          content?: string
-        }
-      } | CloudformationTags
+      tags?:
+        | {
+            spec?: {
+              content?: string
+            }
+          }
+        | CloudformationTags
       stackName: string
       connectorRef: string | Connector
       region: string
@@ -83,13 +92,13 @@ export interface CreateStackData extends StepElementConfig {
       parameters?: Parameter[]
       roleArn?: string
       templateFile: {
-          type: string
-          spec: {
-            type?: string
-            templateBody?: string
-            templateUrl?: string
-          }
+        type: string
+        spec: {
+          type?: string
+          templateBody?: string
+          templateUrl?: string
         }
+      }
     }
   }
 }
@@ -134,4 +143,31 @@ export interface CloudFormationCreateStackProps {
 export enum DeleteStackTypes {
   Inline = 'Inline',
   Inherited = 'Inherited'
+}
+
+export interface DeleteStackData extends StepElementConfig {
+  type: string
+  name: string
+  identifier: string
+  timeout: string
+  spec: {
+    configuration: {
+      type: string
+      spec: {
+        connectorRef?: string | Connector
+        region?: string
+        roleArn?: string
+        stackName?: string
+        provisionerIdentifier?: string
+      }
+    }
+  }
+}
+
+export interface CFDeleteStackStepInfo {
+  spec: CloudformationDeleteStackStepInfo
+  name: string
+  identifier: string
+  timeout: string
+  type: string
 }
