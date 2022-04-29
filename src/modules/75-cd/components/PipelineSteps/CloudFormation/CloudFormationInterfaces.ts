@@ -164,10 +164,38 @@ export interface DeleteStackData extends StepElementConfig {
   }
 }
 
-export interface CFDeleteStackStepInfo {
+export interface CFDeleteStackStepInfo extends StepElementConfig {
   spec: CloudformationDeleteStackStepInfo
   name: string
   identifier: string
   timeout: string
   type: string
+}
+
+export interface CloudFormationDeleteStackProps {
+  allowableTypes: MultiTypeInputType[]
+  isNewStep: boolean | undefined
+  readonly: boolean | undefined
+  initialValues: any
+  onUpdate: (values: any) => void
+  onChange: (values: any) => void
+  stepViewType: StepViewType | undefined
+}
+
+export interface DeleteStackProps<T = DeleteStackData> {
+  initialValues: T
+  onUpdate?: (data: T) => void
+  onChange?: (data: T) => void
+  allowableTypes: MultiTypeInputType[]
+  stepViewType?: StepViewType
+  configTypes?: SelectOption[]
+  isNewStep?: boolean
+  inputSetData?: {
+    template?: T
+    path?: string
+  }
+  readonly?: boolean
+  path?: string
+  stepType?: string
+  allValues?: T
 }

@@ -36,12 +36,19 @@ import { setFormikRef, StepFormikFowardRef } from '@pipeline/components/Abstract
 import { useListAwsRegions } from 'services/portal'
 import { useGetIamRolesForAws } from 'services/cd-ng'
 import { Connectors } from '@connectors/constants'
-import { DeleteStackTypes } from '../CloudFormationInterfaces'
+import { DeleteStackTypes, CloudFormationDeleteStackProps } from '../CloudFormationInterfaces'
 import stepCss from '@pipeline/components/PipelineSteps/Steps/Steps.module.scss'
 import css from '../CloudFormation.module.scss'
 
 export const CloudFormationDeleteStack = (
-  { allowableTypes, isNewStep = true, readonly = false, initialValues, onUpdate, onChange }: any,
+  {
+    allowableTypes,
+    isNewStep = true,
+    readonly = false,
+    initialValues,
+    onUpdate,
+    onChange
+  }: CloudFormationDeleteStackProps,
   formikRef: StepFormikFowardRef
 ): JSX.Element => {
   const { getString } = useStrings()
@@ -49,7 +56,7 @@ export const CloudFormationDeleteStack = (
   const { expressions } = useVariablesExpression()
   const [regions, setRegions] = useState<MultiSelectOption[]>([])
   const [awsRoles, setAwsRoles] = useState<MultiSelectOption[]>([])
-  const [awsRef, setAwsRef] = useState<string>('')
+  const [awsRef, setAwsRef] = useState('')
 
   const { data: regionData } = useListAwsRegions({
     queryParams: {
@@ -138,8 +145,7 @@ export const CloudFormationDeleteStack = (
     >
       {formik => {
         setFormikRef(formikRef, formik)
-        const { values, setFieldValue, errors } = formik
-        console.log({ values, errors })
+        const { values, setFieldValue } = formik
         const config = values?.spec?.configuration
         const provisionerIdentifier = config?.spec?.provisionerIdentifier
         const stackName = config?.spec?.stackName
@@ -147,7 +153,7 @@ export const CloudFormationDeleteStack = (
         const stepType = config?.type
         const awsConnector = config?.spec?.connectorRef
         if (awsConnector !== awsRef) {
-          setAwsRef(awsConnector)
+          setAwsRef(awsConnector as string)
         }
         return (
           <>
@@ -272,7 +278,7 @@ export const CloudFormationDeleteStack = (
                   />
                   {getMultiTypeFromValue(stackName) === MultiTypeInputType.RUNTIME && (
                     <ConfigureOptions
-                      value={stackName}
+                      value={stackName as string}
                       type="String"
                       variableName="spec.configuration.spec.stackName"
                       showRequiredField={false}

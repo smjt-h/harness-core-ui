@@ -16,7 +16,7 @@ import { PipelineStep } from '@pipeline/components/PipelineSteps/PipelineStep'
 import { getDurationValidationSchema } from '@common/components/MultiTypeDuration/MultiTypeDuration'
 import { DeleteStackData, DeleteStackTypes, CFDeleteStackStepInfo } from '../CloudFormationInterfaces'
 import { CloudFormationDeleteStack } from './CloudFormationDeleteStackRef'
-import { CloudFormationDeleteStackInputStepRef } from './DeleteStackInputSteps'
+import CloudFormationDeleteStackInputStep from './DeleteStackInputSteps'
 const CloudFormationDeleteStackWithRef = forwardRef(CloudFormationDeleteStack)
 
 export class CFDeleteStack extends PipelineStep<CFDeleteStackStepInfo> {
@@ -97,11 +97,11 @@ export class CFDeleteStack extends PipelineStep<CFDeleteStackStepInfo> {
     return data
   }
 
-  private getInitialValues(data: CFDeleteStackStepInfo): any {
+  private getInitialValues(data: CFDeleteStackStepInfo) {
     return data
   }
 
-  renderStep(props: StepProps<CFDeleteStackStepInfo>): JSX.Element {
+  renderStep(props: StepProps<any, unknown>): JSX.Element {
     const {
       initialValues,
       onUpdate,
@@ -117,7 +117,7 @@ export class CFDeleteStack extends PipelineStep<CFDeleteStackStepInfo> {
 
     if (stepViewType === StepViewType.InputSet || stepViewType === StepViewType.DeploymentForm) {
       return (
-        <CloudFormationDeleteStackInputStepRef
+        <CloudFormationDeleteStackInputStep
           initialValues={initialValues}
           onUpdate={data => onUpdate?.(this.processFormData(data))}
           onChange={data => onChange?.(this.processFormData(data))}

@@ -18,7 +18,7 @@ import {
   Color,
   MultiSelectOption
 } from '@harness/uicore'
-import type { FormikContext } from 'formik'
+import { connect, FormikContext } from 'formik'
 import { useStrings } from 'framework/strings'
 import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
 import { FormMultiTypeDurationField } from '@common/components/MultiTypeDuration/MultiTypeDuration'
@@ -27,19 +27,21 @@ import { Connectors } from '@connectors/constants'
 import { useVariablesExpression } from '@pipeline/components/PipelineStudio/PiplineHooks/useVariablesExpression'
 import { useListAwsRegions } from 'services/portal'
 import { useGetIamRolesForAws } from 'services/cd-ng'
-// import {DeleteStackData} from '../CloudFormationInterfaces'
+import type { DeleteStackData, DeleteStackProps } from '../CloudFormationInterfaces'
 import stepCss from '@pipeline/components/PipelineSteps/Steps/Steps.module.scss'
 
 const isRuntime = (value: string): boolean => getMultiTypeFromValue(value) === MultiTypeInputType.RUNTIME
 
-export const CloudFormationDeleteStackInputStepRef = (props: any & { formik?: FormikContext<any> }): JSX.Element => {
+export function CloudFormationDeleteStackInputStepRef<T extends DeleteStackData = DeleteStackData>(
+  props: DeleteStackProps<T> & { formik?: FormikContext<any> }
+): React.ReactElement {
   const { inputSetData, readonly, path, allowableTypes, formik } = props
   const { getString } = useStrings()
   const { expressions } = useVariablesExpression()
   const { accountId, projectIdentifier, orgIdentifier } = useParams<ProjectPathProps>()
   const [regions, setRegions] = useState<MultiSelectOption[]>([])
   const [awsRoles, setAwsRoles] = useState<MultiSelectOption[]>([])
-  const [awsRef, setAwsRef] = useState<string>(inputSetData?.template?.spec?.configuration?.connectorRef)
+  const [awsRef, setAwsRef] = useState<string>(inputSetData?.template?.spec?.configuration?.spec?.connectorRef as string)
 
   const {
     data: regionData,
@@ -51,7 +53,7 @@ export const CloudFormationDeleteStackInputStepRef = (props: any & { formik?: Fo
       accountId
     }
   })
-  const regionRequired = isRuntime(inputSetData?.template?.spec?.configuration?.spec?.region)
+  const regionRequired = isRuntime(inputSetData?.template?.spec?.configuration?.spec?.region as string)
   useEffect(() => {
     if (regionData) {
       const regionValues = map(regionData?.resource, reg => ({ label: reg.name, value: reg.value }))
@@ -74,7 +76,7 @@ export const CloudFormationDeleteStackInputStepRef = (props: any & { formik?: Fo
     }
   })
 
-  const roleRequired = isRuntime(inputSetData?.template?.spec?.configuration?.spec?.roleArn)
+  const roleRequired = isRuntime(inputSetData?.template?.spec?.configuration?.spec?.roleArn as string)
   useEffect(() => {
     if (roleData) {
       const roleValues = map(roleData?.data, cap => ({ label: cap, value: cap }))
@@ -87,7 +89,7 @@ export const CloudFormationDeleteStackInputStepRef = (props: any & { formik?: Fo
 
   return (
     <FormikForm>
-      {isRuntime(inputSetData?.template?.timeout) && (
+      {isRuntime(inputSetData?.template?.timeout as string) && (
         <div className={cx(stepCss.formGroup, stepCss.md)}>
           <FormMultiTypeDurationField
             label={getString('pipelineSteps.timeoutLabel')}
@@ -102,7 +104,7 @@ export const CloudFormationDeleteStackInputStepRef = (props: any & { formik?: Fo
           />
         </div>
       )}
-      {isRuntime(inputSetData?.template?.spec?.configuration?.spec?.provisionerIdentifier) && (
+      {isRuntime(inputSetData?.template?.spec?.configuration?.spec?.provisionerIdentifier as string) && (
         <div className={cx(stepCss.formGroup, stepCss.md)}>
           <FormInput.MultiTextInput
             name={`${path}.spec.configuration.spec.provisionerIdentifier`}
@@ -115,7 +117,7 @@ export const CloudFormationDeleteStackInputStepRef = (props: any & { formik?: Fo
           />
         </div>
       )}
-      {isRuntime(inputSetData?.template?.spec?.configuration?.spec?.connectorRef) && (
+      {isRuntime(inputSetData?.template?.spec?.configuration?.spec?.connectorRef as string) && (
         <div className={cx(stepCss.formGroup, stepCss.md)}>
           <FormMultiTypeConnectorField
             label={<Text color={Color.GREY_900}>{getString('pipelineSteps.awsConnectorLabel')}</Text>}
@@ -130,17 +132,14 @@ export const CloudFormationDeleteStackInputStepRef = (props: any & { formik?: Fo
             disabled={readonly}
             width={300}
             onChange={(value: any, _unused, _notUsed) => {
-                setAwsRef(value?.record?.identifier)
-                formik?.setFieldValue(
-                  `${path}.spec.configuration.spec.connectorRef`,
-                  value?.record?.identifier
-                )
-              }}
-              setRefValue
+              setAwsRef(value?.record?.identifier)
+              formik?.setFieldValue(`${path}.spec.configuration.spec.connectorRef`, value?.record?.identifier)
+            }}
+            setRefValue
           />
         </div>
       )}
-      {isRuntime(inputSetData?.template?.spec?.configuration?.spec?.region) && (
+      {isRuntime(inputSetData?.template?.spec?.configuration?.spec?.region as string) && (
         <div className={cx(stepCss.formGroup, stepCss.md)}>
           <FormInput.MultiTypeInput
             label={getString('regionLabel')}
@@ -160,7 +159,7 @@ export const CloudFormationDeleteStackInputStepRef = (props: any & { formik?: Fo
           />
         </div>
       )}
-      {isRuntime(inputSetData?.template?.spec?.configuration?.spec?.roleArn) && (
+      {isRuntime(inputSetData?.template?.spec?.configuration?.spec?.roleArn as string) && (
         <div className={cx(stepCss.formGroup, stepCss.md)}>
           <FormInput.MultiTypeInput
             label={getString('connectors.awsKms.roleArnLabel')}
@@ -179,7 +178,7 @@ export const CloudFormationDeleteStackInputStepRef = (props: any & { formik?: Fo
           />
         </div>
       )}
-      {isRuntime(inputSetData?.template?.spec?.configuration?.spec?.stackName) && (
+      {isRuntime(inputSetData?.template?.spec?.configuration?.spec?.stackName as string) && (
         <div className={cx(stepCss.formGroup, stepCss.md)}>
           <FormInput.MultiTextInput
             name={`${path}.spec.configuration.spec.stackName`}
@@ -195,3 +194,6 @@ export const CloudFormationDeleteStackInputStepRef = (props: any & { formik?: Fo
     </FormikForm>
   )
 }
+
+const CloudFormationDeleteStackInputStep = connect(CloudFormationDeleteStackInputStepRef)
+export default CloudFormationDeleteStackInputStep
