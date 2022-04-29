@@ -248,6 +248,7 @@ const EnvironmentsPage: React.FC = () => {
           <Layout.Horizontal>
             <EnvironmentDialog
               disabled={loading}
+              environments={environments}
               onCreate={response => {
                 setTimeout(() => {
                   history.push(

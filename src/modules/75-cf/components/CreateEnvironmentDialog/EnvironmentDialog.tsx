@@ -15,15 +15,17 @@ import {
   Collapse,
   Container,
   Formik,
+  FormikForm,
   FormInput,
   IconName,
   Layout,
   Text
-} from '@wings-software/uicore'
+} from '@harness/uicore'
 import { Color } from '@harness/design-system'
 import { useModalHook } from '@harness/use-modal'
+import type { FormikErrors } from 'formik'
 import * as Yup from 'yup'
-import { ResponseEnvironmentResponseDTO, useCreateEnvironment } from 'services/cd-ng'
+import { EnvironmentResponseDTO, ResponseEnvironmentResponseDTO, useCreateEnvironment } from 'services/cd-ng'
 import { IdentifierSchema, NameSchema } from '@common/utils/Validation'
 import { useToaster } from '@common/exports'
 import { useEnvStrings } from '@cf/hooks/environment'
@@ -47,6 +49,7 @@ export interface EnvironmentDialogProps {
   disabled?: boolean
   onCreate: (response?: ResponseEnvironmentResponseDTO) => void
   buttonProps?: ButtonProps
+  environments?: EnvironmentResponseDTO[]
 }
 
 interface EnvironmentValues {
@@ -59,7 +62,7 @@ interface EnvironmentValues {
 
 const identity = (x: any) => x as string
 
-const EnvironmentDialog: React.FC<EnvironmentDialogProps> = ({ disabled, onCreate, buttonProps }) => {
+const EnvironmentDialog: React.FC<EnvironmentDialogProps> = ({ disabled, onCreate, buttonProps, environments }) => {
   const { showError } = useToaster()
   const { getString, getEnvString } = useEnvStrings()
   const { accountId, orgIdentifier, projectIdentifier } = useParams<Record<string, string>>()
@@ -121,6 +124,15 @@ const EnvironmentDialog: React.FC<EnvironmentDialogProps> = ({ disabled, onCreat
       }
     : undefined
 
+  const handleValidation = (values: EnvironmentValues): FormikErrors<EnvironmentValues> => {
+    const errors: { name?: string } = {}
+
+    if (environments?.some(env => env.name === values.name)) {
+      errors.name = getEnvString('create.duplicateName')
+    }
+    return errors
+  }
+
   const [openModal, hideModal] = useModalHook(() => {
     return (
       <Dialog enforceFocus={false} isOpen onClose={hideModal} className={css.dialog}>
@@ -133,103 +145,106 @@ const EnvironmentDialog: React.FC<EnvironmentDialogProps> = ({ disabled, onCreat
             name: NameSchema({ requiredErrorMsg: getString?.('fieldRequired', { field: 'Environment' }) }),
             identifier: IdentifierSchema()
           })}
+          validate={handleValidation}
         >
           {formikProps => {
             return (
-              <Container
-                padding="xxxlarge"
-                style={{
-                  height: '100%',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  paddingBottom: 'var(--spacing-medium)'
-                }}
-              >
-                <Text font={{ size: 'medium', weight: 'bold' }} color={Color.BLACK}>
-                  {getEnvString('create.title')}
-                </Text>
-                <Text margin={{ top: 'large', bottom: 'large' }}>{getEnvString('create.description')}</Text>
-                <Layout.Vertical
-                  spacing="small"
-                  style={{ minHeight: 415, overflow: 'auto', padding: 'var(--spacing-xsmall)' }}
-                >
-                  <FormInput.InputWithIdentifier
-                    inputName="name"
-                    idName="identifier"
-                    isIdentifierEditable
-                    inputLabel={getEnvString('create.nameLabel')}
-                    inputGroupProps={{ inputGroup: { autoFocus: true } }}
-                  />
-                  <Layout.Vertical>
-                    <Container className={css.collapse}>
-                      <Collapse
-                        {...collapseProps}
-                        heading={getString('description')}
-                        collapseHeaderClassName={css.collapseHeaderFix}
-                      >
-                        <FormInput.TextArea name="description" />
-                      </Collapse>
-                    </Container>
-                    <Container className={css.collapse}>
-                      <Collapse
-                        {...collapseProps}
-                        heading={getString('tagsLabel')}
-                        collapseHeaderClassName={css.collapseHeaderFix}
-                      >
-                        <FormInput.TagInput
-                          name="tags"
-                          label=""
-                          items={[]}
-                          labelFor={identity}
-                          itemFromNewTag={identity}
-                          tagInputProps={{
-                            showClearAllButton: true,
-                            allowNewTag: true,
-                            placeholder: 'Tags'
-                          }}
-                        />
-                      </Collapse>
-                    </Container>
-                  </Layout.Vertical>
-                  <Layout.Vertical spacing="small" style={{ margin: 'auto 0' }}>
-                    <Text font={{ size: 'normal' }} padding={{ top: 'medium' }}>
-                      {getEnvString('create.envTypeLabel')}
-                    </Text>
-                    <CardSelect
-                      cornerSelected
-                      data={envTypes}
-                      selected={getTypeOption(formikProps.values.type)}
-                      className={css.cardSelect}
-                      onChange={nextValue => formikProps.setFieldValue('type', nextValue.value)}
-                      renderItem={cardData => (
-                        <Container
-                          flex={{ align: 'center-center', distribution: 'space-between' }}
-                          className="cardBody"
-                        >
-                          {cardData.text}
-                        </Container>
-                      )}
-                    />
-                  </Layout.Vertical>
-                </Layout.Vertical>
+              <FormikForm>
                 <Container
+                  padding="xxxlarge"
                   style={{
+                    height: '100%',
                     display: 'flex',
-                    justifyContent: 'flex-start',
-                    alignItems: 'center',
-                    marginTop: 'auto'
+                    flexDirection: 'column',
+                    paddingBottom: 'var(--spacing-medium)'
                   }}
                 >
-                  <Button
-                    text={getString('createSecretYAML.create')}
-                    onClick={() => formikProps.handleSubmit()}
-                    intent="primary"
-                    disabled={loading}
-                  />
-                  <Button text={getString('cancel')} onClick={() => formikProps.handleReset()} minimal />
-                  {loading && <Spinner size={16} />}
+                  <Text font={{ size: 'medium', weight: 'bold' }} color={Color.BLACK}>
+                    {getEnvString('create.title')}
+                  </Text>
+                  <Text margin={{ top: 'large', bottom: 'large' }}>{getEnvString('create.description')}</Text>
+                  <Layout.Vertical
+                    spacing="small"
+                    style={{ minHeight: 415, overflow: 'auto', padding: 'var(--spacing-xsmall)' }}
+                  >
+                    <FormInput.InputWithIdentifier
+                      inputName="name"
+                      idName="identifier"
+                      isIdentifierEditable
+                      inputLabel={getEnvString('create.nameLabel')}
+                      inputGroupProps={{ inputGroup: { autoFocus: true } }}
+                    />
+                    <Layout.Vertical>
+                      <Container className={css.collapse}>
+                        <Collapse
+                          {...collapseProps}
+                          heading={getString('description')}
+                          collapseHeaderClassName={css.collapseHeaderFix}
+                        >
+                          <FormInput.TextArea name="description" />
+                        </Collapse>
+                      </Container>
+                      <Container className={css.collapse}>
+                        <Collapse
+                          {...collapseProps}
+                          heading={getString('tagsLabel')}
+                          collapseHeaderClassName={css.collapseHeaderFix}
+                        >
+                          <FormInput.TagInput
+                            name="tags"
+                            label=""
+                            items={[]}
+                            labelFor={identity}
+                            itemFromNewTag={identity}
+                            tagInputProps={{
+                              showClearAllButton: true,
+                              allowNewTag: true,
+                              placeholder: 'Tags'
+                            }}
+                          />
+                        </Collapse>
+                      </Container>
+                    </Layout.Vertical>
+                    <Layout.Vertical spacing="small" style={{ margin: 'auto 0' }}>
+                      <Text font={{ size: 'normal' }} padding={{ top: 'medium' }}>
+                        {getEnvString('create.envTypeLabel')}
+                      </Text>
+                      <CardSelect
+                        cornerSelected
+                        data={envTypes}
+                        selected={getTypeOption(formikProps.values.type)}
+                        className={css.cardSelect}
+                        onChange={nextValue => formikProps.setFieldValue('type', nextValue.value)}
+                        renderItem={cardData => (
+                          <Container
+                            flex={{ align: 'center-center', distribution: 'space-between' }}
+                            className="cardBody"
+                          >
+                            {cardData.text}
+                          </Container>
+                        )}
+                      />
+                    </Layout.Vertical>
+                  </Layout.Vertical>
+                  <Container
+                    style={{
+                      display: 'flex',
+                      justifyContent: 'flex-start',
+                      alignItems: 'center',
+                      marginTop: 'auto'
+                    }}
+                  >
+                    <Button
+                      type="submit"
+                      text={getString('createSecretYAML.create')}
+                      intent="primary"
+                      disabled={loading}
+                    />
+                    <Button text={getString('cancel')} onClick={() => formikProps.handleReset()} minimal />
+                    {loading && <Spinner size={16} />}
+                  </Container>
                 </Container>
-              </Container>
+              </FormikForm>
             )
           }}
         </Formik>

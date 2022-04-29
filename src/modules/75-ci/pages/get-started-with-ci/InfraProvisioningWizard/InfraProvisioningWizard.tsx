@@ -23,7 +23,7 @@ import {
   StepStatus,
   GitAuthenticationMethod
 } from './Constants'
-import { SelectBuildLocation } from './SelectBuildLocation'
+import { SelectBuildLocation, SelectBuildLocationRef } from './SelectBuildLocation'
 import { SelectGitProvider, SelectGitProviderRef } from './SelectGitProvider'
 import { SelectRepository, SelectRepositoryRef } from './SelectRepository'
 
@@ -36,6 +36,7 @@ export const InfraProvisioningWizard: React.FC<InfraProvisioningWizardProps> = p
   const [disable, setDisable] = useState<boolean>(false)
   const [currentWizardStepId, setCurrentWizardStepId] =
     useState<InfraProvisiongWizardStepId>(lastConfiguredWizardStepId)
+  const selectBuildLocationRef = React.useRef<SelectBuildLocationRef | null>(null)
   const selectGitProviderRef = React.useRef<SelectGitProviderRef | null>(null)
   const selectRepositoryRef = React.useRef<SelectRepositoryRef | null>(null)
   const [showError, setShowError] = useState<boolean>(false)
@@ -75,7 +76,9 @@ export const InfraProvisioningWizard: React.FC<InfraProvisioningWizardProps> = p
     [
       InfraProvisiongWizardStepId.SelectBuildLocation,
       {
-        stepRender: <SelectBuildLocation selectedBuildLocation={HostedByHarnessBuildLocation} />,
+        stepRender: (
+          <SelectBuildLocation ref={selectBuildLocationRef} selectedBuildLocation={HostedByHarnessBuildLocation} />
+        ),
         onClickNext: () => {
           updateStepStatus([InfraProvisiongWizardStepId.SelectBuildLocation], StepStatus.InProgress)
           setShowDialog(true)
@@ -91,6 +94,7 @@ export const InfraProvisioningWizard: React.FC<InfraProvisioningWizardProps> = p
             ref={selectGitProviderRef}
             disableNextBtn={() => setDisable(true)}
             enableNextBtn={() => setDisable(false)}
+            selectedHosting={selectBuildLocationRef.current?.hosting}
           />
         ),
         onClickNext: () => {

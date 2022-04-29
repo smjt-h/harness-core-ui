@@ -18,7 +18,7 @@ import {
 } from '@wings-software/uicore'
 import { connect } from 'formik'
 import { FontVariation } from '@harness/design-system'
-import { get, set, isEmpty, pickBy, identity, isNil } from 'lodash-es'
+import { get, set, isEmpty, pickBy, identity, isNil, defaultTo } from 'lodash-es'
 import cx from 'classnames'
 import { useParams } from 'react-router-dom'
 import { FormMultiTypeDurationField } from '@common/components/MultiTypeDuration/MultiTypeDuration'
@@ -45,6 +45,11 @@ import { useGitScope } from '@pipeline/utils/CIUtils'
 import { ConnectorRefWidth } from '@pipeline/utils/constants'
 import { FormMultiTypeConnectorField } from '@connectors/components/ConnectorReferenceField/FormMultiTypeConnectorField'
 import type { StringsMap } from 'stringTypes'
+import {
+  getCustomStepProps,
+  getStepTypeByDeploymentType,
+  infraDefinitionTypeMapping
+} from '@pipeline/utils/stageHelpers'
 import factory from '../PipelineSteps/PipelineStepFactory'
 import { StepType } from '../PipelineSteps/PipelineStepInterface'
 
@@ -242,6 +247,7 @@ export interface StageInputSetFormProps {
   readonly?: boolean
   viewType: StepViewType
   stageIdentifier?: string
+  executionIdentifier?: string
   allowableTypes: MultiTypeInputType[]
 }
 
@@ -254,8 +260,10 @@ function ExecutionWrapperInputSetForm(props: {
   readonly?: boolean
   viewType: StepViewType
   allowableTypes: MultiTypeInputType[]
+  executionIdentifier?: string
 }): JSX.Element {
-  const { stepsTemplate, allValues, values, path, formik, readonly, viewType, allowableTypes } = props
+  const { stepsTemplate, allValues, values, path, formik, readonly, viewType, allowableTypes, executionIdentifier } =
+    props
   return (
     <>
       {stepsTemplate?.map((item, index) => {
@@ -352,6 +360,7 @@ function ExecutionWrapperInputSetForm(props: {
                     headerColor="var(--black)"
                   >
                     <ExecutionWrapperInputSetForm
+                      executionIdentifier={executionIdentifier}
                       stepsTemplate={nodep.stepGroup.steps}
                       formik={formik}
                       readonly={readonly}
@@ -379,6 +388,7 @@ function ExecutionWrapperInputSetForm(props: {
                 headerColor="var(--black)"
               >
                 <ExecutionWrapperInputSetForm
+                  executionIdentifier={executionIdentifier}
                   stepsTemplate={item.stepGroup.steps}
                   formik={formik}
                   readonly={readonly}
@@ -407,6 +417,7 @@ export function StageInputSetFormInternal({
   readonly,
   viewType,
   stageIdentifier,
+  executionIdentifier,
   allowableTypes
 }: StageInputSetFormProps): React.ReactElement {
   const deploymentStageInputSet = get(formik?.values, path, {})
@@ -544,7 +555,9 @@ export function StageInputSetFormInternal({
                     ? deploymentStageTemplate?.serviceConfig?.stageOverrides
                     : deploymentStageTemplate?.serviceConfig?.serviceDefinition?.spec || {}
                 }
-                type={StepType.K8sServiceSpec}
+                type={getStepTypeByDeploymentType(
+                  defaultTo(deploymentStage?.serviceConfig?.serviceDefinition?.type, '')
+                )}
                 stepViewType={viewType}
                 path={
                   isPropagating
@@ -803,8 +816,10 @@ export function StageInputSetFormInternal({
                   deploymentStage?.infrastructure?.infrastructureDefinition?.spec || /* istanbul ignore next */ {}
                 }
                 type={
-                  (deploymentStage?.infrastructure?.infrastructureDefinition?.type as StepType) ||
-                  /* istanbul ignore next */ StepType.KubernetesDirect
+                  ((infraDefinitionTypeMapping[
+                    deploymentStage?.infrastructure?.infrastructureDefinition?.type as string
+                  ] || deploymentStage?.infrastructure?.infrastructureDefinition?.type) as StepType) ||
+                  StepType.KubernetesDirect
                 }
                 path={`${path}.infrastructure.infrastructureDefinition.spec`}
                 readonly={readonly}
@@ -816,6 +831,10 @@ export function StageInputSetFormInternal({
                   }
                 }}
                 stepViewType={viewType}
+                customStepProps={getCustomStepProps(
+                  deploymentStage?.infrastructure?.infrastructureDefinition?.type || '',
+                  getString
+                )}
               />
             )}
           </div>
@@ -832,6 +851,7 @@ export function StageInputSetFormInternal({
           <div className={css.nestedAccordions}>
             {deploymentStageTemplate.infrastructure.infrastructureDefinition?.provisioner?.steps && (
               <ExecutionWrapperInputSetForm
+                executionIdentifier={executionIdentifier}
                 stepsTemplate={deploymentStageTemplate.infrastructure.infrastructureDefinition?.provisioner?.steps}
                 path={`${path}.infrastructure.infrastructureDefinition.provisioner.steps`}
                 allValues={deploymentStage?.infrastructure.infrastructureDefinition?.provisioner?.steps}
@@ -844,6 +864,7 @@ export function StageInputSetFormInternal({
             )}
             {deploymentStageTemplate.infrastructure.infrastructureDefinition?.provisioner?.rollbackSteps && (
               <ExecutionWrapperInputSetForm
+                executionIdentifier={executionIdentifier}
                 stepsTemplate={
                   deploymentStageTemplate.infrastructure.infrastructureDefinition?.provisioner?.rollbackSteps
                 }
@@ -942,6 +963,7 @@ export function StageInputSetFormInternal({
           <div className={css.nestedAccordions}>
             {deploymentStageTemplate.execution?.steps && (
               <ExecutionWrapperInputSetForm
+                executionIdentifier={executionIdentifier}
                 stepsTemplate={deploymentStageTemplate.execution.steps}
                 path={`${path}.execution.steps`}
                 allValues={deploymentStage?.execution?.steps}
@@ -954,6 +976,7 @@ export function StageInputSetFormInternal({
             )}
             {deploymentStageTemplate.execution?.rollbackSteps && (
               <ExecutionWrapperInputSetForm
+                executionIdentifier={executionIdentifier}
                 stepsTemplate={deploymentStageTemplate.execution.rollbackSteps}
                 path={`${path}.execution.rollbackSteps`}
                 allValues={deploymentStage?.execution?.rollbackSteps}

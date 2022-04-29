@@ -327,6 +327,7 @@ environments:
     description: 'An environment is the representation of your production or non-production infrastructure'
     envTypeLabel: 'Environment type'
     nameLabel: 'Name of your environment'
+    duplicateName: 'Environment with this name already exists. Try another name'
   apiKeys:
     addKeyTitle: Create SDK Key
     message: 'Secrets are only visible right after creation and redacted once you leave the page. Please make sure to copy and store your secret somewhere safe'
@@ -511,6 +512,7 @@ gitSync:
   invalidYaml: 'We are unable to render your {{{ flagsYamlFilename }}} file because it is invalid. Fix the following issues on Git and try again.'
 policyEvaluations:
   failedToSave: Flag cannot be saved due to the policy evaluation failures
+  warning: Flag saved with policy warnings
 planEnforcement:
   upgradeRequiredDev: Total Developers managing feature flags has exceeded the Subscribed developer count.
   upgradeRequiredMau: 'Total Monthly Active Users (MAU) has reached the free plan limit. Upgrade to manage unlimited MAUs.'

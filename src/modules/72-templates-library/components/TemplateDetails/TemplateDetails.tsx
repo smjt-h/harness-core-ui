@@ -309,7 +309,7 @@ export const TemplateDetails: React.FC<TemplateDetailsProps> = props => {
                           <Tabs id="template-details" selectedTabId={selectedTab} onChange={handleTabChange}>
                             <Tab
                               id={TemplateTabs.INPUTS}
-                              title={getString('templatesLibrary.templateInputs')}
+                              title={getString('pipeline.templateInputs')}
                               panel={<TemplateInputs template={selectedTemplate} />}
                             />
                             <Tab

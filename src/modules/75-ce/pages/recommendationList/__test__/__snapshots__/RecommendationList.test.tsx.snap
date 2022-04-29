@@ -146,11 +146,15 @@ exports[`test cases for Recommendation List Page should be able to render empty 
             <div
               class="Layout--vertical Layout--layout-spacing-small StyledProps--main"
             >
-              <p
-                class="StyledProps--font StyledProps--main StyledProps--color StyledProps--color-grey500 StyledProps--font-variation-h6"
+              <div
+                class="Layout--horizontal Layout--layout-spacing-small StyledProps--main"
               >
-                ce.recommendation.listPage.monthlySavingsText
-              </p>
+                <p
+                  class="StyledProps--font StyledProps--main StyledProps--color StyledProps--color-grey500 StyledProps--font-variation-h6"
+                >
+                  ce.recommendation.listPage.monthlySavingsText
+                </p>
+              </div>
               <div
                 class="StyledProps--font StyledProps--main"
               >
@@ -383,11 +387,15 @@ exports[`test cases for Recommendation List Page should be able to render empty 
             <div
               class="Layout--vertical Layout--layout-spacing-small StyledProps--main"
             >
-              <p
-                class="StyledProps--font StyledProps--main StyledProps--color StyledProps--color-grey500 StyledProps--font-variation-h6"
+              <div
+                class="Layout--horizontal Layout--layout-spacing-small StyledProps--main"
               >
-                ce.recommendation.listPage.monthlyPotentialCostText
-              </p>
+                <p
+                  class="StyledProps--font StyledProps--main StyledProps--color StyledProps--color-grey500 StyledProps--font-variation-h6"
+                >
+                  ce.recommendation.listPage.monthlyPotentialCostText
+                </p>
+              </div>
               <div
                 class="StyledProps--font StyledProps--main"
               >
@@ -578,11 +586,15 @@ exports[`test cases for Recommendation List Page should be able to render page w
             <div
               class="Layout--vertical Layout--layout-spacing-small StyledProps--main"
             >
-              <p
-                class="StyledProps--font StyledProps--main StyledProps--color StyledProps--color-grey500 StyledProps--font-variation-h6"
+              <div
+                class="Layout--horizontal Layout--layout-spacing-small StyledProps--main"
               >
-                ce.recommendation.listPage.monthlySavingsText
-              </p>
+                <p
+                  class="StyledProps--font StyledProps--main StyledProps--color StyledProps--color-grey500 StyledProps--font-variation-h6"
+                >
+                  ce.recommendation.listPage.monthlySavingsText
+                </p>
+              </div>
               <div
                 class="StyledProps--font StyledProps--main"
               >
@@ -815,11 +827,15 @@ exports[`test cases for Recommendation List Page should be able to render page w
             <div
               class="Layout--vertical Layout--layout-spacing-small StyledProps--main"
             >
-              <p
-                class="StyledProps--font StyledProps--main StyledProps--color StyledProps--color-grey500 StyledProps--font-variation-h6"
+              <div
+                class="Layout--horizontal Layout--layout-spacing-small StyledProps--main"
               >
-                ce.recommendation.listPage.monthlyPotentialCostText
-              </p>
+                <p
+                  class="StyledProps--font StyledProps--main StyledProps--color StyledProps--color-grey500 StyledProps--font-variation-h6"
+                >
+                  ce.recommendation.listPage.monthlyPotentialCostText
+                </p>
+              </div>
               <div
                 class="StyledProps--font StyledProps--main"
               >
@@ -1006,11 +1022,15 @@ exports[`test cases for Recommendation List Page should be able to render page w
             <div
               class="Layout--vertical Layout--layout-spacing-small StyledProps--main"
             >
-              <p
-                class="StyledProps--font StyledProps--main StyledProps--color StyledProps--color-grey500 StyledProps--font-variation-h6"
+              <div
+                class="Layout--horizontal Layout--layout-spacing-small StyledProps--main"
               >
-                ce.recommendation.listPage.monthlySavingsText
-              </p>
+                <p
+                  class="StyledProps--font StyledProps--main StyledProps--color StyledProps--color-grey500 StyledProps--font-variation-h6"
+                >
+                  ce.recommendation.listPage.monthlySavingsText
+                </p>
+              </div>
               <div
                 class="StyledProps--font StyledProps--main"
               >
@@ -1243,11 +1263,15 @@ exports[`test cases for Recommendation List Page should be able to render page w
             <div
               class="Layout--vertical Layout--layout-spacing-small StyledProps--main"
             >
-              <p
-                class="StyledProps--font StyledProps--main StyledProps--color StyledProps--color-grey500 StyledProps--font-variation-h6"
+              <div
+                class="Layout--horizontal Layout--layout-spacing-small StyledProps--main"
               >
-                ce.recommendation.listPage.monthlyPotentialCostText
-              </p>
+                <p
+                  class="StyledProps--font StyledProps--main StyledProps--color StyledProps--color-grey500 StyledProps--font-variation-h6"
+                >
+                  ce.recommendation.listPage.monthlyPotentialCostText
+                </p>
+              </div>
               <div
                 class="StyledProps--font StyledProps--main"
               >
@@ -1455,11 +1479,15 @@ exports[`test cases for Recommendation List Page should be able to render the li
             <div
               class="Layout--vertical Layout--layout-spacing-small StyledProps--main"
             >
-              <p
-                class="StyledProps--font StyledProps--main StyledProps--color StyledProps--color-grey500 StyledProps--font-variation-h6"
+              <div
+                class="Layout--horizontal Layout--layout-spacing-small StyledProps--main"
               >
-                ce.recommendation.listPage.monthlySavingsText
-              </p>
+                <p
+                  class="StyledProps--font StyledProps--main StyledProps--color StyledProps--color-grey500 StyledProps--font-variation-h6"
+                >
+                  ce.recommendation.listPage.monthlySavingsText
+                </p>
+              </div>
               <div
                 class="StyledProps--font StyledProps--main"
               >
@@ -1692,11 +1720,15 @@ exports[`test cases for Recommendation List Page should be able to render the li
             <div
               class="Layout--vertical Layout--layout-spacing-small StyledProps--main"
             >
-              <p
-                class="StyledProps--font StyledProps--main StyledProps--color StyledProps--color-grey500 StyledProps--font-variation-h6"
+              <div
+                class="Layout--horizontal Layout--layout-spacing-small StyledProps--main"
               >
-                ce.recommendation.listPage.monthlyPotentialCostText
-              </p>
+                <p
+                  class="StyledProps--font StyledProps--main StyledProps--color StyledProps--color-grey500 StyledProps--font-variation-h6"
+                >
+                  ce.recommendation.listPage.monthlyPotentialCostText
+                </p>
+              </div>
               <div
                 class="StyledProps--font StyledProps--main"
               >

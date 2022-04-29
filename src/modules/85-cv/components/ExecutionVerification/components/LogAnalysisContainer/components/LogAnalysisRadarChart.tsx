@@ -28,7 +28,8 @@ const LogAnalysisRadarChart: React.FC<LogAnalysisRadarChartProps> = ({
   filteredAngle,
   onRadarPointClick,
   clusterChartError,
-  refetchClusterAnalysis
+  refetchClusterAnalysis,
+  logsLoading
 }) => {
   const radarChartSeries = getRadarChartSeries(clusterChartData?.resource || [])
 
@@ -64,7 +65,7 @@ const LogAnalysisRadarChart: React.FC<LogAnalysisRadarChartProps> = ({
         />
       </Container>
     )
-  } else if (!clusterChartData?.resource?.length) {
+  } else if (!clusterChartData?.resource?.length && !logsLoading) {
     return (
       <Container className={styles.noData}>
         <NoDataCard message={getString('cv.monitoredServices.noMatchingData')} image={noDataImage} />

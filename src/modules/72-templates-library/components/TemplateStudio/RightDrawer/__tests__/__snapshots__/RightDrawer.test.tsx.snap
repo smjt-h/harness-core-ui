@@ -102,7 +102,7 @@ exports[`<RightDrawer /> tests should match snapshot for TemplateInputs drawer t
         <p
           class="StyledProps--font StyledProps--main StyledProps--font-variation-h4"
         >
-          templatesLibrary.templateInputs
+          pipeline.templateInputs
         </p>
       </div>
       <div

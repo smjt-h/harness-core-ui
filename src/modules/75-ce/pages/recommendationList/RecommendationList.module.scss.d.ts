@@ -10,5 +10,7 @@ declare const styles: {
   readonly errorContainer: string
   readonly errorText: string
   readonly listContainer: string
+  readonly potentialEmissionCard: string
+  readonly potentialReducedEmissionCard: string
 }
 export default styles

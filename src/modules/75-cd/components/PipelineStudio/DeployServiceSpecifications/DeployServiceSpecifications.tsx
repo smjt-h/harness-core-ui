@@ -15,9 +15,10 @@ import {
   Layout,
   RUNTIME_INPUT_VALUE,
   SelectOption,
-  Text
+  Text,
+  useConfirmationDialog
 } from '@wings-software/uicore'
-import { Color } from '@harness/design-system'
+import { Color, Intent } from '@harness/design-system'
 import produce from 'immer'
 import { debounce, get, isEmpty, set, unset } from 'lodash-es'
 import { StepViewType } from '@pipeline/components/AbstractSteps/Step'
@@ -40,11 +41,16 @@ import PropagateWidget, {
 } from '@cd/components/PipelineStudio/DeployServiceSpecifications/PropagateWidget/PropagateWidget'
 import { StageErrorContext } from '@pipeline/context/StageErrorContext'
 import { useValidationErrors } from '@pipeline/components/PipelineStudio/PiplineHooks/useValidationErrors'
-import { DeployTabs } from '@cd/components/PipelineStudio/DeployStageSetupShell/DeployStageSetupShellUtils'
+import { DeployTabs } from '@pipeline/components/PipelineStudio/CommonUtils/DeployStageSetupShellUtils'
 import SelectDeploymentType from '@cd/components/PipelineStudio/DeployServiceSpecifications/SelectDeploymentType'
 import type { DeploymentStageElementConfig } from '@pipeline/utils/pipelineTypes'
 import { useDeepCompareEffect } from '@common/hooks'
-import { StageType } from '@pipeline/utils/stageHelpers'
+import {
+  deleteStageData,
+  doesStageContainOtherData,
+  ServiceDeploymentType,
+  StageType
+} from '@pipeline/utils/stageHelpers'
 import { useFeatureFlags } from '@common/hooks/useFeatureFlag'
 import { Scope } from '@common/interfaces/SecretsInterface'
 import { getIdentifierFromValue } from '@common/components/EntityReference/EntityReference'
@@ -78,7 +84,7 @@ export default function DeployServiceSpecifications(props: React.PropsWithChildr
     [updateStage]
   )
   const { stage } = getStageFromPipeline<DeploymentStageElementConfig>(selectedStageId || '')
-  const getDeploymentType = (): string => {
+  const getDeploymentType = (): ServiceDeploymentType => {
     return get(
       stage,
       'stage.spec.serviceConfig.serviceDefinition.type',
@@ -92,13 +98,31 @@ export default function DeployServiceSpecifications(props: React.PropsWithChildr
   })
   const [selectedPropagatedState, setSelectedPropagatedState] = useState<SelectOption>()
   const [serviceIdNameMap, setServiceIdNameMap] = useState<{ [key: string]: string }>()
-  const [selectedDeploymentType, setSelectedDeploymentType] = useState(getDeploymentType())
+  const [selectedDeploymentType, setSelectedDeploymentType] = useState<ServiceDeploymentType | undefined>(
+    getDeploymentType()
+  )
   const [previousStageList, setPreviousStageList] = useState<SelectOption[]>([])
+  const [currStageData, setCurrStageData] = useState<DeploymentStageElementConfig | undefined>()
 
   const { index: stageIndex } = getStageIndexFromPipeline(pipeline, selectedStageId || '')
   const { stages } = getFlattenedStages(pipeline)
   const { submitFormsForTab } = useContext(StageErrorContext)
   const { errorMap } = useValidationErrors()
+
+  const { openDialog: openStageDataDeleteWarningDialog } = useConfirmationDialog({
+    cancelButtonText: getString('cancel'),
+    contentText: getString('pipeline.stageDataDeleteWarningText'),
+    titleText: getString('pipeline.stageDataDeleteWarningTitle'),
+    confirmButtonText: getString('confirm'),
+    intent: Intent.WARNING,
+    onCloseDialog: async isConfirmed => {
+      if (isConfirmed) {
+        deleteStageData(currStageData)
+        await debounceUpdateStage(currStageData)
+        setSelectedDeploymentType(currStageData?.spec?.serviceConfig.serviceDefinition?.type as ServiceDeploymentType)
+      }
+    }
+  })
 
   useEffect(() => {
     if (
@@ -304,13 +328,18 @@ export default function DeployServiceSpecifications(props: React.PropsWithChildr
   )
 
   const handleDeploymentTypeChange = useCallback(
-    (deploymentType: string): void => {
+    (deploymentType: ServiceDeploymentType): void => {
       const stageData = produce(stage, draft => {
         const serviceDefinition = get(draft, 'stage.spec.serviceConfig.serviceDefinition', {})
         serviceDefinition.type = deploymentType
       })
-      setSelectedDeploymentType(deploymentType)
-      updateStage(stageData?.stage as StageElementConfig)
+      if (doesStageContainOtherData(stageData?.stage)) {
+        setCurrStageData(stageData?.stage)
+        openStageDataDeleteWarningDialog()
+      } else {
+        setSelectedDeploymentType(deploymentType)
+        updateStage(stageData?.stage as StageElementConfig)
+      }
     },
     [stage, updateStage]
   )

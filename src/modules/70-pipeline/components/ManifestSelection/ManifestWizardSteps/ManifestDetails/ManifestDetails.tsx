@@ -31,6 +31,7 @@ import { FormMultiTypeCheckboxField } from '@common/components'
 
 import { useStrings } from 'framework/strings'
 import type { ConnectorConfigDTO, ManifestConfig, ManifestConfigWrapper } from 'services/cd-ng'
+import { isServerlessManifestType } from '@pipeline/utils/stageHelpers'
 import type { ManifestDetailDataType, ManifestTypes } from '../../ManifestInterface'
 import {
   gitFetchTypeList,
@@ -55,6 +56,10 @@ interface ManifestDetailsPropType {
   handleSubmit: (data: ManifestConfigWrapper) => void
   manifestIdsList: Array<string>
   isReadonly?: boolean
+}
+
+const showAdvancedSection = (selectedManifest: ManifestTypes | null): boolean => {
+  return selectedManifest === ManifestDataType.K8sManifest || selectedManifest === ManifestDataType.ServerlessAwsLambda
 }
 
 function ManifestDetails({
@@ -90,17 +95,17 @@ function ManifestDetails({
     const specValues = get(initialValues, 'spec.store.spec', null)
 
     if (specValues) {
-      const values = {
+      return {
         ...specValues,
         identifier: initialValues.identifier,
         skipResourceVersioning: initialValues?.spec?.skipResourceVersioning,
+        configOverridePath: initialValues?.spec?.configOverridePath,
         repoName: getRepositoryName(prevStepData, initialValues),
         paths:
           typeof specValues.paths === 'string'
             ? specValues.paths
             : specValues.paths?.map((path: string) => ({ path, uuid: uuid(path, nameSpace()) }))
       }
-      return values
     }
     return {
       identifier: '',
@@ -109,7 +114,8 @@ function ManifestDetails({
       gitFetchType: 'Branch',
       paths: [{ path: '', uuid: uuid('', nameSpace()) }],
       skipResourceVersioning: false,
-      repoName: getRepositoryName(prevStepData, initialValues)
+      repoName: getRepositoryName(prevStepData, initialValues),
+      configOverridePath: undefined
     }
   }, [])
 
@@ -129,7 +135,8 @@ function ManifestDetails({
                   ? formData?.paths
                   : formData?.paths?.map((path: { path: string }) => path.path)
             }
-          }
+          },
+          configOverridePath: formData?.configOverridePath
         }
       }
     }
@@ -306,9 +313,10 @@ function ManifestDetails({
                     selectedManifest={selectedManifest}
                     expressions={expressions}
                     allowableTypes={allowableTypes}
+                    allowOnlyOneFilePath={isServerlessManifestType(selectedManifest)}
                   />
 
-                  {!!(selectedManifest === ManifestDataType.K8sManifest) && (
+                  {showAdvancedSection(selectedManifest) && (
                     <Accordion
                       activeId={isActiveAdvancedStep ? getString('advancedTitle') : ''}
                       className={css.advancedStepOpen}
@@ -318,33 +326,64 @@ function ManifestDetails({
                         addDomId={true}
                         summary={getString('advancedTitle')}
                         details={
-                          <Layout.Horizontal
-                            width={'50%'}
-                            flex={{ justifyContent: 'flex-start', alignItems: 'center' }}
-                            margin={{ bottom: 'huge' }}
-                          >
-                            <FormMultiTypeCheckboxField
-                              name="skipResourceVersioning"
-                              label={getString('skipResourceVersion')}
-                              multiTypeTextbox={{ expressions, allowableTypes }}
-                              className={css.checkbox}
-                            />
-                            {getMultiTypeFromValue(formik.values?.skipResourceVersioning) ===
-                              MultiTypeInputType.RUNTIME && (
-                              <ConfigureOptions
-                                value={(formik.values?.skipResourceVersioning || '') as string}
-                                type="String"
-                                variableName="skipResourceVersioning"
-                                showRequiredField={false}
-                                showDefaultField={false}
-                                showAdvanced={true}
-                                onChange={value => formik.setFieldValue('skipResourceVersioning', value)}
-                                style={{ alignSelf: 'center', marginTop: 11 }}
-                                className={css.addmarginTop}
-                                isReadonly={isReadonly}
+                          isServerlessManifestType(selectedManifest) ? (
+                            <div
+                              className={cx(css.halfWidth, {
+                                [css.runtimeInput]:
+                                  getMultiTypeFromValue(formik.values?.configOverridePath) ===
+                                  MultiTypeInputType.RUNTIME
+                              })}
+                            >
+                              <FormInput.MultiTextInput
+                                multiTextInputProps={{ expressions, allowableTypes }}
+                                label={getString('pipeline.manifestType.serverlessConfigFilePath')}
+                                placeholder={getString('pipeline.manifestType.serverlessConfigFilePathPlaceholder')}
+                                name="configOverridePath"
                               />
-                            )}
-                          </Layout.Horizontal>
+
+                              {getMultiTypeFromValue(formik.values?.configOverridePath) ===
+                                MultiTypeInputType.RUNTIME && (
+                                <ConfigureOptions
+                                  value={formik.values?.configOverridePath as string}
+                                  type="String"
+                                  variableName="configOverridePath"
+                                  showRequiredField={false}
+                                  showDefaultField={false}
+                                  showAdvanced={true}
+                                  onChange={value => formik.setFieldValue('configOverridePath', value)}
+                                  isReadonly={isReadonly}
+                                />
+                              )}
+                            </div>
+                          ) : (
+                            <Layout.Horizontal
+                              width={'50%'}
+                              flex={{ justifyContent: 'flex-start', alignItems: 'center' }}
+                              margin={{ bottom: 'huge' }}
+                            >
+                              <FormMultiTypeCheckboxField
+                                name="skipResourceVersioning"
+                                label={getString('skipResourceVersion')}
+                                multiTypeTextbox={{ expressions, allowableTypes }}
+                                className={css.checkbox}
+                              />
+                              {getMultiTypeFromValue(formik.values?.skipResourceVersioning) ===
+                                MultiTypeInputType.RUNTIME && (
+                                <ConfigureOptions
+                                  value={(formik.values?.skipResourceVersioning || '') as string}
+                                  type="String"
+                                  variableName="skipResourceVersioning"
+                                  showRequiredField={false}
+                                  showDefaultField={false}
+                                  showAdvanced={true}
+                                  onChange={value => formik.setFieldValue('skipResourceVersioning', value)}
+                                  style={{ alignSelf: 'center', marginTop: 11 }}
+                                  className={css.addmarginTop}
+                                  isReadonly={isReadonly}
+                                />
+                              )}
+                            </Layout.Horizontal>
+                          )
                         }
                       />
                     </Accordion>

@@ -8,6 +8,7 @@
 import type { IconName } from '@harness/uicore'
 import type { ConnectorInfoDTO } from 'services/cd-ng'
 import type { StringsMap } from 'stringTypes'
+import { Connectors } from '@connectors/constants'
 
 export interface InfraProvisioningWizardProps {
   lastConfiguredWizardStepId?: InfraProvisiongWizardStepId
@@ -53,8 +54,7 @@ export const HostedByHarnessBuildLocation: BuildLocationDetails = {
   approxETAInMins: 2
 }
 
-export const AllBuildLocations: BuildLocationDetails[] = [
-  HostedByHarnessBuildLocation,
+export const AllBuildLocationsForOnPrem: BuildLocationDetails[] = [
   {
     icon: 'app-kubernetes',
     location: BuildLocation.Kubernetes,
@@ -81,6 +81,11 @@ export const AllBuildLocations: BuildLocationDetails[] = [
   }
 ]
 
+export const AllBuildLocationsForSaaS: BuildLocationDetails[] = [
+  HostedByHarnessBuildLocation,
+  ...AllBuildLocationsForOnPrem
+]
+
 export enum InfraProvisiongWizardStepId {
   SelectBuildLocation = 'SELECT_BUILD_LOCATION',
   SelectGitProvider = 'SELECT_GIT_PROVIDER',
@@ -103,14 +108,16 @@ export interface GitProvider {
 }
 
 export const AllGitProviders: GitProvider[] = [
-  { icon: 'github', label: 'common.repo_provider.githubLabel', type: 'Github' },
-  { icon: 'gitlab', label: 'common.repo_provider.gitlabLabel', type: 'Gitlab', disabled: true },
-  { icon: 'bitbucket-blue', label: 'common.repo_provider.bitbucketLabel', type: 'Bitbucket', disabled: true }
+  { icon: 'github', label: 'common.repo_provider.githubLabel', type: Connectors.GITHUB },
+  { icon: 'gitlab', label: 'common.repo_provider.gitlabLabel', type: Connectors.GITLAB },
+  { icon: 'bitbucket-blue', label: 'common.repo_provider.bitbucketLabel', type: Connectors.BITBUCKET }
 ]
 
 export enum GitAuthenticationMethod {
   OAuth = 'OAUTH',
-  AccessToken = 'ACCESS_TOKEN'
+  AccessToken = 'ACCESS_TOKEN',
+  AccessKey = 'ACCESS_KEY',
+  UserNameAndApplicationPassword = 'USERNAME_AND_PASSWORD'
 }
 
 export interface GitProviderPermission {
@@ -119,7 +126,14 @@ export interface GitProviderPermission {
 }
 
 export const GitProviderPermissions: GitProviderPermission[] = [
-  { type: 'Github', permissions: ['repo', 'admin:repo_hook', 'user'] },
-  { type: 'Bitbucket', permissions: ['Issues:read', 'Webhooks:read and write', 'Pull requests:write'] },
-  { type: 'Gitlab', permissions: ['api', 'read_repository', 'write_repository'] }
+  { type: Connectors.GITHUB, permissions: ['repo', 'admin:repo_hook', 'user'] },
+  { type: Connectors.BITBUCKET, permissions: ['Issues:read', 'Webhooks:read and write', 'Pull requests:write'] },
+  { type: Connectors.GITLAB, permissions: ['api', 'read_repository', 'write_repository'] }
 ]
+
+export const GitProviderTypeToAuthenticationMethodMapping: Map<ConnectorInfoDTO['type'], GitAuthenticationMethod> =
+  new Map([
+    [Connectors.GITHUB, GitAuthenticationMethod.AccessToken],
+    [Connectors.GITLAB, GitAuthenticationMethod.AccessKey],
+    [Connectors.BITBUCKET, GitAuthenticationMethod.UserNameAndApplicationPassword]
+  ])

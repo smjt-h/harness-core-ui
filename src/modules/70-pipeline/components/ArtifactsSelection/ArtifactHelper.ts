@@ -71,6 +71,7 @@ export const ArtifactConnectorLabelMap: Record<string, string> = {
 export const allowedArtifactTypes: Record<ServiceDefinition['type'], Array<ArtifactType>> = {
   Kubernetes: [ENABLED_ARTIFACT_TYPES.DockerRegistry, ENABLED_ARTIFACT_TYPES.Gcr, ENABLED_ARTIFACT_TYPES.Ecr],
   NativeHelm: [ENABLED_ARTIFACT_TYPES.DockerRegistry, ENABLED_ARTIFACT_TYPES.Gcr, ENABLED_ARTIFACT_TYPES.Ecr],
+  ServerlessAwsLambda: [ENABLED_ARTIFACT_TYPES.ArtifactoryRegistry],
   Ssh: [],
   WinRm: []
 }

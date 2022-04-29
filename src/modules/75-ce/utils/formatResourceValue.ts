@@ -6,9 +6,11 @@
  */
 
 import { QualityOfService } from '@ce/types'
+import formatCost from './formatCost'
 
 const BYTES_IN_A_GB = 1000000000
 const BYTES_IN_A_MB = 1000000
+const EMISSION_MULTIPLIER = 0.025
 
 type fnNumberToString = (val: number) => string
 
@@ -81,4 +83,8 @@ export const getCPUValueInCPUFromExpression: (val: string | number) => number = 
     return Number(stringVal.split('m')[0]) / 1000
   }
   return Number(val)
+}
+
+export const getEmissionsValue = (cost: number) => {
+  return formatCost(cost * EMISSION_MULTIPLIER, { currency: undefined, style: undefined })
 }

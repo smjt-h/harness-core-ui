@@ -677,6 +677,7 @@ function RunPipelineFormBasic({
                     setExistingProvide={setExistingProvide}
                     executionInputSetTemplateYaml={executionInputSetTemplateYaml}
                     pipelineIdentifier={pipelineIdentifier}
+                    executionIdentifier={pipelineExecutionId}
                     template={inputSetYamlResponse}
                     pipeline={pipeline}
                     currentPipeline={{ pipeline: values }}

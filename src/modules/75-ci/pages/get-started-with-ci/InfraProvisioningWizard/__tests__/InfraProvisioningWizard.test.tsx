@@ -10,7 +10,7 @@ import { act, fireEvent, render, getByText as getByTextBody } from '@testing-lib
 import { StringsContext } from 'framework/strings'
 import { findDialogContainer, TestWrapper } from '@common/utils/testUtils'
 import routes from '@common/RouteDefinitions'
-import { HostedByHarnessBuildLocation, InfraProvisiongWizardStepId, AllBuildLocations } from '../Constants'
+import { HostedByHarnessBuildLocation, InfraProvisiongWizardStepId, AllBuildLocationsForSaaS } from '../Constants'
 import { InfraProvisioningWizard } from '../InfraProvisioningWizard'
 import { SelectBuildLocation } from '../SelectBuildLocation'
 
@@ -27,7 +27,7 @@ describe('Render and test InfraProvisioningWizard', () => {
 
     // All build infra type cards should be visible
     const buildInfraCards = Array.from(container.querySelectorAll('div[class*="bp3-card"]')) as HTMLElement[]
-    expect(buildInfraCards.length).toBe(AllBuildLocations.length)
+    expect(buildInfraCards.length).toBe(AllBuildLocationsForSaaS.length)
 
     // Hosted By Harness build infra card should be selected by default
     expect(buildInfraCards[0].className).toContain('Card--selected')
@@ -49,7 +49,7 @@ describe('Render and test InfraProvisioningWizard', () => {
 
   test('Test Wizard Navigation with Select Build Location as first step', async () => {
     const { container, getByText } = render(
-      <TestWrapper path={routes.toCIGetStarted({ ...pathParams, module: 'ci' })} pathParams={pathParams}>
+      <TestWrapper path={routes.toGetStartedWithCI({ ...pathParams, module: 'ci' })} pathParams={pathParams}>
         <InfraProvisioningWizard />
       </TestWrapper>
     )
@@ -91,7 +91,7 @@ describe('Render and test InfraProvisioningWizard', () => {
 
   test('Test Wizard Navigation with Select Git Provider as first step', async () => {
     const { getByText } = render(
-      <TestWrapper path={routes.toCIGetStarted({ ...pathParams, module: 'ci' })} pathParams={pathParams}>
+      <TestWrapper path={routes.toGetStartedWithCI({ ...pathParams, module: 'ci' })} pathParams={pathParams}>
         <InfraProvisioningWizard lastConfiguredWizardStepId={InfraProvisiongWizardStepId.SelectGitProvider} />
       </TestWrapper>
     )

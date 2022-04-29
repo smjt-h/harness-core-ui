@@ -14,6 +14,7 @@ import {
   useGetBarrierInfo,
   useGetResourceConstraintsExecutionInfo
 } from 'services/pipeline-ng'
+import type { CDStageModuleInfo } from 'services/cd-ng'
 import { PageSpinner } from '@common/components'
 import { processExecutionData } from '@pipeline/utils/executionUtils'
 import { useExecutionContext } from '@pipeline/context/ExecutionContext'
@@ -124,7 +125,7 @@ export default function ExecutionStageDetails(props: ExecutionStageDetailsProps)
       event.stageTarget,
       {
         event,
-        data: currentStage
+        data: { ...currentStage, ...stage }
       },
       { useArrows: true, darkMode: false, fixedPosition: false }
     )
@@ -150,6 +151,10 @@ export default function ExecutionStageDetails(props: ExecutionStageDetailsProps)
         failureInfo: FailureInfo
       }
       when: NodeRunInfo
+      module: string
+      moduleInfo: {
+        [key: string]: CDStageModuleInfo
+      }
     }
   }): JSX.Element => {
     return (

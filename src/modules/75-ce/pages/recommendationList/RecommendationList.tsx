@@ -12,7 +12,7 @@ import type { CellProps, Renderer } from 'react-table'
 import qs from 'qs'
 import { Color, FontVariation } from '@harness/design-system'
 import { defaultTo, get } from 'lodash-es'
-import { useStrings } from 'framework/strings'
+import { String, useStrings } from 'framework/strings'
 import {
   RecommendationItemDto,
   useRecommendationsQuery,
@@ -37,6 +37,11 @@ import { NGBreadcrumbs } from '@common/components/NGBreadcrumbs/NGBreadcrumbs'
 import { CCM_PAGE_TYPE, CloudProvider } from '@ce/types'
 import { calculateSavingsPercentage } from '@ce/utils/recommendationUtils'
 import { generateFilters } from '@ce/utils/anomaliesUtils'
+import { getEmissionsValue } from '@ce/utils/formatResourceValue'
+import greenLeafImg from '@ce/common/images/green-leaf.svg'
+import grayLeafImg from '@ce/common/images/gray-leaf.svg'
+import { FeatureFlag } from '@common/featureFlags'
+import { useFeatureFlag } from '@common/hooks/useFeatureFlag'
 import RecommendationSavingsCard from '../../components/RecommendationSavingsCard/RecommendationSavingsCard'
 import RecommendationFilters from '../../components/RecommendationFilters'
 import css from './RecommendationList.module.scss'
@@ -324,6 +329,7 @@ const RecommendationList: React.FC = () => {
   const { trackPage } = useTelemetry()
   const history = useHistory()
   const { accountId } = useParams<{ accountId: string }>()
+  const sustainabilityEnabled = useFeatureFlag(FeatureFlag.CCM_SUSTAINABILITY)
   const {
     perspectiveId,
     perspectiveName,
@@ -473,12 +479,53 @@ const RecommendationList: React.FC = () => {
                   count: summaryData?.recommendationStatsV2?.count
                 })}
               />
+              {sustainabilityEnabled && (
+                <RecommendationSavingsCard
+                  title={getString('ce.recommendation.listPage.potentialReducedEmissionTitle')}
+                  titleImg={greenLeafImg}
+                  amount={
+                    isEmptyView ? (
+                      ''
+                    ) : (
+                      <String
+                        stringID="ce.common.emissionUnitHTML"
+                        vars={{ value: getEmissionsValue(totalSavings) }}
+                        useRichText
+                      />
+                    )
+                  }
+                  cardCssName={css.potentialReducedEmissionCard}
+                  subTitle={getString('ce.recommendation.listPage.potentialReducedEmissionSubtitle', {
+                    count: summaryData?.recommendationStatsV2?.count
+                  })}
+                />
+              )}
               <RecommendationSavingsCard
                 title={getString('ce.recommendation.listPage.monthlyPotentialCostText')}
                 amount={isEmptyView ? '$-' : formatCost(totalMonthlyCost)}
                 amountSubTitle={getString('ce.recommendation.listPage.byEOM')}
                 subTitle={getString('ce.recommendation.listPage.forecatedCostSubText')}
               />
+              {sustainabilityEnabled && (
+                <RecommendationSavingsCard
+                  title={getString('ce.recommendation.listPage.potentialEmissionTitle')}
+                  titleImg={grayLeafImg}
+                  amount={
+                    isEmptyView ? (
+                      ''
+                    ) : (
+                      <String
+                        stringID="ce.common.emissionUnitHTML"
+                        vars={{ value: getEmissionsValue(totalMonthlyCost) }}
+                        useRichText
+                      />
+                    )
+                  }
+                  cardCssName={css.potentialEmissionCard}
+                  amountSubTitle={getString('ce.recommendation.listPage.byEOM')}
+                  subTitle={getString('ce.recommendation.listPage.forecatedCostSubText')}
+                />
+              )}
             </Layout.Horizontal>
             <RecommendationsList
               onAddClusterSuccess={() => {

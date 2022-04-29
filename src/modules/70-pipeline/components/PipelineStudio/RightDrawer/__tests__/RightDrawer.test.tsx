@@ -218,6 +218,7 @@ const pipelineVariablesContextMock = {
     ]
   },
   metadataMap: {},
+  serviceExpressionPropertiesList: [],
   error: null,
   initLoading: false,
   loading: false,

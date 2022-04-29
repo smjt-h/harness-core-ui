@@ -27,6 +27,7 @@ import type { RecommendationOverviewStats } from 'services/ce/services'
 import formatCost from '@ce/utils/formatCost'
 import { getTimePeriodString } from '@ce/utils/momentUtils'
 import { addBufferToValue, calculateSavingsPercentage } from '@ce/utils/recommendationUtils'
+import { useQueryParamsState } from '@common/hooks/useQueryParamsState'
 import { RecommendationType, ChartColors, PercentileValues } from './constants'
 import RecommendationTabs from './RecommendationTabs'
 import RecommendationDiffViewer from '../RecommendationDiffViewer/RecommendationDiffViewer'
@@ -66,8 +67,17 @@ const RecommendationDetails: React.FC<RecommendationDetailsProps> = ({
 }) => {
   const [containerVisible, setContainerVisible] = useState(true)
 
-  const [cpuReqVal, setCPUReqVal] = useState(PercentileValues.P50)
-  const [memReqVal, setMemReqVal] = useState(PercentileValues.P50)
+  const [selectedRecommendation, setSelectedRecommendation] = useQueryParamsState<RecommendationType>(
+    'rType',
+    RecommendationType.CostOptimized
+  )
+
+  const [cpuReqVal, setCPUReqVal] = useState(
+    selectedRecommendation === RecommendationType.CostOptimized ? PercentileValues.P50 : PercentileValues.P95
+  )
+  const [memReqVal, setMemReqVal] = useState(
+    selectedRecommendation === RecommendationType.CostOptimized ? PercentileValues.P50 : PercentileValues.P95
+  )
   const [memLimitVal, setMemLimitVal] = useState(PercentileValues.P95)
 
   const { cpu: cpuCost, memory: memoryCost } = histogramData.containerRecommendation?.lastDayCost || {}
@@ -76,9 +86,6 @@ const RecommendationDetails: React.FC<RecommendationDetailsProps> = ({
 
   const { getString } = useStrings()
 
-  const [selectedRecommendation, setSelectedRecommendation] = useState<RecommendationType>(
-    RecommendationType.CostOptimized
-  )
   const currentCPUResource = getCPUValueInCPUFromExpression(currentResources.requests.cpu || 1)
   const currentMemResource = getMemoryValueInGBFromExpression(currentResources.requests.memory)
 

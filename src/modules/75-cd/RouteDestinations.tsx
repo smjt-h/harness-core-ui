@@ -43,7 +43,7 @@ import type {
 import routes from '@common/RouteDefinitions'
 
 import { String as LocaleString } from 'framework/strings'
-import featureFactory from 'framework/featureStore/FeaturesFactory'
+import featureFactory, { RenderMessageReturn } from 'framework/featureStore/FeaturesFactory'
 import { FeatureIdentifier } from 'framework/featureStore/FeatureIdentifier'
 import CDSideNav from '@cd/components/CDSideNav/CDSideNav'
 import CDHomePage from '@cd/pages/home/CDHomePage'
@@ -242,24 +242,19 @@ featureFactory.registerFeaturesByModule('cd', {
     FeatureIdentifier.SERVICES,
     FeatureIdentifier.INITIAL_DEPLOYMENTS
   ],
-  renderMessage: (props, getString, additionalLicenseProps = {}) => {
+  renderMessage: (props, getString, additionalLicenseProps = {}): RenderMessageReturn => {
     const featuresMap = props.features
     const serviceFeatureDetail = featuresMap.get(FeatureIdentifier.SERVICES)
     const dpmFeatureDetail = featuresMap.get(FeatureIdentifier.DEPLOYMENTS_PER_MONTH)
     const initialDeploymentsFeatureDetail = featuresMap.get(FeatureIdentifier.INITIAL_DEPLOYMENTS)
 
-    const { message, bannerType } = getBannerText(
+    return getBannerText(
       getString,
       additionalLicenseProps,
       serviceFeatureDetail,
       dpmFeatureDetail,
       initialDeploymentsFeatureDetail
     )
-
-    return {
-      message: () => message,
-      bannerType
-    }
   }
 })
 

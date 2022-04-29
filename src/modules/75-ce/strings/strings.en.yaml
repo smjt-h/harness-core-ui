@@ -10,6 +10,7 @@ common:
   containerService: 'ECS'
   database: 'RDS'
   totalCount: 'Total: {{ count }}'
+  emissionUnitHTML: '{{value}} kg CO<sub>2</sub>'
 allRegions: 'All Regions'
 allClusters: 'All Clusters'
 enforcementMessage:
@@ -41,6 +42,8 @@ co:
   selectResourceGroupPlaceholder: '{{$.select}} Resource Groups'
   noOfTasks: 'No. of tasks:'
   noOfInstances: 'No. of instances:'
+  totalEmissions: 'TOTAL EMISSIONS'
+  reducedEmissions: 'EMISSIONS REDUCED'
   landingPageText:
     '<b>AutoStopping Rules</b> dynamically make sure that your <i>non-production workloads</i> are <b>running (and costing you)
     only when you’re using them</b>, and never when they are idle. Additionally, run your workloads on fully
@@ -513,6 +516,9 @@ recommendation:
     recommnedationBreakdown: 'Recommendations Breakdown'
     filterHereText: 'Filter here'
     backToPerspectives: 'Back to perspective {{ name }}'
+    potentialReducedEmissionTitle: 'Emissions that can be reduced'
+    potentialReducedEmissionSubtitle: 'by applying {{ count }} recommendations'
+    potentialEmissionTitle: 'Potential Carbon Emissions'
     filters:
       minSaving: Monthly savings greater than
       minCost: Monthly cost greater than
@@ -767,6 +773,7 @@ overview:
   workload: Workload Resizing
   nodepool: Nodepool Rightsizing
   savings: savings per month
+  recommendationsEmission: 'Potential to reduce '
   cardtitles:
     multipleCloud: Cost by cloud providers
     azure: Top Azure services
@@ -783,6 +790,11 @@ overview:
     autoStopping: Create a new AutoStopping Rule
     connector: Create another Connector
     ngDocs: Learn what CCM has to offer
+  sustainability:
+    fromClusterTitle: 'Carbon emissions from Clusters'
+    idleAndUnallocatedClusters: 'Idle + Unallocated clusters'
+    fromClousUsageTitle: 'Carbon emissions from Cloud Usage'
+    tillDate: 'till date'
 sideNav:
   perspective: 'Perspective'
 nodeRecommendation:

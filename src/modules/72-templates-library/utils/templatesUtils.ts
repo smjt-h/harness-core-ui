@@ -53,7 +53,7 @@ export const getAllowedTemplateTypes = (
       disabled: false
     },
     {
-      label: getString('templatesLibrary.stageTemplate'),
+      label: getString('common.stage'),
       value: TemplateType.Stage,
       disabled: false
     },

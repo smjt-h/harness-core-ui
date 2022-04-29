@@ -21,7 +21,7 @@ import { Scope } from '@common/interfaces/SecretsInterface'
 import * as PipelineCard from '@pipeline/components/PipelineStudio/PipelineVariables/Cards/PipelineCard'
 import * as StageCard from '@pipeline/components/PipelineStudio/PipelineVariables/Cards/StageCard'
 import type { PipelineInfoConfig } from 'services/cd-ng'
-import { useCreateVariables } from 'services/pipeline-ng'
+import { useCreateVariablesV2 } from 'services/pipeline-ng'
 import { useGetYamlWithTemplateRefsResolved } from 'services/template-ng'
 
 import { yamlStringify } from '@common/utils/YamlHelperMethods'
@@ -93,7 +93,7 @@ jest.spyOn(cdng, 'useGetSourceCodeManagers').mockImplementation((): any => {
 })
 
 jest.mock('services/pipeline-ng', () => ({
-  useCreateVariables: jest.fn().mockReturnValue({
+  useCreateVariablesV2: jest.fn().mockReturnValue({
     mutate: jest.fn()
   })
 }))
@@ -118,7 +118,7 @@ describe('<PipelineVariables /> tests', () => {
   })
 
   test('snapshot test', async () => {
-    ;(useCreateVariables as jest.Mock).mockReturnValue({
+    ;(useCreateVariablesV2 as jest.Mock).mockReturnValue({
       mutate: jest.fn(() =>
         Promise.resolve({
           data: {
@@ -155,7 +155,7 @@ describe('<PipelineVariables /> tests', () => {
 
   test('should call PipelineCard with unresolved pipeline ', async () => {
     const PipelineCardMock = jest.spyOn(PipelineCard, 'default')
-    ;(useCreateVariables as jest.Mock).mockReturnValue({
+    ;(useCreateVariablesV2 as jest.Mock).mockReturnValue({
       mutate: jest.fn(() =>
         Promise.resolve({
           data: {
@@ -200,7 +200,7 @@ describe('<PipelineVariables /> tests', () => {
   test('should render StageCard in readonly mode and with resolved stage for stage template', async () => {
     const StageCardMock = jest.spyOn(StageCard, 'default')
 
-    ;(useCreateVariables as jest.Mock).mockReturnValue({
+    ;(useCreateVariablesV2 as jest.Mock).mockReturnValue({
       mutate: jest.fn(() =>
         Promise.resolve({
           data: {
@@ -242,7 +242,7 @@ describe('<PipelineVariables /> tests', () => {
   })
 
   test('should call update pipeline with unresolved stage', async () => {
-    ;(useCreateVariables as jest.Mock).mockReturnValue({
+    ;(useCreateVariablesV2 as jest.Mock).mockReturnValue({
       mutate: jest.fn(() =>
         Promise.resolve({
           data: {
@@ -291,7 +291,7 @@ describe('<PipelineVariables /> tests', () => {
   })
 
   test('renders loader', async () => {
-    ;(useCreateVariables as jest.Mock).mockReturnValue({
+    ;(useCreateVariablesV2 as jest.Mock).mockReturnValue({
       mutate: jest.fn(() =>
         Promise.resolve({
           data: {}
@@ -333,7 +333,7 @@ describe('<PipelineVariables /> tests', () => {
   })
 
   test('renders error', async () => {
-    ;(useCreateVariables as jest.Mock).mockReturnValue({
+    ;(useCreateVariablesV2 as jest.Mock).mockReturnValue({
       mutate: jest.fn().mockRejectedValue({
         message: 'This is an error message'
       })

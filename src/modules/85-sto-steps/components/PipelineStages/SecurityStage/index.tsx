@@ -12,7 +12,7 @@ import { stagesCollection } from '@pipeline/components/PipelineStudio/Stages/Sta
 import type { StageAttributes } from '@pipeline/components/PipelineStudio/PipelineContext/PipelineContext'
 import { SecurityStage } from './SecurityStage'
 
-const titleKey = 'pipeline.security.title'
+const titleKey = 'common.purpose.sto.continuous'
 
 const getStageAttributes = (getString: UseStringsReturn['getString']): StageAttributes => ({
   name: getString(titleKey),

@@ -13,7 +13,7 @@ export const transactionsFilterAPI = `cv/api/verify-step/GZNwefkdR2aBhc7owmJ1-w/
 export const deploymentTimeseriesDataWithFilters = `/cv/api/verify-step/GZNwefkdR2aBhc7owmJ1-w/deployment-timeseries-data?routingId=${accountId}&accountId=${accountId}&anomalousMetricsOnly=true&anomalousNodesOnly=true&hostNames=harness-deployment-canary-7445f86dbf-ml857&pageNumber=0&pageSize=10&healthSources=appd_prod%2Fappdtest&transactionNames=%2Ftodolist%2Fregister`
 export const strategies = `/ng/api/pipelines/configuration/strategies?routingId=${accountId}`
 export const strategiesYamlSnippets = `/ng/api/pipelines/configuration/strategies/yaml-snippets?routingId=${accountId}&serviceDefinitionType=Kubernetes&strategyType=Rolling`
-export const variables = `/pipeline/api/pipelines/variables?routingId=${accountId}&accountIdentifier=${accountId}&orgIdentifier=${org}&projectIdentifier=${project}`
+export const variables = `/pipeline/api/pipelines/v2/variables?routingId=${accountId}&accountIdentifier=${accountId}&orgIdentifier=${org}&projectIdentifier=${project}`
 export const pipelineSteps = `/pipeline/api/pipelines/v2/steps?routingId=${accountId}&accountId=${accountId}`
 export const monitoresServices = `/cv/api/monitored-service/service-environment?routingId=${accountId}&accountId=${accountId}&orgIdentifier=${org}&projectIdentifier=${project}&environmentIdentifier=testEnv&serviceIdentifier=*`
 export const servicesCall = `/ng/api/servicesV2?routingId=${accountId}&accountIdentifier=${accountId}&orgIdentifier=${org}&projectIdentifier=${project}`

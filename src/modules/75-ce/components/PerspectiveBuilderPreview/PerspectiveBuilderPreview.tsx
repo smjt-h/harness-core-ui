@@ -28,7 +28,7 @@ import {
   getTimeFilters,
   getViewFilterForId,
   perspectiveDefaultTimeRangeMapper,
-  getIdFiltersFromRules
+  getRuleFilters
 } from '@ce/utils/perspectiveUtils'
 import { CCM_CHART_TYPES } from '@ce/constants'
 import { DAYS_FOR_TICK_INTERVAL } from '@ce/components/CloudCostInsightChart/Chart'
@@ -74,7 +74,7 @@ const PerspectiveBuilderPreview: React.FC<PerspectiveBuilderPreviewProps> = ({
       filters: [
         getViewFilterForId(perspectiveId, true),
         ...getTimeFilters(getGMTStartDateTime(timeRangeObj.from), getGMTEndDateTime(timeRangeObj.to)),
-        ...getIdFiltersFromRules(normalizeViewRules(formValues.viewRules))
+        ...getRuleFilters(normalizeViewRules(formValues.viewRules))
       ],
       limit: 12,
       groupBy: [
@@ -92,7 +92,7 @@ const PerspectiveBuilderPreview: React.FC<PerspectiveBuilderPreviewProps> = ({
       filters: [
         getViewFilterForId(perspectiveId, true),
         ...getTimeFilters(dateRange[0].valueOf(), dateRange[1].valueOf()),
-        ...getIdFiltersFromRules(normalizeViewRules(formValues.viewRules))
+        ...getRuleFilters(normalizeViewRules(formValues.viewRules))
       ],
       limit: 100,
       offset: 0,

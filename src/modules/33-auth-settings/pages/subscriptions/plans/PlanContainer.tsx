@@ -236,7 +236,7 @@ const PlanContainer: React.FC<PlanProps> = ({ plans, timeType, moduleName }) => 
               })
 
               history.push(
-                routes.toCIGetStarted({
+                routes.toGetStartedWithCI({
                   accountId,
                   module: 'ci',
                   orgIdentifier: orgId,

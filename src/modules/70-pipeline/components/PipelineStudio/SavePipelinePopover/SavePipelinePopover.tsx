@@ -51,6 +51,7 @@ import type {
 import { useTelemetry } from '@common/hooks/useTelemetry'
 import { usePipelineSchema } from '@pipeline/components/PipelineStudio/PipelineSchema/PipelineSchemaContext'
 import { useSaveAsTemplate } from '@pipeline/components/PipelineStudio/SaveTemplateButton/useSaveAsTemplate'
+import { validateServerlessArtifactsManifests } from '@pipeline/utils/stageHelpers'
 import { AppStoreContext } from 'framework/AppStore/AppStoreContext'
 import type { PipelineInfoConfig } from 'services/cd-ng'
 import { FeatureIdentifier } from 'framework/featureStore/FeatureIdentifier'
@@ -104,7 +105,7 @@ export function SavePipelinePopover({
   const { showSuccess, showError, clear } = useToaster()
   const { getRBACErrorMessage } = useRBACError()
   const { getString } = useStrings()
-  const { OPA_PIPELINE_GOVERNANCE } = useFeatureFlags()
+  const { OPA_PIPELINE_GOVERNANCE, SERVERLESS_SUPPORT } = useFeatureFlags()
   const history = useHistory()
   const { projectIdentifier, orgIdentifier, accountId, pipelineIdentifier, module } =
     useParams<PipelineType<PipelinePathProps>>()
@@ -152,13 +153,13 @@ export function SavePipelinePopover({
   }
 
   const gotoViewWithDetails = React.useCallback(
-    ({ stageId, stepId }: { stageId?: string; stepId?: string } = {}): void => {
+    ({ stageId, stepId, sectionId }: { stageId?: string; stepId?: string; sectionId?: string } = {}): void => {
       hideErrorModal()
       // If Yaml mode, or if pipeline error - stay on yaml mode
       if (isYaml || (!stageId && !stepId)) {
         return
       }
-      setSelection({ stageId, stepId })
+      setSelection(sectionId ? { stageId, stepId, sectionId } : { stageId, stepId })
       updatePipelineView({
         ...pipelineView,
         isSplitViewOpen: true,
@@ -314,6 +315,18 @@ export function SavePipelinePopover({
       clear()
       showError(ciCodeBaseConfigurationError)
       return
+    }
+
+    if (SERVERLESS_SUPPORT) {
+      const serverlessArtifactValidationError = validateServerlessArtifactsManifests({
+        pipeline: latestPipeline,
+        getString
+      })
+      if (serverlessArtifactValidationError) {
+        clear()
+        showError(serverlessArtifactValidationError)
+        return
+      }
     }
 
     // if Git sync enabled then display modal

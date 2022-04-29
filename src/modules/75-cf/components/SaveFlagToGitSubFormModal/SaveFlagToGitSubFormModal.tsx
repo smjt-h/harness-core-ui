@@ -33,7 +33,7 @@ const SaveFlagToGitSubFormModal = ({ title, onSubmit, onClose }: SaveFlagToGitSu
           />
           <Button
             text={getString('cancel')}
-            variation={ButtonVariation.TERTIARY}
+            variation={ButtonVariation.SECONDARY}
             data-testid="save-flag-to-git-modal-cancel-button"
             onClick={event => {
               event.preventDefault()

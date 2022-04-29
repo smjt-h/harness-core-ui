@@ -154,3 +154,13 @@ export const CONNECTOR_CREDENTIALS_STEP_IDENTIFIER = 'CONNECTOR_CREDENTIALS_STEP
 export const TESTCONNECTION_STEP_INDEX = 3
 export const GIT_TESTCONNECTION_STEP_INDEX = 4
 export const SECRET_MANAGER_TESTCONNECTION_STEP_INDEX = 2
+
+export const connectorHelperUrls = {
+  ceAwsLaunchConsole: 'https://console.aws.amazon.com/billing/home?#/reports',
+  ceAwscostUsageReportSteps:
+    'https://ngdocs.harness.io/article/80vbt5jv0q-set-up-cost-visibility-for-aws#step_2_cost_and_usage_report',
+  ceAwsNoAccount:
+    'https://newdocs.helpdocs.io/article/80vbt5jv0q-set-up-cost-visibility-for-aws#review_aws_access_permissions',
+  ceAwsRoleARNsteps:
+    'https://ngdocs.harness.io/article/80vbt5jv0q-set-up-cost-visibility-for-aws#step_4_create_cross_account_role'
+}

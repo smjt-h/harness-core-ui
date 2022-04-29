@@ -47,6 +47,7 @@ export interface PipelineInputSetFormProps {
   originalPipeline: PipelineInfoConfig
   template: PipelineInfoConfig
   path?: string
+  executionIdentifier?: string
   readonly?: boolean
   maybeContainerClass?: string
   viewType: StepViewType
@@ -71,7 +72,8 @@ export function StageFormInternal({
   readonly,
   viewType,
   stageClassName = '',
-  allowableTypes
+  allowableTypes,
+  executionIdentifier
 }: {
   allValues?: StageElementWrapperConfig
   template?: StageElementWrapperConfig
@@ -80,6 +82,7 @@ export function StageFormInternal({
   viewType: StepViewType
   stageClassName?: string
   allowableTypes: MultiTypeInputType[]
+  executionIdentifier?: string
 }): JSX.Element {
   const { getString } = useStrings()
   return (
@@ -103,6 +106,7 @@ export function StageFormInternal({
               customStepProps={{
                 template: { variables: template?.stage?.variables as AllNGVariables[] },
                 path,
+                executionIdentifier,
                 allValues: { variables: (allValues?.stage?.variables || []) as AllNGVariables[] }
               }}
             />
@@ -117,6 +121,7 @@ export function StageFormInternal({
           deploymentStage={allValues?.stage?.spec as DeploymentStageConfig}
           readonly={readonly}
           viewType={viewType}
+          executionIdentifier={executionIdentifier}
           allowableTypes={allowableTypes}
         />
       )}
@@ -142,7 +147,8 @@ export function StageForm({
   viewType,
   hideTitle = false,
   stageClassName = '',
-  allowableTypes
+  allowableTypes,
+  executionIdentifier
 }: {
   allValues?: StageElementWrapperConfig
   template?: StageElementWrapperConfig
@@ -151,6 +157,7 @@ export function StageForm({
   viewType: StepViewType
   hideTitle?: boolean
   stageClassName?: string
+  executionIdentifier?: string
   allowableTypes: MultiTypeInputType[]
 }): JSX.Element {
   const isTemplateStage = !!template?.stage?.template
@@ -181,6 +188,7 @@ export function StageForm({
         viewType={viewType}
         allowableTypes={allowableTypes}
         stageClassName={stageClassName}
+        executionIdentifier={executionIdentifier}
       />
     </div>
   )
@@ -194,6 +202,7 @@ export function PipelineInputSetFormInternal(props: PipelineInputSetFormProps): 
     readonly,
     viewType,
     maybeContainerClass = '',
+    executionIdentifier,
     allowableTypes = [MultiTypeInputType.FIXED, MultiTypeInputType.EXPRESSION]
   } = props
   const { getString } = useStrings()
@@ -274,6 +283,7 @@ export function PipelineInputSetFormInternal(props: PipelineInputSetFormProps): 
             customStepProps={{
               template: { variables: (finalTemplate?.variables || []) as AllNGVariables[] },
               path: finalPath,
+              executionIdentifier,
               allValues: { variables: (originalPipeline?.variables || []) as AllNGVariables[] }
             }}
           />
@@ -321,6 +331,7 @@ export function PipelineInputSetFormInternal(props: PipelineInputSetFormProps): 
                   readonly={isInputStageDisabled(stageObj?.stage?.identifier)}
                   viewType={viewType}
                   allowableTypes={allowableTypes}
+                  executionIdentifier={executionIdentifier}
                 />
               </Layout.Vertical>
             )

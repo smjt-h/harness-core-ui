@@ -28,7 +28,7 @@ const pathParams = { accountId: 'accountId', orgIdentifier: 'orgId', projectIden
 describe('Test SelectRepository component', () => {
   test('Initial render', async () => {
     const { container, getByText } = render(
-      <TestWrapper path={routes.toCIGetStarted({ ...pathParams, module: 'ci' })} pathParams={pathParams}>
+      <TestWrapper path={routes.toGetStartedWithCI({ ...pathParams, module: 'ci' })} pathParams={pathParams}>
         <InfraProvisioningWizard lastConfiguredWizardStepId={InfraProvisiongWizardStepId.SelectRepository} />
       </TestWrapper>
     )
@@ -63,7 +63,7 @@ describe('Test SelectRepository component', () => {
   const routesToPipelineStudio = jest.spyOn(routes, 'toPipelineStudio')
   test('Should create a pipeline if a repository is selected and user clicks on next', async () => {
     const { getByText } = render(
-      <TestWrapper path={routes.toCIGetStarted({ ...pathParams, module: 'ci' })} pathParams={pathParams}>
+      <TestWrapper path={routes.toGetStartedWithCI({ ...pathParams, module: 'ci' })} pathParams={pathParams}>
         <InfraProvisioningWizard lastConfiguredWizardStepId={InfraProvisiongWizardStepId.SelectRepository} />
       </TestWrapper>
     )

@@ -88,7 +88,7 @@ const StartTrialComponent: React.FC<StartTrialProps> = startTrialProps => {
             handleUpdateLicenseStore({ ...licenseInformation }, updateLicenseStore, module, data)
 
             history.push(
-              routes.toCIGetStarted({
+              routes.toGetStartedWithCI({
                 accountId,
                 module: 'ci',
                 orgIdentifier: orgId,

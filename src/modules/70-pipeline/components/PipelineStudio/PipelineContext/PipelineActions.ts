@@ -52,7 +52,8 @@ export enum DrawerTypes {
   AdvancedOptions = 'AdvancedOptions',
   PolicySets = 'PolicySets',
   ProvisionerStepConfig = 'ProvisionerStepConfig',
-  AddProvisionerStep = 'AddProvisionerStep'
+  AddProvisionerStep = 'AddProvisionerStep',
+  TemplateInputs = 'TemplateInputs'
 }
 
 export const TemplateDrawerSizes: Record<TemplateDrawerTypes, React.CSSProperties['width']> = {
@@ -72,7 +73,8 @@ export const DrawerSizes: Record<DrawerTypes, React.CSSProperties['width']> = {
   [DrawerTypes.PipelineNotifications]: 'calc(100% - 270px - 60px)', // has 60px more offset from right
   [DrawerTypes.FlowControl]: 600,
   [DrawerTypes.AdvancedOptions]: 840,
-  [DrawerTypes.PolicySets]: 1000
+  [DrawerTypes.PolicySets]: 1000,
+  [DrawerTypes.TemplateInputs]: 876
 }
 
 export enum SplitViewTypes {

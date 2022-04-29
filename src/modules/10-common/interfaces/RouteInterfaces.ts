@@ -16,6 +16,10 @@ export interface OrgPathProps extends AccountPathProps {
   orgIdentifier: string
 }
 
+export interface DashboardPathProps extends AccountPathProps {
+  folderId: string
+}
+
 export interface GitQueryParams {
   branch?: EntityGitDetails['branch']
   repoIdentifier?: EntityGitDetails['repoIdentifier']

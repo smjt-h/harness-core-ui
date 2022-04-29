@@ -24,3 +24,16 @@
     text-align: center;
   }
 }
+
+.potentialReducedEmissionCard {
+  background: rgba(228, 247, 225, 0.5);
+  > div > div > span:last-child {
+    color: var(--grey-800) !important;
+  }
+}
+
+.potentialEmissionCard {
+  background: rgba(228, 247, 225, 0.3);
+  -webkit-filter: grayscale(50%);
+  filter: grayscale(50%);
+}

@@ -10,6 +10,7 @@ export interface LogAnalysisRadarChartProps {
   onRadarPointClick: (clusterId: string) => void
   clusterChartError?: GetDataError<unknown> | null
   refetchClusterAnalysis?: () => void
+  logsLoading?: boolean
 }
 
 export interface MultiRangeSliderProps {

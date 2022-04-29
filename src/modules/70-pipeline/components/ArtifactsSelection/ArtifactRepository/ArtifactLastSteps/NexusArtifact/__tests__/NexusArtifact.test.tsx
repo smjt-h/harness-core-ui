@@ -14,6 +14,7 @@ import {
   RepositoryPortOrServer,
   TagTypes
 } from '@pipeline/components/ArtifactsSelection/ArtifactInterface'
+import { ServiceDeploymentType } from '@pipeline/utils/stageHelpers'
 import { NexusArtifact } from '../NexusArtifact'
 
 const props = {
@@ -23,7 +24,8 @@ const props = {
   context: 2,
   handleSubmit: jest.fn(),
   artifactIdentifiers: [],
-  selectedArtifact: 'Nexus3Registry' as ArtifactType
+  selectedArtifact: 'Nexus3Registry' as ArtifactType,
+  selectedDeploymentType: ServiceDeploymentType.Kubernetes
 }
 
 jest.mock('services/cd-ng', () => ({

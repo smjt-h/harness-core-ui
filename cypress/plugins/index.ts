@@ -38,7 +38,7 @@ module.exports = (on: Cypress.PluginEvents, config: Cypress.PluginConfigOptions)
       // Checking for any success attempt and storing screenshot name
       results.tests.forEach(test => {
         if (_.some(test.attempts, { state: 'failed' }) && test.state === 'passed') {
-          const screenshotName = test.title.join(' -- ').replace('/', '') // cypress fileName creation
+          const screenshotName = test.title.join(' -- ').replace(/\/|\.$/gi, '') // cypress fileName creation
           deleteScrenshots.push(screenshotName)
         }
       })
@@ -46,7 +46,7 @@ module.exports = (on: Cypress.PluginEvents, config: Cypress.PluginConfigOptions)
     deleteScrenshots.forEach(file => {
       ;(results as any)?.screenshots.forEach(screenshot => {
         // Matching screenshot path with substring formed by spec+test name
-        if (screenshot.path.includes(file)) {
+        if (file && screenshot?.path && screenshot.path.includes(file)) {
           console.log('file deleted successfully: ', screenshot.path)
           fs.unlinkSync(screenshot.path)
         }

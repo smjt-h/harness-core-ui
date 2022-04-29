@@ -13,7 +13,7 @@ import { fillAtForm, InputTypes } from '@common/utils/JestFormHelper'
 import { TestWrapper } from '@common/utils/testUtils'
 import { SelectGitProvider } from '../SelectGitProvider'
 import { InfraProvisioningWizard } from '../InfraProvisioningWizard'
-import { AllGitProviders, InfraProvisiongWizardStepId } from '../Constants'
+import { AllGitProviders, Hosting, InfraProvisiongWizardStepId } from '../Constants'
 
 jest.useFakeTimers()
 
@@ -23,7 +23,7 @@ describe('Test SelectGitProvider component', () => {
   test('Initial render', async () => {
     const { container } = render(
       <StringsContext.Provider value={{ data: {} as any, getString: (key: string) => key as string }}>
-        <SelectGitProvider enableNextBtn={jest.fn()} disableNextBtn={jest.fn()} />
+        <SelectGitProvider enableNextBtn={jest.fn()} disableNextBtn={jest.fn()} selectedHosting={Hosting.SaaS} />
       </StringsContext.Provider>
     )
     const gitProviderCards = Array.from(container.querySelectorAll('div[class*="bp3-card"]')) as HTMLElement[]
@@ -33,7 +33,7 @@ describe('Test SelectGitProvider component', () => {
   test('User clicks on Github Provider card', async () => {
     const { container, getByText } = render(
       <StringsContext.Provider value={{ data: {} as any, getString: (key: string) => key as string }}>
-        <SelectGitProvider enableNextBtn={jest.fn()} disableNextBtn={jest.fn()} />
+        <SelectGitProvider enableNextBtn={jest.fn()} disableNextBtn={jest.fn()} selectedHosting={Hosting.SaaS} />
       </StringsContext.Provider>
     )
     const gitProviderCards = Array.from(container.querySelectorAll('div[class*="bp3-card"]')) as HTMLElement[]
@@ -45,18 +45,18 @@ describe('Test SelectGitProvider component', () => {
     })
     expect(gitProviderCards[0].classList.contains('Card--selected')).toBe(true)
 
-    // All other git provider cards except Github should be disabled
-    gitProviderCards.map((card, index) => index !== 0 && expect(card.className).toContain('Card--disabled'))
+    // All other git provider cards should be disabled
+    gitProviderCards.map(card => expect(card.className).not.toContain('Card--disabled'))
 
     expect(getByText('ci.getStartedWithCI.oAuthLabel')).toBeInTheDocument()
     expect(getByText('ci.getStartedWithCI.accessTokenLabel')).toBeInTheDocument()
   })
 
-  test('User selects an authentication method', async () => {
+  test('User selects a github provider and access token authentication method', async () => {
     window.open = jest.fn()
     const { container, getByText } = render(
       <StringsContext.Provider value={{ data: {} as any, getString: (key: string) => key as string }}>
-        <SelectGitProvider enableNextBtn={jest.fn()} disableNextBtn={jest.fn()} />
+        <SelectGitProvider enableNextBtn={jest.fn()} disableNextBtn={jest.fn()} selectedHosting={Hosting.SaaS} />
       </StringsContext.Provider>
     )
     await act(async () => {
@@ -118,19 +118,12 @@ describe('Test SelectGitProvider component', () => {
       fireEvent.click(testConnectionBtn)
     })
 
-    expect(getByText('common.test.inProgress')).toBeTruthy()
-
-    act(() => {
-      jest.runOnlyPendingTimers()
-    })
-
-    // Test Connection should show success eventually
-    expect(getByText('common.test.connectionSuccessful')).toBeTruthy()
+    expect(getByText('common.test.inProgress')).toBeInTheDocument()
   })
 
   test('Render SelectGitProvider inside InfraProvisioningWizard', async () => {
     const { container, getByText } = render(
-      <TestWrapper path={routes.toCIGetStarted({ ...pathParams, module: 'ci' })} pathParams={pathParams}>
+      <TestWrapper path={routes.toGetStartedWithCI({ ...pathParams, module: 'ci' })} pathParams={pathParams}>
         <InfraProvisioningWizard lastConfiguredWizardStepId={InfraProvisiongWizardStepId.SelectGitProvider} />
       </TestWrapper>
     )

@@ -106,7 +106,7 @@ const codebaseIcons: Record<CodebaseStatuses, IconName> = {
 
 declare global {
   interface WindowEventMap {
-    OPEN_PIPELINE_TEMPLATE_VARIABLES: CustomEvent
+    OPEN_PIPELINE_TEMPLATE_RIGHT_DRAWER: CustomEvent
   }
 }
 
@@ -118,7 +118,8 @@ export function RightBar(): JSX.Element {
       isLoading,
       pipelineView: {
         drawerData: { type }
-      }
+      },
+      isUpdated
     },
     contextType,
     isReadonly,
@@ -155,6 +156,7 @@ export function RightBar(): JSX.Element {
   }
 
   const isYaml = view === SelectedView.YAML
+  const isPipelineTemplateContextType = contextType === PipelineContextType.PipelineTemplate
 
   const connectorId = getIdentifierFromValue((codebase?.connectorRef as string) || '')
   const initialScope = getScopeFromValue((codebase?.connectorRef as string) || '')
@@ -302,13 +304,15 @@ export function RightBar(): JSX.Element {
   const { getString } = useStrings()
 
   const openVariablesPanel = () => {
-    if (contextType === PipelineContextType.PipelineTemplate) {
+    if (isPipelineTemplateContextType) {
       updatePipelineView({
         ...pipelineView,
         isSplitViewOpen: false,
         splitViewData: {}
       })
-      window.dispatchEvent(new CustomEvent('OPEN_PIPELINE_TEMPLATE_VARIABLES'))
+      window.dispatchEvent(
+        new CustomEvent('OPEN_PIPELINE_TEMPLATE_RIGHT_DRAWER', { detail: DrawerTypes.PipelineVariables })
+      )
     } else {
       updatePipelineView({
         ...pipelineView,
@@ -320,12 +324,35 @@ export function RightBar(): JSX.Element {
     }
   }
 
+  const openTemplatesInputDrawer = () => {
+    updatePipelineView({
+      ...pipelineView,
+      isSplitViewOpen: false,
+      splitViewData: {}
+    })
+    window.dispatchEvent(new CustomEvent('OPEN_PIPELINE_TEMPLATE_RIGHT_DRAWER', { detail: DrawerTypes.TemplateInputs }))
+  }
+
   if (isLoading) {
     return <div className={css.rightBar}></div>
   }
 
   return (
     <div className={css.rightBar}>
+      {isPipelineTemplateContextType && (
+        <Button
+          className={cx(css.iconButton, { [css.selected]: type === DrawerTypes.TemplateInputs })}
+          onClick={openTemplatesInputDrawer}
+          variation={ButtonVariation.TERTIARY}
+          font={{ weight: 'semi-bold', size: 'xsmall' }}
+          icon="template-inputs"
+          withoutCurrentColor={true}
+          iconProps={{ size: 28 }}
+          text={getString('pipeline.templateInputs')}
+          data-testid="template-inputs"
+          disabled={isUpdated}
+        />
+      )}
       <Button
         className={cx(css.iconButton, { [css.selected]: type === DrawerTypes.PipelineVariables })}
         onClick={openVariablesPanel}
@@ -337,7 +364,6 @@ export function RightBar(): JSX.Element {
         text={getString('variablesText')}
         data-testid="input-variable"
       />
-
       {!pipeline.template && (
         <Button
           className={cx(css.iconButton, {

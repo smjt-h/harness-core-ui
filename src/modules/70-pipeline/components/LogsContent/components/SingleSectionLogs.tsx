@@ -22,7 +22,6 @@ export function SingleSectionLogs(
   ref: React.ForwardedRef<VirtuosoHandle | null>
 ): React.ReactElement {
   const { state } = props
-
   const unitKey = state.logKeys[0]
   const unit = state.dataMap[unitKey]
   const length = unit.data.length

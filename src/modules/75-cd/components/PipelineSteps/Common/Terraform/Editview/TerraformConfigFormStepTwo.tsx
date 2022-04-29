@@ -177,7 +177,7 @@ export const TerraformConfigStepTwo: React.FC<StepProps<any> & TerraformConfigSt
 
                 <div className={cx(stepCss.formGroup, stepCss.md)}>
                   <FormInput.MultiTextInput
-                    label={getString('cd.folderPath')}
+                    label={getString('common.git.folderPath')}
                     placeholder={getString('pipeline.manifestType.pathPlaceholder')}
                     name={formInputNames(isTerraformPlan).folderPath}
                     multiTextInputProps={{ expressions, allowableTypes }}

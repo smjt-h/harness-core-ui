@@ -42,6 +42,7 @@ interface FlagActivationDetailsProps {
   gitSync: UseGitSync
   gitSyncActionsComponent?: ReactElement
   refetchFlag: () => void
+  setGovernanceMetadata: (governanceMetadata: any) => void
 }
 
 const VariationItem: React.FC<{ variation: Variation; index: number }> = ({ variation, index }) => {
@@ -52,11 +53,12 @@ const VariationItem: React.FC<{ variation: Variation; index: number }> = ({ vari
   )
 }
 
-const VariationsList: React.FC<{ featureFlag: Feature; onEditSuccess: () => void; gitSync: UseGitSync }> = ({
-  featureFlag,
-  onEditSuccess,
-  gitSync
-}) => {
+const VariationsList: React.FC<{
+  featureFlag: Feature
+  onEditSuccess: () => void
+  gitSync: UseGitSync
+  setGovernanceMetadata: (governanceMetadata: any) => void
+}> = ({ featureFlag, onEditSuccess, gitSync, setGovernanceMetadata }) => {
   const { orgIdentifier, accountId: accountIdentifier, projectIdentifier } = useParams<Record<string, string>>()
   const isFlagTypeBoolean = featureFlag.kind === FlagTypeVariations.booleanFlag
   const { variations } = featureFlag
@@ -85,6 +87,7 @@ const VariationsList: React.FC<{ featureFlag: Feature; onEditSuccess: () => void
           intent="primary"
           icon="edit"
           disabled={featureFlag.archived}
+          setGovernanceMetadata={setGovernanceMetadata}
         />
       </Layout.Horizontal>
 
@@ -118,7 +121,7 @@ const VariationsList: React.FC<{ featureFlag: Feature; onEditSuccess: () => void
 
 const FlagActivationDetails: React.FC<FlagActivationDetailsProps> = props => {
   const urlQuery: Record<string, string> = useQueryParams()
-  const { featureFlag, refetchFlag, gitSyncActionsComponent, gitSync } = props
+  const { featureFlag, refetchFlag, gitSyncActionsComponent, gitSync, setGovernanceMetadata } = props
   const { getString } = useStrings()
   const { orgIdentifier, accountId: accountIdentifier, projectIdentifier } = useParams<Record<string, string>>()
   const featureFlagListURL =
@@ -185,6 +188,7 @@ const FlagActivationDetails: React.FC<FlagActivationDetailsProps> = props => {
           submitPatch={submitPatch}
           deleteFeatureFlag={deleteFeatureFlag}
           refetchFlag={refetchFlag}
+          setGovernanceMetadata={setGovernanceMetadata}
         />
       </Layout.Horizontal>
 
@@ -220,9 +224,15 @@ const FlagActivationDetails: React.FC<FlagActivationDetailsProps> = props => {
           onEditSuccess={() => {
             refetchFlag()
           }}
+          setGovernanceMetadata={setGovernanceMetadata}
         />
 
-        <FlagPrerequisites featureFlag={featureFlag} refetchFlag={refetchFlag} gitSync={gitSync} />
+        <FlagPrerequisites
+          featureFlag={featureFlag}
+          refetchFlag={refetchFlag}
+          gitSync={gitSync}
+          setGovernanceMetadata={setGovernanceMetadata}
+        />
       </Container>
     </>
   )

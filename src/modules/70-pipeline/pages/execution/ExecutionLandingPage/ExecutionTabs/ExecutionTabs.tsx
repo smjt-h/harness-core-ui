@@ -210,11 +210,7 @@ export default function ExecutionTabs(props: React.PropsWithChildren<unknown>): 
     })
   }
 
-  if (
-    (isCD && stoCDPipelineSecurityEnabled) ||
-    (isCI && stoCIPipelineSecurityEnabled) ||
-    localStorage.STO_PIPELINE_SECURITY_ENABLED
-  ) {
+  if ((isCD && stoCDPipelineSecurityEnabled) || (isCI && stoCIPipelineSecurityEnabled)) {
     tabList.push({
       id: TAB_ID_MAP.STO_SECURITY,
       title: (
@@ -224,7 +220,7 @@ export default function ExecutionTabs(props: React.PropsWithChildren<unknown>): 
           activeClassName={css.activeLink}
         >
           <Icon name="sto-grey" size={16} />
-          <span>{getString('pipeline.security.title')}</span>
+          <span>{getString('common.purpose.sto.continuous')}</span>
         </NavLink>
       )
     })

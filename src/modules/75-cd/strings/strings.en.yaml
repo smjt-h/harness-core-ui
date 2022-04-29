@@ -13,9 +13,11 @@ steps:
     clusterDetails: Cluster Details
     selectOrEnterClusterPlaceholder: Select or add cluster
     releaseNamePlaceholder: Enter Release Name
+  serverless:
+    regionPlaceholder: Specify a region
+    stagePlaceholder: Specify a stage
   kubernetesGcpStep:
     stepName: Specify your GCP Connector
-folderPath: Folder Path
 filePathPlaceholder: 'Enter path within manifest folder'
 resourceCannotBeEmpty: 'Resource cannot be empty'
 manifestPathsCannotBeEmpty: 'Manifest Paths cannot be empty'
@@ -77,7 +79,6 @@ pipelineSteps:
     environmentIsRequired: Environment is required
   serviceTab:
     stageOverrides: Stage Overrides
-    propagateStage: Stage is required
     overrideChanges: Override artifacts, manifests, service variables for this stage
     deploymentTypeRequired: Deployment type selection is required
     propagateFrom: Propagate from
@@ -91,6 +92,7 @@ pipelineSteps:
   infraTab:
     deploymentType: Infrastructure type selection is required
     clusterError: No cluster found with given Connector
+    stageIsRequired: Stage is required
   executionTab:
     stepsCount: At least one step is required
 cdLaunchText: Launch CD First Generation
@@ -206,3 +208,4 @@ artifactPaths: Artifact Paths
 serviceList:
   noIdentifier: Selected service does not have any identifier associated with it.
 artifactRepoTooltip: Enter the name of the repository where the artifact source is located.
+serverlessDeployCommandOptions: Serverless Deploy Command Options

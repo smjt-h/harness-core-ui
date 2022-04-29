@@ -434,8 +434,8 @@ ceK8:
   overview:
     createNewConnectorCta: 'Create a new connector'
   chooseRequirements:
-    heading: '{{ $.connectors.ceAzure.steps.requirements }}'
-    subheading: '{{ $.connectors.ceAzure.chooseRequirements.featureDesc }}'
+    heading: '{{ $.connectors.ceAws.steps.req }}'
+    subheading: '{{ $.connectors.ceAws.crossAccountRoleStep1.description }}'
     description: '(Deep Kubernetes cost Visibility is selected by default. Select the other option to enable Intelligent Cloud AutoStopping for Kubernetes)'
     fixFeaturesDescription: 'Both the options below are required for Kubernetes AutoStopping and are selected by default. Click Continue to proceed.'
     visibility:
@@ -483,12 +483,12 @@ ceAws:
   steps:
     overview: '{{ $.overview }}'
     cur: 'Cost and Usage Report'
-    req: 'Choose requirements'
+    req: 'Choose Requirements'
     roleARN: '{{ $.connectors.roleARN }}'
     test: '{{ $.common.labelTestConnection }}'
   overview:
     heading: '{{ $.overview }}'
-    awsAccountId: 'Specify the AWS account Id'
+    awsAccountId: 'Specify the AWS account ID'
     alreadyExist: ' {{ $.connectors.connectorAlreadyExist }} '
     alreadyExistInfo: 'The cloud account {{awsAccountID}} already has a Connector “{{existingConnectorName}}” linked to it. The Connector has permission for {{featureText}}'
     trySuggestion: '{{ $.common.errorHandler.tryTheseSuggestions }}'
@@ -504,15 +504,24 @@ ceAws:
     followInstruction: 'Please follow the instructions to provide access to the Cost and Usage Report'
     launchTemplate: 'Launch AWS console'
     login: 'and login to your account'
-    createNew: '+ Create new Cost and Usage report'
+    createNew: 'Create new Cost and Usage report'
     reportName: 'Cost and Usage Report Name'
-    bucketName: 'Cost and Usage S3 bucket Name'
+    bucketName: 'Cost and Usage S3 Bucket Name'
+    instructions:
+      i1: Login to your AWS account if not logged in already.
+      i2: Follow these
+      i3: ' instructions to create the Cost and Usage Report '
+      i4: Enter Cost and Usage Report name and S3 bucket name below.
     validation:
       reportRequired: '{{ $.common.reportNameRequired }}'
       bucketRequired: 'Bucket name is required'
+    noAccountLink: 'Don’t have access to add an AWS account?'
   curExising:
-    subHeading: 'The following Cost and Usage Reports exist in your Harness account. If the AWS Account Id you entered is covered by any of the below, then click “Continue” to proceed. If not, click on "Create new Cost and Usage Report.'
-    accountID: 'Account Id '
+    subHeading: 'The following {{ reportCount }} Cost and Usage Reports are connected with your Harness Account.'
+    accountID: 'Account ID '
+    nextStepHint1: 'If the AWS Account ID you entered is covered by part of any of the above click “Continue >” to proceed. '
+    nextStepHint2: 'If not, create a new one: '
+    searchCUR: Enter Cost and Usage Report Name
   curExtention:
     heading: 'How to Create Cost and Usage Report?'
     subtext: 'Once logged into the AWS console'
@@ -555,13 +564,12 @@ ceAws:
       step3: 'Creating Cost and Usage Reports'
       step4: 'Billing and Cost Management Policy Examples'
   crossAccountRoleStep1:
-    heading: 'Create Cross Account Role - '
-    choosePermissions: '{{ $.connectors.ceAzure.chooseRequirements.heading }}'
+    heading: '{{ $.connectors.ceAws.steps.req }}'
     subHeading:
       'Harness uses the secure cross-account role to access your AWS account. The role includes a restricted policy to
       access the cost and usage reports and resources for the sole purpose of cost analysis and cost optimization'
-    description: 'Select the Cloud Cost Management features you would like to use on the AWS account.'
-    info: (AWS cost Visibility is available by default. Select the others as per your requirements)
+    description: 'Select the Cloud Cost Management features that you would like to enable.'
+    info: 'Cost visibility of the resources for which you added the CUR in the previous step is enabled by default. Select the others as per your requirements.'
     cost: 'Cost'
     visibility: '{{ $.common.ce.visibility }}'
     optimization: '{{ $.common.ce.optimization }}'
@@ -580,14 +588,20 @@ ceAws:
       prefix: AWS OPTIMIZATION BY
       footer: to IAM role
   crossAccountRoleStep2:
-    heading: ' {{$.connectors.ceAws.crossAccountRoleStep1.heading}} '
-    createRole: 'Create Role'
+    heading: '{{ $.connectors.roleARN }}'
     subHeading: '{{ $.connectors.ceAws.crossAccountRoleStep1.subHeading }}'
-    launchTemplate: 'Launch Template In AWS console'
+    instructions:
+      i1: 'Launch the CloudFormation Template on the AWS console: '
+      i2: '(You can preview the template '
+      templateRedirection: here
+      i3: '{{ $.connectors.ceAws.cur.instructions.i1 }}'
+      i4: ' instructions to create the Cross Account Role '
+      i5: Enter Cross Account Role ARN and External ID below.
+    launchTemplate: 'Launch Template on AWS console'
     followInstructions: 'and follow the instuctions given on the right'
-    roleArn: '{{ $.connectors.awsKms.roleArnLabel }}'
-    extId: 'External Id'
-    dontHaveAccess: 'Don’t have access to add an AWS account?'
+    roleArn: Cross Account Role ARN
+    extId: 'External ID'
+    dontHaveAccess: '{{ $.connectors.ceAws.cur.noAccountLink }}'
     validation:
       roleArnPattern: 'Role ARN does not match the pattern'
       roleArnRequired: 'Role ARN is Required'
@@ -622,7 +636,7 @@ ceAzure:
   steps:
     overview: '{{ $.overview }}'
     billingExports: Azure Billing Exports
-    requirements: Choose Requirements
+    requirements: '{{ $.connectors.ceAws.steps.req }}'
     servicePrincipal: Create Service Principal
     testConnection: '{{ $.common.labelTestConnection }}'
   overview:
@@ -681,7 +695,7 @@ ceAzure:
   chooseRequirements:
     heading: Choose Required Permissions
     subHeading: Harness uses Multitenant app to sync billing export data from source storage account to Harness. Create a service principal for this app in your Azure account and assign read permissions on that particular storage account.
-    featureDesc: Select the Cloud Cost Management features that you would like to enable.
+    featureDesc: '{{ $.connectors.ceAws.crossAccountRoleStep1.description }}'
     info: (Azure cost Visibility is available by default. Select the other option as per your requirements)
     visibilityCardDesc: Cost insights, anomaly detection, service insights, creating budgets perspectives and alerts, utilised/wasted resources in clusters.
     optimizationCardDesc: Detection of orphaned resources, recommendations to save costs, scaling/tearing down, turning off in non-work hours, reserving instances.
@@ -743,8 +757,8 @@ ceGcp:
     link1: 'https://cloud.google.com/billing/docs/how-to/export-data-bigquery-setup'
     link2: 'Harness Docs ()'
   chooseRequirements:
-    name: '{{$.connectors.ceAzure.steps.requirements}}'
-    heading: '{{$.connectors.ceAws.crossAccountRoleStep1.heading}}'
+    name: '{{ $.connectors.ceAws.steps.req }}'
+    heading: '{{ $.connectors.ceAws.steps.req }}'
     choosePermissions: '{{$.connectors.ceAzure.chooseRequirements.heading}}'
     description: 'Select the Cloud Cost Management features you would like to use on the GCP account.'
     info: (GCP cost Visibility is available by default. Select the others as per your requirements)

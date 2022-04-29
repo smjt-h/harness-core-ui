@@ -732,7 +732,7 @@ export default (
       licenseRedirectData={licenseRedirectData}
       sidebarProps={CISideNavProps}
       pageName={PAGE_NAME.GetStartedWithCI}
-      path={routes.toCIGetStarted({ ...accountPathProps, ...projectPathProps, ...pipelineModuleParams })}
+      path={routes.toGetStartedWithCI({ ...accountPathProps, ...projectPathProps, ...pipelineModuleParams })}
     >
       <GetStartedWithCI />
     </RouteWithLayout>

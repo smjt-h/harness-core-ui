@@ -59,7 +59,7 @@ import { PipelineStep } from '@pipeline/components/PipelineSteps/PipelineStep'
 import type { GitQueryParams } from '@common/interfaces/RouteInterfaces'
 import { useQueryParams } from '@common/hooks'
 import { StageErrorContext } from '@pipeline/context/StageErrorContext'
-import { DeployTabs } from '@cd/components/PipelineStudio/DeployStageSetupShell/DeployStageSetupShellUtils'
+import { DeployTabs } from '@pipeline/components/PipelineStudio/CommonUtils/DeployStageSetupShellUtils'
 import { getConnectorName, getConnectorValue } from '@pipeline/components/PipelineSteps/Steps/StepsHelper'
 import { getConnectorSchema, getNameSpaceSchema, getReleaseNameSchema } from '../PipelineStepsUtil'
 import css from './GcpInfrastructureSpec.module.scss'
@@ -200,7 +200,6 @@ const GcpInfrastructureSpecEditable: React.FC<GcpInfrastructureSpecEditableProps
           /* istanbul ignore else */ if (value.connectorRef) {
             data.connectorRef = (value.connectorRef as any)?.value || /* istanbul ignore next */ value.connectorRef
           }
-
           delayedOnUpdate(data)
         }}
         validationSchema={getValidationSchema(getString)}

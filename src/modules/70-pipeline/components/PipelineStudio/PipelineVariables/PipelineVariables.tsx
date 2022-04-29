@@ -133,7 +133,7 @@ export function PipelineVariablesWithRef(
         <PageError message={(error?.data as Error)?.message || error?.message} />
       ) : (
         <div className={css.content}>
-          <VariablesHeader applyChanges={applyChanges} discardChanges={discardChanges} />
+          <VariablesHeader applyChanges={applyChanges} discardChanges={discardChanges} isReadonly={isReadonly} />
           <div className={css.variableList} ref={pipelineVariablesRef as any}>
             <GitSyncStoreProvider>
               <NestedAccordionPanel

@@ -109,7 +109,8 @@ export const ConnectorRefWithImage: React.FC<ConnectorRefWithImageProps> = props
             multiTextInputProps={{
               multiTextInputProps: {
                 allowableTypes: AllMultiTypeInputTypesForStep
-              }
+              },
+              disabled: readonly
             }}
           />
         </Container>

@@ -5,10 +5,11 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import React, { ReactElement, useState } from 'react'
+import React, { ReactElement, useState, useEffect } from 'react'
 import { Layout, PageError } from '@wings-software/uicore'
-import { useParams } from 'react-router-dom'
+import { useParams, useLocation } from 'react-router-dom'
 import { GetFeatureFlagQueryParams, useGetFeatureFlag } from 'services/cf'
+import { useGovernance } from '@cf/hooks/useGovernance'
 import { getErrorMessage } from '@cf/utils/CFUtils'
 import { ContainerSpinner } from '@common/components/ContainerSpinner/ContainerSpinner'
 import { useStrings } from 'framework/strings'
@@ -30,6 +31,10 @@ const FeatureFlagsDetailPage: React.FC = () => {
     accountId: accountIdentifier
   } = useParams<Record<string, string>>()
   const { activeEnvironment: environmentIdentifier } = useActiveEnvironment()
+  const location = useLocation<{ governanceMetadata: any }>()
+
+  const { handleError: handleGovernanceError, isGovernanceError } = useGovernance()
+  const [governanceMetadata, setGovernanceMetadata] = useState(location?.state?.governanceMetadata)
 
   useDocumentTitle(getString('featureFlagsText'))
 
@@ -49,6 +54,12 @@ const FeatureFlagsDetailPage: React.FC = () => {
     identifier: featureFlagIdentifier as string,
     queryParams
   })
+
+  useEffect(() => {
+    if (isGovernanceError({ details: { governanceMetadata: governanceMetadata } })) {
+      handleGovernanceError({ details: { governanceMetadata: governanceMetadata } })
+    }
+  }, [governanceMetadata])
 
   const gitSync = useGitSync()
 
@@ -101,6 +112,7 @@ const FeatureFlagsDetailPage: React.FC = () => {
               refetchFlag={refetch}
               gitSyncActionsComponent={gitSync?.isGitSyncActionsEnabled ? <GitSyncActionsComponent /> : undefined}
               gitSync={gitSync}
+              setGovernanceMetadata={setGovernanceMetadata}
             />
           )}
         </Layout.Vertical>

@@ -47,5 +47,6 @@ export const deploymentTypeLabel: Record<ServiceDefinition['type'], StringKeys> 
   Kubernetes: 'kubernetesText',
   NativeHelm: 'pipeline.nativeHelm',
   Ssh: 'SSH',
+  ServerlessAwsLambda: 'pipeline.serviceDeploymentTypes.serverlessAwsLambda',
   WinRm: 'pipeline.serviceDeploymentTypes.winrm'
 }
