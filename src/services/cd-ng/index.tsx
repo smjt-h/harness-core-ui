@@ -5689,9 +5689,10 @@ export type NumberNGVariable = NGVariable & {
   value: number
 }
 
-export type OAuthSettings = NGAuthSettings & {
+export interface OAuthSettings {
   allowedProviders?: ('AZURE' | 'BITBUCKET' | 'GITHUB' | 'GITLAB' | 'GOOGLE' | 'LINKEDIN')[]
   filter?: string
+  settingsType?: 'USER_PASSWORD' | 'SAML' | 'LDAP' | 'OAUTH'
 }
 
 export interface OAuthSignupDTO {
@@ -8204,6 +8205,17 @@ export interface ResponseSetupStatus {
 export interface ResponseSourceCodeManagerDTO {
   correlationId?: string
   data?: SourceCodeManagerDTO
+  metaData?: { [key: string]: any }
+  status?: 'SUCCESS' | 'FAILURE' | 'ERROR'
+}
+
+export interface ResponseStatus {
+  correlationId?: string
+  data?:
+    | 'SUCCESS'
+    | 'DELEGATE_PROVISION_FAILURE'
+    | 'K8S_CONNECTOR_PROVISION_FAILURE'
+    | 'DOCKER_CONNECTOR_PROVISION_FAILURE'
   metaData?: { [key: string]: any }
   status?: 'SUCCESS' | 'FAILURE' | 'ERROR'
 }
