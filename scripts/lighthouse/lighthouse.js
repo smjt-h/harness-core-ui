@@ -8,9 +8,9 @@
 const puppeteer = require('puppeteer')
 const lighthouse = require('lighthouse')
 const reportGenerator = require('lighthouse/lighthouse-core/report/report-generator')
-const PRE_QA_URL = 'https://stress.harness.io/ng/'
-const QA_URL = 'https://qa.harness.io/ng/'
-const PROD_URL = 'https://app.harness.io/ng/'
+// const PRE_QA_URL = 'https://stress.harness.io/ng/'
+// const QA_URL = 'https://qa.harness.io/ng/'
+// const PROD_URL = 'https://app.harness.io/ng/'
 const dbConnection = require('./connection')
 const { DATA_POINTS, getFilterResults, percentageChangeInTwoParams } = require('./utils')
 const pagesToBeTested = [
@@ -24,24 +24,41 @@ const acceptableChange = process.env.LIGHT_HOUSE_ACCEPTANCE_CHANGE
   : 5
 console.log('acceptableChange', acceptableChange)
 const PORT = 8041
-let url = PROD_URL
-let passWord = ''
-let emailId = 'ui_perf_test_prod@mailinator.com'
+// let url = PROD_URL
+// let passWord = ''
+// let emailId = 'ui_perf_test_prod@mailinator.com'
 async function run() {
   // process.argv[2] could be QA / Pre-QA / Production
-  const env = process.argv[2]
-  if (env === 'QA') {
-    url = QA_URL
-    passWord = process.env.PASSWORD
-  } else if (env === 'Pre-QA') {
-    url = PRE_QA_URL
-    emailId = 'perf_test_pre-qa@mailinator.com'
-    passWord = process.env.PASSWORD
-  } else {
-    passWord = process.env.LIGHT_HOUSE_SECRET
+  const env = process.argv[2] || 'Production'
+  const emailId = process.env.EMAIL_ID || 'ui_perf_test_prod@mailinator.com'
+  const passWord = process.env.PASSWORD || 'Harness@123'
+  const url = process.env.URL || 'https://qa.harness.io/ng/'
+  // if (env === 'QA') {
+  //   url = QA_URL
+  //   passWord = process.env.PASSWORD
+  // } else if (env === 'Pre-QA') {
+  //   url = PRE_QA_URL
+  //   emailId = 'perf_test_pre-qa@mailinator.com'
+  //   passWord = process.env.PASSWORD
+  // } else {
+  //   passWord = process.env.LIGHT_HOUSE_SECRET
+  // }
+
+  if (!env) {
+    console.error('Please provide second argument as an env value while running the script')
+    process.exit(1)
+  }
+  if (!emailId) {
+    console.error('Please provide EMAIL_ID environment variable')
+    process.exit(1)
+  }
+  if (!passWord) {
+    console.error('Please provide PASSWORD environment variable')
+    process.exit(1)
   }
   if (!url) {
-    throw 'Please provide URL as a first argument'
+    console.error('Please provide URL environment variable')
+    process.exit(1)
   }
 
   const createMap = passedUrl => {
@@ -137,7 +154,7 @@ async function run() {
     // Comment executablePath while running in local
     const browser = await puppeteer.launch({
       headless: true,
-      executablePath: '/usr/bin/google-chrome',
+      // executablePath: '/usr/bin/google-chrome',
       args: ['--no-sandbox', `--remote-debugging-port=${PORT}`]
     })
     let page = await browser.newPage()
