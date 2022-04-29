@@ -137,7 +137,7 @@ const RenderAPIAccessFormWrapper: React.FC<FormikProps<AzureRepoFormInterface>> 
         label={getString('connectors.sameCredentialsAsAbove')}
         padding={{ left: 'xxlarge' }}
       />
-      {!props.values.sameCredentialsAsAbove && (
+      {!props.values.sameCredentialsAsAbove && true && (
         <>
           <TextReference
             name="apiAccessUsername"
