@@ -593,6 +593,7 @@ export interface StringsMap {
   'common.selectAVersion.title': string
   'common.selectBranch': string
   'common.selectDefaultExperience': string
+  'common.selectType': string
   'common.selectUserGroups': string
   'common.selectVersion': string
   'common.selected': string
@@ -1241,7 +1242,12 @@ export interface StringsMap {
   'secrets.titleCreate': string
   'secrets.titleSelect': string
   'secrets.typeSSH': string
+  'variables.allowedValues': string
+  'variables.defaultValue': string
   'variables.newVariable': string
+  'variables.validation.fixedValue': string
+  'variables.validation.type': string
+  'variables.validation.validation': string
   'authSettings.SAMLProvider': string
   'authSettings.WhitelistedDomainsUpdated': string
   'authSettings.accountOrOAuthLogin': string

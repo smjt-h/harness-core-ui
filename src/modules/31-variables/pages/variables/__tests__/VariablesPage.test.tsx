@@ -16,17 +16,17 @@ import VariablesPage from '../VariablesPage'
 jest.useFakeTimers()
 
 describe('Variables Page', () => {
-  test('render page at account level', () => {
+  test('render page at account level', async () => {
     const { getByText } = render(
       <TestWrapper path={routes.toVariables({ ...accountPathProps })} pathParams={{ accountId: 'dummy' }}>
         <VariablesPage />
       </TestWrapper>
     )
-    waitFor(() => getByText('variableText'))
+    await waitFor(() => getByText('variables.newVariable'))
     expect(getByText('account common.variables')).toBeDefined()
     expect(getByText('variables.newVariable')).toBeDefined()
   })
-  test('render page at org level', () => {
+  test('render page at org level', async () => {
     const { getByText } = render(
       <TestWrapper
         path={routes.toVariables({ ...orgPathProps })}
@@ -35,12 +35,12 @@ describe('Variables Page', () => {
         <VariablesPage />
       </TestWrapper>
     )
-    waitFor(() => getByText('variableText'))
+    await waitFor(() => getByText('variables.newVariable'))
     expect(getByText('variables.newVariable')).toBeDefined()
     expect(getByText('orgLabel common.variables')).toBeDefined()
     expect(getByText('dummyOrg')).toBeDefined()
   })
-  test('render page at project level', () => {
+  test('render page at project level', async () => {
     const { getByText } = render(
       <TestWrapper
         path={routes.toVariables({ ...projectPathProps, module: 'cd' })}
@@ -49,7 +49,7 @@ describe('Variables Page', () => {
         <VariablesPage />
       </TestWrapper>
     )
-    waitFor(() => getByText('variableText'))
+    await waitFor(() => getByText('variables.newVariable'))
 
     expect(getByText('variables.newVariable')).toBeDefined()
     expect(getByText('projectLabel common.variables')).toBeDefined()

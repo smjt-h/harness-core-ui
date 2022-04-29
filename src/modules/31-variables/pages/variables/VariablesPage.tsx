@@ -18,12 +18,16 @@ import { NGBreadcrumbs } from '@common/components/NGBreadcrumbs/NGBreadcrumbs'
 import { getLinkForAccountResources } from '@common/utils/BreadcrumbUtils'
 import ScopedTitle from '@common/components/Title/ScopedTitle'
 import { Scope } from '@common/interfaces/SecretsInterface'
+import useCreateEditVariableModal from '@variables/modals/CreateEditVariableModal/useCreateEditVariableModal'
+import css from './VariablesPage.module.scss'
 
 const VariablesPage: React.FC = () => {
   const { accountId, orgIdentifier, projectIdentifier } = useParams<ProjectPathProps & ModulePathParams>()
   const { getString } = useStrings()
   const variableLabel = getString('common.variables')
   useDocumentTitle(variableLabel)
+
+  const { openCreateUpdateVariableModal } = useCreateEditVariableModal({})
 
   return (
     <>
@@ -44,7 +48,7 @@ const VariablesPage: React.FC = () => {
         }
       />
 
-      <Layout.Horizontal flex>
+      <Layout.Horizontal flex className={css.header}>
         <Layout.Horizontal spacing="small">
           <RbacButton
             variation={ButtonVariation.PRIMARY}
@@ -52,15 +56,10 @@ const VariablesPage: React.FC = () => {
             icon="plus"
             id="newVariableBtn"
             data-test="newVariableButton"
+            onClick={() => openCreateUpdateVariableModal()}
           />
         </Layout.Horizontal>
-        <ExpandingSearchInput
-          alwaysExpanded
-          // onChange={() => {
-          //   // ToDO
-          // }}
-          width={250}
-        />
+        <ExpandingSearchInput alwaysExpanded width={200} placeholder={getString('search')} throttle={200} />
       </Layout.Horizontal>
 
       <Page.Body>{/* TODO */}</Page.Body>
