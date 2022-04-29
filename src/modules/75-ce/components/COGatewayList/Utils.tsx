@@ -18,6 +18,7 @@ import type { AllResourcesOfAccountResponse, Service } from 'services/lw'
 import { GatewayKindType, PROVIDER_TYPES } from '@ce/constants'
 import odIcon from './images/ondemandIcon.svg'
 import spotIcon from './images/spotIcon.svg'
+import css from './COGatewayCumulativeAnalytics.module.scss'
 
 export function getRelativeTime(t: string, format: string): string {
   return moment(t, format).fromNow()
@@ -175,7 +176,8 @@ export function getRiskGaugeChartOptions(riskScore: number, disable?: boolean) {
       {
         name: 'Risk Score',
         type: 'gauge',
-        data: [riskScore]
+        data: [riskScore],
+        dashStyle: 'dash'
       }
     ]
   }
@@ -190,7 +192,8 @@ export function geGaugeChartOptionsWithoutLabel(riskScore: number) {
       width: 50,
       backgroundColor: 'transparent',
       spacing: [0, 0, 0, 0],
-      type: 'solidgauge'
+      type: 'solidgauge',
+      className: css.gaugeChartWrapper
     },
     credits: {
       enabled: false
@@ -254,7 +257,7 @@ export function geGaugeChartOptionsWithoutLabel(riskScore: number) {
           color: '#EEE'
         }
       ],
-      plotLines: PLOT_LINE_LOCATIONS,
+      // plotLines: PLOT_LINE_LOCATIONS,
       labels: {
         enabled: false
       }

@@ -3809,6 +3809,7 @@ export interface StringsMap {
   'ce.co.accessPoint.validation.vpc': string
   'ce.co.accessPoint.vpcLabel': string
   'ce.co.accessPoint.zone': string
+  'ce.co.activeMode': string
   'ce.co.autoStopping': string
   'ce.co.autoStoppingRule.configuration.addSelectedBtnText': string
   'ce.co.autoStoppingRule.configuration.asgModal.title': string
@@ -3981,6 +3982,7 @@ export interface StringsMap {
   'ce.co.dnsSetup.autoURL': string
   'ce.co.dnsSetup.customURL': string
   'ce.co.dnsSetup.isURLaccessible': string
+  'ce.co.dryRunMode': string
   'ce.co.emptyResultText': string
   'ce.co.gatewayAccess.accessDescription': string
   'ce.co.gatewayAccess.backgroundTasks': string

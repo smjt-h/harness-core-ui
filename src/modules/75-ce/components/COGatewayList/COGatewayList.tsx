@@ -22,7 +22,8 @@ import {
   Page,
   TableV2,
   ExpandingSearchInput,
-  PageHeader
+  PageHeader,
+  PillToggle
 } from '@harness/uicore'
 import { FontVariation, Color } from '@harness/design-system'
 import { isEmpty as _isEmpty, defaultTo as _defaultTo } from 'lodash-es'
@@ -70,6 +71,11 @@ import css from './COGatewayList.module.scss'
 
 const textColor: { [key: string]: string } = {
   disable: '#6B6D85'
+}
+
+enum RulesMode {
+  ACTIVE = 'ACTIVE MODE',
+  DRY = 'DRY RUN MODE'
 }
 
 interface TableRowMenuProps {
@@ -710,6 +716,8 @@ const COGatewayList: React.FC = () => {
   const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false)
   const [tableData, setTableData] = useState<Service[]>([])
   const [pageIndex, setPageIndex] = useState<number>(0)
+  const [mode, setMode] = useState(RulesMode.ACTIVE)
+
   const searchQueryText = useRef(new URLSearchParams(location.search).get('search'))
   const [searchParams, setSearchParams] = useState<SearchParams>({
     isActive: !_isEmpty(searchQueryText.current),
@@ -884,6 +892,22 @@ const COGatewayList: React.FC = () => {
         </Layout.Horizontal>
       </>
       <Page.Body className={css.pageContainer}>
+        <Layout.Horizontal flex={{ justifyContent: 'center', alignItems: 'center' }} padding="medium">
+          <PillToggle
+            selectedView={mode}
+            options={[
+              {
+                label: getString('ce.co.activeMode'),
+                value: RulesMode.ACTIVE
+              },
+              {
+                label: getString('ce.co.dryRunMode'),
+                value: RulesMode.DRY
+              }
+            ]}
+            onChange={setMode}
+          />
+        </Layout.Horizontal>
         <COGatewayCumulativeAnalytics data={graphData?.response} loadingData={graphLoading} />
         <RulesTableContainer
           rules={tableData}

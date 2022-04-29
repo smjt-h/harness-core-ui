@@ -108,7 +108,8 @@ function getStackedAreaChartOptions(
             [1, 'rgba(71, 213, 223, 0)']
           ]
         },
-        pointPlacement: 'on'
+        pointPlacement: 'on',
+        dashStyle: 'Dash'
       },
       {
         name: 'Spend',
@@ -127,7 +128,8 @@ function getStackedAreaChartOptions(
             [1, 'rgba(124, 77, 211, 0) 55.59%)']
           ]
         },
-        pointPlacement: 'on'
+        pointPlacement: 'on',
+        dashStyle: 'Dash'
       }
     ]
   }
