@@ -79,16 +79,16 @@ const CreateEditVariable: React.FC<CreateEditVariableProps> = props => {
           type: VariableType.String,
           fixedValue: '',
           allowedValues: [],
-          variableValueType: Validation.FIXED
+          valueType: Validation.FIXED
         }}
         enableReinitialize
         validationSchema={Yup.object().shape({
           name: NameSchema(),
           identifier: IdentifierSchema(),
           type: Yup.string().trim().required(getString('variables.validation.type')),
-          variableValueType: Yup.string().trim().required(getString('variables.validation.validation')),
-          fixedValue: Yup.string().when('variableValueType', {
-            is: variableValueType => variableValueType === Validation.FIXED,
+          valueType: Yup.string().trim().required(getString('variables.validation.validation')),
+          fixedValue: Yup.string().when('valueType', {
+            is: valueType => valueType === Validation.FIXED,
             then: Yup.string().required(getString('variables.validation.fixedValue')),
             otherwise: Yup.string().nullable()
           })

@@ -11,15 +11,15 @@ exports[`AllowedValuesFields render component click submit 1`] = `
       <div>
         <div
           class="bp3-form-group"
-          data-id="defaultVaule-0"
+          data-id="defaultValue-0"
         >
           <label
             class="bp3-label"
-            for="defaultVaule"
+            for="defaultValue"
           >
             <span
               class="Tooltip--acenter"
-              data-tooltip-id="allowedValueTest_defaultVaule"
+              data-tooltip-id="allowedValueTest_defaultValue"
             >
               variables.defaultValue
             </span>
@@ -37,7 +37,7 @@ exports[`AllowedValuesFields render component click submit 1`] = `
               <input
                 autocomplete="off"
                 class="bp3-input"
-                name="defaultVaule"
+                name="defaultValue"
                 type="text"
                 value=""
               />

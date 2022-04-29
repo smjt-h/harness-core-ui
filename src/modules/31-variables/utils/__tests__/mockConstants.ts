@@ -25,7 +25,7 @@ const variableFormProject = {
 
 const StringType = { type: VariableType.String }
 const StringFixed = {
-  variableValueType: Validation.FIXED,
+  valueType: Validation.FIXED,
   fixedValue: 'customvalue'
 }
 

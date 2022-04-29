@@ -11,15 +11,15 @@ exports[`VariableValidation render component for Fixed 1`] = `
       <div>
         <div
           class="bp3-form-group"
-          data-id="variableValueType-0"
+          data-id="valueType-0"
         >
           <label
             class="bp3-label"
-            for="variableValueType"
+            for="valueType"
           >
             <span
               class="Tooltip--acenter"
-              data-tooltip-id="allowedValueTest_variableValueType"
+              data-tooltip-id="allowedValueTest_valueType"
             >
               common.configureOptions.validation
             </span>
@@ -44,7 +44,7 @@ exports[`VariableValidation render component for Fixed 1`] = `
                   <input
                     checked=""
                     class="RadioButton--input"
-                    name="variableValueType"
+                    name="valueType"
                     type="radio"
                     value="FIXED"
                   />
@@ -59,7 +59,7 @@ exports[`VariableValidation render component for Fixed 1`] = `
                   <input
                     class="RadioButton--input"
                     disabled=""
-                    name="variableValueType"
+                    name="valueType"
                     type="radio"
                     value="FIXED_SET"
                   />
@@ -74,7 +74,7 @@ exports[`VariableValidation render component for Fixed 1`] = `
                   <input
                     class="RadioButton--input"
                     disabled=""
-                    name="variableValueType"
+                    name="valueType"
                     type="radio"
                     value="REGEX"
                   />
@@ -138,15 +138,15 @@ exports[`VariableValidation render component for Fixed Set 1`] = `
       <div>
         <div
           class="bp3-form-group"
-          data-id="variableValueType-0"
+          data-id="valueType-0"
         >
           <label
             class="bp3-label"
-            for="variableValueType"
+            for="valueType"
           >
             <span
               class="Tooltip--acenter"
-              data-tooltip-id="allowedValueTest_variableValueType"
+              data-tooltip-id="allowedValueTest_valueType"
             >
               common.configureOptions.validation
             </span>
@@ -170,7 +170,7 @@ exports[`VariableValidation render component for Fixed Set 1`] = `
                 >
                   <input
                     class="RadioButton--input"
-                    name="variableValueType"
+                    name="valueType"
                     type="radio"
                     value="FIXED"
                   />
@@ -186,7 +186,7 @@ exports[`VariableValidation render component for Fixed Set 1`] = `
                     checked=""
                     class="RadioButton--input"
                     disabled=""
-                    name="variableValueType"
+                    name="valueType"
                     type="radio"
                     value="FIXED_SET"
                   />
@@ -201,7 +201,7 @@ exports[`VariableValidation render component for Fixed Set 1`] = `
                   <input
                     class="RadioButton--input"
                     disabled=""
-                    name="variableValueType"
+                    name="valueType"
                     type="radio"
                     value="REGEX"
                   />
@@ -219,11 +219,11 @@ exports[`VariableValidation render component for Fixed Set 1`] = `
         >
           <label
             class="bp3-label"
-            for="defaultVaule"
+            for="defaultValue"
           >
             <span
               class="Tooltip--acenter"
-              data-tooltip-id="allowedValueTest_defaultVaule"
+              data-tooltip-id="allowedValueTest_defaultValue"
             >
               variables.defaultValue
             </span>
@@ -241,7 +241,7 @@ exports[`VariableValidation render component for Fixed Set 1`] = `
               <input
                 autocomplete="off"
                 class="bp3-input"
-                name="defaultVaule"
+                name="defaultValue"
                 type="text"
                 value=""
               />
@@ -302,15 +302,15 @@ exports[`VariableValidation render component for regex 1`] = `
       <div>
         <div
           class="bp3-form-group"
-          data-id="variableValueType-0"
+          data-id="valueType-0"
         >
           <label
             class="bp3-label"
-            for="variableValueType"
+            for="valueType"
           >
             <span
               class="Tooltip--acenter"
-              data-tooltip-id="allowedValueTest_variableValueType"
+              data-tooltip-id="allowedValueTest_valueType"
             >
               common.configureOptions.validation
             </span>
@@ -334,7 +334,7 @@ exports[`VariableValidation render component for regex 1`] = `
                 >
                   <input
                     class="RadioButton--input"
-                    name="variableValueType"
+                    name="valueType"
                     type="radio"
                     value="FIXED"
                   />
@@ -349,7 +349,7 @@ exports[`VariableValidation render component for regex 1`] = `
                   <input
                     class="RadioButton--input"
                     disabled=""
-                    name="variableValueType"
+                    name="valueType"
                     type="radio"
                     value="FIXED_SET"
                   />
@@ -365,7 +365,7 @@ exports[`VariableValidation render component for regex 1`] = `
                     checked=""
                     class="RadioButton--input"
                     disabled=""
-                    name="variableValueType"
+                    name="valueType"
                     type="radio"
                     value="REGEX"
                   />

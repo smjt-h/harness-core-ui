@@ -34,7 +34,7 @@ describe('VariableValidation', () => {
     fillAtForm([
       {
         container,
-        fieldId: 'variableValueType',
+        fieldId: 'valueType',
         type: InputTypes.RADIOS,
         value: Validation.FIXED
       }
@@ -58,7 +58,7 @@ describe('VariableValidation', () => {
     fillAtForm([
       {
         container,
-        fieldId: 'variableValueType',
+        fieldId: 'valueType',
         type: InputTypes.RADIOS,
         value: Validation.FIXED_SET
       }
@@ -82,7 +82,7 @@ describe('VariableValidation', () => {
     fillAtForm([
       {
         container,
-        fieldId: 'variableValueType',
+        fieldId: 'valueType',
         type: InputTypes.RADIOS,
         value: Validation.REGEX
       }

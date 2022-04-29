@@ -22,7 +22,7 @@ const VariableValidation: React.FC<VariableValidationProps> = props => {
     <>
       <FormInput.RadioGroup
         radioGroup={{ inline: true }}
-        name="variableValueType"
+        name="valueType"
         label={getString('common.configureOptions.validation')}
         items={[
           { label: getString('inputTypes.FIXED'), value: Validation.FIXED },
@@ -30,11 +30,11 @@ const VariableValidation: React.FC<VariableValidationProps> = props => {
           { label: getString('common.configureOptions.regex'), value: Validation.REGEX, disabled: true }
         ]}
       />
-      {props.formik.values.variableValueType === Validation.FIXED ? (
+      {props.formik.values.valueType === Validation.FIXED ? (
         <FormInput.Text name="fixedValue" label="Fixed Value" />
       ) : null}
-      {props.formik.values.variableValueType === Validation.FIXED_SET ? <AllowedValuesField /> : null}
-      {props.formik.values.variableValueType === Validation.REGEX ? (
+      {props.formik.values.valueType === Validation.FIXED_SET ? <AllowedValuesField /> : null}
+      {props.formik.values.valueType === Validation.REGEX ? (
         <FormInput.TextArea label={getString('common.configureOptions.regex')} name="regExValues" />
       ) : null}
     </>

@@ -13,7 +13,7 @@ const AllowedValuesField: React.FC = () => {
   const { getString } = useStrings()
   return (
     <>
-      <FormInput.Text name="defaultVaule" label={getString('variables.defaultValue')} />
+      <FormInput.Text name="defaultValue" label={getString('variables.defaultValue')} />
       <FormInput.KVTagInput label={getString('variables.allowedValues')} name="allowedValues" isArray={true} />
     </>
   )
