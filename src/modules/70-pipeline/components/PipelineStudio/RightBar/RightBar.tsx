@@ -16,18 +16,18 @@ import {
   FormikForm,
   RUNTIME_INPUT_VALUE,
   TextInput,
-  FormInput,
   Text,
   Layout,
   getMultiTypeFromValue,
   MultiTypeInputType,
   ButtonVariation,
   VisualYamlSelectedView as SelectedView,
-  Container
+  Container,
+  SelectOption
 } from '@wings-software/uicore'
 import { useParams } from 'react-router-dom'
 import { isEmpty, get, set, unset } from 'lodash-es'
-import { FontVariation } from '@harness/design-system'
+import { Color, FontVariation } from '@harness/design-system'
 
 import { Classes, Dialog } from '@blueprintjs/core'
 import produce from 'immer'
@@ -80,7 +80,7 @@ interface CodebaseValues {
   connectorRef?: ConnectorReferenceFieldProps['selected']
   repoName?: string
   depth?: string
-  sslVerify?: number
+  sslVerify?: boolean
   prCloneStrategy?: MultiTypeSelectOption
   memoryLimit?: string
   cpuLimit?: string
@@ -99,14 +99,14 @@ export const prCloneStrategyOptions = [
   { label: 'Source Branch', value: 'SourceBranch' }
 ]
 
-const sslVerifyOptions = [
+export const sslVerifyOptions = [
   {
     label: 'True',
-    value: 1
+    value: true
   },
   {
     label: 'False',
-    value: 0
+    value: false
   }
 ]
 
@@ -136,6 +136,17 @@ const getConnectorWidth = ({
   }
   return (!isRuntimeInput(connectorRef) && ConnectorRefWidth.RightBarView) || undefined
 }
+
+export const getOptionalSubLabel = (getString: UseStringsReturn['getString'], tooltip?: string): JSX.Element => (
+  <Text
+    className={css.capitalize}
+    tooltipProps={{ dataTooltipId: tooltip }}
+    color={Color.GREY_400}
+    font={{ size: 'small', weight: 'semi-bold' }}
+  >
+    {getString('common.optionalLabel')}
+  </Text>
+)
 
 export const renderConnectorAndRepoName = ({
   values,
@@ -300,7 +311,7 @@ export function RightBar(): JSX.Element {
     connectorRef: codebase?.connectorRef,
     repoName: codebase?.repoName,
     depth: codebase?.depth !== undefined ? String(codebase.depth) : undefined,
-    sslVerify: codebase?.sslVerify !== undefined ? Number(codebase.sslVerify) : undefined,
+    sslVerify: codebase?.sslVerify,
     memoryLimit: codebase?.resources?.limits?.memory,
     prCloneStrategy:
       getMultiTypeFromValue(codebase?.prCloneStrategy) === MultiTypeInputType.FIXED
@@ -711,9 +722,8 @@ export function RightBar(): JSX.Element {
                   set(draft, 'properties.ci.codebase.depth', depthValue)
                 }
 
-                const sslVerifyVal = values.sslVerify === undefined ? values.sslVerify : !!values.sslVerify
-                if (get(draft, 'properties.ci.codebase.sslVerify') !== sslVerifyVal) {
-                  set(draft, 'properties.ci.codebase.sslVerify', sslVerifyVal)
+                if (get(draft, 'properties.ci.codebase.sslVerify') !== values.sslVerify) {
+                  set(draft, 'properties.ci.codebase.sslVerify', values.sslVerify)
                 }
 
                 if (get(draft, 'properties.ci.codebase.prCloneStrategy') !== values.prCloneStrategy) {
@@ -768,80 +778,173 @@ export function RightBar(): JSX.Element {
                         summary={
                           <Layout.Horizontal>
                             <Text font={{ weight: 'bold' }}>{getString('advancedTitle')}</Text>&nbsp;
-                            <Text>{getString('common.optionalLabel')}</Text>
                           </Layout.Horizontal>
                         }
                         details={
                           <div>
-                            <FormInput.Text
-                              name="depth"
-                              label={
-                                <Text
-                                  tooltipProps={{
-                                    dataTooltipId: 'depth'
-                                  }}
-                                >
-                                  {getString('pipeline.depth')}
-                                </Text>
-                              }
-                              disabled={isReadonly}
-                            />
-                            <FormInput.Select
-                              name="sslVerify"
-                              label={
-                                <Text
-                                  tooltipProps={{
-                                    dataTooltipId: 'sslVerify'
-                                  }}
-                                >
-                                  {getString('pipeline.sslVerify')}
-                                </Text>
-                              }
-                              items={sslVerifyOptions}
-                              disabled={isReadonly}
-                            />
-                            <MultiTypeSelectField
-                              name="prCloneStrategy"
-                              label={
-                                <Text margin={{ bottom: 'xsmall' }} tooltipProps={{ dataTooltipId: 'prCloneStrategy' }}>
-                                  {getString('pipeline.ciCodebase.prCloneStrategy')}
-                                </Text>
-                              }
-                              multiTypeInputProps={{
-                                selectItems: prCloneStrategyOptions,
-                                placeholder: 'Select',
-                                disabled: isReadonly,
-                                multiTypeInputProps: {
-                                  selectProps: { addClearBtn: true, items: prCloneStrategyOptions },
-                                  allowableTypes: [MultiTypeInputType.FIXED]
-                                }
-                              }}
-                              configureOptionsProps={{ variableName: 'prCloneStrategy' }}
-                              style={{ marginBottom: 'var(--spacing-medium)' }}
-                            />
-                            <Text margin={{ top: 'small' }} tooltipProps={{ dataTooltipId: 'setContainerResources' }}>
-                              {getString('pipelineSteps.setContainerResources')}
-                            </Text>
-                            <Layout.Horizontal spacing="small">
-                              <FormInput.Text
-                                name="memoryLimit"
+                            <Container className={css.bottomMargin5}>
+                              <MultiTypeTextField
                                 label={
-                                  <Text margin={{ bottom: 'xsmall' }}>
-                                    {getString('pipelineSteps.limitMemoryLabel')}
-                                  </Text>
+                                  <Layout.Horizontal style={{ display: 'flex', alignItems: 'baseline' }}>
+                                    <Text font={{ variation: FontVariation.FORM_LABEL }} margin={{ bottom: 'xsmall' }}>
+                                      {getString('pipeline.depth')}
+                                    </Text>
+                                    &nbsp;
+                                    {getOptionalSubLabel(getString, 'depth')}
+                                  </Layout.Horizontal>
                                 }
-                                style={{ flex: 1 }}
+                                name="depth"
+                                multiTextInputProps={{
+                                  multiTextInputProps: {
+                                    expressions,
+                                    allowableTypes: [MultiTypeInputType.FIXED, MultiTypeInputType.RUNTIME]
+                                  },
+                                  disabled: isReadonly
+                                }}
+                              />
+                            </Container>
+                            <Container className={css.bottomMargin5}>
+                              <MultiTypeSelectField
+                                name="sslVerify"
+                                label={
+                                  <Layout.Horizontal style={{ display: 'flex', alignItems: 'baseline' }}>
+                                    <Text
+                                      className={css.inpLabel}
+                                      color={Color.GREY_600}
+                                      font={{ size: 'small', weight: 'semi-bold' }}
+                                    >
+                                      {getString('pipeline.sslVerify')}
+                                    </Text>
+                                    &nbsp;
+                                    {getOptionalSubLabel(getString, 'sslVerify')}
+                                  </Layout.Horizontal>
+                                }
+                                multiTypeInputProps={{
+                                  // selectItems: sslVerifyOptions,
+                                  selectItems: sslVerifyOptions as unknown as SelectOption[],
+                                  placeholder: getString('select'),
+                                  multiTypeInputProps: {
+                                    expressions,
+                                    selectProps: {
+                                      addClearBtn: true,
+                                      // selectProps: { addClearBtn: true, items: sslVerifyOptions }
+                                      items: sslVerifyOptions as unknown as SelectOption[]
+                                    },
+                                    allowableTypes: [
+                                      MultiTypeInputType.FIXED,
+                                      MultiTypeInputType.EXPRESSION,
+                                      MultiTypeInputType.RUNTIME
+                                    ]
+                                  },
+                                  disabled: isReadonly
+                                }}
+                                useValue
                                 disabled={isReadonly}
                               />
-                              <FormInput.Text
-                                name="cpuLimit"
+                            </Container>
+                            <Container className={css.bottomMargin5}>
+                              <MultiTypeSelectField
+                                name="prCloneStrategy"
                                 label={
-                                  <Text margin={{ bottom: 'xsmall' }}>{getString('pipelineSteps.limitCPULabel')}</Text>
+                                  <Layout.Horizontal style={{ display: 'flex', alignItems: 'baseline' }}>
+                                    <Text
+                                      className={css.inpLabel}
+                                      color={Color.GREY_600}
+                                      font={{ size: 'small', weight: 'semi-bold' }}
+                                    >
+                                      {getString('pipeline.ciCodebase.prCloneStrategy')}
+                                    </Text>
+                                    &nbsp;
+                                    {getOptionalSubLabel(getString, 'prCloneStrategy')}
+                                  </Layout.Horizontal>
                                 }
-                                style={{ flex: 1 }}
+                                multiTypeInputProps={{
+                                  selectItems: prCloneStrategyOptions,
+                                  placeholder: getString('select'),
+                                  multiTypeInputProps: {
+                                    expressions,
+                                    selectProps: { addClearBtn: true, items: prCloneStrategyOptions },
+                                    allowableTypes: [
+                                      MultiTypeInputType.FIXED,
+                                      MultiTypeInputType.EXPRESSION,
+                                      MultiTypeInputType.RUNTIME
+                                    ]
+                                  },
+                                  disabled: isReadonly
+                                }}
                                 disabled={isReadonly}
                               />
-                            </Layout.Horizontal>
+                            </Container>
+                            <Layout.Vertical spacing="medium">
+                              <Text
+                                className={css.inpLabel}
+                                color={Color.GREY_600}
+                                font={{ size: 'small', weight: 'semi-bold' }}
+                                tooltipProps={{ dataTooltipId: 'setContainerResources' }}
+                              >
+                                {getString('pipelineSteps.setContainerResources')}
+                              </Text>
+                              <Layout.Horizontal spacing="small">
+                                <MultiTypeTextField
+                                  name="memoryLimit"
+                                  label={
+                                    <Layout.Horizontal style={{ display: 'flex', alignItems: 'baseline' }}>
+                                      <Text
+                                        className={css.inpLabel}
+                                        color={Color.GREY_600}
+                                        font={{ size: 'small', weight: 'semi-bold' }}
+                                      >
+                                        {getString('pipelineSteps.limitMemoryLabel')}
+                                      </Text>
+                                      &nbsp;
+                                      {getOptionalSubLabel(getString, 'limitMemory')}
+                                    </Layout.Horizontal>
+                                  }
+                                  multiTextInputProps={{
+                                    multiTextInputProps: {
+                                      expressions,
+                                      allowableTypes: [
+                                        MultiTypeInputType.FIXED,
+                                        MultiTypeInputType.EXPRESSION,
+                                        MultiTypeInputType.RUNTIME
+                                      ]
+                                    },
+                                    disabled: isReadonly
+                                  }}
+                                  configureOptionsProps={{ variableName: 'spec.limit.memory' }}
+                                  style={{ flexGrow: 1, flexBasis: '50%' }}
+                                />
+                                <MultiTypeTextField
+                                  name="cpuLimit"
+                                  label={
+                                    <Layout.Horizontal style={{ display: 'flex', alignItems: 'baseline' }}>
+                                      <Text
+                                        className={css.inpLabel}
+                                        color={Color.GREY_600}
+                                        font={{ size: 'small', weight: 'semi-bold' }}
+                                      >
+                                        {getString('pipelineSteps.limitCPULabel')}
+                                      </Text>
+                                      &nbsp;
+                                      {getOptionalSubLabel(getString, 'limitCPULabel')}
+                                    </Layout.Horizontal>
+                                  }
+                                  multiTextInputProps={{
+                                    multiTextInputProps: {
+                                      expressions,
+                                      allowableTypes: [
+                                        MultiTypeInputType.FIXED,
+                                        MultiTypeInputType.EXPRESSION,
+                                        MultiTypeInputType.RUNTIME
+                                      ]
+                                    },
+                                    disabled: isReadonly
+                                  }}
+                                  configureOptionsProps={{ variableName: 'spec.limit.cpu' }}
+                                  style={{ flexGrow: 1, flexBasis: '50%' }}
+                                />
+                              </Layout.Horizontal>
+                            </Layout.Vertical>
                           </div>
                         }
                       />

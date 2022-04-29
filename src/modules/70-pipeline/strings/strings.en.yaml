@@ -763,6 +763,9 @@ ciCodebase:
   prCloneStrategy: Pull Request Clone Strategy
   buildType: CI Codebase Build Type
   pullRequestNumber: Pull Request Number
+  validation:
+    oneOfValues: Value must be one of these values [{{values}}]
+    sslVerifyBoolean: SSL Verify must be a boolean value
 tagDependencyRequired: required to fetch the tags
 artifactPathDependencyRequired: required to fetch the artifact paths
 artifactRepositoryDependencyRequired: 'Artifactory Connector is required to fetch repositories. You can make this field Runtime input otherwise.'

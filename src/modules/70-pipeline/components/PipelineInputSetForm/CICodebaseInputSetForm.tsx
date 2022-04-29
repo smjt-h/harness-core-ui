@@ -17,21 +17,25 @@ import {
   Radio,
   Icon,
   TextInput,
-  RUNTIME_INPUT_VALUE
+  RUNTIME_INPUT_VALUE,
+  SelectOption
 } from '@wings-software/uicore'
-import { FontVariation } from '@harness/design-system'
+import { FontVariation, Color } from '@harness/design-system'
 import { connect } from 'formik'
 import { useStrings } from 'framework/strings'
 import { getIdentifierFromValue, getScopeFromValue } from '@common/components/EntityReference/EntityReference'
 import { Scope } from '@common/interfaces/SecretsInterface'
 import { useVariablesExpression } from '@pipeline/components/PipelineStudio/PiplineHooks/useVariablesExpression'
 import { ConnectorInfoDTO, PipelineInfoConfig, useGetConnector } from 'services/cd-ng'
-import { ConnectorRefWidth } from '@pipeline/utils/constants'
+import { getConnectorRefWidth } from '@pipeline/utils/constants'
 import { FormMultiTypeConnectorField } from '@connectors/components/ConnectorReferenceField/FormMultiTypeConnectorField'
 import { MultiTypeTextField } from '@common/components/MultiTypeText/MultiTypeText'
+import { MultiTypeSelectField } from '@common/components/MultiTypeSelect/MultiTypeSelect'
 import type { GitQueryParams } from '@common/interfaces/RouteInterfaces'
 import { useQueryParams } from '@common/hooks'
+import { getOptionalSubLabel, sslVerifyOptions, prCloneStrategyOptions } from '../PipelineStudio/RightBar/RightBar'
 import { isRuntimeInput } from '../PipelineStudio/RightBar/RightBarUtils'
+import { StepViewType } from '../AbstractSteps/Step'
 import css from './CICodebaseInputSetForm.module.scss'
 export interface CICodebaseInputSetFormProps {
   path: string
@@ -39,6 +43,8 @@ export interface CICodebaseInputSetFormProps {
   formik?: any
   template?: PipelineInfoConfig
   originalPipeline: PipelineInfoConfig
+  viewType: StepViewType
+  isTriggerForm?: boolean
 }
 
 type CodeBaseType = 'branch' | 'tag' | 'PR'
@@ -127,7 +133,9 @@ function CICodebaseInputSetFormInternal({
   readonly,
   formik,
   template,
-  originalPipeline
+  originalPipeline,
+  viewType,
+  isTriggerForm
 }: CICodebaseInputSetFormProps): JSX.Element {
   const { triggerIdentifier, accountId, projectIdentifier, orgIdentifier } = useParams<Record<string, string>>()
 
@@ -140,6 +148,9 @@ function CICodebaseInputSetFormInternal({
   const [connectionType, setConnectionType] = React.useState('')
   const [connectorUrl, setConnectorUrl] = React.useState('')
   const isConnectorRuntimeInput = template?.properties?.ci?.codebase?.connectorRef
+  const isCpuLimitRuntimeInput = template?.properties?.ci?.codebase?.resources?.limits?.cpu
+  const isMemoryLimitRuntimeInput = template?.properties?.ci?.codebase?.resources?.limits?.memory
+  const isDeploymentOrTriggerForm = viewType === StepViewType.DeploymentForm || isTriggerForm
   const [isConnectorExpression, setIsConnectorExpression] = useState<boolean>(false)
   const savedValues = useRef<Record<string, string>>({
     branch: '',
@@ -170,8 +181,14 @@ function CICodebaseInputSetFormInternal({
     branch: `${formattedPath}properties.ci.codebase.build.spec.branch`,
     tag: `${formattedPath}properties.ci.codebase.build.spec.tag`,
     PR: `${formattedPath}properties.ci.codebase.build.spec.number`,
+    // !Double check if below is correctly used
     connectorRef: `${formattedPath}properties.ci.codebase.connectorRef`,
-    repoName: `${formattedPath}properties.ci.codebase.repoName`
+    repoName: `${formattedPath}properties.ci.codebase.repoName`,
+    depth: `${formattedPath}properties.ci.codebase.depth`,
+    sslVerify: `${formattedPath}properties.ci.codebase.sslVerify`,
+    prCloneStrategy: `${formattedPath}properties.ci.codebase.prCloneStrategy`,
+    memoryLimit: `${formattedPath}properties.ci.codebase.resources.limits.memory`,
+    cpuLimit: `${formattedPath}properties.ci.codebase.resources.limits.cpu`
   }
 
   const {
@@ -287,10 +304,10 @@ function CICodebaseInputSetFormInternal({
       ) : (
         <>
           {isConnectorRuntimeInput && (
-            <Container className={css.bottomMargin3}>
+            <Container width="50%" className={css.bottomMargin3}>
               <FormMultiTypeConnectorField
                 name={codeBaseInputFieldFormName.connectorRef}
-                width={ConnectorRefWidth.DefaultView}
+                width={getConnectorRefWidth(viewType)}
                 error={formik?.errors?.connectorRef}
                 type={['Git', 'Github', 'Gitlab', 'Bitbucket', 'Codecommit']}
                 label={<Text font={{ variation: FontVariation.FORM_LABEL }}>{getString('connector')}</Text>}
@@ -341,13 +358,14 @@ function CICodebaseInputSetFormInternal({
                 <Container width={'50%'} className={css.bottomMargin3}>
                   <MultiTypeTextField
                     label={
-                      <Text
-                        font={{ variation: FontVariation.FORM_LABEL }}
-                        margin={{ bottom: 'xsmall' }}
-                        tooltipProps={{ dataTooltipId: 'rightBarForm_repoName' }}
-                      >
-                        {getString('common.repositoryName')}
-                      </Text>
+                      <Layout.Horizontal className={css.inpLabel}>
+                        <Text
+                          font={{ variation: FontVariation.FORM_LABEL }}
+                          tooltipProps={{ dataTooltipId: 'rightBarForm_repoName' }}
+                        >
+                          {getString('common.repositoryName')}
+                        </Text>
+                      </Layout.Horizontal>
                     }
                     name={codeBaseInputFieldFormName.repoName}
                     multiTextInputProps={{
@@ -371,6 +389,171 @@ function CICodebaseInputSetFormInternal({
                 ) : null}
               </>
             ))}
+          {template?.properties?.ci?.codebase?.depth && (
+            <Container width={'50%'} className={css.bottomMargin3}>
+              <MultiTypeTextField
+                label={
+                  <Layout.Horizontal className={css.inpLabel} style={{ display: 'flex', alignItems: 'baseline' }}>
+                    <Text
+                      font={{ variation: FontVariation.FORM_LABEL }}
+                      {...(!isDeploymentOrTriggerForm && { tooltipProps: { dataTooltipId: 'depth' } })}
+                    >
+                      {getString('pipeline.depth')}
+                    </Text>
+                    &nbsp;
+                    {isDeploymentOrTriggerForm && getOptionalSubLabel(getString, 'depth')}
+                  </Layout.Horizontal>
+                }
+                name={codeBaseInputFieldFormName.depth}
+                multiTextInputProps={{
+                  multiTextInputProps: {
+                    expressions,
+                    allowableTypes: [MultiTypeInputType.FIXED]
+                  },
+                  disabled: readonly
+                }}
+              />
+            </Container>
+          )}
+          {template?.properties?.ci?.codebase?.sslVerify && (
+            <Container width={'50%'} className={css.bottomMargin3}>
+              <MultiTypeSelectField
+                name={codeBaseInputFieldFormName.sslVerify}
+                label={
+                  <Layout.Horizontal className={css.inpLabel} style={{ display: 'flex', alignItems: 'baseline' }}>
+                    <Text
+                      color={Color.GREY_600}
+                      font={{ size: 'small', weight: 'semi-bold' }}
+                      {...(!isDeploymentOrTriggerForm && { tooltipProps: { dataTooltipId: 'sslVerify' } })}
+                    >
+                      {getString('pipeline.sslVerify')}
+                    </Text>
+                    &nbsp;
+                    {isDeploymentOrTriggerForm && getOptionalSubLabel(getString, 'sslVerify')}
+                  </Layout.Horizontal>
+                }
+                multiTypeInputProps={{
+                  selectItems: sslVerifyOptions as unknown as SelectOption[],
+                  placeholder: getString('select'),
+                  multiTypeInputProps: {
+                    expressions,
+                    selectProps: { addClearBtn: true, items: sslVerifyOptions as unknown as SelectOption[] },
+                    allowableTypes: [MultiTypeInputType.FIXED, MultiTypeInputType.EXPRESSION]
+                  },
+                  disabled: readonly
+                }}
+                useValue
+                disabled={readonly}
+              />
+            </Container>
+          )}
+          {template?.properties?.ci?.codebase?.prCloneStrategy && (
+            <Container width={'50%'} className={css.bottomMargin3}>
+              <MultiTypeSelectField
+                name={codeBaseInputFieldFormName.prCloneStrategy}
+                label={
+                  <Layout.Horizontal className={css.inpLabel} style={{ display: 'flex', alignItems: 'baseline' }}>
+                    <Text
+                      color={Color.GREY_600}
+                      font={{ size: 'small', weight: 'semi-bold' }}
+                      {...(!isDeploymentOrTriggerForm && { tooltipProps: { dataTooltipId: 'prCloneStrategy' } })}
+                    >
+                      {getString('pipeline.ciCodebase.prCloneStrategy')}
+                    </Text>
+                    &nbsp;
+                    {isDeploymentOrTriggerForm && getOptionalSubLabel(getString, 'prCloneStrategy')}
+                  </Layout.Horizontal>
+                }
+                multiTypeInputProps={{
+                  selectItems: prCloneStrategyOptions,
+                  placeholder: getString('select'),
+                  multiTypeInputProps: {
+                    expressions,
+                    selectProps: { addClearBtn: true, items: prCloneStrategyOptions },
+                    allowableTypes: [
+                      MultiTypeInputType.FIXED,
+                      MultiTypeInputType.EXPRESSION,
+                      MultiTypeInputType.RUNTIME
+                    ]
+                  },
+                  disabled: readonly
+                }}
+                useValue
+                disabled={readonly}
+              />
+            </Container>
+          )}
+          {(isCpuLimitRuntimeInput || isMemoryLimitRuntimeInput) && (
+            <Layout.Vertical width={'50%'} className={css.bottomMargin3} spacing="medium">
+              <Text
+                className={css.inpLabel}
+                color={Color.GREY_600}
+                font={{ size: 'small', weight: 'semi-bold' }}
+                tooltipProps={{ dataTooltipId: 'setContainerResources' }}
+              >
+                {getString('pipelineSteps.setContainerResources')}
+              </Text>
+              <Layout.Horizontal spacing="small">
+                {isMemoryLimitRuntimeInput && (
+                  <MultiTypeTextField
+                    name={codeBaseInputFieldFormName.memoryLimit}
+                    label={
+                      <Layout.Horizontal style={{ display: 'flex', alignItems: 'baseline' }}>
+                        <Text
+                          className={css.inpLabel}
+                          color={Color.GREY_600}
+                          font={{ size: 'small', weight: 'semi-bold' }}
+                          {...(!isDeploymentOrTriggerForm && { tooltipProps: { dataTooltipId: 'limitMemory' } })}
+                        >
+                          {getString('pipelineSteps.limitMemoryLabel')}
+                        </Text>
+                        &nbsp;
+                        {isDeploymentOrTriggerForm && getOptionalSubLabel(getString, 'limitMemory')}
+                      </Layout.Horizontal>
+                    }
+                    multiTextInputProps={{
+                      multiTextInputProps: {
+                        expressions,
+                        allowableTypes: [MultiTypeInputType.FIXED, MultiTypeInputType.EXPRESSION]
+                      },
+                      disabled: readonly
+                    }}
+                    configureOptionsProps={{ variableName: 'spec.limit.memory' }}
+                    style={{ flexGrow: 1, flexBasis: '50%' }}
+                  />
+                )}
+
+                {isCpuLimitRuntimeInput && (
+                  <MultiTypeTextField
+                    name={codeBaseInputFieldFormName.cpuLimit}
+                    label={
+                      <Layout.Horizontal style={{ display: 'flex', alignItems: 'baseline' }}>
+                        <Text
+                          className={css.inpLabel}
+                          color={Color.GREY_600}
+                          font={{ size: 'small', weight: 'semi-bold' }}
+                          {...(!isDeploymentOrTriggerForm && { tooltipProps: { dataTooltipId: 'limitCPULabel' } })}
+                        >
+                          {getString('pipelineSteps.limitCPULabel')}
+                        </Text>
+                        &nbsp;
+                        {isDeploymentOrTriggerForm && getOptionalSubLabel(getString, 'limitCPULabel')}
+                      </Layout.Horizontal>
+                    }
+                    multiTextInputProps={{
+                      multiTextInputProps: {
+                        expressions,
+                        allowableTypes: [MultiTypeInputType.FIXED, MultiTypeInputType.EXPRESSION]
+                      },
+                      disabled: readonly
+                    }}
+                    configureOptionsProps={{ variableName: 'spec.limit.cpu' }}
+                    style={{ flexGrow: 1, flexBasis: '50%' }}
+                  />
+                )}
+              </Layout.Horizontal>
+            </Layout.Vertical>
+          )}
           {(!isConnectorRuntimeInput ||
             (isConnectorRuntimeInput && get(formik?.values, codeBaseInputFieldFormName.connectorRef))) && (
             <Layout.Horizontal

@@ -14,6 +14,7 @@ import set from 'lodash-es/set'
 import reduce from 'lodash-es/reduce'
 import isObject from 'lodash-es/isObject'
 import memoize from 'lodash-es/memoize'
+import isBoolean from 'lodash-es/isBoolean'
 import get from 'lodash-es/get'
 import type {
   StageElementConfig,
@@ -38,6 +39,7 @@ import '@ci/components/PipelineSteps'
 // eslint-disable-next-line no-restricted-imports
 import '@sto-steps/components/PipelineSteps'
 import { StepViewType } from '../AbstractSteps/Step'
+import { prCloneStrategyOptions } from './RightBar/RightBar'
 
 export const clearRuntimeInput = (template: PipelineInfoConfig): PipelineInfoConfig => {
   return JSON.parse(
@@ -408,6 +410,77 @@ export const validateCICodebase = ({
         errors,
         'properties.ci.codebase.build.spec.number',
         getString?.('fieldRequired', { field: getString?.('pipeline.gitPullRequestNumber') })
+      )
+    }
+  }
+
+  if (template?.properties?.ci?.codebase?.connectorRef) {
+    if (!pipeline?.properties?.ci?.codebase?.connectorRef) {
+      set(
+        errors,
+        'properties.ci.codebase.connectorRef',
+        getString?.('fieldRequired', { field: getString?.('connector') })
+      )
+    }
+  }
+
+  if (template?.properties?.ci?.codebase?.repoName) {
+    if (!pipeline?.properties?.ci?.codebase?.repoName) {
+      set(
+        errors,
+        'properties.ci.codebase.repoName',
+        getString?.('fieldRequired', { field: getString?.('common.repositoryName') })
+      )
+    }
+  }
+
+  if (template?.properties?.ci?.codebase?.depth) {
+    const depth = pipeline?.properties?.ci?.codebase?.depth
+    if (depth && (typeof depth !== 'number' || (typeof depth === 'string' && parseInt(depth) < 1))) {
+      set(errors, 'properties.ci.codebase.depth', getString?.('pipeline.onlyPositiveInteger'))
+    }
+  }
+
+  if (template?.properties?.ci?.codebase?.sslVerify) {
+    const sslVerify = pipeline?.properties?.ci?.codebase?.sslVerify
+    if (sslVerify && !isBoolean(sslVerify)) {
+      set(errors, 'properties.ci.codebase.sslVerify', getString?.('pipeline.ciCodebase.validation.sslVerifyBoolean'))
+    }
+  }
+
+  if (template?.properties?.ci?.codebase?.prCloneStrategy) {
+    // error will appear in yaml view
+    const prCloneStrategy = pipeline?.properties?.ci?.codebase?.prCloneStrategy
+    const prCloneStrategyOptionsValues = prCloneStrategyOptions.map(option => option.value)
+    if (prCloneStrategy && !prCloneStrategyOptionsValues.some(value => value === prCloneStrategy)) {
+      set(
+        errors,
+        'properties.ci.codebase.prCloneStrategy',
+        getString?.('pipeline.ciCodebase.validation.oneOfValues', { values: prCloneStrategyOptionsValues.join(', ') })
+      )
+    }
+  }
+
+  if (template?.properties?.ci?.codebase?.resources?.limits?.memory) {
+    const memoryLimit = pipeline?.properties?.ci?.codebase?.resources?.limits?.memory
+    const pattern = /^\d+(\.\d+)?$|^\d+(\.\d+)?(G|M|Gi|Mi)$|^$/
+    if (memoryLimit && (!pattern.test(memoryLimit) || !isNaN(memoryLimit as unknown as number))) {
+      set(
+        errors,
+        'properties.ci.codebase.resources.limits.memory',
+        getString?.('pipeline.stepCommonFields.validation.invalidLimitMemory')
+      )
+    }
+  }
+
+  if (template?.properties?.ci?.codebase?.resources?.limits?.cpu) {
+    const cpuLimit = pipeline?.properties?.ci?.codebase?.resources?.limits?.cpu
+    const pattern = /^\d+(\.\d+)?$|^\d+m$|^$/
+    if (cpuLimit && (!pattern.test(cpuLimit) || !isNaN(cpuLimit as unknown as number))) {
+      set(
+        errors,
+        'properties.ci.codebase.resources.limits.cpu',
+        getString?.('pipeline.stepCommonFields.validation.invalidLimitCPU')
       )
     }
   }

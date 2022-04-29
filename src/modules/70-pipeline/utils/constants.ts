@@ -7,6 +7,8 @@
 import type { IconName } from '@harness/uicore'
 import type { ConnectorInfoDTO } from 'services/cd-ng'
 
+import type { StepViewType } from '@pipeline/components/AbstractSteps/Step'
+
 export const EXPRESSION_STRING = '<+expression>' // TODO: this needs to be exported from uicore for best use.
 
 export enum CardVariant {
@@ -17,7 +19,9 @@ export enum CardVariant {
 
 export const ConnectorRefWidth = {
   DeploymentFormView: 320,
+  DeploymentForm: 320, // matches StepViewType key for getConnectorRefWidth function
   InputSetView: 310,
+  InputSet: 310, // matches StepViewType key for getConnectorRefWidth function
   DefaultView: 385,
   EditStageView: 366,
   EditStageViewInputSet: 308,
@@ -36,3 +40,6 @@ export const stageTypeToIconMap: Record<string, IconName> = {
   Approval: 'approval-stage-icon',
   FeatureFlag: 'cf-main'
 }
+
+export const getConnectorRefWidth = (viewType: StepViewType): number =>
+  Object.entries(ConnectorRefWidth).find(key => key[0] === viewType)?.[1] || ConnectorRefWidth.DefaultView

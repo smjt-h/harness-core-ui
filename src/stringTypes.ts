@@ -2526,6 +2526,8 @@ export interface StringsMap {
   'pipeline.ciCodebase.buildType': string
   'pipeline.ciCodebase.prCloneStrategy': string
   'pipeline.ciCodebase.pullRequestNumber': string
+  'pipeline.ciCodebase.validation.oneOfValues': string
+  'pipeline.ciCodebase.validation.sslVerifyBoolean': string
   'pipeline.clickHere': string
   'pipeline.clickToExpandErrorDetails': string
   'pipeline.closeStepConfig': string
