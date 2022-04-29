@@ -240,7 +240,7 @@ function StageBuilder(): JSX.Element {
   const setSelectionRef = React.useRef(setSelection)
   setSelectionRef.current = setSelection
 
-  const newPipelineStudioEnabled: boolean = useFeatureFlag(FeatureFlag.NEW_PIPELINE_STUDIO) || true
+  const newPipelineStudioEnabled: boolean = useFeatureFlag(FeatureFlag.NEW_PIPELINE_STUDIO)
   const { getTemplate } = useTemplateSelector()
 
   const { trackEvent } = useTelemetry()

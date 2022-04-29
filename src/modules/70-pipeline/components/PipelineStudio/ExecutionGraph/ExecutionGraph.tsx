@@ -264,7 +264,7 @@ function ExecutionGraphRef<T extends StageElementConfig>(
   } = props
   const { getStagePathFromPipeline } = usePipelineContext()
   const templatesEnabled: boolean = useFeatureFlag(FeatureFlag.NG_TEMPLATES)
-  const newPipelineStudioEnabled: boolean = useFeatureFlag(FeatureFlag.NEW_PIPELINE_STUDIO) || true
+  const newPipelineStudioEnabled: boolean = useFeatureFlag(FeatureFlag.NEW_PIPELINE_STUDIO)
   // NOTE: we are using ref as DynamicPopover use memo
   const stageCloneRef = React.useRef<StageElementWrapper<T>>({})
   stageCloneRef.current = cloneDeep(stage)

@@ -29,7 +29,7 @@ export function StepGroupNode(props: any): JSX.Element {
   const CreateNode: React.FC<any> | undefined = props?.getNode?.(NodeType.CreateNode)?.component
   const DefaultNode: React.FC<any> | undefined = props?.getDefaultNode()?.component
   const stepGroupData = defaultTo(props?.data?.stepGroup, props?.data?.step?.data?.stepGroup)
-  const stepsData = stepGroupData?.steps || stepGroupData?.steps
+  const stepsData = stepGroupData?.steps
   const isNestedStepGroup = Boolean(get(props, 'data.step.data.isNestedGroup'))
 
   React.useEffect(() => {

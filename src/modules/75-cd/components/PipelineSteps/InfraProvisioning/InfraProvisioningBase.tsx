@@ -67,7 +67,7 @@ export const InfraProvisioningBase = (
   const { accountId } = useParams<ProjectPathProps>()
   const formikRef = useRef<FormikContext<InfraProvisioningDataUI>>()
 
-  const newPipelineStudioEnabled: boolean = useFeatureFlag(FeatureFlag.NEW_PIPELINE_STUDIO) || true
+  const newPipelineStudioEnabled: boolean = useFeatureFlag(FeatureFlag.NEW_PIPELINE_STUDIO)
   const { showModal } = useChooseProvisioner({
     onSubmit: (data: any) => {
       onUpdate?.(data)

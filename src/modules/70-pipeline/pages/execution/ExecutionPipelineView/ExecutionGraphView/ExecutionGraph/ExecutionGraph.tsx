@@ -133,7 +133,7 @@ export default function ExecutionGraph(props: ExecutionGraphProps): React.ReactE
   const { pipelineExecutionDetail, selectedStageId } = useExecutionContext()
   const { primaryPaneSize } = useExecutionLayoutContext()
 
-  const newPipelineStudioEnabled: boolean = useFeatureFlag(FeatureFlag.NEW_PIPELINE_STUDIO) || true
+  const newPipelineStudioEnabled: boolean = useFeatureFlag(FeatureFlag.NEW_PIPELINE_STUDIO)
   const nodeData = useMemo(
     () =>
       newPipelineStudioEnabled

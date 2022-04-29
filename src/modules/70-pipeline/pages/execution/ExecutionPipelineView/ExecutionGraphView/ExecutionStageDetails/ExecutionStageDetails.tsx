@@ -87,7 +87,7 @@ export default function ExecutionStageDetails(props: ExecutionStageDetailsProps)
     DynamicPopoverHandlerBinding<unknown> | undefined
   >()
 
-  const newPipelineStudioEnabled: boolean = useFeatureFlag(FeatureFlag.NEW_PIPELINE_STUDIO) || true
+  const newPipelineStudioEnabled: boolean = useFeatureFlag(FeatureFlag.NEW_PIPELINE_STUDIO)
   const { executionIdentifier, accountId } = useParams<ExecutionPathProps>()
   const stage = pipelineStagesMap.get(selectedStageId)
   const {

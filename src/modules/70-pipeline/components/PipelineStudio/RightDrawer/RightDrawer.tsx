@@ -421,7 +421,7 @@ export function RightDrawer(): React.ReactElement {
   if (data?.stepConfig?.isStepGroup) {
     stepData = stepsFactory.getStepData(StepType.StepGroup)
   }
-  const newPipelineStudioEnabled: boolean = useFeatureFlag(FeatureFlag.NEW_PIPELINE_STUDIO) || true
+  const newPipelineStudioEnabled: boolean = useFeatureFlag(FeatureFlag.NEW_PIPELINE_STUDIO)
 
   const discardChanges = (): void => {
     updatePipelineView({
