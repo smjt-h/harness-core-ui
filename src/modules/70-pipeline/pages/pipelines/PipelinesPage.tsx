@@ -88,9 +88,8 @@ import pipelineIllustration from './images/deploypipeline-illustration.svg'
 import buildpipelineIllustration from './images/buildpipeline-illustration.svg'
 import flagpipelineIllustration from './images/flagpipeline-illustration.svg'
 import css from './PipelinesPage.module.scss'
-import { useFiltersContext } from '../pipeline-deployment-list/FiltersContext/FiltersContext'
 import { useQueryParams, useUpdateQueryParams } from '@common/hooks'
-import type { PipelineListQueryParams, QueryParams, StringQueryParams } from './types'
+import type { PipelineListQueryParams, StringQueryParams } from './types'
 
 export enum Sort {
   DESC = 'DESC',
@@ -181,7 +180,6 @@ function PipelinesPage({ mockData }: CDPipelinesPageProps): React.ReactElement {
   const { updateQueryParams } = useUpdateQueryParams<Partial<GetPipelineListQueryParams>>()
 
   const handleFilterChange = (filter: GitFilterScope) => {
-    console.log('filter', filter)
     Object.entries(filter).forEach(entry => {
       entry[0] = entry[0] === 'repo' ? 'repoIdentifier' : entry[0]
       if (entry[1]) {
