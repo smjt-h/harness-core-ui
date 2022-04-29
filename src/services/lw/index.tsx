@@ -391,6 +391,7 @@ export interface Opts {
   access_details?: { [key: string]: any }
   always_use_private_ip?: boolean
   delete_cloud_resources?: boolean
+  dry_run?: boolean
   hide_progress_page?: boolean
   preserve_private_ip?: boolean
 }

@@ -2737,6 +2737,9 @@
         },
         "hide_progress_page": {
           "type": "boolean"
+        },
+        "dry_run": {
+          "type": "boolean"
         }
       }
     },

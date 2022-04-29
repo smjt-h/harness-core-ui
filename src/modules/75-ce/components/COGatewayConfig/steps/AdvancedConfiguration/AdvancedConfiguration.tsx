@@ -66,19 +66,32 @@ const AdvancedConfiguration: React.FC<AdvancedConfigurationProps> = props => {
       }}
     >
       <Layout.Vertical spacing="medium">
-        {(isK8sSelected || isEcsSelected) && (
+        <Layout.Horizontal spacing={'large'}>
+          {(isK8sSelected || isEcsSelected) && (
+            <Toggle
+              label={'Hide Progress Page'}
+              checked={props.gatewayDetails.opts.hide_progress_page}
+              onToggle={isToggled => {
+                props.setGatewayDetails({
+                  ...props.gatewayDetails,
+                  opts: { ...props.gatewayDetails.opts, hide_progress_page: isToggled }
+                })
+              }}
+              data-testid={'progressPageViewToggle'}
+            />
+          )}
           <Toggle
-            label={'Hide Progress Page'}
-            checked={props.gatewayDetails.opts.hide_progress_page}
+            label={getString('ce.co.dryRunMode')}
+            checked={props.gatewayDetails.opts.dry_run}
             onToggle={isToggled => {
               props.setGatewayDetails({
                 ...props.gatewayDetails,
-                opts: { ...props.gatewayDetails.opts, hide_progress_page: isToggled }
+                opts: { ...props.gatewayDetails.opts, dry_run: isToggled }
               })
             }}
-            data-testid={'progressPageViewToggle'}
+            data-testid={'dryRunToggle'}
           />
-        )}
+        </Layout.Horizontal>
         <Tabs id="advancedConfigTabs" selectedTabId={selectedTab} onChange={handleTabChange}>
           <Tab
             id={AdvancedConfigTabs.deps}
