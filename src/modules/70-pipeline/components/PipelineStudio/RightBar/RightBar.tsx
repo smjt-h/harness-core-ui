@@ -830,11 +830,7 @@ export function RightBar(): JSX.Element {
                                       // selectProps: { addClearBtn: true, items: sslVerifyOptions }
                                       items: sslVerifyOptions as unknown as SelectOption[]
                                     },
-                                    allowableTypes: [
-                                      MultiTypeInputType.FIXED,
-                                      MultiTypeInputType.EXPRESSION,
-                                      MultiTypeInputType.RUNTIME
-                                    ]
+                                    allowableTypes: [MultiTypeInputType.FIXED, MultiTypeInputType.RUNTIME]
                                   },
                                   disabled: isReadonly
                                 }}
@@ -864,11 +860,7 @@ export function RightBar(): JSX.Element {
                                   multiTypeInputProps: {
                                     expressions,
                                     selectProps: { addClearBtn: true, items: prCloneStrategyOptions },
-                                    allowableTypes: [
-                                      MultiTypeInputType.FIXED,
-                                      MultiTypeInputType.EXPRESSION,
-                                      MultiTypeInputType.RUNTIME
-                                    ]
+                                    allowableTypes: [MultiTypeInputType.FIXED, MultiTypeInputType.RUNTIME]
                                   },
                                   disabled: isReadonly
                                 }}
@@ -903,11 +895,7 @@ export function RightBar(): JSX.Element {
                                   multiTextInputProps={{
                                     multiTextInputProps: {
                                       expressions,
-                                      allowableTypes: [
-                                        MultiTypeInputType.FIXED,
-                                        MultiTypeInputType.EXPRESSION,
-                                        MultiTypeInputType.RUNTIME
-                                      ]
+                                      allowableTypes: [MultiTypeInputType.FIXED, MultiTypeInputType.RUNTIME]
                                     },
                                     disabled: isReadonly
                                   }}
@@ -932,11 +920,7 @@ export function RightBar(): JSX.Element {
                                   multiTextInputProps={{
                                     multiTextInputProps: {
                                       expressions,
-                                      allowableTypes: [
-                                        MultiTypeInputType.FIXED,
-                                        MultiTypeInputType.EXPRESSION,
-                                        MultiTypeInputType.RUNTIME
-                                      ]
+                                      allowableTypes: [MultiTypeInputType.FIXED, MultiTypeInputType.RUNTIME]
                                     },
                                     disabled: isReadonly
                                   }}

@@ -320,7 +320,7 @@ function CICodebaseInputSetFormInternal({
                 multiTypeProps={{
                   expressions,
                   disabled: readonly,
-                  allowableTypes: [MultiTypeInputType.FIXED, MultiTypeInputType.EXPRESSION]
+                  allowableTypes: [MultiTypeInputType.FIXED]
                 }}
                 onChange={(value, _valueType, connectorRefType) =>
                   handleCIConnectorRefOnChange({
@@ -438,7 +438,7 @@ function CICodebaseInputSetFormInternal({
                   multiTypeInputProps: {
                     expressions,
                     selectProps: { addClearBtn: true, items: sslVerifyOptions as unknown as SelectOption[] },
-                    allowableTypes: [MultiTypeInputType.FIXED, MultiTypeInputType.EXPRESSION]
+                    allowableTypes: [MultiTypeInputType.FIXED]
                   },
                   disabled: readonly
                 }}
@@ -470,11 +470,7 @@ function CICodebaseInputSetFormInternal({
                   multiTypeInputProps: {
                     expressions,
                     selectProps: { addClearBtn: true, items: prCloneStrategyOptions },
-                    allowableTypes: [
-                      MultiTypeInputType.FIXED,
-                      MultiTypeInputType.EXPRESSION,
-                      MultiTypeInputType.RUNTIME
-                    ]
+                    allowableTypes: [MultiTypeInputType.FIXED]
                   },
                   disabled: readonly
                 }}
@@ -514,7 +510,7 @@ function CICodebaseInputSetFormInternal({
                     multiTextInputProps={{
                       multiTextInputProps: {
                         expressions,
-                        allowableTypes: [MultiTypeInputType.FIXED, MultiTypeInputType.EXPRESSION]
+                        allowableTypes: [MultiTypeInputType.FIXED]
                       },
                       disabled: readonly
                     }}
@@ -543,7 +539,7 @@ function CICodebaseInputSetFormInternal({
                     multiTextInputProps={{
                       multiTextInputProps: {
                         expressions,
-                        allowableTypes: [MultiTypeInputType.FIXED, MultiTypeInputType.EXPRESSION]
+                        allowableTypes: [MultiTypeInputType.FIXED]
                       },
                       disabled: readonly
                     }}
@@ -556,51 +552,53 @@ function CICodebaseInputSetFormInternal({
           )}
           {(!isConnectorRuntimeInput ||
             (isConnectorRuntimeInput && get(formik?.values, codeBaseInputFieldFormName.connectorRef))) && (
-            <Layout.Horizontal
-              flex={{ justifyContent: 'start' }}
-              padding={{ top: 'small', left: 'xsmall', bottom: 'xsmall' }}
-              margin={{ left: 'large' }}
-            >
-              <Radio
-                label={radioLabels['branch']}
-                width={110}
-                // margin={{ left: 'medium' }}
-                onClick={() => handleTypeChange('branch')}
-                checked={codeBaseType === 'branch'}
-                disabled={readonly}
-                font={{ variation: FontVariation.FORM_LABEL }}
-                key="branch-radio-option"
-              />
-              <Radio
-                label={radioLabels['tag']}
-                width={90}
-                margin={{ left: 'huge' }}
-                onClick={() => handleTypeChange('tag')}
-                checked={codeBaseType === 'tag'}
-                disabled={readonly}
-                font={{ variation: FontVariation.FORM_LABEL }}
-                key="tag-radio-option"
-              />
-              {connectorType !== 'Codecommit' ? (
+            <>
+              <Layout.Horizontal
+                flex={{ justifyContent: 'start' }}
+                padding={{ top: 'small', left: 'xsmall', bottom: 'xsmall' }}
+                margin={{ left: 'large' }}
+              >
                 <Radio
-                  label={radioLabels['PR']}
+                  label={radioLabels['branch']}
                   width={110}
-                  margin={{ left: 'huge' }}
-                  onClick={() => handleTypeChange('PR')}
-                  checked={codeBaseType === 'PR'}
+                  // margin={{ left: 'medium' }}
+                  onClick={() => handleTypeChange('branch')}
+                  checked={codeBaseType === 'branch'}
                   disabled={readonly}
                   font={{ variation: FontVariation.FORM_LABEL }}
-                  key="pr-radio-option"
+                  key="branch-radio-option"
                 />
-              ) : null}
-            </Layout.Horizontal>
-          )}
+                <Radio
+                  label={radioLabels['tag']}
+                  width={90}
+                  margin={{ left: 'huge' }}
+                  onClick={() => handleTypeChange('tag')}
+                  checked={codeBaseType === 'tag'}
+                  disabled={readonly}
+                  font={{ variation: FontVariation.FORM_LABEL }}
+                  key="tag-radio-option"
+                />
+                {connectorType !== 'Codecommit' ? (
+                  <Radio
+                    label={radioLabels['PR']}
+                    width={110}
+                    margin={{ left: 'huge' }}
+                    onClick={() => handleTypeChange('PR')}
+                    checked={codeBaseType === 'PR'}
+                    disabled={readonly}
+                    font={{ variation: FontVariation.FORM_LABEL }}
+                    key="pr-radio-option"
+                  />
+                ) : null}
+              </Layout.Horizontal>
 
-          <Container width={'50%'}>
-            {codeBaseType === 'branch' ? renderCodeBaseTypeInput('branch') : null}
-            {codeBaseType === 'tag' ? renderCodeBaseTypeInput('tag') : null}
-            {codeBaseType === 'PR' ? renderCodeBaseTypeInput('PR') : null}
-          </Container>
+              <Container width={'50%'}>
+                {codeBaseType === 'branch' ? renderCodeBaseTypeInput('branch') : null}
+                {codeBaseType === 'tag' ? renderCodeBaseTypeInput('tag') : null}
+                {codeBaseType === 'PR' ? renderCodeBaseTypeInput('PR') : null}
+              </Container>
+            </>
+          )}
         </>
       )}
     </Layout.Vertical>
