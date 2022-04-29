@@ -91,6 +91,9 @@ import buildpipelineIllustration from './images/buildpipeline-illustration.svg'
 import flagpipelineIllustration from './images/flagpipeline-illustration.svg'
 import { deploymentTypeLabel } from './PipelineListUtils'
 import css from './PipelinesPage.module.scss'
+import { useFiltersContext } from '../pipeline-deployment-list/FiltersContext/FiltersContext'
+import { useQueryParams, useUpdateQueryParams } from '@common/hooks'
+import type { PipelineListQueryParams, QueryParams, StringQueryParams } from './types'
 
 export enum Sort {
   DESC = 'DESC',
@@ -156,6 +159,41 @@ function PipelinesPage({ mockData }: CDPipelinesPageProps): React.ReactElement {
   const [isReseting, setIsReseting] = useState<boolean>(false)
   const [isDeleting, setIsDeleting] = useState<boolean>(false)
   const [pipelineToDelete, setPipelineToDelete] = useState<PMSPipelineSummaryResponse>()
+  const queryParams = useQueryParams<PipelineListQueryParams>({
+    processQueryParams(params: StringQueryParams) {
+      let filters = {}
+
+      try {
+        filters = params.filters ? JSON.parse(params.filters) : undefined
+      } catch (_e) {
+        // do nothing
+      }
+
+      return {
+        ...params,
+        page: params.page || '1',
+        size: params.size || '20',
+        sort: [],
+        filters,
+        searchTerm: params.searchTerm,
+        repoIdentifier: params.repoIdentifier,
+        branch: params.branch
+      }
+    }
+  })
+  const { updateQueryParams } = useUpdateQueryParams<Partial<GetPipelineListQueryParams>>()
+
+  const handleFilterChange = (filter: GitFilterScope) => {
+    console.log('filter', filter)
+    Object.entries(filter).forEach(entry => {
+      entry[0] = entry[0] === 'repo' ? 'repoIdentifier' : entry[0]
+      if (entry[1]) {
+        updateQueryParams({ [entry[0]]: entry[1] })
+      } else {
+        updateQueryParams({ [entry[0]]: [] as any }) // removes the param
+      }
+    })
+  }
 
   const { projectIdentifier, orgIdentifier, accountId, module } = useParams<
     PipelineType<{
@@ -629,6 +667,8 @@ function PipelinesPage({ mockData }: CDPipelinesPageProps): React.ReactElement {
     return <PageSpinner />
   }
 
+  console.log('queryParams', queryParams)
+
   return (
     <>
       <Page.Header
@@ -667,6 +707,7 @@ function PipelinesPage({ mockData }: CDPipelinesPageProps): React.ReactElement {
               <GitSyncStoreProvider>
                 <GitFilters
                   onChange={filter => {
+                    handleFilterChange(filter)
                     setGitFilter(filter)
                     setPage(0)
                   }}
