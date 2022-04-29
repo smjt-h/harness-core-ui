@@ -18,6 +18,6 @@ export interface NotificationRule {
   id: string
   condition: SelectOption | null
   changeType?: MultiSelectOption[]
-  value?: number | SelectOption
-  duration?: number | SelectOption
+  value?: string | SelectOption
+  duration?: string | SelectOption
 }

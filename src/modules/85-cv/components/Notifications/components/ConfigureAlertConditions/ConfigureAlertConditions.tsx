@@ -1,3 +1,10 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import {
   Button,
   ButtonVariation,
@@ -66,16 +73,18 @@ export default function ConfigureAlertConditions({
   const handleChangeField = useCallback(
     (
       notificationRule: NotificationRule,
-      currentFieldValue: SelectOption | MultiSelectOption[] | number,
+      currentFieldValue: SelectOption | MultiSelectOption[] | string,
       currentField: string,
-      nextField?: string
+      nextField?: string,
+      nextFieldValue?: SelectOption | MultiSelectOption[] | string
     ) => {
       const updatedNotificationRules = getUpdatedNotificationRules({
         notificationRules,
         notificationRule,
         currentField,
         currentFieldValue,
-        nextField
+        nextField,
+        nextFieldValue
       })
       setNotificationRules(updatedNotificationRules)
     },

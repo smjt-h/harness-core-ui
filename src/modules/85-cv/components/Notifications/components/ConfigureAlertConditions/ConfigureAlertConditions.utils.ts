@@ -23,20 +23,22 @@ export function getUpdatedNotificationRules({
   notificationRule,
   currentField,
   currentFieldValue,
-  nextField
+  nextField,
+  nextFieldValue
 }: {
   notificationRules: NotificationRule[]
   notificationRule: NotificationRule
   currentField: string
-  currentFieldValue: number | SelectOption | MultiSelectOption[]
+  currentFieldValue: string | SelectOption | MultiSelectOption[]
   nextField?: string
+  nextFieldValue?: string | SelectOption | MultiSelectOption[]
 }): NotificationRule[] {
   return notificationRules.map(el => {
     if (el.id === notificationRule.id) {
       return {
         ...el,
         [currentField]: currentFieldValue,
-        ...(nextField && { [nextField]: defaultOption })
+        ...(nextField && { [nextField]: nextFieldValue ?? defaultOption })
       }
     } else return el
   })
