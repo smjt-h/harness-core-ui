@@ -1,6 +1,8 @@
 newVariable: New Variable
 defaultValue: Default Value
 allowedValues: Allowed Values
+noVariableFound: No Variable Found
+noVariableExist: There are no variables in your project
 validation:
   type: 'Type is a required field'
   validation: 'Please select a validation type'

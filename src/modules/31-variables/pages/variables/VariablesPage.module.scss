@@ -10,3 +10,10 @@
   background: var(--white) !important;
   border-bottom: 1px solid var(--grey-300);
 }
+.listBody {
+  min-height: calc(100vh - 136px);
+  min-width: 900px;
+}
+.listPage {
+  min-width: 900px;
+}
