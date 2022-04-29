@@ -25,7 +25,7 @@ import type {
   StepElementConfig
 } from 'services/cd-ng'
 
-import type { UseStringsReturn } from 'framework/strings'
+import type { UseStringsReturn, StringKeys } from 'framework/strings'
 import { getDurationValidationSchema } from '@common/components/MultiTypeDuration/MultiTypeDuration'
 import type { TemplateStepNode } from 'services/pipeline-ng'
 import { ServiceDeploymentType } from '@pipeline/utils/stageHelpers'
@@ -38,6 +38,11 @@ import '@ci/components/PipelineSteps'
 // eslint-disable-next-line no-restricted-imports
 import '@sto-steps/components/PipelineSteps'
 import { StepViewType } from '../AbstractSteps/Step'
+
+const stringTrimmingRequiredRef: StringKeys = 'pipeline.ci.validations.stringTrimmingRequired'
+
+const valueRequiresTrimming = (value: unknown): boolean =>
+  typeof value === 'string' && (value.startsWith(' ') || value.endsWith(' '))
 
 export const clearRuntimeInput = (template: PipelineInfoConfig): PipelineInfoConfig => {
   return JSON.parse(
@@ -217,15 +222,41 @@ export const validateStage = ({
     const templateStageConfig = template?.spec as DeploymentStageConfig | undefined
     const originalStageConfig = originalStage?.spec as DeploymentStageConfig | undefined
     if (
-      isEmpty((stageConfig?.infrastructure as Infrastructure)?.spec?.namespace) &&
       getMultiTypeFromValue((templateStageConfig?.infrastructure as Infrastructure)?.spec?.namespace) ===
-        MultiTypeInputType.RUNTIME
+      MultiTypeInputType.RUNTIME
     ) {
-      set(
-        errors,
-        'spec.infrastructure.spec.namespace',
-        getString?.('fieldRequired', { field: getString?.('pipelineSteps.build.infraSpecifications.namespace') })
-      )
+      const namespace = (stageConfig?.infrastructure as Infrastructure)?.spec?.namespace
+      if (isEmpty(namespace)) {
+        set(
+          errors,
+          'spec.infrastructure.spec.namespace',
+          getString?.('fieldRequired', { field: getString?.('pipelineSteps.build.infraSpecifications.namespace') })
+        )
+      } else if (valueRequiresTrimming(namespace)) {
+        set(
+          errors,
+          'spec.infrastructure.spec.namespace',
+          getString?.(stringTrimmingRequiredRef, {
+            label: getString?.('pipelineSteps.build.infraSpecifications.namespace')
+          })
+        )
+      }
+    }
+
+    if (
+      getMultiTypeFromValue((templateStageConfig?.infrastructure as Infrastructure)?.spec?.serviceAccountName) ===
+      MultiTypeInputType.RUNTIME
+    ) {
+      const serviceAccountName = (stageConfig?.infrastructure as Infrastructure)?.spec?.serviceAccountName
+      if (valueRequiresTrimming(serviceAccountName)) {
+        set(
+          errors,
+          'spec.infrastructure.spec.serviceAccountName',
+          getString?.(stringTrimmingRequiredRef, {
+            label: getString?.('pipeline.infraSpecifications.serviceAccountName')
+          })
+        )
+      }
     }
 
     if (stage.type === 'Deployment' && templateStageConfig?.serviceConfig?.serviceRef) {

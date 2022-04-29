@@ -71,6 +71,8 @@ import stepCss from '@pipeline/components/PipelineSteps/Steps/Steps.module.scss'
 const logger = loggerFor(ModuleName.CD)
 const k8sClusterKeyRef = 'connectors.title.k8sCluster'
 const namespaceKeyRef = 'pipelineSteps.build.infraSpecifications.namespace'
+const stringTrimmingRequiredRef = 'pipeline.ci.validations.stringTrimmingRequired'
+const serviceAccountNameRef = 'pipeline.infraSpecifications.serviceAccountName'
 const poolIdKeyRef = 'pipeline.buildInfra.poolId'
 
 interface BuildInfraTypeItem {
@@ -173,6 +175,11 @@ const validateUniqueList = ({
   } else {
     return yup.string()
   }
+}
+
+const validateRequiresTrimming = (value?: string): boolean => {
+  const requiresTrimming = value && (value.startsWith(' ') || value.endsWith(' '))
+  return !requiresTrimming
 }
 
 const getMapValues: (value: MultiTypeMapUIType) => MultiTypeMapType = value => {
@@ -1002,7 +1009,7 @@ export default function BuildInfraSpecifications({ children }: React.PropsWithCh
                 margin={{ bottom: 'xsmall' }}
                 tooltipProps={{ dataTooltipId: 'serviceAccountName' }}
               >
-                {getString('pipeline.infraSpecifications.serviceAccountName')}
+                {getString(serviceAccountNameRef)}
               </Text>
             }
             name="serviceAccountName"
@@ -1130,7 +1137,22 @@ export default function BuildInfraSpecifications({ children }: React.PropsWithCh
                   }
                   return true
                 }
-              ),
+              )
+              .test({
+                test: value => validateRequiresTrimming(value),
+                message: getString(stringTrimmingRequiredRef, {
+                  label: getString(namespaceKeyRef)
+                })
+              }),
+            serviceAccountName: yup
+              .string()
+              .nullable()
+              .test({
+                test: value => validateRequiresTrimming(value),
+                message: getString(stringTrimmingRequiredRef, {
+                  label: getString(serviceAccountNameRef)
+                })
+              }),
             useFromStage: yup
               .string()
               .nullable()
@@ -1362,7 +1384,7 @@ export default function BuildInfraSpecifications({ children }: React.PropsWithCh
                                                   margin={{ bottom: 'xsmall' }}
                                                   tooltipProps={{ dataTooltipId: 'serviceAccountName' }}
                                                 >
-                                                  {getString('pipeline.infraSpecifications.serviceAccountName')}
+                                                  {getString(serviceAccountNameRef)}
                                                 </Text>
                                                 <Text color="black" margin={{ bottom: 'medium' }}>
                                                   {

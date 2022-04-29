@@ -946,6 +946,7 @@ ci:
     keyUnique: Key should be unique
     invalidSize: Invalid Size. To learn more, hover over the Size tooltip.
     pathRequiredForHostPath: 'Path is required for Type Host Path'
+    stringTrimmingRequired: '{{label}} requires whitespaces to be trimmed'
 imageVersionDeprecated: Image version outdated
 unsupportedImagesWarning: 'You are using unsupported Harness CI images. Harness allows builds to use these images, but we cannot ensure that builds will not fail. Please update the versions of the following image(s) {{summary}}'
 invalidRequest: Invalid Request
