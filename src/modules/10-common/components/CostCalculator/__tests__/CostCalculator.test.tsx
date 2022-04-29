@@ -4,8 +4,63 @@ import { CostCalculator } from '@common/components/CostCalculator/CostCalculator
 import { ReviewPage } from '@common/components/CostCalculator/ReviewAndBuyPlanUpgrades'
 import { Editions } from '@common/constants/SubscriptionTypes'
 import { PlanType } from '@common/components/CostCalculator/CostCalculatorUtils'
+import {useGetUsageAndLimit} from "@common/hooks/useGetUsageAndLimit";
+import {useRetrieveProductPrices} from "services/cd-ng";
+import {useParams} from "react-router-dom";
+
+
+const useGetUsageAndLimitMock = useGetUsageAndLimit as jest.MockedFunction<any>;
+const useRetrieveProductPricesMock = useRetrieveProductPrices as jest.MockedFunction<any>;
+const useParamsMock = useParams as jest.MockedFunction<any>;
+
 
 describe('Cost Calculator Test', () => {
+
+  useParamsMock.mockImplementation(() => {
+    return {accountId: 'testid'}
+  });
+  useRetrieveProductPricesMock.mockImplementation(() => {
+    return {
+      data: {
+        data: {
+          prices : [
+            {lookupKey : 'FF_TEAM_DEVELOPERS_MONTHLY', unitAmount: 50},
+            {lookupKey : 'FF_TEAM_DEVELOPERS_YEARLY', unitAmount: 500},
+            {lookupKey : 'FF_ENTERPRISE_DEVELOPERS_MONTHLY', unitAmount: 90},
+            {lookupKey : 'FF_ENTERPRISE_DEVELOPERS_YEARLY', unitAmount: 900},
+            {lookupKey : 'FF_TEAM_MAU_MONTHLY', unitAmount: 50},
+            {lookupKey : 'FF_TEAM_MAU_YEARLY', unitAmount: 500},
+            {lookupKey : 'FF_ENTERPRISE_MAU_MONTHLY', unitAmount: 90},
+            {lookupKey : 'FF_ENTERPRISE_MAU_YEARLY', unitAmount: 900},
+          ]
+        }
+      }
+    }
+  });
+  useGetUsageAndLimitMock.mockImplementation(() => {
+    return {
+      limitData: {
+        loadingLimit: false,
+        limit: {
+          ff: {
+            totalClientMAUs: 50000,
+            totalFeatureFlagUnits: 20
+          }
+        }
+      },
+      usageData: {
+        loadingLimit: false,
+        usage: {
+          ff: {
+            activeClientMAUs: {count: 25000},
+            activeFeatureFlagUsers: {count: 10}
+          }
+        }
+      }
+    };
+  });
+
+
   test('Check CostCalc', async () => {
     const { container } = render(<CostCalculator />)
     expect(container).toMatchSnapshot()
