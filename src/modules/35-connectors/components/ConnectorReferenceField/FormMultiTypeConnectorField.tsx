@@ -113,7 +113,8 @@ export const MultiTypeConnectorField = (props: MultiTypeConnectorFieldProps): Re
     disabled,
     ...rest
   } = restProps
-  const selected = get(formik?.values, name, '')
+  // Not using get here is because, lodash get will not work properly with null values.
+  const selected = formik?.values?.[name] || ''
   const [selectedValue, setSelectedValue] = React.useState(selected)
   const [inlineSelection, setInlineSelection] = React.useState<InlineSelectionInterface>({
     selected: false,

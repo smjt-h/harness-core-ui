@@ -10,7 +10,6 @@ import { Card, Container, Formik, FormikForm, FormInput, Icon, IconName, Layout,
 import { useParams } from 'react-router-dom'
 import { Color } from '@harness/design-system'
 import cx from 'classnames'
-import { FormConnectorReferenceField } from '@connectors/components/ConnectorReferenceField/FormConnectorReferenceField'
 import { useStrings } from 'framework/strings'
 import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
 import { useFeatureFlag } from '@common/hooks/useFeatureFlag'
@@ -31,6 +30,10 @@ import {
   validateDuplicateIdentifier
 } from './DefineHealthSource.utils'
 import css from './DefineHealthSource.module.scss'
+import { useVariablesExpression } from '@pipeline/components/PipelineStudio/PiplineHooks/useVariablesExpression'
+import { FormMultiTypeConnectorField } from '@connectors/components/ConnectorReferenceField/FormMultiTypeConnectorField'
+import { useGitScope } from '@pipeline/utils/CIUtils'
+import { AllMultiTypeInputTypesForStep } from '@ci/components/PipelineSteps/CIStep/StepUtils'
 
 interface DefineHealthSourceProps {
   onSubmit?: (values: any) => void
@@ -39,15 +42,16 @@ interface DefineHealthSourceProps {
 function DefineHealthSource(props: DefineHealthSourceProps): JSX.Element {
   const { onSubmit } = props
   const { getString } = useStrings()
+  const { expressions } = useVariablesExpression()
   const { onNext, sourceData } = useContext(SetupSourceTabsContext)
   const { orgIdentifier, projectIdentifier, accountId } = useParams<ProjectPathProps & { identifier: string }>()
   const { isEdit } = sourceData
+  const gitScope = useGitScope()
 
   const isErrorTrackingEnabled = useFeatureFlag(FeatureFlag.ERROR_TRACKING_ENABLED)
   const isDynatraceAPMEnabled = useFeatureFlag(FeatureFlag.DYNATRACE_APM_ENABLED)
   const isCustomMetricEnabled = useFeatureFlag(FeatureFlag.CHI_CUSTOM_HEALTH)
   const isCustomLogEnabled = useFeatureFlag(FeatureFlag.CHI_CUSTOM_HEALTH_LOGS)
-
   const disabledByFF: string[] = useMemo(() => {
     const disabledConnectorsList = []
     if (!isDynatraceAPMEnabled) {
@@ -108,9 +112,16 @@ function DefineHealthSource(props: DefineHealthSourceProps): JSX.Element {
         }}
       >
         {formik => {
+          console.log('nammmme', formik?.values)
           let featureOption = getFeatureOption(formik?.values?.sourceType, getString)
           if (formik.values?.sourceType === HealthSourceTypes.CustomHealth) {
             featureOption = modifyCustomHealthFeatureBasedOnFF(isCustomLogEnabled, isCustomMetricEnabled, featureOption)
+          }
+          if (
+            formik?.values?.connectorId?.value &&
+            formik.values?.[ConnectorRefFieldName] !== formik?.values?.connectorId?.value
+          ) {
+            formik.setFieldValue(ConnectorRefFieldName, formik?.values?.connectorId?.value)
           }
           return (
             <FormikForm className={css.formFullheight}>
@@ -203,24 +214,23 @@ function DefineHealthSource(props: DefineHealthSourceProps): JSX.Element {
                 <>
                   <Container margin={{ bottom: 'large' }} width={'400px'}>
                     <div className={css.connectorField}>
-                      <FormConnectorReferenceField
-                        width={400}
-                        formik={formik}
-                        type={formik?.values?.sourceType}
-                        name={ConnectorRefFieldName}
-                        accountIdentifier={accountId}
-                        projectIdentifier={projectIdentifier}
-                        orgIdentifier={orgIdentifier}
-                        placeholder={getString('cv.healthSource.connectors.selectConnector', {
-                          sourceType: formik?.values?.sourceType
-                        })}
-                        disabled={isEdit ? !!formik?.values?.connectorRef && isEdit : !formik?.values?.sourceType}
+                      <FormMultiTypeConnectorField
+                        name={'connectorId'}
                         label={
                           <Text color={Color.BLACK} font={'small'} margin={{ bottom: 'small' }}>
                             {getString('connectors.selectConnector')}
                           </Text>
                         }
-                        tooltipProps={{ dataTooltipId: 'selectHealthSourceConnector' }}
+                        placeholder={getString('cv.healthSource.connectors.selectConnector', {
+                          sourceType: formik?.values?.sourceType
+                        })}
+                        disabled={isEdit ? !!formik?.values?.connectorRef && isEdit : !formik?.values?.sourceType}
+                        accountIdentifier={accountId}
+                        projectIdentifier={projectIdentifier}
+                        orgIdentifier={orgIdentifier}
+                        width={400}
+                        multiTypeProps={{ expressions, allowableTypes: AllMultiTypeInputTypesForStep }}
+                        gitScope={gitScope}
                       />
                     </div>
                   </Container>
