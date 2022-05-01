@@ -32,8 +32,6 @@ const VariablesPage: React.FC = () => {
 
   useDocumentTitle(variableLabel)
 
-  const { openCreateUpdateVariableModal } = useCreateEditVariableModal({})
-
   const {
     data: variableResponse,
     loading,
@@ -49,6 +47,11 @@ const VariablesPage: React.FC = () => {
       searchTerm
     }
   })
+
+  const { openCreateUpdateVariableModal } = useCreateEditVariableModal({
+    onSuccess: refetch
+  })
+
   return (
     <>
       <Page.Header

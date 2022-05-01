@@ -8,21 +8,35 @@
 import React from 'react'
 
 import { render, waitFor, act, fireEvent } from '@testing-library/react'
+import * as cdngServices from 'services/cd-ng'
 import routes from '@common/RouteDefinitions'
 import { TestWrapper } from '@common/utils/testUtils'
 import { accountPathProps, orgPathProps, projectPathProps } from '@common/utils/routeUtils'
 import VariablesPage from '../VariablesPage'
+import {
+  VariableSuccessResponseWithData,
+  VariableSuccessResponseWithError,
+  VariableSuccessResponseWithNoData
+} from './mock/variableResponse'
 
 jest.useFakeTimers()
 
 describe('Variables Page', () => {
+  beforeEach(() => {
+    jest.clearAllMocks()
+  })
   test('render page at account level', async () => {
-    const { getByText } = render(
+    jest
+      .spyOn(cdngServices, 'useGetVariablesList')
+      .mockImplementation(() => ({ data: VariableSuccessResponseWithData, loading: false } as any))
+    const { container, getByText, getAllByText } = render(
       <TestWrapper path={routes.toVariables({ ...accountPathProps })} pathParams={{ accountId: 'dummy' }}>
         <VariablesPage />
       </TestWrapper>
     )
-    await waitFor(() => getByText('variables.newVariable'))
+
+    await waitFor(() => getAllByText('variables.newVariable'))
+    await waitFor(() => getAllByText('CUSTOM_VARIABLE'))
     expect(getByText('account common.variables')).toBeDefined()
     expect(getByText('variables.newVariable')).toBeDefined()
     const neVarBtn = getByText('variables.newVariable')
@@ -31,8 +45,64 @@ describe('Variables Page', () => {
     })
 
     await waitFor(() => expect(getByText('common.addVariable')))
+    expect(container).toMatchSnapshot()
   })
+
+  test('render page at account level with no data', async () => {
+    jest
+      .spyOn(cdngServices, 'useGetVariablesList')
+      .mockImplementation(() => ({ data: VariableSuccessResponseWithNoData, loading: false } as any))
+    const { getByText, getAllByText } = render(
+      <TestWrapper path={routes.toVariables({ ...accountPathProps })} pathParams={{ accountId: 'dummy' }}>
+        <VariablesPage />
+      </TestWrapper>
+    )
+    await waitFor(() => getAllByText('variables.newVariable'))
+    expect(getByText('variables.noVariableExist')).toBeDefined()
+  })
+
+  test('render page at account level with error', async () => {
+    const mockListRefect = jest.fn()
+    jest
+      .spyOn(cdngServices, 'useGetVariablesList')
+      .mockImplementation(
+        () => ({ error: VariableSuccessResponseWithError, loading: false, refetch: mockListRefect } as any)
+      )
+    const { getByText, getAllByText } = render(
+      <TestWrapper path={routes.toVariables({ ...accountPathProps })} pathParams={{ accountId: 'dummy' }}>
+        <VariablesPage />
+      </TestWrapper>
+    )
+    await waitFor(() => getAllByText('variables.newVariable'))
+    expect(getByText('Invalid request: Failed to connect')).toBeDefined()
+    const retryBtn = getByText('Retry')
+    expect(retryBtn).toBeDefined()
+    act(() => {
+      fireEvent.click(retryBtn)
+    })
+    await waitFor(() => expect(mockListRefect).toBeCalled())
+  })
+
+  test('render page at account level when loading state', async () => {
+    const mockListRefect = jest.fn()
+    jest
+      .spyOn(cdngServices, 'useGetVariablesList')
+      .mockImplementation(
+        () => ({ error: VariableSuccessResponseWithError, loading: true, refetch: mockListRefect } as any)
+      )
+    const { getByText, getAllByText } = render(
+      <TestWrapper path={routes.toVariables({ ...accountPathProps })} pathParams={{ accountId: 'dummy' }}>
+        <VariablesPage />
+      </TestWrapper>
+    )
+    await waitFor(() => getAllByText('variables.newVariable'))
+    expect(getByText('Loading, please wait...')).toBeDefined()
+  })
+
   test('render page at org level', async () => {
+    jest
+      .spyOn(cdngServices, 'useGetVariablesList')
+      .mockImplementation(() => ({ data: VariableSuccessResponseWithData, loading: false } as any))
     const { getByText } = render(
       <TestWrapper
         path={routes.toVariables({ ...orgPathProps })}
@@ -47,6 +117,9 @@ describe('Variables Page', () => {
     expect(getByText('dummyOrg')).toBeDefined()
   })
   test('render page at project level', async () => {
+    jest
+      .spyOn(cdngServices, 'useGetVariablesList')
+      .mockImplementation(() => ({ data: VariableSuccessResponseWithData, loading: false } as any))
     const { getByText } = render(
       <TestWrapper
         path={routes.toVariables({ ...projectPathProps, module: 'cd' })}

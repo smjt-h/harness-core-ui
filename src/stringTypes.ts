@@ -1245,6 +1245,7 @@ export interface StringsMap {
   'secrets.typeSSH': string
   'variables.allowedValues': string
   'variables.defaultValue': string
+  'variables.inputValidation': string
   'variables.newVariable': string
   'variables.noVariableExist': string
   'variables.noVariableFound': string

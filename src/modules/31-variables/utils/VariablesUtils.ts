@@ -68,3 +68,21 @@ function getVariableSpecFromFormData(data: VariableFormDataWithScope): StringVar
       throw Error(` ${variableType} variable type is not supported.`)
   }
 }
+
+export function getValueFromVariableAndValidationType(data: VariableDTO): string | number | boolean {
+  switch (data.type) {
+    case VariableType.String:
+      return getValueFromValidationTypeForString(data.spec)
+    default:
+      throw Error('Unsupported Variable type.')
+  }
+}
+
+function getValueFromValidationTypeForString(spec: StringVariableConfigDTO): string {
+  switch (spec.valueType) {
+    case Validation.FIXED:
+      return spec.fixedValue as string
+    default:
+      throw Error('Unsupported validation type for String variable.')
+  }
+}
