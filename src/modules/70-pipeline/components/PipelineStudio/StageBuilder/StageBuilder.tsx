@@ -60,7 +60,8 @@ import {
   resetServiceSelectionForStages,
   getAffectedDependentStages,
   getStageIndexByIdentifier,
-  getNewStageFromTemplate
+  getNewStageFromTemplate,
+  getFlattenedStages
 } from './StageBuilderUtil'
 import { useStageBuilderCanvasState } from './useStageBuilderCanvasState'
 import { StageList } from './views/StageList/StageList'
@@ -862,19 +863,18 @@ function StageBuilder(): React.ReactElement {
     id: deleteId
   })} `
 
-  if (
-    isConfirmDeleteStageOpen &&
-    pipeline.stages?.some(
-      currentStage =>
-        (currentStage.stage?.spec as DeploymentStageConfig)?.serviceConfig?.useFromStage?.stage === deleteId ||
-        currentStage.parallel?.some(
-          parallelStage =>
-            (parallelStage.stage?.spec as DeploymentStageConfig)?.serviceConfig?.useFromStage?.stage === deleteId
-        )
-    )
-  ) {
-    deletionContentText =
-      'If this stage is deleted, then other stages propagating configuration from this stage will be reset.'
+  if (isConfirmDeleteStageOpen) {
+    const propagatingStages = getFlattenedStages(pipeline)
+      .stages?.filter(
+        currentStage =>
+          (currentStage.stage?.spec as DeploymentStageConfig)?.serviceConfig?.useFromStage?.stage === deleteId
+      )
+      ?.reduce((prev, next) => {
+        return prev ? `${prev}, ${next.stage?.name}` : next.stage?.name || ''
+      }, '')
+
+    if (propagatingStages)
+      deletionContentText = `Warning: this Stage's settings are propagated to another Stage in this Pipeline (${propagatingStages}). If you delete this Stage, you must update the other Stage's settings or the Pipeline will fail.`
   }
 
   return (
