@@ -6,13 +6,14 @@
  */
 
 import React from 'react'
-import { render, waitFor } from '@testing-library/react'
+import { render, waitFor, act, fireEvent } from '@testing-library/react'
 import routes from '@common/RouteDefinitions'
 import { TestWrapper } from '@common/utils/testUtils'
 import { accountPathProps } from '@common/utils/routeUtils'
 import VariableListView from '../VariableListView'
 import {
   VariableSuccessResponseWithData,
+  VariableSuccessResponseWithDataFor2Pages,
   VariableSuccessResponseWithDataWithNoPagedInfo
 } from '../../__tests__/mock/variableResponse'
 
@@ -45,4 +46,25 @@ describe('VariableListView', () => {
       await waitFor(() => getByText('CUSTOM_VARIABLE'))
       expect(container).toMatchSnapshot()
     })
+
+  test('render component at account level', async () => {
+    const gotoPageMock = jest.fn()
+    const { getByText } = render(
+      <TestWrapper path={routes.toVariables({ ...accountPathProps })} pathParams={{ accountId: 'dummy' }}>
+        <VariableListView
+          variables={VariableSuccessResponseWithDataFor2Pages.data as any}
+          gotoPage={gotoPageMock}
+          refetch={jest.fn()}
+        />
+      </TestWrapper>
+    )
+
+    await waitFor(() => getByText('CUSTOM_VARIABLE'))
+
+    const nextBtn = getByText('Next')
+    act(() => {
+      fireEvent.click(nextBtn)
+    })
+    expect(gotoPageMock).toBeCalled()
+  })
 })

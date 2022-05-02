@@ -14,7 +14,9 @@ import { findDialogContainer, TestWrapper } from '@common/utils/testUtils'
 import { accountPathProps, orgPathProps, projectPathProps } from '@common/utils/routeUtils'
 import VariablesPage from '../VariablesPage'
 import {
+  VariableSuccessResponseWithContentUndefined,
   VariableSuccessResponseWithData,
+  VariableSuccessResponseWithDataUndefined,
   VariableSuccessResponseWithError,
   VariableSuccessResponseWithNoData
 } from './mock/variableResponse'
@@ -48,10 +50,67 @@ describe('Variables Page', () => {
     expect(container).toMatchSnapshot()
   })
 
-  test('render page at account level with no data', async () => {
+  test('render page at account level with no data - case 1', async () => {
     jest
       .spyOn(cdngServices, 'useGetVariablesList')
       .mockImplementation(() => ({ data: VariableSuccessResponseWithNoData, loading: false } as any))
+    const { getByText, getAllByText } = render(
+      <TestWrapper path={routes.toVariables({ ...accountPathProps })} pathParams={{ accountId: 'dummy' }}>
+        <VariablesPage />
+      </TestWrapper>
+    )
+    await waitFor(() => getAllByText('variables.newVariable'))
+    expect(getByText('variables.noVariableExist')).toBeDefined()
+    const neVarBtn = getAllByText('variables.newVariable')[1]
+    act(() => {
+      fireEvent.click(neVarBtn)
+    })
+
+    await waitFor(() => expect(getByText('common.addVariable')))
+  })
+
+  test('render page at account level with no data- case 2', async () => {
+    jest
+      .spyOn(cdngServices, 'useGetVariablesList')
+      .mockImplementation(() => ({ data: VariableSuccessResponseWithDataUndefined, loading: false } as any))
+    const { getByText, getAllByText } = render(
+      <TestWrapper path={routes.toVariables({ ...accountPathProps })} pathParams={{ accountId: 'dummy' }}>
+        <VariablesPage />
+      </TestWrapper>
+    )
+    await waitFor(() => getAllByText('variables.newVariable'))
+    expect(getByText('variables.noVariableExist')).toBeDefined()
+    const neVarBtn = getAllByText('variables.newVariable')[1]
+    act(() => {
+      fireEvent.click(neVarBtn)
+    })
+
+    await waitFor(() => expect(getByText('common.addVariable')))
+  })
+
+  test('render page at account level with no data - case 3', async () => {
+    jest
+      .spyOn(cdngServices, 'useGetVariablesList')
+      .mockImplementation(() => ({ data: VariableSuccessResponseWithContentUndefined, loading: false } as any))
+    const { getByText, getAllByText } = render(
+      <TestWrapper path={routes.toVariables({ ...accountPathProps })} pathParams={{ accountId: 'dummy' }}>
+        <VariablesPage />
+      </TestWrapper>
+    )
+    await waitFor(() => getAllByText('variables.newVariable'))
+    expect(getByText('variables.noVariableExist')).toBeDefined()
+    const neVarBtn = getAllByText('variables.newVariable')[1]
+    act(() => {
+      fireEvent.click(neVarBtn)
+    })
+
+    await waitFor(() => expect(getByText('common.addVariable')))
+  })
+
+  test('render page at account level with no data - case 4', async () => {
+    jest
+      .spyOn(cdngServices, 'useGetVariablesList')
+      .mockImplementation(() => ({ data: undefined, loading: false } as any))
     const { getByText, getAllByText } = render(
       <TestWrapper path={routes.toVariables({ ...accountPathProps })} pathParams={{ accountId: 'dummy' }}>
         <VariablesPage />
@@ -163,5 +222,47 @@ describe('Variables Page', () => {
     await waitFor(() => expect(getByText('common.addVariable')))
     const dialog = findDialogContainer() as HTMLElement
     expect(dialog).toMatchSnapshot()
+  })
+  test('test search on ', async () => {
+    jest
+      .spyOn(cdngServices, 'useGetVariablesList')
+      .mockImplementation(() => ({ data: VariableSuccessResponseWithData, loading: false } as any))
+    const { container, getByText, getAllByText } = render(
+      <TestWrapper path={routes.toVariables({ ...accountPathProps })} pathParams={{ accountId: 'dummy' }}>
+        <VariablesPage />
+      </TestWrapper>
+    )
+
+    await waitFor(() => getAllByText('variables.newVariable'))
+    await waitFor(() => getAllByText('CUSTOM_VARIABLE'))
+    expect(getByText('account common.variables')).toBeDefined()
+    const search = container.querySelector('input[type="search"]') as HTMLInputElement
+    expect(search).toBeDefined()
+    act(() => {
+      fireEvent.change(search, { target: { value: 'COST' } })
+    })
+
+    await waitFor(() => expect(search.value).toBe('COST'))
+  })
+
+  test('render component at account level - with 2 pages', async () => {
+    jest
+      .spyOn(cdngServices, 'useGetVariablesList')
+      .mockImplementation(() => ({ data: VariableSuccessResponseWithData, loading: false } as any))
+    const { getByText } = render(
+      <TestWrapper
+        path={routes.toVariables({ ...projectPathProps, module: 'cd' })}
+        pathParams={{ accountId: 'dummy', orgIdentifier: 'dummyOrg', projectIdentifier: 'dummyProject' }}
+      >
+        <VariablesPage />
+      </TestWrapper>
+    )
+
+    await waitFor(() => getByText('CUSTOM_VARIABLE'))
+
+    const nextBtn = getByText('Next')
+    act(() => {
+      fireEvent.click(nextBtn)
+    })
   })
 })
