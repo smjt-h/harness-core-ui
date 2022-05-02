@@ -227,7 +227,7 @@ serviceNowCreateStep:
     templateName: Template Name is required
 serviceNowUpdateStep:
   fieldType:
-    applyFromTemplate: Apply standard change from template
+    applyFromTemplate: Apply from template
     updateFields: Update Fields
 manifestType:
   manifestTyperequired: Manifest Type is required

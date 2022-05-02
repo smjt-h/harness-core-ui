@@ -105,6 +105,7 @@ function FormContent({
     []
   )
   const [connectorValueType, setConnectorValueType] = useState<MultiTypeInputType>(MultiTypeInputType.FIXED)
+  const [ticketValueType, setTicketValueType] = useState<MultiTypeInputType>(MultiTypeInputType.FIXED)
   const commonParams = {
     accountIdentifier: accountId,
     projectIdentifier,
@@ -151,7 +152,9 @@ function FormContent({
   useEffect(() => {
     if (
       connectorRefFixedValue &&
+      connectorValueType === MultiTypeInputType.FIXED &&
       ticketTypeKeyFixedValue &&
+      ticketValueType === MultiTypeInputType.FIXED &&
       getMultiTypeFromValue(templateName) === MultiTypeInputType.FIXED
     ) {
       refetchServiceNowTemplate({
@@ -167,7 +170,7 @@ function FormContent({
     }
   }, [connectorRefFixedValue, ticketTypeKeyFixedValue, templateName])
   useDeepCompareEffect(() => {
-    if (connectorRefFixedValue && ticketTypeKeyFixedValue) {
+    if (connectorRefFixedValue && ticketTypeKeyFixedValue && ticketValueType === MultiTypeInputType.FIXED) {
       refetchServiceNowMetadata({
         queryParams: {
           ...commonParams,
@@ -399,6 +402,7 @@ function FormContent({
               allowableTypes,
               expressions,
               onChange: (value: unknown, _valueType, type) => {
+                setTicketValueType(type)
                 // Clear dependent fields
                 if (
                   type === MultiTypeInputType.FIXED &&
