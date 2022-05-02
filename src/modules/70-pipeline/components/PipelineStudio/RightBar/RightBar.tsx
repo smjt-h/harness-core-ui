@@ -51,7 +51,8 @@ import {
   getScopeFromValue
 } from '@common/components/EntityReference/EntityReference'
 import { useVariablesExpression } from '@pipeline/components/PipelineStudio/PiplineHooks/useVariablesExpression'
-import { ConnectorRefWidth, getPrCloneStrategyOptions } from '@pipeline/utils/constants'
+import { ConnectorRefWidth, getPrCloneStrategyOptions, sslVerifyOptions } from '@pipeline/utils/constants'
+import { getOptionalSubLabel } from '@pipeline/components/Volumes/Volumes'
 import {
   handleCIConnectorRefOnChange,
   ConnectionType,
@@ -94,17 +95,6 @@ enum CodebaseStatuses {
   Validating = 'validating'
 }
 
-export const sslVerifyOptions = [
-  {
-    label: 'True',
-    value: true
-  },
-  {
-    label: 'False',
-    value: false
-  }
-]
-
 const codebaseIcons: Record<CodebaseStatuses, IconName> = {
   [CodebaseStatuses.ZeroState]: 'codebase-zero-state',
   [CodebaseStatuses.NotConfigured]: 'codebase-not-configured',
@@ -131,17 +121,6 @@ const getConnectorWidth = ({
   }
   return (!isRuntimeInput(connectorRef) && ConnectorRefWidth.RightBarView) || undefined
 }
-
-export const getOptionalSubLabel = (getString: UseStringsReturn['getString'], tooltip?: string): JSX.Element => (
-  <Text
-    className={css.capitalize}
-    tooltipProps={{ dataTooltipId: tooltip }}
-    color={Color.GREY_400}
-    font={{ size: 'small', weight: 'semi-bold' }}
-  >
-    {getString('common.optionalLabel')}
-  </Text>
-)
 
 export const renderConnectorAndRepoName = ({
   values,

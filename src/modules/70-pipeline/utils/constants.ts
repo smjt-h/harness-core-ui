@@ -48,3 +48,14 @@ export const getPrCloneStrategyOptions = (getString: UseStringsReturn['getString
   { label: getString('pipeline.rightBar.mergeCommit'), value: 'MergeCommit' },
   { label: getString('common.sourceBranch'), value: 'SourceBranch' }
 ]
+
+export const sslVerifyOptions = [
+  {
+    label: 'True',
+    value: true
+  },
+  {
+    label: 'False',
+    value: false
+  }
+]
