@@ -100,6 +100,7 @@ export const ECRStepBase = (
               enableFields={{
                 name: {},
                 'spec.imageName': {},
+                'spec.baseImageConnectorRefs': {},
                 'spec.connectorRef': {
                   label: (
                     <Text

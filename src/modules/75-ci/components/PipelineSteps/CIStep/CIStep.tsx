@@ -375,6 +375,9 @@ export const CIStep: React.FC<CIStepProps> = props => {
           })}
         </Container>
       ) : null}
+      {Object.prototype.hasOwnProperty.call(enableFields, 'spec.baseImageConnectorRefs') ? (
+        <Container className={cx(css.formGroup, stepCss, css.bottomMargin5)}>baseImageConnectorRefs</Container>
+      ) : null}
       {Object.prototype.hasOwnProperty.call(enableFields, 'spec.tags') ? (
         <Container className={cx(css.formGroup, stepCss, css.bottomMargin5)}>
           {renderMultiTypeList({
