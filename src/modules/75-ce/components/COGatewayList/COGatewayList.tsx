@@ -29,7 +29,7 @@ import { FontVariation, Color } from '@harness/design-system'
 import { isEmpty as _isEmpty, defaultTo as _defaultTo } from 'lodash-es'
 import HighchartsReact from 'highcharts-react-official'
 import Highcharts from 'highcharts'
-import { useHistory, useLocation, useParams } from 'react-router-dom'
+import { useHistory, useParams } from 'react-router-dom'
 import { Classes, Drawer, Menu, Position } from '@blueprintjs/core'
 import routes from '@common/RouteDefinitions'
 import { useToaster } from '@common/exports'
@@ -58,6 +58,7 @@ import RbacButton from '@rbac/components/Button/Button'
 import { FeatureIdentifier } from 'framework/featureStore/FeatureIdentifier'
 import type { FeatureDetail } from 'framework/featureStore/featureStoreUtil'
 import { NGBreadcrumbs } from '@common/components/NGBreadcrumbs/NGBreadcrumbs'
+import useUrlSearchParams from '@ce/common/hooks/useUrlSearchParams'
 import COGatewayAnalytics from './COGatewayAnalytics'
 import COGatewayCumulativeAnalytics from './COGatewayCumulativeAnalytics'
 import ComputeType from './components/ComputeType'
@@ -545,8 +546,7 @@ const RulesTableContainer: React.FC<RulesTableContainerProps> = ({
   searchParams
 }) => {
   const { getString } = useStrings()
-  const history = useHistory()
-  const location = useLocation()
+  const { setParamsToUrl } = useUrlSearchParams()
   const tableData = rules.slice(
     pageProps.index * TOTAL_ITEMS_PER_PAGE,
     pageProps.index * TOTAL_ITEMS_PER_PAGE + TOTAL_ITEMS_PER_PAGE
@@ -565,9 +565,7 @@ const RulesTableContainer: React.FC<RulesTableContainerProps> = ({
   /* istanbul ignore next */
   const onSearchChange = async (val: string) => {
     val = val.trim()
-    const hasSearchText = !_isEmpty(val)
-    const params = new URLSearchParams({ search: val })
-    history.replace({ pathname: location.pathname, search: hasSearchText ? params.toString() : undefined })
+    setParamsToUrl({ search: val })
     await refetchRules(val, true)
     pageProps.setIndex(0)
   }
@@ -703,7 +701,7 @@ const RulesTableContainer: React.FC<RulesTableContainerProps> = ({
 const COGatewayList: React.FC = () => {
   const { getString } = useStrings()
   const history = useHistory()
-  const location = useLocation()
+  const { setParamsToUrl, getQueryParam } = useUrlSearchParams()
   const { trackEvent } = useTelemetry()
   const { accountId } = useParams<AccountPathProps>()
   const { showSuccess, showError } = useToaster()
@@ -712,13 +710,15 @@ const COGatewayList: React.FC = () => {
       featureName: FeatureIdentifier.RESTRICTED_AUTOSTOPPING_RULE_CREATION
     }
   })
+  const searchQueryText = useRef(getQueryParam('search'))
+  const modeQueryText = useRef(getQueryParam('mode'))
+
   const [selectedService, setSelectedService] = useState<{ data: Service; index: number } | null>()
   const [isDrawerOpen, setIsDrawerOpen] = useState<boolean>(false)
   const [tableData, setTableData] = useState<Service[]>([])
   const [pageIndex, setPageIndex] = useState<number>(0)
-  const [mode, setMode] = useState(RulesMode.ACTIVE)
+  const [mode, setMode] = useState<RulesMode>(_defaultTo(modeQueryText.current, RulesMode.ACTIVE) as RulesMode)
 
-  const searchQueryText = useRef(new URLSearchParams(location.search).get('search'))
   const [searchParams, setSearchParams] = useState<SearchParams>({
     isActive: !_isEmpty(searchQueryText.current),
     text: _defaultTo(searchQueryText.current, '')
@@ -734,7 +734,8 @@ const COGatewayList: React.FC = () => {
     account_id: accountId,
     queryParams: {
       accountIdentifier: accountId,
-      value: _defaultTo(searchParams.text, '')
+      value: _defaultTo(searchParams.text, ''),
+      dry_run: mode === RulesMode.DRY
     }
   })
 
@@ -807,6 +808,12 @@ const COGatewayList: React.FC = () => {
         gatewayIdentifier: _service.id?.toString() as string
       })
     )
+
+  const handleModeChange = async (val: RulesMode) => {
+    setMode(val)
+    setParamsToUrl({ mode: val })
+    await refetchServices()
+  }
 
   // Render page loader for initial loading of the page
   if (isLoadingPage) {
@@ -905,7 +912,7 @@ const COGatewayList: React.FC = () => {
                 value: RulesMode.DRY
               }
             ]}
-            onChange={setMode}
+            onChange={handleModeChange}
           />
         </Layout.Horizontal>
         <COGatewayCumulativeAnalytics data={graphData?.response} loadingData={graphLoading} />

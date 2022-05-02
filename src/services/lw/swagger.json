@@ -40,6 +40,12 @@
             "in": "query",
             "required": false,
             "type": "string"
+          },
+          {
+            "name": "dry_run",
+            "in": "query",
+            "required": false,
+            "type": "boolean"
           }
         ],
         "tags": ["services"],

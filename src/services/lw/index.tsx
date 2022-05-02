@@ -1301,6 +1301,7 @@ export const useAccessPointRules = ({ account_id, lb_id, ...props }: UseAccessPo
 export interface GetServicesQueryParams {
   accountIdentifier: string
   value?: string
+  dry_run?: boolean
 }
 
 export interface GetServicesPathParams {
