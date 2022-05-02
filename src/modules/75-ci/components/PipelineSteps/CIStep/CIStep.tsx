@@ -24,6 +24,7 @@ import { useStrings } from 'framework/strings'
 import type { StringsMap } from 'stringTypes'
 import { AllMultiTypeInputTypesForInputSet, AllMultiTypeInputTypesForStep } from './StepUtils'
 import { renderMultiTypeListInputSet } from './CIStepOptionalConfig'
+import { MultiConnectorReference } from '../../MultiConnectorReference/MultiConnectorReference'
 import css from '@pipeline/components/PipelineSteps/Steps/Steps.module.scss'
 
 interface CIStepProps {
@@ -376,7 +377,32 @@ export const CIStep: React.FC<CIStepProps> = props => {
         </Container>
       ) : null}
       {Object.prototype.hasOwnProperty.call(enableFields, 'spec.baseImageConnectorRefs') ? (
-        <Container className={cx(css.formGroup, stepCss, css.bottomMargin5)}>baseImageConnectorRefs</Container>
+        <Container className={cx(css.formGroup, stepCss, css.bottomMargin5)}>
+          <MultiConnectorReference
+            name={`${prefix}spec.baseImageConnectorRefs`}
+            label={enableFields['spec.baseImageConnectorRefs'].label}
+            placeholder={getString('select')}
+            accountIdentifier={accountId}
+            projectIdentifier={projectIdentifier}
+            orgIdentifier={orgIdentifier}
+            width={
+              stepViewType === StepViewType.DeploymentForm
+                ? ConnectorRefWidth.DeploymentFormView
+                : stepViewType === StepViewType.InputSet
+                ? ConnectorRefWidth.InputSetView
+                : ConnectorRefWidth.DefaultView
+            }
+            type={enableFields['spec.baseImageConnectorRefs'].type}
+            multiTypeProps={{
+              expressions,
+              allowableTypes: isInputSetView ? AllMultiTypeInputTypesForInputSet : AllMultiTypeInputTypesForStep,
+              disabled: readonly,
+              ...enableFields['spec.baseImageConnectorRefs'].multiTypeProps
+            }}
+            gitScope={gitScope}
+            setRefValue
+          />
+        </Container>
       ) : null}
       {Object.prototype.hasOwnProperty.call(enableFields, 'spec.tags') ? (
         <Container className={cx(css.formGroup, stepCss, css.bottomMargin5)}>

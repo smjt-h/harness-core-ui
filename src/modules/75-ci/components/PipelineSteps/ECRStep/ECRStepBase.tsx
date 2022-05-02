@@ -100,7 +100,20 @@ export const ECRStepBase = (
               enableFields={{
                 name: {},
                 'spec.imageName': {},
-                'spec.baseImageConnectorRefs': {},
+                'spec.baseImageConnectorRefs': {
+                  label: (
+                    <Text
+                      className={css.inpLabel}
+                      color={Color.GREY_600}
+                      font={{ size: 'small', weight: 'semi-bold' }}
+                      style={{ display: 'flex', alignItems: 'center' }}
+                      tooltipProps={{ dataTooltipId: 'baseConnectorImage' }}
+                    >
+                      {getString('ci.baseConnectorImage')}
+                    </Text>
+                  ),
+                  type: Connectors.AWS
+                },
                 'spec.connectorRef': {
                   label: (
                     <Text
