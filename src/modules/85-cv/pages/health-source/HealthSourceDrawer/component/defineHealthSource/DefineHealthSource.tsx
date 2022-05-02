@@ -32,7 +32,6 @@ import {
 import css from './DefineHealthSource.module.scss'
 import { useVariablesExpression } from '@pipeline/components/PipelineStudio/PiplineHooks/useVariablesExpression'
 import { FormMultiTypeConnectorField } from '@connectors/components/ConnectorReferenceField/FormMultiTypeConnectorField'
-import { useGitScope } from '@pipeline/utils/CIUtils'
 import { AllMultiTypeInputTypesForStep } from '@ci/components/PipelineSteps/CIStep/StepUtils'
 
 interface DefineHealthSourceProps {
@@ -42,11 +41,10 @@ interface DefineHealthSourceProps {
 function DefineHealthSource(props: DefineHealthSourceProps): JSX.Element {
   const { onSubmit } = props
   const { getString } = useStrings()
-  const { expressions } = useVariablesExpression()
+  const { expressions } = useVariablesExpression?.() || {}
   const { onNext, sourceData } = useContext(SetupSourceTabsContext)
   const { orgIdentifier, projectIdentifier, accountId } = useParams<ProjectPathProps & { identifier: string }>()
   const { isEdit } = sourceData
-  const gitScope = useGitScope()
 
   const isErrorTrackingEnabled = useFeatureFlag(FeatureFlag.ERROR_TRACKING_ENABLED)
   const isDynatraceAPMEnabled = useFeatureFlag(FeatureFlag.DYNATRACE_APM_ENABLED)
@@ -112,7 +110,6 @@ function DefineHealthSource(props: DefineHealthSourceProps): JSX.Element {
         }}
       >
         {formik => {
-          console.log('nammmme', formik?.values)
           let featureOption = getFeatureOption(formik?.values?.sourceType, getString)
           if (formik.values?.sourceType === HealthSourceTypes.CustomHealth) {
             featureOption = modifyCustomHealthFeatureBasedOnFF(isCustomLogEnabled, isCustomMetricEnabled, featureOption)
@@ -230,7 +227,6 @@ function DefineHealthSource(props: DefineHealthSourceProps): JSX.Element {
                         orgIdentifier={orgIdentifier}
                         width={400}
                         multiTypeProps={{ expressions, allowableTypes: AllMultiTypeInputTypesForStep }}
-                        gitScope={gitScope}
                       />
                     </div>
                   </Container>
