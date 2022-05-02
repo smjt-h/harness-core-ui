@@ -84,7 +84,7 @@ describe('Test cases for CVSLODetailsPage', () => {
 
     const { container } = renderComponent()
 
-    expect(container.getElementsByClassName('bp3-skeleton')).toHaveLength(2)
+    expect(container.getElementsByClassName('bp3-skeleton')).toHaveLength(4)
   })
 
   test('is should handle retryOnError for both tabs', async () => {

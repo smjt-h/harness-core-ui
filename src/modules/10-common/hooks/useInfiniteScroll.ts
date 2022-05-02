@@ -26,6 +26,9 @@ interface InfiniteScrollProps {
 
   // limit prop for defining the size of pagination, default is DEFAULT_PAGE_SIZE
   limit?: number
+
+  // search term prop to get results with the search term as substring
+  searchTerm?: string
 }
 
 interface InfiniteScrollReturnProps {
@@ -48,11 +51,11 @@ What will this hook manage?
  - Items that are visible on the view. Can be used with any list of items that are resulted from paginated API calls
 
 loadItems
- - Fetch data based on a given offset and limit
- - Function that accepts a page number/offset variable. It will call the underlying API function with the offset variable
+ - Fetch data based on a given offset and limit and/or a search term
+ - Function that accepts a page number/offset/searchTerm variable. It will call the underlying API function with the offset/searchTerm variable
 */
 export const useInfiniteScroll = (props: InfiniteScrollProps): InfiniteScrollReturnProps => {
-  const { getItems, limit = DEFAULT_PAGE_SIZE } = props
+  const { getItems, limit = DEFAULT_PAGE_SIZE, searchTerm } = props
   const [items, setItems] = useState<any>([])
   const [fetching, setFetching] = useState(false)
   const [error, setError] = useState('')
@@ -77,7 +80,13 @@ export const useInfiniteScroll = (props: InfiniteScrollProps): InfiniteScrollRet
         hasMore.current = canFetchMore
 
         const responseContent = response.data.content
-        setItems((prevItems: any) => [...prevItems, ...responseContent])
+        setItems((prevItems: any) => {
+          if (offsetToFetch.current === 0) {
+            return [...responseContent]
+          } else {
+            return [...prevItems, ...responseContent]
+          }
+        })
         setError('')
       })
       .catch(err => {
@@ -144,7 +153,14 @@ export const useInfiniteScroll = (props: InfiniteScrollProps): InfiniteScrollRet
 
     loadItems()
     initialPageLoaded.current = true
-  }, [loadItems])
+  }, [])
+
+  useEffect(() => {
+    if (initialPageLoaded.current) {
+      offsetToFetch.current = 0
+      loadItems()
+    }
+  }, [searchTerm])
 
   return {
     fetching,

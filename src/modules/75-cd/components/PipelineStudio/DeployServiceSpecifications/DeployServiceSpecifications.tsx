@@ -51,7 +51,6 @@ import {
   ServiceDeploymentType,
   StageType
 } from '@pipeline/utils/stageHelpers'
-import { useFeatureFlags } from '@common/hooks/useFeatureFlag'
 import { Scope } from '@common/interfaces/SecretsInterface'
 import { getIdentifierFromValue } from '@common/components/EntityReference/EntityReference'
 import stageCss from '../DeployStageSetupShell/DeployStage.module.scss'
@@ -72,7 +71,6 @@ export default function DeployServiceSpecifications(props: React.PropsWithChildr
     updateStage
   } = usePipelineContext()
   const scrollRef = React.useRef<HTMLDivElement | null>(null)
-  const { NG_NATIVE_HELM } = useFeatureFlags()
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const debounceUpdateStage = useCallback(
@@ -85,11 +83,7 @@ export default function DeployServiceSpecifications(props: React.PropsWithChildr
   )
   const { stage } = getStageFromPipeline<DeploymentStageElementConfig>(selectedStageId || '')
   const getDeploymentType = (): ServiceDeploymentType => {
-    return get(
-      stage,
-      'stage.spec.serviceConfig.serviceDefinition.type',
-      !NG_NATIVE_HELM ? 'Kubernetes' : /* istanbul ignore next */ undefined
-    )
+    return get(stage, 'stage.spec.serviceConfig.serviceDefinition.type')
   }
 
   const [setupModeType, setSetupMode] = useState('')
@@ -252,7 +246,6 @@ export default function DeployServiceSpecifications(props: React.PropsWithChildr
           serviceConfig: {
             serviceRef: getScopeBasedDefaultServiceRef(),
             serviceDefinition: {
-              type: !NG_NATIVE_HELM ? 'Kubernetes' : undefined,
               spec: {
                 variables: []
               }

@@ -255,7 +255,11 @@ export function PipelineInputSetFormInternal(props: PipelineInputSetFormProps): 
       ) : null}
       {getMultiTypeFromValue(finalTemplate?.delegateSelectors) === MultiTypeInputType.RUNTIME ? (
         <div className={cx(stepCss.formGroup, stepCss.sm, stepCss.delegate)}>
-          <DelegateSelectorPanel isReadonly={readonly || false} allowableTypes={allowableTypes} />
+          <DelegateSelectorPanel
+            isReadonly={readonly || false}
+            allowableTypes={allowableTypes}
+            name={!isEmpty(finalPath) ? `${finalPath}.delegateSelectors` : 'delegateSelectors'}
+          />
         </div>
       ) : null}
       {finalTemplate?.variables && finalTemplate?.variables?.length > 0 && (

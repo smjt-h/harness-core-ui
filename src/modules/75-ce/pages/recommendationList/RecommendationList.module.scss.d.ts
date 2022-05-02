@@ -12,5 +12,6 @@ declare const styles: {
   readonly listContainer: string
   readonly potentialEmissionCard: string
   readonly potentialReducedEmissionCard: string
+  readonly resourceNameContainer: string
 }
 export default styles

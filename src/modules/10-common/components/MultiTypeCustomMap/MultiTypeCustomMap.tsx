@@ -26,7 +26,7 @@ import MultiTypeFieldSelector, {
 } from '@common/components/MultiTypeFieldSelector/MultiTypeFieldSelector'
 import css from './MultiTypeCustomMap.module.scss'
 
-export type MapValue = { id: string; key: string; value: string }[]
+export type MapValue = { id?: string; key: string; value: string }[]
 export type MultiTypeMapValue = MapValue | string
 type MultiTypeMapConfigureOptionsOmit = 'value' | 'type' | 'variableName' | 'onChange'
 
@@ -51,6 +51,7 @@ export interface MultiTypeCustomMapProps {
   appearance?: 'default' | 'minimal'
   restrictToSingleEntry?: boolean
   multiTypeMapKeys: MultiTypeMapKey[]
+  excludeId?: boolean
 }
 
 export const MultiTypeCustomMap = (props: MultiTypeCustomMapProps): React.ReactElement => {
@@ -66,11 +67,12 @@ export const MultiTypeCustomMap = (props: MultiTypeCustomMapProps): React.ReactE
     appearance = 'default',
     restrictToSingleEntry,
     multiTypeMapKeys = [],
+    excludeId,
     ...restProps
   } = props
 
-  const getDefaultResetValue = () => {
-    const defaultKeys: { [key: string]: string }[] = [{ id: uuid('', nameSpace()) }]
+  const getDefaultResetValue = (): { [key: string]: string }[] => {
+    const defaultKeys: { [key: string]: string }[] = excludeId ? [{}] : [{ id: uuid('', nameSpace()) }]
     multiTypeMapKeys.forEach((key: MultiTypeMapKey) => (defaultKeys[0][key.value] = ''))
     return defaultKeys
   }
@@ -101,11 +103,11 @@ export const MultiTypeCustomMap = (props: MultiTypeCustomMapProps): React.ReactE
             render={({ remove }) => (
               <>
                 {Array.isArray(value) &&
-                  value.map((row, index: number) => (
-                    <div className={cx(css.group)} key={row.id}>
+                  value.map((_row, index: number) => (
+                    <div className={cx(css.group)} key={index}>
                       {multiTypeMapKeys.map(({ label: keyLabel, value: keyValue }, keyIndex) => {
                         return (
-                          <div key={`${row.id + keyIndex}`}>
+                          <div key={`${index}-${keyIndex}`}>
                             {index === 0 && (
                               <Text font={{ variation: FontVariation.FORM_LABEL }} margin={{ bottom: 'xsmall' }}>
                                 {keyLabel ?? getString('keyLabel')}
@@ -143,7 +145,7 @@ export const MultiTypeCustomMap = (props: MultiTypeCustomMapProps): React.ReactE
                     text={getString('plusAdd')}
                     data-testid={`add-${name}`}
                     onClick={() => {
-                      const currentValue = formik?.values?.[name] || []
+                      const currentValue = (get(formik?.values, name) as MultiTypeMapValue) || []
                       const newVal = [...currentValue, ...getDefaultResetValue()]
                       formik?.setFieldValue(name, newVal)
                     }}

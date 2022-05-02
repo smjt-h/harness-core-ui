@@ -131,7 +131,7 @@ describe('SLOCardContent', () => {
     expect(screen.getByText('cv.errorBudget')).toHaveClass('PillToggle--selected')
 
     expect(setSliderTimeRange).toBeCalledTimes(1)
-    expect(setChartTimeRange).toBeCalledTimes(1)
+    expect(setChartTimeRange).toBeCalledTimes(0)
   })
 
   test('it should show the SLI recalculation in progress warning', () => {

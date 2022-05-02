@@ -71,7 +71,7 @@ type InfraTypes = K8SDirectInfrastructure | K8sGcpInfrastructure | ServerlessInf
 export default function DeployInfraSpecifications(props: React.PropsWithChildren<unknown>): JSX.Element {
   const [initialInfrastructureDefinitionValues, setInitialInfrastructureDefinitionValues] =
     React.useState<Infrastructure>({})
-  const [selectedInfrastructureType, setselectedInfrastructureType] = React.useState<string | undefined>()
+
   const scrollRef = React.useRef<HTMLDivElement | null>(null)
   const { getString } = useStrings()
   const { submitFormsForTab } = React.useContext(StageErrorContext)
@@ -105,6 +105,8 @@ export default function DeployInfraSpecifications(props: React.PropsWithChildren
   )
 
   const { stage } = getStageFromPipeline<DeploymentStageElementConfig>(selectedStageId || '')
+
+  const [selectedInfrastructureType, setSelectedInfrastructureType] = React.useState<string | undefined>()
 
   useEffect(() => {
     if (isEmpty(stage?.stage?.spec?.infrastructure) && stage?.stage?.type === StageType.DEPLOY) {
@@ -160,11 +162,13 @@ export default function DeployInfraSpecifications(props: React.PropsWithChildren
   }, [stage, getStageFromPipeline])
 
   React.useEffect(() => {
-    const infrastructureType = deploymentTypeInfraTypeMap[selectedDeploymentType]
-    setselectedInfrastructureType(infrastructureType)
-    const initialInfraDefValues = getInfrastructureDefaultValue(stage, infrastructureType)
+    const type =
+      stage?.stage?.spec?.infrastructure?.infrastructureDefinition?.type ||
+      deploymentTypeInfraTypeMap[selectedDeploymentType]
+    setSelectedInfrastructureType(type)
+    const initialInfraDefValues = getInfrastructureDefaultValue(stage, type)
     setInitialInfrastructureDefinitionValues(initialInfraDefValues)
-  }, [stage, selectedDeploymentType])
+  }, [stage])
 
   const onUpdateInfrastructureDefinition = (extendedSpec: InfraTypes, type: string): void => {
     if (get(stageRef.current, 'stage.spec.infrastructure', null)) {
@@ -445,7 +449,7 @@ export default function DeployInfraSpecifications(props: React.PropsWithChildren
             isReadonly={isReadonly}
             selectedInfrastructureType={selectedInfrastructureType}
             onChange={deploymentType => {
-              setselectedInfrastructureType(deploymentType)
+              setSelectedInfrastructureType(deploymentType)
               resetInfrastructureDefinition(deploymentType)
             }}
           />

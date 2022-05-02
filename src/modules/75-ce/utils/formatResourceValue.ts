@@ -59,8 +59,8 @@ export const getMemValueInGB: fnNumberToString = val => {
 export const getRecommendationYaml: (
   cpuReqVal: string | number,
   memReqVal: string | number,
-  memLimitVal: string | number,
-  qualityOfService: QualityOfService
+  memLimitVal?: string | number,
+  qualityOfService?: QualityOfService
 ) => string = (cpuReqVal, memReqVal, memLimitVal, qualityOfService) => {
   const cpuLimitVal = qualityOfService === QualityOfService.GUARANTEED ? `\n  cpu: ${cpuReqVal}` : null
 
@@ -87,4 +87,20 @@ export const getCPUValueInCPUFromExpression: (val: string | number) => number = 
 
 export const getEmissionsValue = (cost: number) => {
   return formatCost(cost * EMISSION_MULTIPLIER, { currency: undefined, style: undefined })
+}
+
+export const getECSMemValueInReadableForm: (val: string | number) => string = val => {
+  let stringVal = `${val}`
+
+  if (!val) {
+    return '0'
+  }
+
+  if (stringVal.includes('M')) {
+    stringVal = stringVal.split('M')[0]
+  } else if (stringVal.includes('G')) {
+    stringVal = `${Number(stringVal.split('G')[0]) * 1000}`
+  }
+
+  return `${parseFloat(Number(stringVal).toFixed(3))}Mi`
 }

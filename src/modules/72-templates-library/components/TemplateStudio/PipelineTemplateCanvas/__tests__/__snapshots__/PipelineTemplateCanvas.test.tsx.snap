@@ -1,10 +1,14 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`<PipelineTemplateCanvas/> tests should match snapshot 1`] = `
+exports[`<PipelineTemplateCanvas/> tests should call updateTemplate with updated template 1`] = `
 <div>
   <div
     class="stage-builder-mock"
-  />
+  >
+    <button>
+      Update Pipeline
+    </button>
+  </div>
   <div
     class="rightBar"
   >

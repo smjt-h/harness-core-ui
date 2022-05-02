@@ -29,7 +29,7 @@ import { FontVariation, Color } from '@harness/design-system'
 import { Select } from '@blueprintjs/select'
 
 import { Classes, Menu } from '@blueprintjs/core'
-import { useParams, useHistory } from 'react-router-dom'
+import { Link, useParams, useHistory } from 'react-router-dom'
 import { useGet } from 'restful-react'
 import type { CellProps, Renderer, Column } from 'react-table'
 
@@ -139,23 +139,18 @@ const TagsRenderer = (data: DashboardInterface) => {
 const RenderDashboardName: Renderer<CellProps<DashboardInterface>> = ({ row }) => {
   const data = row.original
   const { accountId, folderId } = useParams<{ accountId: string; folderId: string }>()
-  const history = useHistory()
   return (
-    <Text
-      color={Color.BLACK}
-      lineClamp={1}
-      onClick={() => {
-        history.push({
-          pathname: routes.toViewCustomDashboard({
-            viewId: row.id,
-            accountId: accountId,
-            folderId: folderId === 'shared' ? 'shared' : data.resourceIdentifier
-          })
-        })
-      }}
+    <Link
+      to={routes.toViewCustomDashboard({
+        viewId: data.id,
+        accountId: accountId,
+        folderId: folderId === 'shared' ? 'shared' : data.resourceIdentifier
+      })}
     >
-      {data.title}
-    </Text>
+      <Text color={Color.PRIMARY_7} font={{ variation: FontVariation.CARD_TITLE }}>
+        {data.title}
+      </Text>
+    </Link>
   )
 }
 
@@ -195,21 +190,11 @@ export interface DashboardCardInterface {
 const DashboardCard: React.FC<DashboardCardInterface> = ({ dashboard, clone, deleteById, editDashboard }) => {
   const { getString } = useStrings()
   const { accountId, folderId } = useParams<{ accountId: string; folderId: string }>()
-  const history = useHistory()
   const [menuOpen, setMenuOpen] = useState(false)
 
-  const onCardClick = (): void => {
-    history.push({
-      pathname: routes.toViewCustomDashboard({
-        viewId: dashboard.id,
-        accountId: accountId,
-        folderId: folderId === 'shared' ? 'shared' : dashboard?.resourceIdentifier
-      })
-    })
-  }
-
-  const onCardLinkClick = (event: React.MouseEvent<HTMLAnchorElement>): void => {
-    event.preventDefault()
+  const onCardMenuInteraction = (nextOpenState: boolean, e?: React.SyntheticEvent<HTMLElement>): void => {
+    e?.preventDefault()
+    setMenuOpen(nextOpenState)
   }
 
   const onCloneClick = (event: React.MouseEvent<HTMLElement>): void => {
@@ -237,8 +222,8 @@ const DashboardCard: React.FC<DashboardCardInterface> = ({ dashboard, clone, del
   })
 
   return (
-    <a onClick={onCardLinkClick} href={cardPath}>
-      <Card interactive className={cx(css.dashboardCard)} onClick={onCardClick}>
+    <Link to={cardPath}>
+      <Card interactive className={cx(css.dashboardCard)}>
         <Container>
           <CardBody.Menu
             menuContent={
@@ -288,9 +273,7 @@ const DashboardCard: React.FC<DashboardCardInterface> = ({ dashboard, clone, del
             menuPopoverProps={{
               className: Classes.DARK,
               isOpen: menuOpen,
-              onInteraction: nextOpenState => {
-                setMenuOpen(nextOpenState)
-              }
+              onInteraction: onCardMenuInteraction
             }}
           />
           <Layout.Vertical spacing="large">
@@ -318,7 +301,7 @@ const DashboardCard: React.FC<DashboardCardInterface> = ({ dashboard, clone, del
           </Layout.Vertical>
         </Container>
       </Card>
-    </a>
+    </Link>
   )
 }
 

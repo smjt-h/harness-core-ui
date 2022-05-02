@@ -187,7 +187,7 @@ export default function BuildStageSetupShell(): JSX.Element {
     <Layout.Horizontal spacing="medium" className={css.footer}>
       {selectedTabId !== BuildTabs.OVERVIEW ? (
         <Button
-          text={getString('ci.previous')}
+          text={getString('back')}
           icon="chevron-left"
           onClick={() =>
             handleTabChange(
@@ -214,7 +214,7 @@ export default function BuildStageSetupShell(): JSX.Element {
         ) : null
       ) : (
         <Button
-          text={selectedTabId === BuildTabs.EXECUTION ? getString('ci.save') : getString('ci.next')}
+          text={selectedTabId === BuildTabs.EXECUTION ? getString('ci.save') : getString('continue')}
           intent="primary"
           rightIcon="chevron-right"
           onClick={() => {

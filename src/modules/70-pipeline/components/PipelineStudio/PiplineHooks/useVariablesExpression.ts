@@ -47,7 +47,7 @@ function pickExpressionsFromMetadataMap(
 function pickExtraExpressionsFromMetadataMap(
   metadataMap: Record<string, VariableResponseMapValue>,
   localStageKeys: string[],
-  key: 'properties' | 'outputProperties'
+  key: 'properties' | 'outputproperties'
 ): string[] {
   return sortedUniq(
     sortBy(
@@ -92,7 +92,7 @@ export function useVariablesExpression(): { expressions: string[] } {
       const extraOutputExpressions = pickExtraExpressionsFromMetadataMap(
         metadataMap,
         localStageKeys,
-        'outputProperties'
+        'outputproperties'
       )
 
       const otherExpressions = serviceExpressionPropertiesList.map(row => row.expression).filter(p => p) as string[]

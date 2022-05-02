@@ -206,6 +206,29 @@ serviceNowApprovalStep:
     connectorRef: ServiceNow Connector is required
     ticketType: Ticket Type is required
     issueNumber: Ticket Number is required
+serviceNowCreateStep:
+  fieldType:
+    configureFields: Configure Fields
+    createFromTemplate: Create From Template
+  selectFieldListHelp: Select the issue type to list available fields to choose from.
+  addFields: Add ServiceNow Fields
+  descriptionPlaceholder: Enter the Description
+  shortDescriptionPlaceholder: Enter the Short Description
+  shortDescription: Short Description
+  templateNamePlaceholder: Enter the Template Name
+  fetchingFields: Fetching fields
+  fetchingTemplateDetails: Fetching template details
+  noSuchTemplateFound: No Such Template Found
+  templateName: Template name
+  validations:
+    description: Description is required
+    shortDescription: Short Description is required
+    validTemplateName: Valid Template Name is required
+    templateName: Template Name is required
+serviceNowUpdateStep:
+  fieldType:
+    applyFromTemplate: Apply standard change from template
+    updateFields: Update Fields
 manifestType:
   manifestTyperequired: Manifest Type is required
   gitConnectorLabel: 'Git'
@@ -918,6 +941,9 @@ runPipeline:
   ciCodebaseConfig: CI Codebase Configuration is missing. Codebase is required when the pipeline contains a CI stage that is set to clone codebase.
 buildInfra:
   poolId: Pool Id
+  nodeSelector: Node Selector
+  tolerations: Tolerations
+  volumes: Volumes
   automountServiceAccountToken: Automount Service Account Token
   priorityClassName: Priority Class
   containerSecurityContext: Container Security Context
@@ -927,10 +953,22 @@ buildInfra:
   runAsNonRoot: Run as Non Root
   readOnlyRootFilesystem: Read-only Root Filesystem
   privileged: Privileged
+  effect: Effect
+  mountPath: Mount Path
+  size: Size
+  pathType: Path Type
+  emptyDirectory: Empty Directory
+  hostPath: Host Path
+  persistentVolumeClaim: Persistent Volume Claim
+  claimName: Claim Name
 ci:
   validations:
     port: Port can only contain digits
     serviceDependencyIdentifier: 'Identifier should match regex {{regex}}'
+    mountPathUnique: Mount Path should be unique
+    keyUnique: Key should be unique
+    invalidSize: Invalid Size. To learn more, hover over the Size tooltip.
+    pathRequiredForHostPath: 'Path is required for Type Host Path'
 imageVersionDeprecated: Image version outdated
 unsupportedImagesWarning: 'You are using unsupported Harness CI images. Harness allows builds to use these images, but we cannot ensure that builds will not fail. Please update the versions of the following image(s) {{summary}}'
 invalidRequest: Invalid Request

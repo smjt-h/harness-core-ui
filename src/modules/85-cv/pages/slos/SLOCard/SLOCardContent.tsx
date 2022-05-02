@@ -19,7 +19,7 @@ import css from '../CVSLOsListingPage.module.scss'
 
 const SLOCardContent: React.FC<SLOCardContentProps> = props => {
   const { getString } = useStrings()
-  const { isCardView, serviceLevelObjective, setChartTimeRange, setSliderTimeRange } = props
+  const { isCardView, serviceLevelObjective, setSliderTimeRange } = props
   const { sloPerformanceTrend, sloTargetPercentage } = serviceLevelObjective
 
   const [toggle, setToggle] = useState(SLOCardToggleViews.SLO)
@@ -44,8 +44,6 @@ const SLOCardContent: React.FC<SLOCardContentProps> = props => {
     ],
     onChange: view => {
       resetSlider()
-      setCustomTimeFilter(false)
-      setChartTimeRange?.()
       setToggle(view)
     },
     selectedView: toggle,

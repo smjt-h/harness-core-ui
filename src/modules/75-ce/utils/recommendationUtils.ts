@@ -19,8 +19,8 @@ export const getProviderIcon = (provider: string): IconName => {
   return iconMapping[provider] || 'app-kubernetes'
 }
 
-export const addBufferToValue = (value: number, bufferPercentage: number): number =>
-  +(((100 + bufferPercentage) / 100) * value).toFixed(2)
+export const addBufferToValue = (value: number, bufferPercentage: number, precision?: number): number =>
+  +(((100 + bufferPercentage) / 100) * value).toFixed(precision || 2)
 
 export const calculateSavingsPercentage = (savings: number, totalCost: number): string =>
   `(${Math.floor((savings / totalCost) * 100)}%)`

@@ -79,24 +79,20 @@ const PipelineTemplateCanvas = () => {
     }
   })
 
-  if (pipeline) {
-    return (
-      <TemplatePipelineProvider
-        queryParams={{ accountIdentifier: accountId, orgIdentifier, projectIdentifier, repoIdentifier, branch }}
-        initialValue={pipeline as PipelineInfoConfig}
-        onUpdatePipeline={onUpdatePipeline}
-        contextType={PipelineContextType.PipelineTemplate}
-        isReadOnly={isReadonly}
-      >
-        {!isDrawerOpened && <StageBuilder />}
-        <PipelineStudioRightBar />
-        <TemplateDrawer />
-        <RightDrawer />
-      </TemplatePipelineProvider>
-    )
-  } else {
-    return <></>
-  }
+  return (
+    <TemplatePipelineProvider
+      queryParams={{ accountIdentifier: accountId, orgIdentifier, projectIdentifier, repoIdentifier, branch }}
+      initialValue={pipeline as PipelineInfoConfig}
+      onUpdatePipeline={onUpdatePipeline}
+      contextType={PipelineContextType.PipelineTemplate}
+      isReadOnly={isReadonly}
+    >
+      {!isDrawerOpened && <StageBuilder />}
+      <PipelineStudioRightBar />
+      <TemplateDrawer />
+      <RightDrawer />
+    </TemplatePipelineProvider>
+  )
 }
 
 export const PipelineTemplateCanvasWithRef = React.forwardRef(PipelineTemplateCanvas)

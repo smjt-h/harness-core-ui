@@ -74,7 +74,9 @@ export const responseSLODashboardDetail: ResponseSLODashboardDetail = {
       recalculatingSLI: false,
       errorBudgetRisk: 'EXHAUSTED'
     },
-    description: '99.9 percent of logins should have <= 50ms latency'
+    description: '99.9 percent of logins should have <= 50ms latency',
+    createdAt: 1648857600000,
+    lastModifiedAt: 1648857600000
   },
   metaData: undefined,
   correlationId: '0c955a4d-29a2-42ff-90b3-2c629dffac84'

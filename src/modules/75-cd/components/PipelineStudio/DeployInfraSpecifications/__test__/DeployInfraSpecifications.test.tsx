@@ -277,7 +277,11 @@ describe('Deploy infra specifications test', () => {
         </PipelineContext.Provider>
       </TestWrapper>
     )
-
+    const changeButton = await waitFor(() => findByText('Change'))
+    expect(changeButton).toBeTruthy()
+    act(() => {
+      fireEvent.click(changeButton)
+    })
     const awsCard = await waitFor(() => findByText('pipelineSteps.deploymentTypes.kubernetes'))
     expect(awsCard).toBeTruthy()
   })

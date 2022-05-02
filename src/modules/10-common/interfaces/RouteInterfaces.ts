@@ -142,6 +142,14 @@ export interface EnvironmentPathProps {
   environmentIdentifier: string
 }
 
+export interface EnvironmentGroupPathProps {
+  environmentGroupIdentifier: string
+}
+
+export interface EnvironmentGroupQueryParams {
+  sectionId?: 'CONFIGURATION' | 'ENVIRONMENTS'
+}
+
 export interface CVDataSourceTypePathProps {
   dataSourceType: string
 }

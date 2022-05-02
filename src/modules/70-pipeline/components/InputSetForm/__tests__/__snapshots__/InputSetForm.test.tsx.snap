@@ -818,8 +818,7 @@ exports[`Render Forms - Snapshot Testing render Edit Input Set Form view: expand
                                 infrastructureText
                               </div>
                               <div
-                                class="nestedAccordions"
-                                style="width: 50%;"
+                                class="nestedAccordions infraSection"
                               />
                               <div
                                 class="nestedAccordions"
@@ -1609,8 +1608,7 @@ exports[`Render Forms - Snapshot Testing render Input Set Form view 1`] = `
                                 infrastructureText
                               </div>
                               <div
-                                class="nestedAccordions"
-                                style="width: 50%;"
+                                class="nestedAccordions infraSection"
                               />
                               <div
                                 class="nestedAccordions"

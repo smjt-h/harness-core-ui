@@ -162,5 +162,8 @@ export const connectorHelperUrls = {
   ceAwsNoAccount:
     'https://newdocs.helpdocs.io/article/80vbt5jv0q-set-up-cost-visibility-for-aws#review_aws_access_permissions',
   ceAwsRoleARNsteps:
-    'https://ngdocs.harness.io/article/80vbt5jv0q-set-up-cost-visibility-for-aws#step_4_create_cross_account_role'
+    'https://ngdocs.harness.io/article/80vbt5jv0q-set-up-cost-visibility-for-aws#step_4_create_cross_account_role',
+  ceAzureLaunchConsole: 'https://portal.azure.com/#blade/Microsoft_Azure_CostManagement/Menu/exports',
+  ceAzureBillingExport:
+    'https://ngdocs.harness.io/article/v682mz6qfd-set-up-cost-visibility-for-azure#step_2_azure_billing_exports'
 }

@@ -30,7 +30,8 @@ import {
   userGroupPathProps,
   serviceAccountProps,
   servicePathProps,
-  templatePathProps
+  templatePathProps,
+  environmentGroupPathProps
 } from '@common/utils/routeUtils'
 import type {
   PipelinePathProps,
@@ -43,7 +44,7 @@ import type {
 import routes from '@common/RouteDefinitions'
 
 import { String as LocaleString } from 'framework/strings'
-import featureFactory from 'framework/featureStore/FeaturesFactory'
+import featureFactory, { RenderMessageReturn } from 'framework/featureStore/FeaturesFactory'
 import { FeatureIdentifier } from 'framework/featureStore/FeatureIdentifier'
 import CDSideNav from '@cd/components/CDSideNav/CDSideNav'
 import CDHomePage from '@cd/pages/home/CDHomePage'
@@ -111,12 +112,8 @@ import ExecutionPolicyEvaluationsView from '@pipeline/pages/execution/ExecutionP
 import ExecutionSecurityView from '@pipeline/pages/execution/ExecutionSecurityView/ExecutionSecurityView'
 import { ResourceCategory, ResourceType } from '@rbac/interfaces/ResourceType'
 import { PermissionIdentifier } from '@rbac/interfaces/PermissionIdentifier'
-import {
-  isCDCommunity,
-  LicenseRedirectProps,
-  LICENSE_STATE_NAMES,
-  useLicenseStore
-} from 'framework/LicenseStore/LicenseStoreContext'
+import { LicenseRedirectProps, LICENSE_STATE_NAMES } from 'framework/LicenseStore/LicenseStoreContext'
+import { isCommunityPlan } from '@common/utils/utils'
 import { TemplateStudioWrapper } from '@templates-library/components/TemplateStudio/TemplateStudioWrapper'
 import TemplatesPage from '@templates-library/pages/TemplatesPage/TemplatesPage'
 import { GovernanceRouteDestinations } from '@governance/RouteDestinations'
@@ -124,6 +121,9 @@ import GitSyncConfigTab from '@gitsync/pages/config/GitSyncConfigTab'
 import FullPageLogView from '@pipeline/pages/full-page-log-view/FullPageLogView'
 import { PAGE_NAME } from '@common/pages/pageContext/PageName'
 import { Environments } from './components/Environments/Environments'
+import EnvironmentGroups from './components/EnvironmentGroups/EnvironmentGroups'
+import EnvironmentGroupDetails from './components/EnvironmentGroups/EnvironmentGroupDetails/EnvironmentGroupDetails'
+
 import CDTrialHomePage from './pages/home/CDTrialHomePage'
 
 import { CDExecutionCardSummary } from './components/CDExecutionCardSummary/CDExecutionCardSummary'
@@ -242,24 +242,19 @@ featureFactory.registerFeaturesByModule('cd', {
     FeatureIdentifier.SERVICES,
     FeatureIdentifier.INITIAL_DEPLOYMENTS
   ],
-  renderMessage: (props, getString, additionalLicenseProps = {}) => {
+  renderMessage: (props, getString, additionalLicenseProps = {}): RenderMessageReturn => {
     const featuresMap = props.features
     const serviceFeatureDetail = featuresMap.get(FeatureIdentifier.SERVICES)
     const dpmFeatureDetail = featuresMap.get(FeatureIdentifier.DEPLOYMENTS_PER_MONTH)
     const initialDeploymentsFeatureDetail = featuresMap.get(FeatureIdentifier.INITIAL_DEPLOYMENTS)
 
-    const { message, bannerType } = getBannerText(
+    return getBannerText(
       getString,
       additionalLicenseProps,
       serviceFeatureDetail,
       dpmFeatureDetail,
       initialDeploymentsFeatureDetail
     )
-
-    return {
-      message: () => message,
-      bannerType
-    }
   }
 })
 
@@ -304,8 +299,7 @@ const RedirectToCDProject = (): React.ReactElement => {
 const CDDashboardPageOrRedirect = (): React.ReactElement => {
   const params = useParams<ProjectPathProps>()
   const { selectedProject } = useAppStore()
-  const { licenseInformation } = useLicenseStore()
-  const isCommunity = isCDCommunity(licenseInformation)
+  const isCommunity = isCommunityPlan()
 
   if (!isCommunity) {
     return <CDDashboardPage />
@@ -499,6 +493,26 @@ export default (
       pageName={PAGE_NAME.Environments}
     >
       <Environments />
+    </RouteWithLayout>
+    <RouteWithLayout
+      exact
+      licenseRedirectData={licenseRedirectData}
+      sidebarProps={CDSideNavProps}
+      path={routes.toEnvironmentGroups({ ...projectPathProps, ...pipelineModuleParams })}
+    >
+      <EnvironmentGroups />
+    </RouteWithLayout>
+    <RouteWithLayout
+      exact
+      licenseRedirectData={licenseRedirectData}
+      sidebarProps={CDSideNavProps}
+      path={routes.toEnvironmentGroupDetails({
+        ...projectPathProps,
+        ...pipelineModuleParams,
+        ...environmentGroupPathProps
+      })}
+    >
+      <EnvironmentGroupDetails />
     </RouteWithLayout>
 
     <RouteWithLayout

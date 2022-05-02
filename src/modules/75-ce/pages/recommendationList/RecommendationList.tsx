@@ -35,13 +35,14 @@ import { PAGE_NAMES, USER_JOURNEY_EVENTS } from '@ce/TrackingEventsConstants'
 import { useTelemetry } from '@common/hooks/useTelemetry'
 import { NGBreadcrumbs } from '@common/components/NGBreadcrumbs/NGBreadcrumbs'
 import { CCM_PAGE_TYPE, CloudProvider } from '@ce/types'
-import { calculateSavingsPercentage } from '@ce/utils/recommendationUtils'
+import { calculateSavingsPercentage, getProviderIcon } from '@ce/utils/recommendationUtils'
 import { generateFilters } from '@ce/utils/anomaliesUtils'
 import { getEmissionsValue } from '@ce/utils/formatResourceValue'
 import greenLeafImg from '@ce/common/images/green-leaf.svg'
 import grayLeafImg from '@ce/common/images/gray-leaf.svg'
 import { FeatureFlag } from '@common/featureFlags'
 import { useFeatureFlag } from '@common/hooks/useFeatureFlag'
+import type { StringsMap } from 'stringTypes'
 import RecommendationSavingsCard from '../../components/RecommendationSavingsCard/RecommendationSavingsCard'
 import RecommendationFilters from '../../components/RecommendationFilters'
 import css from './RecommendationList.module.scss'
@@ -84,14 +85,16 @@ const RecommendationsList: React.FC<RecommendationListProps> = ({
   const resourceTypeToRoute: Record<ResourceType, RouteFn> = useMemo(() => {
     return {
       [ResourceType.Workload]: routes.toCERecommendationDetails,
-      [ResourceType.NodePool]: routes.toCENodeRecommendationDetails
+      [ResourceType.NodePool]: routes.toCENodeRecommendationDetails,
+      [ResourceType.EcsService]: routes.toCEECSRecommendationDetails
     }
   }, [])
 
-  const resourceTypeMap: Record<string, string> = useMemo(
+  const resourceTypeMap: Record<ResourceType, string> = useMemo(
     () => ({
       [ResourceType.Workload]: getString('ce.overview.workload'),
-      [ResourceType.NodePool]: getString('ce.overview.nodepool')
+      [ResourceType.NodePool]: getString('ce.overview.nodepool'),
+      [ResourceType.EcsService]: getString('ce.overview.ecsService')
     }),
     []
   )
@@ -130,13 +133,13 @@ const RecommendationsList: React.FC<RecommendationListProps> = ({
 
     const provider = get(originalRowData, 'recommendationDetails.recommended.provider', '')
 
-    const iconMapping: Record<string, IconName> = {
-      google: 'gcp',
-      azure: 'service-azure',
-      amazon: 'service-aws'
+    const iconMapping: Record<ResourceType, IconName> = {
+      [ResourceType.EcsService]: 'service-ecs',
+      [ResourceType.NodePool]: getProviderIcon(provider),
+      [ResourceType.Workload]: 'app-kubernetes'
     }
 
-    const iconName = provider ? iconMapping[provider] : 'app-kubernetes'
+    const iconName = iconMapping[resourceType]
     const perspectiveKey = 'defaultClusterPerspectiveId'
     const cloudProvider = 'CLUSTER'
 
@@ -188,8 +191,14 @@ const RecommendationsList: React.FC<RecommendationListProps> = ({
       []
     )
 
+    const resourceTypeStringKey: Record<ResourceType, keyof StringsMap> = {
+      [ResourceType.EcsService]: 'ce.recommendation.listPage.service',
+      [ResourceType.NodePool]: 'ce.nodeRecommendation.nodepool',
+      [ResourceType.Workload]: 'pipelineSteps.workload'
+    }
+
     return (
-      <Layout.Horizontal style={{ alignItems: 'center' }}>
+      <Layout.Horizontal>
         <Icon name={iconName} size={28} padding={{ right: 'medium' }} />
         <Layout.Vertical>
           <Container>
@@ -214,24 +223,27 @@ const RecommendationsList: React.FC<RecommendationListProps> = ({
               </Link>
             </Container>
           ) : null}
-          <Container>
-            <Text inline color={Color.GREY_500} font={{ variation: FontVariation.SMALL_BOLD }}>
-              {`${getString(
-                ResourceType.Workload === resourceType ? 'pipelineSteps.workload' : 'ce.nodeRecommendation.nodepool'
-              )}: `}
+          <Layout.Horizontal className={css.resourceNameContainer}>
+            <Text
+              inline
+              color={Color.GREY_500}
+              font={{ variation: FontVariation.SMALL_BOLD }}
+              margin={{ right: 'xsmall' }}
+            >
+              {`${getString(resourceTypeStringKey[resourceType])}: `}
             </Text>
             {resourceType === ResourceType.Workload ? (
               <Link to={resourceDetailsLink} onClick={e => e.stopPropagation()}>
-                <Text inline color={Color.PRIMARY_7} font={{ variation: FontVariation.BODY2 }}>
+                <Text inline color={Color.PRIMARY_7} font={{ variation: FontVariation.BODY2 }} lineClamp={1}>
                   {cell.value}
                 </Text>
               </Link>
             ) : (
-              <Text inline color={Color.GREY_700} font={{ variation: FontVariation.BODY2 }}>
+              <Text inline color={Color.GREY_700} font={{ variation: FontVariation.BODY2 }} lineClamp={1}>
                 {cell.value}
               </Text>
             )}
-          </Container>
+          </Layout.Horizontal>
         </Layout.Vertical>
       </Layout.Horizontal>
     )

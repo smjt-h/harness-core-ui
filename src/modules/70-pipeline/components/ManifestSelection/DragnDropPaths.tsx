@@ -28,7 +28,7 @@ import type { ManifestTypes } from '@pipeline/components/ManifestSelection/Manif
 import { isServerlessManifestType } from '@pipeline/utils/stageHelpers'
 
 import { ManifestDataType } from './Manifesthelper'
-import css from './ManifestWizardSteps/ManifestDetails/ManifestDetails.module.scss'
+import css from './ManifestWizardSteps/K8sValuesManifest/ManifestDetails.module.scss'
 
 export interface DragnDropPathsProps {
   formik: any

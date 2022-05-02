@@ -29,7 +29,7 @@ serviceUpdated: '{{ $.common.serviceUpdated }}'
 environmentCreated: '{{ $.common.environmentCreated }}'
 environmentUpdated: '{{ $.common.environmentUpdated }}'
 preProduction: 'Pre Production'
-preProductionType: 'PreProduction'
+preProductionType: 'Pre-Prod'
 environmentDelete: '{{ $.common.deleteEnvironment.title }}'
 environmentDeleteMessage: 'Are you sure you want to delete environment <strong>{{name}}</strong>?'
 namespaceValidation: Namespace must consist of lower case alphanumeric characters or '-', and must start and end with an alphanumeric character (e.g. 'my-name',  or '123-abc')

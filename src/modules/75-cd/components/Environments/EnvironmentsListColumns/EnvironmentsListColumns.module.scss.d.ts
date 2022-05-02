@@ -16,12 +16,14 @@ declare const styles: {
   readonly dialog: string
   readonly dialogStyles: string
   readonly editServiceModal: string
+  readonly environmentType: string
   readonly flex: string
   readonly label: string
   readonly name: string
   readonly noRepositorySubText: string
   readonly noRepositoryText: string
   readonly pageBody: string
+  readonly production: string
   readonly repositoryCard: string
   readonly source: string
   readonly sourceDestinationWrapper: string

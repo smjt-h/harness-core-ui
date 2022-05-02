@@ -59,7 +59,7 @@ export interface ManifestStepInitData {
   store: ManifestStores | string
   selectedManifest: ManifestTypes | null
 }
-export interface ManifestDetailDataType {
+export interface K8sValuesManifestDataType {
   identifier: string
   branch: string | undefined
   commitId: string | undefined
@@ -67,7 +67,6 @@ export interface ManifestDetailDataType {
   paths: any
   skipResourceVersioning?: boolean
   repoName?: string
-  configOverridePath?: string
 }
 export interface ManifestLastStepProps {
   key: string
@@ -146,4 +145,13 @@ export interface OpenShiftParamDataType {
   repoName?: string
   gitFetchType?: 'Branch' | 'Commit'
   paths: string[] | any
+}
+export interface ServerlessManifestDataType extends K8sValuesManifestDataType {
+  identifier: string
+  branch: string | undefined
+  commitId: string | undefined
+  gitFetchType: 'Branch' | 'Commit'
+  paths: any
+  repoName?: string
+  configOverridePath?: string
 }

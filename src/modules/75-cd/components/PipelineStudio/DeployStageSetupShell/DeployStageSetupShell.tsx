@@ -239,7 +239,7 @@ export default function DeployStageSetupShell(): JSX.Element {
     <Layout.Horizontal className={css.navigationBtns}>
       {selectedTabId !== DeployTabs.OVERVIEW && (
         <Button
-          text={getString('previous')}
+          text={getString('back')}
           variation={ButtonVariation.SECONDARY}
           icon="chevron-left"
           onClick={() => {
@@ -249,7 +249,7 @@ export default function DeployStageSetupShell(): JSX.Element {
       )}
       {selectedTabId !== DeployTabs.ADVANCED && (
         <Button
-          text={selectedTabId === DeployTabs.EXECUTION ? getString('save') : getString('next')}
+          text={selectedTabId === DeployTabs.EXECUTION ? getString('save') : getString('continue')}
           variation={ButtonVariation.PRIMARY}
           rightIcon="chevron-right"
           onClick={() => {

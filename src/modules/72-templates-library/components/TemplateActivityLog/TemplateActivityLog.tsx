@@ -39,6 +39,8 @@ const HumanizedAction = ({ action }: { action: string }) => {
     actionString = getString('templatesLibrary.created')
   } else if (action === 'UPDATE') {
     actionString = getString('templatesLibrary.updated')
+  } else if (action === 'DELETE') {
+    actionString = getString('templatesLibrary.deleted')
   } else if (action === 'DEFAULT') {
     actionString = getString('templatesLibrary.default')
   }

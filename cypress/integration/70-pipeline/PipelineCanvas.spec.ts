@@ -73,7 +73,7 @@ describe('GIT SYNC DISABLED', () => {
 
     cy.get('[name="variables[0].value"]').type('varvalue')
 
-    cy.contains('span', 'Next').click()
+    cy.contains('span', 'Continue').click()
 
     cy.contains('span', 'New Environment').click()
     cy.fillName('testEnv')
@@ -368,7 +368,7 @@ describe('ServerlessAwsLambda as deployment type', () => {
     cy.wait(1000)
     cy.contains('span', 'Confirm').click()
     cy.wait(1000)
-    cy.contains('span', 'Next').click()
+    cy.contains('span', 'Continue').click()
     cy.contains('span', 'Select Connector').click()
     cy.contains('p', 'dynatrace').click()
     cy.wait(500)
@@ -391,7 +391,7 @@ describe('ServerlessAwsLambda as deployment type', () => {
     cy.wait(1000)
     cy.contains('span', 'Confirm').click()
     cy.wait(1000)
-    cy.contains('span', 'Next').click()
+    cy.contains('span', 'Continue').click()
     cy.get('span[data-icon="fixed-input"]').eq(1).click()
     cy.get('.MultiTypeInput--header svg[data-icon="cross"]').eq(0).click()
     cy.contains('div', 'Runtime input').click()
@@ -402,7 +402,7 @@ describe('ServerlessAwsLambda as deployment type', () => {
     cy.contains('span', '<+input>').should('be.visible')
   })
 
-  it(`artifactPath and artifactPathFilter validation`, () => {
+  it.only(`artifactPath and artifactPathFilter validation`, () => {
     cy.intercept('GET', pipelineDetails, { fixture: 'pipeline/api/pipelines/serverlessAwsLambdaPipelineDetails' }).as(
       'pipelineDetails'
     )
@@ -422,7 +422,7 @@ describe('ServerlessAwsLambda as deployment type', () => {
     cy.get('span[data-icon="Edit"]').last().should('be.visible').click()
 
     // Click on 'Continue >' button
-    cy.contains('span', 'Continue').should('be.visible').click()
+    cy.contains('.StepWizard--main span', 'Continue').should('be.visible').click()
 
     // Make connectors/connector API call
     cy.intercept('GET', connectorList, { fixture: 'ng/api/connectors/connector' }).as('connectorList')
@@ -439,11 +439,11 @@ describe('ServerlessAwsLambda as deployment type', () => {
     cy.wait(2000)
 
     // Click on 'Continue >' button
-    cy.contains('span', 'Continue').should('be.visible').click()
+    cy.contains('.StepWizard--main span', 'Continue').should('be.visible').click()
     // Remove selected artifact path
     cy.get('span[data-icon="main-delete"]').last().should('be.visible').click()
     // Click on 'Submit >' button
-    cy.contains('span', 'Submit').should('be.visible').click()
+    cy.contains('.StepWizard--main span', 'Submit').should('be.visible').click()
     // Try to Save Pipeline
     cy.contains('span', 'Save').click()
     // Below error should appear in toaster and Save should be aborted

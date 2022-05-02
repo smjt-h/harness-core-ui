@@ -164,8 +164,20 @@ describe('Create Azure connector Wizard', () => {
     await act(async () => {
       clickSubmit(container)
     })
-
     expect(getByText('connectors.ceAzure.existingExports.instruction')).toBeDefined()
+    const searchButton = container.querySelector('[class*="ExpandingSearchInput"]')
+    expect(searchButton).toBeDefined()
+    act(() => {
+      fireEvent.click(searchButton!)
+    })
+
+    const input = container.querySelector('input[type="search"]') as HTMLInputElement
+    expect(input).toBeDefined()
+    act(() => {
+      fireEvent.change(input, { target: { value: 'report' } })
+    })
+    expect(input.value).toBe('report')
+
     expect(container).toMatchSnapshot()
   })
 
@@ -224,7 +236,7 @@ describe('Create Azure connector Wizard', () => {
       clickSubmit(container)
     })
 
-    expect(getByText('connectors.ceAzure.billing.instruction')).toBeDefined()
+    expect(getByText('connectors.ceAzure.billing.subHeading')).toBeDefined()
     expect(container).toMatchSnapshot()
   })
 

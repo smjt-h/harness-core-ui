@@ -11,7 +11,7 @@ import {
   pipelineSaveCall
 } from '../../support/70-pipeline/constants'
 
-describe('RUN PIPELINE MODAL', () => {
+describe.skip('RUN PIPELINE MODAL', () => {
   const gitSyncCall =
     '/ng/api/git-sync/git-sync-enabled?accountIdentifier=accountId&orgIdentifier=default&projectIdentifier=project1'
   const resolvedPipelineDetailsCall =
@@ -187,7 +187,7 @@ describe('RUN PIPELINE MODAL', () => {
         cy.contains('span', 'cypress').should('be.visible')
       })
 
-      it('visual to variable view for stage configuration', () => {
+      it.skip('visual to variable view for stage configuration', () => {
         // Toggle to variable view
         cy.contains('span', 'Variables').click()
         cy.wait(2000)
@@ -261,7 +261,7 @@ describe('RUN PIPELINE MODAL', () => {
       cy.contains('span', 'Apply Changes').click({ force: true })
     })
 
-    it('visual to variable view for stage configuration', () => {
+    it.skip('visual to variable view for stage configuration', () => {
       // Toggle to variable view
       cy.intercept('POST', pipelineVariablesCall, { fixture: 'pipeline/api/runpipeline/pipelines.variables' })
       cy.intercept('POST', resolvedPipelineDetailsCall, { fixture: 'pipeline/api/approvals/getresolvedpipeline' })

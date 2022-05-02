@@ -58,6 +58,8 @@ import GitSyncRepoTab from '@gitsync/pages/repos/GitSyncRepoTab'
 import GitSyncEntityTab from '@gitsync/pages/entities/GitSyncEntityTab'
 import GitSyncErrors from '@gitsync/pages/errors/GitSyncErrors'
 import GitSyncConfigTab from '@gitsync/pages/config/GitSyncConfigTab'
+import { registerFeatureFlagPipelineStage } from './pages/pipeline-studio/views/FeatureFlagStage'
+import { registerFlagConfigurationPipelineStep } from './components/PipelineSteps'
 import { TargetsPage } from './pages/target-management/targets/TargetsPage'
 import { TargetDetailPage as LegacyTargetDetailPage } from './pages/target-details/TargetDetailPage'
 import TargetDetailPage from './pages/target-detail/TargetDetailPage'
@@ -145,8 +147,11 @@ RbacFactory.registerResourceTypeHandler(ResourceType.TARGETGROUP, {
   }
 })
 
+registerFeatureFlagPipelineStage()
+registerFlagConfigurationPipelineStep()
+
 const CFRoutes: FC = () => {
-  const { FFM_1512, FFM_1827 } = useFeatureFlags()
+  const { FF_PIPELINE, FFM_1512, FFM_1827 } = useFeatureFlags()
 
   return (
     <>
@@ -448,7 +453,7 @@ const CFRoutes: FC = () => {
         </GitSyncPage>
       </RouteWithLayout>
       <AdminRouteDestinations />
-      <PipelineRouteDestinations />
+      {FF_PIPELINE && <PipelineRouteDestinations />}
 
       {GovernanceRouteDestinations({
         sidebarProps: CFSideNavProps,

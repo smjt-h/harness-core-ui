@@ -490,8 +490,7 @@ exports[`<TemplateStageSpecifications /> tests snapshot test with template input
                         infrastructureText
                       </div>
                       <div
-                        class="nestedAccordions"
-                        style="width: 50%;"
+                        class="nestedAccordions infraSection"
                       />
                       <div
                         class="nestedAccordions"

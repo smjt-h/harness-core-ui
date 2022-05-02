@@ -197,7 +197,24 @@ export interface StringsMap {
   'common.entityReferenceSubTitle': string
   'common.entityReferenceTitle': string
   'common.entityType': string
+  'common.environment.fetchNext': string
   'common.environmentCreated': string
+  'common.environmentGroup.createNew': string
+  'common.environmentGroup.created': string
+  'common.environmentGroup.delete': string
+  'common.environmentGroup.deleteConfirmation': string
+  'common.environmentGroup.deleted': string
+  'common.environmentGroup.edit': string
+  'common.environmentGroup.filters.environmentGroupNamePlaceholder': string
+  'common.environmentGroup.label': string
+  'common.environmentGroup.new': string
+  'common.environmentGroup.noEnvironment': string
+  'common.environmentGroup.updated': string
+  'common.environmentGroup.validation.oneEnvRequired': string
+  'common.environmentGroups.label': string
+  'common.environmentGroups.noEnvironmentGroups.label': string
+  'common.environmentGroups.noEnvironmentGroups.message': string
+  'common.environmentList': string
   'common.environmentUpdated': string
   'common.errorCount': string
   'common.errorHandler.communityForum': string
@@ -399,6 +416,7 @@ export interface StringsMap {
   'common.noDeployments': string
   'common.noInfo': string
   'common.noRefData': string
+  'common.noSearchResultsFound': string
   'common.noexpiration': string
   'common.notEnabled': string
   'common.note': string
@@ -561,6 +579,7 @@ export interface StringsMap {
   'common.saveAsTemplate': string
   'common.savedSuccessfully': string
   'common.scope': string
+  'common.searchOther': string
   'common.searchPlaceholder': string
   'common.seconds': string
   'common.secretKey': string
@@ -1617,6 +1636,10 @@ export interface StringsMap {
   'connectors.ceAzure.billing.extension.video': string
   'connectors.ceAzure.billing.heading': string
   'connectors.ceAzure.billing.instruction': string
+  'connectors.ceAzure.billing.instructions.i1': string
+  'connectors.ceAzure.billing.instructions.i2': string
+  'connectors.ceAzure.billing.instructions.i3': string
+  'connectors.ceAzure.billing.instructions.i4': string
   'connectors.ceAzure.billing.launchAzureConsole': string
   'connectors.ceAzure.billing.login': string
   'connectors.ceAzure.billing.reportName': string
@@ -1646,7 +1669,10 @@ export interface StringsMap {
   'connectors.ceAzure.chooseRequirements.visibility.footer': string
   'connectors.ceAzure.chooseRequirements.visibilityCardDesc': string
   'connectors.ceAzure.existingExports.createNewExportBtn': string
+  'connectors.ceAzure.existingExports.hints.nextStepHint1': string
+  'connectors.ceAzure.existingExports.hints.nextStepHint2': string
   'connectors.ceAzure.existingExports.instruction': string
+  'connectors.ceAzure.existingExports.searchBillingReports': string
   'connectors.ceAzure.existingExports.subscriptionId': string
   'connectors.ceAzure.existingExports.tenantId': string
   'connectors.ceAzure.guidPlaceholder': string
@@ -1659,8 +1685,13 @@ export interface StringsMap {
   'connectors.ceAzure.overview.subscriptionId': string
   'connectors.ceAzure.overview.tenantId': string
   'connectors.ceAzure.overview.trySuggestion': string
+  'connectors.ceAzure.servicePrincipal.assignRoleCmd': string
+  'connectors.ceAzure.servicePrincipal.costVisibilityCmd': string
   'connectors.ceAzure.servicePrincipal.heading': string
-  'connectors.ceAzure.servicePrincipal.subHeading': string
+  'connectors.ceAzure.servicePrincipal.optimisationCmd': string
+  'connectors.ceAzure.servicePrincipal.registerCommand': string
+  'connectors.ceAzure.servicePrincipal.subHeading1': string
+  'connectors.ceAzure.servicePrincipal.subHeading2': string
   'connectors.ceAzure.steps.billingExports': string
   'connectors.ceAzure.steps.overview': string
   'connectors.ceAzure.steps.requirements': string
@@ -2415,13 +2446,24 @@ export interface StringsMap {
   'pipeline.buildInfra.addCapabilities': string
   'pipeline.buildInfra.allowPrivilegeEscalation': string
   'pipeline.buildInfra.automountServiceAccountToken': string
+  'pipeline.buildInfra.claimName': string
   'pipeline.buildInfra.containerSecurityContext': string
   'pipeline.buildInfra.dropCapabilities': string
+  'pipeline.buildInfra.effect': string
+  'pipeline.buildInfra.emptyDirectory': string
+  'pipeline.buildInfra.hostPath': string
+  'pipeline.buildInfra.mountPath': string
+  'pipeline.buildInfra.nodeSelector': string
+  'pipeline.buildInfra.pathType': string
+  'pipeline.buildInfra.persistentVolumeClaim': string
   'pipeline.buildInfra.poolId': string
   'pipeline.buildInfra.priorityClassName': string
   'pipeline.buildInfra.privileged': string
   'pipeline.buildInfra.readOnlyRootFilesystem': string
   'pipeline.buildInfra.runAsNonRoot': string
+  'pipeline.buildInfra.size': string
+  'pipeline.buildInfra.tolerations': string
+  'pipeline.buildInfra.volumes': string
   'pipeline.buildRepo': string
   'pipeline.cannotAddInputSetInvalidPipeline': string
   'pipeline.cannotAddTriggerInvalidPipeline': string
@@ -2429,6 +2471,10 @@ export interface StringsMap {
   'pipeline.cannotRunInvalidPipeline': string
   'pipeline.changeTemplate': string
   'pipeline.changeTemplateLabel': string
+  'pipeline.ci.validations.invalidSize': string
+  'pipeline.ci.validations.keyUnique': string
+  'pipeline.ci.validations.mountPathUnique': string
+  'pipeline.ci.validations.pathRequiredForHostPath': string
   'pipeline.ci.validations.port': string
   'pipeline.ci.validations.serviceDependencyIdentifier': string
   'pipeline.ciCodebase.buildType': string
@@ -2957,6 +3003,24 @@ export interface StringsMap {
   'pipeline.serviceNowApprovalStep.validations.connectorRef': string
   'pipeline.serviceNowApprovalStep.validations.issueNumber': string
   'pipeline.serviceNowApprovalStep.validations.ticketType': string
+  'pipeline.serviceNowCreateStep.addFields': string
+  'pipeline.serviceNowCreateStep.descriptionPlaceholder': string
+  'pipeline.serviceNowCreateStep.fetchingFields': string
+  'pipeline.serviceNowCreateStep.fetchingTemplateDetails': string
+  'pipeline.serviceNowCreateStep.fieldType.configureFields': string
+  'pipeline.serviceNowCreateStep.fieldType.createFromTemplate': string
+  'pipeline.serviceNowCreateStep.noSuchTemplateFound': string
+  'pipeline.serviceNowCreateStep.selectFieldListHelp': string
+  'pipeline.serviceNowCreateStep.shortDescription': string
+  'pipeline.serviceNowCreateStep.shortDescriptionPlaceholder': string
+  'pipeline.serviceNowCreateStep.templateName': string
+  'pipeline.serviceNowCreateStep.templateNamePlaceholder': string
+  'pipeline.serviceNowCreateStep.validations.description': string
+  'pipeline.serviceNowCreateStep.validations.shortDescription': string
+  'pipeline.serviceNowCreateStep.validations.templateName': string
+  'pipeline.serviceNowCreateStep.validations.validTemplateName': string
+  'pipeline.serviceNowUpdateStep.fieldType.applyFromTemplate': string
+  'pipeline.serviceNowUpdateStep.fieldType.updateFields': string
   'pipeline.singleStageExecution': string
   'pipeline.sslVerify': string
   'pipeline.stageDataDeleteWarningText': string
@@ -3174,6 +3238,7 @@ export interface StringsMap {
   'templatesLibrary.created': string
   'templatesLibrary.default': string
   'templatesLibrary.deleteTemplate': string
+  'templatesLibrary.deleted': string
   'templatesLibrary.editModal.heading': string
   'templatesLibrary.fetchingActivityLogs': string
   'templatesLibrary.inputsCount': string
@@ -3937,6 +4002,7 @@ export interface StringsMap {
   'ce.co.ruleDrawer.logs': string
   'ce.co.ruleDrawer.spendVsSavings': string
   'ce.co.ruleDrawer.usageTime': string
+  'ce.co.rules': string
   'ce.co.rulesTableHeaders.fulfilment': string
   'ce.co.rulesTableHeaders.idleTime': string
   'ce.co.rulesTableHeaders.lastActivity': string
@@ -4067,6 +4133,7 @@ export interface StringsMap {
   'ce.overview.cardtitles.multipleCloud': string
   'ce.overview.cardtitles.topClusters': string
   'ce.overview.cardtitles.topRecommendation': string
+  'ce.overview.ecsService': string
   'ce.overview.noData.autoStopping': string
   'ce.overview.noData.connector': string
   'ce.overview.noData.explore': string
@@ -4246,6 +4313,9 @@ export interface StringsMap {
   'ce.recommendation.detailsPage.customDetailsText1': string
   'ce.recommendation.detailsPage.customDetailsText2': string
   'ce.recommendation.detailsPage.customDetailsText3': string
+  'ce.recommendation.detailsPage.ecsRecommendationHelpText': string
+  'ce.recommendation.detailsPage.ecsRecommendedResources': string
+  'ce.recommendation.detailsPage.ecsServiceDetails': string
   'ce.recommendation.detailsPage.guaranteed': string
   'ce.recommendation.detailsPage.headerText': string
   'ce.recommendation.detailsPage.histogramText': string
@@ -4268,6 +4338,7 @@ export interface StringsMap {
   'ce.recommendation.detailsPage.resetRecommendationText': string
   'ce.recommendation.detailsPage.resizeText': string
   'ce.recommendation.detailsPage.resourceChanges': string
+  'ce.recommendation.detailsPage.setBuffer': string
   'ce.recommendation.detailsPage.setQoSAndBuffer': string
   'ce.recommendation.detailsPage.timeChangeText': string
   'ce.recommendation.detailsPage.totalCost': string
@@ -4302,15 +4373,18 @@ export interface StringsMap {
   'ce.recommendation.listPage.recommendationTypes.resizing': string
   'ce.recommendation.listPage.recommendationTypes.rightSizing': string
   'ce.recommendation.listPage.recommnedationBreakdown': string
+  'ce.recommendation.listPage.service': string
   'ce.recommendation.listPage.uptoText': string
   'ce.recommendation.recommendationChart.and': string
   'ce.recommendation.recommendationChart.cpuHistogramHeader': string
   'ce.recommendation.recommendationChart.cpuPlaceholder': string
+  'ce.recommendation.recommendationChart.cpuValuePlaceholder': string
   'ce.recommendation.recommendationChart.limitLabel': string
   'ce.recommendation.recommendationChart.limitLabelRegular': string
   'ce.recommendation.recommendationChart.memoryHistogramHeader': string
   'ce.recommendation.recommendationChart.memoryLabel': string
   'ce.recommendation.recommendationChart.memoryLabelRegular': string
+  'ce.recommendation.recommendationChart.memoryUsageInMBsPlaceholder': string
   'ce.recommendation.recommendationChart.memoryUsagePlaceholder': string
   'ce.recommendation.recommendationChart.noOfSamples': string
   'ce.recommendation.recommendationChart.request': string
@@ -5094,6 +5168,7 @@ export interface StringsMap {
   'cv.considerMissingMetricDataAs': string
   'cv.continuous': string
   'cv.copyURL': string
+  'cv.createdOn': string
   'cv.currentProductionRisk': string
   'cv.customHealthSource.Querymapping.endTimeLabel': string
   'cv.customHealthSource.Querymapping.jsonPathTitle': string
@@ -5235,6 +5310,7 @@ export interface StringsMap {
   'cv.jobNamePlaceholder': string
   'cv.known': string
   'cv.last12Hours': string
+  'cv.lastModifiedOn': string
   'cv.lastOneHour': string
   'cv.lastSuccessfulRun': string
   'cv.learnMore': string

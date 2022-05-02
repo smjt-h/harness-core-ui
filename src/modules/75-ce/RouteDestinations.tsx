@@ -48,6 +48,7 @@ import NodeDetailsPage from './pages/node-details/NodeDetailsPage'
 import AnomaliesOverviewPage from './pages/anomalies-overview/AnomaliesOverviewPage'
 import formatCost from './utils/formatCost'
 import BusinessMapping from './pages/business-mapping/BusinessMapping'
+import ECSRecommendationDetailsPage from './pages/ecs-recommendation-details/ECSRecommendationDetailsPage'
 
 featureFactory.registerFeaturesByModule('ce', {
   features: [FeatureIdentifier.PERSPECTIVES],
@@ -304,6 +305,19 @@ const CERoutes: React.FC = () => {
           exact
         >
           <NodeRecommendationDetailsPage />
+        </RouteWithLayout>
+        <RouteWithLayout
+          licenseRedirectData={licenseRedirectData}
+          sidebarProps={CESideNavProps}
+          path={routes.toCEECSRecommendationDetails({
+            ...accountPathProps,
+            ...projectPathProps,
+            recommendationName: ':recommendationName',
+            recommendation: ':recommendation'
+          })}
+          exact
+        >
+          <ECSRecommendationDetailsPage />
         </RouteWithLayout>
         <RouteWithLayout
           sidebarProps={CESideNavProps}

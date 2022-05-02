@@ -6,13 +6,22 @@
  */
 
 import React from 'react'
-import { Button, ButtonSize, ButtonVariation, Container, Layout, Text } from '@harness/uicore'
+import { Button, ButtonSize, ButtonVariation, Container, Text } from '@harness/uicore'
 import { FontVariation, Color } from '@harness/design-system'
 import { useStrings } from 'framework/strings'
 import css from './ConnectorCreationInstructionList.module.scss'
 
 interface InstuctionListProps {
-  instructionsList: Record<string, any>[]
+  instructionsList: InstructionProps[]
+}
+
+export interface InstructionProps {
+  type: string
+  text?: string
+  icon?: string
+  url?: string
+  listClassName?: string
+  renderer?: () => void
 }
 
 const ConnectorInstructionList: React.FC<InstuctionListProps> = props => {
@@ -27,11 +36,9 @@ const ConnectorInstructionList: React.FC<InstuctionListProps> = props => {
           variation={ButtonVariation.SECONDARY}
           iconProps={{ size: 12, margin: { left: 'xsmall' } }}
           size={ButtonSize.SMALL}
-          onClick={
-            /* istanbul ignore next */ () => {
-              window.open(instruction.url, '_blank')
-            }
-          }
+          onClick={() => {
+            window.open(instruction.url, '_blank')
+          }}
         />
       )
     } else if (instruction.type === 'text') {
@@ -47,18 +54,16 @@ const ConnectorInstructionList: React.FC<InstuctionListProps> = props => {
 
   return (
     <Container className={css.instructionPanel}>
-      <Layout.Vertical>
-        <ol className={css.instructionList}>
-          {props.instructionsList.map((item, index) => {
-            const classname = item.listClassName as string
-            return (
-              <li key={index} className={css[classname as keyof typeof css]}>
-                {getElement(item)}
-              </li>
-            )
-          })}
-        </ol>
-      </Layout.Vertical>
+      <ol className={css.instructionList}>
+        {props.instructionsList.map((item, index) => {
+          const classname = item.listClassName as string
+          return (
+            <li key={index} className={css[classname as keyof typeof css]}>
+              {getElement(item)}
+            </li>
+          )
+        })}
+      </ol>
     </Container>
   )
 }

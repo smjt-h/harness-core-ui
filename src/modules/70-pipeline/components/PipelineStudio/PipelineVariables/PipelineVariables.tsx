@@ -127,13 +127,15 @@ export function PipelineVariablesWithRef(
     closeDrawer()
   }
 
+  const readOnly = isReadonly || !!pipeline.template
+
   return (
     <div className={css.pipelineVariables}>
       {error ? (
         <PageError message={(error?.data as Error)?.message || error?.message} />
       ) : (
         <div className={css.content}>
-          <VariablesHeader applyChanges={applyChanges} discardChanges={discardChanges} isReadonly={isReadonly} />
+          <VariablesHeader applyChanges={applyChanges} discardChanges={discardChanges} isReadonly={readOnly} />
           <div className={css.variableList} ref={pipelineVariablesRef as any}>
             <GitSyncStoreProvider>
               <NestedAccordionPanel
@@ -157,7 +159,7 @@ export function PipelineVariablesWithRef(
                     stepsFactory={stepsFactory}
                     updatePipeline={updatePipeline}
                     metadataMap={metadataMap}
-                    readonly={isReadonly || !!pipeline.template}
+                    readonly={readOnly}
                     allowableTypes={allowableTypes}
                   />
                 }

@@ -46,7 +46,7 @@ module.exports = (on: Cypress.PluginEvents, config: Cypress.PluginConfigOptions)
     deleteScrenshots.forEach(file => {
       ;(results as any)?.screenshots.forEach(screenshot => {
         // Matching screenshot path with substring formed by spec+test name
-        if (file && screenshot?.path && screenshot.path.includes(file)) {
+        if (screenshot?.path && screenshot.path.includes(file) && fs.existsSync(screenshot.path)) {
           console.log('file deleted successfully: ', screenshot.path)
           fs.unlinkSync(screenshot.path)
         }

@@ -49,7 +49,9 @@ const OverviewTopRecommendations = () => {
   })
 
   const { data, fetching } = result
-  const recommendationItems = data?.recommendationsV2?.items || ([] as RecommendationItemDto[])
+
+  const recommendationItems = (data?.recommendationsV2?.items || []) as RecommendationItemDto[]
+
   const totalRecommendedSavings = useMemo(
     () => recommendationItems.reduce((prev, curr) => prev + defaultTo(curr?.monthlySaving, 0), 0),
     [recommendationItems]
@@ -124,7 +126,8 @@ const Recommendation = (props: RecommendationProps) => {
   const map: Record<string, string> = useMemo(
     () => ({
       [ResourceType.Workload]: getString('ce.overview.workload'),
-      [ResourceType.NodePool]: getString('ce.overview.nodepool')
+      [ResourceType.NodePool]: getString('ce.overview.nodepool'),
+      [ResourceType.EcsService]: getString('ce.overview.ecsService')
     }),
     []
   )
@@ -132,7 +135,8 @@ const Recommendation = (props: RecommendationProps) => {
   const resourceTypeToRoute: Record<ResourceType, RouteFn> = useMemo(() => {
     return {
       [ResourceType.Workload]: routes.toCERecommendationDetails,
-      [ResourceType.NodePool]: routes.toCENodeRecommendationDetails
+      [ResourceType.NodePool]: routes.toCENodeRecommendationDetails,
+      [ResourceType.EcsService]: routes.toCEECSRecommendationDetails
     }
   }, [])
 

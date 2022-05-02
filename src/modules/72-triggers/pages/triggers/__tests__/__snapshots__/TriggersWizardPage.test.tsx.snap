@@ -812,8 +812,7 @@ exports[`TriggersWizardPage Triggers tests Payload/Values Comparison Existing Tr
                                     infrastructureText
                                   </div>
                                   <div
-                                    class="nestedAccordions"
-                                    style="width: 50%;"
+                                    class="nestedAccordions infraSection"
                                   >
                                     <div
                                       class="bp3-form-group"

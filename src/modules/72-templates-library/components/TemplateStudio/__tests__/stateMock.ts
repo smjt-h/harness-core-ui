@@ -28,6 +28,45 @@ export const stepTemplateMock: NGTemplateInfoConfig = {
   } as JsonNode
 }
 
+export const approvalStageTemplateMock: NGTemplateInfoConfig = {
+  name: 'Test Template',
+  identifier: 'Test_Template',
+  versionLabel: 'v1',
+  type: 'Stage',
+  projectIdentifier: 'Yogesh_Test',
+  orgIdentifier: 'default',
+  tags: {},
+  spec: {
+    type: 'Approval',
+    spec: {
+      execution: {
+        steps: [
+          {
+            step: {
+              name: 'Approval',
+              identifier: 'approval',
+              type: 'HarnessApproval',
+              timeout: '1d',
+              spec: {
+                approvalMessage: 'Please review the following information\nand approve the pipeline progression',
+                includePipelineExecutionHistory: true,
+                approvers: {
+                  minimumCount: 1,
+                  disallowPipelineExecutor: false,
+                  userGroups: ['group2']
+                },
+                approverInputs: []
+              }
+            }
+          }
+        ]
+      }
+    },
+    failureStrategies: [{ onFailure: { errors: ['AllErrors'], action: { type: 'StageRollback' } } }],
+    when: { pipelineStatus: 'Success' }
+  } as JsonNode
+}
+
 export const stageTemplateMock: NGTemplateInfoConfig = {
   name: 'Test Template',
   identifier: 'Test_Template',
@@ -94,6 +133,65 @@ export const stageTemplateMock: NGTemplateInfoConfig = {
   } as JsonNode
 }
 
+export const pipelineTemplateMock: NGTemplateInfoConfig = {
+  name: 'Test Template',
+  identifier: 'Test_Template',
+  versionLabel: 'v1',
+  type: 'Pipeline',
+  projectIdentifier: 'Yogesh_Test',
+  orgIdentifier: 'default',
+  tags: {},
+  spec: {
+    stages: [
+      {
+        stage: {
+          name: 'Stage 1',
+          identifier: 'Stage_1',
+          description: '',
+          type: 'Deployment',
+          spec: {
+            serviceConfig: {
+              serviceRef: 'Template',
+              serviceDefinition: { spec: { variables: [] }, type: 'Kubernetes' }
+            },
+            infrastructure: {
+              environmentRef: 'QA',
+              infrastructureDefinition: {
+                type: 'KubernetesDirect',
+                spec: { connectorRef: 'Yogesh_K8_Connector', namespace: 'default', releaseName: 'release-<+INFRA_KEY>' }
+              },
+              allowSimultaneousDeployments: false
+            },
+            execution: {
+              steps: [
+                {
+                  step: {
+                    type: 'ShellScript',
+                    name: 'Step 1',
+                    identifier: 'Step_1',
+                    spec: {
+                      shell: 'Bash',
+                      onDelegate: true,
+                      source: { type: 'Inline', spec: { script: 'echo 1' } },
+                      environmentVariables: [],
+                      outputVariables: [],
+                      executionTarget: {}
+                    },
+                    timeout: '10m'
+                  }
+                }
+              ],
+              rollbackSteps: []
+            }
+          },
+          tags: {},
+          failureStrategies: [{ onFailure: { errors: ['AllErrors'], action: { type: 'StageRollback' } } }]
+        }
+      }
+    ]
+  } as JsonNode
+}
+
 export const monitoredServiceTemplateMock: NGTemplateInfoConfigWithMonitoredService = {
   name: 'Test Template',
   identifier: 'Test_Template',
@@ -131,7 +229,7 @@ export const getTemplateContextMock = (type: TemplateType): TemplateContextInter
     view: 'VISUAL',
     isReadonly: false,
     setView: () => void 0,
-    fetchTemplate: () => new Promise<void>(() => undefined),
+    fetchTemplate: jest.fn(),
     setYamlHandler: () => undefined,
     updateTemplate: jest.fn(),
     updateTemplateView: jest.fn(),
@@ -150,6 +248,11 @@ export const getTemplateContextMock = (type: TemplateType): TemplateContextInter
       return produce(defaultTemplateContextMock, draft => {
         set(draft, 'state.template', stageTemplateMock)
         set(draft, 'state.originalTemplate', stageTemplateMock)
+      })
+    case TemplateType.Pipeline:
+      return produce(defaultTemplateContextMock, draft => {
+        set(draft, 'state.template', pipelineTemplateMock)
+        set(draft, 'state.originalTemplate', pipelineTemplateMock)
       })
     case TemplateType.MonitoredService:
       return produce(defaultTemplateContextMock, draft => {

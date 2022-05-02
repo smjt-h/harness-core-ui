@@ -16,7 +16,7 @@ import { useModalHook } from '@harness/use-modal'
 import { Color, FontVariation } from '@harness/design-system'
 import cx from 'classnames'
 import { useStrings, UseStringsReturn } from 'framework/strings'
-import { isCDCommunity, useLicenseStore } from 'framework/LicenseStore/LicenseStoreContext'
+import { isCommunityPlan } from '@common/utils/utils'
 import { StageErrorContext } from '@pipeline/context/StageErrorContext'
 import { isServerlessDeploymentType, ServiceDeploymentType } from '@pipeline/utils/stageHelpers'
 import { DeployTabs } from '@pipeline/components/PipelineStudio/CommonUtils/DeployStageSetupShellUtils'
@@ -87,15 +87,8 @@ const CardList = ({
   )
 }
 
-const getCGTypes = (
-  cgSupportedDeploymentTypes: DeploymentTypeItem[],
-  nativeHelmFF = false,
-  serverlessFF = false
-): DeploymentTypeItem[] => {
+const getCGTypes = (cgSupportedDeploymentTypes: DeploymentTypeItem[], serverlessFF = false): DeploymentTypeItem[] => {
   let cgTypes = cgSupportedDeploymentTypes
-  if (nativeHelmFF) {
-    cgTypes = cgTypes.filter(deploymentType => deploymentType.value !== 'NativeHelm')
-  }
   if (serverlessFF) {
     cgTypes = cgTypes.filter(deploymentType => !isServerlessDeploymentType(deploymentType.value))
   }
@@ -149,8 +142,7 @@ export default function SelectDeploymentType(props: SelectServiceDeploymentTypeP
   const { getString } = useStrings()
   const formikRef = React.useRef<FormikProps<unknown> | null>(null)
   const { subscribeForm, unSubscribeForm } = React.useContext(StageErrorContext)
-  const { licenseInformation } = useLicenseStore()
-  const { NG_NATIVE_HELM, SERVERLESS_SUPPORT } = useFeatureFlags()
+  const { SERVERLESS_SUPPORT } = useFeatureFlags()
   const { accountId } = useParams<{
     accountId: string
   }>()
@@ -163,6 +155,11 @@ export default function SelectDeploymentType(props: SelectServiceDeploymentTypeP
         label: getString('pipeline.serviceDeploymentTypes.kubernetes'),
         icon: 'service-kubernetes',
         value: ServiceDeploymentType.Kubernetes
+      },
+      {
+        label: getString('pipeline.nativeHelm'),
+        icon: 'service-helm',
+        value: ServiceDeploymentType.NativeHelm
       }
     ],
     [getString]
@@ -171,11 +168,6 @@ export default function SelectDeploymentType(props: SelectServiceDeploymentTypeP
   // Suppported in CG (First Gen - Old Version of Harness App)
   const cgSupportedDeploymentTypes: DeploymentTypeItem[] = React.useMemo(
     () => [
-      {
-        label: getString('pipeline.nativeHelm'),
-        icon: 'service-helm',
-        value: ServiceDeploymentType.NativeHelm
-      },
       {
         label: getString('pipeline.serviceDeploymentTypes.amazonEcs'),
         icon: 'service-ecs',
@@ -218,6 +210,7 @@ export default function SelectDeploymentType(props: SelectServiceDeploymentTypeP
 
   const [cgDeploymentTypes, setCgDeploymentTypes] = React.useState(cgSupportedDeploymentTypes)
   const [ngDeploymentTypes, setNgDeploymentTypes] = React.useState(ngSupportedDeploymentTypes)
+  const isCommunity = isCommunityPlan()
 
   const [showCurrentGenSwitcherModal, hideCurrentGenSwitcherModal] = useModalHook(() => {
     return (
@@ -243,29 +236,24 @@ export default function SelectDeploymentType(props: SelectServiceDeploymentTypeP
   }, [selectedDeploymentTypeInCG])
 
   React.useEffect(() => {
-    if (isCDCommunity(licenseInformation)) {
+    if (isCommunity) {
       cgSupportedDeploymentTypes.forEach(deploymentType => {
         deploymentType['disabled'] = true
-        if (deploymentType.value === 'NativeHelm') {
-          deploymentType['disabled'] = !NG_NATIVE_HELM
-        }
       })
       setCgDeploymentTypes(cgSupportedDeploymentTypes)
     } else {
-      if (NG_NATIVE_HELM) {
-        // If FF enabled - Native Helm will be in NG - left section
-        setNgDeploymentTypes([
-          ...ngSupportedDeploymentTypes,
-          ...cgSupportedDeploymentTypes.filter(deploymentType => deploymentType.value === 'NativeHelm')
-        ])
-      } else if (SERVERLESS_SUPPORT) {
+      let ngTypes: DeploymentTypeItem[] = ngSupportedDeploymentTypes
+
+      if (SERVERLESS_SUPPORT) {
         // If FF enabled - Serverless deployment types will be in NG - left section
-        setNgDeploymentTypes([
-          ...ngSupportedDeploymentTypes,
+        ngTypes = [
+          ...ngTypes,
           ...cgSupportedDeploymentTypes.filter(deploymentType => isServerlessDeploymentType(deploymentType.value))
-        ])
+        ]
       }
-      const cgTypes = getCGTypes(cgSupportedDeploymentTypes, NG_NATIVE_HELM, SERVERLESS_SUPPORT)
+      setNgDeploymentTypes(ngTypes)
+
+      const cgTypes = getCGTypes(cgSupportedDeploymentTypes, SERVERLESS_SUPPORT)
       cgTypes.forEach(deploymentType => {
         deploymentType['disabled'] = true
         deploymentType['tooltip'] = (
@@ -283,7 +271,7 @@ export default function SelectDeploymentType(props: SelectServiceDeploymentTypeP
       })
       setCgDeploymentTypes(cgTypes)
     }
-  }, [licenseInformation, NG_NATIVE_HELM])
+  }, [SERVERLESS_SUPPORT])
 
   React.useEffect(() => {
     subscribeForm({ tab: DeployTabs.SERVICE, form: formikRef })
@@ -291,7 +279,7 @@ export default function SelectDeploymentType(props: SelectServiceDeploymentTypeP
   }, [formikRef])
 
   const renderDeploymentTypes = React.useCallback((): JSX.Element => {
-    if (!isCDCommunity(licenseInformation)) {
+    if (!isCommunity) {
       const tooltipContent = (
         <article className={cx(deployServiceCsss.cdGenerationSelectionTooltip, deployServiceCsss.tooltipContainer)}>
           <section className={deployServiceCsss.cdGenerationSwitchContainer}>
@@ -394,14 +382,7 @@ export default function SelectDeploymentType(props: SelectServiceDeploymentTypeP
         selectedValue={selectedDeploymentType}
       />
     )
-  }, [
-    cgDeploymentTypes,
-    ngSupportedDeploymentTypes,
-    getString,
-    isReadonly,
-    licenseInformation,
-    props.handleDeploymentTypeChange
-  ])
+  }, [cgDeploymentTypes, ngSupportedDeploymentTypes, getString, isReadonly, props.handleDeploymentTypeChange])
 
   return (
     <Formik<{ deploymentType: string }>

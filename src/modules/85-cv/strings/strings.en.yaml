@@ -718,6 +718,8 @@ slos:
       calendarBasedDefinition2: Calendar windows are more closely aligned with business planning and project work.
 SLO: SLO
 SLOWithName: 'SLO: {{ name }}'
+lastModifiedOn: Last modified on
+createdOn: Created on
 SLOPerformanceTrend: SLO Performance Trend
 sloRecalculationInProgress: SLO recalculation in progress
 errorBudgetRecalculationInProgress: Error Budget recalculation in progress

@@ -7,16 +7,10 @@
 
 import { isNull, isUndefined, omitBy, isEmpty, get, set, flatten } from 'lodash-es'
 import { string, array, object, ObjectSchema } from 'yup'
-import type {
-  PipelineInfoConfig,
-  ConnectorInfoDTO,
-  ConnectorResponse,
-  ManifestConfigWrapper,
-  NGVariable
-} from 'services/cd-ng'
+import type { PipelineInfoConfig, ConnectorResponse, ManifestConfigWrapper, NGVariable } from 'services/cd-ng'
 import { IdentifierSchema, NameSchema } from '@common/utils/Validation'
 import { Scope } from '@common/interfaces/SecretsInterface'
-import type { GetActionsListQueryParams, NGTriggerConfigV2, NGTriggerSourceV2 } from 'services/pipeline-ng'
+import type { NGTriggerSourceV2 } from 'services/pipeline-ng'
 import { connectorUrlType } from '@connectors/constants'
 import type { PanelInterface } from '@common/components/Wizard/Wizard'
 import { illegalIdentifiers, regexIdentifier } from '@common/utils/StringUtils'
@@ -26,6 +20,14 @@ import { ENABLED_ARTIFACT_TYPES } from '@pipeline/components/ArtifactsSelection/
 import type { StringsMap } from 'framework/strings/StringsContext'
 import { isCronValid } from '../views/subviews/ScheduleUtils'
 import type { AddConditionInterface } from '../views/AddConditionsSection'
+import type {
+  artifactManifestData,
+  artifactTableDetails,
+  artifactTableItem,
+  ManifestInterface,
+  TriggerConfigDTO,
+  TriggerTypeSourceInterface
+} from '../interface/TriggersWizardInterface'
 export const CUSTOM = 'Custom'
 export const AWS_CODECOMMIT = 'AWS_CODECOMMIT'
 export const AwsCodeCommit = 'AwsCodeCommit'
@@ -49,152 +51,6 @@ export const getArtifactId = (isManifest?: boolean, selectedArtifactId?: string)
   return ''
 }
 
-export interface ConnectorRefInterface {
-  identifier?: string
-  repoName?: string
-  value?: string
-  connector?: ConnectorInfoDTO
-  label?: string
-  live?: boolean
-}
-
-export interface FlatInitialValuesInterface {
-  triggerType: NGTriggerSourceV2['type']
-  identifier?: string
-  tags?: {
-    [key: string]: string
-  }
-  pipeline?: string | PipelineInfoConfig
-  originalPipeline?: PipelineInfoConfig
-  resolvedPipeline?: PipelineInfoConfig
-  inputSetTemplateYamlObj?: {
-    pipeline: PipelineInfoConfig | Record<string, never>
-  }
-  name?: string
-  // WEBHOOK-SPECIFIC
-  sourceRepo?: string
-  connectorRef?: ConnectorRefInterface
-  // SCHEDULE-SPECIFIC
-  selectedScheduleTab?: string
-}
-
-export interface FlatOnEditValuesInterface {
-  name: string
-  identifier: string
-  // targetIdentifier: string
-  description?: string
-  tags?: {
-    [key: string]: string
-  }
-  pipeline: PipelineInfoConfig
-  triggerType: NGTriggerSourceV2['type']
-  manifestType?: string
-  artifactType?: string
-  originalPipeline?: PipelineInfoConfig
-  resolvedPipeline?: PipelineInfoConfig
-  // WEBHOOK-SPECIFIC
-  sourceRepo?: GetActionsListQueryParams['sourceRepo']
-  connectorRef?: ConnectorRefInterface
-  connectorIdentifier?: string
-  repoName?: string
-  repoUrl?: string
-  autoAbortPreviousExecutions?: boolean
-  event?: string
-  actions?: string[]
-  anyAction?: boolean // required for onEdit to show checked
-  secureToken?: string
-  sourceBranchOperator?: string
-  sourceBranchValue?: string
-  targetBranchOperator?: string
-  targetBranchValue?: string
-  changedFilesOperator?: string
-  changedFilesValue?: string
-  tagConditionOperator?: string
-  tagConditionValue?: string
-  headerConditions?: AddConditionInterface[]
-  payloadConditions?: AddConditionInterface[]
-  jexlCondition?: string
-  // SCHEDULE-SPECIFIC
-  selectedScheduleTab?: string
-  minutes?: string
-  expression?: string
-  // ARTIFACT/MANIFEST-SPECIFIC
-  selectedArtifact?: any
-  stageId?: string
-  inputSetTemplateYamlObj?: {
-    pipeline: PipelineInfoConfig | Record<string, never>
-  }
-  eventConditions?: AddConditionInterface[]
-  versionValue?: string
-  versionOperator?: string
-  buildValue?: string
-  buildOperator?: string
-}
-
-export interface FlatValidWebhookFormikValuesInterface {
-  name: string
-  identifier: string
-  description?: string
-  tags?: {
-    [key: string]: string
-  }
-  target?: string
-  targetIdentifier?: string
-  pipeline: PipelineInfoConfig
-  sourceRepo: string
-  triggerType: NGTriggerSourceV2['type']
-  repoName?: string
-  connectorRef?: { connector: { spec: { type: string } }; value: string } // get from dto interface when available
-  autoAbortPreviousExecutions: boolean
-  event?: string
-  actions?: string[]
-  secureToken?: string
-  sourceBranchOperator?: string
-  sourceBranchValue?: string
-  targetBranchOperator?: string
-  targetBranchValue?: string
-  changedFilesOperator?: string
-  changedFilesValue?: string
-  tagConditionOperator?: string
-  tagConditionValue?: string
-  headerConditions?: AddConditionInterface[]
-  payloadConditions?: AddConditionInterface[]
-  jexlCondition?: string
-}
-
-export interface FlatValidScheduleFormikValuesInterface {
-  name: string
-  identifier: string
-  description?: string
-  tags?: {
-    [key: string]: string
-  }
-  target?: string
-  targetIdentifier?: string
-  pipeline: PipelineInfoConfig
-  sourceRepo: string
-  triggerType: NGTriggerSourceV2['type']
-  expression: string
-}
-
-export interface FlatValidArtifactFormikValuesInterface {
-  name: string
-  identifier: string
-  description?: string
-  tags?: {
-    [key: string]: string
-  }
-  triggerType: NGTriggerSourceV2['type']
-  selectedArtifact: any
-  stageId: string
-  pipeline: PipelineInfoConfig
-}
-
-export type FlatValidFormikValuesInterface =
-  | FlatValidArtifactFormikValuesInterface
-  | FlatValidWebhookFormikValuesInterface
-  | FlatValidScheduleFormikValuesInterface
-
 export const TriggerTypes = {
   WEBHOOK: 'Webhook',
   NEW_ARTIFACT: 'NewArtifact',
@@ -205,13 +61,6 @@ export const TriggerTypes = {
 
 export const isArtifactOrManifestTrigger = (triggerType?: string): boolean =>
   triggerType === TriggerTypes.MANIFEST || triggerType === TriggerTypes.ARTIFACT
-
-interface TriggerTypeSourceInterface {
-  triggerType: NGTriggerSourceV2['type']
-  sourceRepo?: string
-  manifestType?: string
-  artifactType?: string
-}
 
 export const PayloadConditionTypes = {
   TARGET_BRANCH: 'targetBranch',
@@ -256,10 +105,6 @@ const getTriggerTitle = ({
     return getString('triggers.onNewScheduleTitle')
   }
   return ''
-}
-
-export interface TriggerConfigDTO extends Omit<NGTriggerConfigV2, 'identifier'> {
-  identifier?: string
 }
 
 // todo: revisit to see how to require identifier w/o type issue
@@ -832,22 +677,6 @@ export const mockOperators = [
 export const inNotInArr = ['In', 'NotIn']
 export const inNotInPlaceholder = 'value1, regex1'
 
-export interface artifactManifestData {
-  artifactRef: string
-  name: string
-  stageId: string
-  artifactRepository: string
-  location: string
-  buildTag?: string
-  version?: string
-  spec?: any
-  [key: string]: any
-}
-
-interface ManifestInterface {
-  [key: string]: string
-}
-
 const getFilteredManifestsWithOverrides = ({
   stageObj,
   manifestType,
@@ -1142,15 +971,13 @@ export const parseArtifactsManifests = ({
 }
 
 export const getFilteredStage = (pipelineObj: any, stageId: string): any => {
-  let filteredStage
   for (const item of pipelineObj) {
     if (Array.isArray(item.parallel)) {
-      filteredStage = getFilteredStage(item.parallel, stageId)
-    } else if (item && item.stage && item.stage.identifier === stageId) {
-      filteredStage = item
+      return getFilteredStage(item.parallel, stageId)
+    } else if (item.stage.identifier === stageId) {
+      return item
     }
   }
-  return filteredStage
 }
 
 export const filterArtifact = ({
@@ -1292,11 +1119,6 @@ const getChartVersionAttribute = ({ artifact }: { artifact: ManifestConfigWrappe
 const getTag = ({ artifact }: { artifact: ManifestConfigWrapper }): string | undefined =>
   get(artifact, 'sidecar.spec.tag')
 
-interface artifactTableDetails {
-  location?: string
-  chartVersion?: string
-  tag?: string
-}
 export const getDetailsFromPipeline = ({
   manifests,
   manifestIdentifier,
@@ -1393,19 +1215,6 @@ export const getArtifactConnectorNameFromPipeline = ({
       (artifactObj: any) => artifactObj?.sidecar.identifier === artifactIdentifier
     )?.sidecar?.spec?.connectorRef
   }
-}
-
-export interface artifactTableItem {
-  artifactId: string
-  artifactLabel: string
-  stageId: string
-  artifactRepository: string
-  location: string
-  version?: string // for manifest
-  buildTag?: string // for artifact
-  disabled: boolean
-  hasRuntimeInputs: boolean
-  isStageOverrideManifest: boolean // to hide in SelectArtifactModal if not unique
 }
 
 export const TriggerDefaultFieldList = {

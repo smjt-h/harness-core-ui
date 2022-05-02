@@ -76,7 +76,7 @@ import {
   allowedManifestTypes,
   manifestStoreTypes
 } from './Manifesthelper'
-import ManifestDetails from './ManifestWizardSteps/ManifestDetails/ManifestDetails'
+import K8sValuesManifest from './ManifestWizardSteps/K8sValuesManifest/K8sValuesManifest'
 import type { ConnectorRefLabelType } from '../ArtifactsSelection/ArtifactInterface'
 import type {
   ManifestStepInitData,
@@ -94,6 +94,7 @@ import HelmWithS3 from './ManifestWizardSteps/HelmWithS3/HelmWithS3'
 import KustomizeWithGIT from './ManifestWizardSteps/KustomizeWithGIT/KustomizeWithGIT'
 import OpenShiftParamWithGit from './ManifestWizardSteps/OpenShiftParam/OSWithGit'
 import KustomizePatchDetails from './ManifestWizardSteps/KustomizePatchesDetails/KustomizePatchesDetails'
+import ServerlessAwsLambdaManifest from './ManifestWizardSteps/ServerlessAwsLambdaManifest/ServerlessAwsLambdaManifest'
 import css from './ManifestSelection.module.scss'
 
 const showAddManifestBtn = (
@@ -363,12 +364,15 @@ function ManifestListView({
         ):
         manifestDetailStep = <KustomizePatchDetails {...lastStepProps()} />
         break
+      case selectedManifest === ManifestDataType.ServerlessAwsLambda:
+        manifestDetailStep = <ServerlessAwsLambdaManifest {...lastStepProps()} />
+        break
       case [ManifestDataType.K8sManifest, ManifestDataType.Values].includes(selectedManifest as ManifestTypes) &&
         [ManifestStoreMap.Git, ManifestStoreMap.Github, ManifestStoreMap.GitLab, ManifestStoreMap.Bitbucket].includes(
           manifestStore as ManifestStores
         ):
       default:
-        manifestDetailStep = <ManifestDetails {...lastStepProps()} />
+        manifestDetailStep = <K8sValuesManifest {...lastStepProps()} />
 
         break
     }

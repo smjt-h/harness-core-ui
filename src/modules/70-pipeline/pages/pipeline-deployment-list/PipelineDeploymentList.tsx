@@ -30,7 +30,7 @@ import RbacButton from '@rbac/components/Button/Button'
 import PipelineSummaryCards from '@pipeline/components/Dashboards/PipelineSummaryCards/PipelineSummaryCards'
 import PipelineBuildExecutionsChart from '@pipeline/components/Dashboards/BuildExecutionsChart/PipelineBuildExecutionsChart'
 import useTabVisible from '@common/hooks/useTabVisible'
-import { isCDCommunity, useLicenseStore } from 'framework/LicenseStore/LicenseStoreContext'
+import { isCommunityPlan } from '@common/utils/utils'
 import ExecutionsList from './ExecutionsList/ExecutionsList'
 import ExecutionsPagination from './ExecutionsPagination/ExecutionsPagination'
 import { PipelineDeploymentListHeader } from './PipelineDeploymentListHeader/PipelineDeploymentListHeader'
@@ -262,8 +262,7 @@ export default function PipelineDeploymentList(props: PipelineDeploymentListProp
     setData(await (await reloadPipelines({ filterType: 'PipelineSetup' }))?.data?.totalElements)
   }, [cancel])
 
-  const { licenseInformation } = useLicenseStore()
-  const isCommunityAndCDModule = module === 'cd' && isCDCommunity(licenseInformation)
+  const isCommunityAndCDModule = module === 'cd' && isCommunityPlan()
 
   const {
     data,
