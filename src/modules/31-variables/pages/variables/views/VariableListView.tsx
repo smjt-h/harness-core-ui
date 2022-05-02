@@ -74,7 +74,7 @@ const VariableListView: React.FC<SecretsListProps> = props => {
     const data = row.original.variable
     return (
       <Text color={Color.GREY_600} font={{ variation: FontVariation.FORM_INPUT_TEXT }}>
-        {(data.spec as StringVariableConfigDTO)?.defaultValue ?? '-'}
+        {(data.spec as StringVariableConfigDTO)?.defaultValue}
       </Text>
     )
   }

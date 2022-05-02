@@ -10,7 +10,7 @@ import React from 'react'
 import { render, waitFor, act, fireEvent } from '@testing-library/react'
 import * as cdngServices from 'services/cd-ng'
 import routes from '@common/RouteDefinitions'
-import { TestWrapper } from '@common/utils/testUtils'
+import { findDialogContainer, TestWrapper } from '@common/utils/testUtils'
 import { accountPathProps, orgPathProps, projectPathProps } from '@common/utils/routeUtils'
 import VariablesPage from '../VariablesPage'
 import {
@@ -59,6 +59,12 @@ describe('Variables Page', () => {
     )
     await waitFor(() => getAllByText('variables.newVariable'))
     expect(getByText('variables.noVariableExist')).toBeDefined()
+    const neVarBtn = getAllByText('variables.newVariable')[1]
+    act(() => {
+      fireEvent.click(neVarBtn)
+    })
+
+    await waitFor(() => expect(getByText('common.addVariable')))
   })
 
   test('render page at account level with error', async () => {
@@ -133,5 +139,29 @@ describe('Variables Page', () => {
     expect(getByText('variables.newVariable')).toBeDefined()
     expect(getByText('projectLabel common.variables')).toBeDefined()
     expect(getByText('dummyProject')).toBeDefined()
+  })
+
+  test('render page at project level - click new variable button', async () => {
+    jest
+      .spyOn(cdngServices, 'useGetVariablesList')
+      .mockImplementation(() => ({ data: VariableSuccessResponseWithData, loading: false } as any))
+    const { getByText } = render(
+      <TestWrapper
+        path={routes.toVariables({ ...projectPathProps, module: 'cd' })}
+        pathParams={{ accountId: 'dummy', orgIdentifier: 'dummyOrg', projectIdentifier: 'dummyProject' }}
+      >
+        <VariablesPage />
+      </TestWrapper>
+    )
+    await waitFor(() => getByText('variables.newVariable'))
+    expect(getByText('variables.newVariable')).toBeDefined()
+    const newVarBtn = getByText('variables.newVariable')
+    act(() => {
+      fireEvent.click(newVarBtn)
+    })
+
+    await waitFor(() => expect(getByText('common.addVariable')))
+    const dialog = findDialogContainer() as HTMLElement
+    expect(dialog).toMatchSnapshot()
   })
 })

@@ -11,15 +11,18 @@ import routes from '@common/RouteDefinitions'
 import { TestWrapper } from '@common/utils/testUtils'
 import { accountPathProps } from '@common/utils/routeUtils'
 import VariableListView from '../VariableListView'
-import { VariableSuccessResponseWithData } from '../../__tests__/mock/variableResponse'
+import {
+  VariableSuccessResponseWithData,
+  VariableSuccessResponseWithDataWithNoPagedInfo
+} from '../../__tests__/mock/variableResponse'
 
 jest.useFakeTimers()
 
-describe('Variables Page', () => {
+describe('VariableListView', () => {
   beforeEach(() => {
     jest.clearAllMocks()
   })
-  test('render page at account level', async () => {
+  test('render component at account level', async () => {
     const { container, getByText } = render(
       <TestWrapper path={routes.toVariables({ ...accountPathProps })} pathParams={{ accountId: 'dummy' }}>
         <VariableListView variables={VariableSuccessResponseWithData.data as any} gotoPage={jest.fn()} />
@@ -28,5 +31,18 @@ describe('Variables Page', () => {
 
     await waitFor(() => getByText('CUSTOM_VARIABLE'))
     expect(container).toMatchSnapshot()
-  })
+  }),
+    test('render component with initial page render - paged metric info missing', async () => {
+      const { container, getByText } = render(
+        <TestWrapper path={routes.toVariables({ ...accountPathProps })} pathParams={{ accountId: 'dummy' }}>
+          <VariableListView
+            variables={VariableSuccessResponseWithDataWithNoPagedInfo.data as any}
+            gotoPage={jest.fn()}
+          />
+        </TestWrapper>
+      )
+
+      await waitFor(() => getByText('CUSTOM_VARIABLE'))
+      expect(container).toMatchSnapshot()
+    })
 })

@@ -34,6 +34,31 @@ export const VariableSuccessResponseWithData = {
   correlationId: 'correlationId'
 }
 
+export const VariableSuccessResponseWithDataWithNoPagedInfo = {
+  status: 'SUCCESS',
+  data: {
+    content: [
+      {
+        variable: {
+          identifier: 'CUSTOM_VARIABLE',
+          name: 'CUSTOM_VARIABLE',
+          description: '',
+          orgIdentifier: null,
+          projectIdentifier: null,
+          type: 'String',
+          spec: { valueType: 'FIXED', fixedValue: 'CUSTOM', defaultValue: '', allowedValues: [], regex: null }
+        },
+        createdAt: 1651340335268,
+        lastModifiedAt: 1651340335268
+      }
+    ],
+
+    empty: false
+  },
+  metaData: null,
+  correlationId: 'correlationId'
+}
+
 export const VariableSuccessResponseWithNoData = {
   status: 'SUCCESS',
   data: { totalPages: 0, totalItems: 0, pageItemCount: 0, pageSize: 10, content: [], pageIndex: 0, empty: true },
