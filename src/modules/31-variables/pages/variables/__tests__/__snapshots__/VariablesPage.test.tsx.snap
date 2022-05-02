@@ -202,7 +202,7 @@ exports[`Variables Page render page at account level 1`] = `
             <p
               class="StyledProps--font StyledProps--main StyledProps--font-variation-table-headers"
             >
-              common.variable
+              variableLabel
             </p>
           </div>
         </div>
@@ -219,7 +219,7 @@ exports[`Variables Page render page at account level 1`] = `
             <p
               class="StyledProps--font StyledProps--main StyledProps--font-variation-table-headers"
             >
-              common.type
+              typeLabel
             </p>
           </div>
         </div>
