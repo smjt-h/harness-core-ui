@@ -33,11 +33,11 @@ const VariableListView: React.FC<SecretsListProps> = props => {
         <Layout.Vertical>
           <Layout.Horizontal spacing="small" width={230}>
             <Text color={Color.BLACK} lineClamp={1}>
-              {data?.name}
+              {data.name}
             </Text>
           </Layout.Horizontal>
           <Text color={Color.GREY_600} font={{ variation: FontVariation.SMALL }} width={230} lineClamp={1}>
-            {`${getString('common.ID')}: ${data?.identifier}`}
+            {`${getString('common.ID')}: ${data.identifier}`}
           </Text>
         </Layout.Vertical>
       </Layout.Horizontal>
@@ -48,7 +48,7 @@ const VariableListView: React.FC<SecretsListProps> = props => {
     const data = row.original.variable
     return (
       <Text color={Color.BLACK} font={{ variation: FontVariation.BODY }}>
-        {data?.type}
+        {data.type}
       </Text>
     )
   }
@@ -56,7 +56,7 @@ const VariableListView: React.FC<SecretsListProps> = props => {
     const data = row.original.variable
     return (
       <Text color={Color.BLACK} font={{ variation: FontVariation.BODY }}>
-        {data?.spec?.valueType}
+        {data.spec.valueType}
       </Text>
     )
   }
@@ -74,7 +74,7 @@ const VariableListView: React.FC<SecretsListProps> = props => {
     const data = row.original.variable
     return (
       <Text color={Color.GREY_600} font={{ variation: FontVariation.FORM_INPUT_TEXT }}>
-        {(data?.spec as StringVariableConfigDTO)?.defaultValue ?? '-'}
+        {(data.spec as StringVariableConfigDTO)?.defaultValue ?? '-'}
       </Text>
     )
   }
@@ -83,35 +83,35 @@ const VariableListView: React.FC<SecretsListProps> = props => {
     () => [
       {
         Header: getString('variableLabel'),
-        accessor: row => row.variable?.name,
+        accessor: row => row.variable.name,
         id: 'name',
         width: '25%',
         Cell: RenderColumnVariable
       },
       {
         Header: getString('typeLabel'),
-        accessor: row => row.variable?.type,
+        accessor: row => row.variable.type,
         id: 'type',
         width: '15%',
         Cell: RenderColumnType
       },
       {
         Header: getString('variables.inputValidation'),
-        accessor: row => row.variable?.spec?.valueType,
+        accessor: row => row.variable.spec.valueType,
         id: 'validation',
         width: '15%',
         Cell: RenderColumnValidation
       },
       {
         Header: getString('valueLabel'),
-        accessor: row => row.variable?.identifier,
+        accessor: row => row.variable.identifier,
         id: 'value',
         width: '30%',
         Cell: RenderColumnValue
       },
       {
         Header: getString('variables.defaultValue'),
-        accessor: row => row.variable?.spec,
+        accessor: row => row.variable.spec,
         id: 'defaultValue',
         width: '10%',
         Cell: RenderColumnDefaultValue
