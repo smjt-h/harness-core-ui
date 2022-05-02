@@ -23,6 +23,7 @@ import { useStrings } from 'framework/strings'
 import { useGetAllLogsClusterData, useGetAllLogsData } from 'services/cv'
 import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
 import { getErrorMessage } from '@cv/utils/CommonUtils'
+import LogAnalysis from '@cv/components/ExecutionVerification/components/LogAnalysisContainer/LogAnalysis'
 import { HealthSourceDropDown } from '@cv/components/HealthSourceDropDown/HealthSourceDropDown'
 import noDataImage from '@cv/assets/noData.svg'
 import { LogAnalysisRow } from './components/LogAnalysisRow/LogAnalysisRow'
@@ -32,69 +33,72 @@ import { PAGE_SIZE } from './LogAnalysis.constants'
 import ClusterChart from './components/ClusterChart/ClusterChart'
 import { VerificationType } from '../HealthSourceDropDown/HealthSourceDropDown.constants'
 import css from './LogAnalysis.module.scss'
+import RadarChartComponent from './components/RadarChart/RadarChartComponent'
+import ClusterTypeFiltersForLogs from '../ExecutionVerification/components/LogAnalysisContainer/components/ClusterTypeFiltersForLogs'
 
-const ClusterChartContainer: React.FC<LogAnalysisContentProps> = ({
+// const ClusterChartContainer: React.FC<LogAnalysisContentProps> = ({
+//   monitoredServiceIdentifier,
+//   startTime,
+//   endTime,
+//   logEvent,
+//   healthSource
+// }) => {
+//   const { getString } = useStrings()
+//   const { orgIdentifier, projectIdentifier, accountId } = useParams<ProjectPathProps>()
+
+//   const { data, loading, error, refetch } = useGetAllLogsClusterData({
+//     queryParams: {
+//       accountId,
+//       orgIdentifier,
+//       projectIdentifier,
+//       monitoredServiceIdentifier,
+//       startTime,
+//       endTime,
+//       ...(logEvent ? { clusterTypes: [logEvent] } : {}),
+//       healthSources: healthSource ? [healthSource] : undefined
+//     },
+//     queryParamStringifyOptions: {
+//       arrayFormat: 'repeat'
+//     }
+//   })
+
+//   if (loading) {
+//     return (
+//       <Container flex={{ justifyContent: 'center' }} margin={{ top: 'xxxlarge' }}>
+//         <Icon name="steps-spinner" color={Color.GREY_400} size={30} />
+//       </Container>
+//     )
+//   }
+
+//   if (error) {
+//     return <PageError message={getErrorMessage(error)} onClick={() => refetch()} />
+//   }
+
+//   if (!data?.resource?.length) {
+//     return (
+//       <NoDataCard
+//         image={noDataImage}
+//         imageClassName={css.logClusterNoDataImage}
+//         className={css.noData}
+//         containerClassName={css.noDataContainer}
+//         message={getString('cv.monitoredServices.noAvailableData')}
+//       />
+//     )
+//   }
+
+//   return <ClusterChart data={data.resource} />
+// }
+
+export const LogAnalysisContent: React.FC<LogAnalysisContentProps> = ({
   monitoredServiceIdentifier,
   startTime,
-  endTime,
-  logEvent,
-  healthSource
+  endTime
 }) => {
   const { getString } = useStrings()
   const { orgIdentifier, projectIdentifier, accountId } = useParams<ProjectPathProps>()
 
-  const { data, loading, error, refetch } = useGetAllLogsClusterData({
-    queryParams: {
-      accountId,
-      orgIdentifier,
-      projectIdentifier,
-      monitoredServiceIdentifier,
-      startTime,
-      endTime,
-      ...(logEvent ? { clusterTypes: [logEvent] } : {}),
-      healthSources: healthSource ? [healthSource] : undefined
-    },
-    queryParamStringifyOptions: {
-      arrayFormat: 'repeat'
-    }
-  })
-
-  if (loading) {
-    return (
-      <Container flex={{ justifyContent: 'center' }} margin={{ top: 'xxxlarge' }}>
-        <Icon name="steps-spinner" color={Color.GREY_400} size={30} />
-      </Container>
-    )
-  }
-
-  if (error) {
-    return <PageError message={getErrorMessage(error)} onClick={() => refetch()} />
-  }
-
-  if (!data?.resource?.length) {
-    return (
-      <NoDataCard
-        image={noDataImage}
-        imageClassName={css.logClusterNoDataImage}
-        className={css.noData}
-        containerClassName={css.noDataContainer}
-        message={getString('cv.monitoredServices.noAvailableData')}
-      />
-    )
-  }
-
-  return <ClusterChart data={data.resource} />
-}
-
-const LogAnalysisContent: React.FC<LogAnalysisContentProps> = ({
-  monitoredServiceIdentifier,
-  startTime,
-  endTime,
-  logEvent,
-  healthSource
-}) => {
-  const { getString } = useStrings()
-  const { orgIdentifier, projectIdentifier, accountId } = useParams<ProjectPathProps>()
+  const [logEvent, setLogEvent] = useState<LogEvents>(LogEvents.UNKNOWN)
+  const [healthSource, setHealthSource] = useState<string>()
 
   const queryParams = useMemo(() => {
     return {
@@ -120,12 +124,90 @@ const LogAnalysisContent: React.FC<LogAnalysisContentProps> = ({
     startTime
   ])
 
-  const { data, refetch, loading, error } = useGetAllLogsData({
+  const {
+    data: logsData,
+    refetch: fetchLogAnalysis,
+    loading: logsLoading,
+    error: logsError
+  } = useGetAllLogsData({
     queryParams,
     queryParamStringifyOptions: {
       arrayFormat: 'repeat'
     }
   })
+
+  // Radar call
+  // const {
+  //   data: clusterChartData,
+  //   loading: clusterChartLoading,
+  //   error: clusterChartError,
+  //   refetch: fetchClusterAnalysis
+  // } = useGetVerifyStepDeploymentRadarChartLogAnalysisClusters({
+  //   verifyStepExecutionId: activityId,
+  //   queryParams: radarChartDataQueryParams,
+  //   queryParamStringifyOptions: {
+  //     arrayFormat: 'repeat'
+  //   }
+  // })
+  // mock data
+  const radarChartData = {
+    resource: [
+      {
+        label: 0,
+        message: 'projects/chi-play/logs/stdout',
+        risk: 'HEALTHY',
+        radius: 1.357564536113864,
+        angle: 0,
+        baseline: {
+          label: 0,
+          message: 'projects/chi-play/logs/stdout',
+          risk: 'NO_ANALYSIS',
+          radius: 0.5,
+          angle: 0,
+          clusterType: 'BASELINE',
+          hasControlData: false
+        },
+        clusterType: 'KNOWN_EVENT',
+        hasControlData: true
+      },
+      {
+        label: 2,
+        message: 'projects/chi-play/logs/stderr',
+        risk: 'HEALTHY',
+        radius: 1.8066135269309567,
+        angle: 120,
+        baseline: {
+          label: 2,
+          message: 'projects/chi-play/logs/stderr',
+          risk: 'NO_ANALYSIS',
+          radius: 0.2,
+          angle: 120,
+          clusterType: 'BASELINE',
+          hasControlData: false
+        },
+        clusterType: 'KNOWN_EVENT',
+        hasControlData: true
+      },
+      {
+        label: 1,
+        message: 'projects/chi-play/logs/events',
+        risk: 'HEALTHY',
+        radius: 1.480099986754282,
+        angle: 240,
+        baseline: {
+          label: 1,
+          message: 'projects/chi-play/logs/events',
+          risk: 'NO_ANALYSIS',
+          radius: 0.3698184595475662,
+          angle: 240,
+          clusterType: 'BASELINE',
+          hasControlData: false
+        },
+        clusterType: 'KNOWN_EVENT',
+        hasControlData: true
+      }
+    ]
+  }
 
   if (loading) {
     return (
@@ -153,7 +235,31 @@ const LogAnalysisContent: React.FC<LogAnalysisContentProps> = ({
 
   return (
     <>
-      <LogAnalysisRow data={getLogAnalysisTableData(data.resource.content)} />
+      <ClusterTypeFiltersForLogs
+        nodeNames={null}
+        clusterTypeFilters={undefined}
+        onFilterChange={() => null}
+        selectedNodeName={[]}
+        handleNodeNameChange={() => null}
+        nodeNamesError={null}
+        nodeNamesLoading={false}
+      />
+
+      <LogAnalysis
+        data={logsData}
+        clusterChartData={radarChartData}
+        filteredAngle={{ max: 360, min: 0 }}
+        logsLoading={logsLoading}
+        logsError={logsError}
+        refetchLogAnalysis={fetchLogAnalysis}
+        refetchClusterAnalysis={() => null}
+        clusterChartError={null}
+        clusterChartLoading={false}
+        goToPage={() => null}
+        activityId={null}
+        isErrorTracking={false}
+        handleAngleChange={() => null}
+      />
       <Pagination
         pageSize={pageSize}
         pageCount={totalPages}
@@ -165,54 +271,57 @@ const LogAnalysisContent: React.FC<LogAnalysisContentProps> = ({
   )
 }
 
-const LogAnalysis: React.FC<LogAnalysisProps> = ({ monitoredServiceIdentifier, startTime, endTime }) => {
-  const { getString } = useStrings()
+// const LogAnalysis: React.FC<LogAnalysisProps> = ({ monitoredServiceIdentifier, startTime, endTime }) => {
+//   const { getString } = useStrings()
 
-  const [logEvent, setLogEvent] = useState<LogEvents>(LogEvents.UNKNOWN)
-  const [healthSource, setHealthSource] = useState<string>()
+//   const [logEvent, setLogEvent] = useState<LogEvents>(LogEvents.UNKNOWN)
+//   const [healthSource, setHealthSource] = useState<string>()
 
-  const clusterTypes = getClusterTypes(getString)
+//   const clusterTypes = getClusterTypes(getString)
 
-  return (
-    <div className={css.container}>
-      <Layout.Horizontal spacing="medium" margin={{ bottom: 'medium' }}>
-        <Select
-          items={clusterTypes}
-          defaultSelectedItem={clusterTypes[2]}
-          className={css.logsAnalysisFilters}
-          inputProps={{ placeholder: getString('pipeline.verification.logs.filterByClusterType') }}
-          onChange={item => setLogEvent(item.value as LogEvents)}
-        />
-        <HealthSourceDropDown
-          onChange={setHealthSource}
-          className={css.logsAnalysisFilters}
-          monitoredServiceIdentifier={monitoredServiceIdentifier}
-          verificationType={VerificationType.LOG}
-        />
-      </Layout.Horizontal>
+//   return (
+//     <div className={css.container}>
+//       <Layout.Horizontal spacing="medium" margin={{ bottom: 'medium' }}>
+//         <Select
+//           items={clusterTypes}
+//           defaultSelectedItem={clusterTypes[2]}
+//           className={css.logsAnalysisFilters}
+//           inputProps={{ placeholder: getString('pipeline.verification.logs.filterByClusterType') }}
+//           onChange={item => setLogEvent(item.value as LogEvents)}
+//         />
+//         <HealthSourceDropDown
+//           onChange={setHealthSource}
+//           className={css.logsAnalysisFilters}
+//           monitoredServiceIdentifier={monitoredServiceIdentifier}
+//           verificationType={VerificationType.LOG}
+//         />
+//       </Layout.Horizontal>
 
-      <Card className={css.clusterChart}>
-        <Heading level={2} font={{ variation: FontVariation.CARD_TITLE }}>
-          {getString('pipeline.verification.logs.logCluster')}
-        </Heading>
-        <ClusterChartContainer
-          monitoredServiceIdentifier={monitoredServiceIdentifier}
-          startTime={startTime}
-          endTime={endTime}
-          logEvent={logEvent}
-          healthSource={healthSource}
-        />
-      </Card>
+//       <Card className={css.clusterChart}>
+//         <Heading level={2} font={{ variation: FontVariation.CARD_TITLE }}>
+//           {getString('pipeline.verification.logs.logCluster')}
+//         </Heading>
+//         <ClusterTypeFiltersForLogs
+//           nodeNames={null}
+//           clusterTypeFilters={undefined}
+//           onFilterChange={() => null}
+//           selectedNodeName={[]}
+//           handleNodeNameChange={() => null}
+//           nodeNamesError={null}
+//           nodeNamesLoading={false}
+//         />
+//         <RadarChartComponent />
+//       </Card>
 
-      <LogAnalysisContent
-        monitoredServiceIdentifier={monitoredServiceIdentifier}
-        startTime={startTime}
-        endTime={endTime}
-        logEvent={logEvent}
-        healthSource={healthSource}
-      />
-    </div>
-  )
-}
+//       <LogAnalysisContent
+//         monitoredServiceIdentifier={monitoredServiceIdentifier}
+//         startTime={startTime}
+//         endTime={endTime}
+//         logEvent={logEvent}
+//         healthSource={healthSource}
+//       />
+//     </div>
+//   )
+// }
 
-export default LogAnalysis
+// export default LogAnalysis

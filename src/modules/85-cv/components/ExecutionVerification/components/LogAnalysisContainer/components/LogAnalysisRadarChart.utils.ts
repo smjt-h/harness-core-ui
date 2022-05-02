@@ -55,7 +55,7 @@ export function getRadarChartSeries(data?: LogAnalysisRadarChartClusterDTO[]): S
   return graphData
 }
 
-export default function getLogAnalysisSpiderChartOptions(
+export function getLogAnalysisSpiderChartOptions(
   series: SeriesScatterOptions['data'] | null,
   minMaxAngle: MinMaxAngleState,
   handleRadarPointClick: (pointClusterId: string) => void
@@ -115,6 +115,115 @@ export default function getLogAnalysisSpiderChartOptions(
       max: 90,
       allowDecimals: false,
       tickPositions: [0, 30, 60, 90],
+      gridLineColor: '#ECE6E6',
+      tickPixelInterval: 30
+    },
+
+    tooltip: {
+      formatter: function tooltipFormatter(): string {
+        return this.series.name
+      },
+      backgroundColor: 'rgba(255,255,255,0.7)',
+      borderColor: Color.GREY_300,
+      borderRadius: 10,
+      shadow: {
+        color: 'rgba(96, 97, 112, 0.56)'
+      },
+      shape: 'square',
+      outside: true
+    },
+    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+    // @ts-ignore
+    series,
+    plotOptions: {
+      series: {
+        events: {
+          mouseOver: function () {
+            this.data.forEach(p => p.setState('hover'))
+          },
+          mouseOut: function () {
+            this.data.forEach(p => p.setState())
+          }
+        },
+        marker: {
+          symbol: 'circle',
+          states: {
+            hover: {
+              enabled: true,
+              radius: 10
+            }
+          }
+        },
+        cursor: 'pointer',
+        point: {
+          events: {
+            click: e => {
+              // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+              // @ts-ignore
+              handleRadarPointClick(e.point.series.userOptions.clusterId)
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+export function getLogAnalysisSpiderChartOptionsWithoutBaseline(
+  series: SeriesScatterOptions['data'] | null,
+  minMaxAngle: MinMaxAngleState,
+  handleRadarPointClick: (pointClusterId: string) => void
+): Highcharts.Options {
+  return {
+    chart: {
+      polar: true,
+      type: 'scatter',
+      height: 400,
+      marginTop: 20,
+      marginBottom: 20
+    },
+    credits: undefined,
+    title: {
+      text: ''
+    },
+    legend: {
+      enabled: false
+    },
+    pane: {
+      size: '100%'
+    },
+
+    xAxis: {
+      labels: { enabled: true, format: '{text}°' },
+      floor: 0,
+      tickmarkPlacement: 'on',
+      lineWidth: 0,
+      tickAmount: 13,
+      max: minMaxAngle.max,
+      min: minMaxAngle.min
+    },
+    boost: {
+      enabled: true,
+      seriesThreshold: 2000
+    },
+
+    yAxis: {
+      labels: { enabled: false },
+      plotBands: [
+        {
+          from: 0,
+          to: 60,
+          color: '#FAFCFF'
+        },
+        {
+          from: 60,
+          to: 90,
+          color: '#EFFBFF'
+        }
+      ],
+      max: 90,
+      allowDecimals: false,
+      tickPositions: [0, 60, 90],
       gridLineColor: '#ECE6E6',
       tickPixelInterval: 30
     },

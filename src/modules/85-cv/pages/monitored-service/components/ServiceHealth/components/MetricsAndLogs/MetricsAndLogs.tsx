@@ -10,7 +10,7 @@ import { Container, Layout, Heading, Card, NoDataCard, Button, ButtonVariation }
 import { Color, FontVariation } from '@harness/design-system'
 import noServiceAvailableImage from '@cv/assets/noServiceAvailable.png'
 import { useStrings } from 'framework/strings'
-import LogAnalysis from '@cv/components/LogsAnalysis/LogAnalysis'
+import { LogAnalysisContent } from '@cv/components/LogsAnalysis/LogAnalysis'
 import { useLogContentHook } from '@cv/hooks/useLogContentHook/useLogContentHook'
 import { LogTypes } from '@cv/hooks/useLogContentHook/useLogContentHook.types'
 import type { MetricsAndLogsProps } from './MetricsAndLogs.types'
@@ -20,7 +20,7 @@ import css from './MetricsAndLogs.module.scss'
 const MetricsAndLogs: React.FC<MetricsAndLogsProps> = props => {
   const { getString } = useStrings()
 
-  const { startTime, endTime, showTimelineSlider } = props
+  const { startTime, endTime, showTimelineSlider, monitoredServiceIdentifier } = props
 
   const { openLogContentHook } = useLogContentHook({
     monitoredServiceStartTime: startTime,
@@ -57,12 +57,16 @@ const MetricsAndLogs: React.FC<MetricsAndLogsProps> = props => {
         </Layout.Horizontal>
       </Card>
       {startTime && endTime ? (
-        <Layout.Horizontal data-testid="analysis-view" spacing="medium">
+        <Layout.Horizontal margin={{ top: 'medium' }} data-testid="analysis-view" spacing="medium">
           <Card className={css.metricsAndLogsCard}>
             <MetricsAnalysisContainer {...props} startTime={startTime} endTime={endTime} />
           </Card>
           <Card className={css.metricsAndLogsCard}>
-            <LogAnalysis {...props} startTime={startTime} endTime={endTime} />
+            <LogAnalysisContent
+              monitoredServiceIdentifier={monitoredServiceIdentifier}
+              startTime={startTime}
+              endTime={endTime}
+            />
           </Card>
         </Layout.Horizontal>
       ) : (

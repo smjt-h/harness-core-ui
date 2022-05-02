@@ -11,6 +11,7 @@ export interface LogAnalysisRadarChartProps {
   clusterChartError?: GetDataError<unknown> | null
   refetchClusterAnalysis?: () => void
   logsLoading?: boolean
+  showBaseline?: boolean
 }
 
 export interface MultiRangeSliderProps {

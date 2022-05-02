@@ -29,7 +29,8 @@ export enum LogEvents {
   UNEXPECTED = 'UNEXPECTED'
 }
 
-export interface LogAnalysisContentProps extends LogAnalysisProps {
-  logEvent: LogEvents
-  healthSource?: string
+export interface LogAnalysisContentProps {
+  monitoredServiceIdentifier: string
+  startTime: number
+  endTime: number
 }
