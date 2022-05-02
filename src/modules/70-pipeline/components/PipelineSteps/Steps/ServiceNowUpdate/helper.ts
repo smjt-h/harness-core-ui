@@ -15,20 +15,40 @@ import {
 } from '@pipeline/components/PipelineSteps/Steps/ServiceNowCreate/helper'
 
 export const processFormData = (values: ServiceNowUpdateData): ServiceNowUpdateData => {
+  let serviceNowSpec
+  if (!values.spec.useServiceNowTemplate) {
+    serviceNowSpec = {
+      spec: {
+        delegateSelectors: values.spec.delegateSelectors,
+        useServiceNowTemplate: false,
+        connectorRef:
+          getMultiTypeFromValue(values.spec.connectorRef as SelectOption) === MultiTypeInputType.FIXED
+            ? (values.spec.connectorRef as SelectOption)?.value?.toString()
+            : values.spec.connectorRef,
+        ticketType: values.spec.ticketType,
+        ticketNumber: values.spec.ticketNumber,
+        fields: processFieldsForSubmit(values)
+      }
+    }
+  } else {
+    serviceNowSpec = {
+      spec: {
+        delegateSelectors: values.spec.delegateSelectors,
+        useServiceNowTemplate: true,
+        connectorRef:
+          getMultiTypeFromValue(values.spec.connectorRef as SelectOption) === MultiTypeInputType.FIXED
+            ? (values.spec.connectorRef as SelectOption)?.value?.toString()
+            : values.spec.connectorRef,
+        ticketType: values.spec.ticketType,
+        ticketNumber: values.spec.ticketNumber,
+        fields: [],
+        templateName: values.spec.templateName
+      }
+    }
+  }
   return {
     ...values,
-    spec: {
-      delegateSelectors: values.spec.delegateSelectors,
-      useServiceNowTemplate: values.spec.fieldType === FieldType.CreateFromTemplate,
-      connectorRef:
-        getMultiTypeFromValue(values.spec.connectorRef as SelectOption) === MultiTypeInputType.FIXED
-          ? (values.spec.connectorRef as SelectOption)?.value?.toString()
-          : values.spec.connectorRef,
-      ticketType: values.spec.ticketType,
-      ticketNumber: values.spec.ticketNumber,
-      fields: values.spec.fieldType === FieldType.ConfigureFields ? processFieldsForSubmit(values) : [],
-      templateName: values.spec.fieldType === FieldType.CreateFromTemplate ? values.spec.templateName : ''
-    }
+    ...serviceNowSpec
   }
 }
 

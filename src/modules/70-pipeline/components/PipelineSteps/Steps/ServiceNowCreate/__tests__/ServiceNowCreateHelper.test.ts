@@ -74,7 +74,6 @@ describe('ServiceNow Create process form data tests', () => {
           label: 'Incident',
           value: 'INCIDENT'
         },
-        templateName: '',
         fields: [
           {
             name: 'description',
@@ -145,7 +144,6 @@ describe('ServiceNow Create process form data tests', () => {
         connectorRef: '<+input>',
         delegateSelectors: undefined,
         ticketType: '<+input>',
-        templateName: '',
         fields: [
           {
             name: 'description',

@@ -260,7 +260,6 @@ describe('ServiceNow Update process form data tests', () => {
         ticketType: 'INCIDENT',
         ticketNumber: '123',
         useServiceNowTemplate: false,
-        templateName: '',
         fields: [
           {
             name: 'description',
@@ -333,7 +332,6 @@ describe('ServiceNow Update process form data tests', () => {
         ticketNumber: '<+input>',
         useServiceNowTemplate: false,
         ticketType: 'INCIDENT',
-        templateName: '',
         fields: [
           {
             name: 'description',

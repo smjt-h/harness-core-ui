@@ -74,6 +74,7 @@ import css from './ServiceNowUpdate.module.scss'
 import stepCss from '@pipeline/components/PipelineSteps/Steps/Steps.module.scss'
 
 const fetchingTicketTypesPlaceholder: StringKeys = 'pipeline.serviceNowApprovalStep.fetchingTicketTypesPlaceholder'
+
 function FormContent({
   formik,
   isNewStep,
@@ -707,27 +708,27 @@ function ServiceNowUpdateStepMode(
             then: Yup.string().required(getString('pipeline.serviceNowCreateStep.validations.shortDescription'))
           }),
           ticketNumber: Yup.string().required(getString('pipeline.serviceNowApprovalStep.validations.issueNumber')),
-          templateName: Yup.string()
-            .when('useServiceNowTemplate', {
-              is: true,
-              then: Yup.string().required(getString('pipeline.serviceNowCreateStep.validations.templateName'))
-            })
-            .test(
-              'templateNameTest',
-              getString('pipeline.serviceNowCreateStep.validations.validTemplateName'),
-              function () {
-                return (
-                  // if not fixed then allow saving or
-                  // if fixed then template name should be available from the APi call
-                  // (templateFields indicates the fields fetched
+          templateName: Yup.string().when('useServiceNowTemplate', {
+            is: true,
+            then: Yup.string()
+              .required(getString('pipeline.serviceNowCreateStep.validations.templateName'))
+              .test(
+                'templateNameTest',
+                getString('pipeline.serviceNowCreateStep.validations.validTemplateName'),
+                function () {
+                  return (
+                    // if not fixed then allow saving or
+                    // if fixed then template name should be available from the APi call
+                    // (templateFields indicates the fields fetched
 
-                  getMultiTypeFromValue(this.parent.templateName) !== MultiTypeInputType.FIXED ||
-                  (this.parent.templateFields?.length > 0 &&
-                    getMultiTypeFromValue(this.parent.templateName) === MultiTypeInputType.FIXED &&
-                    !isEmpty(this.parent.templateName))
-                )
-              }
-            )
+                    getMultiTypeFromValue(this.parent.templateName) !== MultiTypeInputType.FIXED ||
+                    (this.parent.templateFields?.length > 0 &&
+                      getMultiTypeFromValue(this.parent.templateName) === MultiTypeInputType.FIXED &&
+                      !isEmpty(this.parent.templateName))
+                  )
+                }
+              )
+          })
         })
       })}
     >
