@@ -24,7 +24,6 @@ import { useStrings } from 'framework/strings'
 import type { StringsMap } from 'stringTypes'
 import { AllMultiTypeInputTypesForInputSet, AllMultiTypeInputTypesForStep } from './StepUtils'
 import { renderMultiTypeListInputSet } from './CIStepOptionalConfig'
-import { MultiConnectorReference } from '../../MultiConnectorReference/MultiConnectorReference'
 import css from '@pipeline/components/PipelineSteps/Steps/Steps.module.scss'
 
 interface CIStepProps {
@@ -378,13 +377,9 @@ export const CIStep: React.FC<CIStepProps> = props => {
       ) : null}
       {Object.prototype.hasOwnProperty.call(enableFields, 'spec.baseImageConnectorRefs') ? (
         <Container className={cx(css.formGroup, stepCss, css.bottomMargin5)}>
-          <MultiConnectorReference
-            name={`${prefix}spec.baseImageConnectorRefs`}
+          <FormMultiTypeConnectorField
             label={enableFields['spec.baseImageConnectorRefs'].label}
-            placeholder={getString('select')}
-            accountIdentifier={accountId}
-            projectIdentifier={projectIdentifier}
-            orgIdentifier={orgIdentifier}
+            type={enableFields['spec.baseImageConnectorRefs'].type}
             width={
               stepViewType === StepViewType.DeploymentForm
                 ? ConnectorRefWidth.DeploymentFormView
@@ -392,7 +387,11 @@ export const CIStep: React.FC<CIStepProps> = props => {
                 ? ConnectorRefWidth.InputSetView
                 : ConnectorRefWidth.DefaultView
             }
-            type={enableFields['spec.baseImageConnectorRefs'].type}
+            name={`${prefix}spec.baseImageConnectorRefs`}
+            placeholder={getString('select')}
+            accountIdentifier={accountId}
+            projectIdentifier={projectIdentifier}
+            orgIdentifier={orgIdentifier}
             multiTypeProps={{
               expressions,
               allowableTypes: isInputSetView ? AllMultiTypeInputTypesForInputSet : AllMultiTypeInputTypesForStep,
