@@ -59,6 +59,7 @@ import { FeatureIdentifier } from 'framework/featureStore/FeatureIdentifier'
 import type { FeatureDetail } from 'framework/featureStore/featureStoreUtil'
 import { NGBreadcrumbs } from '@common/components/NGBreadcrumbs/NGBreadcrumbs'
 import useUrlSearchParams from '@ce/common/hooks/useUrlSearchParams'
+import { RulesMode } from '@ce/constants'
 import COGatewayAnalytics from './COGatewayAnalytics'
 import COGatewayCumulativeAnalytics from './COGatewayCumulativeAnalytics'
 import ComputeType from './components/ComputeType'
@@ -72,11 +73,6 @@ import css from './COGatewayList.module.scss'
 
 const textColor: { [key: string]: string } = {
   disable: '#6B6D85'
-}
-
-enum RulesMode {
-  ACTIVE = 'ACTIVE MODE',
-  DRY = 'DRY RUN MODE'
 }
 
 interface TableRowMenuProps {
@@ -912,10 +908,11 @@ const COGatewayList: React.FC = () => {
                 value: RulesMode.DRY
               }
             ]}
+            className={css.modeToggle}
             onChange={handleModeChange}
           />
         </Layout.Horizontal>
-        <COGatewayCumulativeAnalytics data={graphData?.response} loadingData={graphLoading} />
+        <COGatewayCumulativeAnalytics data={graphData?.response} loadingData={graphLoading} mode={mode} />
         <RulesTableContainer
           rules={tableData}
           setRules={setTableData}

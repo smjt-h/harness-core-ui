@@ -15,7 +15,7 @@ import {
   StoppedStatusIndicator
 } from '@ce/common/InstanceStatusIndicator/InstanceStatusIndicator'
 import type { AllResourcesOfAccountResponse, Service } from 'services/lw'
-import { GatewayKindType, PROVIDER_TYPES } from '@ce/constants'
+import { GatewayKindType, PROVIDER_TYPES, RulesMode } from '@ce/constants'
 import odIcon from './images/ondemandIcon.svg'
 import spotIcon from './images/spotIcon.svg'
 import css from './COGatewayCumulativeAnalytics.module.scss'
@@ -183,7 +183,7 @@ export function getRiskGaugeChartOptions(riskScore: number, disable?: boolean) {
   }
 }
 
-export function geGaugeChartOptionsWithoutLabel(riskScore: number) {
+export function geGaugeChartOptionsWithoutLabel(riskScore: number, mode?: RulesMode) {
   const gaugeColor = riskScore === -1 ? 'var(--grey-200)' : getColorValue(100 - riskScore, 0, 100)
   riskScore = Math.round(riskScore * 10) / 10
   return {
@@ -193,7 +193,7 @@ export function geGaugeChartOptionsWithoutLabel(riskScore: number) {
       backgroundColor: 'transparent',
       spacing: [0, 0, 0, 0],
       type: 'solidgauge',
-      className: css.gaugeChartWrapper
+      className: mode === RulesMode.DRY ? css.gaugeChartWrapper : ''
     },
     credits: {
       enabled: false
@@ -257,7 +257,7 @@ export function geGaugeChartOptionsWithoutLabel(riskScore: number) {
           color: '#EEE'
         }
       ],
-      // plotLines: PLOT_LINE_LOCATIONS,
+      plotLines: mode === RulesMode.DRY ? [] : PLOT_LINE_LOCATIONS,
       labels: {
         enabled: false
       }
