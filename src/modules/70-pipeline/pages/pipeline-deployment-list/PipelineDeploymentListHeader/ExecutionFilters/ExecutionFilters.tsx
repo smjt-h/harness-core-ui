@@ -45,8 +45,8 @@ import {
   removeNullAndEmpty,
   flattenObject
 } from '@common/components/Filter/utils/FilterUtils'
+import { deploymentTypeLabel } from '@pipeline/utils/DeploymentTypeUtils'
 import { useFeatureFlags } from '@common/hooks/useFeatureFlag'
-import { deploymentTypeLabel } from '@pipeline/pages/pipelines/PipelineListUtils'
 import { useFiltersContext } from '../../FiltersContext/FiltersContext'
 import PipelineFilterForm from '../../PipelineFilterForm/PipelineFilterForm'
 import type { StringQueryParams } from '../../types'
