@@ -16,6 +16,7 @@ import VariablesPage from '../VariablesPage'
 import {
   VariableSuccessResponseWithContentUndefined,
   VariableSuccessResponseWithData,
+  VariableSuccessResponseWithDataFor2Pages,
   VariableSuccessResponseWithDataUndefined,
   VariableSuccessResponseWithError,
   VariableSuccessResponseWithNoData
@@ -235,8 +236,8 @@ describe('Variables Page', () => {
   test('render component at account level - with 2 pages', async () => {
     jest
       .spyOn(cdngServices, 'useGetVariablesList')
-      .mockImplementation(() => ({ data: VariableSuccessResponseWithData, loading: false } as any))
-    const { getByText } = render(
+      .mockImplementation(() => ({ data: VariableSuccessResponseWithDataFor2Pages, loading: false } as any))
+    const { container, getByText } = render(
       <TestWrapper
         path={routes.toVariables({ ...projectPathProps, module: 'cd' })}
         pathParams={{ accountId: 'dummy', orgIdentifier: 'dummyOrg', projectIdentifier: 'dummyProject' }}
@@ -247,9 +248,11 @@ describe('Variables Page', () => {
 
     await waitFor(() => getByText('CUSTOM_VARIABLE'))
 
-    const nextBtn = getByText('Next')
+    const nextBtn = container.querySelector('[class*="Button--withRightIcon"]')
     act(() => {
-      fireEvent.click(nextBtn)
+      fireEvent.click(nextBtn!)
     })
+    await waitFor(() => getByText('CUSTOM_VARIABLE'))
+    expect(getByText('CUSTOM VARIABLE')).toBeDefined()
   })
 })

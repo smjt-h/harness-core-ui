@@ -21,7 +21,36 @@ export const VariableSuccessResponseWithData = {
           orgIdentifier: null,
           projectIdentifier: null,
           type: 'String',
-          spec: { valueType: 'FIXED', fixedValue: 'CUSTOM', defaultValue: '', allowedValues: [], regex: null }
+          spec: { valueType: 'FIXED', fixedValue: 'CUSTOM', defaultValue: undefined, allowedValues: [], regex: null }
+        },
+        createdAt: 1651340335268,
+        lastModifiedAt: 1651340335268
+      }
+    ],
+    pageIndex: 0,
+    empty: false
+  },
+  metaData: null,
+  correlationId: 'correlationId'
+}
+
+export const VariableSuccessResponseWithDataWithDefaultValue = {
+  status: 'SUCCESS',
+  data: {
+    totalPages: 1,
+    totalItems: 3,
+    pageItemCount: 3,
+    pageSize: 10,
+    content: [
+      {
+        variable: {
+          identifier: 'CUSTOM_VARIABLE',
+          name: 'CUSTOM_VARIABLE',
+          description: '',
+          orgIdentifier: null,
+          projectIdentifier: null,
+          type: 'String',
+          spec: { valueType: 'FIXED', fixedValue: 'CUSTOM', defaultValue: 'default', allowedValues: [], regex: null }
         },
         createdAt: 1651340335268,
         lastModifiedAt: 1651340335268

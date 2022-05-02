@@ -14,6 +14,7 @@ import VariableListView from '../VariableListView'
 import {
   VariableSuccessResponseWithData,
   VariableSuccessResponseWithDataFor2Pages,
+  VariableSuccessResponseWithDataWithDefaultValue,
   VariableSuccessResponseWithDataWithNoPagedInfo
 } from '../../__tests__/mock/variableResponse'
 
@@ -66,5 +67,38 @@ describe('VariableListView', () => {
       fireEvent.click(nextBtn)
     })
     expect(gotoPageMock).toBeCalled()
+  })
+
+  test('render component at account level - with no variable data', async () => {
+    const { container } = render(
+      <TestWrapper path={routes.toVariables({ ...accountPathProps })} pathParams={{ accountId: 'dummy' }}>
+        <VariableListView variables={undefined} gotoPage={jest.fn()} />
+      </TestWrapper>
+    )
+
+    expect(container).toMatchSnapshot()
+  })
+
+  test('render component at account level - with no variable data', async () => {
+    const { container } = render(
+      <TestWrapper path={routes.toVariables({ ...accountPathProps })} pathParams={{ accountId: 'dummy' }}>
+        <VariableListView variables={{ content: undefined }} gotoPage={jest.fn()} />
+      </TestWrapper>
+    )
+
+    expect(container).toMatchSnapshot()
+  })
+
+  test('render component at account level - with no variable data', async () => {
+    const { getByText } = render(
+      <TestWrapper path={routes.toVariables({ ...accountPathProps })} pathParams={{ accountId: 'dummy' }}>
+        <VariableListView
+          variables={VariableSuccessResponseWithDataWithDefaultValue.data as any}
+          gotoPage={jest.fn()}
+        />
+      </TestWrapper>
+    )
+    await waitFor(() => getByText('CUSTOM_VARIABLE'))
+    expect(getByText('default'))
   })
 })
