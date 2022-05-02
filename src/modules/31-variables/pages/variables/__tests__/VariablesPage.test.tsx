@@ -22,6 +22,14 @@ import {
 } from './mock/variableResponse'
 
 jest.useFakeTimers()
+jest.mock('@harness/uicore', () => {
+  const fullModule = jest.requireActual('@harness/uicore')
+
+  return {
+    ...fullModule,
+    ExpandingSearchInput: () => <div></div>
+  }
+})
 
 describe('Variables Page', () => {
   beforeEach(() => {
@@ -222,27 +230,6 @@ describe('Variables Page', () => {
     await waitFor(() => expect(getByText('common.addVariable')))
     const dialog = findDialogContainer() as HTMLElement
     expect(dialog).toMatchSnapshot()
-  })
-  test('test search on ', async () => {
-    jest
-      .spyOn(cdngServices, 'useGetVariablesList')
-      .mockImplementation(() => ({ data: VariableSuccessResponseWithData, loading: false } as any))
-    const { container, getByText, getAllByText } = render(
-      <TestWrapper path={routes.toVariables({ ...accountPathProps })} pathParams={{ accountId: 'dummy' }}>
-        <VariablesPage />
-      </TestWrapper>
-    )
-
-    await waitFor(() => getAllByText('variables.newVariable'))
-    await waitFor(() => getAllByText('CUSTOM_VARIABLE'))
-    expect(getByText('account common.variables')).toBeDefined()
-    const search = container.querySelector('input[type="search"]') as HTMLInputElement
-    expect(search).toBeDefined()
-    act(() => {
-      fireEvent.change(search, { target: { value: 'COST' } })
-    })
-
-    await waitFor(() => expect(search.value).toBe('COST'))
   })
 
   test('render component at account level - with 2 pages', async () => {
