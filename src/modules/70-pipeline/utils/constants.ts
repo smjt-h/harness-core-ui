@@ -21,7 +21,6 @@ export const ConnectorRefWidth = {
   DeploymentFormView: 320,
   DeploymentForm: 320, // matches StepViewType key for getConnectorRefWidth function
   InputSetView: 310,
-  InputSet: 310, // matches StepViewType key for getConnectorRefWidth function
   DefaultView: 385,
   EditStageView: 366,
   EditStageViewInputSet: 308,
