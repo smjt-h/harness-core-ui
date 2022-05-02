@@ -2396,6 +2396,7 @@ export interface EnvironmentGroupDeleteResponse {
 export type EnvironmentGroupFilterProperties = FilterProperties & {
   description?: string
   envGroupName?: string
+  envGroupTags?: NGTag[]
   envIdentifiers?: string[]
 }
 
@@ -18729,15 +18730,28 @@ export interface GetEnvironmentGroupListQueryParams {
 }
 
 export type GetEnvironmentGroupListProps = Omit<
-  GetProps<ResponsePageEnvironmentGroupResponse, Failure | Error, GetEnvironmentGroupListQueryParams, void>,
-  'path'
+  MutateProps<
+    ResponsePageEnvironmentGroupResponse,
+    Failure | Error,
+    GetEnvironmentGroupListQueryParams,
+    FilterProperties,
+    void
+  >,
+  'path' | 'verb'
 >
 
 /**
  * Gets Environment Group list
  */
 export const GetEnvironmentGroupList = (props: GetEnvironmentGroupListProps) => (
-  <Get<ResponsePageEnvironmentGroupResponse, Failure | Error, GetEnvironmentGroupListQueryParams, void>
+  <Mutate<
+    ResponsePageEnvironmentGroupResponse,
+    Failure | Error,
+    GetEnvironmentGroupListQueryParams,
+    FilterProperties,
+    void
+  >
+    verb="POST"
     path={`/environmentGroup/list`}
     base={getConfig('ng/api')}
     {...props}
@@ -18745,37 +18759,48 @@ export const GetEnvironmentGroupList = (props: GetEnvironmentGroupListProps) => 
 )
 
 export type UseGetEnvironmentGroupListProps = Omit<
-  UseGetProps<ResponsePageEnvironmentGroupResponse, Failure | Error, GetEnvironmentGroupListQueryParams, void>,
-  'path'
+  UseMutateProps<
+    ResponsePageEnvironmentGroupResponse,
+    Failure | Error,
+    GetEnvironmentGroupListQueryParams,
+    FilterProperties,
+    void
+  >,
+  'path' | 'verb'
 >
 
 /**
  * Gets Environment Group list
  */
 export const useGetEnvironmentGroupList = (props: UseGetEnvironmentGroupListProps) =>
-  useGet<ResponsePageEnvironmentGroupResponse, Failure | Error, GetEnvironmentGroupListQueryParams, void>(
-    `/environmentGroup/list`,
-    { base: getConfig('ng/api'), ...props }
-  )
+  useMutate<
+    ResponsePageEnvironmentGroupResponse,
+    Failure | Error,
+    GetEnvironmentGroupListQueryParams,
+    FilterProperties,
+    void
+  >('POST', `/environmentGroup/list`, { base: getConfig('ng/api'), ...props })
 
 /**
  * Gets Environment Group list
  */
 export const getEnvironmentGroupListPromise = (
-  props: GetUsingFetchProps<
+  props: MutateUsingFetchProps<
     ResponsePageEnvironmentGroupResponse,
     Failure | Error,
     GetEnvironmentGroupListQueryParams,
+    FilterProperties,
     void
   >,
   signal?: RequestInit['signal']
 ) =>
-  getUsingFetch<ResponsePageEnvironmentGroupResponse, Failure | Error, GetEnvironmentGroupListQueryParams, void>(
-    getConfig('ng/api'),
-    `/environmentGroup/list`,
-    props,
-    signal
-  )
+  mutateUsingFetch<
+    ResponsePageEnvironmentGroupResponse,
+    Failure | Error,
+    GetEnvironmentGroupListQueryParams,
+    FilterProperties,
+    void
+  >('POST', getConfig('ng/api'), `/environmentGroup/list`, props, signal)
 
 export interface DeleteEnvironmentGroupQueryParams {
   accountIdentifier: string
