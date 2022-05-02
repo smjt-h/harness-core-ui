@@ -27,13 +27,13 @@ import { getIdentifierFromValue, getScopeFromValue } from '@common/components/En
 import { Scope } from '@common/interfaces/SecretsInterface'
 import { useVariablesExpression } from '@pipeline/components/PipelineStudio/PiplineHooks/useVariablesExpression'
 import { ConnectorInfoDTO, PipelineInfoConfig, useGetConnector } from 'services/cd-ng'
-import { getConnectorRefWidth } from '@pipeline/utils/constants'
+import { getConnectorRefWidth, getPrCloneStrategyOptions } from '@pipeline/utils/constants'
 import { FormMultiTypeConnectorField } from '@connectors/components/ConnectorReferenceField/FormMultiTypeConnectorField'
 import { MultiTypeTextField } from '@common/components/MultiTypeText/MultiTypeText'
 import { MultiTypeSelectField } from '@common/components/MultiTypeSelect/MultiTypeSelect'
 import type { GitQueryParams } from '@common/interfaces/RouteInterfaces'
 import { useQueryParams } from '@common/hooks'
-import { getOptionalSubLabel, sslVerifyOptions, prCloneStrategyOptions } from '../PipelineStudio/RightBar/RightBar'
+import { getOptionalSubLabel, sslVerifyOptions } from '../PipelineStudio/RightBar/RightBar'
 import { isRuntimeInput } from '../PipelineStudio/RightBar/RightBarUtils'
 import { StepViewType } from '../AbstractSteps/Step'
 import css from './CICodebaseInputSetForm.module.scss'
@@ -164,7 +164,7 @@ function CICodebaseInputSetFormInternal({
   const formattedPath = isEmpty(path) ? '' : `${path}.`
   const codeBaseTypePath = `${formattedPath}properties.ci.codebase.build.type`
   const buildSpecPath = `${formattedPath}properties.ci.codebase.build.spec`
-
+  const prCloneStrategyOptions = getPrCloneStrategyOptions(getString)
   const radioLabels = {
     branch: getString('gitBranch'),
     tag: getString('gitTag'),

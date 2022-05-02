@@ -63,6 +63,7 @@ selectStage: Select Stage
 stepNamePlaceholder: 'Enter Step Name'
 rightBar:
   editCodebaseConfiguration: Edit Codebase Configuration
+  mergeCommit: Merge Commit
 barrierStep:
   barrierReference: Barrier Reference
   barrierReferenceRequired: Barrier Reference is required

@@ -30,6 +30,7 @@ import type { UseStringsReturn } from 'framework/strings'
 import { getDurationValidationSchema } from '@common/components/MultiTypeDuration/MultiTypeDuration'
 import type { TemplateStepNode } from 'services/pipeline-ng'
 import { ServiceDeploymentType } from '@pipeline/utils/stageHelpers'
+import { getPrCloneStrategyOptions } from '@pipeline/utils/constants'
 import factory from '../PipelineSteps/PipelineStepFactory'
 import { StepType } from '../PipelineSteps/PipelineStepInterface'
 // eslint-disable-next-line no-restricted-imports
@@ -39,7 +40,6 @@ import '@ci/components/PipelineSteps'
 // eslint-disable-next-line no-restricted-imports
 import '@sto-steps/components/PipelineSteps'
 import { StepViewType } from '../AbstractSteps/Step'
-import { prCloneStrategyOptions } from './RightBar/RightBar'
 
 export const clearRuntimeInput = (template: PipelineInfoConfig): PipelineInfoConfig => {
   return JSON.parse(
@@ -451,6 +451,7 @@ export const validateCICodebase = ({
   if (template?.properties?.ci?.codebase?.prCloneStrategy) {
     // error will appear in yaml view
     const prCloneStrategy = pipeline?.properties?.ci?.codebase?.prCloneStrategy
+    const prCloneStrategyOptions = (getString && getPrCloneStrategyOptions(getString)) || []
     const prCloneStrategyOptionsValues = prCloneStrategyOptions.map(option => option.value)
     if (prCloneStrategy && !prCloneStrategyOptionsValues.some(value => value === prCloneStrategy)) {
       set(

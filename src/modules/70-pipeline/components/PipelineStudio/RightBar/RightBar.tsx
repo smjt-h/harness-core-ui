@@ -51,7 +51,7 @@ import {
   getScopeFromValue
 } from '@common/components/EntityReference/EntityReference'
 import { useVariablesExpression } from '@pipeline/components/PipelineStudio/PiplineHooks/useVariablesExpression'
-import { ConnectorRefWidth } from '@pipeline/utils/constants'
+import { ConnectorRefWidth, getPrCloneStrategyOptions } from '@pipeline/utils/constants'
 import {
   handleCIConnectorRefOnChange,
   ConnectionType,
@@ -93,11 +93,6 @@ enum CodebaseStatuses {
   Invalid = 'invalid',
   Validating = 'validating'
 }
-
-export const prCloneStrategyOptions = [
-  { label: 'Merge Commit', value: 'MergeCommit' },
-  { label: 'Source Branch', value: 'SourceBranch' }
-]
 
 export const sslVerifyOptions = [
   {
@@ -194,7 +189,6 @@ export const renderConnectorAndRepoName = ({
       <FormMultiTypeConnectorField
         name="connectorRef"
         type={['Git', 'Github', 'Gitlab', 'Bitbucket', 'Codecommit']}
-        // selected={values.connectorRef}
         label={getString('connector')}
         width={getConnectorWidth({ connectorWidth, connectorRef: values.connectorRef })}
         error={errors?.connectorRef}
@@ -290,6 +284,7 @@ export function RightBar(): JSX.Element {
   const codebase = pipeline?.properties?.ci?.codebase
   const [codebaseStatus, setCodebaseStatus] = React.useState<CodebaseStatuses>(CodebaseStatuses.ZeroState)
   const enableGovernanceSidebar = useFeatureFlag(FeatureFlag.OPA_PIPELINE_GOVERNANCE)
+  const { getString } = useStrings()
 
   const { accountId, projectIdentifier, orgIdentifier } = useParams<
     PipelineType<{
@@ -307,6 +302,7 @@ export function RightBar(): JSX.Element {
   const [codebaseRuntimeInputs, setCodebaseRuntimeInputs] = React.useState<CodebaseRuntimeInputsInterface>({
     ...(isRuntimeInput(codebase?.connectorRef) && { connectorRef: true, repoName: true })
   })
+  const prCloneStrategyOptions = getPrCloneStrategyOptions(getString)
   const codebaseInitialValues: CodebaseValues = {
     connectorRef: codebase?.connectorRef,
     repoName: codebase?.repoName,
@@ -466,8 +462,6 @@ export function RightBar(): JSX.Element {
     setConnectionType,
     setConnectorUrl
   ])
-
-  const { getString } = useStrings()
 
   const openVariablesPanel = () => {
     if (isPipelineTemplateContextType) {
@@ -820,14 +814,12 @@ export function RightBar(): JSX.Element {
                                   </Layout.Horizontal>
                                 }
                                 multiTypeInputProps={{
-                                  // selectItems: sslVerifyOptions,
                                   selectItems: sslVerifyOptions as unknown as SelectOption[],
                                   placeholder: getString('select'),
                                   multiTypeInputProps: {
                                     expressions,
                                     selectProps: {
                                       addClearBtn: true,
-                                      // selectProps: { addClearBtn: true, items: sslVerifyOptions }
                                       items: sslVerifyOptions as unknown as SelectOption[]
                                     },
                                     allowableTypes: [MultiTypeInputType.FIXED, MultiTypeInputType.RUNTIME]
