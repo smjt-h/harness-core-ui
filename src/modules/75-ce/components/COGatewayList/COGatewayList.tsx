@@ -806,9 +806,15 @@ const COGatewayList: React.FC = () => {
     )
 
   const handleModeChange = async (val: RulesMode) => {
-    setMode(val)
     setParamsToUrl({ mode: val })
-    await refetchServices()
+    // await refetchServices({
+    //   queryParams: {
+    //     accountIdentifier: accountId,
+    //     value: _defaultTo(searchParams.text, ''),
+    //     dry_run: val === RulesMode.DRY
+    //   }
+    // })
+    setMode(val)
   }
 
   // Render page loader for initial loading of the page
@@ -820,10 +826,11 @@ const COGatewayList: React.FC = () => {
     )
   }
 
+  // Only for ACTIVE MODE
   // Render empty page component when:
   // no data is available
   // search is not active
-  if (!isLoadingPage && _isEmpty(tableData) && !searchParams.isActive) {
+  if (!isLoadingPage && _isEmpty(modeQueryText.current) && _isEmpty(tableData) && !searchParams.isActive) {
     return <EmptyListPage featureDetail={featureDetail} />
   }
 
