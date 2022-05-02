@@ -846,6 +846,7 @@ export interface StringsMap {
   'auditTrail.resourceNameLabel': string
   'auditTrail.supplementaryDetails': string
   'auditTrail.yamlDifference': string
+  'rbac.UserGroupRoleAssignmentForm.assignmentValidation': string
   'rbac.accessControlTitle.resourceGroups': string
   'rbac.accessControlTitle.roles': string
   'rbac.accessControlTitle.serviceAccounts': string
@@ -994,6 +995,7 @@ export interface StringsMap {
   'rbac.userGroupForm.editSuccess': string
   'rbac.userGroupPage.addMembers': string
   'rbac.userGroupPage.addUsers': string
+  'rbac.userGroupPage.assignRoles': string
   'rbac.userGroupPage.confirmDelete': string
   'rbac.userGroupPage.confirmDeleteTitle': string
   'rbac.userGroupPage.editUserGroup': string
@@ -1001,6 +1003,7 @@ export interface StringsMap {
   'rbac.userGroupPage.noDataText': string
   'rbac.userGroupPage.noRoleAssignmentsText': string
   'rbac.userGroupPage.noUserGroups': string
+  'rbac.userGroupPage.roleAssignSuccess': string
   'rbac.userGroupPage.search': string
   'rbac.userGroupPage.successMessage': string
   'rbac.userGroupPage.userGroupEmptyState': string
@@ -1008,6 +1011,7 @@ export interface StringsMap {
   'rbac.userGroupPage.userList.deleteFailureMessage': string
   'rbac.userGroupPage.userList.deleteSuccessMessage': string
   'rbac.userGroupPage.userList.deleteTitle': string
+  'rbac.userGroupRequired': string
   'rbac.userRequired': string
   'rbac.userUpperLimit': string
   'rbac.usersPage.assignRoleBindings': string

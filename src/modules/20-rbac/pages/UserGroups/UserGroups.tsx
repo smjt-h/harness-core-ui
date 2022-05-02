@@ -18,6 +18,7 @@ import { useRoleAssignmentModal } from '@rbac/modals/RoleAssignmentModal/useRole
 import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
 import { useDocumentTitle } from '@common/hooks/useDocumentTitle'
 import { ResourceType } from '@rbac/interfaces/ResourceType'
+import { PrincipalType } from '@rbac/utils/utils'
 import ManagePrincipalButton from '@rbac/components/ManagePrincipalButton/ManagePrincipalButton'
 import { setPageNumber } from '@common/utils/utils'
 import UserGroupEmptyState from './user-group-empty-state.png'
@@ -40,7 +41,8 @@ const UserGroupsPage: React.FC = () => {
       projectIdentifier,
       pageIndex: page,
       pageSize: 10,
-      searchTerm: searchTerm
+      searchTerm: searchTerm,
+      filterType: 'INCLUDE_INHERITED_GROUPS'
     },
     debounce: 300
   })
@@ -68,6 +70,24 @@ const UserGroupsPage: React.FC = () => {
     />
   )
 
+  const AssignRolesBtn: React.FC<UserGroupBtnProp> = ({ size }): JSX.Element => (
+    <ManagePrincipalButton
+      text={getString('rbac.userGroupPage.assignRoles')}
+      variation={ButtonVariation.SECONDARY}
+      onClick={() => openRoleAssignmentModal(PrincipalType.USER_GROUP)}
+      resourceType={ResourceType.USERGROUP}
+      size={size}
+      className={css.assignRolesButton}
+    />
+  )
+
+  const CombinedBtnLarge: React.FC<UserGroupBtnProp> = () => (
+    <>
+      <UserGroupBtn size={ButtonSize.LARGE} />
+      <AssignRolesBtn size={ButtonSize.LARGE} />
+    </>
+  )
+
   return (
     <>
       {data?.data?.content?.length || searchTerm || loading || error ? (
@@ -75,6 +95,7 @@ const UserGroupsPage: React.FC = () => {
           title={
             <Layout.Horizontal>
               <UserGroupBtn />
+              <AssignRolesBtn />
             </Layout.Horizontal>
           }
           toolbar={
@@ -102,7 +123,7 @@ const UserGroupsPage: React.FC = () => {
           message: searchTerm
             ? getString('rbac.userGroupPage.noUserGroups')
             : getString('rbac.userGroupPage.userGroupEmptyState'),
-          button: !searchTerm ? <UserGroupBtn size={ButtonSize.LARGE} /> : undefined,
+          button: !searchTerm ? <CombinedBtnLarge /> : undefined,
           image: UserGroupEmptyState,
           imageClassName: css.userGroupsEmptyState
         }}
