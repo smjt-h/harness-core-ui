@@ -1015,3 +1015,4 @@ cannotRunInvalidPipeline: Cannot run the pipeline because it's invalid, please r
 cannotAddTriggerInvalidPipeline: Cannot add a trigger because pipeline is invalid, please review the configuration.
 cannotAddInputSetInvalidPipeline: Cannot add an input set because pipeline is invalid, please review the configuration.
 cannotEditTriggerInvalidPipeline: Cannot edit the trigger because pipeline is invalid, please review the configuration.
+parentStageDeleteWarning: "Warning: this Stage's settings are propagated to another Stage in this Pipeline ({{propagatingStages}}). If you delete this Stage, you must update the other Stage's settings or the Pipeline will fail."

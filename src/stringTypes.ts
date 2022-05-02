@@ -2901,6 +2901,7 @@ export interface StringsMap {
   'pipeline.overrideSets.overrideSetPlaceholder': string
   'pipeline.parallelSelectedStages': string
   'pipeline.parallelStages': string
+  'pipeline.parentStageDeleteWarning': string
   'pipeline.pipelineInputPanel.automaticallyExtractedFromText': string
   'pipeline.pipelineInputPanel.existing': string
   'pipeline.pipelineInputPanel.noRuntimeInputs': string

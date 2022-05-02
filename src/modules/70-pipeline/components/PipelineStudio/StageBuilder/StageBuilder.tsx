@@ -874,7 +874,9 @@ function StageBuilder(): React.ReactElement {
       }, '')
 
     if (propagatingStages)
-      deletionContentText = `Warning: this Stage's settings are propagated to another Stage in this Pipeline (${propagatingStages}). If you delete this Stage, you must update the other Stage's settings or the Pipeline will fail.`
+      deletionContentText = getString('pipeline.parentStageDeleteWarning', {
+        propagatingStages
+      })
   }
 
   return (
