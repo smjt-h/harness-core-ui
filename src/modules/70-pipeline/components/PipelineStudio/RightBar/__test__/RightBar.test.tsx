@@ -12,6 +12,7 @@ import { TestWrapper } from '@common/utils/testUtils'
 import { factory } from '@pipeline/components/PipelineSteps/Steps/__tests__/StepTestUtil'
 import { Scope } from '@common/interfaces/SecretsInterface'
 import { RightBar } from '../RightBar'
+import { isRuntimeInput } from '../RightBarUtils'
 import { PipelineContext, PipelineContextInterface } from '../../PipelineContext/PipelineContext'
 
 jest.mock('services/cd-ng', () => ({
@@ -278,5 +279,26 @@ describe('RightBar', () => {
       isSplitViewOpen: false,
       splitViewData: {}
     })
+  })
+})
+
+describe('RightBarUtils', () => {
+  test('str value with <+input> returns true', () => {
+    const res = isRuntimeInput('<+input>')
+    expect(res).toBeTruthy
+  })
+  test('str value with expression value returns false', () => {
+    const res = isRuntimeInput('<+expression>')
+    expect(res).toBeFalsy
+  })
+
+  test('number value returns false', () => {
+    const res = isRuntimeInput(4)
+    expect(res).toBeFalsy
+  })
+
+  test('undefined value returns false', () => {
+    const res = isRuntimeInput(undefined)
+    expect(res).toBeFalsy
   })
 })

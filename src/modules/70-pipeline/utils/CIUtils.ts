@@ -21,6 +21,12 @@ export function getShortCommitId(commitId: string): string {
   return commitId.slice(0, 7)
 }
 
+export enum CodebaseTypes {
+  branch = 'branch',
+  tag = 'tag',
+  PR = 'PR'
+}
+
 // TODO: Add singular forms, better using i18n because they have support for it
 export function getTimeAgo(timeStamp: number): string {
   const currentDate = moment(new Date())

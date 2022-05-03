@@ -25,6 +25,7 @@ import { connect } from 'formik'
 import { useStrings } from 'framework/strings'
 import { getIdentifierFromValue, getScopeFromValue } from '@common/components/EntityReference/EntityReference'
 import { Scope } from '@common/interfaces/SecretsInterface'
+import { Connectors } from '@connectors/constants'
 import { useVariablesExpression } from '@pipeline/components/PipelineStudio/PiplineHooks/useVariablesExpression'
 import { ConnectorInfoDTO, PipelineInfoConfig, useGetConnector } from 'services/cd-ng'
 import { getConnectorRefWidth, getPrCloneStrategyOptions, sslVerifyOptions } from '@pipeline/utils/constants'
@@ -34,6 +35,7 @@ import { MultiTypeSelectField } from '@common/components/MultiTypeSelect/MultiTy
 import type { GitQueryParams } from '@common/interfaces/RouteInterfaces'
 import { useQueryParams } from '@common/hooks'
 import { getOptionalSubLabel } from '@pipeline/components/Volumes/Volumes'
+import { CodebaseTypes } from '@pipeline/utils/CIUtils'
 import { isRuntimeInput } from '../PipelineStudio/RightBar/RightBarUtils'
 import { StepViewType } from '../AbstractSteps/Step'
 import css from './CICodebaseInputSetForm.module.scss'
@@ -89,7 +91,7 @@ export const handleCIConnectorRefOnChange = ({
   connectorRefType: MultiTypeInputType
   setConnectionType: Dispatch<SetStateAction<string>>
   setConnectorUrl: Dispatch<SetStateAction<string>>
-  setFieldValue: (field: string, value: any) => void
+  setFieldValue: (field: string, value: unknown) => void
   setIsConnectorExpression?: Dispatch<SetStateAction<boolean>> // used in inputset form
   codeBaseInputFieldFormName?: { [key: string]: string } // only used when setting nested values in input set
 }): void => {
@@ -181,7 +183,6 @@ function CICodebaseInputSetFormInternal({
     branch: `${formattedPath}properties.ci.codebase.build.spec.branch`,
     tag: `${formattedPath}properties.ci.codebase.build.spec.tag`,
     PR: `${formattedPath}properties.ci.codebase.build.spec.number`,
-    // !Double check if below is correctly used
     connectorRef: `${formattedPath}properties.ci.codebase.connectorRef`,
     repoName: `${formattedPath}properties.ci.codebase.repoName`,
     depth: `${formattedPath}properties.ci.codebase.depth`,
@@ -223,7 +224,7 @@ function CICodebaseInputSetFormInternal({
 
     if (connectorDetails?.data?.connector) {
       setConnectionType(
-        connectorDetails?.data?.connector?.type === 'Git'
+        connectorDetails?.data?.connector?.type === Connectors.GIT
           ? connectorDetails?.data?.connector.spec.connectionType
           : connectorDetails?.data?.connector.spec.type
       )
@@ -309,7 +310,13 @@ function CICodebaseInputSetFormInternal({
                 name={codeBaseInputFieldFormName.connectorRef}
                 width={getConnectorRefWidth(viewType)}
                 error={formik?.errors?.connectorRef}
-                type={['Git', 'Github', 'Gitlab', 'Bitbucket', 'Codecommit']}
+                type={[
+                  Connectors.GIT,
+                  Connectors.GITHUB,
+                  Connectors.GITLAB,
+                  Connectors.BITBUCKET,
+                  Connectors.AWS_CODECOMMIT
+                ]}
                 label={<Text font={{ variation: FontVariation.FORM_LABEL }}>{getString('connector')}</Text>}
                 placeholder={loadingConnectorDetails ? getString('loading') : getString('connectors.selectConnector')}
                 accountIdentifier={accountId}
@@ -561,9 +568,8 @@ function CICodebaseInputSetFormInternal({
                 <Radio
                   label={radioLabels['branch']}
                   width={110}
-                  // margin={{ left: 'medium' }}
                   onClick={() => handleTypeChange('branch')}
-                  checked={codeBaseType === 'branch'}
+                  checked={codeBaseType === CodebaseTypes.branch}
                   disabled={readonly}
                   font={{ variation: FontVariation.FORM_LABEL }}
                   key="branch-radio-option"
@@ -573,7 +579,7 @@ function CICodebaseInputSetFormInternal({
                   width={90}
                   margin={{ left: 'huge' }}
                   onClick={() => handleTypeChange('tag')}
-                  checked={codeBaseType === 'tag'}
+                  checked={codeBaseType === CodebaseTypes.tag}
                   disabled={readonly}
                   font={{ variation: FontVariation.FORM_LABEL }}
                   key="tag-radio-option"
@@ -584,7 +590,7 @@ function CICodebaseInputSetFormInternal({
                     width={110}
                     margin={{ left: 'huge' }}
                     onClick={() => handleTypeChange('PR')}
-                    checked={codeBaseType === 'PR'}
+                    checked={codeBaseType === CodebaseTypes.PR}
                     disabled={readonly}
                     font={{ variation: FontVariation.FORM_LABEL }}
                     key="pr-radio-option"
@@ -593,9 +599,9 @@ function CICodebaseInputSetFormInternal({
               </Layout.Horizontal>
 
               <Container width={'50%'}>
-                {codeBaseType === 'branch' ? renderCodeBaseTypeInput('branch') : null}
-                {codeBaseType === 'tag' ? renderCodeBaseTypeInput('tag') : null}
-                {codeBaseType === 'PR' ? renderCodeBaseTypeInput('PR') : null}
+                {codeBaseType === CodebaseTypes.branch ? renderCodeBaseTypeInput('branch') : null}
+                {codeBaseType === CodebaseTypes.tag ? renderCodeBaseTypeInput('tag') : null}
+                {codeBaseType === CodebaseTypes.PR ? renderCodeBaseTypeInput('PR') : null}
               </Container>
             </>
           )}

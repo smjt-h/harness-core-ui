@@ -37,7 +37,7 @@ export interface MultiTypeSelectProps {
   name: string
   label: string | React.ReactElement
   formik?: FormikContext<any>
-  multiTypeInputProps: Omit<FormMultiTypeInputProps, 'name' | 'label' | 'useValue'>
+  multiTypeInputProps: Omit<FormMultiTypeInputProps, 'name' | 'label'>
   enableConfigureOptions?: boolean
   configureOptionsProps?: MultiTypeSelectConfigureOptionsProps
   style?: React.CSSProperties

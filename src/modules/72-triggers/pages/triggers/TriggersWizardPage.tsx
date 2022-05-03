@@ -41,6 +41,7 @@ import {
   NGTriggerSourceV2,
   useGetSchemaYaml
 } from 'services/pipeline-ng'
+import { CodebaseTypes } from '@pipeline/utils/CIUtils'
 import { useStrings } from 'framework/strings'
 import { usePermission } from '@rbac/hooks/usePermission'
 import { PermissionIdentifier } from '@rbac/interfaces/PermissionIdentifier'
@@ -1603,19 +1604,28 @@ const TriggersWizardPage: React.FC = (): JSX.Element => {
       }
     }
     const ciCodeBaseType = get(formData, 'pipeline.properties.ci.codebase.build.type')
-    if (ciCodeBaseType === 'branch' && isEmpty(get(formData, 'pipeline.properties.ci.codebase.build.spec.branch'))) {
+    if (
+      ciCodeBaseType === CodebaseTypes.branch &&
+      isEmpty(get(formData, 'pipeline.properties.ci.codebase.build.spec.branch'))
+    ) {
       return {
         'pipeline.properties.ci.codebase.build.spec.branch': getString(
           'pipeline.failureStrategies.validation.gitBranchRequired'
         )
       }
-    } else if (ciCodeBaseType === 'tag' && isEmpty(get(formData, 'pipeline.properties.ci.codebase.build.spec.tag'))) {
+    } else if (
+      ciCodeBaseType === CodebaseTypes.tag &&
+      isEmpty(get(formData, 'pipeline.properties.ci.codebase.build.spec.tag'))
+    ) {
       return {
         'pipeline.properties.ci.codebase.build.spec.tag': getString(
           'pipeline.failureStrategies.validation.gitTagRequired'
         )
       }
-    } else if (ciCodeBaseType === 'PR' && isEmpty(get(formData, 'pipeline.properties.ci.codebase.build.spec.number'))) {
+    } else if (
+      ciCodeBaseType === CodebaseTypes.PR &&
+      isEmpty(get(formData, 'pipeline.properties.ci.codebase.build.spec.number'))
+    ) {
       return {
         'pipeline.properties.ci.codebase.build.spec.number': getString(
           'pipeline.failureStrategies.validation.gitPRRequired'

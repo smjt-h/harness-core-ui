@@ -66,6 +66,7 @@ import {
   generateSchemaForLimitCPU,
   generateSchemaForLimitMemory
 } from '@pipeline/components/PipelineSteps/Steps/StepsValidateUtils'
+import { Connectors } from '@connectors/constants'
 import { useQueryParams } from '@common/hooks'
 import { PipelineContextType, usePipelineContext } from '../PipelineContext/PipelineContext'
 import { isRuntimeInput } from './RightBarUtils'
@@ -167,7 +168,7 @@ export const renderConnectorAndRepoName = ({
     <Container className={css.bottomMargin3}>
       <FormMultiTypeConnectorField
         name="connectorRef"
-        type={['Git', 'Github', 'Gitlab', 'Bitbucket', 'Codecommit']}
+        type={[Connectors.GIT, Connectors.GITHUB, Connectors.GITLAB, Connectors.BITBUCKET, Connectors.AWS_CODECOMMIT]}
         label={getString('connector')}
         width={getConnectorWidth({ connectorWidth, connectorRef: values.connectorRef })}
         error={errors?.connectorRef}
@@ -341,7 +342,7 @@ export function RightBar(): JSX.Element {
   React.useEffect(() => {
     if (connector?.data?.connector) {
       setConnectionType(
-        connector?.data?.connector?.type === 'Git'
+        connector?.data?.connector?.type === Connectors.GIT
           ? connector?.data?.connector.spec.connectionType
           : connector?.data?.connector.spec.type
       )
@@ -358,6 +359,8 @@ export function RightBar(): JSX.Element {
   React.useEffect(() => {
     if (!codebase?.connectorRef) {
       setCodebaseStatus(CodebaseStatuses.NotConfigured)
+    } else if (isRuntimeInput(codebase?.connectorRef)) {
+      setCodebaseStatus(CodebaseStatuses.Valid)
     } else {
       const validate = async () => {
         setCodebaseStatus(CodebaseStatuses.Validating)

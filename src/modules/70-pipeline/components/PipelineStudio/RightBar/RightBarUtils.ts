@@ -5,4 +5,4 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-export const isRuntimeInput = (str: any): boolean => typeof str === 'string' && str?.includes('<+input>')
+export const isRuntimeInput = (str: unknown): boolean => typeof str === 'string' && str?.includes('<+input>')

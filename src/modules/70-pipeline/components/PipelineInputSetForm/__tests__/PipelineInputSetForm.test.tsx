@@ -33,7 +33,11 @@ jest.mock('services/cd-ng', () => ({
   })
 }))
 
-const getCommonProps = ({ path }: { path?: string }) => ({
+const getCommonProps = ({
+  path
+}: {
+  path?: string
+}): { path?: string; readonly?: boolean; viewType: StepViewType; maybeContainerClass?: string } => ({
   path: path || '/dummypath',
   readonly: false,
   viewType: StepViewType.InputSet,
