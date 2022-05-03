@@ -94,20 +94,16 @@ const VariablesPage: React.FC = () => {
 
       <Page.Body className={css.listBody}>
         {loading ? (
-          <div style={{ position: 'relative', height: 'calc(100vh - 128px)' }}>
-            <PageSpinner />
-          </div>
+          <PageSpinner />
         ) : error ? (
-          <div style={{ paddingTop: '200px' }}>
-            <PageError
-              message={(error?.data as Error)?.message || error?.message}
-              onClick={(e: React.MouseEvent<Element, MouseEvent>) => {
-                e.preventDefault()
-                e.stopPropagation()
-                refetch()
-              }}
-            />
-          </div>
+          <PageError
+            message={(error?.data as Error)?.message || error?.message}
+            onClick={(e: React.MouseEvent<Element, MouseEvent>) => {
+              e.preventDefault()
+              e.stopPropagation()
+              refetch()
+            }}
+          />
         ) : variableResponse?.data?.content?.length ? (
           <VariableListView
             variables={variableResponse.data}
