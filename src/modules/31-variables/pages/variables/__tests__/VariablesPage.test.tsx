@@ -253,6 +253,6 @@ describe('Variables Page', () => {
       fireEvent.click(nextBtn!)
     })
     await waitFor(() => getByText('CUSTOM_VARIABLE'))
-    expect(getByText('CUSTOM VARIABLE')).toBeDefined()
+    expect(getByText('CUSTOM_VARIABLE')).toBeDefined()
   })
 })

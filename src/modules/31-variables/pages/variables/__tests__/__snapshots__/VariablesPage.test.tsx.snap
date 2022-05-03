@@ -321,9 +321,7 @@ exports[`Variables Page render page at account level 1`] = `
           >
             <p
               class="StyledProps--font StyledProps--main StyledProps--color StyledProps--color-grey600 StyledProps--font-variation-form-input-text"
-            >
-              
-            </p>
+            />
           </div>
         </div>
       </div>
