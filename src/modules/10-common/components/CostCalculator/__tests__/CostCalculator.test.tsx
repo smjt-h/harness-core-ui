@@ -58,7 +58,7 @@ describe('Cost Calculator Test', () => {
   test('Check CostCalc', async () => {
     const { container } = render(
       <TestWrapper
-        path="/account/:accountId/settings/subscriptions?moduleCard=cd&&tab=PLANS"
+        path="/account/:accountId/settings/subscriptions?moduleCard=cf"
         pathParams={{ accountId: 'dummy' }}
       >
         <CostCalculator />

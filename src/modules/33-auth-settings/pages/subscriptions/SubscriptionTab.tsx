@@ -23,11 +23,11 @@ import { useFeatureFlags } from '@common/hooks/useFeatureFlag'
 import type { StringsMap } from 'stringTypes'
 import { useCommunity } from 'framework/LicenseStore/useCommunity'
 
+import {ExampleModal} from "@common/components/CostCalculator/CostCalculator";
 import SubscriptionOverview from './overview/SubscriptionOverview'
 import SubscriptionBanner from './SubscriptionBanner'
 import SubscriptionPlans from './plans/SubscriptionPlans'
 import css from './SubscriptionsPage.module.scss'
-// import {ExampleModal} from "@common/components/CostCalculator/CostCalculator";
 
 export interface SubscriptionTabInfo {
   name: SUBSCRIPTION_TAB_NAMES
@@ -159,7 +159,7 @@ const SubscriptionTab = ({
         {getSubscriptionTabButtons()}
       </Layout.Horizontal>
       {getTabComponent()}
-      {/*<ExampleModal/>*/}
+      <ExampleModal/>
     </React.Fragment>
   )
 }

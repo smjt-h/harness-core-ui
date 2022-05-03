@@ -5,24 +5,24 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import React, { useEffect, useState } from 'react'
-import { Color, FontVariation } from '@harness/design-system'
-import { Button, ButtonSize, Layout, PillToggle, Text, Toggle } from '@harness/uicore'
+import React, {useEffect, useState} from 'react'
+import {Color, FontVariation} from '@harness/design-system'
+import {Button, ButtonSize, HarnessDocTooltip, Layout, PillToggle, Text, Toggle} from '@harness/uicore'
 import cx from 'classnames'
-import { Classes, Dialog, IDialogProps, NumericInput, Slider } from '@blueprintjs/core'
-import { useModalHook } from '@harness/use-modal'
-import { ButtonVariation, Container } from '@wings-software/uicore'
-import { useParams } from 'react-router-dom'
+import {Classes, Dialog, IDialogProps, NumericInput, ProgressBar, Slider} from '@blueprintjs/core'
+import {useModalHook} from '@harness/use-modal'
+import {ButtonVariation, Container} from '@wings-software/uicore'
+import {useParams} from 'react-router-dom'
 import moment from 'moment'
-import { isNaN } from 'lodash-es'
-import { Editions } from '@common/constants/SubscriptionTypes'
-import { acquireCurrentPlan, ffUnitTypes, PlanType } from '@common/components/CostCalculator/CostCalculatorUtils'
-import { ReviewPage } from '@common/components/CostCalculator/ReviewAndBuyPlanUpgrades'
-import type { AccountPathProps } from '@common/interfaces/RouteInterfaces'
-import { useRetrieveProductPrices } from 'services/cd-ng'
-import { useGetUsageAndLimit } from '@common/hooks/useGetUsageAndLimit'
-import { ModuleName } from 'framework/types/ModuleName'
-import { ContainerSpinner } from '@common/components/ContainerSpinner/ContainerSpinner'
+import {isNaN} from 'lodash-es'
+import {Editions} from '@common/constants/SubscriptionTypes'
+import {acquireCurrentPlan, ffUnitTypes, PlanType} from '@common/components/CostCalculator/CostCalculatorUtils'
+import {ReviewPage} from '@common/components/CostCalculator/ReviewAndBuyPlanUpgrades'
+import type {AccountPathProps} from '@common/interfaces/RouteInterfaces'
+import {useRetrieveProductPrices} from 'services/cd-ng'
+import {useGetUsageAndLimit} from '@common/hooks/useGetUsageAndLimit'
+import {ModuleName} from 'framework/types/ModuleName'
+import {ContainerSpinner} from '@common/components/ContainerSpinner/ContainerSpinner'
 import recommendedIcon from './images/recommendedbig.png'
 import usageIcon from './images/usagebig.png'
 import plannedUsageIcon from './images/currentbig.png'
@@ -36,21 +36,38 @@ interface InfoBoxParams {
   using: number
 }
 
+const FormatTooltip = ({text}: { text: string }) => {
+  return (
+      <Container background={Color.PRIMARY_9} border={{radius: 8}} >
+    <Text font={{size: 'normal'}} color={Color.WHITE} padding={16}>
+      {text}
+    </Text>
+  </Container>
+  )
+}
+
+
 const InfoBox = ({ title, units, using, recommended, planned }: InfoBoxParams) => {
   const newUnits = units ? units : ''
+
   return (
     <Layout.Vertical
       padding={{ top: 'medium', bottom: 'medium', left: 'xlarge', right: 'xlarge' }}
       className={cx(css.infocard)}
     >
-      <Text
-        font={{ variation: FontVariation.H4 }}
-        className={cx(css.textwrap)}
-        padding={{ bottom: 'medium' }}
-        color={Color.GREY_600}
-      >
-        {title}
-      </Text>
+      <Layout.Horizontal padding={{ bottom: 'medium' }} flex={{alignItems: 'baseline',justifyContent: 'left'}}>
+        <Text
+            font={{ variation: FontVariation.H4 }}
+            className={cx(css.textwrap)}
+            color={Color.GREY_600}
+            padding={{right: 'xsmall'}}
+        >
+          {title}
+        </Text>
+        <HarnessDocTooltip tooltipId={'dummy'} labelText={'Another dummy'} />
+        {/*<Text rightIcon={'main-info'} rightIconProps={{color: Color.PRIMARY_7, size: 12}} tooltip={FormatTooltip({text: 'Somedummy data'})}/>*/}
+      </Layout.Horizontal>
+
       <Layout.Horizontal flex={{ justifyContent: 'space-around' }} padding={{ bottom: 'xxlarge' }}>
         {!isNaN(planned as number) && (
           <Layout.Vertical>
@@ -126,13 +143,38 @@ export const GetEditionBox = ({ editionType }: EditionBox) => {
   )
 }
 
+const CustomProgress = (usage: number, planned: number, recommended: number) => {
+  const percent: Array<[string,number]> = [['usage',Math.round(usage*100)],['planned',Math.round(planned*100)], ['recommended', Math.round(recommended*100)]];
+  const sortedPercent = percent.sort( (a,b) => a[1] - b[1]);
+  sortedPercent[2][1] = sortedPercent[2][1] - sortedPercent[2][1];
+  sortedPercent[1][1] = sortedPercent[1][1] - sortedPercent[0][1];
+  sortedPercent.forEach((x ,i : number) => {
+    if(x[1] <= 2) {
+      sortedPercent[i][1] = 2;
+    }
+  });
+  const colourCode : Record<string,string> = {'usage' : '#42AB45', 'planned' : '#000000', 'recommended': '#0278D5'};
+  const divs = sortedPercent.map((x,i) => {
+    return <div key={i} style={{backgroundColor: colourCode[sortedPercent[i][0]], width: `${x[1]}%`, height: '100%'}}  />
+  });
+
+  return (
+      <div style={{display: 'flex', alignItems: 'flex-start', height: '10px', borderRadius: '5px', overflow: 'hidden'}}>
+        {divs}
+      </div>
+  )
+}
+
+
 const CostSlider = (costSliderParms: CostSliderParams) => {
   const [thumbMoved, setThumbMoved] = useState<boolean>(false)
 
-  const shownPlannedUsage = Math.max(
-    Math.min(costSliderParms.plannedUsage || 0, costSliderParms.maxVal),
-    costSliderParms.minVal
-  )
+
+  const progressDenom = costSliderParms.maxVal - costSliderParms.minVal
+  const usagePercent = Math.max((costSliderParms.currentUsage - costSliderParms.minVal),0)/progressDenom;
+  const recommendedPercent = Math.max((costSliderParms.recommended - costSliderParms.minVal),0)/progressDenom;
+  const plannedPercent = Math.max(((costSliderParms.plannedUsage || 0) - costSliderParms.minVal),0)/progressDenom;
+
 
   return (
     <Layout.Vertical padding={{ top: 'xlarge' }}>
@@ -160,27 +202,30 @@ const CostSlider = (costSliderParms: CostSliderParams) => {
           {costSliderParms.inputUnit}
         </Text>
       </Layout.Horizontal>
-      <Container className={css.topSliderDots}>
-        {costSliderParms.plannedUsage !== undefined && (
-          <Container
-            width={`${(shownPlannedUsage * 100) / costSliderParms.maxVal}%`}
-            className={css.sliderDotContainer}
-          >
-            <img src={plannedUsageIcon} height={'10px'} width={'10px'} />
-          </Container>
-        )}
-        <Container
-          width={`${(costSliderParms.currentUsage * 100) / costSliderParms.maxVal}%`}
-          className={css.sliderDotContainer}
-        >
-          <img src={usageIcon} height={'10px'} width={'10px'} />
-        </Container>
-        <Container
-          width={`${(costSliderParms.recommended * 100) / costSliderParms.maxVal}%`}
-          className={css.sliderDotContainer}
-        >
-          <img src={recommendedIcon} height={'15px'} width={'12px'} />
-        </Container>
+      {/*<Container className={css.topSliderDots}>*/}
+      {/*  {costSliderParms.plannedUsage !== undefined && (*/}
+      {/*    <Container*/}
+      {/*      width={`${(shownPlannedUsage * 100) / costSliderParms.maxVal}%`}*/}
+      {/*      className={css.sliderDotContainer}*/}
+      {/*    >*/}
+      {/*      <img src={plannedUsageIcon} height={'10px'} width={'10px'} />*/}
+      {/*    </Container>*/}
+      {/*  )}*/}
+      {/*  <Container*/}
+      {/*    width={`${(costSliderParms.currentUsage * 100) / costSliderParms.maxVal}%`}*/}
+      {/*    className={css.sliderDotContainer}*/}
+      {/*  >*/}
+      {/*    <img src={usageIcon} height={'10px'} width={'10px'} />*/}
+      {/*  </Container>*/}
+      {/*  <Container*/}
+      {/*    width={`${(costSliderParms.recommended * 100) / costSliderParms.maxVal}%`}*/}
+      {/*    className={css.sliderDotContainer}*/}
+      {/*  >*/}
+      {/*    <img src={recommendedIcon} height={'15px'} width={'12px'} />*/}
+      {/*  </Container>*/}
+      {/*</Container>*/}
+      <Container padding={{top: 'small', bottom: 'small'}}>
+        {CustomProgress(usagePercent,plannedPercent,recommendedPercent)}
       </Container>
       <Slider
         min={costSliderParms.minVal}
