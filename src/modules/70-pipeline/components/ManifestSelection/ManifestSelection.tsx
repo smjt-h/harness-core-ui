@@ -15,7 +15,7 @@ import { usePipelineContext } from '@pipeline/components/PipelineStudio/Pipeline
 
 import type { PipelineType } from '@common/interfaces/RouteInterfaces'
 import { getIdentifierFromValue, getScopeFromValue } from '@common/components/EntityReference/EntityReference'
-import { getSelectedDeploymentType, isServerlessDeploymentType } from '@pipeline/utils/stageHelpers'
+import { isServerlessDeploymentType } from '@pipeline/utils/stageHelpers'
 
 import { useStrings } from 'framework/strings'
 import type { Scope } from '@common/interfaces/SecretsInterface'
@@ -30,7 +30,8 @@ export default function ManifestSelection({
   identifierName,
   isForPredefinedSets = false,
   isPropagating,
-  overrideSetIdentifier
+  overrideSetIdentifier,
+  deploymentType
 }: ManifestSelectionProps): JSX.Element {
   const {
     state: {
@@ -127,8 +128,6 @@ export default function ManifestSelection({
       setFetchedConnectorResponse(connectorResponse)
     }
   }
-
-  const deploymentType = getSelectedDeploymentType(stage, getStageFromPipeline, isPropagating)
 
   return (
     <Layout.Vertical>

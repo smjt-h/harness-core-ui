@@ -26,7 +26,7 @@ import { useStrings } from 'framework/strings'
 
 import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
 import { StepType } from '@pipeline/components/PipelineSteps/PipelineStepInterface'
-import { ServiceConfig, StageElementConfig, useGetServiceList } from 'services/cd-ng'
+import { ServiceConfig, ServiceDefinition, StageElementConfig, useGetServiceList } from 'services/cd-ng'
 import factory from '@pipeline/components/PipelineSteps/PipelineStepFactory'
 import { usePipelineContext } from '@pipeline/components/PipelineStudio/PipelineContext/PipelineContext'
 import {
@@ -414,7 +414,8 @@ export default function DeployServiceSpecifications(props: React.PropsWithChildr
                   readonly={isReadonly}
                   initialValues={{
                     stageIndex,
-                    setupModeType
+                    setupModeType,
+                    deploymentType: selectedDeploymentType as ServiceDefinition['type']
                   }}
                   allowableTypes={allowableTypes}
                   type={StepType.K8sServiceSpec}
