@@ -5131,6 +5131,7 @@ export interface StringsMap {
   'cv.SLOPerformanceTrend': string
   'cv.SLOTarget': string
   'cv.SLOWithName': string
+  'cv.aMaximumOfThreeSLOCanBeComparedWithTheServiceHealth': string
   'cv.abbreviatedCategories.errors': string
   'cv.abbreviatedCategories.infrastructure': string
   'cv.abbreviatedCategories.performance': string
@@ -5708,6 +5709,7 @@ export interface StringsMap {
   'cv.periodLengthIsRequired': string
   'cv.pinABaseline': string
   'cv.pleaseFillTheRequiredFieldsToSeeTheSLIData': string
+  'cv.pleaseSelectSLOToGetTheData': string
   'cv.postDeployment': string
   'cv.preProductionTests': string
   'cv.previousErrorBudgetResetHistory': string
