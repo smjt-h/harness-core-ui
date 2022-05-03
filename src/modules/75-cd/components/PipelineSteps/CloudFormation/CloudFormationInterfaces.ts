@@ -8,7 +8,7 @@ import type { MultiTypeInputType } from '@harness/uicore'
 import type { Scope } from '@common/interfaces/SecretsInterface'
 import type { StepViewType } from '@pipeline/components/AbstractSteps/Step'
 import type { SelectOption } from '@pipeline/components/PipelineSteps/Steps/StepsTypes'
-import type { StepElementConfig, ExecutionElementConfig, CloudformationCreateStackStepInfo, NGVariable, CloudformationTags } from 'services/cd-ng'
+import type { StepElementConfig, ExecutionElementConfig, CloudformationCreateStackStepInfo, NGVariable, CloudformationTags, CloudformationRollbackStepInfo } from 'services/cd-ng'
 
 export const StoreTypes = {
   Inline: 'Inline',
@@ -141,4 +141,42 @@ export interface CloudFormationCreateStackProps {
   onUpdate: (values: any) => void
   onChange: (values: any) => void
   stepViewType: StepViewType | undefined
+}
+
+export interface RollbackStackData {
+  type: string
+  name: string
+  identifier: string
+  spec: {
+      configuration: {
+          provisionerIdentifier: string
+    }
+  }
+  timeout: string
+}
+
+export interface RollbackStackProps<T = RollbackStackData> {
+  initialValues: T
+  onUpdate?: (data: T) => void
+  onChange?: (data: T) => void
+  allowableTypes: MultiTypeInputType[]
+  stepViewType?: StepViewType
+  configTypes?: SelectOption[]
+  isNewStep?: boolean
+  inputSetData?: {
+    template?: T
+    path?: string
+  }
+  readonly?: boolean
+  path?: string
+  stepType?: string
+  allValues?: T
+}
+
+export interface RollbackStackStepInfo {
+  spec: CloudformationRollbackStepInfo
+  name: string
+  identifier: string
+  timeout: string
+  type: string
 }

@@ -57,5 +57,6 @@ export enum StepType {
   Template = 'Template',
   Policy = 'Policy',
   ZeroNorth = 'Security',
-  CloudFormationCreateStack = 'CreateStack'
+  CloudFormationCreateStack = 'CreateStack',
+  CloudFormationRollbackStack = 'RollbackStack'
 }
