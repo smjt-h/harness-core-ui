@@ -1059,7 +1059,11 @@ export interface StringsMap {
   'rbac.youAreNotAuthorizedTo': string
   'governance.permissions.governancePolicies': string
   'governance.permissions.governancePolicySets': string
+  'filestore.cantDeleteFile': string
+  'filestore.confirmDeleteFile': string
+  'filestore.deletedSuccessMessage': string
   'filestore.editFileDetails': string
+  'filestore.fileReferenceText': string
   'filestore.fileSuccessCreated': string
   'filestore.folderSuccessCreated': string
   'filestore.newFile': string
@@ -1068,6 +1072,7 @@ export interface StringsMap {
   'filestore.noFilesInFolderTitle': string
   'filestore.noFilesInStore': string
   'filestore.noFilesTitle': string
+  'filestore.referenceButtonText': string
   'filestore.uploadFileFolder': string
   'filestore.view.cannotRender': string
   'filestore.view.fileName': string
