@@ -88,8 +88,8 @@ function ServerlessAwsLambdaManifest({
     if (specValues) {
       return {
         ...specValues,
-        identifier: initialValues.identifier,
-        configOverridePath: initialValues.spec?.configOverridePath,
+        identifier: initialValues?.identifier,
+        configOverridePath: initialValues?.spec?.configOverridePath,
         repoName: getRepositoryName(prevStepData, initialValues),
         paths:
           typeof specValues.paths === 'string'
@@ -155,7 +155,7 @@ function ServerlessAwsLambdaManifest({
         validationSchema={Yup.object().shape({
           ...ManifestIdentifierValidation(
             manifestIdsList,
-            initialValues.identifier,
+            initialValues?.identifier,
             getString('pipeline.uniqueIdentifier')
           ),
           branch: Yup.string().when('gitFetchType', {
