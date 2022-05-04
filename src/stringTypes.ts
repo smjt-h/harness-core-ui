@@ -3430,11 +3430,24 @@ export interface StringsMap {
   'cd.cdTrialHomePage.startTrial.description': string
   'cd.cdTrialHomePage.startTrial.startBtn.description': string
   'cd.chooseProvisionerText': string
-  'cd.cloudFormation.cfParameterFiles': string
+  'cd.cloudFormation.cfTemplateFile': string
+  'cd.cloudFormation.continueStatus': string
+  'cd.cloudFormation.errors.name': string
+  'cd.cloudFormation.errors.region': string
+  'cd.cloudFormation.errors.stackName': string
+  'cd.cloudFormation.errors.value': string
+  'cd.cloudFormation.inlineParameterFiles': string
+  'cd.cloudFormation.paramFileConnector': string
+  'cd.cloudFormation.parameterFileDetails': string
+  'cd.cloudFormation.parameterFiles': string
   'cd.cloudFormation.specifyCapabilities': string
+  'cd.cloudFormation.specifyInlineParameterFiles': string
+  'cd.cloudFormation.specifyParameterFiles': string
   'cd.cloudFormation.specifyTemplateFile': string
   'cd.cloudFormation.stackName': string
   'cd.cloudFormation.templateFile': string
+  'cd.cloudFormation.templateFileConnector': string
+  'cd.cloudFormation.templateFileStore': string
   'cd.componentsInstalled': string
   'cd.configFileDetails': string
   'cd.configFilePlaceHolder': string

@@ -10,7 +10,6 @@ declare const styles: {
   readonly addMarginBottom: string
   readonly addMarginTop: string
   readonly addTfVarFile: string
-  readonly capabilitiesInput: string
   readonly configField: string
   readonly configFile: string
   readonly configFileLabel: string
@@ -26,18 +25,24 @@ declare const styles: {
   readonly dragging: string
   readonly fieldBorder: string
   readonly formComponent: string
+  readonly formContainer: string
   readonly formContainerStepOne: string
   readonly headerContainer: string
+  readonly horizontalFlex: string
   readonly iconMargin: string
   readonly iconPosition: string
+  readonly inputWidth: string
   readonly manifestIcon: string
   readonly modal: string
   readonly newConnectorButton: string
   readonly optionalDetails: string
   readonly optionsViewContainer: string
+  readonly overrideSelect: string
+  readonly overridesInputHeader: string
   readonly radioBtns: string
   readonly remoteIcon: string
   readonly squareCardContainer: string
+  readonly templateDropdown: string
   readonly tfRemoteForm: string
   readonly tfVarLabel: string
   readonly tfVarMargin: string
