@@ -37,8 +37,6 @@ import { RegExAllowedInputExpression } from '../PipelineSteps/Steps/CustomVariab
 // eslint-disable-next-line no-restricted-imports
 import '@cd/components/PipelineSteps'
 // eslint-disable-next-line no-restricted-imports
-import '@ci/components/PipelineSteps'
-// eslint-disable-next-line no-restricted-imports
 import '@sto-steps/components/PipelineSteps'
 
 export const clearRuntimeInput = (template: PipelineInfoConfig): PipelineInfoConfig => {
