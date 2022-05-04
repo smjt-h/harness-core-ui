@@ -5,36 +5,27 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import React, { useMemo, useState } from 'react'
+import React, { useCallback, useMemo, useState } from 'react'
 import { useParams } from 'react-router-dom'
-import {
-  Container,
-  Icon,
-  Pagination,
-  Select,
-  Heading,
-  NoDataCard,
-  Layout,
-  PageError,
-  Card
-} from '@wings-software/uicore'
-import { FontVariation, Color } from '@harness/design-system'
+import { Container, Icon, Pagination, NoDataCard, PageError, MultiSelectOption } from '@wings-software/uicore'
+import { Color } from '@harness/design-system'
 import { useStrings } from 'framework/strings'
-import { useGetAllLogsClusterData, useGetAllLogsData } from 'services/cv'
+import { useGetAllLogsData } from 'services/cv'
 import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
 import { getErrorMessage } from '@cv/utils/CommonUtils'
 import LogAnalysis from '@cv/components/ExecutionVerification/components/LogAnalysisContainer/LogAnalysis'
-import { HealthSourceDropDown } from '@cv/components/HealthSourceDropDown/HealthSourceDropDown'
 import noDataImage from '@cv/assets/noData.svg'
-import { LogAnalysisRow } from './components/LogAnalysisRow/LogAnalysisRow'
-import { getClusterTypes, getLogAnalysisTableData } from './LogAnalysis.utils'
-import { LogAnalysisContentProps, LogAnalysisProps, LogEvents } from './LogAnalysis.types'
+import type { LogAnalysisContentProps, LogEvents } from './LogAnalysis.types'
 import { PAGE_SIZE } from './LogAnalysis.constants'
-import ClusterChart from './components/ClusterChart/ClusterChart'
-import { VerificationType } from '../HealthSourceDropDown/HealthSourceDropDown.constants'
+import type {
+  ClusterTypes,
+  MinMaxAngleState
+} from '../ExecutionVerification/components/LogAnalysisContainer/LogAnalysisView.container.types'
+import { getClusterTypes } from '../ExecutionVerification/components/LogAnalysisContainer/LogAnalysis.utils'
+import type { EventTypeFullName } from '../ExecutionVerification/components/LogAnalysisContainer/LogAnalysis.constants'
+import LogFilters from './components/LogFilters/LogFilters'
+import { RadarChartAngleLimits } from '../ExecutionVerification/components/LogAnalysisContainer/LogAnalysisView.container.constants'
 import css from './LogAnalysis.module.scss'
-import RadarChartComponent from './components/RadarChart/RadarChartComponent'
-import ClusterTypeFiltersForLogs from '../ExecutionVerification/components/LogAnalysisContainer/components/ClusterTypeFiltersForLogs'
 
 // const ClusterChartContainer: React.FC<LogAnalysisContentProps> = ({
 //   monitoredServiceIdentifier,
@@ -97,8 +88,13 @@ export const LogAnalysisContent: React.FC<LogAnalysisContentProps> = ({
   const { getString } = useStrings()
   const { orgIdentifier, projectIdentifier, accountId } = useParams<ProjectPathProps>()
 
-  const [logEvent, setLogEvent] = useState<LogEvents>(LogEvents.UNKNOWN)
-  const [healthSource, setHealthSource] = useState<string>()
+  const [clusterTypeFilters, setClusterTypeFilters] = useState<ClusterTypes>(() => {
+    return getClusterTypes(getString).map(i => i.value) as ClusterTypes
+  })
+
+  const [logEvent, setLogEvent] = useState<LogEvents>()
+  const [minMaxAngle, setMinMaxAngle] = useState({ min: RadarChartAngleLimits.MIN, max: RadarChartAngleLimits.MAX })
+  const [selectedHealthSources, setSelectedHealthSources] = useState<MultiSelectOption[]>([])
 
   const queryParams = useMemo(() => {
     return {
@@ -110,14 +106,15 @@ export const LogAnalysisContent: React.FC<LogAnalysisContentProps> = ({
       monitoredServiceIdentifier,
       startTime,
       endTime,
-      ...(logEvent ? { clusterTypes: [logEvent] } : {}),
-      healthSources: healthSource ? [healthSource] : undefined
+      clusterTypes: undefined,
+      healthSources: selectedHealthSources.length
+        ? (selectedHealthSources.map(item => item.value) as string[])
+        : undefined
     }
   }, [
     accountId,
     endTime,
-    healthSource,
-    logEvent,
+    selectedHealthSources,
     orgIdentifier,
     projectIdentifier,
     monitoredServiceIdentifier,
@@ -135,6 +132,34 @@ export const LogAnalysisContent: React.FC<LogAnalysisContentProps> = ({
       arrayFormat: 'repeat'
     }
   })
+
+  const handleClustersFilterChange = useCallback((checked: boolean, filterName: EventTypeFullName): void => {
+    setClusterTypeFilters(currentFilters => {
+      if (checked) {
+        return [...(currentFilters as EventTypeFullName[]), filterName]
+      } else {
+        return currentFilters?.filter((item: string) => item !== filterName)
+      }
+    })
+  }, [])
+
+  const goToLogsPage = useCallback(
+    page => {
+      fetchLogAnalysis({
+        queryParams: { ...queryParams, page }
+      })
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [queryParams]
+  )
+
+  const handleHealthSourceChange = useCallback(selectedHealthSourceFitlers => {
+    setSelectedHealthSources(selectedHealthSourceFitlers)
+  }, [])
+
+  const handleMinMaxChange = useCallback((updatedAngle: MinMaxAngleState): void => {
+    setMinMaxAngle({ ...updatedAngle })
+  }, [])
 
   // Radar call
   // const {
@@ -209,64 +234,262 @@ export const LogAnalysisContent: React.FC<LogAnalysisContentProps> = ({
     ]
   }
 
-  if (loading) {
+  const logsListCallResponse = {
+    metaData: {},
+    resource: {
+      totalClusters: 29,
+      eventCounts: [
+        { clusterType: 'KNOWN_EVENT', count: 24, displayName: 'Known' },
+        { clusterType: 'UNKNOWN_EVENT', count: 4, displayName: 'Unknown' },
+        { clusterType: 'UNEXPECTED_FREQUENCY', count: 1, displayName: 'Unexpected Frequency' }
+      ],
+      logAnalysisRadarCharts: {
+        totalPages: 3,
+        totalItems: 29,
+        pageItemCount: 10,
+        pageSize: 10,
+        content: [
+          {
+            message: 'Test Message',
+            label: 0,
+            risk: 'UNHEALTHY',
+            clusterType: 'UNEXPECTED_FREQUENCY',
+            count: 258,
+            frequencyData: [45.0, 74.0, 44.0, 43.0, 52.0],
+            baseline: {
+              message: '< Transfer-Encoding: chunked\r\n',
+              label: 0,
+              risk: 'NO_ANALYSIS',
+              clusterType: 'BASELINE',
+              count: 0,
+              frequencyData: [2.0],
+              baseline: null,
+              hasControlData: false
+            },
+            hasControlData: true,
+            cluterId: 1
+          },
+          {
+            message:
+              '2022-02-10 07:22:59 UTC | TRACE | INFO | (pkg/trace/info/stats.go:104 in LogStats) | No data received\n',
+            label: 30003,
+            risk: 'UNHEALTHY',
+            clusterType: 'UNKNOWN_EVENT',
+            count: 1,
+            frequencyData: [1.0],
+            baseline: null,
+            hasControlData: false,
+            cluterId: 2
+          },
+          {
+            message:
+              '  A v e r a g e   S p e e d       T i m  e         T i m e        D lToiamde    UCpuload   Trorteanlt \n',
+            label: 30001,
+            risk: 'UNHEALTHY',
+            clusterType: 'UNKNOWN_EVENT',
+            count: 1,
+            frequencyData: [1.0],
+            baseline: null,
+            hasControlData: false,
+            cluterId: 3
+          },
+          {
+            message:
+              '  % Total    % Received % Xferd  Average Spee d   %  TTimoet a  l  T i m e%   R e c eTiivmeed   %C uXrfreerndt \n',
+            label: 30002,
+            risk: 'UNHEALTHY',
+            clusterType: 'UNKNOWN_EVENT',
+            count: 1,
+            frequencyData: [1.0],
+            baseline: null,
+            hasControlData: false,
+            cluterId: 4
+          },
+          {
+            message:
+              '    \r     0          D0l o a d   Up0l o a d    0  T   o0 t a l    S p0e n t     L   e0f t       0S p-e-e:d-\n',
+            label: 30000,
+            risk: 'UNHEALTHY',
+            clusterType: 'UNKNOWN_EVENT',
+            count: 1,
+            frequencyData: [1.0],
+            baseline: null,
+            hasControlData: false,
+            cluterId: 5
+          },
+          {
+            message: '{ [2938 bytes data]\n',
+            label: 11,
+            risk: 'HEALTHY',
+            clusterType: 'KNOWN_EVENT',
+            count: 21,
+            frequencyData: [3.0, 6.0, 4.0, 4.0, 4.0],
+            baseline: {
+              message: '{ [2938 bytes data]\n',
+              label: 11,
+              risk: 'NO_ANALYSIS',
+              clusterType: 'BASELINE',
+              count: 0,
+              frequencyData: [38.0],
+              baseline: null,
+              hasControlData: false
+            },
+            hasControlData: true,
+            cluterId: 6
+          },
+          {
+            message:
+              '</pre><p><b>Note</b> The full stack trace of the root cause is available in the server logs.</p><hr class="line" /><h3>Apache Tomcat/8.5.41</h3></body></html><!doctype html><html lang="en"><head><title>HTTP Status 500 – Internal Server Error</title><style type="text/css">h1 {font-family:Tahoma,Arial,sans-serif;color:white;background-color:#525D76;font-size:22px;} h2 {font-family:Tahoma,Arial,sans-serif;color:white;background-color:#525D76;font-size:16px;} h3 {font-family:Tahoma,Arial,sans-serif;color:white;background-color:#525D76;font-size:14px;} body {font-family:Tahoma,Arial,sans-serif;color:black;background-color:white;} b {font-family:Tahoma,Arial,sans-serif;color:white;background-color:#525D76;} p {font-family:Tahoma,Arial,sans-serif;background:white;color:black;font-size:12px;} a {color:black;} a.name {color:black;} .line {height:1px;background-color:#525D76;border:none;}</style></head><body><h1>HTTP Status 500 – Internal Server Error</h1><hr class="line" /><p><b>Type</b> Exception Report</p><p><b>Description</b> The server encountered an unexpected condition that prevented it from fulfilling the request.</p><p><b>Exception</b></p><pre>java.lang.NullPointerException\n',
+            label: 98,
+            risk: 'HEALTHY',
+            clusterType: 'KNOWN_EVENT',
+            count: 4,
+            frequencyData: [1.0, 1.0, 1.0, 1.0],
+            baseline: {
+              message:
+                '</pre><p><b>Note</b> The full stack trace of the root cause is available in the server logs.</p><hr class="line" /><h3>Apache Tomcat/8.5.41</h3></body></html><!doctype html><html lang="en"><head><title>HTTP Status 500 – Internal Server Error</title><style type="text/css">h1 {font-family:Tahoma,Arial,sans-serif;color:white;background-color:#525D76;font-size:22px;} h2 {font-family:Tahoma,Arial,sans-serif;color:white;background-color:#525D76;font-size:16px;} h3 {font-family:Tahoma,Arial,sans-serif;color:white;background-color:#525D76;font-size:14px;} body {font-family:Tahoma,Arial,sans-serif;color:black;background-color:white;} b {font-family:Tahoma,Arial,sans-serif;color:white;background-color:#525D76;} p {font-family:Tahoma,Arial,sans-serif;background:white;color:black;font-size:12px;} a {color:black;} a.name {color:black;} .line {height:1px;background-color:#525D76;border:none;}</style></head><body><h1>HTTP Status 500 – Internal Server Error</h1><hr class="line" /><p><b>Type</b> Exception Report</p><p><b>Description</b> The server encountered an unexpected condition that prevented it from fulfilling the request.</p><p><b>Exception</b></p><pre>java.lang.NullPointerException\n',
+              label: 98,
+              risk: 'NO_ANALYSIS',
+              clusterType: 'BASELINE',
+              count: 0,
+              frequencyData: [8.0],
+              baseline: null,
+              hasControlData: false
+            },
+            hasControlData: true,
+            cluterId: 7
+          },
+          {
+            message: '< Location: display.jsp\r\n',
+            label: 112,
+            risk: 'HEALTHY',
+            clusterType: 'KNOWN_EVENT',
+            count: 3,
+            frequencyData: [1.0, 1.0, 1.0],
+            baseline: {
+              message: '< Location: display.jsp\r\n',
+              label: 112,
+              risk: 'NO_ANALYSIS',
+              clusterType: 'BASELINE',
+              count: 0,
+              frequencyData: [4.0],
+              baseline: null,
+              hasControlData: false
+            },
+            hasControlData: true,
+            cluterId: 8
+          },
+          {
+            message: '< Date: Thu, 10 Feb 2022 07:22:58 GMT\r\n',
+            label: 80,
+            risk: 'HEALTHY',
+            clusterType: 'KNOWN_EVENT',
+            count: 25,
+            frequencyData: [5.0, 7.0, 4.0, 4.0, 5.0],
+            baseline: {
+              message: '< Date: Thu, 10 Feb 2022 07:22:58 GMT\r\n',
+              label: 80,
+              risk: 'NO_ANALYSIS',
+              clusterType: 'BASELINE',
+              count: 0,
+              frequencyData: [41.0],
+              baseline: null,
+              hasControlData: false
+            },
+            hasControlData: true,
+            cluterId: 9
+          },
+          {
+            message: '* upload completely sent off: 47 out of 47 bytes\n',
+            label: 89,
+            risk: 'HEALTHY',
+            clusterType: 'KNOWN_EVENT',
+            count: 10,
+            frequencyData: [2.0, 3.0, 2.0, 2.0, 1.0],
+            baseline: {
+              message: '* upload completely sent off: 47 out of 47 bytes\n',
+              label: 89,
+              risk: 'NO_ANALYSIS',
+              clusterType: 'BASELINE',
+              count: 0,
+              frequencyData: [16.0],
+              baseline: null,
+              hasControlData: false
+            },
+            hasControlData: true,
+            cluterId: 10
+          }
+        ],
+        pageIndex: 0,
+        empty: false
+      }
+    },
+    responseMessages: []
+  }
+
+  const getContents = (): JSX.Element => {
+    if (logsLoading) {
+      return (
+        <Container flex={{ justifyContent: 'center' }} className={css.loadingContainer}>
+          <Icon name="steps-spinner" color={Color.GREY_400} size={30} />
+        </Container>
+      )
+    }
+
+    if (logsError) {
+      return <PageError message={getErrorMessage(logsError)} onClick={() => fetchLogAnalysis()} />
+    }
+
+    if (!logsData?.resource?.content?.length) {
+      return (
+        <NoDataCard
+          message={getString('cv.monitoredServices.noAvailableData')}
+          image={noDataImage}
+          containerClassName={css.logsAnalysisNoData}
+        />
+      )
+    }
+
+    const { pageSize = 0, totalPages = 0, totalItems = 0, pageIndex = 0 } = logsData?.resource
     return (
-      <Container flex={{ justifyContent: 'center' }} className={css.loadingContainer}>
-        <Icon name="steps-spinner" color={Color.GREY_400} size={30} />
-      </Container>
+      <>
+        <LogAnalysis
+          data={logsListCallResponse}
+          clusterChartData={radarChartData}
+          filteredAngle={minMaxAngle}
+          logsLoading={logsLoading}
+          logsError={logsError}
+          refetchLogAnalysis={fetchLogAnalysis}
+          refetchClusterAnalysis={() => null}
+          clusterChartError={null}
+          clusterChartLoading={false}
+          goToPage={goToLogsPage}
+          activityId={null}
+          isErrorTracking={false}
+          handleAngleChange={handleMinMaxChange}
+          isServicePage
+        />
+        <Pagination
+          pageSize={pageSize}
+          pageCount={totalPages}
+          itemCount={totalItems}
+          pageIndex={pageIndex}
+          gotoPage={goToLogsPage}
+        />
+      </>
     )
   }
-
-  if (error) {
-    return <PageError message={getErrorMessage(error)} onClick={() => refetch()} />
-  }
-
-  if (!data?.resource?.content?.length) {
-    return (
-      <NoDataCard
-        message={getString('cv.monitoredServices.noAvailableData')}
-        image={noDataImage}
-        containerClassName={css.logsAnalysisNoData}
-      />
-    )
-  }
-
-  const { pageSize = 0, totalPages = 0, totalItems = 0, pageIndex = 0 } = data.resource
 
   return (
     <>
-      <ClusterTypeFiltersForLogs
-        nodeNames={null}
-        clusterTypeFilters={undefined}
-        onFilterChange={() => null}
-        selectedNodeName={[]}
-        handleNodeNameChange={() => null}
-        nodeNamesError={null}
-        nodeNamesLoading={false}
+      <LogFilters
+        clusterTypeFilters={clusterTypeFilters}
+        onFilterChange={handleClustersFilterChange}
+        onHealthSouceChange={handleHealthSourceChange}
+        monitoredServiceIdentifier={monitoredServiceIdentifier}
+        selectedHealthSources={selectedHealthSources}
       />
-
-      <LogAnalysis
-        data={logsData}
-        clusterChartData={radarChartData}
-        filteredAngle={{ max: 360, min: 0 }}
-        logsLoading={logsLoading}
-        logsError={logsError}
-        refetchLogAnalysis={fetchLogAnalysis}
-        refetchClusterAnalysis={() => null}
-        clusterChartError={null}
-        clusterChartLoading={false}
-        goToPage={() => null}
-        activityId={null}
-        isErrorTracking={false}
-        handleAngleChange={() => null}
-      />
-      <Pagination
-        pageSize={pageSize}
-        pageCount={totalPages}
-        itemCount={totalItems}
-        pageIndex={pageIndex}
-        gotoPage={index => refetch({ queryParams: { ...queryParams, page: index } })}
-      />
+      {getContents()}
     </>
   )
 }

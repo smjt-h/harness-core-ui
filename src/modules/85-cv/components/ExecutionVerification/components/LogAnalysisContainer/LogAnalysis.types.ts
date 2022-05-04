@@ -46,4 +46,5 @@ export interface LogAnalysisProps {
   refetchLogAnalysis?: () => void
   refetchClusterAnalysis?: () => void
   clusterChartError?: GetDataError<unknown> | null
+  isServicePage?: boolean
 }

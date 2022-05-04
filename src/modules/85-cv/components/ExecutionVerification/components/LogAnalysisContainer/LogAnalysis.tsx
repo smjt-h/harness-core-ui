@@ -8,6 +8,7 @@
 import React, { useCallback, useMemo, useState } from 'react'
 import { Container, Icon, NoDataCard, PageError } from '@wings-software/uicore'
 import { Color } from '@harness/design-system'
+import cx from 'classnames'
 import { useStrings } from 'framework/strings'
 import noDataImage from '@cv/assets/noData.svg'
 import { getErrorMessage } from '@cv/utils/CommonUtils'
@@ -32,7 +33,8 @@ export default function LogAnalysis(props: LogAnalysisProps): JSX.Element {
     logsError,
     refetchLogAnalysis,
     clusterChartError,
-    refetchClusterAnalysis
+    refetchClusterAnalysis,
+    isServicePage = false
   } = props
   const { getString } = useStrings()
 
@@ -89,7 +91,11 @@ export default function LogAnalysis(props: LogAnalysisProps): JSX.Element {
   }, [logsLoading, logAnalysisData.length, selectedLog])
 
   return (
-    <Container className={styles.logsTab}>
+    <Container
+      className={cx(styles.logsTab, {
+        [styles.logsTabServiceScreen]: isServicePage
+      })}
+    >
       <Container className={styles.clusterChart}>
         {!clusterChartLoading && !logsError && (
           <LogAnalysisRadarChartHeader
@@ -106,6 +112,7 @@ export default function LogAnalysis(props: LogAnalysisProps): JSX.Element {
           clusterChartError={clusterChartError}
           refetchClusterAnalysis={refetchClusterAnalysis}
           logsLoading={logsLoading}
+          showBaseline={!isServicePage}
         />
       </Container>
       <Container className={styles.tableContent}>{renderLogsData()}</Container>
