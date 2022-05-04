@@ -5,24 +5,25 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import React, {useEffect, useState} from 'react'
-import {Color, FontVariation} from '@harness/design-system'
-import {Button, ButtonSize, HarnessDocTooltip, Layout, PillToggle, Text, Toggle} from '@harness/uicore'
+import React, { useEffect, useState } from 'react'
+import { Color, FontVariation } from '@harness/design-system'
+import { Button, ButtonSize, HarnessDocTooltip, Layout, PillToggle, Text, Toggle } from '@harness/uicore'
 import cx from 'classnames'
-import {Classes, Dialog, IDialogProps, NumericInput, ProgressBar, Slider} from '@blueprintjs/core'
-import {useModalHook} from '@harness/use-modal'
-import {ButtonVariation, Container} from '@wings-software/uicore'
-import {useParams} from 'react-router-dom'
+import { Classes, Dialog, IDialogProps, NumericInput, Slider } from '@blueprintjs/core'
+import { useModalHook } from '@harness/use-modal'
+import { ButtonVariation, Container } from '@wings-software/uicore'
+import { useParams } from 'react-router-dom'
 import moment from 'moment'
-import {isNaN} from 'lodash-es'
-import {Editions} from '@common/constants/SubscriptionTypes'
-import {acquireCurrentPlan, ffUnitTypes, PlanType} from '@common/components/CostCalculator/CostCalculatorUtils'
-import {ReviewPage} from '@common/components/CostCalculator/ReviewAndBuyPlanUpgrades'
-import type {AccountPathProps} from '@common/interfaces/RouteInterfaces'
-import {useRetrieveProductPrices} from 'services/cd-ng'
-import {useGetUsageAndLimit} from '@common/hooks/useGetUsageAndLimit'
-import {ModuleName} from 'framework/types/ModuleName'
-import {ContainerSpinner} from '@common/components/ContainerSpinner/ContainerSpinner'
+import { isNaN } from 'lodash-es'
+import { Editions } from '@common/constants/SubscriptionTypes'
+import { acquireCurrentPlan, ffUnitTypes, PlanType } from '@common/components/CostCalculator/CostCalculatorUtils'
+import { ReviewPage } from '@common/components/CostCalculator/ReviewAndBuyPlanUpgrades'
+import type { AccountPathProps } from '@common/interfaces/RouteInterfaces'
+import { useCreateFfSubscription, useRetrieveProductPrices } from 'services/cd-ng/index'
+import { useGetUsageAndLimit } from '@common/hooks/useGetUsageAndLimit'
+import { ModuleName } from 'framework/types/ModuleName'
+import { ContainerSpinner } from '@common/components/ContainerSpinner/ContainerSpinner'
+import { useLicenseStore } from 'framework/LicenseStore/LicenseStoreContext'
 import recommendedIcon from './images/recommendedbig.png'
 import usageIcon from './images/usagebig.png'
 import plannedUsageIcon from './images/currentbig.png'
@@ -36,16 +37,15 @@ interface InfoBoxParams {
   using: number
 }
 
-const FormatTooltip = ({text}: { text: string }) => {
+const FormatTooltip = ({ text }: { text: string }) => {
   return (
-      <Container background={Color.PRIMARY_9} border={{radius: 8}} >
-    <Text font={{size: 'normal'}} color={Color.WHITE} padding={16}>
-      {text}
-    </Text>
-  </Container>
+    <Container background={Color.PRIMARY_9} border={{ radius: 8 }}>
+      <Text font={{ size: 'normal' }} color={Color.WHITE} padding={16}>
+        {text}
+      </Text>
+    </Container>
   )
 }
-
 
 const InfoBox = ({ title, units, using, recommended, planned }: InfoBoxParams) => {
   const newUnits = units ? units : ''
@@ -55,12 +55,12 @@ const InfoBox = ({ title, units, using, recommended, planned }: InfoBoxParams) =
       padding={{ top: 'medium', bottom: 'medium', left: 'xlarge', right: 'xlarge' }}
       className={cx(css.infocard)}
     >
-      <Layout.Horizontal padding={{ bottom: 'medium' }} flex={{alignItems: 'baseline',justifyContent: 'left'}}>
+      <Layout.Horizontal padding={{ bottom: 'medium' }} flex={{ alignItems: 'baseline', justifyContent: 'left' }}>
         <Text
-            font={{ variation: FontVariation.H4 }}
-            className={cx(css.textwrap)}
-            color={Color.GREY_600}
-            padding={{right: 'xsmall'}}
+          font={{ variation: FontVariation.H4 }}
+          className={cx(css.textwrap)}
+          color={Color.GREY_600}
+          padding={{ right: 'xsmall' }}
         >
           {title}
         </Text>
@@ -68,7 +68,7 @@ const InfoBox = ({ title, units, using, recommended, planned }: InfoBoxParams) =
         {/*<Text rightIcon={'main-info'} rightIconProps={{color: Color.PRIMARY_7, size: 12}} tooltip={FormatTooltip({text: 'Somedummy data'})}/>*/}
       </Layout.Horizontal>
 
-      <Layout.Horizontal flex={{ justifyContent: 'space-around' }} padding={{ bottom: 'xxlarge' }}>
+      <Layout.Horizontal flex={{ justifyContent: 'space-around' }} padding={{ bottom: 'xlarge' }}>
         {!isNaN(planned as number) && (
           <Layout.Vertical>
             <Text font={{ variation: FontVariation.SMALL }}>Current</Text>
@@ -144,37 +144,40 @@ export const GetEditionBox = ({ editionType }: EditionBox) => {
 }
 
 const CustomProgress = (usage: number, planned: number, recommended: number) => {
-  const percent: Array<[string,number]> = [['usage',Math.round(usage*100)],['planned',Math.round(planned*100)], ['recommended', Math.round(recommended*100)]];
-  const sortedPercent = percent.sort( (a,b) => a[1] - b[1]);
-  sortedPercent[2][1] = sortedPercent[2][1] - sortedPercent[2][1];
-  sortedPercent[1][1] = sortedPercent[1][1] - sortedPercent[0][1];
-  sortedPercent.forEach((x ,i : number) => {
-    if(x[1] <= 2) {
-      sortedPercent[i][1] = 2;
+  const percent: Array<[string, number]> = [
+    ['usage', Math.round(usage * 100)],
+    ['planned', Math.round(planned * 100)],
+    ['recommended', Math.round(recommended * 100)]
+  ]
+  const sortedPercent = percent.sort((a, b) => a[1] - b[1])
+  sortedPercent[2][1] = sortedPercent[2][1] - sortedPercent[2][1]
+  sortedPercent[1][1] = sortedPercent[1][1] - sortedPercent[0][1]
+  sortedPercent.forEach((x, i: number) => {
+    if (x[1] <= 2) {
+      sortedPercent[i][1] = 2
     }
-  });
-  const colourCode : Record<string,string> = {'usage' : '#42AB45', 'planned' : '#000000', 'recommended': '#0278D5'};
-  const divs = sortedPercent.map((x,i) => {
-    return <div key={i} style={{backgroundColor: colourCode[sortedPercent[i][0]], width: `${x[1]}%`, height: '100%'}}  />
-  });
+  })
+  const colourCode: Record<string, string> = { usage: '#42AB45', planned: '#000000', recommended: '#0278D5' }
+  const divs = sortedPercent.map((x, i) => {
+    return (
+      <div key={i} style={{ backgroundColor: colourCode[sortedPercent[i][0]], width: `${x[1]}%`, height: '100%' }} />
+    )
+  })
 
   return (
-      <div style={{display: 'flex', alignItems: 'flex-start', height: '10px', borderRadius: '5px', overflow: 'hidden'}}>
-        {divs}
-      </div>
+    <div style={{ display: 'flex', alignItems: 'flex-start', height: '10px', borderRadius: '5px', overflow: 'hidden' }}>
+      {divs}
+    </div>
   )
 }
-
 
 const CostSlider = (costSliderParms: CostSliderParams) => {
   const [thumbMoved, setThumbMoved] = useState<boolean>(false)
 
-
   const progressDenom = costSliderParms.maxVal - costSliderParms.minVal
-  const usagePercent = Math.max((costSliderParms.currentUsage - costSliderParms.minVal),0)/progressDenom;
-  const recommendedPercent = Math.max((costSliderParms.recommended - costSliderParms.minVal),0)/progressDenom;
-  const plannedPercent = Math.max(((costSliderParms.plannedUsage || 0) - costSliderParms.minVal),0)/progressDenom;
-
+  const usagePercent = Math.max(costSliderParms.currentUsage - costSliderParms.minVal, 0) / progressDenom
+  const recommendedPercent = Math.max(costSliderParms.recommended - costSliderParms.minVal, 0) / progressDenom
+  const plannedPercent = Math.max((costSliderParms.plannedUsage || 0) - costSliderParms.minVal, 0) / progressDenom
 
   return (
     <Layout.Vertical padding={{ top: 'xlarge' }}>
@@ -224,8 +227,8 @@ const CostSlider = (costSliderParms: CostSliderParams) => {
       {/*    <img src={recommendedIcon} height={'15px'} width={'12px'} />*/}
       {/*  </Container>*/}
       {/*</Container>*/}
-      <Container padding={{top: 'small', bottom: 'small'}}>
-        {CustomProgress(usagePercent,plannedPercent,recommendedPercent)}
+      <Container padding={{ top: 'small', bottom: 'small' }}>
+        {CustomProgress(usagePercent, plannedPercent, recommendedPercent)}
       </Container>
       <Slider
         min={costSliderParms.minVal}
@@ -262,10 +265,13 @@ enum CalcPage {
 }
 
 export const CostCalculator = (): JSX.Element => {
-  const [edition, plan] = acquireCurrentPlan('')
+  const [, plan] = acquireCurrentPlan('')
   const frequencyString = (time: PlanType) => (time === PlanType.MONTHLY ? 'month' : 'year')
 
   const { limitData, usageData } = useGetUsageAndLimit(ModuleName.CF)
+
+  const licenseInfo = useLicenseStore()
+  const edition = licenseInfo.licenseInformation.CF.edition
 
   const { usage } = usageData
   const { limit } = limitData
@@ -287,6 +293,44 @@ export const CostCalculator = (): JSX.Element => {
   const [premiumSupportDisabled, setPremiumSupportDisabled] = useState<boolean>(false)
 
   const { accountId } = useParams<AccountPathProps>()
+  const { mutate: createNewSubscription, loading: subscriptionLoading } = useCreateFfSubscription({
+    queryParams: { accountIdentifier: accountId }
+  })
+  const [clientSecret, setClientSecret] = useState<string>('')
+  const [reviewClicked, setReviewClicked] = useState<boolean>(false)
+
+  useEffect(() => {
+    if (!reviewClicked) {
+      return
+    }
+    createNewSubscription({
+      accountId: accountId,
+      edition: editionSelected,
+      numberOfDevelopers: developerSelected,
+      numberOfMau: mausSelected,
+      paymentFreq: paymentFrequencySelected,
+      premiumSupport: !premiumSupportDisabled
+    })
+      .then(resp => {
+        const acqCl = resp?.data?.clientSecret || ''
+        setClientSecret(acqCl)
+      })
+      .then(() => {
+        setShownPage(CalcPage.Review)
+      })
+      .finally(() => {
+        setReviewClicked(false)
+      })
+  }, [
+    accountId,
+    createNewSubscription,
+    developerSelected,
+    editionSelected,
+    mausSelected,
+    paymentFrequencySelected,
+    premiumSupportDisabled,
+    reviewClicked
+  ])
 
   const isLoading = limitData.loadingLimit || usageData.loadingUsage
 
@@ -350,25 +394,25 @@ export const CostCalculator = (): JSX.Element => {
     return <ContainerSpinner />
   }
 
-  const currentDate = moment()
+  // const currentDate = moment()
   const nextMonthStart = moment().add(1, 'month').startOf('month')
   const nextYearStart = moment().add(1, 'year').startOf('year')
-  const dayDiffMonth = -currentDate.diff(nextMonthStart, 'days')
-  const monthDiffYear = -currentDate.diff(nextYearStart, 'month')
-  const fractionCostMonth = dayDiffMonth / currentDate.daysInMonth()
-  const fractionCostYear = monthDiffYear / 12
+  // const dayDiffMonth = -currentDate.diff(nextMonthStart, 'days')
+  // const monthDiffYear = -currentDate.diff(nextYearStart, 'month')
+  // const fractionCostMonth = dayDiffMonth / currentDate.daysInMonth()
+  // const fractionCostYear = monthDiffYear / 12
 
   let prorateDate
-  let timeDiff
-  let fractionCost
+  // let timeDiff
+  // let fractionCost
   if (paymentFrequencySelected === PlanType.MONTHLY) {
     prorateDate = nextMonthStart
-    timeDiff = [dayDiffMonth, 'days']
-    fractionCost = fractionCostMonth
+    // timeDiff = [dayDiffMonth, 'days']
+    // fractionCost = fractionCostMonth
   } else {
     prorateDate = nextYearStart
-    timeDiff = [monthDiffYear, 'months']
-    fractionCost = fractionCostYear
+    // timeDiff = [monthDiffYear, 'months']
+    // fractionCost = fractionCostYear
   }
 
   const getCostForUnits = (units: number, unitType: ffUnitTypes, editionProvided: Editions, planType: PlanType) => {
@@ -404,7 +448,7 @@ export const CostCalculator = (): JSX.Element => {
       : 0
   const supportCost = premiumSupport ? 160 : 0
   const totalCost = totalDeveloperRate + totalMauRate + supportCost
-  const dueTodayCost = Math.round(totalCost * fractionCost)
+  // const dueTodayCost = Math.round(totalCost * fractionCost)
 
   const title = `Feature Flag Subscription`
   const monthYear = frequencyString(paymentFrequencySelected)
@@ -587,29 +631,30 @@ export const CostCalculator = (): JSX.Element => {
                 </Text>
               </Layout.Vertical>
             </Layout.Horizontal>
-            <div style={{ width: '100%' }} />
-            <Layout.Horizontal className={cx(css.pricingdisplayItem, css.duetodaybox)}>
-              <Layout.Vertical>
-                <Text font={{ variation: FontVariation.H5 }} color={Color.GREY_700}>
-                  {'Due Today'}
-                </Text>
-                <Layout.Horizontal className={cx(css.dueTodayPadding)}>
-                  <Text font={{ size: 'medium', weight: 'bold' }} color={Color.BLACK}>
-                    {`$ ${dueTodayCost}`}
-                  </Text>
-                </Layout.Horizontal>
-                <Text font={{ size: 'small', weight: 'bold' }} color={Color.BLACK}>
-                  {`Prorated for next ${timeDiff[0]} ${timeDiff[1]}`}
-                </Text>
-              </Layout.Vertical>
-            </Layout.Horizontal>
+            {/*<div style={{ width: '100%' }} />*/}
+            {/*  <Layout.Horizontal className={cx(css.pricingdisplayItem, css.duetodaybox)}>*/}
+            {/*    <Layout.Vertical>*/}
+            {/*      <Text font={{ variation: FontVariation.H5 }} color={Color.GREY_700}>*/}
+            {/*        {'Due Today'}*/}
+            {/*      </Text>*/}
+            {/*      <Layout.Horizontal className={cx(css.dueTodayPadding)}>*/}
+            {/*        <Text font={{ size: 'medium', weight: 'bold' }} color={Color.BLACK}>*/}
+            {/*          {`$ ${dueTodayCost}`}*/}
+            {/*        </Text>*/}
+            {/*      </Layout.Horizontal>*/}
+            {/*      <Text font={{ size: 'small', weight: 'bold' }} color={Color.BLACK}>*/}
+            {/*        {`Prorated for next ${timeDiff[0]} ${timeDiff[1]}`}*/}
+            {/*      </Text>*/}
+            {/*    </Layout.Vertical>*/}
+            {/*  </Layout.Horizontal>*/}
           </Layout.Horizontal>
           <Layout.Horizontal padding={{ top: 'xxlarge' }} flex={{ alignItems: 'center', justifyContent: 'flex-start' }}>
             <Button
               text={'Review Changes'}
               variation={ButtonVariation.PRIMARY}
               size={ButtonSize.MEDIUM}
-              onClick={() => setShownPage(CalcPage.Review)}
+              onClick={() => setReviewClicked(true)}
+              disabled={reviewClicked}
             />
             <Layout.Horizontal padding={{ left: 'xlarge' }}>
               <Text>Or</Text>
@@ -634,6 +679,7 @@ export const CostCalculator = (): JSX.Element => {
           mauCost={totalMauRate}
           supportCost={supportCost}
           total={totalCost + supportCost + supportCost}
+          clientSecret={clientSecret}
           backButtonClick={() => setShownPage(CalcPage.Calculator)}
         />
       )}

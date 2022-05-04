@@ -8,8 +8,9 @@
 import React from 'react'
 import { Button, ButtonVariation, Container, Layout, Text } from '@harness/uicore'
 import cx from 'classnames'
-import { Color, FontVariation } from '@harness/design-system'
-//import {loadStripe} from "@stripe/stripe-js";
+import { FontVariation } from '@harness/design-system'
+import { loadStripe } from '@stripe/stripe-js'
+import { Elements, PaymentElement } from '@stripe/react-stripe-js'
 import type { PlanType } from '@common/components/CostCalculator/CostCalculatorUtils'
 import type { Editions } from '@common/constants/SubscriptionTypes'
 import { GetEditionBox } from '@common/components/CostCalculator/CostCalculator'
@@ -28,26 +29,33 @@ interface ReviewPageParams {
   mauCost: number
   supportCost: number
   total: number
+  clientSecret: string
   backButtonClick: () => void
 }
 
-// const JustStripeData = () => {
-//
-//   const CL = 'pk_test_51IykZ0Iqk5P9Eha3uhZUAnFuUWzaLLSa2elWpGBCF7uGpDU5rOcuX8PQew7hI947J9Lefh4qmQniY11HyXcUyBXD00aayEoMmU';
-//   const options = {
-//     // passing the client secret obtained from the server
-//     clientSecret: CL,
-//   };
-//
-//   return (
-//       <Elements stripe={stripePromise} options={options}>
-//         <CheckoutForm />
-//       </Elements>
-//   );
-//
-//
-//
-// }
+const stripePromise = loadStripe(
+  'pk_live_51IykZ0Iqk5P9Eha39LKDxAE4molfPO3dN5ucM9MqiIBIohtP9F80QNOqxT2YUej1d4N6J6hfCK4uUEmoCQx2tkQ300TajVoKTt'
+)
+
+interface JustStripeDataParams {
+  clientSecret: string
+}
+
+const JustStripeData = ({ clientSecret }: JustStripeDataParams) => {
+  const options = {
+    // passing the client secret obtained from the server
+    clientSecret: clientSecret
+  }
+
+  return (
+    <Elements stripe={stripePromise} options={options}>
+      <form>
+        <PaymentElement />
+        <button>Submit</button>
+      </form>
+    </Elements>
+  )
+}
 
 export const ReviewPage = ({
   previousEdition,
@@ -62,6 +70,7 @@ export const ReviewPage = ({
   mauCost,
   supportCost,
   total,
+  clientSecret,
   backButtonClick
 }: ReviewPageParams) => {
   const reviewTitle = `Feature Flag Subscription`
@@ -148,19 +157,20 @@ export const ReviewPage = ({
         </Layout.Vertical>
 
         <Layout.Vertical>
-          <Text font={{ variation: FontVariation.H4 }} className={cx(css.textwrap)}>
-            Payment Methods
-          </Text>
-          <Text font={{ size: 'medium' }}>Charge the credit card on file</Text>
-          <Layout.Horizontal>
-            <Text font={{ variation: FontVariation.BLOCKQUOTE }} background={Color.PRIMARY_6} color={Color.WHITE}>
-              visa
-            </Text>
-            <Text font={{ size: 'medium' }}>****1423</Text>
-          </Layout.Horizontal>
+          {/*<Text font={{ variation: FontVariation.H4 }} className={cx(css.textwrap)}>*/}
+          {/*  Payment Methods*/}
+          {/*</Text>*/}
+          {/*<Text font={{ size: 'medium' }}>Charge the credit card on file</Text>*/}
+          {/*<Layout.Horizontal>*/}
+          {/*  <Text font={{ variation: FontVariation.BLOCKQUOTE }} background={Color.PRIMARY_6} color={Color.WHITE}>*/}
+          {/*    visa*/}
+          {/*  </Text>*/}
+          {/*  <Text font={{ size: 'medium' }}>****1423</Text>*/}
+          {/*</Layout.Horizontal>*/}
 
-          <div style={{ height: '100%' }} />
-          <Button variation={ButtonVariation.PRIMARY}>Make a Payment</Button>
+          {/*<div style={{ height: '100%' }} />*/}
+          {/*<Button variation={ButtonVariation.PRIMARY}>Make a Payment</Button>*/}
+          <JustStripeData clientSecret={clientSecret} />
         </Layout.Vertical>
       </Layout.Horizontal>
       <Button variation={ButtonVariation.SECONDARY} onClick={backButtonClick}>

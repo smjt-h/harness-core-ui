@@ -15,7 +15,7 @@ import { SUBSCRIPTION_TAB_NAMES, ModuleLicenseType } from '@common/constants/Sub
 import { useStrings } from 'framework/strings'
 import { useQueryParams } from '@common/hooks'
 import type { ModuleName } from 'framework/types/ModuleName'
-import type { ModuleLicenseDTO } from 'services/cd-ng'
+import type { ModuleLicenseDTO } from 'services/cd-ng/index'
 import routes from '@common/RouteDefinitions'
 import type { AccountPathProps, Module } from '@common/interfaces/RouteInterfaces'
 
