@@ -9,7 +9,14 @@ import isMatch from 'lodash-es/isMatch'
 import has from 'lodash-es/has'
 import { StepViewType } from '@pipeline/components/AbstractSteps/Step'
 import type { PipelineInfoConfig } from 'services/cd-ng'
-import { validateCICodebase, getErrorsList, validatePipeline } from '../StepUtil'
+import {
+  validateCICodebase,
+  getErrorsList,
+  validatePipeline,
+  shouldRenderRunTimeInputView,
+  shouldRenderRunTimeInputViewWithAllowedValues,
+  getAllowedValuesFromTemplate
+} from '../StepUtil'
 import {
   pipelineTemplateWithRuntimeInput,
   pipelineWithNoBuildInfo,
@@ -113,5 +120,70 @@ describe('Test StepUtils', () => {
     const { errorStrings, errorCount } = getErrorsList(errors)
     expect(errorStrings.length).toBe(3)
     expect(errorCount).toBe(3)
+  })
+
+  test('Test shouldRenderRunTimeInputView method', () => {
+    expect(shouldRenderRunTimeInputView('sample-value')).not.toBeTruthy()
+    expect(shouldRenderRunTimeInputView('<+input>')).toBeTruthy()
+    expect(shouldRenderRunTimeInputView('<+input>.allowedValues(ecr,docker)')).toBeTruthy()
+    expect(shouldRenderRunTimeInputView('<+input>.regex(abc*)')).toBeTruthy()
+    expect(shouldRenderRunTimeInputView({ key1: '<+input>' })).toBeTruthy()
+    expect(shouldRenderRunTimeInputView({ key1: 'sample-value' })).not.toBeTruthy()
+    expect(shouldRenderRunTimeInputView({ key1: 'sample-value', key2: '<+input>' })).toBeTruthy()
+    expect(
+      shouldRenderRunTimeInputView({ key1: 'sample-value', key2: '<+input>.allowedValues(ecr,docker)' })
+    ).toBeTruthy()
+    expect(shouldRenderRunTimeInputView(123)).not.toBeTruthy()
+    expect(shouldRenderRunTimeInputView(null)).not.toBeTruthy()
+    expect(shouldRenderRunTimeInputView(undefined)).not.toBeTruthy()
+  })
+
+  test('Test shouldRenderRunTimeInputViewWithAllowedValues method', () => {
+    expect(
+      shouldRenderRunTimeInputViewWithAllowedValues('a.b.c', {
+        a: { b: { c: '<+input>.allowedValues(val1,val2,val3)' } }
+      })
+    ).toBeTruthy()
+    expect(shouldRenderRunTimeInputViewWithAllowedValues('')).not.toBeTruthy()
+    expect(shouldRenderRunTimeInputViewWithAllowedValues('a.b.c')).not.toBeTruthy()
+    expect(
+      shouldRenderRunTimeInputViewWithAllowedValues('a.b.c', {
+        a: { b: { c: '<+input>' } }
+      })
+    ).not.toBeTruthy()
+    expect(
+      shouldRenderRunTimeInputViewWithAllowedValues('a.b.c', {
+        a: { b: { c: 'some-value' } }
+      })
+    ).not.toBeTruthy()
+  })
+
+  test('Test getAllowedValuesFromTemplate method', () => {
+    expect(
+      getAllowedValuesFromTemplate(
+        {
+          a: { b: { c: '<+input>.allowedValues(val1,val2,val3)' } }
+        },
+        'a.b.c'
+      ).length
+    ).toBe(3)
+    expect(
+      getAllowedValuesFromTemplate(
+        {
+          a: { b: { c: '<+input>' } }
+        },
+        'a.b.c'
+      ).length
+    ).toBe(0)
+    expect(
+      JSON.stringify(
+        getAllowedValuesFromTemplate(
+          {
+            a: { b: { c: '<+input>.allowedValues(val1)' } }
+          },
+          'a.b.c'
+        )
+      )
+    ).toBe(JSON.stringify([{ label: 'val1', value: 'val1' }]))
   })
 })

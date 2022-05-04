@@ -11,7 +11,7 @@ import { getMultiTypeFromValue, MultiTypeInputType, FormikForm } from '@wings-so
 import { useStrings } from 'framework/strings'
 import StepCommonFieldsInputSet from '@ci/components/PipelineSteps/StepCommonFields/StepCommonFieldsInputSet'
 import { useVariablesExpression } from '@pipeline/components/PipelineStudio/PiplineHooks/useVariablesExpression'
-import { shouldRenderRunTimeInputView } from '@pipeline/utils/CIUtils'
+import { shouldRenderRunTimeInputView } from '@pipeline/components/PipelineStudio/StepUtil'
 import { Connectors } from '@connectors/constants'
 import type { PluginStepProps } from './PluginStep'
 import { CIStep } from '../CIStep/CIStep'

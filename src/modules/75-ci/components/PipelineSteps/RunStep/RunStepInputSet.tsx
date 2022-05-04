@@ -18,7 +18,10 @@ import { FormMultiTypeCheckboxField } from '@common/components/MultiTypeCheckbox
 import { useVariablesExpression } from '@pipeline/components/PipelineStudio/PiplineHooks/useVariablesExpression'
 import StepCommonFieldsInputSet from '@ci/components/PipelineSteps/StepCommonFields/StepCommonFieldsInputSet'
 import { StepViewType } from '@pipeline/components/AbstractSteps/Step'
-import { shouldRenderRunTimeInputView, shouldRenderRunTimeInputViewWithAllowedValues } from '@pipeline/utils/CIUtils'
+import {
+  shouldRenderRunTimeInputView,
+  shouldRenderRunTimeInputViewWithAllowedValues
+} from '@pipeline/components/PipelineStudio/StepUtil'
 import type { RunStepProps } from './RunStep'
 import { CIStep } from '../CIStep/CIStep'
 import {

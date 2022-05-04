@@ -43,12 +43,7 @@ import Volumes from '@pipeline/components/Volumes/Volumes'
 import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
 import type { TemplateStepNode } from 'services/pipeline-ng'
 import { TEMPLATE_INPUT_PATH } from '@pipeline/utils/templateUtils'
-import {
-  getAllowedValuesFromTemplate,
-  getConnectorRefWidth,
-  shouldRenderRunTimeInputViewWithAllowedValues,
-  useGitScope
-} from '@pipeline/utils/CIUtils'
+import { useGitScope } from '@pipeline/utils/CIUtils'
 import { FormMultiTypeConnectorField } from '@connectors/components/ConnectorReferenceField/FormMultiTypeConnectorField'
 import type { StringsMap } from 'stringTypes'
 import {
@@ -60,7 +55,12 @@ import type { K8sDirectInfraYaml } from 'services/ci'
 import factory from '../PipelineSteps/PipelineStepFactory'
 import { StepType } from '../PipelineSteps/PipelineStepInterface'
 import { CollapseForm } from './CollapseForm'
-import { getStepFromStage } from '../PipelineStudio/StepUtil'
+import {
+  getStepFromStage,
+  getAllowedValuesFromTemplate,
+  getConnectorRefWidth,
+  shouldRenderRunTimeInputViewWithAllowedValues
+} from '../PipelineStudio/StepUtil'
 import { StepWidget } from '../AbstractSteps/StepWidget'
 import { ConditionalExecutionForm } from './StageAdvancedInputSetForm'
 import { useVariablesExpression } from '../PipelineStudio/PiplineHooks/useVariablesExpression'

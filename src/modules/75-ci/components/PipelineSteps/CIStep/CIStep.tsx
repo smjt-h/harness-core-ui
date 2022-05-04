@@ -15,12 +15,12 @@ import { Color } from '@harness/design-system'
 import { MultiTypeTextField, MultiTypeTextProps } from '@common/components/MultiTypeText/MultiTypeText'
 import MultiTypeList from '@common/components/MultiTypeList/MultiTypeList'
 import { FormMultiTypeTextAreaField } from '@common/components'
+import { useGitScope } from '@pipeline/utils/CIUtils'
+import { StepViewType } from '@pipeline/components/AbstractSteps/Step'
 import {
-  useGitScope,
   shouldRenderRunTimeInputViewWithAllowedValues,
   getConnectorRefWidth
-} from '@pipeline/utils/CIUtils'
-import { StepViewType } from '@pipeline/components/AbstractSteps/Step'
+} from '@pipeline/components/PipelineStudio/StepUtil'
 import { useVariablesExpression } from '@pipeline/components/PipelineStudio/PiplineHooks/useVariablesExpression'
 import { FormMultiTypeConnectorField } from '@connectors/components/ConnectorReferenceField/FormMultiTypeConnectorField'
 import { useStrings } from 'framework/strings'

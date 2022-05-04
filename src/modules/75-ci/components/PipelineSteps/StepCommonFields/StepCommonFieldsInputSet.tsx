@@ -23,7 +23,7 @@ import {
 import type { InputSetData } from '@pipeline/components/AbstractSteps/Step'
 import { StepViewType } from '@pipeline/components/AbstractSteps/Step'
 import { useVariablesExpression } from '@pipeline/components/PipelineStudio/PiplineHooks/useVariablesExpression'
-import { shouldRenderRunTimeInputViewWithAllowedValues } from '@pipeline/utils/CIUtils'
+import { shouldRenderRunTimeInputViewWithAllowedValues } from '@pipeline/components/PipelineStudio/StepUtil'
 import {
   getOptionalSubLabel,
   renderMultiTypeInputWithAllowedValues

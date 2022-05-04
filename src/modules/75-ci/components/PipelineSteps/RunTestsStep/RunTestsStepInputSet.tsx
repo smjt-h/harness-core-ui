@@ -20,7 +20,10 @@ import { FormMultiTypeCheckboxField } from '@common/components'
 import { MultiTypeTextField } from '@common/components/MultiTypeText/MultiTypeText'
 import { StepViewType } from '@pipeline/components/AbstractSteps/Step'
 import { useVariablesExpression } from '@pipeline/components/PipelineStudio/PiplineHooks/useVariablesExpression'
-import { shouldRenderRunTimeInputView, shouldRenderRunTimeInputViewWithAllowedValues } from '@pipeline/utils/CIUtils'
+import {
+  shouldRenderRunTimeInputView,
+  shouldRenderRunTimeInputViewWithAllowedValues
+} from '@pipeline/components/PipelineStudio/StepUtil'
 import type { RunTestsStepProps } from './RunTestsStep'
 import { AllMultiTypeInputTypesForInputSet } from '../CIStep/StepUtils'
 import { CIStep } from '../CIStep/CIStep'

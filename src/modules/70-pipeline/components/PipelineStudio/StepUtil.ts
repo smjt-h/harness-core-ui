@@ -6,7 +6,7 @@
  */
 
 import { FormikErrors, yupToFormErrors } from 'formik'
-import { getMultiTypeFromValue, MultiTypeInputType } from '@wings-software/uicore'
+import { getMultiTypeFromValue, MultiTypeInputType, SelectOption, RUNTIME_INPUT_VALUE } from '@wings-software/uicore'
 import isEmpty from 'lodash-es/isEmpty'
 import has from 'lodash-es/has'
 import * as Yup from 'yup'
@@ -29,15 +29,17 @@ import type { UseStringsReturn } from 'framework/strings'
 import { getDurationValidationSchema } from '@common/components/MultiTypeDuration/MultiTypeDuration'
 import type { TemplateStepNode } from 'services/pipeline-ng'
 import { ServiceDeploymentType } from '@pipeline/utils/stageHelpers'
+import { StepViewType } from '../AbstractSteps/Step'
 import factory from '../PipelineSteps/PipelineStepFactory'
+import { ConnectorRefWidth } from '../../utils/constants'
 import { StepType } from '../PipelineSteps/PipelineStepInterface'
+import { RegExAllowedInputExpression } from '../PipelineSteps/Steps/CustomVariables/CustomVariableInputSet'
 // eslint-disable-next-line no-restricted-imports
 import '@cd/components/PipelineSteps'
 // eslint-disable-next-line no-restricted-imports
 import '@ci/components/PipelineSteps'
 // eslint-disable-next-line no-restricted-imports
 import '@sto-steps/components/PipelineSteps'
-import { StepViewType } from '../AbstractSteps/Step'
 
 export const clearRuntimeInput = (template: PipelineInfoConfig): PipelineInfoConfig => {
   return JSON.parse(
@@ -567,3 +569,45 @@ export const validateCICodebaseConfiguration = ({ pipeline, getString }: Partial
   }
   return ''
 }
+
+export const getAllowedValuesFromTemplate = (template: Record<string, any>, fieldPath: string): SelectOption[] => {
+  if (!template || !fieldPath) {
+    return []
+  }
+  const value = get(template, fieldPath, '')
+  const items: SelectOption[] = []
+  if (RegExAllowedInputExpression.test(value as string)) {
+    // This separates out "<+input>.allowedValues(a, b, c)" to ["<+input>", ["a", "b", "c"]]
+    const match = (value as string).match(RegExAllowedInputExpression)
+    if (match && match?.length > 1) {
+      const allowedValues = match[1]
+      items.push(...allowedValues.split(',').map(item => ({ label: item, value: item })))
+    }
+  }
+  return items
+}
+
+export const shouldRenderRunTimeInputView = (value: any): boolean => {
+  if (!value) {
+    return false
+  }
+  if (typeof value === 'object') {
+    return Object.keys(value).some(key => typeof value[key] === 'string' && value[key].startsWith(RUNTIME_INPUT_VALUE))
+  } else {
+    return typeof value === 'string' && value.startsWith(RUNTIME_INPUT_VALUE)
+  }
+}
+
+export const shouldRenderRunTimeInputViewWithAllowedValues = (
+  fieldPath: string,
+  template?: Record<string, any>
+): boolean => {
+  if (!template || !fieldPath) {
+    return false
+  }
+  const allowedValues = get(template, fieldPath, '')
+  return shouldRenderRunTimeInputView(allowedValues) && RegExAllowedInputExpression.test(allowedValues)
+}
+
+export const getConnectorRefWidth = (viewType: StepViewType): number =>
+  Object.entries(ConnectorRefWidth).find(key => key[0] === viewType)?.[1] || ConnectorRefWidth.DefaultView
