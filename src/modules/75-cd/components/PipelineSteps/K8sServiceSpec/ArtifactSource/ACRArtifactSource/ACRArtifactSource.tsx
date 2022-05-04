@@ -94,12 +94,10 @@ const Content = (props: ACRRenderContent): JSX.Element => {
       orgIdentifier,
       repoIdentifier,
       branch,
-
       connectorRef:
         getMultiTypeFromValue(artifact?.spec?.connectorRef) !== MultiTypeInputType.RUNTIME
           ? artifact?.spec?.connectorRef
           : get(initialValues?.artifacts, `${artifactPath}.spec.connectorRef`, ''),
-
       subscriptionId:
         getMultiTypeFromValue(artifact?.spec?.subscriptionId) !== MultiTypeInputType.RUNTIME
           ? artifact?.spec?.subscriptionId
@@ -486,7 +484,7 @@ const Content = (props: ACRRenderContent): JSX.Element => {
               {...props}
               isFieldDisabled={() => isFieldDisabled(`artifacts.${artifactPath}.spec.tag`, true)}
               fetchingTags={fetchingTags}
-              buildDetailsList={acrTagsData?.data?.buildDetailsList}
+              buildDetailsList={/* istanbul ignore next */ acrTagsData?.data?.buildDetailsList}
               fetchTagsError={fetchTagsError}
               fetchTags={fetchTags}
               expressions={expressions}
