@@ -73,9 +73,11 @@ const getPropsForVariables = (): PipelineInputSetFormProps => ({
 
 const getPropsForCIStage = ({
   connectorRefAsRuntime,
+  repoNameAsRuntime,
   path
 }: {
   connectorRefAsRuntime?: boolean
+  repoNameAsRuntime?: boolean
   path?: string
 }): PipelineInputSetFormProps => ({
   originalPipeline: {
@@ -85,6 +87,7 @@ const getPropsForCIStage = ({
       ci: {
         codebase: {
           connectorRef: connectorRefAsRuntime ? '<+input>' : 'testConnectorRef',
+          repoName: repoNameAsRuntime ? '<+input>' : 'repo',
           build: RUNTIME_INPUT_VALUE as any
         }
       }
@@ -109,6 +112,7 @@ const getPropsForCIStage = ({
       ci: {
         codebase: {
           ...(connectorRefAsRuntime ? { connectorRef: RUNTIME_INPUT_VALUE } : {}),
+          ...(repoNameAsRuntime ? { repoName: RUNTIME_INPUT_VALUE } : {}),
           build: RUNTIME_INPUT_VALUE as any
         } as any // codebase in template does not require connectorRef if connectorRef is not a runtime input
       }
@@ -447,7 +451,7 @@ describe('CI enabled', () => {
       })
     }))
     // with connectoRef as runtime input, we will prompt for Git Branch, Git Tag, and Git Pull Request
-    const props = getPropsForCIStage({ connectorRefAsRuntime: true, path: 'pipeline' })
+    const props = getPropsForCIStage({ connectorRefAsRuntime: true, repoNameAsRuntime: true, path: 'pipeline' })
     const { container } = render(
       <Formik
         initialValues={{ pipeline: { properties: { ci: { codebase: { connectorRef: 'account.gitlab' } } } } }}
