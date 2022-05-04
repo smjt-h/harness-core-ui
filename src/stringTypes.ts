@@ -913,6 +913,7 @@ export interface StringsMap {
   'rbac.resourceGroup.noResourceGroup': string
   'rbac.resourceGroup.noResourceGroupFound': string
   'rbac.resourceGroup.noResourceGroupTypes': string
+  'rbac.resourceGroup.resourceFilterSelection': string
   'rbac.resourceGroup.selectResourceGroup': string
   'rbac.resourceGroup.selectionHeading': string
   'rbac.resourceGroup.summary': string

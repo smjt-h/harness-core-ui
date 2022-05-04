@@ -6,7 +6,7 @@
  */
 
 import React from 'react'
-import { Layout, Tag, Text } from '@harness/uicore'
+import { Layout, Tag } from '@harness/uicore'
 import { useParams } from 'react-router-dom'
 import { useStrings } from 'framework/strings'
 import type { ResourceGroupDetailsPathProps, ModulePathParams } from '@common/interfaces/RouteInterfaces'
@@ -32,8 +32,8 @@ const ProjectSelectionRenderer: React.FC<ProjectSelectionRendererProps> = ({ inc
     }
   })
 
-  if (!hasProjects) return <></>
-  return projects.length ? (
+  if (!hasProjects || !projects.length) return <></>
+  return (
     <Layout.Horizontal spacing="xsmall" padding="xsmall" className={css.projectSelection}>
       {data?.data?.content?.map(({ project }) => (
         <Tag key={project.identifier} className={css.tags}>{`${project.name} (${getString('idLabel', {
@@ -41,8 +41,6 @@ const ProjectSelectionRenderer: React.FC<ProjectSelectionRendererProps> = ({ inc
         })})`}</Tag>
       ))}
     </Layout.Horizontal>
-  ) : (
-    <Text>{`${getString('rbac.scopeItems.allProjects')} (${data?.data?.content?.length})`}</Text>
   )
 }
 

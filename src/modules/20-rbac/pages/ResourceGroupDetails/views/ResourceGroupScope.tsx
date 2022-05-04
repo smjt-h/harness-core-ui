@@ -40,12 +40,14 @@ const ResourceGroupScope: React.FC<ResourceGroupScopeProps> = ({ includedScopes,
     <Card className={css.card}>
       <Layout.Vertical spacing="medium">
         <Layout.Horizontal spacing="small" flex={{ alignItems: 'center', justifyContent: 'flex-start' }}>
-          <Text font={{ variation: FontVariation.H6 }} color={Color.GREY_800}>
+          <Text font={{ variation: FontVariation.H5 }} color={Color.GREY_800}>
             {getString('rbac.resourceScope.label')}
           </Text>
           <Text
             onClick={() => openResourceScopeModal(includedScopes)}
             border={{ color: Color.GREY_250 }}
+            font={{ variation: FontVariation.BODY }}
+            color={Color.GREY_900}
             padding="small"
             className={css.dropdown}
             rightIcon="chevron-down"

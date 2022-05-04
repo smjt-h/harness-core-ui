@@ -60,7 +60,7 @@ const ResourceGroupDetails: React.FC = () => {
   const { getRBACErrorMessage } = useRBACError()
   const [isUpdated, setIsUpdated] = useState<boolean>(false)
   const [includedScopes, setIncludedScopes] = useState<ScopeSelector[]>([])
-  const [selectedScope, setSelectedScope] = useState<SelectorScope>(SelectorScope.CURRENT)
+  const [selectedScope, setSelectedScope] = useState<SelectorScope>(SelectorScope.INCLUDE_CHILD_SCOPES)
   const [selectionType, setSelectionType] = useState<SelectionType>(SelectionType.SPECIFIED)
   const [selectedResourcesMap, setSelectedResourceMap] = useState<Map<ResourceType, string[] | string>>(new Map())
   const [resourceTypes, setResourceTypes] = useState<ResourceType[]>([])
@@ -161,7 +161,7 @@ const ResourceGroupDetails: React.FC = () => {
   }
 
   const disableSelection = (): boolean => {
-    return selectionType === SelectionType.ALL || selectedScope === SelectorScope.INCLUDE_CHILD_SCOPES
+    return selectionType === SelectionType.ALL || selectedScope !== SelectorScope.CURRENT
   }
 
   const onResourceSelectionChange = (resourceType: ResourceType, isAdd: boolean, identifiers?: string[]): void => {
@@ -295,41 +295,37 @@ const ResourceGroupDetails: React.FC = () => {
             </Layout.Horizontal>
           </Card>
         )}
-        <Container className={css.pageContainer}>
-          <Container padding="xlarge" className={css.resourceTypeListContainer}>
-            <ResourceTypeList
-              selectionType={selectionType}
-              resourceCategoryMap={resourceCategoryMap}
-              onResourceSelectionChange={onResourceSelectionChange}
-              onResourceCategorySelect={onResourceCategorySelect}
-              preSelectedResourceList={Array.from(selectedResourcesMap.keys())}
-              disableAddingResources={disableAddingResources}
-              onSelectionTypeChange={onSelectionTypeChange}
-            />
-          </Container>
-          <Layout.Vertical spacing="small">
-            <Layout.Horizontal
-              spacing="small"
-              flex={{ justifyContent: 'flex-start' }}
-              padding={{ top: 'xlarge', left: 'xlarge', bottom: 'small' }}
-            >
-              <ResourceGroupScope
-                resourceGroup={resourceGroup}
-                includedScopes={includedScopes}
-                setIncludedScopes={setIncludedScopes}
-                setIsUpdated={setIsUpdated}
+        <Layout.Vertical spacing="small" flex={{ justifyContent: 'flex-start' }} padding="xlarge">
+          <ResourceGroupScope
+            resourceGroup={resourceGroup}
+            includedScopes={includedScopes}
+            setIncludedScopes={setIncludedScopes}
+            setIsUpdated={setIsUpdated}
+          />
+          <Container className={css.pageContainer}>
+            <Container padding="xlarge" className={css.resourceTypeListContainer}>
+              <ResourceTypeList
+                selectionType={selectionType}
+                resourceCategoryMap={resourceCategoryMap}
+                onResourceSelectionChange={onResourceSelectionChange}
+                onResourceCategorySelect={onResourceCategorySelect}
+                preSelectedResourceList={Array.from(selectedResourcesMap.keys())}
+                disableAddingResources={disableAddingResources}
+                onSelectionTypeChange={onSelectionTypeChange}
               />
-            </Layout.Horizontal>
-            <ResourcesCardList
-              selectedResourcesMap={selectedResourcesMap}
-              resourceCategoryMap={resourceCategoryMap}
-              onResourceSelectionChange={onResourceSelectionChange}
-              onResourceCategorySelect={onResourceCategorySelect}
-              disableAddingResources={isHarnessManaged}
-              disableSelection={disableSelection()}
-            />
-          </Layout.Vertical>
-        </Container>
+            </Container>
+            <Layout.Vertical spacing="small">
+              <ResourcesCardList
+                selectedResourcesMap={selectedResourcesMap}
+                resourceCategoryMap={resourceCategoryMap}
+                onResourceSelectionChange={onResourceSelectionChange}
+                onResourceCategorySelect={onResourceCategorySelect}
+                disableAddingResources={isHarnessManaged}
+                disableSelection={disableSelection()}
+              />
+            </Layout.Vertical>
+          </Container>
+        </Layout.Vertical>
       </Page.Body>
     </>
   )

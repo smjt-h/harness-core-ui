@@ -72,7 +72,7 @@ const OrgSelectionRenderer: React.FC<OrgSelectionRendererProps> = ({
                 {
                   accountIdentifier,
                   orgIdentifier,
-                  filter: event.currentTarget.checked ? 'INCLUDING_CHILD_SCOPES' : 'EXCLUDING_CHILD_SCOPES'
+                  filter: event?.currentTarget?.checked ? 'INCLUDING_CHILD_SCOPES' : 'EXCLUDING_CHILD_SCOPES'
                 }
               ]
             })
@@ -88,6 +88,17 @@ const OrgSelectionRenderer: React.FC<OrgSelectionRendererProps> = ({
               value={SelectionType.ALL}
               checked={projectSelection === SelectionType.ALL}
               onChange={e => {
+                setSelectedScopes(oldVal =>
+                  produce(oldVal, draft => {
+                    draft[index] = [
+                      {
+                        accountIdentifier,
+                        orgIdentifier,
+                        filter: 'INCLUDING_CHILD_SCOPES'
+                      }
+                    ]
+                  })
+                )
                 setProjectSelection(e.currentTarget.value as SelectionType)
               }}
             />
@@ -97,6 +108,17 @@ const OrgSelectionRenderer: React.FC<OrgSelectionRendererProps> = ({
               value={SelectionType.SPECIFIED}
               checked={projectSelection === SelectionType.SPECIFIED}
               onChange={e => {
+                setSelectedScopes(oldVal =>
+                  produce(oldVal, draft => {
+                    draft[index] = [
+                      {
+                        accountIdentifier,
+                        orgIdentifier,
+                        filter: 'EXCLUDING_CHILD_SCOPES'
+                      }
+                    ]
+                  })
+                )
                 setProjectSelection(e.currentTarget.value as SelectionType)
               }}
             />

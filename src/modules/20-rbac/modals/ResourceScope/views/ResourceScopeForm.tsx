@@ -9,7 +9,7 @@ import { Button, ButtonVariation, Color, Layout, RadioButtonGroup } from '@harne
 import React, { FormEvent, useState } from 'react'
 import cx from 'classnames'
 import { useParams } from 'react-router-dom'
-import { groupBy } from 'lodash-es'
+import { groupBy, isEqual, uniqWith } from 'lodash-es'
 import { getScopeFromDTO } from '@common/components/EntityReference/EntityReference'
 import type { ModulePathParams, ResourceGroupDetailsPathProps } from '@common/interfaces/RouteInterfaces'
 import {
@@ -42,19 +42,22 @@ const ResourceScopeForm: React.FC<ResourceScopeFormProps> = ({ scopes, onSubmit,
   const getIncludedScopes = (): ScopeSelector[] => {
     switch (selectedScope) {
       case SelectorScope.CUSTOM:
-        return [
-          ...(hasCurrentScope
-            ? [
-                {
-                  accountIdentifier: accountId,
-                  orgIdentifier,
-                  projectIdentifier,
-                  filter: 'EXCLUDING_CHILD_SCOPES'
-                } as ScopeSelector
-              ]
-            : []),
-          ...selectedScopes.flat()
-        ]
+        return uniqWith(
+          [
+            ...(hasCurrentScope
+              ? [
+                  {
+                    accountIdentifier: accountId,
+                    orgIdentifier,
+                    projectIdentifier,
+                    filter: 'EXCLUDING_CHILD_SCOPES'
+                  } as ScopeSelector
+                ]
+              : []),
+            ...selectedScopes.flat()
+          ],
+          isEqual
+        )
       default:
         return [
           {
