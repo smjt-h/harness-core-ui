@@ -140,7 +140,14 @@ export interface ServicePathProps {
   serviceId: string
 }
 
-export type ModuleNameMatch = ':module' | ':module(ci)' | ':module(cd)' | ':module(cf)' | ':module(cv)' | ':module(ce)'
+export type ModuleNameMatch =
+  | ':module'
+  | ':module(ci)'
+  | ':module(cd)'
+  | ':module(cf)'
+  | ':module(cv)'
+  | ':module(ce)'
+  | ':module(chaos)'
 
 export type Module = ModuleName | ModuleNameMatch
 
