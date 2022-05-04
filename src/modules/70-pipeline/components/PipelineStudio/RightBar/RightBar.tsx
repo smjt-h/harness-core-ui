@@ -74,7 +74,7 @@ import { DrawerTypes } from '../PipelineContext/PipelineActions'
 import { RightDrawer } from '../RightDrawer/RightDrawer'
 import css from './RightBar.module.scss'
 
-interface CodebaseRuntimeInputsInterface {
+export interface CodebaseRuntimeInputsInterface {
   connectorRef?: boolean
   repoName?: boolean
 }
@@ -641,9 +641,10 @@ export function RightBar(): JSX.Element {
             initialValues={codebaseInitialValues}
             validationSchema={Yup.object().shape({
               connectorRef: Yup.mixed().required(getString('fieldRequired', { field: getString('connector') })),
-              ...(connectionType === ConnectionType.Account && {
-                repoName: Yup.string().required(getString('common.validation.repositoryName'))
-              })
+              ...(connectionType === ConnectionType.Account &&
+                !codebaseRuntimeInputs.repoName && {
+                  repoName: Yup.string().required(getString('common.validation.repositoryName'))
+                })
             })}
             validate={values => {
               const errors = {}

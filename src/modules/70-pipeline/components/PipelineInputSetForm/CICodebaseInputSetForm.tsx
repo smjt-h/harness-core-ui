@@ -53,7 +53,8 @@ type CodeBaseType = 'branch' | 'tag' | 'PR'
 
 export enum ConnectionType {
   Repo = 'Repo',
-  Account = 'Account'
+  Account = 'Account',
+  Region = 'Region' // awscodecommit
 }
 
 const inputNames = {
@@ -97,15 +98,13 @@ export const handleCIConnectorRefOnChange = ({
 }): void => {
   const newConnectorRef = value as ConnectorRefInterface
   if (connectorRefType === MultiTypeInputType.FIXED) {
-    if (newConnectorRef?.record?.spec?.type === ConnectionType.Account) {
+    const connectionType = newConnectorRef?.record?.spec?.type
+    if (connectionType === ConnectionType.Account) {
       setConnectionType(ConnectionType.Account)
       setConnectorUrl(newConnectorRef.record?.spec?.url || '')
       setFieldValue(codeBaseInputFieldFormName?.repoName || 'repoName', '')
-    } else if (
-      newConnectorRef?.record?.spec?.type === ConnectionType.Repo ||
-      newConnectorRef?.record?.spec?.connectionType === ConnectionType.Repo
-    ) {
-      setConnectionType(ConnectionType.Repo)
+    } else if (connectionType === ConnectionType.Repo || connectionType === ConnectionType.Region) {
+      setConnectionType(connectionType)
       setConnectorUrl(newConnectorRef.record?.spec?.url || '')
       //  clear repoName from yaml
       setFieldValue(codeBaseInputFieldFormName?.repoName || 'repoName', undefined)
@@ -150,6 +149,7 @@ function CICodebaseInputSetFormInternal({
   const [connectionType, setConnectionType] = React.useState('')
   const [connectorUrl, setConnectorUrl] = React.useState('')
   const isConnectorRuntimeInput = template?.properties?.ci?.codebase?.connectorRef
+  const isRepoNameRuntimeInput = template?.properties?.ci?.codebase?.repoName
   const isCpuLimitRuntimeInput = template?.properties?.ci?.codebase?.resources?.limits?.cpu
   const isMemoryLimitRuntimeInput = template?.properties?.ci?.codebase?.resources?.limits?.memory
   const isDeploymentOrTriggerForm = viewType === StepViewType.DeploymentForm || isTriggerForm
@@ -343,7 +343,7 @@ function CICodebaseInputSetFormInternal({
               />
             </Container>
           )}
-          {isConnectorRuntimeInput &&
+          {isRepoNameRuntimeInput &&
             (!isRuntimeInput(formik?.values.connectorRef) && connectionType === ConnectionType.Repo ? (
               <Container width={'50%'}>
                 <Text

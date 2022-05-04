@@ -38,7 +38,10 @@ import { createTemplate, getTemplateNameWithLabel } from '@pipeline/utils/templa
 import { useTelemetry } from '@common/hooks/useTelemetry'
 import { Category, StageActions } from '@common/constants/TrackingConstants'
 import { isContextTypeNotStageTemplate } from '@pipeline/components/PipelineStudio/PipelineUtils'
-import { renderConnectorAndRepoName } from '@pipeline/components/PipelineStudio/RightBar/RightBar'
+import {
+  renderConnectorAndRepoName,
+  CodebaseRuntimeInputsInterface
+} from '@pipeline/components/PipelineStudio/RightBar/RightBar'
 import { isRuntimeInput } from '@pipeline/components/PipelineStudio/RightBar/RightBarUtils'
 import css from './EditStageView.module.scss'
 
@@ -102,7 +105,7 @@ export const EditStageView: React.FC<EditStageView> = ({ data, template, onSubmi
   const connectorId = getIdentifierFromValue((codebase?.connectorRef as string) || '')
   const initialScope = getScopeFromValue((codebase?.connectorRef as string) || '')
 
-  const [codebaseRuntimeInputs, setCodebaseRuntimeInputs] = React.useState({
+  const [codebaseRuntimeInputs, setCodebaseRuntimeInputs] = React.useState<CodebaseRuntimeInputsInterface>({
     ...(isRuntimeInput(codebase?.connectorRef) && { connectorRef: true, repoName: true })
   })
 
