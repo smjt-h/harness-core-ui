@@ -29,7 +29,6 @@ import {
 import * as Yup from 'yup'
 import { useStrings } from 'framework/strings'
 import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
-import type { ConnectorSelectedValue } from '@connectors/components/ConnectorReferenceField/ConnectorReferenceField'
 import { FormMultiTypeConnectorField } from '@connectors/components/ConnectorReferenceField/FormMultiTypeConnectorField'
 import { useVariablesExpression } from '@pipeline/components/PipelineStudio/PiplineHooks/useVariablesExpression'
 import { AllowedTypes, ConnectorIcons, ConnectorMap, ConnectorLabelMap, ConnectorTypes } from '../../CloudFormationHelper'
@@ -155,7 +154,7 @@ const ConnectorStepOne: React.FC<StepProps<any> & ConnectorStepOneProps> = ({
             isFixedValue = getMultiTypeFromValue(connectorRef) === MultiTypeInputType.FIXED
             name = `spec.configuration.parameters.store.spec.connectorRef`
           }
-          const disabled = !selectedConnector || (isFixedValue && !(connectorRef as ConnectorSelectedValue)?.connector)
+          const disabled = !selectedConnector || (isFixedValue && !connectorRef)
           return (
             <>
               <Layout.Horizontal className={css.horizontalFlex} margin={{ top: 'xlarge', bottom: 'xlarge' }}>

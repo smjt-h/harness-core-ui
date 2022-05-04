@@ -36,7 +36,7 @@ import type { CreateStackData, CreateStackProps } from '../../CloudFormationInte
 import { isRuntime } from '../../CloudFormationHelper'
 import stepCss from '@pipeline/components/PipelineSteps/Steps/Steps.module.scss'
 
-function CloudFormationCreateStackInputStepRef<T extends CreateStackData = CreateStackData>(
+function CreateStackInputStepRef<T extends CreateStackData = CreateStackData>(
   props: CreateStackProps<T> & { formik?: FormikContext<any> }
 ): React.ReactElement {
   const { inputSetData, readonly, path, allowableTypes, formik } = props
@@ -306,5 +306,5 @@ function CloudFormationCreateStackInputStepRef<T extends CreateStackData = Creat
   )
 }
 
-const CloudFormationCreateStackInputStep = connect(CloudFormationCreateStackInputStepRef)
-export default CloudFormationCreateStackInputStep
+const CreateStackInputStep = connect(CreateStackInputStepRef)
+export default CreateStackInputStep

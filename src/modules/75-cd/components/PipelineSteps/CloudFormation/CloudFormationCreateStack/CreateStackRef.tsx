@@ -57,7 +57,7 @@ enum TemplateTypes {
   Inline = 'Inline'
 }
 
-export const CloudFormationCreateStack = (
+export const CreateStack = (
   {
     allowableTypes,
     isNewStep = true,
@@ -272,6 +272,7 @@ export const CloudFormationCreateStack = (
                 multiTypeProps={{ expressions, allowableTypes }}
                 disabled={readonly}
                 width={300}
+                setRefValue
               />
             </div>
             <Layout.Vertical className={css.addMarginBottom}>

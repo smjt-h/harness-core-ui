@@ -14,10 +14,11 @@ import { StepViewType, StepProps, ValidateInputSetProps } from '@pipeline/compon
 import { StepType } from '@pipeline/components/PipelineSteps/PipelineStepInterface'
 import { PipelineStep } from '@pipeline/components/PipelineSteps/PipelineStep'
 import { getDurationValidationSchema } from '@common/components/MultiTypeDuration/MultiTypeDuration'
-import type { CreateStackStepInfo, CreateStackData } from '../CloudFormationInterfaces'
-import { CloudFormationCreateStack } from './CloudFormationCreateStackRef'
-import CloudFormationCreateStackInputStep from './InputSteps/CloudFormationInputStep'
-const CloudFormationCreateStackWithRef = forwardRef(CloudFormationCreateStack)
+import type { CreateStackStepInfo, CreateStackData, CreateStackVariableStepProps } from '../CloudFormationInterfaces'
+import { CreateStack } from './CreateStackRef'
+import { CreateStackVariableStep } from './VaribaleView/CreateStackVariableView'
+import CreateStackInputStep from './InputSteps/CreateStackInputStep'
+const CloudFormationCreateStackWithRef = forwardRef(CreateStack)
 
 export class CFCreateStack extends PipelineStep<CreateStackStepInfo> {
   constructor() {
@@ -91,9 +92,9 @@ export class CFCreateStack extends PipelineStep<CreateStackStepInfo> {
     }
     return errors
   }
-  /* istanbul ignore next */
+
   processFormData(data: any): CreateStackStepInfo {
-    const awsConnRef = data.spec.configuration.connectorRef?.value || data.spec.configuration.connectorRef
+    const awsConnRef = data?.spec?.configuration?.connectorRef?.value || data?.spec?.configuration?.connectorRef
     let templateFile = data.spec.configuration.templateFile
 
     if (data?.spec?.configuration?.templateFile?.type === 'Remote') {
@@ -247,12 +248,13 @@ export class CFCreateStack extends PipelineStep<CreateStackStepInfo> {
       isNewStep,
       readonly,
       inputSetData,
-      path
+      path,
+      customStepProps
     } = props
 
     if (stepViewType === StepViewType.InputSet || stepViewType === StepViewType.DeploymentForm) {
       return (
-        <CloudFormationCreateStackInputStep
+        <CreateStackInputStep
           initialValues={initialValues}
           onUpdate={data => onUpdate?.(this.processFormData(data))}
           onChange={data => onChange?.(this.processFormData(data))}
@@ -265,7 +267,13 @@ export class CFCreateStack extends PipelineStep<CreateStackStepInfo> {
         />
       )
     } else if (stepViewType === StepViewType.InputVariable) {
-      return <></>
+      return (
+        <CreateStackVariableStep
+          {...(customStepProps as CreateStackVariableStepProps)}
+          initialValues={initialValues}
+          onUpdate={data => onUpdate?.(this.processFormData(data))}
+        />
+      )
     }
 
     return (
