@@ -64,6 +64,7 @@ import { getConnectorName, getConnectorValue } from '@pipeline/components/Pipeli
 import { getConnectorSchema, getNameSpaceSchema, getReleaseNameSchema } from '../PipelineStepsUtil'
 import css from './GcpInfrastructureSpec.module.scss'
 import stepCss from '@pipeline/components/PipelineSteps/Steps/Steps.module.scss'
+import pipelineVariableCss from '@pipeline/components/PipelineStudio/PipelineVariables/PipelineVariables.module.scss'
 
 const logger = loggerFor(ModuleName.CD)
 type K8sGcpInfrastructureTemplate = { [key in keyof K8sGcpInfrastructure]: string }
@@ -599,6 +600,7 @@ const GcpInfrastructureSpecVariablesForm: React.FC<GcpInfrastructureSpecEditable
       data={infraVariables}
       originalData={initialValues?.infrastructureDefinition?.spec || initialValues}
       metadataMap={metadataMap}
+      className={pipelineVariableCss.variablePaddingL1}
     />
   ) : null
 }

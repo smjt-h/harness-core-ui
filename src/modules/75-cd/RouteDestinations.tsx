@@ -81,8 +81,8 @@ import { EnhancedInputSetForm } from '@pipeline/components/InputSetForm/InputSet
 import TriggersDetailPage from '@triggers/pages/triggers/TriggersDetailPage'
 import CreateConnectorFromYamlPage from '@connectors/pages/createConnectorFromYaml/CreateConnectorFromYamlPage'
 import CreateSecretFromYamlPage from '@secrets/pages/createSecretFromYaml/CreateSecretFromYamlPage'
-import ServiceDetailPage from '@cd/pages/ServiceDetailPage/ServiceDetailPage'
 import ServiceDetails from '@cd/components/ServiceDetails/ServiceDetails'
+import { Services } from '@cd/components/Services/Services'
 import ChildAppMounter from 'microfrontends/ChildAppMounter'
 
 import './components/PipelineSteps'
@@ -469,7 +469,7 @@ export default (
       path={routes.toServices({ ...accountPathProps, ...projectPathProps, ...pipelineModuleParams })}
       pageName={PAGE_NAME.ServiceDetailPage}
     >
-      <ServiceDetailPage />
+      <Services />
     </RouteWithLayout>
     <RouteWithLayout
       exact

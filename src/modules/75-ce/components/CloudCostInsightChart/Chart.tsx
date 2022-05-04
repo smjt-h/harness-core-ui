@@ -113,7 +113,9 @@ const GetChart: React.FC<GetChartProps> = ({
       events: {
         click: function (event: any) {
           const name = event.point.series.userOptions.name as string
-          setFilterUsingChartClick && setFilterUsingChartClick(name)
+          if (chart.length > 1 && setFilterUsingChartClick) {
+            setFilterUsingChartClick(name)
+          }
         }
       },
       stacking

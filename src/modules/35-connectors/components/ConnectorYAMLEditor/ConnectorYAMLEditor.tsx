@@ -157,6 +157,7 @@ const ConnectorYAMLEditor: React.FC<ConnectorYAMLEditorProp> = props => {
   } = useGetYamlSchema({
     queryParams: {
       entityType: 'Connectors',
+      identifier: connector.identifier,
       projectIdentifier,
       orgIdentifier,
       accountIdentifier: accountId,

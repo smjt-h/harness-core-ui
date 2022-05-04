@@ -26,10 +26,17 @@ import {
 } from '@pipeline/components/PipelineStudio/StepUtil'
 import { MultiTypeSelectField } from '@common/components/MultiTypeSelect/MultiTypeSelect'
 import { ArchiveFormatOptions } from '../../../constants/Constants'
-import { AllMultiTypeInputTypesForInputSet, AllMultiTypeInputTypesForStep } from './StepUtils'
+import {
+  AllMultiTypeInputTypesForInputSet,
+  AllMultiTypeInputTypesForStep,
+  SupportedInputTypesForListTypeField,
+  SupportedInputTypesForOPVarsListItems,
+  SupportedInputTypesForListItems,
+  SupportedInputTypesForListTypeFieldInInputSetView
+} from './StepUtils'
 import css from '@pipeline/components/PipelineSteps/Steps/Steps.module.scss'
 
-interface CIStepOptionalConfigProps {
+export interface CIStepOptionalConfigProps {
   readonly?: boolean
   enableFields: {
     [key: string]: { [key: string]: any }
@@ -65,6 +72,7 @@ export const renderMultiTypeListInputSet = ({
   withObjectStructure,
   keyName,
   allowedTypes,
+  allowedTypesForEntries,
   expressions,
   getString,
   readonly,
@@ -77,6 +85,7 @@ export const renderMultiTypeListInputSet = ({
   withObjectStructure?: boolean
   keyName?: string
   allowedTypes: MultiTypeInputType[]
+  allowedTypesForEntries: MultiTypeInputType[]
   expressions: string[]
   getString: (key: keyof StringsMap, vars?: Record<string, any> | undefined) => string
   readonly?: boolean
@@ -85,8 +94,8 @@ export const renderMultiTypeListInputSet = ({
   <MultiTypeListInputSet
     name={name}
     multiTextInputProps={{
-      allowableTypes: allowedTypes,
-      expressions
+      expressions,
+      allowableTypes: allowedTypesForEntries
     }}
     multiTypeFieldSelectorProps={{
       label: (
@@ -335,19 +344,22 @@ export const CIStepOptionalConfig: React.FC<CIStepOptionalConfigProps> = props =
       tooltipId,
       labelKey,
       placeholderKey,
-      allowedTypes
+      allowedTypes,
+      allowedTypesForEntries
     }: {
       name: string
       tooltipId?: string
       labelKey: keyof StringsMap
       placeholderKey?: keyof StringsMap
-      allowedTypes?: MultiTypeInputType[]
+      allowedTypes: MultiTypeInputType[]
+      allowedTypesForEntries: MultiTypeInputType[]
     }) => (
       <MultiTypeList
         name={name}
         placeholder={placeholderKey ? getString(placeholderKey) : ''}
         multiTextInputProps={{
-          expressions
+          expressions,
+          allowableTypes: allowedTypesForEntries
         }}
         multiTypeFieldSelectorProps={{
           label: (
@@ -421,18 +433,54 @@ export const CIStepOptionalConfig: React.FC<CIStepOptionalConfigProps> = props =
               allowableTypes: isInputSetView ? AllMultiTypeInputTypesForInputSet : AllMultiTypeInputTypesForStep
             })
         : null}
-      {/* Input Set render for Report Paths is handled in respective steps itself and not handled here due to a technical limitation */}
-      {Object.prototype.hasOwnProperty.call(enableFields, 'spec.reportPaths') &&
-        (!isInputSetView ? (
-          <Container className={cx(css.formGroup, stepCss, css.bottomMargin5)}>
-            {renderMultiTypeList({
-              name: `${prefix}spec.reportPaths`,
-              placeholderKey: 'pipelineSteps.reportPathsPlaceholder',
-              labelKey: 'pipelineSteps.reportPathsLabel',
-              allowedTypes: AllMultiTypeInputTypesForStep
-            })}
-          </Container>
-        ) : null)}
+      {Object.prototype.hasOwnProperty.call(enableFields, 'spec.reportPaths') && (
+        <Container className={cx(css.formGroup, stepCss, css.bottomMargin5)}>
+          {isInputSetView
+            ? renderMultiTypeListInputSet({
+                name: `${prefix}spec.reports.spec.paths`,
+                tooltipId: 'reportPaths',
+                labelKey: 'pipelineSteps.reportPathsLabel',
+                allowedTypes: SupportedInputTypesForListTypeFieldInInputSetView,
+                allowedTypesForEntries: SupportedInputTypesForListItems,
+                placeholderKey: 'pipelineSteps.reportPathsPlaceholder',
+                expressions,
+                getString,
+                readonly,
+                formik
+              })
+            : renderMultiTypeList({
+                name: `${prefix}spec.reportPaths`,
+                placeholderKey: 'pipelineSteps.reportPathsPlaceholder',
+                labelKey: 'pipelineSteps.reportPathsLabel',
+                allowedTypes: SupportedInputTypesForListTypeField,
+                allowedTypesForEntries: SupportedInputTypesForListItems
+              })}
+        </Container>
+      )}
+      {Object.prototype.hasOwnProperty.call(enableFields, 'spec.outputVariables') && (
+        <Container className={cx(css.formGroup, stepCss, css.bottomMargin5)}>
+          {isInputSetView
+            ? renderMultiTypeListInputSet({
+                name: `${prefix}spec.outputVariables`,
+                tooltipId: 'outputVariables',
+                labelKey: 'pipelineSteps.outputVariablesLabel',
+                allowedTypes: SupportedInputTypesForListTypeFieldInInputSetView,
+                allowedTypesForEntries: SupportedInputTypesForOPVarsListItems,
+                expressions,
+                getString,
+                readonly,
+                formik,
+                withObjectStructure: true,
+                keyName: 'name'
+              })
+            : renderMultiTypeList({
+                name: `${prefix}spec.outputVariables`,
+                labelKey: 'pipelineSteps.outputVariablesLabel',
+                allowedTypes: SupportedInputTypesForListTypeField,
+                allowedTypesForEntries: SupportedInputTypesForOPVarsListItems
+              })}
+        </Container>
+      )}
       {Object.prototype.hasOwnProperty.call(enableFields, 'spec.envVariables')
         ? isInputSetView
           ? renderMultiTypeMapInputSet(`${prefix}spec.envVariables`, 'environmentVariables', '')
@@ -442,35 +490,50 @@ export const CIStepOptionalConfig: React.FC<CIStepOptionalConfigProps> = props =
               allowableTypes: isInputSetView ? AllMultiTypeInputTypesForInputSet : AllMultiTypeInputTypesForStep
             })
         : null}
-      {/* Input Set render for Report Paths is handled in respective steps itself and not handled here due to a technical limitation */}
-      {Object.prototype.hasOwnProperty.call(enableFields, 'spec.outputVariables') &&
-        (!isInputSetView ? (
-          <Container className={cx(css.formGroup, stepCss, css.bottomMargin5)}>
-            {renderMultiTypeList({
-              name: `${prefix}spec.outputVariables`,
-              labelKey: 'pipelineSteps.outputVariablesLabel',
-              allowedTypes: AllMultiTypeInputTypesForStep
-            })}
-          </Container>
-        ) : null)}
       {Object.prototype.hasOwnProperty.call(enableFields, 'spec.entrypoint') ? (
         <Container className={cx(css.formGroup, stepCss, css.bottomMargin5)}>
-          {renderMultiTypeList({
-            name: `${prefix}spec.entrypoint`,
-            labelKey: 'entryPointLabel',
-            tooltipId: 'dependencyEntryPoint',
-            allowedTypes: isInputSetView ? AllMultiTypeInputTypesForInputSet : AllMultiTypeInputTypesForStep
-          })}
+          {isInputSetView
+            ? renderMultiTypeListInputSet({
+                name: `${prefix}spec.entrypoint`,
+                tooltipId: 'dependencyEntryPoint',
+                labelKey: 'entryPointLabel',
+                allowedTypes: SupportedInputTypesForListTypeFieldInInputSetView,
+                allowedTypesForEntries: SupportedInputTypesForListItems,
+                expressions,
+                getString,
+                readonly,
+                formik
+              })
+            : renderMultiTypeList({
+                name: `${prefix}spec.entrypoint`,
+                labelKey: 'entryPointLabel',
+                tooltipId: 'dependencyEntryPoint',
+                allowedTypes: isInputSetView ? AllMultiTypeInputTypesForInputSet : SupportedInputTypesForListTypeField,
+                allowedTypesForEntries: SupportedInputTypesForListItems
+              })}
         </Container>
       ) : null}
       {Object.prototype.hasOwnProperty.call(enableFields, 'spec.args') ? (
         <Container className={cx(css.formGroup, stepCss, css.bottomMargin5)}>
-          {renderMultiTypeList({
-            name: `${prefix}spec.args`,
-            labelKey: 'argsLabel',
-            tooltipId: 'dependencyArgs',
-            allowedTypes: isInputSetView ? AllMultiTypeInputTypesForInputSet : AllMultiTypeInputTypesForStep
-          })}
+          {isInputSetView
+            ? renderMultiTypeListInputSet({
+                name: `${prefix}spec.args`,
+                tooltipId: 'dependencyArgs',
+                labelKey: 'argsLabel',
+                allowedTypes: SupportedInputTypesForListTypeFieldInInputSetView,
+                allowedTypesForEntries: SupportedInputTypesForListItems,
+                expressions,
+                getString,
+                readonly,
+                formik
+              })
+            : renderMultiTypeList({
+                name: `${prefix}spec.args`,
+                labelKey: 'argsLabel',
+                tooltipId: 'dependencyArgs',
+                allowedTypes: isInputSetView ? AllMultiTypeInputTypesForInputSet : SupportedInputTypesForListTypeField,
+                allowedTypesForEntries: SupportedInputTypesForListItems
+              })}
         </Container>
       ) : null}
       {Object.prototype.hasOwnProperty.call(enableFields, 'spec.portBindings')

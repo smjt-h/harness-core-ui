@@ -54,3 +54,18 @@ export const AllMultiTypeInputTypesForStep = [
 ]
 
 export const AllMultiTypeInputTypesForInputSet = [MultiTypeInputType.FIXED, MultiTypeInputType.EXPRESSION]
+
+/* Field of type lists have some limitations to support all three input types */
+
+/* a field of type list cannot assume expression as supported a value */
+export const SupportedInputTypesForListTypeField = [MultiTypeInputType.FIXED, MultiTypeInputType.RUNTIME]
+
+/* Note:  list items do not support runtime inputs by design, captured in https://harness.atlassian.net/browse/PIE-2617 */
+
+/* for few fields, list items cannot support be expressions due to a limitation, captured in https://harness.atlassian.net/browse/CI-3950 */
+export const SupportedInputTypesForOPVarsListItems = [MultiTypeInputType.FIXED]
+
+/* few fields are able to support expressions for list items */
+export const SupportedInputTypesForListItems = [MultiTypeInputType.FIXED, MultiTypeInputType.EXPRESSION]
+
+export const SupportedInputTypesForListTypeFieldInInputSetView = [MultiTypeInputType.FIXED]

@@ -598,7 +598,7 @@ export function StageInputSetFormInternal({
           name={name}
           multiTextInputProps={{
             expressions,
-            allowableTypes
+            allowableTypes: [MultiTypeInputType.FIXED, MultiTypeInputType.EXPRESSION]
           }}
           formik={formik}
           multiTypeFieldSelectorProps={{

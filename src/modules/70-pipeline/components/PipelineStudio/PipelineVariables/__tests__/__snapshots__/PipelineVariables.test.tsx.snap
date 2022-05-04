@@ -1750,7 +1750,7 @@ exports[`<PipelineVariables /> tests snapshot test 1`] = `
                                   data-testid="pipeline.stage_1.Environment-details"
                                 >
                                   <div
-                                    class="variablesListTable variablePaddingL0"
+                                    class="variablesListTable variablePaddingL1"
                                   >
                                     <div
                                       class="variableListRow variable-list-row"
@@ -3069,7 +3069,7 @@ exports[`<PipelineVariables /> tests snapshot test 1`] = `
                                   data-testid="pipeline.stage_2.Environment-details"
                                 >
                                   <div
-                                    class="variablesListTable variablePaddingL0"
+                                    class="variablesListTable variablePaddingL1"
                                   >
                                     <div
                                       class="variableListRow variable-list-row"
@@ -3945,7 +3945,7 @@ exports[`<PipelineVariables /> tests snapshot test 1`] = `
                                   data-testid="pipeline.parallel_stage_.Environment-details"
                                 >
                                   <div
-                                    class="variablesListTable variablePaddingL0"
+                                    class="variablesListTable variablePaddingL1"
                                   >
                                     <div
                                       class="variableListRow variable-list-row"
@@ -4821,7 +4821,7 @@ exports[`<PipelineVariables /> tests snapshot test 1`] = `
                                   data-testid="pipeline.parallel_stage_2.Environment-details"
                                 >
                                   <div
-                                    class="variablesListTable variablePaddingL0"
+                                    class="variablesListTable variablePaddingL1"
                                   >
                                     <div
                                       class="variableListRow variable-list-row"
