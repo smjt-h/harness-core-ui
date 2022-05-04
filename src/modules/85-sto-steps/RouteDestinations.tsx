@@ -66,5 +66,15 @@ export default (
     >
       <ChildAppMounter ChildApp={STOApp} customComponents={{ ExecutionCard, CardRailView }} />
     </RouteWithLayout>
+
+    <RouteWithLayout
+      sidebarProps={STOSideNavProps}
+      path={[
+        routes.toSTOTargets({ ...accountPathProps }),
+        routes.toSTOProjectTargets({ ...accountPathProps, ...projectPathProps })
+      ]}
+    >
+      <ChildAppMounter ChildApp={STOApp} />
+    </RouteWithLayout>
   </>
 )

@@ -61,8 +61,8 @@ showInstructions: Show instructions
 apiKey: '{{$.common.apikey}}'
 apiKeyOrPassword: Password/Api Key
 costVisibility: Cost Visibility
-chooseMethodForK8sConnection: Choose the method for Harness to use when connecting to the cluster.
-chooseMethodForGCPConnection: Choose the method for Harness to use when connecting to GCP.
+chooseMethodForConnection: 'Choose the method for Harness to use when connecting to {{name}}.'
+k8sConnection: the cluster
 delegateInClusterInfo: 'Use the credentials of a specific Harness Delegate (IAM role, service account, etc)'
 createConnector: 'Create a Connector'
 connectorEmptyState: 'There are no connectors in your project'
@@ -107,6 +107,7 @@ title:
   ceAws: 'AWS Connector '
   gcpKms: GCP Key Management Service
   errorTracking: 'Error Tracking'
+  azure: 'Azure Cloud Provider'
 name_labels:
   Kubernetes: 'Kubernetes Connector Name'
   HttpHelmRepo: 'Helm Http Connector Name'
@@ -253,6 +254,19 @@ GCR:
   artifactServer: 'GCR Server'
   stepTwoName: 'Google Container Registry Details'
   registryHostname: 'GCR Registry URL'
+azure:
+  delegateInClusterInfo: 'Use the credentials of a specific Harness Delegate (IAM role, service account, managed identity, etc)'
+  clientId: '{{ $.common.clientId }}'
+  applicationId: 'Application Id'
+  managedIdentity: 'Managed Identity'
+  managedIdentities:
+    userAssigned: 'User Assigned Managed Identity'
+    systemAssigned: 'System Assigned Managed Identity'
+  environments:
+    azureGlobal: 'Azure Global'
+    usGov: 'US Government'
+  auth:
+    certificate: '{{ $.common.certificate }}'
 GCS:
   name: GCS
   fullName: Google Cloud Storage

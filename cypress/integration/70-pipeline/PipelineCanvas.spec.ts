@@ -36,7 +36,7 @@ import {
 } from '../../support/70-pipeline/constants'
 import { getIdentifierFromName } from '../../utils/stringHelpers'
 
-describe('GIT SYNC DISABLED', () => {
+describe.skip('GIT SYNC DISABLED', () => {
   beforeEach(() => {
     cy.on('uncaught:exception', () => {
       // returning false here prevents Cypress from

@@ -133,7 +133,7 @@ describe('Deploy service stage specifications', () => {
       </TestWrapper>
     )
 
-    await waitFor(() => expect(queryByText('variablesText')).toBeTruthy())
+    await waitFor(() => expect(queryByText('common.variables')).toBeTruthy())
   })
 
   test('Should Deployment Type section be present', async () => {

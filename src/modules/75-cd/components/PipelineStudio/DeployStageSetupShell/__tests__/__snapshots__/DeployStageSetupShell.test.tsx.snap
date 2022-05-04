@@ -1217,12 +1217,12 @@ exports[`DeployStageSetupShell tests opens services tab by default 1`] = `
                       </div>
                       <div
                         class="bp3-card bp3-elevation-0 Card--card sectionCard"
-                        id="variablesText"
+                        id="common.variables"
                       >
                         <div
                           class="tabSubHeading"
                         >
-                          variablesText
+                          common.variables
                         </div>
                         <div
                           class="Layout--vertical StyledProps--main"

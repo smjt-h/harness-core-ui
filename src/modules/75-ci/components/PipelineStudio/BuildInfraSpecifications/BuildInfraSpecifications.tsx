@@ -707,7 +707,7 @@ export default function BuildInfraSpecifications({ children }: React.PropsWithCh
                     {getString('pipeline.buildInfra.addCapabilities')}
                   </Text>
                 ),
-                allowedTypes: [MultiTypeInputType.FIXED, MultiTypeInputType.EXPRESSION, MultiTypeInputType.RUNTIME]
+                allowedTypes: [MultiTypeInputType.FIXED, MultiTypeInputType.RUNTIME]
               }}
               disabled={isReadonly}
             />
@@ -995,7 +995,7 @@ export default function BuildInfraSpecifications({ children }: React.PropsWithCh
           />
         </Container>
         <Container className={css.bottomMargin4}>
-          <FormInput.MultiTextInput
+          <MultiTypeTextField
             label={
               <Text
                 font={{ variation: FontVariation.FORM_LABEL }}
@@ -1006,11 +1006,12 @@ export default function BuildInfraSpecifications({ children }: React.PropsWithCh
               </Text>
             }
             name="serviceAccountName"
-            placeholder={getString('pipeline.infraSpecifications.serviceAccountNamePlaceholder')}
-            style={{
-              width: 300
+            style={{ width: 300 }}
+            multiTextInputProps={{
+              multiTextInputProps: { expressions, allowableTypes },
+              disabled: isReadonly,
+              placeholder: getString('pipeline.infraSpecifications.serviceAccountNamePlaceholder')
             }}
-            multiTextInputProps={{ expressions, disabled: isReadonly, allowableTypes }}
           />
         </Container>
         <Container width={300}>

@@ -58,6 +58,7 @@ import GitSyncRepoTab from '@gitsync/pages/repos/GitSyncRepoTab'
 import GitSyncEntityTab from '@gitsync/pages/entities/GitSyncEntityTab'
 import GitSyncErrors from '@gitsync/pages/errors/GitSyncErrors'
 import GitSyncConfigTab from '@gitsync/pages/config/GitSyncConfigTab'
+import VariablesPage from '@variables/pages/variables/VariablesPage'
 import { registerFeatureFlagPipelineStage } from './pages/pipeline-studio/views/FeatureFlagStage'
 import { registerFlagConfigurationPipelineStep } from './components/PipelineSteps'
 import { TargetsPage } from './pages/target-management/targets/TargetsPage'
@@ -341,6 +342,14 @@ const CFRoutes: FC = () => {
         exact
       >
         <SecretsPage />
+      </RouteWithLayout>
+      <RouteWithLayout
+        licenseRedirectData={licenseRedirectData}
+        sidebarProps={CFSideNavProps}
+        path={routes.toVariables({ ...accountPathProps, ...projectPathProps, ...pipelineModuleParams })}
+        exact
+      >
+        <VariablesPage />
       </RouteWithLayout>
 
       <RouteWithLayout

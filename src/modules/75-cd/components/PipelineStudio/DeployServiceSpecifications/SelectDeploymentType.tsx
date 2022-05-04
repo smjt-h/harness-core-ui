@@ -18,7 +18,7 @@ import cx from 'classnames'
 import { useStrings, UseStringsReturn } from 'framework/strings'
 import { isCommunityPlan } from '@common/utils/utils'
 import { StageErrorContext } from '@pipeline/context/StageErrorContext'
-import { isServerlessDeploymentType, ServiceDeploymentType } from '@pipeline/utils/stageHelpers'
+import { ServiceDeploymentType } from '@pipeline/utils/stageHelpers'
 import { DeployTabs } from '@pipeline/components/PipelineStudio/CommonUtils/DeployStageSetupShellUtils'
 import { useFeatureFlags } from '@common/hooks/useFeatureFlag'
 import type { StringsMap } from 'framework/strings/StringsContext'
@@ -87,14 +87,6 @@ const CardList = ({
   )
 }
 
-const getCGTypes = (cgSupportedDeploymentTypes: DeploymentTypeItem[], serverlessFF = false): DeploymentTypeItem[] => {
-  let cgTypes = cgSupportedDeploymentTypes
-  if (serverlessFF) {
-    cgTypes = cgTypes.filter(deploymentType => !isServerlessDeploymentType(deploymentType.value))
-  }
-  return cgTypes
-}
-
 const getServerlessDeploymentTypes = (
   getString: (key: keyof StringsMap, vars?: Record<string, any> | undefined) => string,
   SERVERLESS_SUPPORT = false
@@ -160,9 +152,10 @@ export default function SelectDeploymentType(props: SelectServiceDeploymentTypeP
         label: getString('pipeline.nativeHelm'),
         icon: 'service-helm',
         value: ServiceDeploymentType.NativeHelm
-      }
+      },
+      ...getServerlessDeploymentTypes(getString, SERVERLESS_SUPPORT)
     ],
-    [getString]
+    [getString, SERVERLESS_SUPPORT]
   )
 
   // Suppported in CG (First Gen - Old Version of Harness App)
@@ -202,8 +195,7 @@ export default function SelectDeploymentType(props: SelectServiceDeploymentTypeP
         label: getString('pipeline.serviceDeploymentTypes.ssh'),
         icon: 'secret-ssh',
         value: ServiceDeploymentType.ssh
-      },
-      ...getServerlessDeploymentTypes(getString, SERVERLESS_SUPPORT)
+      }
     ],
     [getString]
   )
@@ -242,19 +234,8 @@ export default function SelectDeploymentType(props: SelectServiceDeploymentTypeP
       })
       setCgDeploymentTypes(cgSupportedDeploymentTypes)
     } else {
-      let ngTypes: DeploymentTypeItem[] = ngSupportedDeploymentTypes
-
-      if (SERVERLESS_SUPPORT) {
-        // If FF enabled - Serverless deployment types will be in NG - left section
-        ngTypes = [
-          ...ngTypes,
-          ...cgSupportedDeploymentTypes.filter(deploymentType => isServerlessDeploymentType(deploymentType.value))
-        ]
-      }
-      setNgDeploymentTypes(ngTypes)
-
-      const cgTypes = getCGTypes(cgSupportedDeploymentTypes, SERVERLESS_SUPPORT)
-      cgTypes.forEach(deploymentType => {
+      setNgDeploymentTypes(ngSupportedDeploymentTypes)
+      cgSupportedDeploymentTypes.forEach(deploymentType => {
         deploymentType['disabled'] = true
         deploymentType['tooltip'] = (
           <div
@@ -269,9 +250,9 @@ export default function SelectDeploymentType(props: SelectServiceDeploymentTypeP
         )
         deploymentType['tooltipProps'] = { isDark: true }
       })
-      setCgDeploymentTypes(cgTypes)
+      setCgDeploymentTypes(cgSupportedDeploymentTypes)
     }
-  }, [SERVERLESS_SUPPORT])
+  }, [])
 
   React.useEffect(() => {
     subscribeForm({ tab: DeployTabs.SERVICE, form: formikRef })

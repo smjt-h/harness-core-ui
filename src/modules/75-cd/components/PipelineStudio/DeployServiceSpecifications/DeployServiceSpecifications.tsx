@@ -20,13 +20,13 @@ import {
 } from '@wings-software/uicore'
 import { Color, Intent } from '@harness/design-system'
 import produce from 'immer'
-import { debounce, get, isEmpty, set, unset } from 'lodash-es'
+import { debounce, defaultTo, get, isEmpty, set, unset } from 'lodash-es'
 import { StepViewType } from '@pipeline/components/AbstractSteps/Step'
 import { useStrings } from 'framework/strings'
 
 import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
 import { StepType } from '@pipeline/components/PipelineSteps/PipelineStepInterface'
-import { ServiceConfig, StageElementConfig, useGetServiceList } from 'services/cd-ng'
+import { ServiceConfig, ServiceDefinition, StageElementConfig, useGetServiceList } from 'services/cd-ng'
 import factory from '@pipeline/components/PipelineSteps/PipelineStepFactory'
 import { usePipelineContext } from '@pipeline/components/PipelineStudio/PipelineContext/PipelineContext'
 import {
@@ -48,6 +48,7 @@ import { useDeepCompareEffect } from '@common/hooks'
 import {
   deleteStageData,
   doesStageContainOtherData,
+  getStepTypeByDeploymentType,
   ServiceDeploymentType,
   StageType
 } from '@pipeline/utils/stageHelpers'
@@ -407,10 +408,11 @@ export default function DeployServiceSpecifications(props: React.PropsWithChildr
                   readonly={isReadonly}
                   initialValues={{
                     stageIndex,
-                    setupModeType
+                    setupModeType,
+                    deploymentType: selectedDeploymentType as ServiceDefinition['type']
                   }}
                   allowableTypes={allowableTypes}
-                  type={StepType.K8sServiceSpec}
+                  type={getStepTypeByDeploymentType(defaultTo(selectedDeploymentType, ''))}
                   stepViewType={StepViewType.Edit}
                 />
               </Layout.Horizontal>

@@ -5,12 +5,16 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import { isEmpty } from 'lodash-es'
+import { get, isEmpty } from 'lodash-es'
 import moment from 'moment'
+import { RUNTIME_INPUT_VALUE, SelectOption } from '@harness/uicore'
 import type { GitFilterScope } from '@common/components/GitFilters/GitFilters'
 import { usePipelineContext } from '@pipeline/components/PipelineStudio/PipelineContext/PipelineContext'
+import { RegExAllowedInputExpression } from '@pipeline/components/PipelineSteps/Steps/CustomVariables/CustomVariableInputSet'
 import type { GitQueryParams } from '@common/interfaces/RouteInterfaces'
 import { useQueryParams } from '@common/hooks'
+import type { StepViewType } from '@pipeline/components/AbstractSteps/Step'
+import { ConnectorRefWidth } from './constants'
 
 // Returns first 7 letters of commit ID
 export function getShortCommitId(commitId: string): string {
@@ -55,3 +59,45 @@ export function useGitScope(): GitFilterScope | undefined {
     }
   }
 }
+
+export const getAllowedValuesFromTemplate = (template: Record<string, any>, fieldPath: string): SelectOption[] => {
+  if (!template || !fieldPath) {
+    return []
+  }
+  const value = get(template, fieldPath, '')
+  const items: SelectOption[] = []
+  if (RegExAllowedInputExpression.test(value as string)) {
+    // This separates out "<+input>.allowedValues(a, b, c)" to ["<+input>", ["a", "b", "c"]]
+    const match = (value as string).match(RegExAllowedInputExpression)
+    if (match && match?.length > 1) {
+      const allowedValues = match[1]
+      items.push(...allowedValues.split(',').map(item => ({ label: item, value: item })))
+    }
+  }
+  return items
+}
+
+export const shouldRenderRunTimeInputView = (value: any): boolean => {
+  if (!value) {
+    return false
+  }
+  if (typeof value === 'object') {
+    return Object.keys(value).some(key => typeof value[key] === 'string' && value[key].startsWith(RUNTIME_INPUT_VALUE))
+  } else {
+    return typeof value === 'string' && value.startsWith(RUNTIME_INPUT_VALUE)
+  }
+}
+
+export const shouldRenderRunTimeInputViewWithAllowedValues = (
+  fieldPath: string,
+  template?: Record<string, any>
+): boolean => {
+  if (!template || !fieldPath) {
+    return false
+  }
+  const allowedValues = get(template, fieldPath, '')
+  return shouldRenderRunTimeInputView(allowedValues) && RegExAllowedInputExpression.test(allowedValues)
+}
+
+export const getConnectorRefWidth = (viewType: StepViewType): number =>
+  Object.entries(ConnectorRefWidth).find(key => key[0] === viewType)?.[1] || ConnectorRefWidth.DefaultView

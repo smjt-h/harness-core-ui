@@ -169,7 +169,7 @@ export function PipelineVariablesWithRef(
         </div>
       )}
       <ConfirmationDialog
-        titleText={getString('variablesText')}
+        titleText={getString('common.variables')}
         contentText={getString('pipeline.stepConfigHasChanges')}
         isOpen={isConfirmationDialogOpen}
         confirmButtonText={getString('applyChanges')}

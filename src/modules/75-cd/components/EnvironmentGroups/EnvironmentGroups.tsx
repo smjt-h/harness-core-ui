@@ -38,7 +38,7 @@ import { useMutateAsGet, useQueryParams, useUpdateQueryParams } from '@common/ho
 import type { ModulePathParams, ProjectPathProps } from '@common/interfaces/RouteInterfaces'
 import { NGBreadcrumbs } from '@common/components/NGBreadcrumbs/NGBreadcrumbs'
 
-import { FilterContextProvider } from '@pipeline/pages/pipeline-deployment-list/FiltersContext/FiltersContext'
+import { FilterContextProvider } from '@cd/context/FiltersContext'
 
 import CreateEnvironmentGroupModal from './CreateEnvironmentGroupModal'
 import EnvironmentGroupsList from './EnvironmentGroupsList/EnvironmentGroupsList'

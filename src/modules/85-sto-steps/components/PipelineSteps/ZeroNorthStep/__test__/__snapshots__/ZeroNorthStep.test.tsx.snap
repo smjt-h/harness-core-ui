@@ -3851,7 +3851,8 @@ exports[`ZeroNorth Step InputSet View should render all fields 1`] = `
             </p>
           </div>
           <div
-            class="Layout--horizontal Layout--layout-spacing-medium StyledProps--main formGroup lgOverride"
+            class="Layout--horizontal Layout--layout-spacing-medium StyledProps--main formGroup lgOverride lg StyledProps--margin-top-xsmall StyledProps--margin-bottom-small"
+            style="align-items: baseline;"
           >
             <div
               class="StyledProps--font StyledProps--main"
