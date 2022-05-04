@@ -34,7 +34,7 @@ export type AuditFilterProperties = FilterProperties & {
   )[]
   endTime?: number
   environments?: Environment[]
-  modules?: ('CD' | 'CI' | 'CV' | 'CF' | 'CE' | 'STO' | 'CORE' | 'PMS' | 'TEMPLATESERVICE')[]
+  modules?: ('CD' | 'CI' | 'CV' | 'CF' | 'CE' | 'STO' | 'CORE' | 'PMS' | 'TEMPLATESERVICE' | 'GOVERNANCE')[]
   principals?: Principal[]
   resources?: ResourceDTO[]
   scopes?: ResourceScopeDTO[]
@@ -444,6 +444,8 @@ export interface Error {
     | 'AZURE_AUTHENTICATION_ERROR'
     | 'AZURE_CONFIG_ERROR'
     | 'DATA_PROCESSING_ERROR'
+    | 'INVALID_AZURE_AKS_REQUEST'
+    | 'SERVERLESS_EXECUTION_ERROR'
   correlationId?: string
   detailedMessage?: string
   message?: string
@@ -769,6 +771,8 @@ export interface Failure {
     | 'AZURE_AUTHENTICATION_ERROR'
     | 'AZURE_CONFIG_ERROR'
     | 'DATA_PROCESSING_ERROR'
+    | 'INVALID_AZURE_AKS_REQUEST'
+    | 'SERVERLESS_EXECUTION_ERROR'
   correlationId?: string
   errors?: ValidationError[]
   message?: string
@@ -796,33 +800,15 @@ export interface FilterProperties {
     | 'Template'
     | 'EnvironmentGroup'
     | 'FileStore'
+    | 'CCMRecommendation'
+    | 'Anomaly'
   tags?: {
     [key: string]: string
   }
 }
 
 export interface JsonNode {
-  array?: boolean
-  bigDecimal?: boolean
-  bigInteger?: boolean
-  binary?: boolean
-  boolean?: boolean
-  containerNode?: boolean
-  double?: boolean
-  float?: boolean
-  floatingPointNumber?: boolean
-  int?: boolean
-  integralNumber?: boolean
-  long?: boolean
-  missingNode?: boolean
-  nodeType?: 'ARRAY' | 'BINARY' | 'BOOLEAN' | 'MISSING' | 'NULL' | 'NUMBER' | 'OBJECT' | 'POJO' | 'STRING'
-  null?: boolean
-  number?: boolean
-  object?: boolean
-  pojo?: boolean
-  short?: boolean
-  textual?: boolean
-  valueNode?: boolean
+  [key: string]: any
 }
 
 export interface NGTag {
@@ -844,7 +830,7 @@ export interface NGTemplateInfoConfig {
   tags?: {
     [key: string]: string
   }
-  type: 'Step' | 'Stage' | 'Pipeline'
+  type: 'Step' | 'Stage' | 'Pipeline' | 'MonitoredService'
   versionLabel: string
 }
 
@@ -945,6 +931,8 @@ export interface ResourceDTO {
     | 'API_KEY'
     | 'TOKEN'
     | 'DELEGATE_TOKEN'
+    | 'GOVERNANCE_POLICY'
+    | 'GOVERNANCE_POLICY_SET'
 }
 
 export interface ResourceScopeDTO {
@@ -1297,6 +1285,8 @@ export interface ResponseMessage {
     | 'AZURE_AUTHENTICATION_ERROR'
     | 'AZURE_CONFIG_ERROR'
     | 'DATA_PROCESSING_ERROR'
+    | 'INVALID_AZURE_AKS_REQUEST'
+    | 'SERVERLESS_EXECUTION_ERROR'
   exception?: Throwable
   failureTypes?: (
     | 'EXPIRED'
@@ -1421,10 +1411,12 @@ export interface TemplateFilterProperties {
     | 'Template'
     | 'EnvironmentGroup'
     | 'FileStore'
+    | 'CCMRecommendation'
+    | 'Anomaly'
   tags?: {
     [key: string]: string
   }
-  templateEntityTypes?: ('Step' | 'Stage' | 'Pipeline')[]
+  templateEntityTypes?: ('Step' | 'Stage' | 'Pipeline' | 'MonitoredService')[]
   templateIdentifiers?: string[]
   templateNames?: string[]
 }
@@ -1470,7 +1462,7 @@ export interface TemplateResponse {
   tags?: {
     [key: string]: string
   }
-  templateEntityType?: 'Step' | 'Stage' | 'Pipeline'
+  templateEntityType?: 'Step' | 'Stage' | 'Pipeline' | 'MonitoredService'
   templateScope?: 'account' | 'org' | 'project' | 'unknown'
   version?: number
   versionLabel?: string
@@ -1493,7 +1485,7 @@ export interface TemplateSummaryResponse {
   tags?: {
     [key: string]: string
   }
-  templateEntityType?: 'Step' | 'Stage' | 'Pipeline'
+  templateEntityType?: 'Step' | 'Stage' | 'Pipeline' | 'MonitoredService'
   templateScope?: 'account' | 'org' | 'project' | 'unknown'
   version?: number
   versionLabel?: string
@@ -1559,7 +1551,7 @@ export type YamlSchemaErrorWrapperDTO = ErrorMetadataDTO & {
 
 export type FilterDTORequestBody = FilterDTO
 
-export type GetTemplateReferencesBodyRequestBody = string
+export type UpdateExistingTemplateLabelBodyRequestBody = string
 
 export interface GetFilterListQueryParams {
   pageIndex?: number
@@ -1578,6 +1570,8 @@ export interface GetFilterListQueryParams {
     | 'Template'
     | 'EnvironmentGroup'
     | 'FileStore'
+    | 'CCMRecommendation'
+    | 'Anomaly'
 }
 
 export type GetFilterListProps = Omit<
@@ -1740,6 +1734,8 @@ export interface DeleteFilterQueryParams {
     | 'Template'
     | 'EnvironmentGroup'
     | 'FileStore'
+    | 'CCMRecommendation'
+    | 'Anomaly'
 }
 
 export type DeleteFilterProps = Omit<
@@ -1803,6 +1799,8 @@ export interface GetFilterQueryParams {
     | 'Template'
     | 'EnvironmentGroup'
     | 'FileStore'
+    | 'CCMRecommendation'
+    | 'Anomaly'
 }
 
 export interface GetFilterPathParams {
@@ -1907,7 +1905,7 @@ export type CreateTemplateProps = Omit<
     ResponseTemplateWrapperResponse,
     Failure | Error,
     CreateTemplateQueryParams,
-    GetTemplateReferencesBodyRequestBody,
+    UpdateExistingTemplateLabelBodyRequestBody,
     void
   >,
   'path' | 'verb'
@@ -1921,7 +1919,7 @@ export const CreateTemplate = (props: CreateTemplateProps) => (
     ResponseTemplateWrapperResponse,
     Failure | Error,
     CreateTemplateQueryParams,
-    GetTemplateReferencesBodyRequestBody,
+    UpdateExistingTemplateLabelBodyRequestBody,
     void
   >
     verb="POST"
@@ -1936,7 +1934,7 @@ export type UseCreateTemplateProps = Omit<
     ResponseTemplateWrapperResponse,
     Failure | Error,
     CreateTemplateQueryParams,
-    GetTemplateReferencesBodyRequestBody,
+    UpdateExistingTemplateLabelBodyRequestBody,
     void
   >,
   'path' | 'verb'
@@ -1950,7 +1948,7 @@ export const useCreateTemplate = (props: UseCreateTemplateProps) =>
     ResponseTemplateWrapperResponse,
     Failure | Error,
     CreateTemplateQueryParams,
-    GetTemplateReferencesBodyRequestBody,
+    UpdateExistingTemplateLabelBodyRequestBody,
     void
   >('POST', `/templates`, { base: getConfig('template/api'), ...props })
 
@@ -1962,7 +1960,7 @@ export const createTemplatePromise = (
     ResponseTemplateWrapperResponse,
     Failure | Error,
     CreateTemplateQueryParams,
-    GetTemplateReferencesBodyRequestBody,
+    UpdateExistingTemplateLabelBodyRequestBody,
     void
   >,
   signal?: RequestInit['signal']
@@ -1971,7 +1969,7 @@ export const createTemplatePromise = (
     ResponseTemplateWrapperResponse,
     Failure | Error,
     CreateTemplateQueryParams,
-    GetTemplateReferencesBodyRequestBody,
+    UpdateExistingTemplateLabelBodyRequestBody,
     void
   >('POST', getConfig('template/api'), `/templates`, props, signal)
 
@@ -2263,6 +2261,9 @@ export interface GetTemplateReferencesQueryParams {
   accountIdentifier: string
   orgIdentifier?: string
   projectIdentifier?: string
+  branch?: string
+  repoIdentifier?: string
+  getDefaultFromOtherRepo?: boolean
 }
 
 export type GetTemplateReferencesProps = Omit<
@@ -2270,7 +2271,7 @@ export type GetTemplateReferencesProps = Omit<
     ResponseListEntityDetailProtoDTO,
     Failure | Error,
     GetTemplateReferencesQueryParams,
-    GetTemplateReferencesBodyRequestBody,
+    UpdateExistingTemplateLabelBodyRequestBody,
     void
   >,
   'path' | 'verb'
@@ -2281,7 +2282,7 @@ export const GetTemplateReferences = (props: GetTemplateReferencesProps) => (
     ResponseListEntityDetailProtoDTO,
     Failure | Error,
     GetTemplateReferencesQueryParams,
-    GetTemplateReferencesBodyRequestBody,
+    UpdateExistingTemplateLabelBodyRequestBody,
     void
   >
     verb="POST"
@@ -2296,7 +2297,7 @@ export type UseGetTemplateReferencesProps = Omit<
     ResponseListEntityDetailProtoDTO,
     Failure | Error,
     GetTemplateReferencesQueryParams,
-    GetTemplateReferencesBodyRequestBody,
+    UpdateExistingTemplateLabelBodyRequestBody,
     void
   >,
   'path' | 'verb'
@@ -2307,7 +2308,7 @@ export const useGetTemplateReferences = (props: UseGetTemplateReferencesProps) =
     ResponseListEntityDetailProtoDTO,
     Failure | Error,
     GetTemplateReferencesQueryParams,
-    GetTemplateReferencesBodyRequestBody,
+    UpdateExistingTemplateLabelBodyRequestBody,
     void
   >('POST', `/templates/templateReferences`, { base: getConfig('template/api'), ...props })
 
@@ -2316,7 +2317,7 @@ export const getTemplateReferencesPromise = (
     ResponseListEntityDetailProtoDTO,
     Failure | Error,
     GetTemplateReferencesQueryParams,
-    GetTemplateReferencesBodyRequestBody,
+    UpdateExistingTemplateLabelBodyRequestBody,
     void
   >,
   signal?: RequestInit['signal']
@@ -2325,7 +2326,7 @@ export const getTemplateReferencesPromise = (
     ResponseListEntityDetailProtoDTO,
     Failure | Error,
     GetTemplateReferencesQueryParams,
-    GetTemplateReferencesBodyRequestBody,
+    UpdateExistingTemplateLabelBodyRequestBody,
     void
   >('POST', getConfig('template/api'), `/templates/templateReferences`, props, signal)
 
@@ -2341,6 +2342,8 @@ export interface UpdateExistingTemplateLabelQueryParams {
   lastObjectId?: string
   resolvedConflictCommitId?: string
   baseBranch?: string
+  connectorRef?: string
+  storeType?: 'INLINE' | 'REMOTE'
   setDefaultTemplate?: boolean
   comments?: string
 }
@@ -2355,7 +2358,7 @@ export type UpdateExistingTemplateLabelProps = Omit<
     ResponseTemplateWrapperResponse,
     Failure | Error,
     UpdateExistingTemplateLabelQueryParams,
-    GetTemplateReferencesBodyRequestBody,
+    UpdateExistingTemplateLabelBodyRequestBody,
     UpdateExistingTemplateLabelPathParams
   >,
   'path' | 'verb'
@@ -2374,7 +2377,7 @@ export const UpdateExistingTemplateLabel = ({
     ResponseTemplateWrapperResponse,
     Failure | Error,
     UpdateExistingTemplateLabelQueryParams,
-    GetTemplateReferencesBodyRequestBody,
+    UpdateExistingTemplateLabelBodyRequestBody,
     UpdateExistingTemplateLabelPathParams
   >
     verb="PUT"
@@ -2389,7 +2392,7 @@ export type UseUpdateExistingTemplateLabelProps = Omit<
     ResponseTemplateWrapperResponse,
     Failure | Error,
     UpdateExistingTemplateLabelQueryParams,
-    GetTemplateReferencesBodyRequestBody,
+    UpdateExistingTemplateLabelBodyRequestBody,
     UpdateExistingTemplateLabelPathParams
   >,
   'path' | 'verb'
@@ -2408,7 +2411,7 @@ export const useUpdateExistingTemplateLabel = ({
     ResponseTemplateWrapperResponse,
     Failure | Error,
     UpdateExistingTemplateLabelQueryParams,
-    GetTemplateReferencesBodyRequestBody,
+    UpdateExistingTemplateLabelBodyRequestBody,
     UpdateExistingTemplateLabelPathParams
   >(
     'PUT',
@@ -2429,7 +2432,7 @@ export const updateExistingTemplateLabelPromise = (
     ResponseTemplateWrapperResponse,
     Failure | Error,
     UpdateExistingTemplateLabelQueryParams,
-    GetTemplateReferencesBodyRequestBody,
+    UpdateExistingTemplateLabelBodyRequestBody,
     UpdateExistingTemplateLabelPathParams
   > & { templateIdentifier: string; versionLabel: string },
   signal?: RequestInit['signal']
@@ -2438,7 +2441,7 @@ export const updateExistingTemplateLabelPromise = (
     ResponseTemplateWrapperResponse,
     Failure | Error,
     UpdateExistingTemplateLabelQueryParams,
-    GetTemplateReferencesBodyRequestBody,
+    UpdateExistingTemplateLabelBodyRequestBody,
     UpdateExistingTemplateLabelPathParams
   >('PUT', getConfig('template/api'), `/templates/update/${templateIdentifier}/${versionLabel}`, props, signal)
 

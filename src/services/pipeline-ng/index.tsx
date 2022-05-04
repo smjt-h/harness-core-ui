@@ -70,6 +70,13 @@ export interface ArtifactTypeSpec {
   [key: string]: any
 }
 
+export type ArtifactoryGenericRegistrySpec = ArtifactTypeSpec & {
+  artifactDirectory?: string
+  artifactPath?: string
+  connectorRef?: string
+  eventConditions?: TriggerEventDataCondition[]
+}
+
 export type ArtifactoryRegistrySpec = ArtifactTypeSpec & {
   connectorRef?: string
   eventConditions?: TriggerEventDataCondition[]
@@ -99,7 +106,7 @@ export type AuditFilterProperties = FilterProperties & {
   )[]
   endTime?: number
   environments?: Environment[]
-  modules?: ('CD' | 'CI' | 'CV' | 'CF' | 'CE' | 'CORE' | 'PMS' | 'TEMPLATESERVICE')[]
+  modules?: ('CD' | 'CI' | 'CV' | 'CF' | 'CE' | 'STO' | 'CORE' | 'PMS' | 'TEMPLATESERVICE' | 'GOVERNANCE')[]
   principals?: Principal[]
   resources?: ResourceDTO[]
   scopes?: ResourceScopeDTO[]
@@ -663,6 +670,12 @@ export interface Error {
     | 'INVALID_ARTIFACTORY_REGISTRY_REQUEST'
     | 'INVALID_NEXUS_REGISTRY_REQUEST'
     | 'ENTITY_NOT_FOUND'
+    | 'INVALID_AZURE_CONTAINER_REGISTRY_REQUEST'
+    | 'AZURE_AUTHENTICATION_ERROR'
+    | 'AZURE_CONFIG_ERROR'
+    | 'DATA_PROCESSING_ERROR'
+    | 'INVALID_AZURE_AKS_REQUEST'
+    | 'SERVERLESS_EXECUTION_ERROR'
   correlationId?: string
   detailedMessage?: string
   message?: string
@@ -723,7 +736,7 @@ export interface ExecutionInfo {
     | 'INTERVENTION_WAITING'
     | 'APPROVAL_WAITING'
     | 'APPROVAL_REJECTED'
-    | 'WAITING'
+    | 'Waiting'
   uuid?: string
 }
 
@@ -778,7 +791,7 @@ export interface ExecutionNode {
     | 'INTERVENTION_WAITING'
     | 'APPROVAL_WAITING'
     | 'APPROVAL_REJECTED'
-    | 'WAITING'
+    | 'Waiting'
   stepDetails?: {
     [key: string]: {
       [key: string]: { [key: string]: any }
@@ -1110,6 +1123,12 @@ export interface Failure {
     | 'INVALID_ARTIFACTORY_REGISTRY_REQUEST'
     | 'INVALID_NEXUS_REGISTRY_REQUEST'
     | 'ENTITY_NOT_FOUND'
+    | 'INVALID_AZURE_CONTAINER_REGISTRY_REQUEST'
+    | 'AZURE_AUTHENTICATION_ERROR'
+    | 'AZURE_CONFIG_ERROR'
+    | 'DATA_PROCESSING_ERROR'
+    | 'INVALID_AZURE_AKS_REQUEST'
+    | 'SERVERLESS_EXECUTION_ERROR'
   correlationId?: string
   errors?: ValidationError[]
   message?: string
@@ -1160,6 +1179,9 @@ export interface FilterProperties {
     | 'Audit'
     | 'Template'
     | 'EnvironmentGroup'
+    | 'FileStore'
+    | 'CCMRecommendation'
+    | 'Anomaly'
   tags?: {
     [key: string]: string
   }
@@ -1295,7 +1317,7 @@ export interface GraphLayoutNode {
     | 'INTERVENTION_WAITING'
     | 'APPROVAL_WAITING'
     | 'APPROVAL_REJECTED'
-    | 'WAITING'
+    | 'Waiting'
   stepDetails?: {
     [key: string]: {
       [key: string]: { [key: string]: any }
@@ -1380,7 +1402,6 @@ export interface InputSetResponse {
   tags?: {
     [key: string]: string
   }
-  version?: number
 }
 
 export interface InputSetSanitiseResponse {
@@ -1407,7 +1428,6 @@ export interface InputSetSummaryResponse {
   tags?: {
     [key: string]: string
   }
-  version?: number
 }
 
 export interface InputSetTemplateRequest {
@@ -1485,27 +1505,7 @@ export interface JiraIssueKeyNG {
 }
 
 export interface JsonNode {
-  array?: boolean
-  bigDecimal?: boolean
-  bigInteger?: boolean
-  binary?: boolean
-  boolean?: boolean
-  containerNode?: boolean
-  double?: boolean
-  float?: boolean
-  floatingPointNumber?: boolean
-  int?: boolean
-  integralNumber?: boolean
-  long?: boolean
-  missingNode?: boolean
-  nodeType?: 'ARRAY' | 'BINARY' | 'BOOLEAN' | 'MISSING' | 'NULL' | 'NUMBER' | 'OBJECT' | 'POJO' | 'STRING'
-  null?: boolean
-  number?: boolean
-  object?: boolean
-  pojo?: boolean
-  short?: boolean
-  textual?: boolean
-  valueNode?: boolean
+  [key: string]: any
 }
 
 export interface LandingDashboardRequestPMS {
@@ -1629,7 +1629,6 @@ export interface NGTriggerResponse {
   projectIdentifier?: string
   targetIdentifier?: string
   type?: 'Webhook' | 'Artifact' | 'Manifest' | 'Scheduled'
-  version?: number
   yaml?: string
 }
 
@@ -1722,7 +1721,6 @@ export interface OverlayInputSetResponse {
   tags?: {
     [key: string]: string
   }
-  version?: number
 }
 
 export interface PMSPipelineResponseDTO {
@@ -1730,7 +1728,6 @@ export interface PMSPipelineResponseDTO {
   gitDetails?: EntityGitDetails
   modules?: string[]
   resolvedTemplatesPipelineYaml?: string
-  version?: number
   yamlPipeline?: string
 }
 
@@ -1895,7 +1892,7 @@ export type PipelineExecutionFilterProperties = FilterProperties & {
     | 'INTERVENTION_WAITING'
     | 'APPROVAL_WAITING'
     | 'APPROVAL_REJECTED'
-    | 'WAITING'
+    | 'Waiting'
   )[]
 }
 
@@ -1962,7 +1959,7 @@ export interface PipelineExecutionSummary {
     | 'INTERVENTION_WAITING'
     | 'APPROVAL_WAITING'
     | 'APPROVAL_REJECTED'
-    | 'WAITING'
+    | 'Waiting'
   successfulStagesCount?: number
   tags?: NGTag[]
   totalStagesCount?: number
@@ -2177,6 +2174,8 @@ export interface ResourceDTO {
     | 'API_KEY'
     | 'TOKEN'
     | 'DELEGATE_TOKEN'
+    | 'GOVERNANCE_POLICY'
+    | 'GOVERNANCE_POLICY_SET'
 }
 
 export interface ResourceScopeDTO {
@@ -2738,6 +2737,12 @@ export interface ResponseMessage {
     | 'INVALID_ARTIFACTORY_REGISTRY_REQUEST'
     | 'INVALID_NEXUS_REGISTRY_REQUEST'
     | 'ENTITY_NOT_FOUND'
+    | 'INVALID_AZURE_CONTAINER_REGISTRY_REQUEST'
+    | 'AZURE_AUTHENTICATION_ERROR'
+    | 'AZURE_CONFIG_ERROR'
+    | 'DATA_PROCESSING_ERROR'
+    | 'INVALID_AZURE_AKS_REQUEST'
+    | 'SERVERLESS_EXECUTION_ERROR'
   exception?: Throwable
   failureTypes?: (
     | 'EXPIRED'
@@ -3055,7 +3060,7 @@ export interface RetryStageInfo {
     | 'INTERVENTION_WAITING'
     | 'APPROVAL_WAITING'
     | 'APPROVAL_REJECTED'
-    | 'WAITING'
+    | 'Waiting'
 }
 
 export interface RunStageRequestDTO {
@@ -3237,7 +3242,7 @@ export interface SuccessHealthInfo {
 export type TemplateFilterProperties = FilterProperties & {
   childTypes?: string[]
   description?: string
-  templateEntityTypes?: ('Step' | 'Stage' | 'Pipeline')[]
+  templateEntityTypes?: ('Step' | 'Stage' | 'Pipeline' | 'MonitoredService')[]
   templateIdentifiers?: string[]
   templateNames?: string[]
 }
@@ -3435,7 +3440,7 @@ export interface ExecutionSummaryInfo {
     | 'INTERVENTION_WAITING'
     | 'APPROVAL_WAITING'
     | 'APPROVAL_REJECTED'
-    | 'WAITING'
+    | 'Waiting'
   lastExecutionTs?: number
   numOfErrors?: number[]
 }
@@ -3471,9 +3476,9 @@ export type NGTriggerConfigV2RequestBody = NGTriggerConfigV2
 
 export type RunStageRequestDTORequestBody = RunStageRequestDTO
 
-export type UpdateInputSetForPipelineBodyRequestBody = string
+export type CustomWebhookEndpointBodyRequestBody = string
 
-export type WebhookEndpointBodyRequestBody = string
+export type UpdateInputSetForPipelineBodyRequestBody = string
 
 export interface GetInitialStageYamlSnippetQueryParams {
   approvalType: 'HarnessApproval' | 'JiraApproval' | 'ServiceNowApproval'
@@ -4028,6 +4033,9 @@ export interface GetFilterListQueryParams {
     | 'Audit'
     | 'Template'
     | 'EnvironmentGroup'
+    | 'FileStore'
+    | 'CCMRecommendation'
+    | 'Anomaly'
 }
 
 export type GetFilterListProps = Omit<
@@ -4189,6 +4197,9 @@ export interface DeleteFilterQueryParams {
     | 'Audit'
     | 'Template'
     | 'EnvironmentGroup'
+    | 'FileStore'
+    | 'CCMRecommendation'
+    | 'Anomaly'
 }
 
 export type DeleteFilterProps = Omit<
@@ -4251,6 +4262,9 @@ export interface GetFilterQueryParams {
     | 'Audit'
     | 'Template'
     | 'EnvironmentGroup'
+    | 'FileStore'
+    | 'CCMRecommendation'
+    | 'Anomaly'
 }
 
 export interface GetFilterPathParams {
@@ -4411,6 +4425,8 @@ export interface CreateInputSetForPipelineQueryParams {
   commitMsg?: string
   isNewBranch?: boolean
   baseBranch?: string
+  connectorRef?: string
+  storeType?: 'INLINE' | 'REMOTE'
 }
 
 export type CreateInputSetForPipelineProps = Omit<
@@ -4672,6 +4688,8 @@ export interface CreateOverlayInputSetForPipelineQueryParams {
   commitMsg?: string
   isNewBranch?: boolean
   baseBranch?: string
+  connectorRef?: string
+  storeType?: 'INLINE' | 'REMOTE'
 }
 
 export type CreateOverlayInputSetForPipelineProps = Omit<
@@ -4851,6 +4869,8 @@ export interface UpdateOverlayInputSetForPipelineQueryParams {
   lastObjectId?: string
   resolvedConflictCommitId?: string
   baseBranch?: string
+  connectorRef?: string
+  storeType?: 'INLINE' | 'REMOTE'
 }
 
 export interface UpdateOverlayInputSetForPipelinePathParams {
@@ -5188,6 +5208,8 @@ export interface UpdateInputSetForPipelineQueryParams {
   lastObjectId?: string
   resolvedConflictCommitId?: string
   baseBranch?: string
+  connectorRef?: string
+  storeType?: 'INLINE' | 'REMOTE'
 }
 
 export interface UpdateInputSetForPipelinePathParams {
@@ -5291,6 +5313,8 @@ export interface SanitiseInputSetQueryParams {
   lastObjectId?: string
   resolvedConflictCommitId?: string
   baseBranch?: string
+  connectorRef?: string
+  storeType?: 'INLINE' | 'REMOTE'
 }
 
 export interface SanitiseInputSetPathParams {
@@ -7255,6 +7279,9 @@ export interface CreatePipelineQueryParams {
   accountIdentifier: string
   orgIdentifier: string
   projectIdentifier: string
+  identifier?: string
+  name?: string
+  description?: string
   branch?: string
   repoIdentifier?: string
   rootFolder?: string
@@ -7262,6 +7289,8 @@ export interface CreatePipelineQueryParams {
   commitMsg?: string
   isNewBranch?: boolean
   baseBranch?: string
+  connectorRef?: string
+  storeType?: 'INLINE' | 'REMOTE'
 }
 
 export type CreatePipelineProps = Omit<
@@ -7448,7 +7477,7 @@ export interface GetListOfExecutionsQueryParams {
     | 'INTERVENTION_WAITING'
     | 'APPROVAL_WAITING'
     | 'APPROVAL_REJECTED'
-    | 'WAITING'
+    | 'Waiting'
   )[]
   myDeployments?: boolean
   branch?: string
@@ -8433,6 +8462,9 @@ export interface CreatePipelineV2QueryParams {
   accountIdentifier: string
   orgIdentifier: string
   projectIdentifier: string
+  identifier?: string
+  name?: string
+  description?: string
   branch?: string
   repoIdentifier?: string
   rootFolder?: string
@@ -8440,6 +8472,8 @@ export interface CreatePipelineV2QueryParams {
   commitMsg?: string
   isNewBranch?: boolean
   baseBranch?: string
+  connectorRef?: string
+  storeType?: 'INLINE' | 'REMOTE'
 }
 
 export type CreatePipelineV2Props = Omit<
@@ -8638,6 +8672,8 @@ export interface PutPipelineV2QueryParams {
   accountIdentifier: string
   orgIdentifier: string
   projectIdentifier: string
+  name?: string
+  description?: string
   branch?: string
   repoIdentifier?: string
   rootFolder?: string
@@ -8646,6 +8682,8 @@ export interface PutPipelineV2QueryParams {
   lastObjectId?: string
   resolvedConflictCommitId?: string
   baseBranch?: string
+  connectorRef?: string
+  storeType?: 'INLINE' | 'REMOTE'
 }
 
 export interface PutPipelineV2PathParams {
@@ -9059,6 +9097,8 @@ export interface PutPipelineQueryParams {
   accountIdentifier: string
   orgIdentifier: string
   projectIdentifier: string
+  name?: string
+  description?: string
   branch?: string
   repoIdentifier?: string
   rootFolder?: string
@@ -9067,6 +9107,8 @@ export interface PutPipelineQueryParams {
   lastObjectId?: string
   resolvedConflictCommitId?: string
   baseBranch?: string
+  connectorRef?: string
+  storeType?: 'INLINE' | 'REMOTE'
 }
 
 export interface PutPipelinePathParams {
@@ -9885,7 +9927,13 @@ export interface CustomWebhookEndpointQueryParams {
 }
 
 export type CustomWebhookEndpointProps = Omit<
-  MutateProps<ResponseString, Failure | Error, CustomWebhookEndpointQueryParams, WebhookEndpointBodyRequestBody, void>,
+  MutateProps<
+    ResponseString,
+    Failure | Error,
+    CustomWebhookEndpointQueryParams,
+    CustomWebhookEndpointBodyRequestBody,
+    void
+  >,
   'path' | 'verb'
 >
 
@@ -9893,7 +9941,7 @@ export type CustomWebhookEndpointProps = Omit<
  * accept custom webhook event
  */
 export const CustomWebhookEndpoint = (props: CustomWebhookEndpointProps) => (
-  <Mutate<ResponseString, Failure | Error, CustomWebhookEndpointQueryParams, WebhookEndpointBodyRequestBody, void>
+  <Mutate<ResponseString, Failure | Error, CustomWebhookEndpointQueryParams, CustomWebhookEndpointBodyRequestBody, void>
     verb="POST"
     path={`/webhook/custom`}
     base={getConfig('pipeline/api')}
@@ -9906,7 +9954,7 @@ export type UseCustomWebhookEndpointProps = Omit<
     ResponseString,
     Failure | Error,
     CustomWebhookEndpointQueryParams,
-    WebhookEndpointBodyRequestBody,
+    CustomWebhookEndpointBodyRequestBody,
     void
   >,
   'path' | 'verb'
@@ -9916,11 +9964,13 @@ export type UseCustomWebhookEndpointProps = Omit<
  * accept custom webhook event
  */
 export const useCustomWebhookEndpoint = (props: UseCustomWebhookEndpointProps) =>
-  useMutate<ResponseString, Failure | Error, CustomWebhookEndpointQueryParams, WebhookEndpointBodyRequestBody, void>(
-    'POST',
-    `/webhook/custom`,
-    { base: getConfig('pipeline/api'), ...props }
-  )
+  useMutate<
+    ResponseString,
+    Failure | Error,
+    CustomWebhookEndpointQueryParams,
+    CustomWebhookEndpointBodyRequestBody,
+    void
+  >('POST', `/webhook/custom`, { base: getConfig('pipeline/api'), ...props })
 
 /**
  * accept custom webhook event
@@ -9930,7 +9980,7 @@ export const customWebhookEndpointPromise = (
     ResponseString,
     Failure | Error,
     CustomWebhookEndpointQueryParams,
-    WebhookEndpointBodyRequestBody,
+    CustomWebhookEndpointBodyRequestBody,
     void
   >,
   signal?: RequestInit['signal']
@@ -9939,7 +9989,7 @@ export const customWebhookEndpointPromise = (
     ResponseString,
     Failure | Error,
     CustomWebhookEndpointQueryParams,
-    WebhookEndpointBodyRequestBody,
+    CustomWebhookEndpointBodyRequestBody,
     void
   >('POST', getConfig('pipeline/api'), `/webhook/custom`, props, signal)
 
@@ -10252,7 +10302,7 @@ export interface WebhookEndpointQueryParams {
 }
 
 export type WebhookEndpointProps = Omit<
-  MutateProps<ResponseString, Failure | Error, WebhookEndpointQueryParams, WebhookEndpointBodyRequestBody, void>,
+  MutateProps<ResponseString, Failure | Error, WebhookEndpointQueryParams, CustomWebhookEndpointBodyRequestBody, void>,
   'path' | 'verb'
 >
 
@@ -10260,7 +10310,7 @@ export type WebhookEndpointProps = Omit<
  * accept webhook event
  */
 export const WebhookEndpoint = (props: WebhookEndpointProps) => (
-  <Mutate<ResponseString, Failure | Error, WebhookEndpointQueryParams, WebhookEndpointBodyRequestBody, void>
+  <Mutate<ResponseString, Failure | Error, WebhookEndpointQueryParams, CustomWebhookEndpointBodyRequestBody, void>
     verb="POST"
     path={`/webhook/trigger`}
     base={getConfig('pipeline/api')}
@@ -10269,7 +10319,13 @@ export const WebhookEndpoint = (props: WebhookEndpointProps) => (
 )
 
 export type UseWebhookEndpointProps = Omit<
-  UseMutateProps<ResponseString, Failure | Error, WebhookEndpointQueryParams, WebhookEndpointBodyRequestBody, void>,
+  UseMutateProps<
+    ResponseString,
+    Failure | Error,
+    WebhookEndpointQueryParams,
+    CustomWebhookEndpointBodyRequestBody,
+    void
+  >,
   'path' | 'verb'
 >
 
@@ -10277,7 +10333,7 @@ export type UseWebhookEndpointProps = Omit<
  * accept webhook event
  */
 export const useWebhookEndpoint = (props: UseWebhookEndpointProps) =>
-  useMutate<ResponseString, Failure | Error, WebhookEndpointQueryParams, WebhookEndpointBodyRequestBody, void>(
+  useMutate<ResponseString, Failure | Error, WebhookEndpointQueryParams, CustomWebhookEndpointBodyRequestBody, void>(
     'POST',
     `/webhook/trigger`,
     { base: getConfig('pipeline/api'), ...props }
@@ -10291,18 +10347,18 @@ export const webhookEndpointPromise = (
     ResponseString,
     Failure | Error,
     WebhookEndpointQueryParams,
-    WebhookEndpointBodyRequestBody,
+    CustomWebhookEndpointBodyRequestBody,
     void
   >,
   signal?: RequestInit['signal']
 ) =>
-  mutateUsingFetch<ResponseString, Failure | Error, WebhookEndpointQueryParams, WebhookEndpointBodyRequestBody, void>(
-    'POST',
-    getConfig('pipeline/api'),
-    `/webhook/trigger`,
-    props,
-    signal
-  )
+  mutateUsingFetch<
+    ResponseString,
+    Failure | Error,
+    WebhookEndpointQueryParams,
+    CustomWebhookEndpointBodyRequestBody,
+    void
+  >('POST', getConfig('pipeline/api'), `/webhook/trigger`, props, signal)
 
 export interface TriggerProcessingDetailsQueryParams {
   accountIdentifier: string
@@ -10432,6 +10488,7 @@ export interface GetSchemaYamlQueryParams {
     | 'HelmRollback'
     | 'Connectors'
     | 'Secrets'
+    | 'Files'
     | 'Service'
     | 'Environment'
     | 'EnvironmentGroup'
@@ -10443,6 +10500,8 @@ export interface GetSchemaYamlQueryParams {
     | 'CvVerificationJob'
     | 'IntegrationStage'
     | 'IntegrationSteps'
+    | 'SecurityStage'
+    | 'SecuritySteps'
     | 'CvKubernetesActivitySource'
     | 'DeploymentSteps'
     | 'DeploymentStage'
@@ -10457,7 +10516,7 @@ export interface GetSchemaYamlQueryParams {
     | 'ServiceNowCreate'
     | 'ServiceNowUpdate'
     | 'GovernancePolicies'
-    | 'POLICY_STEP'
+    | 'Policy'
     | 'Run'
     | 'RunTests'
     | 'Plugin'
@@ -10472,6 +10531,8 @@ export interface GetSchemaYamlQueryParams {
     | 'BuildAndPushGCR'
     | 'BuildAndPushECR'
     | 'BuildAndPushDockerRegistry'
+    | 'ServerlessAwsLambdaDeploy'
+    | 'ServerlessAwsLambdaRollback'
   projectIdentifier?: string
   orgIdentifier?: string
   scope?: 'account' | 'org' | 'project' | 'unknown'
@@ -10557,6 +10618,7 @@ export interface GetStepYamlSchemaQueryParams {
     | 'HelmRollback'
     | 'Connectors'
     | 'Secrets'
+    | 'Files'
     | 'Service'
     | 'Environment'
     | 'EnvironmentGroup'
@@ -10568,6 +10630,8 @@ export interface GetStepYamlSchemaQueryParams {
     | 'CvVerificationJob'
     | 'IntegrationStage'
     | 'IntegrationSteps'
+    | 'SecurityStage'
+    | 'SecuritySteps'
     | 'CvKubernetesActivitySource'
     | 'DeploymentSteps'
     | 'DeploymentStage'
@@ -10582,7 +10646,7 @@ export interface GetStepYamlSchemaQueryParams {
     | 'ServiceNowCreate'
     | 'ServiceNowUpdate'
     | 'GovernancePolicies'
-    | 'POLICY_STEP'
+    | 'Policy'
     | 'Run'
     | 'RunTests'
     | 'Plugin'
@@ -10597,6 +10661,8 @@ export interface GetStepYamlSchemaQueryParams {
     | 'BuildAndPushGCR'
     | 'BuildAndPushECR'
     | 'BuildAndPushDockerRegistry'
+    | 'ServerlessAwsLambdaDeploy'
+    | 'ServerlessAwsLambdaRollback'
   scope?: 'account' | 'org' | 'project' | 'unknown'
 }
 
