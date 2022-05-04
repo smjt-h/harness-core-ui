@@ -86,7 +86,7 @@ export function useSaveToGitDialog<T = Record<string, string>>(
   /* TODO Don't see proper types for this new errors format, replace Record<string, any> with more stricter type when available */
   const [error, setError] = useState<Record<string, any>>({})
   const [createUpdateStatus, setCreateUpdateStatus] = useState<StepStatus>()
-  const { mutate: createPullRequest, loading: creatingPR } = useCreatePR({})
+  const { mutate: createPullRequest, loading: creatingPR } = useCreatePR({ queryParams: { accountIdentifier: accountId } })
 
   /* Stages for an entity updated/created and/or saved to git */
   const entityCreateUpdateStage = {
