@@ -451,10 +451,7 @@ const TriggersWizardPage: React.FC = (): JSX.Element => {
 
   useEffect(() => {
     if (onEditInitialValues?.pipeline && template?.data?.inputSetTemplateYaml && mergedPipelineKey < 1) {
-      const newOnEditPipeline = merge(
-        parse(template?.data?.inputSetTemplateYaml || '')?.pipeline,
-        onEditInitialValues.pipeline || {}
-      )
+      const newOnEditPipeline = parse(template?.data?.inputSetTemplateYaml || '')?.pipeline
       const newPipeline = clearRuntimeInput(newOnEditPipeline)
       setOnEditInitialValues({
         ...onEditInitialValues,
