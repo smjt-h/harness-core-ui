@@ -12,11 +12,17 @@ import { useParams } from 'react-router-dom'
 import { groupBy } from 'lodash-es'
 import { getScopeFromDTO } from '@common/components/EntityReference/EntityReference'
 import type { ModulePathParams, ResourceGroupDetailsPathProps } from '@common/interfaces/RouteInterfaces'
-import { getScopeDropDownItems, getSelectedScopeType, SelectorScope } from '@rbac/pages/ResourceGroupDetails/utils'
+import {
+  getScopeDropDownItems,
+  getSelectedScopeType,
+  SelectorScope,
+  includesCurrentScope
+} from '@rbac/pages/ResourceGroupDetails/utils'
 import { useStrings } from 'framework/strings'
 import type { ScopeSelector } from 'services/resourcegroups'
 import { Scope } from '@common/interfaces/SecretsInterface'
 import AccountCustomScope from './AccountCustomScope'
+import OrgCustomScope from './OrgCustomScope'
 import css from './ResourceScopeForm.module.scss'
 
 interface ResourceScopeFormProps {
@@ -27,8 +33,8 @@ interface ResourceScopeFormProps {
 const ResourceScopeForm: React.FC<ResourceScopeFormProps> = ({ scopes, onSubmit, onCancel }) => {
   const { accountId, projectIdentifier, orgIdentifier } = useParams<ResourceGroupDetailsPathProps & ModulePathParams>()
   const resourceGroupScope = getScopeFromDTO({ accountIdentifier: accountId, orgIdentifier, projectIdentifier })
-  const [includedScopes, setIncludedScopes] = useState(scopes)
   const scopeGroup = groupBy(scopes, 'orgIdentifier')
+  const [hasCurrentScope, setHasCurrentScope] = useState(includesCurrentScope(scopes, resourceGroupScope))
   const [selectedScopes, setSelectedScopes] = useState(Object.values(scopeGroup))
   const [selectedScope, setSelectedScope] = useState<SelectorScope>(getSelectedScopeType(resourceGroupScope, scopes))
   const { getString } = useStrings()
@@ -36,7 +42,19 @@ const ResourceScopeForm: React.FC<ResourceScopeFormProps> = ({ scopes, onSubmit,
   const getIncludedScopes = (): ScopeSelector[] => {
     switch (selectedScope) {
       case SelectorScope.CUSTOM:
-        return selectedScopes.flat()
+        return [
+          ...(hasCurrentScope
+            ? [
+                {
+                  accountIdentifier: accountId,
+                  orgIdentifier,
+                  projectIdentifier,
+                  filter: 'EXCLUDING_CHILD_SCOPES'
+                } as ScopeSelector
+              ]
+            : []),
+          ...selectedScopes.flat()
+        ]
       default:
         return [
           {
@@ -55,7 +73,6 @@ const ResourceScopeForm: React.FC<ResourceScopeFormProps> = ({ scopes, onSubmit,
         inline={true}
         selectedValue={selectedScope}
         onChange={(e: FormEvent<HTMLInputElement>) => {
-          setIncludedScopes([])
           setSelectedScope(e.currentTarget.value as SelectorScope)
         }}
         options={getScopeDropDownItems(resourceGroupScope, getString)}
@@ -66,10 +83,18 @@ const ResourceScopeForm: React.FC<ResourceScopeFormProps> = ({ scopes, onSubmit,
           <Layout.Vertical border={{ top: true, color: Color.GREY_200 }}>
             {resourceGroupScope === Scope.ACCOUNT && (
               <AccountCustomScope
-                scopes={includedScopes}
-                setIncludedScopes={setIncludedScopes}
                 selectedScopes={selectedScopes}
                 setSelectedScopes={setSelectedScopes}
+                hasCurrentScope={hasCurrentScope}
+                setHasCurrentScope={setHasCurrentScope}
+              />
+            )}
+            {resourceGroupScope === Scope.ORG && (
+              <OrgCustomScope
+                selectedScopes={selectedScopes}
+                setSelectedScopes={setSelectedScopes}
+                hasCurrentScope={hasCurrentScope}
+                setHasCurrentScope={setHasCurrentScope}
               />
             )}
           </Layout.Vertical>
@@ -80,7 +105,6 @@ const ResourceScopeForm: React.FC<ResourceScopeFormProps> = ({ scopes, onSubmit,
           variation={ButtonVariation.PRIMARY}
           text={getString('common.apply')}
           onClick={() => {
-            setIncludedScopes(getIncludedScopes())
             onSubmit(getIncludedScopes())
           }}
         />

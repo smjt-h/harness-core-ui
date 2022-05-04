@@ -5,8 +5,8 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import React, { FormEvent, useState } from 'react'
-import { MultiSelectOption, Layout, RadioButtonGroup, Checkbox, MultiSelect } from '@harness/uicore'
+import React, { useState } from 'react'
+import { MultiSelectOption, Layout, Checkbox, MultiSelect, Radio } from '@harness/uicore'
 import produce from 'immer'
 import { SelectionType } from '@rbac/utils/utils'
 import { useStrings } from 'framework/strings'
@@ -80,20 +80,27 @@ const OrgSelectionRenderer: React.FC<OrgSelectionRendererProps> = ({
         }}
       />
       {includeProjectResources && (
-        <Layout.Vertical spacing="small">
-          <RadioButtonGroup
-            name="project-selection"
-            inline={true}
-            selectedValue={projectSelection}
-            onChange={(e: FormEvent<HTMLInputElement>) => {
-              setProjectSelection(e.currentTarget.value as SelectionType)
-            }}
-            options={[
-              { label: getString('rbac.scopeItems.allProjects'), value: SelectionType.ALL },
-              { label: getString('rbac.scopeItems.specificProjects'), value: SelectionType.SPECIFIED }
-            ]}
-            margin={{ bottom: 'small' }}
-          />
+        <Layout.Vertical spacing="small" padding={{ top: 'xsmall' }}>
+          <Layout.Horizontal spacing="huge" margin={{ left: 'xxlarge' }}>
+            <Radio
+              label={getString('rbac.resourceGroup.all')}
+              inline={true}
+              value={SelectionType.ALL}
+              checked={projectSelection === SelectionType.ALL}
+              onChange={e => {
+                setProjectSelection(e.currentTarget.value as SelectionType)
+              }}
+            />
+            <Radio
+              label={getString('common.specified')}
+              inline={true}
+              value={SelectionType.SPECIFIED}
+              checked={projectSelection === SelectionType.SPECIFIED}
+              onChange={e => {
+                setProjectSelection(e.currentTarget.value as SelectionType)
+              }}
+            />
+          </Layout.Horizontal>
           {projectSelection === SelectionType.SPECIFIED && (
             <MultiSelect
               fill
@@ -105,12 +112,22 @@ const OrgSelectionRenderer: React.FC<OrgSelectionRendererProps> = ({
               onChange={items => {
                 setSelectedScopes(oldVal =>
                   produce(oldVal, draft => {
-                    draft[index] = items.map(item => ({
-                      accountIdentifier,
-                      orgIdentifier,
-                      projectIdentifier: item.value.toString(),
-                      filter: 'EXCLUDING_CHILD_SCOPES'
-                    }))
+                    draft[index] = [
+                      {
+                        accountIdentifier,
+                        orgIdentifier,
+                        filter: 'EXCLUDING_CHILD_SCOPES'
+                      },
+                      ...items.map(
+                        item =>
+                          ({
+                            accountIdentifier,
+                            orgIdentifier,
+                            projectIdentifier: item.value.toString(),
+                            filter: 'EXCLUDING_CHILD_SCOPES'
+                          } as ScopeSelector)
+                      )
+                    ]
                   })
                 )
               }}

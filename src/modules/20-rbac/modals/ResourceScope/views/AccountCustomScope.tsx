@@ -5,7 +5,17 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import { Button, Card, Checkbox, DropDown, Label, Layout, SelectOption, ButtonVariation } from '@harness/uicore'
+import {
+  Button,
+  Card,
+  Checkbox,
+  DropDown,
+  Label,
+  Layout,
+  SelectOption,
+  ButtonVariation,
+  PageSpinner
+} from '@harness/uicore'
 import React from 'react'
 import { useParams } from 'react-router-dom'
 import produce from 'immer'
@@ -13,35 +23,33 @@ import type { AccountPathProps } from '@common/interfaces/RouteInterfaces'
 import { useStrings } from 'framework/strings'
 import { useGetOrganizationList } from 'services/cd-ng'
 import type { ScopeSelector } from 'services/resourcegroups'
-import { getAllProjects, includeProjects } from '@rbac/pages/ResourceGroupDetails/utils'
+import { getAllProjects, includeProjects, includesCurrentScope } from '@rbac/pages/ResourceGroupDetails/utils'
+import { Scope } from '@common/interfaces/SecretsInterface'
 import OrgSelectionRenderer from './OrgSelectionRenderer'
 import css from './ResourceScopeForm.module.scss'
 
 interface AccountCustomScopeProps {
-  scopes: ScopeSelector[]
-  setIncludedScopes: (scopes: ScopeSelector[]) => void
   selectedScopes: ScopeSelector[][]
   setSelectedScopes: React.Dispatch<React.SetStateAction<ScopeSelector[][]>>
+  hasCurrentScope: boolean
+  setHasCurrentScope: React.Dispatch<React.SetStateAction<boolean>>
 }
 
 const AccountCustomScope: React.FC<AccountCustomScopeProps> = ({
-  scopes,
-  setIncludedScopes,
   selectedScopes,
-  setSelectedScopes
+  setSelectedScopes,
+  hasCurrentScope,
+  setHasCurrentScope
 }) => {
   const { accountId } = useParams<AccountPathProps>()
   const { getString } = useStrings()
-  const { data: orgData } = useGetOrganizationList({
+  const { data: orgData, loading } = useGetOrganizationList({
     queryParams: {
       accountIdentifier: accountId
     },
     debounce: 300
   })
-  const accountScopeOnly: ScopeSelector = {
-    accountIdentifier: accountId,
-    filter: 'EXCLUDING_CHILD_SCOPES'
-  }
+
   const organizations: SelectOption[] =
     orgData?.data?.content?.map(org => {
       return {
@@ -50,31 +58,20 @@ const AccountCustomScope: React.FC<AccountCustomScopeProps> = ({
       }
     }) || []
 
-  const includeAccResources = (): boolean => {
-    return !!scopes.find(scope => !scope.orgIdentifier && scope.filter === 'EXCLUDING_CHILD_SCOPES')
-  }
-
   return (
     <Layout.Vertical spacing="small" padding={{ top: 'large' }}>
+      {loading && <PageSpinner />}
       <Checkbox
         label={getString('rbac.resourceScope.includeAccResources')}
-        defaultChecked={includeAccResources()}
+        defaultChecked={hasCurrentScope}
         onChange={event => {
-          setIncludedScopes(
-            produce(scopes, draft => {
-              if (event.currentTarget.checked) {
-                draft.push(accountScopeOnly)
-              } else {
-                draft.filter(item => item !== accountScopeOnly)
-              }
-            })
-          )
+          setHasCurrentScope(event.currentTarget.checked)
         }}
       />
       <Layout.Vertical spacing="medium" className={css.orgSelection}>
         {selectedScopes.map((scope, index) => {
           const org = scope?.[0]?.orgIdentifier
-          return (
+          return includesCurrentScope(scope, Scope.ACCOUNT) ? null : (
             <Card key={org}>
               <Label>{getString('rbac.resourceScope.selectOrg')}</Label>
               <DropDown
@@ -86,7 +83,7 @@ const AccountCustomScope: React.FC<AccountCustomScopeProps> = ({
                     produce(selectedScopes, draft => {
                       draft[index] = [
                         {
-                          filter: 'INCLUDING_CHILD_SCOPES',
+                          filter: 'EXCLUDING_CHILD_SCOPES',
                           accountIdentifier: accountId,
                           orgIdentifier: item.value.toString()
                         }
@@ -107,7 +104,7 @@ const AccountCustomScope: React.FC<AccountCustomScopeProps> = ({
               ) : null}
               <Button
                 variation={ButtonVariation.ICON}
-                icon="trash"
+                icon="main-trash"
                 className={css.deleteIcon}
                 onClick={() => {
                   setSelectedScopes(

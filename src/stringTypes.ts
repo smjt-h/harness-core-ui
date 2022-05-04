@@ -919,6 +919,7 @@ export interface StringsMap {
   'rbac.resourceGroup.updateResourceGroupDialogTitle': string
   'rbac.resourceGroup.updateSuccess': string
   'rbac.resourceScope.includeAccResources': string
+  'rbac.resourceScope.includeOrgResources': string
   'rbac.resourceScope.includeProjResources': string
   'rbac.resourceScope.label': string
   'rbac.resourceScope.select': string

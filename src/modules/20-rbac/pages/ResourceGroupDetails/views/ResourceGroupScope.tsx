@@ -16,6 +16,7 @@ import type { ResourceGroupV2, ScopeSelector } from 'services/resourcegroups'
 import { Scope } from '@common/interfaces/SecretsInterface'
 import { getSelectedScopeLabel } from '../utils'
 import OrgSelectionRenderer from './OrgSelectionRenderer'
+import ProjectSelectionRenderer from './ProjectSelectionRenderer'
 import css from './ResourceGroupScope.module.scss'
 interface ResourceGroupScopeProps {
   resourceGroup: ResourceGroupV2
@@ -53,6 +54,7 @@ const ResourceGroupScope: React.FC<ResourceGroupScopeProps> = ({ includedScopes,
           </Text>
         </Layout.Horizontal>
         {scope === Scope.ACCOUNT && <OrgSelectionRenderer includedScopes={includedScopes} />}
+        {scope === Scope.ORG && <ProjectSelectionRenderer includedScopes={includedScopes} />}
       </Layout.Vertical>
     </Card>
   )

@@ -95,7 +95,7 @@ const OrgSelectionRenderer: React.FC<OrgSelectionRendererProps> = ({ includedSco
   })
 
   const data: OrgSelector[] = Object.entries(scopeGroup)
-    .filter(([org, _scopes]) => !!org)
+    .filter(_val => _val[0] !== 'undefined')
     .map(([org, scopes]) => ({
       organization: organizations?.data?.content
         ?.filter(res => res.organization.identifier === org)
@@ -122,7 +122,9 @@ const OrgSelectionRenderer: React.FC<OrgSelectionRendererProps> = ({ includedSco
     ],
     [data, includedScopes, scopeGroup]
   )
-
+  if (!data.length) {
+    return <></>
+  }
   return (
     <>
       <Table<OrgSelector> columns={columns} data={data} bpTableProps={{ bordered: false }} />

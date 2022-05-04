@@ -162,17 +162,6 @@ export const computeResourceMapOnMultiChange = (
   }
 }
 
-export const getScopeLabelFromApi = (
-  getString: UseStringsReturn['getString'],
-  scope: Scope,
-  resourceGroup: ResourceGroupV2
-): string => {
-  const selectorScope = getScopeType(resourceGroup)
-  const dropDownItems = getScopeDropDownItems(scope, getString)
-  const option = dropDownItems.filter(item => item.value === selectorScope)
-  return option.length ? option[0].label : ''
-}
-
 export const getSelectedScopeLabel = (
   getString: UseStringsReturn['getString'],
   resourceGroupScope: Scope,
@@ -226,6 +215,9 @@ export const getScopeType = (resourceGroup?: ResourceGroupV2): SelectorScope => 
 
 export const getSelectedScopeType = (scopeOfResourceGroup: Scope, scopes?: ScopeSelector[]): SelectorScope => {
   if (scopes?.length) {
+    if (scopes.length > 1) {
+      return SelectorScope.CUSTOM
+    }
     for (const scope of scopes) {
       if (scopeOfResourceGroup === getScopeFromDTO(scope)) {
         return scope.filter === 'INCLUDING_CHILD_SCOPES' ? SelectorScope.INCLUDE_CHILD_SCOPES : SelectorScope.CURRENT
@@ -279,12 +271,20 @@ export const getFilteredResourceTypes = (
   }, [])
 }
 
+export const includeCustomProjects = (orgScopes?: ScopeSelector[]): boolean => {
+  return orgScopes?.filter(item => item.filter === 'EXCLUDING_CHILD_SCOPES' || !!item.projectIdentifier).length !== 0
+}
+
 export const includeProjects = (orgScopes?: ScopeSelector[]): boolean => {
   return orgScopes?.filter(item => item.filter === 'INCLUDING_CHILD_SCOPES' || !!item.projectIdentifier).length !== 0
 }
 
 export const getAllProjects = (orgScopes?: ScopeSelector[]): string[] => {
-  return orgScopes?.map(item => item.projectIdentifier || '') || []
+  return (
+    orgScopes
+      ?.filter(item => item.filter === 'EXCLUDING_CHILD_SCOPES' || !!item.projectIdentifier)
+      .map(item => item.projectIdentifier || '') || []
+  )
 }
 
 export const cleanUpResourcesMap = (
@@ -353,4 +353,8 @@ export const getIncludedScopes = (type: SelectorScope, resourceGroup: ResourceGr
         }
       ]
   }
+}
+
+export const includesCurrentScope = (scopes: ScopeSelector[], resourceScope: Scope): boolean => {
+  return !!scopes.find(scope => getScopeFromDTO(scope) === resourceScope && scope.filter === 'EXCLUDING_CHILD_SCOPES')
 }

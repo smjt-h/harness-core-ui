@@ -237,4 +237,5 @@ resourceScope:
   selectOrg: Select Organization
   selectOrgsandProjects: + Select Organization (and its Projects)
   includeAccResources: Include Account-level resources
+  includeOrgResources: Include Organization-level resources
   includeProjResources: Include Project-level Resources
