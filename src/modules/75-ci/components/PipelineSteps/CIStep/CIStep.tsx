@@ -235,7 +235,7 @@ export const CIStep: React.FC<CIStepProps> = props => {
               })}
               type={enableFields['spec.connectorRef'].type}
               width={getConnectorRefWidth(stepViewType)}
-              name={`${prefix}${'spec.connectorRef'}`}
+              name={`${prefix}spec.connectorRef`}
               placeholder={getString('select')}
               accountIdentifier={accountId}
               projectIdentifier={projectIdentifier}

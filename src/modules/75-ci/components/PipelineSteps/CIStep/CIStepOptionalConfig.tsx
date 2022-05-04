@@ -411,7 +411,7 @@ export const CIStepOptionalConfig: React.FC<CIStepOptionalConfigProps> = props =
               })}
               type={enableFields['spec.baseImageConnectorRefs'].type}
               width={getConnectorRefWidth(stepViewType)}
-              name={`${prefix}${'spec.baseImageConnectorRefs'}`}
+              name={`${prefix}spec.baseImageConnectorRefs`}
               placeholder={getString('select')}
               accountIdentifier={accountId}
               projectIdentifier={projectIdentifier}
