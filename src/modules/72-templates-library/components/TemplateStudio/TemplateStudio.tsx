@@ -95,9 +95,11 @@ export function TemplateStudio(): React.ReactElement {
     titleText: getString('common.template.updateTemplate.templateUpdated'),
     confirmButtonText: getString('update'),
     onCloseDialog: isConfirmed => {
+      /* istanbul ignore next */
       if (isConfirmed) {
         fetchTemplate({ forceFetch: true, forceUpdate: true })
       } else {
+        /* istanbul ignore next */
         setDiscardBEUpdate(true)
       }
     }
@@ -109,6 +111,7 @@ export function TemplateStudio(): React.ReactElement {
     titleText: getString(navigationTitleText),
     confirmButtonText: getString('confirm'),
     onCloseDialog: async isConfirmed => {
+      /* istanbul ignore next */
       if (isConfirmed) {
         deleteTemplateCache(gitDetails).then(() => {
           history.push(
@@ -126,6 +129,7 @@ export function TemplateStudio(): React.ReactElement {
           location.reload()
         })
       } else {
+        /* istanbul ignore next */
         setSelectedBranch(defaultTo(branch, ''))
       }
       setBlockNavigation(false)
