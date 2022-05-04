@@ -7,6 +7,7 @@
  **/
 // this is an auto-generated file, do not update this manually
 declare const styles: {
+  readonly backButtonBox: string
   readonly changedDevelopers: string
   readonly changedMaus: string
   readonly changingText: string
@@ -24,6 +25,7 @@ declare const styles: {
   readonly mauUnitPrice: string
   readonly newRate: string
   readonly nextPaymentPadding: string
+  readonly paymentBox: string
   readonly pillboxgap: string
   readonly premiumSupport: string
   readonly pricingdisplayItem: string
@@ -31,7 +33,9 @@ declare const styles: {
   readonly reviewItems: string
   readonly reviewText: string
   readonly sliderDotContainer: string
+  readonly subscriptionReviewContainer: string
   readonly subscriptionType: string
+  readonly subscriptonBox: string
   readonly supportInfoBoxText: string
   readonly tax: string
   readonly textInputWidth: string

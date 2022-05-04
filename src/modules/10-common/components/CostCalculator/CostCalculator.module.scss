@@ -108,10 +108,35 @@
   padding-right: 4px !important;
 }
 
+.subscriptionReviewContainer {
+  display: grid;
+  grid-template-rows: auto auto;
+  grid-template-columns: 1fr 1fr;
+  padding-left: 70px !important;
+  padding-right: 70px !important;
+  grid-gap: 20px;
+}
+.subscriptonBox {
+  grid-row: 1 ;
+  grid-column: 1;
+}
+
+.paymentBox {
+  grid-row: 1 !important;
+  grid-column: 2 !important;
+}
+
+.backButtonBox {
+  grid-row: 2 !important;
+  grid-column: 1 !important;
+}
+
+
 .reviewContainer {
   display: grid;
   grid-template-rows: 2fr 1fr 1fr 3fr 1fr 1fr 1fr 2fr 1fr 1fr 1fr;
   grid-auto-columns: auto 62px;
+  grid-gap: 10px;
 
   .currentPlanContainer {
     grid-row: 1;

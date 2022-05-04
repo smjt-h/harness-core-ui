@@ -71,7 +71,7 @@ const InfoBox = ({ title, units, using, recommended, planned }: InfoBoxParams) =
       <Layout.Horizontal flex={{ justifyContent: 'space-around' }} padding={{ bottom: 'xlarge' }}>
         {!isNaN(planned as number) && (
           <Layout.Vertical>
-            <Text font={{ variation: FontVariation.SMALL }}>Current</Text>
+            <Text font={{ variation: FontVariation.SMALL }}>Current Plan</Text>
             <Layout.Horizontal
               flex={{ alignItems: 'center', justifyContent: 'flex-start' }}
               className={cx(css.infocardItemIcongap)}
@@ -174,10 +174,9 @@ const CustomProgress = (usage: number, planned: number, recommended: number) => 
 const CostSlider = (costSliderParms: CostSliderParams) => {
   const [thumbMoved, setThumbMoved] = useState<boolean>(false)
 
-  const progressDenom = costSliderParms.maxVal - costSliderParms.minVal
-  const usagePercent = Math.max(costSliderParms.currentUsage - costSliderParms.minVal, 0) / progressDenom
-  const recommendedPercent = Math.max(costSliderParms.recommended - costSliderParms.minVal, 0) / progressDenom
-  const plannedPercent = Math.max((costSliderParms.plannedUsage || 0) - costSliderParms.minVal, 0) / progressDenom
+  const usagePercent = costSliderParms.currentUsage / costSliderParms.maxVal
+  const recommendedPercent = costSliderParms.recommended/ costSliderParms.maxVal
+  const plannedPercent = (costSliderParms.plannedUsage || 0) / costSliderParms.maxVal
 
   return (
     <Layout.Vertical padding={{ top: 'xlarge' }}>
@@ -320,6 +319,7 @@ export const CostCalculator = (): JSX.Element => {
       })
       .finally(() => {
         setReviewClicked(false)
+        setShownPage(CalcPage.Review)
       })
   }, [
     accountId,

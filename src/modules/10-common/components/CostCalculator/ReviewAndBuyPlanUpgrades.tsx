@@ -76,7 +76,8 @@ export const ReviewPage = ({
   const reviewTitle = `Feature Flag Subscription`
 
   return (
-    <Layout.Vertical padding={{ left: 'huge', right: 'huge' }} flex={{ justifyContent: 'left' }}>
+      <Container className={css.subscriptionReviewContainer}>
+    <Layout.Vertical flex={{ justifyContent: 'left', alignItems: 'stretch' }}>
       <Text
         icon={'ff-solid'}
         iconProps={{ size: 24 }}
@@ -88,7 +89,7 @@ export const ReviewPage = ({
       <Layout.Horizontal>
         <Layout.Vertical>
           <Container className={cx(css.reviewContainer)}>
-            <Layout.Horizontal className={cx(css.currentPlanContainer)}>
+            <Layout.Horizontal className={cx(css.currentPlanContainer, css.pillboxgap)}>
               <Text font={{ variation: FontVariation.H4 }}>{`Current Plan`}</Text>
               <GetEditionBox editionType={previousEdition} />
               {previousPlan && <GetEditionBox editionType={previousPlan} />}
@@ -105,7 +106,7 @@ export const ReviewPage = ({
             <Text font={{ size: 'medium' }} className={cx(css.currentMauPlan, css.reviewItems)}>
               {previousMau}
             </Text>
-            <Layout.Horizontal className={cx(css.changingText)}>
+            <Layout.Horizontal className={cx(css.changingText, css.pillboxgap)}>
               <Text font={{ variation: FontVariation.H4 }}>{`New plan`}</Text>
               <GetEditionBox editionType={newEdition} />
               <GetEditionBox editionType={newPlan} />
@@ -155,8 +156,9 @@ export const ReviewPage = ({
             </Text>
           </Container>
         </Layout.Vertical>
-
-        <Layout.Vertical>
+      </Layout.Horizontal>
+    </Layout.Vertical>
+        <Layout.Vertical className={cx(css.paymentBox)}>
           {/*<Text font={{ variation: FontVariation.H4 }} className={cx(css.textwrap)}>*/}
           {/*  Payment Methods*/}
           {/*</Text>*/}
@@ -172,10 +174,12 @@ export const ReviewPage = ({
           {/*<Button variation={ButtonVariation.PRIMARY}>Make a Payment</Button>*/}
           <JustStripeData clientSecret={clientSecret} />
         </Layout.Vertical>
-      </Layout.Horizontal>
-      <Button variation={ButtonVariation.SECONDARY} onClick={backButtonClick}>
-        Back
-      </Button>
-    </Layout.Vertical>
+        <Layout.Vertical className={cx(css.backButtonBox)} flex={{alignItems: "flex-start", justifyContent: 'left'}}>
+          <Button variation={ButtonVariation.SECONDARY} onClick={backButtonClick}>
+            Back
+          </Button>
+        </Layout.Vertical>
+
+      </Container>
   )
 }
