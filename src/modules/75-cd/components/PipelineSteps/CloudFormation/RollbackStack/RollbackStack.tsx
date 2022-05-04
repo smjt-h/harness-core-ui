@@ -15,11 +15,11 @@ import { StepType } from '@pipeline/components/PipelineSteps/PipelineStepInterfa
 import { PipelineStep } from '@pipeline/components/PipelineSteps/PipelineStep'
 import { getDurationValidationSchema } from '@common/components/MultiTypeDuration/MultiTypeDuration'
 import type { RollbackStackData, RollbackStackStepInfo } from '../CloudFormationInterfaces'
-import { CloudFormationRollbackStack } from './CloudFormationRollbackStepRef'
-import CloudFormationRollbackStackInputStep from './RollbackStackInputSteps'
-const CloudFormationDeleteStackWithRef = forwardRef(CloudFormationRollbackStack)
+import { RollbackStack } from './RollbackStepRef'
+import RollbackStackInputStep from './RollbackStackInputSteps'
+const RollbackStackWithRef = forwardRef(RollbackStack)
 
-export class CFDeleteStack extends PipelineStep<RollbackStackStepInfo> {
+export class CFRollbackStack extends PipelineStep<RollbackStackStepInfo> {
   constructor() {
     super()
     this._hasStepVariables = true
@@ -104,7 +104,7 @@ export class CFDeleteStack extends PipelineStep<RollbackStackStepInfo> {
 
     if (stepViewType === StepViewType.InputSet || stepViewType === StepViewType.DeploymentForm) {
       return (
-        <CloudFormationRollbackStackInputStep
+        <RollbackStackInputStep
           initialValues={initialValues}
           onUpdate={data => onUpdate?.(this.processFormData(data))}
           onChange={data => onChange?.(this.processFormData(data))}
@@ -121,7 +121,7 @@ export class CFDeleteStack extends PipelineStep<RollbackStackStepInfo> {
     }
 
     return (
-      <CloudFormationDeleteStackWithRef
+      <RollbackStackWithRef
         initialValues={this.getInitialValues(initialValues)}
         onUpdate={(data: any) => onUpdate?.(this.processFormData(data))}
         onChange={(data: any) => onChange?.(this.processFormData(data))}

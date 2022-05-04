@@ -32,7 +32,7 @@ import { InfraProvisioning } from './InfraProvisioning/InfraProvisioning'
 import { GcpInfrastructureSpec } from './GcpInfrastructureSpec/GcpInfrastructureSpec'
 import { PolicyStep } from './PolicyStep/PolicyStep'
 import { CFCreateStack } from './CloudFormation/CloudFormationCreateStack/CloudFormationCreateStack'
-import { CFDeleteStack } from './CloudFormation/RollbackStack/CloudFormationRollbackStack'
+import { CFRollbackStack } from './CloudFormation/RollbackStack/RollbackStack'
 
 factory.registerStep(new HttpStep())
 factory.registerStep(new K8RolloutDeployStep())
@@ -59,4 +59,4 @@ factory.registerStep(new TerraformPlan())
 factory.registerStep(new InfraProvisioning())
 factory.registerStep(new PolicyStep())
 factory.registerStep(new CFCreateStack())
-factory.registerStep(new CFDeleteStack())
+factory.registerStep(new CFRollbackStack())

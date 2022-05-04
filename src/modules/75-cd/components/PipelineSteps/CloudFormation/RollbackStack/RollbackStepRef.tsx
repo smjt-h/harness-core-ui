@@ -21,7 +21,7 @@ import { setFormikRef, StepFormikFowardRef } from '@pipeline/components/Abstract
 import stepCss from '@pipeline/components/PipelineSteps/Steps/Steps.module.scss'
 import css from '../CloudFormation.module.scss'
 
-export const CloudFormationRollbackStack = (
+export const RollbackStack = (
   { allowableTypes, isNewStep = true, readonly = false, initialValues, onUpdate, onChange }: any,
   formikRef: StepFormikFowardRef
 ): JSX.Element => {
@@ -51,16 +51,14 @@ export const CloudFormationRollbackStack = (
         spec: Yup.object().shape({
           configuration: Yup.object().shape({
             type: Yup.string(),
-            spec: Yup.object().shape({
-              provisionerIdentifier: Yup.lazy((value): Yup.Schema<unknown> => {
-                if (getMultiTypeFromValue(value as string) === MultiTypeInputType.FIXED) {
-                  return IdentifierSchemaWithOutName(getString, {
-                    requiredErrorMsg: getString('common.validation.provisionerIdentifierIsRequired'),
-                    regexErrorMsg: getString('common.validation.provisionerIdentifierPatternIsNotValid')
-                  })
-                }
-                return Yup.string().required(getString('common.validation.provisionerIdentifierIsRequired'))
-              })
+            provisionerIdentifier: Yup.lazy((value): Yup.Schema<unknown> => {
+              if (getMultiTypeFromValue(value as string) === MultiTypeInputType.FIXED) {
+                return IdentifierSchemaWithOutName(getString, {
+                  requiredErrorMsg: getString('common.validation.provisionerIdentifierIsRequired'),
+                  regexErrorMsg: getString('common.validation.provisionerIdentifierPatternIsNotValid')
+                })
+              }
+              return Yup.string().required(getString('common.validation.provisionerIdentifierIsRequired'))
             })
           })
         })
@@ -68,9 +66,10 @@ export const CloudFormationRollbackStack = (
     >
       {formik => {
         setFormikRef(formikRef, formik)
-        const { values } = formik
+        const { values, errors } = formik
+        console.log('errors: ', errors)
         const config = values?.spec?.configuration
-        const provisionerIdentifier = config?.spec?.provisionerIdentifier
+        const provisionerIdentifier = config?.provisionerIdentifier
         return (
           <>
             <div className={cx(stepCss.formGroup, stepCss.lg)}>

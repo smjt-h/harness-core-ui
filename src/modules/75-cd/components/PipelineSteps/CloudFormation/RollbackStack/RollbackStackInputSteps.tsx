@@ -17,7 +17,7 @@ import { isRuntime } from '../CloudFormationHelper'
 import type { RollbackStackData, RollbackStackProps } from '../CloudFormationInterfaces'
 import stepCss from '@pipeline/components/PipelineSteps/Steps/Steps.module.scss'
 
-export function CloudFormationRollbackStackInputStepRef<T extends RollbackStackData = RollbackStackData>(
+export function RollbackStackInputStepRef<T extends RollbackStackData = RollbackStackData>(
   props: RollbackStackProps<T> & { formik?: FormikContext<any> }
 ): React.ReactElement {
   const { inputSetData, readonly, path, allowableTypes } = props
@@ -41,10 +41,10 @@ export function CloudFormationRollbackStackInputStepRef<T extends RollbackStackD
           />
         </div>
       )}
-      {isRuntime(inputSetData?.template?.spec?.configuration?.spec?.provisionerIdentifier as string) && (
+      {isRuntime(inputSetData?.template?.spec?.configuration?.provisionerIdentifier as string) && (
         <div className={cx(stepCss.formGroup, stepCss.md)}>
           <FormInput.MultiTextInput
-            name={`${path}.spec.configuration.spec.provisionerIdentifier`}
+            name={`${path}.spec.configuration.provisionerIdentifier`}
             label={getString('pipelineSteps.provisionerIdentifier')}
             disabled={readonly}
             multiTextInputProps={{
@@ -58,5 +58,5 @@ export function CloudFormationRollbackStackInputStepRef<T extends RollbackStackD
   )
 }
 
-const CloudFormationRollbackStackInputStep = connect(CloudFormationRollbackStackInputStepRef)
-export default CloudFormationRollbackStackInputStep
+const RollbackStackInputStep = connect(RollbackStackInputStepRef)
+export default RollbackStackInputStep
