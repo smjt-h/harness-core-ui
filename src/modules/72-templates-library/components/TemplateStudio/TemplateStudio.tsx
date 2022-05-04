@@ -282,7 +282,7 @@ export function TemplateStudio(): React.ReactElement {
         size={'small'}
         title={<TemplateStudioHeader templateType={templateType as TemplateType} />}
       />
-      <Page.Body key={key} className={css.rightMargin}>
+      <Page.Body className={css.rightMargin}>
         {isLoading && <PageSpinner />}
         <Layout.Vertical height={'100%'}>
           {!isLoading && isEmpty(template) && !isGitSyncEnabled && <GenericErrorHandler />}
@@ -296,7 +296,7 @@ export function TemplateStudio(): React.ReactElement {
                 getErrors={getErrors}
                 onGitBranchChange={onGitBranchChange}
               />
-              <Container className={css.canvasContainer}>
+              <Container key={key} className={css.canvasContainer}>
                 {view === SelectedView.VISUAL ? (
                   /* istanbul ignore next */
                   templateFactory.getTemplate(templateType)?.renderTemplateCanvas({ formikRef: templateFormikRef })
