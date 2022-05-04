@@ -36,8 +36,6 @@ import { StepType } from '../PipelineSteps/PipelineStepInterface'
 import { RegExAllowedInputExpression } from '../PipelineSteps/Steps/CustomVariables/CustomVariableInputSet'
 // eslint-disable-next-line no-restricted-imports
 import '@cd/components/PipelineSteps'
-// eslint-disable-next-line no-restricted-imports
-import '@sto-steps/components/PipelineSteps'
 
 export const clearRuntimeInput = (template: PipelineInfoConfig): PipelineInfoConfig => {
   return JSON.parse(
