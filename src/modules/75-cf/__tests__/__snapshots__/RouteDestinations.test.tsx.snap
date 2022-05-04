@@ -397,6 +397,27 @@ Array [
         "startTrialRedirect": [Function],
       }
     }
+    path="/account/:accountId/:module/orgs/:orgIdentifier/projects/:projectIdentifier/setup/resources/variables"
+    sidebarProps={
+      Object {
+        "icon": "cf-main",
+        "navComponent": [Function],
+        "title": "Feature Flags",
+      }
+    }
+  >
+    <VariablesPage />
+  </RouteWithLayout>,
+  <RouteWithLayout
+    exact={true}
+    layout={[Function]}
+    licenseRedirectData={
+      Object {
+        "expiredTrialRedirect": [Function],
+        "licenseStateName": "FF_LICENSE_STATE",
+        "startTrialRedirect": [Function],
+      }
+    }
     path="/account/:accountId/:module/orgs/:orgIdentifier/projects/:projectIdentifier/setup/resources/secrets/yaml/create-secret"
     sidebarProps={
       Object {

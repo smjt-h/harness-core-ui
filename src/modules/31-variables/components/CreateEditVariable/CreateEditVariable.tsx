@@ -56,6 +56,7 @@ const CreateEditVariable: React.FC<CreateEditVariableProps> = props => {
   const [modalErrorHandler, setModalErrorHandler] = useState<ModalErrorHandlerBinding>()
   const handleCreateUpdate = async (payload: VariableRequestDTO) => {
     try {
+      // Edit Mode is not suppported for now.
       const response = await (props.isEdit ? noop : createVariable(payload))
       if (response) {
         props.onSuccess?.(payload.variable as VariableDTO)
