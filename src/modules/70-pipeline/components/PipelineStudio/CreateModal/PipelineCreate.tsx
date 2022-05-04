@@ -115,100 +115,102 @@ export default function CreatePipelines({
   }, [isEdit])
 
   return (
-    <Formik<PipelineInfoConfigWithGitDetails>
-      initialValues={initialValues}
-      formName="pipelineCreate"
-      validationSchema={Yup.object().shape({
-        name: NameSchema({ requiredErrorMsg: getString('createPipeline.pipelineNameRequired') }),
-        identifier: IdentifierSchema(),
-        ...(isGitSyncEnabled
-          ? {
-              repo: Yup.string().trim().required(getString('common.git.validation.repoRequired')),
-              branch: Yup.string().trim().required(getString('common.git.validation.branchRequired'))
-            }
-          : {})
-      })}
-      onSubmit={values => {
-        logger.info(JSON.stringify(values))
-        const formGitDetails =
-          values.repo && values.repo.trim().length > 0
-            ? { repoIdentifier: values.repo, branch: values.branch }
-            : undefined
-        afterSave && afterSave(omit(values, 'repo', 'branch'), formGitDetails, usingTemplate, copyingTemplate)
-      }}
-    >
-      {formikProps => (
-        <FormikForm>
-          <NameIdDescriptionTags
-            formikProps={formikProps}
-            identifierProps={{
-              isIdentifierEditable: pipelineIdentifier === DefaultNewPipelineId
-            }}
-            tooltipProps={{ dataTooltipId: 'pipelineCreate' }}
-            className={css.pipelineCreateNameIdDescriptionTags}
-          />
-
-          {gitSimplification ? (
-            <CardSelect
-              data={PipelineModeCards}
-              cornerSelected={true}
-              cardClassName={css.pipelineModeCard}
-              renderItem={(item: CardInterface) => (
-                <Layout.Horizontal flex spacing={'small'}>
-                  <Icon name={item.icon} />
-                  <Container>
-                    <Text font={{ variation: FontVariation.FORM_TITLE }}>{item.title}</Text>
-                    <Text>{item.info}</Text>
-                  </Container>
-                </Layout.Horizontal>
-              )}
-              selected={pipelineMode}
-              onChange={(item: CardInterface) => {
-                formikProps?.setFieldValue('pipelineMode', item.type)
-                formikProps?.setFieldValue('remoteType', item.type === 'remote' ? 'new' : '')
-                setPipelineMode(item)
+    <Container className={css.pipelineCreateForm}>
+      <Formik<PipelineInfoConfigWithGitDetails>
+        initialValues={initialValues}
+        formName="pipelineCreate"
+        validationSchema={Yup.object().shape({
+          name: NameSchema({ requiredErrorMsg: getString('createPipeline.pipelineNameRequired') }),
+          identifier: IdentifierSchema(),
+          ...(isGitSyncEnabled
+            ? {
+                repo: Yup.string().trim().required(getString('common.git.validation.repoRequired')),
+                branch: Yup.string().trim().required(getString('common.git.validation.branchRequired'))
+              }
+            : {})
+        })}
+        onSubmit={values => {
+          logger.info(JSON.stringify(values))
+          const formGitDetails =
+            values.repo && values.repo.trim().length > 0
+              ? { repoIdentifier: values.repo, branch: values.branch }
+              : undefined
+          afterSave && afterSave(omit(values, 'repo', 'branch'), formGitDetails, usingTemplate, copyingTemplate)
+        }}
+      >
+        {formikProps => (
+          <FormikForm>
+            <NameIdDescriptionTags
+              formikProps={formikProps}
+              identifierProps={{
+                isIdentifierEditable: pipelineIdentifier === DefaultNewPipelineId
               }}
+              tooltipProps={{ dataTooltipId: 'pipelineCreate' }}
+              className={css.pipelineCreateNameIdDescriptionTags}
             />
-          ) : isGitSyncEnabled ? (
-            <GitSyncStoreProvider>
-              <GitContextForm formikProps={formikProps} gitDetails={gitDetails} />
-            </GitSyncStoreProvider>
-          ) : null}
 
-          {pipelineMode?.type === 'remote' ? (
-            <GitSyncForm formikProps={formikProps} handleSubmit={noop}></GitSyncForm>
-          ) : null}
-          {usingTemplate && (
-            <Text
-              icon={'template-library'}
-              margin={{ top: 'medium', bottom: 'medium' }}
-              font={{ size: 'small' }}
-              iconProps={{ size: 12, margin: { right: 'xsmall' } }}
-              color={Color.BLACK}
-            >
-              {`Using Template: ${getTemplateNameWithLabel(usingTemplate)}`}
-            </Text>
-          )}
-          <Container padding={{ top: 'xlarge' }}>
-            <Button
-              variation={ButtonVariation.PRIMARY}
-              type="submit"
-              text={isEdit ? getString('save') : getString('start')}
-            />
-            &nbsp; &nbsp;
-            <Button
-              variation={ButtonVariation.TERTIARY}
-              text={getString('cancel')}
-              onClick={() => {
-                trackEvent(PipelineActions.CancelCreateNewPipeline, {
-                  category: Category.PIPELINE
-                })
-                closeModal?.()
-              }}
-            />
-          </Container>
-        </FormikForm>
-      )}
-    </Formik>
+            {gitSimplification ? (
+              <CardSelect
+                data={PipelineModeCards}
+                cornerSelected={true}
+                cardClassName={css.pipelineModeCard}
+                renderItem={(item: CardInterface) => (
+                  <Layout.Horizontal flex spacing={'small'}>
+                    <Icon name={item.icon} />
+                    <Container>
+                      <Text font={{ variation: FontVariation.FORM_TITLE }}>{item.title}</Text>
+                      <Text>{item.info}</Text>
+                    </Container>
+                  </Layout.Horizontal>
+                )}
+                selected={pipelineMode}
+                onChange={(item: CardInterface) => {
+                  formikProps?.setFieldValue('pipelineMode', item.type)
+                  formikProps?.setFieldValue('remoteType', item.type === 'remote' ? 'new' : '')
+                  setPipelineMode(item)
+                }}
+              />
+            ) : isGitSyncEnabled ? (
+              <GitSyncStoreProvider>
+                <GitContextForm formikProps={formikProps} gitDetails={gitDetails} />
+              </GitSyncStoreProvider>
+            ) : null}
+
+            {pipelineMode?.type === 'remote' ? (
+              <GitSyncForm formikProps={formikProps} handleSubmit={noop}></GitSyncForm>
+            ) : null}
+            {usingTemplate && (
+              <Text
+                icon={'template-library'}
+                margin={{ top: 'medium', bottom: 'medium' }}
+                font={{ size: 'small' }}
+                iconProps={{ size: 12, margin: { right: 'xsmall' } }}
+                color={Color.BLACK}
+              >
+                {`Using Template: ${getTemplateNameWithLabel(usingTemplate)}`}
+              </Text>
+            )}
+            <Container padding={{ top: 'xlarge' }}>
+              <Button
+                variation={ButtonVariation.PRIMARY}
+                type="submit"
+                text={isEdit ? getString('save') : getString('start')}
+              />
+              &nbsp; &nbsp;
+              <Button
+                variation={ButtonVariation.TERTIARY}
+                text={getString('cancel')}
+                onClick={() => {
+                  trackEvent(PipelineActions.CancelCreateNewPipeline, {
+                    category: Category.PIPELINE
+                  })
+                  closeModal?.()
+                }}
+              />
+            </Container>
+          </FormikForm>
+        )}
+      </Formik>
+    </Container>
   )
 }

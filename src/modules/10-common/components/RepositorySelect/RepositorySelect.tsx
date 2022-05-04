@@ -18,9 +18,11 @@ import { Error, GitRepositoryResponseDTO, useGetListOfReposByRefConnector } from
 import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
 import { ErrorHandler } from '@common/components/ErrorHandler/ErrorHandler'
 import css from './RepositorySelect.module.scss'
+import type { FormikContext } from 'formik'
 
-export interface RepositorySelectProps {
+export interface RepositorySelectProps<T> {
   modalErrorHandler?: ModalErrorHandlerBinding
+  formikProps: FormikContext<T>
   connectorRef?: string
   selectedValue?: string
   onChange?: (selected: SelectOption, options?: SelectOption[]) => void
@@ -36,8 +38,8 @@ const getRepoSelectOptions = (data: GitRepositoryResponseDTO[] = []) => {
   })
 }
 
-const RepositorySelect: React.FC<RepositorySelectProps> = props => {
-  const { modalErrorHandler, connectorRef, selectedValue } = props
+const RepositorySelect: React.FC<RepositorySelectProps<any>> = props => {
+  const { modalErrorHandler, connectorRef, selectedValue, formikProps } = props
   const { getString } = useStrings()
   const { accountId, projectIdentifier, orgIdentifier } = useParams<ProjectPathProps>()
   const [repoSelectOptions, setRepoSelectOptions] = useState<SelectOption[]>([])
@@ -97,6 +99,7 @@ const RepositorySelect: React.FC<RepositorySelectProps> = props => {
         const selectOptions = getRepoSelectOptions(response?.data)
         setRepoSelectOptions(selectOptions)
         if (selectOptions.length === 1) {
+          formikProps.setFieldValue('repository', selectOptions[0].value)
           props.onChange?.(selectOptions[0], repoSelectOptions)
         }
       } else {
@@ -119,6 +122,12 @@ const RepositorySelect: React.FC<RepositorySelectProps> = props => {
         onChange={selected => props.onChange?.(selected, repoSelectOptions)}
         selectProps={{ usePortal: true, popoverClassName: css.gitBranchSelectorPopover }}
       />
+      {loading ? (
+        <Layout.Horizontal spacing="small" flex padding={{ top: 'xsmall', left: 'xsmall' }}>
+          <Icon name="steps-spinner" size={18} color={Color.PRIMARY_7} />
+          <Text>{'Loading repositories'.concat('...')}</Text>
+        </Layout.Horizontal>
+      ) : null}
       {/* <Dialog isOpen={isOpen} enforceFocus={false} title={'repoFetchFailed'} onClose={close}>
         {responseMessages ? <ErrorHandler responseMessages={responseMessages} /> : undefined}
       </Dialog> */}

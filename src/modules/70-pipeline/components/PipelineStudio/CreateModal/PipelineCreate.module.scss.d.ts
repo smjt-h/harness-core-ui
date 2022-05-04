@@ -7,8 +7,7 @@
  **/
 // this is an auto-generated file, do not update this manually
 declare const styles: {
-  readonly pipelineCreateNameIdDescriptionTags: string
-  readonly pipelineModal: string
+  readonly pipelineCreateForm: string
   readonly pipelineModeCard: string
 }
 export default styles

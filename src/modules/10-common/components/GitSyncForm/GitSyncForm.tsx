@@ -45,11 +45,11 @@ export function GitSyncForm(props: GitSyncFormProps<GitSyncFormFields>): React.R
   return (
     <Container padding={{ top: 'large' }} className={cx()}>
       <FormInput.RadioGroup
-        name="importYaml"
+        name="remoteType"
         radioGroup={{ inline: true }}
         items={[
-          { label: 'Use Existing Yaml', value: 'import', disabled: true },
-          { label: 'Create New Yaml', value: 'create' }
+          { label: 'Use Existing Yaml', value: 'remote', disabled: true },
+          { label: 'Create New Yaml', value: 'new' }
         ]}
       />
       <ConnectorReferenceField
@@ -71,11 +71,13 @@ export function GitSyncForm(props: GitSyncFormProps<GitSyncFormFields>): React.R
             live: value?.status?.status === 'SUCCESS',
             connector: value
           })
+          formikProps.setFieldValue?.('repository', '')
         }}
       />
 
       <RepositorySelect
         key={formikProps.values.gitConnector?.value} // Branch select must be reset if repositoryURL changes
+        formikProps={formikProps}
         connectorRef={formikProps.values.gitConnector?.value}
         //modalErrorHandler={modalErrorHandler}
         onChange={(selected: SelectOption, options?: SelectOption[]) => {
@@ -88,7 +90,7 @@ export function GitSyncForm(props: GitSyncFormProps<GitSyncFormFields>): React.R
       <RepoBranchSelectV2
         key={formikProps.values.repository} // Branch select must be reset if repositoryURL changes
         connectorIdentifierRef={formikProps.values.gitConnector?.value}
-        repoURL={'https://github.com/wings-software/sunnykesh-gitSync'}
+        repoName={formikProps.values.repository}
         modalErrorHandler={modalErrorHandler}
         onChange={(selected: SelectOption, options?: SelectOption[]) => {
           if (!options?.find(branch => branch.value === selected.value)) {
@@ -97,8 +99,6 @@ export function GitSyncForm(props: GitSyncFormProps<GitSyncFormFields>): React.R
         }}
         selectedValue={formikProps.values.branch}
       />
-
-      <FormInput.Select name="branch" label={'Select an existing Branch'} items={[]} />
       <FormInput.Text name="yamlPath" label={'Yaml Path'} placeholder={'Enter Yaml path'} />
     </Container>
   )

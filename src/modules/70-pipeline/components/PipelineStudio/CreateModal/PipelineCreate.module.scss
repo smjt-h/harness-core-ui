@@ -5,12 +5,9 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-.pipelineModal {
-  .pipelineCreateNameIdDescriptionTags {
-    margin-bottom: var(--spacing-xlarge) !important;
-  }
+.pipelineCreateForm {
   .pipelineModeCard {
-    margin-right: var(--spacing-large);
+    margin-right: var(--spacing-large) !important;
   }
 
   :global {
