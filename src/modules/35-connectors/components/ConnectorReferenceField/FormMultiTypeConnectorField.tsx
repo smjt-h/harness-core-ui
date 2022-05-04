@@ -62,6 +62,11 @@ export interface MultiTypeConnectorFieldConfigureOptionsProps
   extends Omit<ConfigureOptionsProps, 'value' | 'type' | 'variableName'> {
   variableName?: ConfigureOptionsProps['variableName']
 }
+
+export enum FieldWrapperType {
+  Array = 'ARRAY'
+}
+
 export interface MultiTypeConnectorFieldProps extends Omit<ConnectorReferenceFieldProps, 'onChange'> {
   onChange?: ExpressionAndRuntimeTypeProps['onChange']
   formik?: FormikContext<any>
@@ -75,6 +80,7 @@ export interface MultiTypeConnectorFieldProps extends Omit<ConnectorReferenceFie
   tooltipProps?: DataTooltipInterface
   multitypeInputValue?: MultiTypeInputType
   connectorLabelClass?: string
+  fieldWrapperType?: FieldWrapperType
 }
 export interface ConnectorReferenceDTO extends ConnectorInfoDTO {
   status: ConnectorResponse['status']
@@ -104,6 +110,7 @@ export const MultiTypeConnectorField = (props: MultiTypeConnectorFieldProps): Re
     multitypeInputValue,
     connectorLabelClass: connectorLabelClassFromProps = '',
     createNewLabel,
+    fieldWrapperType,
     ...restProps
   } = props
   const hasError = errorCheck(name, formik)
@@ -384,7 +391,7 @@ export const MultiTypeConnectorField = (props: MultiTypeConnectorFieldProps): Re
               connector: record
             }
             if (setRefValue) {
-              formik?.setFieldValue(name, value.value)
+              formik?.setFieldValue(name, fieldWrapperType === FieldWrapperType.Array ? [value.value] : value.value)
             } else {
               formik?.setFieldValue(name, value)
             }
