@@ -37,6 +37,7 @@ import { ServerlessAwsLambdaSpec } from './ServerlessAWSLambda/ServerlessAwsLamb
 import { ServerlessAzureSpec } from './ServerlessAzure/ServerlessAzureSpec'
 import { ServerlessGCPSpec } from './ServerlessGCP/ServerlessGCPSpec'
 import { ServerlessAwsLambdaServiceSpec } from './ServerlessAwsLambdaServiceSpec/ServerlessAwsLambdaServiceSpec'
+import { CFCreateStack } from './CloudFormation/CloudFormationCreateStack/CloudFormationCreateStack'
 
 factory.registerStep(new HttpStep())
 factory.registerStep(new K8RolloutDeployStep())
@@ -68,3 +69,4 @@ factory.registerStep(new InfraProvisioning())
 factory.registerStep(new PolicyStep())
 factory.registerStep(new ServerlessAwsLambdaDeployStep())
 factory.registerStep(new ServerlessAwsLambdaRollbackStep())
+factory.registerStep(new CFCreateStack())

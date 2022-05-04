@@ -64,5 +64,6 @@ export enum StepType {
   ZeroNorth = 'Security',
   ServerlessAwsLambdaDeploy = 'ServerlessAwsLambdaDeploy',
   ServerlessAwsLambdaRollback = 'ServerlessAwsLambdaRollback',
-  ServerlessAwsInfra = 'ServerlessAwsInfra'
+  ServerlessAwsInfra = 'ServerlessAwsInfra',
+  CloudFormationCreateStack = 'CloudFormationCreateStack'
 }

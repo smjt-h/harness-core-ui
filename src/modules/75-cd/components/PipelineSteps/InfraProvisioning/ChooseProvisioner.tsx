@@ -5,7 +5,7 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import React from 'react'
+import React, { useState } from 'react'
 import { Classes, Dialog } from '@blueprintjs/core'
 import cx from 'classnames'
 import { Layout, Card, Icon, Text, IconName, Button, ButtonVariation } from '@wings-software/uicore'
@@ -28,7 +28,7 @@ const provisionerTypes: { name: string; icon: IconName; iconColor?: string; enab
   {
     name: ProvisionerTypes.CloudFormation,
     icon: 'cloudformation',
-    enabled: false
+    enabled: true
   },
   {
     name: ProvisionerTypes.ARM,
@@ -41,24 +41,25 @@ const provisionerTypes: { name: string; icon: IconName; iconColor?: string; enab
     enabled: false
   }
 ]
-
-interface ChooseProvisionerProps {
+interface ProvDialogProps {
   onSubmit: any
   onClose: any
+  hideModal: () => void
+  provData: any
 }
-const useChooseProvisioner = (props: ChooseProvisionerProps) => {
-  const { getString } = useStrings()
-  const [provData, setProvData] = React.useState()
 
+const ProvDialog = ({ onClose, hideModal, provData, onSubmit }: ProvDialogProps) => {
+  const { getString } = useStrings()
+  const [provisioner, setProvisioner] = useState<string>(ProvisionerTypes.Terraform)
   const modalProps = {
     isOpen: true,
     canEscapeKeyClose: true,
     canOutsideClickClose: true
   }
-  const ProvDialog = (): JSX.Element => (
+  return (
     <Dialog
       onClose={() => {
-        props.onClose()
+        onClose()
         hideModal()
       }}
       enforceFocus={false}
@@ -81,9 +82,10 @@ const useChooseProvisioner = (props: ChooseProvisionerProps) => {
                 <Card
                   disabled={!type.enabled}
                   interactive={true}
-                  selected={type.name === ProvisionerTypes.Terraform}
-                  cornerSelected={type.name === ProvisionerTypes.Terraform}
+                  selected={type.name === provisioner}
+                  cornerSelected={type.name === provisioner}
                   className={cx({ [css.disabled]: !type.enabled }, css.squareCard)}
+                  onClick={() => setProvisioner(type.name)}
                 >
                   <Icon {...iconProps} />
                 </Card>
@@ -105,14 +107,28 @@ const useChooseProvisioner = (props: ChooseProvisionerProps) => {
           text={getString('cd.setUpProvisionerBtnText')}
           className={css.provisionerBtnText}
           onClick={() => {
-            props.onSubmit(provData)
+            const selectedProvisioner =
+              provisioner === ProvisionerTypes.CloudFormation ? 'CLOUD_FORMATION' : provisioner
+            onSubmit(merge(provData, { selectedProvisioner: selectedProvisioner.toUpperCase() }))
             hideModal()
           }}
         />
       </Layout.Vertical>
     </Dialog>
   )
-  const [showModal, hideModal] = useModalHook(() => <ProvDialog />, [provData])
+}
+
+interface ChooseProvisionerProps {
+  onSubmit: any
+  onClose: any
+}
+
+const useChooseProvisioner = ({ onSubmit, onClose }: ChooseProvisionerProps) => {
+  const [provData, setProvData] = useState()
+  const [showModal, hideModal] = useModalHook(
+    () => <ProvDialog onSubmit={onSubmit} onClose={onClose} hideModal={hideModal} provData={provData} />,
+    [provData]
+  )
 
   const open = (data?: any) => {
     setProvData(data)

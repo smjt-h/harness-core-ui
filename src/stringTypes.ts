@@ -3430,6 +3430,11 @@ export interface StringsMap {
   'cd.cdTrialHomePage.startTrial.description': string
   'cd.cdTrialHomePage.startTrial.startBtn.description': string
   'cd.chooseProvisionerText': string
+  'cd.cloudFormation.cfParameterFiles': string
+  'cd.cloudFormation.specifyCapabilities': string
+  'cd.cloudFormation.specifyTemplateFile': string
+  'cd.cloudFormation.stackName': string
+  'cd.cloudFormation.templateFile': string
   'cd.componentsInstalled': string
   'cd.configFileDetails': string
   'cd.configFilePlaceHolder': string
