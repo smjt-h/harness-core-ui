@@ -12,7 +12,8 @@ import type {
   ManifestConfigWrapper,
   PageConnectorResponse,
   PipelineInfoConfig,
-  StageElementConfig
+  StageElementConfig,
+  ServiceDefinition
 } from 'services/cd-ng'
 import type { StageElementWrapper } from '@pipeline/utils/pipelineTypes'
 
@@ -34,6 +35,7 @@ export interface ManifestSelectionProps {
   isForPredefinedSets?: boolean
   isPropagating?: boolean
   overrideSetIdentifier?: string
+  deploymentType: ServiceDefinition['type']
 }
 
 export interface ManifestListViewProps {

@@ -99,6 +99,7 @@ const ConfigureAlerts: React.FC<StepProps<BudgetStepData> & Props> = props => {
     /* istanbul ignore next */
     const emptyThresholds = (t: AlertThreshold) => (t.emailAddresses?.length || 0) > 0 && t.percentage
     const payload = {
+      accountId,
       name: budgetName,
       alertThresholds: altThresholds.filter(emptyThresholds),
       type: type === 'PREVIOUS_MONTH_SPEND' ? 'PREVIOUS_PERIOD_SPEND' : type,

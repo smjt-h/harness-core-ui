@@ -11,7 +11,7 @@ import {
   pipelineSaveCall
 } from '../../support/70-pipeline/constants'
 
-describe('RUN PIPELINE MODAL', () => {
+describe.skip('RUN PIPELINE MODAL', () => {
   const gitSyncCall =
     '/ng/api/git-sync/git-sync-enabled?accountIdentifier=accountId&orgIdentifier=default&projectIdentifier=project1'
   const resolvedPipelineDetailsCall =

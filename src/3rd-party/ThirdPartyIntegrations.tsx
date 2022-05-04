@@ -13,6 +13,7 @@ import { injectHotJar, identifyHotJarUser } from './HotJar'
 export const ThirdPartyIntegrations: React.FC = () => {
   const { licenseInformation } = useLicenseStore()
   const { currentUserInfo } = useAppStore()
+  const { email, name, accounts } = currentUserInfo
 
   // HotJar is integrated for non-paid accounts (https://harness.atlassian.net/browse/PLG-946):
   // 		1. Community = window.deploymentType is 'COMMUNITY'
@@ -24,8 +25,9 @@ export const ThirdPartyIntegrations: React.FC = () => {
       window.deploymentType === 'SAAS' &&
       licenseInformation &&
       !Object.values(licenseInformation).find(licenseInfo => licenseInfo?.licenseType === 'PAID')
+    const isHarness = email?.toLowerCase().includes('@harness.io')
 
-    return isProd && !window.hj && (isCommunity || isTrial)
+    return isProd && !window.hj && (isCommunity || isTrial) && !isHarness
   }, [licenseInformation])
 
   useEffect(() => {
@@ -36,7 +38,6 @@ export const ThirdPartyIntegrations: React.FC = () => {
 
   useEffect(() => {
     if (shouldIntegrateHotJar && currentUserInfo) {
-      const { email, name, accounts } = currentUserInfo
       identifyHotJarUser(email, {
         email,
         name: name || email?.split('@')[0] || '',

@@ -93,7 +93,7 @@ describe('ServerlessAwsLambdaServiceSpec tests', () => {
             <StepWidget<K8SDirectServiceStep>
               factory={factory}
               allowableTypes={[MultiTypeInputType.FIXED, MultiTypeInputType.RUNTIME, MultiTypeInputType.EXPRESSION]}
-              initialValues={{}}
+              initialValues={{ deploymentType: 'ServerlessAwsLambda' }}
               type={StepType.ServerlessAwsLambda}
               stepViewType={StepViewType.Edit}
             />

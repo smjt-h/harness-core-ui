@@ -18,7 +18,8 @@ import type {
   DockerBuildDetailsDTO,
   Failure,
   Error,
-  ArtifactoryBuildDetailsDTO
+  ArtifactoryBuildDetailsDTO,
+  ServiceDefinition
 } from 'services/cd-ng'
 
 export interface ArtifactListViewProps {
@@ -43,6 +44,7 @@ export interface ArtifactsSelectionProps {
   identifierName?: string
   isPropagating?: boolean
   overrideSetIdentifier?: string
+  deploymentType: ServiceDefinition['type']
 }
 
 export type ArtifactType =

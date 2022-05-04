@@ -5,7 +5,7 @@ import {
   connectorsListAPI
 } from '../../support/35-connectors/constants'
 
-describe('Connectors list', () => {
+describe.skip('Connectors list', () => {
   beforeEach(() => {
     cy.on('uncaught:exception', () => {
       // returning false here prevents Cypress from
