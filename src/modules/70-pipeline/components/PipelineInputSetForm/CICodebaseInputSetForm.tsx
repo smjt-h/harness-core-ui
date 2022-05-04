@@ -22,7 +22,7 @@ import {
 } from '@wings-software/uicore'
 import { FontVariation, Color } from '@harness/design-system'
 import { connect } from 'formik'
-import { useStrings } from 'framework/strings'
+import { StringKeys, useStrings, UseStringsReturn } from 'framework/strings'
 import { getIdentifierFromValue, getScopeFromValue } from '@common/components/EntityReference/EntityReference'
 import { Scope } from '@common/interfaces/SecretsInterface'
 import { Connectors } from '@connectors/constants'
@@ -78,6 +78,30 @@ const placeholderValues = {
 export interface ConnectorRefInterface {
   record?: { spec?: { type?: string; url?: string; connectionType?: string } }
 }
+
+const renderLabel = ({
+  isDeploymentOrTriggerForm,
+  getString,
+  tooltip,
+  keyString
+}: {
+  isDeploymentOrTriggerForm: boolean
+  getString: UseStringsReturn['getString']
+  tooltip?: string
+  keyString: StringKeys
+}): JSX.Element => (
+  <Layout.Horizontal className={css.inpLabel} style={{ display: 'flex', alignItems: 'baseline' }}>
+    <Text
+      color={Color.GREY_600}
+      font={{ size: 'small', weight: 'semi-bold' }}
+      {...(!isDeploymentOrTriggerForm && { tooltipProps: { dataTooltipId: tooltip } })}
+    >
+      {getString(keyString)}
+    </Text>
+    &nbsp;
+    {isDeploymentOrTriggerForm && getOptionalSubLabel(getString, tooltip)}
+  </Layout.Horizontal>
+)
 
 export const handleCIConnectorRefOnChange = ({
   value,
@@ -152,7 +176,7 @@ function CICodebaseInputSetFormInternal({
   const isRepoNameRuntimeInput = template?.properties?.ci?.codebase?.repoName
   const isCpuLimitRuntimeInput = template?.properties?.ci?.codebase?.resources?.limits?.cpu
   const isMemoryLimitRuntimeInput = template?.properties?.ci?.codebase?.resources?.limits?.memory
-  const isDeploymentOrTriggerForm = viewType === StepViewType.DeploymentForm || isTriggerForm
+  const isDeploymentOrTriggerForm = viewType === StepViewType.DeploymentForm || !!isTriggerForm
   const [isConnectorExpression, setIsConnectorExpression] = useState<boolean>(false)
   const savedValues = useRef<Record<string, string>>({
     branch: '',
@@ -426,19 +450,12 @@ function CICodebaseInputSetFormInternal({
             <Container width={'50%'} className={css.bottomMargin3}>
               <MultiTypeSelectField
                 name={codeBaseInputFieldFormName.sslVerify}
-                label={
-                  <Layout.Horizontal className={css.inpLabel} style={{ display: 'flex', alignItems: 'baseline' }}>
-                    <Text
-                      color={Color.GREY_600}
-                      font={{ size: 'small', weight: 'semi-bold' }}
-                      {...(!isDeploymentOrTriggerForm && { tooltipProps: { dataTooltipId: 'sslVerify' } })}
-                    >
-                      {getString('pipeline.sslVerify')}
-                    </Text>
-                    &nbsp;
-                    {isDeploymentOrTriggerForm && getOptionalSubLabel(getString, 'sslVerify')}
-                  </Layout.Horizontal>
-                }
+                label={renderLabel({
+                  isDeploymentOrTriggerForm,
+                  getString,
+                  tooltip: 'sslVerify',
+                  keyString: 'pipeline.sslVerify'
+                })}
                 multiTypeInputProps={{
                   selectItems: sslVerifyOptions as unknown as SelectOption[],
                   placeholder: getString('select'),
@@ -458,19 +475,12 @@ function CICodebaseInputSetFormInternal({
             <Container width={'50%'} className={css.bottomMargin3}>
               <MultiTypeSelectField
                 name={codeBaseInputFieldFormName.prCloneStrategy}
-                label={
-                  <Layout.Horizontal className={css.inpLabel} style={{ display: 'flex', alignItems: 'baseline' }}>
-                    <Text
-                      color={Color.GREY_600}
-                      font={{ size: 'small', weight: 'semi-bold' }}
-                      {...(!isDeploymentOrTriggerForm && { tooltipProps: { dataTooltipId: 'prCloneStrategy' } })}
-                    >
-                      {getString('pipeline.ciCodebase.prCloneStrategy')}
-                    </Text>
-                    &nbsp;
-                    {isDeploymentOrTriggerForm && getOptionalSubLabel(getString, 'prCloneStrategy')}
-                  </Layout.Horizontal>
-                }
+                label={renderLabel({
+                  isDeploymentOrTriggerForm,
+                  getString,
+                  tooltip: 'prCloneStrategy',
+                  keyString: 'pipeline.ciCodebase.prCloneStrategy'
+                })}
                 multiTypeInputProps={{
                   selectItems: prCloneStrategyOptions,
                   placeholder: getString('select'),
