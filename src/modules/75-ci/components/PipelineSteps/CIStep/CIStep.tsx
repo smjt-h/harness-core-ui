@@ -163,6 +163,29 @@ export const CIStep: React.FC<CIStepProps> = props => {
     []
   )
 
+  const renderFormMultiTypeConnectorField = React.useCallback((fieldPath: string) => {
+    return (
+      <FormMultiTypeConnectorField
+        label={renderLabel(enableFields[fieldPath].label)}
+        type={enableFields[fieldPath].type}
+        width={getConnectorRefWidth(stepViewType)}
+        name={`${prefix}${fieldPath}`}
+        placeholder={getString('select')}
+        accountIdentifier={accountId}
+        projectIdentifier={projectIdentifier}
+        orgIdentifier={orgIdentifier}
+        multiTypeProps={{
+          expressions,
+          allowableTypes: isInputSetView ? AllMultiTypeInputTypesForInputSet : AllMultiTypeInputTypesForStep,
+          disabled: readonly,
+          ...enableFields[fieldPath].multiTypeProps
+        }}
+        gitScope={gitScope}
+        setRefValue
+      />
+    )
+  }, [])
+
   return (
     <>
       {stepViewType !== StepViewType.Template && Object.prototype.hasOwnProperty.call(enableFields, 'name') ? (
@@ -221,26 +244,7 @@ export const CIStep: React.FC<CIStepProps> = props => {
             })}
           </Container>
         ) : (
-          <Container className={css.bottomMargin3}>
-            <FormMultiTypeConnectorField
-              label={renderLabel(enableFields['spec.connectorRef'].label)}
-              type={enableFields['spec.connectorRef'].type}
-              width={getConnectorRefWidth(stepViewType)}
-              name={`${prefix}spec.connectorRef`}
-              placeholder={getString('select')}
-              accountIdentifier={accountId}
-              projectIdentifier={projectIdentifier}
-              orgIdentifier={orgIdentifier}
-              multiTypeProps={{
-                expressions,
-                allowableTypes: isInputSetView ? AllMultiTypeInputTypesForInputSet : AllMultiTypeInputTypesForStep,
-                disabled: readonly,
-                ...enableFields['spec.connectorRef'].multiTypeProps
-              }}
-              gitScope={gitScope}
-              setRefValue
-            />
-          </Container>
+          <Container className={css.bottomMargin3}>{renderFormMultiTypeConnectorField('spec.connectorRef')}</Container>
         )
       ) : null}
       {!enableFields['spec.connectorRef']?.shouldHide &&
@@ -455,30 +459,7 @@ export const CIStep: React.FC<CIStepProps> = props => {
       ) : null}
       {Object.prototype.hasOwnProperty.call(enableFields, 'spec.baseImageConnectorRefs') ? (
         <Container className={cx(css.formGroup, stepCss, css.bottomMargin5)}>
-          <FormMultiTypeConnectorField
-            label={enableFields['spec.baseImageConnectorRefs'].label}
-            type={enableFields['spec.baseImageConnectorRefs'].type}
-            width={
-              stepViewType === StepViewType.DeploymentForm
-                ? ConnectorRefWidth.DeploymentFormView
-                : stepViewType === StepViewType.InputSet
-                ? ConnectorRefWidth.InputSetView
-                : ConnectorRefWidth.DefaultView
-            }
-            name={`${prefix}spec.baseImageConnectorRefs`}
-            placeholder={getString('select')}
-            accountIdentifier={accountId}
-            projectIdentifier={projectIdentifier}
-            orgIdentifier={orgIdentifier}
-            multiTypeProps={{
-              expressions,
-              allowableTypes: isInputSetView ? AllMultiTypeInputTypesForInputSet : AllMultiTypeInputTypesForStep,
-              disabled: readonly,
-              ...enableFields['spec.baseImageConnectorRefs'].multiTypeProps
-            }}
-            gitScope={gitScope}
-            setRefValue
-          />
+          {renderFormMultiTypeConnectorField('spec.baseImageConnectorRefs')}
         </Container>
       ) : null}
       {Object.prototype.hasOwnProperty.call(enableFields, 'spec.tags') ? (
