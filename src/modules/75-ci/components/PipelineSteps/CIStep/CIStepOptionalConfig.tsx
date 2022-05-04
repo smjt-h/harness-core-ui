@@ -28,10 +28,7 @@ import {
   useGitScope
 } from '@pipeline/utils/CIUtils'
 import { MultiTypeSelectField } from '@common/components/MultiTypeSelect/MultiTypeSelect'
-import {
-  FieldWrapperType,
-  FormMultiTypeConnectorField
-} from '@connectors/components/ConnectorReferenceField/FormMultiTypeConnectorField'
+import { FormMultiTypeConnectorField } from '@connectors/components/ConnectorReferenceField/FormMultiTypeConnectorField'
 import { ArchiveFormatOptions } from '../../../constants/Constants'
 import {
   AllMultiTypeInputTypesForInputSet,
@@ -424,7 +421,6 @@ export const CIStepOptionalConfig: React.FC<CIStepOptionalConfigProps> = props =
               }}
               gitScope={gitScope}
               setRefValue
-              fieldWrapperType={FieldWrapperType.Array}
             />
           </Container>
         </Container>
