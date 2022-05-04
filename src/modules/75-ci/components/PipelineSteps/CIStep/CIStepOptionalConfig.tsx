@@ -398,32 +398,47 @@ export const CIStepOptionalConfig: React.FC<CIStepOptionalConfigProps> = props =
   return (
     <>
       {Object.prototype.hasOwnProperty.call(enableFields, 'spec.baseImageConnectorRefs') ? (
-        <Container className={cx(css.formGroup, stepCss, css.bottomMargin5)}>
-          <Container className={css.bottomMargin3}>
-            <FormMultiTypeConnectorField
-              label={renderLabel({
-                labelKey: enableFields['spec.baseImageConnectorRefs'].label.labelKey,
-                tooltipId: enableFields['spec.baseImageConnectorRefs'].label?.tooltipId,
-                getString
-              })}
-              type={enableFields['spec.baseImageConnectorRefs'].type}
-              width={getConnectorRefWidth(stepViewType)}
-              name={`${prefix}spec.baseImageConnectorRefs`}
-              placeholder={getString('select')}
-              accountIdentifier={accountId}
-              projectIdentifier={projectIdentifier}
-              orgIdentifier={orgIdentifier}
-              multiTypeProps={{
-                expressions,
-                allowableTypes: isInputSetView ? AllMultiTypeInputTypesForInputSet : AllMultiTypeInputTypesForStep,
-                disabled: readonly,
-                ...enableFields['spec.baseImageConnectorRefs'].multiTypeProps
-              }}
-              gitScope={gitScope}
-              setRefValue
-            />
+        isInputSetView && shouldRenderRunTimeInputViewWithAllowedValues('spec.baseImageConnectorRefs', template) ? (
+          <Container className={cx(css.formGroup, stepCss, css.bottomMargin3)}>
+            {renderMultiTypeInputWithAllowedValues({
+              name: `${prefix}spec.baseImageConnectorRefs`,
+              labelKey: enableFields['spec.baseImageConnectorRefs'].label.labelKey,
+              tooltipId: enableFields['spec.baseImageConnectorRefs'].label?.tooltipId,
+              fieldPath: 'spec.baseImageConnectorRefs',
+              getString,
+              readonly,
+              expressions,
+              template
+            })}
           </Container>
-        </Container>
+        ) : (
+          <Container className={cx(css.formGroup, stepCss, css.bottomMargin5)}>
+            <Container className={css.bottomMargin3}>
+              <FormMultiTypeConnectorField
+                label={renderLabel({
+                  labelKey: enableFields['spec.baseImageConnectorRefs'].label.labelKey,
+                  tooltipId: enableFields['spec.baseImageConnectorRefs'].label?.tooltipId,
+                  getString
+                })}
+                type={enableFields['spec.baseImageConnectorRefs'].type}
+                width={getConnectorRefWidth(stepViewType)}
+                name={`${prefix}spec.baseImageConnectorRefs`}
+                placeholder={getString('select')}
+                accountIdentifier={accountId}
+                projectIdentifier={projectIdentifier}
+                orgIdentifier={orgIdentifier}
+                multiTypeProps={{
+                  expressions,
+                  allowableTypes: isInputSetView ? AllMultiTypeInputTypesForInputSet : AllMultiTypeInputTypesForStep,
+                  disabled: readonly,
+                  ...enableFields['spec.baseImageConnectorRefs'].multiTypeProps
+                }}
+                gitScope={gitScope}
+                setRefValue
+              />
+            </Container>
+          </Container>
+        )
       ) : null}
       {/* Tag is not an optional configuration but due to some weird error, it's being placed here for time being till real reason is figured out.*/}
       {Object.prototype.hasOwnProperty.call(enableFields, 'spec.tags') ? (
