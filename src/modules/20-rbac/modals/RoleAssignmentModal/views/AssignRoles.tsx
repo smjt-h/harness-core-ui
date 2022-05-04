@@ -22,22 +22,15 @@ import { defaultTo } from 'lodash-es'
 import { useToaster } from '@common/components'
 import { usePostRoleAssignments, RoleAssignment as RBACRoleAssignment } from 'services/rbac'
 import { useStrings } from 'framework/strings'
-// import { UserMetadataDTO, RoleAssignmentMetadataDTO, useGetUsers, useAddUsers, AddUsers } from 'services/cd-ng'
 import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
+import { getScopeBasedDefaultAssignment, isNewRoleAssignment, PrincipalType } from '@rbac/utils/utils'
 import {
-  // handleInvitationResponse,
-  // getScopeBasedDefaultAssignment,
-  // InvitationStatus,
-  isNewRoleAssignment,
-  PrincipalType
-} from '@rbac/utils/utils'
-import { getIdentifierFromValue, getPrincipalScopeFromValue } from '@common/components/EntityReference/EntityReference'
-// import { useMutateAsGet } from '@common/hooks/useMutateAsGet'
-// import { Scope } from '@common/interfaces/SecretsInterface'
+  getIdentifierFromValue,
+  getScopeFromDTO,
+  getPrincipalScopeFromValue
+} from '@common/components/EntityReference/EntityReference'
 import UserGroupsInput from '@common/components/UserGroupsInput/UserGroupsInput'
-import { isCDCommunity, useLicenseStore } from 'framework/LicenseStore/LicenseStoreContext'
-// import UserItemRenderer from '@audit-trail/components/UserItemRenderer/UserItemRenderer'
-// import UserTagRenderer from '@audit-trail/components/UserTagRenderer/UserTagRenderer'
+import { isCommunityPlan } from '@common/utils/utils'
 import RoleAssignmentForm from './RoleAssignmentForm'
 
 interface UserGroupRoleAssignmentData {
@@ -77,14 +70,16 @@ export interface UserGroupRoleAssignmentValues {
 const UserRoleAssignment: React.FC<UserGroupRoleAssignmentData> = props => {
   const { onSubmit, onSuccess, onCancel } = props
   const { accountId, orgIdentifier, projectIdentifier } = useParams<ProjectPathProps>()
+  const scope = getScopeFromDTO({ accountIdentifier: accountId, orgIdentifier, projectIdentifier })
   const { getString } = useStrings()
-  const { licenseInformation } = useLicenseStore()
-  const isCommunity = isCDCommunity(licenseInformation)
+  const isCommunity = isCommunityPlan()
   const { showSuccess } = useToaster()
   const [modalErrorHandler, setModalErrorHandler] = useState<ModalErrorHandlerBinding>()
   const { mutate: createRoleAssignment, loading: saving } = usePostRoleAssignments({
     queryParams: { accountIdentifier: accountId, orgIdentifier, projectIdentifier }
   })
+
+  const assignments: Assignment[] = getScopeBasedDefaultAssignment(scope, getString, isCommunity)
 
   const handleRoleAssignment = async (values: UserGroupRoleAssignmentValues): Promise<void> => {
     if (values.assignments.length === 0) {
@@ -134,7 +129,7 @@ const UserRoleAssignment: React.FC<UserGroupRoleAssignmentData> = props => {
   return (
     <Formik<UserGroupRoleAssignmentValues>
       initialValues={{
-        assignments: [],
+        assignments: assignments,
         userGroups: []
       }}
       formName="UserGroupRoleAssignmentForm"
