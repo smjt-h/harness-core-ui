@@ -33,6 +33,8 @@ import css from './DefineHealthSource.module.scss'
 import { useVariablesExpression } from '@pipeline/components/PipelineStudio/PiplineHooks/useVariablesExpression'
 import { FormMultiTypeConnectorField } from '@connectors/components/ConnectorReferenceField/FormMultiTypeConnectorField'
 import { AllMultiTypeInputTypesForStep } from '@ci/components/PipelineSteps/CIStep/StepUtils'
+import { TemplateType } from '@templates-library/utils/templatesUtils'
+import { FormConnectorReferenceField } from '@connectors/components/ConnectorReferenceField/FormConnectorReferenceField'
 
 interface DefineHealthSourceProps {
   onSubmit?: (values: any) => void
@@ -43,7 +45,9 @@ function DefineHealthSource(props: DefineHealthSourceProps): JSX.Element {
   const { getString } = useStrings()
   const { expressions } = useVariablesExpression?.() || {}
   const { onNext, sourceData } = useContext(SetupSourceTabsContext)
-  const { orgIdentifier, projectIdentifier, accountId } = useParams<ProjectPathProps & { identifier: string }>()
+  const { orgIdentifier, projectIdentifier, accountId, templateType } = useParams<
+    ProjectPathProps & { identifier: string; templateType?: string }
+  >()
   const { isEdit } = sourceData
 
   const isErrorTrackingEnabled = useFeatureFlag(FeatureFlag.ERROR_TRACKING_ENABLED)
@@ -110,15 +114,10 @@ function DefineHealthSource(props: DefineHealthSourceProps): JSX.Element {
         }}
       >
         {formik => {
+          console.log('prorpro', formik?.values)
           let featureOption = getFeatureOption(formik?.values?.sourceType, getString)
           if (formik.values?.sourceType === HealthSourceTypes.CustomHealth) {
             featureOption = modifyCustomHealthFeatureBasedOnFF(isCustomLogEnabled, isCustomMetricEnabled, featureOption)
-          }
-          if (
-            formik?.values?.connectorId?.value &&
-            formik.values?.[ConnectorRefFieldName] !== formik?.values?.connectorId?.value
-          ) {
-            formik.setFieldValue(ConnectorRefFieldName, formik?.values?.connectorId?.value)
           }
           return (
             <FormikForm className={css.formFullheight}>
@@ -211,23 +210,50 @@ function DefineHealthSource(props: DefineHealthSourceProps): JSX.Element {
                 <>
                   <Container margin={{ bottom: 'large' }} width={'400px'}>
                     <div className={css.connectorField}>
-                      <FormMultiTypeConnectorField
-                        name={'connectorId'}
-                        label={
-                          <Text color={Color.BLACK} font={'small'} margin={{ bottom: 'small' }}>
-                            {getString('connectors.selectConnector')}
-                          </Text>
-                        }
-                        placeholder={getString('cv.healthSource.connectors.selectConnector', {
-                          sourceType: formik?.values?.sourceType
-                        })}
-                        disabled={isEdit ? !!formik?.values?.connectorRef && isEdit : !formik?.values?.sourceType}
-                        accountIdentifier={accountId}
-                        projectIdentifier={projectIdentifier}
-                        orgIdentifier={orgIdentifier}
-                        width={400}
-                        multiTypeProps={{ expressions, allowableTypes: AllMultiTypeInputTypesForStep }}
-                      />
+                      {templateType === TemplateType.MonitoredService ? (
+                        <FormMultiTypeConnectorField
+                          name={'connectorId'}
+                          label={
+                            <Text color={Color.BLACK} font={'small'} margin={{ bottom: 'small' }}>
+                              {getString('connectors.selectConnector')}
+                            </Text>
+                          }
+                          placeholder={getString('cv.healthSource.connectors.selectConnector', {
+                            sourceType: formik?.values?.sourceType
+                          })}
+                          disabled={isEdit ? !!formik?.values?.connectorRef && isEdit : !formik?.values?.sourceType}
+                          accountIdentifier={accountId}
+                          projectIdentifier={projectIdentifier}
+                          orgIdentifier={orgIdentifier}
+                          width={400}
+                          type={formik?.values?.sourceType}
+                          multiTypeProps={{ expressions, allowableTypes: AllMultiTypeInputTypesForStep }}
+                          onChange={(value: any) => {
+                            const connectorValue = value?.scope ? `${value.scope}.${value?.record?.identifier}` : value
+                            formik?.setFieldValue(ConnectorRefFieldName, connectorValue)
+                          }}
+                        />
+                      ) : (
+                        <FormConnectorReferenceField
+                          width={400}
+                          formik={formik}
+                          type={formik?.values?.sourceType}
+                          name={ConnectorRefFieldName}
+                          label={
+                            <Text color={Color.BLACK} font={'small'} margin={{ bottom: 'small' }}>
+                              {getString('connectors.selectConnector')}
+                            </Text>
+                          }
+                          accountIdentifier={accountId}
+                          projectIdentifier={projectIdentifier}
+                          orgIdentifier={orgIdentifier}
+                          placeholder={getString('cv.healthSource.connectors.selectConnector', {
+                            sourceType: formik?.values?.sourceType
+                          })}
+                          disabled={isEdit ? !!formik?.values?.connectorRef && isEdit : !formik?.values?.sourceType}
+                          tooltipProps={{ dataTooltipId: 'selectHealthSourceConnector' }}
+                        />
+                      )}
                     </div>
                   </Container>
                   <Container margin={{ bottom: 'large' }} width={'400px'}>
