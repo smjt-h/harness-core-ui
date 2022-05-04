@@ -165,7 +165,7 @@ export function ACRArtifact({
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const getValue = (item: { label?: string; value?: string } | string | any): string => {
     /* istanbul ignore next */
-    return typeof item === 'string' ? (item as string) : item?.value
+    return typeof item === 'string' ? item : item?.value
   }
 
   const {

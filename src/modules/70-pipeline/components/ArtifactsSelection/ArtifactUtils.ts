@@ -255,12 +255,6 @@ export const defaultArtifactInitialValues = (selectedArtifact: ArtifactType): an
         version: RUNTIME_INPUT_VALUE
       }
     case ENABLED_ARTIFACT_TYPES.Acr:
-      return {
-        identifier: '',
-        tag: RUNTIME_INPUT_VALUE,
-        tagType: TagTypes.Value,
-        tagRegex: RUNTIME_INPUT_VALUE
-      }
     case ENABLED_ARTIFACT_TYPES.DockerRegistry:
     case ENABLED_ARTIFACT_TYPES.Gcr:
     case ENABLED_ARTIFACT_TYPES.Ecr:
