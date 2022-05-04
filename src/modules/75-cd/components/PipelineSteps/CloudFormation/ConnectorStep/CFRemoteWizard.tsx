@@ -8,7 +8,7 @@
 import React, { useState } from 'react'
 import cx from 'classnames'
 import { useParams } from 'react-router-dom'
-import { Button, ButtonVariation, StepWizard } from '@harness/uicore'
+import { Button, ButtonVariation, StepWizard, MultiTypeInputType, SelectOption } from '@harness/uicore'
 import { Classes, Dialog, IDialogProps } from '@blueprintjs/core'
 import { useStrings } from 'framework/strings'
 import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
@@ -47,11 +47,17 @@ interface Path {
   [key: string]: string
 }
 
-// interface StepChangeData<SharedObject> {
-//   prevStep: number
-//   nextStep: number
-//   prevStepData: SharedObject
-// }
+interface CFRemoteWizardProps {
+  readonly: boolean
+  allowableTypes: MultiTypeInputType[]
+  showModal: boolean
+  onClose: () => void
+  isParam: boolean
+  initialValues: any
+  setFieldValue: (field: string, data: any) => void
+  index?: number
+  regions: SelectOption[]
+}
 
 const CFRemoteWizard = ({
   readonly,
@@ -63,7 +69,7 @@ const CFRemoteWizard = ({
   setFieldValue,
   index,
   regions
-}: any): JSX.Element => {
+}: CFRemoteWizardProps): JSX.Element => {
   const { getString } = useStrings()
   const { accountId, projectIdentifier, orgIdentifier } = useParams<ProjectPathProps>()
   const [isEditMode, setIsEditMode] = useState(false)
@@ -179,7 +185,7 @@ const CFRemoteWizard = ({
       onClose={close}
       className={cx(css.modal, Classes.DIALOG)}
     >
-      <div className={css.createTfWizard}>
+      <div className={css.wizard}>
         <StepWizard
           title={fileStoreTitle}
           className={css.configWizard}

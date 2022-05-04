@@ -158,7 +158,7 @@ export const GetNewConnector = (
 
 const formatPaths = (paths: any) => map(paths, (item: string) => ({ path: item }))
 
-export const FormatFilePaths = (values: any, isParam: boolean, index: number) => {
+export const FormatFilePaths = (values: any, isParam: boolean, index?: number) => {
   if (isParam) {
     let param = get(values, `spec.configuration.parameters[${index}]`)
     param = {

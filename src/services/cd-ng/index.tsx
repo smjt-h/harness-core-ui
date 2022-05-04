@@ -330,11 +330,11 @@ export interface AccessControlCheckError {
     | 'INVALID_ARTIFACTORY_REGISTRY_REQUEST'
     | 'INVALID_NEXUS_REGISTRY_REQUEST'
     | 'ENTITY_NOT_FOUND'
-<<<<<<< HEAD
     | 'INVALID_AZURE_CONTAINER_REGISTRY_REQUEST'
     | 'AZURE_AUTHENTICATION_ERROR'
     | 'AZURE_CONFIG_ERROR'
     | 'DATA_PROCESSING_ERROR'
+<<<<<<< HEAD
 <<<<<<< HEAD
     | 'INVALID_AZURE_AKS_REQUEST'
     | 'SERVERLESS_EXECUTION_ERROR'
@@ -344,6 +344,10 @@ export interface AccessControlCheckError {
     | 'AWS_CF_ERROR'
 >>>>>>> 124daab078d9 (Add api requests)
 >>>>>>> cf70c33256ad (adds to yaml, need to format data. Waiting for UI to be confirmed before continuing)
+=======
+    | 'AWS_IAM_ERROR'
+    | 'AWS_CF_ERROR'
+>>>>>>> 5c7c3761e612 (Fix initial load of data)
   correlationId?: string
   detailedMessage?: string
   failedPermissionChecks?: PermissionCheck[]
@@ -1122,7 +1126,6 @@ export interface AzureMSIAuth {
 }
 
 export type AzureManualDetails = AzureCredentialSpec & {
-<<<<<<< HEAD
   applicationId: string
   auth: AzureAuthDTO
   tenantId: string
@@ -1183,6 +1186,7 @@ export type AzureRepoUsernameToken = AzureRepoHttpCredentialsSpecDTO & {
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 export interface AzureResourceGroupDTO {
   resourceGroup: string
 }
@@ -1215,6 +1219,8 @@ export type AzureUserAssignedMSIAuth = AzureAuthCredentialDTO & {
 
 >>>>>>> 124daab078d9 (Add api requests)
 >>>>>>> cf70c33256ad (adds to yaml, need to format data. Waiting for UI to be confirmed before continuing)
+=======
+>>>>>>> 5c7c3761e612 (Fix initial load of data)
 export interface BarrierInfoConfig {
   identifier: string
   name: string
@@ -2556,6 +2562,7 @@ export interface EnvironmentGroupDeleteResponse {
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 export type EnvironmentGroupFilterProperties = FilterProperties & {
   description?: string
   envGroupName?: string
@@ -2565,6 +2572,8 @@ export type EnvironmentGroupFilterProperties = FilterProperties & {
 
 =======
 >>>>>>> 124daab078d9 (Add api requests)
+=======
+>>>>>>> 5c7c3761e612 (Fix initial load of data)
 export interface EnvironmentGroupResponse {
   createdAt?: number
   envGroup?: EnvironmentGroupResponseDTO
@@ -2577,11 +2586,6 @@ export interface EnvironmentGroupResponseDTO {
   deleted?: boolean
   description?: string
   envIdentifiers?: string[]
-<<<<<<< HEAD
-  envResponse?: EnvironmentResponse[]
-  gitDetails?: EntityGitDetails
-=======
->>>>>>> 124daab078d9 (Add api requests)
   identifier?: string
   name?: string
   orgIdentifier?: string
@@ -2957,11 +2961,11 @@ export interface Error {
     | 'INVALID_ARTIFACTORY_REGISTRY_REQUEST'
     | 'INVALID_NEXUS_REGISTRY_REQUEST'
     | 'ENTITY_NOT_FOUND'
-<<<<<<< HEAD
     | 'INVALID_AZURE_CONTAINER_REGISTRY_REQUEST'
     | 'AZURE_AUTHENTICATION_ERROR'
     | 'AZURE_CONFIG_ERROR'
     | 'DATA_PROCESSING_ERROR'
+<<<<<<< HEAD
 <<<<<<< HEAD
     | 'INVALID_AZURE_AKS_REQUEST'
     | 'SERVERLESS_EXECUTION_ERROR'
@@ -2971,6 +2975,10 @@ export interface Error {
     | 'AWS_CF_ERROR'
 >>>>>>> 124daab078d9 (Add api requests)
 >>>>>>> cf70c33256ad (adds to yaml, need to format data. Waiting for UI to be confirmed before continuing)
+=======
+    | 'AWS_IAM_ERROR'
+    | 'AWS_CF_ERROR'
+>>>>>>> 5c7c3761e612 (Fix initial load of data)
   correlationId?: string
   detailedMessage?: string
   message?: string
@@ -3354,11 +3362,11 @@ export interface Failure {
     | 'INVALID_ARTIFACTORY_REGISTRY_REQUEST'
     | 'INVALID_NEXUS_REGISTRY_REQUEST'
     | 'ENTITY_NOT_FOUND'
-<<<<<<< HEAD
     | 'INVALID_AZURE_CONTAINER_REGISTRY_REQUEST'
     | 'AZURE_AUTHENTICATION_ERROR'
     | 'AZURE_CONFIG_ERROR'
     | 'DATA_PROCESSING_ERROR'
+<<<<<<< HEAD
 <<<<<<< HEAD
     | 'INVALID_AZURE_AKS_REQUEST'
     | 'SERVERLESS_EXECUTION_ERROR'
@@ -3368,6 +3376,10 @@ export interface Failure {
     | 'AWS_CF_ERROR'
 >>>>>>> 124daab078d9 (Add api requests)
 >>>>>>> cf70c33256ad (adds to yaml, need to format data. Waiting for UI to be confirmed before continuing)
+=======
+    | 'AWS_IAM_ERROR'
+    | 'AWS_CF_ERROR'
+>>>>>>> 5c7c3761e612 (Fix initial load of data)
   correlationId?: string
   errors?: ValidationError[]
   message?: string
@@ -4411,6 +4423,7 @@ export interface GitSyncEntityDTO {
     | 'BuildAndPushECR'
     | 'BuildAndPushDockerRegistry'
 <<<<<<< HEAD
+<<<<<<< HEAD
     | 'ServerlessAwsLambdaDeploy'
     | 'ServerlessAwsLambdaRollback'
 =======
@@ -4420,6 +4433,10 @@ export interface GitSyncEntityDTO {
     | 'DeleteStack'
 >>>>>>> 124daab078d9 (Add api requests)
 >>>>>>> cf70c33256ad (adds to yaml, need to format data. Waiting for UI to be confirmed before continuing)
+=======
+    | 'CreateStack'
+    | 'DeleteStack'
+>>>>>>> 5c7c3761e612 (Fix initial load of data)
   entityUrl?: string
   folderPath?: string
   gitConnectorId?: string
@@ -7878,11 +7895,11 @@ export interface ResponseMessage {
     | 'INVALID_ARTIFACTORY_REGISTRY_REQUEST'
     | 'INVALID_NEXUS_REGISTRY_REQUEST'
     | 'ENTITY_NOT_FOUND'
-<<<<<<< HEAD
     | 'INVALID_AZURE_CONTAINER_REGISTRY_REQUEST'
     | 'AZURE_AUTHENTICATION_ERROR'
     | 'AZURE_CONFIG_ERROR'
     | 'DATA_PROCESSING_ERROR'
+<<<<<<< HEAD
 <<<<<<< HEAD
     | 'INVALID_AZURE_AKS_REQUEST'
     | 'SERVERLESS_EXECUTION_ERROR'
@@ -7892,6 +7909,10 @@ export interface ResponseMessage {
     | 'AWS_CF_ERROR'
 >>>>>>> 124daab078d9 (Add api requests)
 >>>>>>> cf70c33256ad (adds to yaml, need to format data. Waiting for UI to be confirmed before continuing)
+=======
+    | 'AWS_IAM_ERROR'
+    | 'AWS_CF_ERROR'
+>>>>>>> 5c7c3761e612 (Fix initial load of data)
   exception?: Throwable
   failureTypes?: (
     | 'EXPIRED'
@@ -10590,16 +10611,12 @@ export type UserGroupDTORequestBody = UserGroupDTO
 
 export type YamlSchemaDetailsWrapperRequestBody = YamlSchemaDetailsWrapper
 
-<<<<<<< HEAD
-export type GetBuildDetailsForAcrArtifactWithYamlBodyRequestBody = string
-=======
 export type CreateEnvironmentGroupBodyRequestBody = string
 
 <<<<<<< HEAD
 export type UnsubscribeBodyRequestBody = string[]
 =======
 export type GetBuildDetailsForEcrWithYamlBodyRequestBody = string
->>>>>>> 124daab078d9 (Add api requests)
 
 export type ProcessPollingResultNgBodyRequestBody = string[]
 >>>>>>> cf70c33256ad (adds to yaml, need to format data. Waiting for UI to be confirmed before continuing)
@@ -12874,11 +12891,7 @@ export type GetBuildDetailsForArtifactoryArtifactWithYamlProps = Omit<
     ResponseArtifactoryResponseDTO,
     Failure | Error,
     GetBuildDetailsForArtifactoryArtifactWithYamlQueryParams,
-<<<<<<< HEAD
-    UpdateEnvironmentGroupBodyRequestBody,
-=======
     CreateEnvironmentGroupBodyRequestBody,
->>>>>>> 124daab078d9 (Add api requests)
     void
   >,
   'path' | 'verb'
@@ -12894,11 +12907,7 @@ export const GetBuildDetailsForArtifactoryArtifactWithYaml = (
     ResponseArtifactoryResponseDTO,
     Failure | Error,
     GetBuildDetailsForArtifactoryArtifactWithYamlQueryParams,
-<<<<<<< HEAD
-    UpdateEnvironmentGroupBodyRequestBody,
-=======
     CreateEnvironmentGroupBodyRequestBody,
->>>>>>> 124daab078d9 (Add api requests)
     void
   >
     verb="POST"
@@ -12913,11 +12922,7 @@ export type UseGetBuildDetailsForArtifactoryArtifactWithYamlProps = Omit<
     ResponseArtifactoryResponseDTO,
     Failure | Error,
     GetBuildDetailsForArtifactoryArtifactWithYamlQueryParams,
-<<<<<<< HEAD
-    UpdateEnvironmentGroupBodyRequestBody,
-=======
     CreateEnvironmentGroupBodyRequestBody,
->>>>>>> 124daab078d9 (Add api requests)
     void
   >,
   'path' | 'verb'
@@ -12933,11 +12938,7 @@ export const useGetBuildDetailsForArtifactoryArtifactWithYaml = (
     ResponseArtifactoryResponseDTO,
     Failure | Error,
     GetBuildDetailsForArtifactoryArtifactWithYamlQueryParams,
-<<<<<<< HEAD
-    UpdateEnvironmentGroupBodyRequestBody,
-=======
     CreateEnvironmentGroupBodyRequestBody,
->>>>>>> 124daab078d9 (Add api requests)
     void
   >('POST', `/artifacts/artifactory/getBuildDetailsV2`, { base: getConfig('ng/api'), ...props })
 
@@ -12949,11 +12950,7 @@ export const getBuildDetailsForArtifactoryArtifactWithYamlPromise = (
     ResponseArtifactoryResponseDTO,
     Failure | Error,
     GetBuildDetailsForArtifactoryArtifactWithYamlQueryParams,
-<<<<<<< HEAD
-    UpdateEnvironmentGroupBodyRequestBody,
-=======
     CreateEnvironmentGroupBodyRequestBody,
->>>>>>> 124daab078d9 (Add api requests)
     void
   >,
   signal?: RequestInit['signal']
@@ -12962,11 +12959,7 @@ export const getBuildDetailsForArtifactoryArtifactWithYamlPromise = (
     ResponseArtifactoryResponseDTO,
     Failure | Error,
     GetBuildDetailsForArtifactoryArtifactWithYamlQueryParams,
-<<<<<<< HEAD
-    UpdateEnvironmentGroupBodyRequestBody,
-=======
     CreateEnvironmentGroupBodyRequestBody,
->>>>>>> 124daab078d9 (Add api requests)
     void
   >('POST', getConfig('ng/api'), `/artifacts/artifactory/getBuildDetailsV2`, props, signal)
 
@@ -13244,11 +13237,7 @@ export type GetBuildDetailsForDockerWithYamlProps = Omit<
     ResponseDockerResponseDTO,
     Failure | Error,
     GetBuildDetailsForDockerWithYamlQueryParams,
-<<<<<<< HEAD
-    UpdateEnvironmentGroupBodyRequestBody,
-=======
     CreateEnvironmentGroupBodyRequestBody,
->>>>>>> 124daab078d9 (Add api requests)
     void
   >,
   'path' | 'verb'
@@ -13262,11 +13251,7 @@ export const GetBuildDetailsForDockerWithYaml = (props: GetBuildDetailsForDocker
     ResponseDockerResponseDTO,
     Failure | Error,
     GetBuildDetailsForDockerWithYamlQueryParams,
-<<<<<<< HEAD
-    UpdateEnvironmentGroupBodyRequestBody,
-=======
     CreateEnvironmentGroupBodyRequestBody,
->>>>>>> 124daab078d9 (Add api requests)
     void
   >
     verb="POST"
@@ -13281,11 +13266,7 @@ export type UseGetBuildDetailsForDockerWithYamlProps = Omit<
     ResponseDockerResponseDTO,
     Failure | Error,
     GetBuildDetailsForDockerWithYamlQueryParams,
-<<<<<<< HEAD
-    UpdateEnvironmentGroupBodyRequestBody,
-=======
     CreateEnvironmentGroupBodyRequestBody,
->>>>>>> 124daab078d9 (Add api requests)
     void
   >,
   'path' | 'verb'
@@ -13299,11 +13280,7 @@ export const useGetBuildDetailsForDockerWithYaml = (props: UseGetBuildDetailsFor
     ResponseDockerResponseDTO,
     Failure | Error,
     GetBuildDetailsForDockerWithYamlQueryParams,
-<<<<<<< HEAD
-    UpdateEnvironmentGroupBodyRequestBody,
-=======
     CreateEnvironmentGroupBodyRequestBody,
->>>>>>> 124daab078d9 (Add api requests)
     void
   >('POST', `/artifacts/docker/getBuildDetailsV2`, { base: getConfig('ng/api'), ...props })
 
@@ -13315,11 +13292,7 @@ export const getBuildDetailsForDockerWithYamlPromise = (
     ResponseDockerResponseDTO,
     Failure | Error,
     GetBuildDetailsForDockerWithYamlQueryParams,
-<<<<<<< HEAD
-    UpdateEnvironmentGroupBodyRequestBody,
-=======
     CreateEnvironmentGroupBodyRequestBody,
->>>>>>> 124daab078d9 (Add api requests)
     void
   >,
   signal?: RequestInit['signal']
@@ -13328,11 +13301,7 @@ export const getBuildDetailsForDockerWithYamlPromise = (
     ResponseDockerResponseDTO,
     Failure | Error,
     GetBuildDetailsForDockerWithYamlQueryParams,
-<<<<<<< HEAD
-    UpdateEnvironmentGroupBodyRequestBody,
-=======
     CreateEnvironmentGroupBodyRequestBody,
->>>>>>> 124daab078d9 (Add api requests)
     void
   >('POST', getConfig('ng/api'), `/artifacts/docker/getBuildDetailsV2`, props, signal)
 
@@ -14590,11 +14559,7 @@ export type GetBuildDetailsForNexusArtifactWithYamlProps = Omit<
     ResponseNexusResponseDTO,
     Failure | Error,
     GetBuildDetailsForNexusArtifactWithYamlQueryParams,
-<<<<<<< HEAD
-    UpdateEnvironmentGroupBodyRequestBody,
-=======
     CreateEnvironmentGroupBodyRequestBody,
->>>>>>> 124daab078d9 (Add api requests)
     void
   >,
   'path' | 'verb'
@@ -14608,11 +14573,7 @@ export const GetBuildDetailsForNexusArtifactWithYaml = (props: GetBuildDetailsFo
     ResponseNexusResponseDTO,
     Failure | Error,
     GetBuildDetailsForNexusArtifactWithYamlQueryParams,
-<<<<<<< HEAD
-    UpdateEnvironmentGroupBodyRequestBody,
-=======
     CreateEnvironmentGroupBodyRequestBody,
->>>>>>> 124daab078d9 (Add api requests)
     void
   >
     verb="POST"
@@ -14627,11 +14588,7 @@ export type UseGetBuildDetailsForNexusArtifactWithYamlProps = Omit<
     ResponseNexusResponseDTO,
     Failure | Error,
     GetBuildDetailsForNexusArtifactWithYamlQueryParams,
-<<<<<<< HEAD
-    UpdateEnvironmentGroupBodyRequestBody,
-=======
     CreateEnvironmentGroupBodyRequestBody,
->>>>>>> 124daab078d9 (Add api requests)
     void
   >,
   'path' | 'verb'
@@ -14645,11 +14602,7 @@ export const useGetBuildDetailsForNexusArtifactWithYaml = (props: UseGetBuildDet
     ResponseNexusResponseDTO,
     Failure | Error,
     GetBuildDetailsForNexusArtifactWithYamlQueryParams,
-<<<<<<< HEAD
-    UpdateEnvironmentGroupBodyRequestBody,
-=======
     CreateEnvironmentGroupBodyRequestBody,
->>>>>>> 124daab078d9 (Add api requests)
     void
   >('POST', `/artifacts/nexus/getBuildDetailsV2`, { base: getConfig('ng/api'), ...props })
 
@@ -14661,11 +14614,7 @@ export const getBuildDetailsForNexusArtifactWithYamlPromise = (
     ResponseNexusResponseDTO,
     Failure | Error,
     GetBuildDetailsForNexusArtifactWithYamlQueryParams,
-<<<<<<< HEAD
-    UpdateEnvironmentGroupBodyRequestBody,
-=======
     CreateEnvironmentGroupBodyRequestBody,
->>>>>>> 124daab078d9 (Add api requests)
     void
   >,
   signal?: RequestInit['signal']
@@ -14674,11 +14623,7 @@ export const getBuildDetailsForNexusArtifactWithYamlPromise = (
     ResponseNexusResponseDTO,
     Failure | Error,
     GetBuildDetailsForNexusArtifactWithYamlQueryParams,
-<<<<<<< HEAD
-    UpdateEnvironmentGroupBodyRequestBody,
-=======
     CreateEnvironmentGroupBodyRequestBody,
->>>>>>> 124daab078d9 (Add api requests)
     void
   >('POST', getConfig('ng/api'), `/artifacts/nexus/getBuildDetailsV2`, props, signal)
 
@@ -20265,80 +20210,6 @@ export interface CreateEnvironmentGroupQueryParams {
   repoIdentifier?: string
   getDefaultFromOtherRepo?: boolean
 }
-
-export type CreateEnvironmentGroupProps = Omit<
-  MutateProps<
-    ResponseEnvironmentGroupResponse,
-    Failure | Error,
-    CreateEnvironmentGroupQueryParams,
-    UpdateEnvironmentGroupBodyRequestBody,
-    void
-  >,
-  'path' | 'verb'
->
-
-/**
- * Create an Environment Group
- */
-export const CreateEnvironmentGroup = (props: CreateEnvironmentGroupProps) => (
-  <Mutate<
-    ResponseEnvironmentGroupResponse,
-    Failure | Error,
-    CreateEnvironmentGroupQueryParams,
-    UpdateEnvironmentGroupBodyRequestBody,
-    void
-  >
-    verb="POST"
-    path={`/environmentGroup`}
-    base={getConfig('ng/api')}
-    {...props}
-  />
-)
-
-export type UseCreateEnvironmentGroupProps = Omit<
-  UseMutateProps<
-    ResponseEnvironmentGroupResponse,
-    Failure | Error,
-    CreateEnvironmentGroupQueryParams,
-    UpdateEnvironmentGroupBodyRequestBody,
-    void
-  >,
-  'path' | 'verb'
->
-
-/**
- * Create an Environment Group
- */
-export const useCreateEnvironmentGroup = (props: UseCreateEnvironmentGroupProps) =>
-  useMutate<
-    ResponseEnvironmentGroupResponse,
-    Failure | Error,
-    CreateEnvironmentGroupQueryParams,
-    UpdateEnvironmentGroupBodyRequestBody,
-    void
-  >('POST', `/environmentGroup`, { base: getConfig('ng/api'), ...props })
-
-/**
- * Create an Environment Group
- */
-export const createEnvironmentGroupPromise = (
-  props: MutateUsingFetchProps<
-    ResponseEnvironmentGroupResponse,
-    Failure | Error,
-    CreateEnvironmentGroupQueryParams,
-    UpdateEnvironmentGroupBodyRequestBody,
-    void
-  >,
-  signal?: RequestInit['signal']
-) =>
-  mutateUsingFetch<
-    ResponseEnvironmentGroupResponse,
-    Failure | Error,
-    CreateEnvironmentGroupQueryParams,
-    UpdateEnvironmentGroupBodyRequestBody,
-    void
-  >('POST', getConfig('ng/api'), `/environmentGroup`, props, signal)
-
 export interface GetEnvironmentGroupListQueryParams {
   accountIdentifier: string
   orgIdentifier: string
@@ -20353,6 +20224,7 @@ export interface GetEnvironmentGroupListQueryParams {
   repoIdentifier?: string
   getDefaultFromOtherRepo?: boolean
 }
+<<<<<<< HEAD
 
 export type GetEnvironmentGroupListProps = Omit<
   MutateProps<
@@ -20427,6 +20299,8 @@ export const getEnvironmentGroupListPromise = (
     void
   >('POST', getConfig('ng/api'), `/environmentGroup/list`, props, signal)
 
+=======
+>>>>>>> 5c7c3761e612 (Fix initial load of data)
 export interface DeleteEnvironmentGroupQueryParams {
   accountIdentifier: string
   orgIdentifier: string
@@ -20438,66 +20312,6 @@ export interface DeleteEnvironmentGroupQueryParams {
   commitMsg?: string
   lastObjectId?: string
 }
-
-export type DeleteEnvironmentGroupProps = Omit<
-  MutateProps<ResponseEnvironmentGroupDeleteResponse, Failure | Error, DeleteEnvironmentGroupQueryParams, string, void>,
-  'path' | 'verb'
->
-
-/**
- * Delete en Environment Group by Identifier
- */
-export const DeleteEnvironmentGroup = (props: DeleteEnvironmentGroupProps) => (
-  <Mutate<ResponseEnvironmentGroupDeleteResponse, Failure | Error, DeleteEnvironmentGroupQueryParams, string, void>
-    verb="DELETE"
-    path={`/environmentGroup`}
-    base={getConfig('ng/api')}
-    {...props}
-  />
-)
-
-export type UseDeleteEnvironmentGroupProps = Omit<
-  UseMutateProps<
-    ResponseEnvironmentGroupDeleteResponse,
-    Failure | Error,
-    DeleteEnvironmentGroupQueryParams,
-    string,
-    void
-  >,
-  'path' | 'verb'
->
-
-/**
- * Delete en Environment Group by Identifier
- */
-export const useDeleteEnvironmentGroup = (props: UseDeleteEnvironmentGroupProps) =>
-  useMutate<ResponseEnvironmentGroupDeleteResponse, Failure | Error, DeleteEnvironmentGroupQueryParams, string, void>(
-    'DELETE',
-    `/environmentGroup`,
-    { base: getConfig('ng/api'), ...props }
-  )
-
-/**
- * Delete en Environment Group by Identifier
- */
-export const deleteEnvironmentGroupPromise = (
-  props: MutateUsingFetchProps<
-    ResponseEnvironmentGroupDeleteResponse,
-    Failure | Error,
-    DeleteEnvironmentGroupQueryParams,
-    string,
-    void
-  >,
-  signal?: RequestInit['signal']
-) =>
-  mutateUsingFetch<
-    ResponseEnvironmentGroupDeleteResponse,
-    Failure | Error,
-    DeleteEnvironmentGroupQueryParams,
-    string,
-    void
-  >('DELETE', getConfig('ng/api'), `/environmentGroup`, props, signal)
-
 export interface GetEnvironmentGroupQueryParams {
   accountIdentifier: string
   orgIdentifier: string
@@ -20511,77 +20325,6 @@ export interface GetEnvironmentGroupQueryParams {
 export interface GetEnvironmentGroupPathParams {
   envGroupIdentifier: string
 }
-
-export type GetEnvironmentGroupProps = Omit<
-  GetProps<
-    ResponseEnvironmentGroupResponse,
-    Failure | Error,
-    GetEnvironmentGroupQueryParams,
-    GetEnvironmentGroupPathParams
-  >,
-  'path'
-> &
-  GetEnvironmentGroupPathParams
-
-/**
- * Gets a Environment Group by identifier
- */
-export const GetEnvironmentGroup = ({ envGroupIdentifier, ...props }: GetEnvironmentGroupProps) => (
-  <Get<ResponseEnvironmentGroupResponse, Failure | Error, GetEnvironmentGroupQueryParams, GetEnvironmentGroupPathParams>
-    path={`/environmentGroup/${envGroupIdentifier}`}
-    base={getConfig('ng/api')}
-    {...props}
-  />
-)
-
-export type UseGetEnvironmentGroupProps = Omit<
-  UseGetProps<
-    ResponseEnvironmentGroupResponse,
-    Failure | Error,
-    GetEnvironmentGroupQueryParams,
-    GetEnvironmentGroupPathParams
-  >,
-  'path'
-> &
-  GetEnvironmentGroupPathParams
-
-/**
- * Gets a Environment Group by identifier
- */
-export const useGetEnvironmentGroup = ({ envGroupIdentifier, ...props }: UseGetEnvironmentGroupProps) =>
-  useGet<
-    ResponseEnvironmentGroupResponse,
-    Failure | Error,
-    GetEnvironmentGroupQueryParams,
-    GetEnvironmentGroupPathParams
-  >((paramsInPath: GetEnvironmentGroupPathParams) => `/environmentGroup/${paramsInPath.envGroupIdentifier}`, {
-    base: getConfig('ng/api'),
-    pathParams: { envGroupIdentifier },
-    ...props
-  })
-
-/**
- * Gets a Environment Group by identifier
- */
-export const getEnvironmentGroupPromise = (
-  {
-    envGroupIdentifier,
-    ...props
-  }: GetUsingFetchProps<
-    ResponseEnvironmentGroupResponse,
-    Failure | Error,
-    GetEnvironmentGroupQueryParams,
-    GetEnvironmentGroupPathParams
-  > & { envGroupIdentifier: string },
-  signal?: RequestInit['signal']
-) =>
-  getUsingFetch<
-    ResponseEnvironmentGroupResponse,
-    Failure | Error,
-    GetEnvironmentGroupQueryParams,
-    GetEnvironmentGroupPathParams
-  >(getConfig('ng/api'), `/environmentGroup/${envGroupIdentifier}`, props, signal)
-
 export interface UpdateEnvironmentGroupQueryParams {
   accountIdentifier: string
   orgIdentifier: string

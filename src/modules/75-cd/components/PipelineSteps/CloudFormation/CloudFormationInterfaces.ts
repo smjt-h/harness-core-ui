@@ -5,51 +5,105 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 import type { MultiTypeInputType } from '@harness/uicore'
-import type { GitFilterScope } from '@common/components/GitFilters/GitFilters'
+import type { Scope } from '@common/interfaces/SecretsInterface'
 import type { StepViewType } from '@pipeline/components/AbstractSteps/Step'
 import type { SelectOption } from '@pipeline/components/PipelineSteps/Steps/StepsTypes'
-import type { StepElementConfig } from 'services/cd-ng'
+import type { StepElementConfig, ExecutionElementConfig, CloudformationCreateStackStepInfo, NGVariable, CloudformationTags } from 'services/cd-ng'
 
 export const StoreTypes = {
   Inline: 'Inline',
   Remote: 'Remote'
 }
 
+export interface Connector {
+  label: string
+  value: string
+  scope: Scope
+  live: boolean
+  connector: {
+    type: string
+    identifier: string
+    name: string
+    spec: { val: string; url: string; connectionType?: string; type?: string }
+  }
+}
+
+export interface Parameter {
+  identifier: string
+  store: {
+    type: string
+    spec: {
+      gitFetchType?: string
+      connectorRef?: string
+      branch?: string
+      paths?: string[]
+      region?: string
+      urls?: string[]
+    }
+  };
+}
+
 export interface CreateStackData extends StepElementConfig {
-  spec?: {
-    provisionerIdentifier?: string
-    timeout?: string
-    configuration?: {
-      awsRegion?: string
-      awsCapabilities?: string
-      stackName?: string
-      tags?: {
-        spec?: {
-          content?: string
+  type: string
+  name: string
+  identifier: string
+  timeout: string
+  spec: {
+    provisionerIdentifier: string
+    configuration: {
+      tags?: string | CloudformationTags
+      stackName: string
+      connectorRef: string | Connector
+      region: string
+      parameterOverrides?: NGVariable[]
+      skipOnStackStatuses?: SelectOption[]
+      capabilities?: SelectOption[]
+      parameters?: Parameter[]
+      templateFile: {
+          type: string
+          spec: {
+            type?: string
+            templateBody?: string
+            templateUrl?: string
+          }
         }
-      }
-      template?: {
-        type?: 'Inline' | 'Remote'
-      }
     }
   }
 }
 
-export interface CreateStackProps<T = CreateStackData> {
-  initialValues: T
-  onUpdate?: (data: T) => void
-  onChange?: (data: T) => void
-  allowableTypes: MultiTypeInputType[]
-  stepViewType?: StepViewType
-  configTypes?: SelectOption[]
-  isNewStep?: boolean
-  inputSetData?: {
-    template?: T
-    path?: string
-  }
-  readonly?: boolean
+export type ProvisionersOptions = 'CLOUD_FORMATION'
+export interface CloudFormationData {
+  provisioner: ExecutionElementConfig
+  originalProvisioner?: Partial<ExecutionElementConfig>
+  provisionerEnabled: boolean
+  provisionerSnippetLoading?: boolean
+  selectedProvisioner?: ProvisionersOptions
+}
+export interface CloudFormationProps {
+  initialValues: CloudFormationData
+  template?: CloudFormationData
   path?: string
-  stepType?: string
-  gitScope?: GitFilterScope
-  allValues?: T
+  readonly?: boolean
+  stepViewType?: StepViewType
+  onUpdate?: (data: CloudFormationData) => void
+  onChange?: (data: CloudFormationData) => void
+  allowableTypes: MultiTypeInputType[]
+}
+
+export interface CreateStackStepInfo {
+  spec: CloudformationCreateStackStepInfo
+  name: string
+  identifier: string
+  timeout: string
+  type: string
+}
+
+export interface CloudFormationCreateStackProps {
+  allowableTypes: MultiTypeInputType[]
+  isNewStep: boolean | undefined
+  readonly: boolean | undefined
+  initialValues: any
+  onUpdate: (values: any) => void
+  onChange: (values: any) => void
+  stepViewType: StepViewType | undefined
 }

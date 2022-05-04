@@ -19,10 +19,10 @@ import {
   Color,
   Layout,
   Label,
-  MultiSelectOption,
   Text,
   MultiTypeInput,
   MultiSelectTypeInput,
+  MultiSelectOption,
   Button,
   Icon
 } from '@harness/uicore'
@@ -38,27 +38,18 @@ import { useVariablesExpression } from '@pipeline/components/PipelineStudio/Pipl
 import { ConfigureOptions } from '@common/components/ConfigureOptions/ConfigureOptions'
 import MultiTypeFieldSelector from '@common/components/MultiTypeFieldSelector/MultiTypeFieldSelector'
 import { FormMultiTypeConnectorField } from '@connectors/components/ConnectorReferenceField/FormMultiTypeConnectorField'
-import { StepViewType, setFormikRef, StepFormikFowardRef } from '@pipeline/components/AbstractSteps/Step'
+import { setFormikRef, StepFormikFowardRef } from '@pipeline/components/AbstractSteps/Step'
 import { useListAwsRegions } from 'services/portal'
 import { useCFCapabilitiesForAws, useCFStatesForAws, useGetIamRolesForAws } from 'services/cd-ng'
 import { Connectors } from '@connectors/constants'
 import { TFMonaco } from '../../Common/Terraform/Editview/TFMonacoEditor'
 import CFRemoteWizard from '../ConnectorStep/CFRemoteWizard'
 import { InlineParameterFile } from './InlineParameterFile'
+import type { Parameter, CloudFormationCreateStackProps } from '../CloudFormationInterfaces'
 import { onDragStart, onDragEnd, onDragLeave, onDragOver, onDrop } from '../DragHelper'
 
 import stepCss from '@pipeline/components/PipelineSteps/Steps/Steps.module.scss'
 import css from '../CloudFormation.module.scss'
-
-interface CloudFormationCreateStackProps {
-  allowableTypes: MultiTypeInputType[]
-  isNewStep: boolean | undefined
-  readonly: boolean | undefined
-  initialValues: any
-  onUpdate: (values: any) => void
-  onChange: (values: any) => void
-  stepViewType: StepViewType | undefined
-}
 
 enum TemplateTypes {
   Remote = 'Remote',
@@ -154,7 +145,6 @@ export const CloudFormationCreateStack = (
         onChange?.(payload)
       }}
       onSubmit={values => {
-        window.console.log('onSubmit:', values)
         const payload = {
           ...values
         }
@@ -183,13 +173,13 @@ export const CloudFormationCreateStack = (
                 .when('type', {
                   is: value => value === TemplateTypes.Inline,
                   then: Yup.object().shape({
-                    templateBody: Yup.string().required('Template body required')
+                    templateBody: Yup.string().required(getString('cd.cloudFormation.errors.templateBody'))
                   })
                 })
                 .when('type', {
                   is: value => value === TemplateTypes.S3URL,
                   then: Yup.object().shape({
-                    templateUrl: Yup.string().required('S3 url required')
+                    templateUrl: Yup.string().required(getString('cd.cloudFormation.errors.awsURL'))
                   })
                 })
                 .when('type', {
@@ -209,8 +199,7 @@ export const CloudFormationCreateStack = (
     >
       {formik => {
         setFormikRef(formikRef, formik)
-        const { values, setFieldValue, errors } = formik
-        window.console.log('values: ', values, errors)
+        const { values, setFieldValue } = formik
         const awsConnector = values?.spec?.configuration?.connectorRef
         if (awsConnector?.value !== awsRef) {
           setAwsRef(awsConnector?.value)
@@ -348,9 +337,9 @@ export const CloudFormationCreateStack = (
                       }
                     }}
                   >
-                    <option value={TemplateTypes.Remote}>Remote</option>
-                    <option value={TemplateTypes.Inline}>Inline</option>
-                    <option value={TemplateTypes.S3URL}>S3 URL</option>
+                    <option value={TemplateTypes.Remote}>{getString("remote")}</option>
+                    <option value={TemplateTypes.Inline}>{getString("inline")}</option>
+                    <option value={TemplateTypes.S3URL}>{getString('cd.cloudFormation.awsURL')}</option>
                   </select>
                 </Layout.Vertical>
               </Layout.Horizontal>
@@ -366,7 +355,7 @@ export const CloudFormationCreateStack = (
                     <a className={css.configPlaceHolder}>
                       {remoteTemplateFile?.paths?.[0]
                         ? `/${remoteTemplateFile?.paths?.[0]}`
-                        : 'Specify template file...'}
+                        : getString('cd.cloudFormation.specifyTemplateFile')}
                     </a>
                     <Button
                       minimal
@@ -469,7 +458,7 @@ export const CloudFormationCreateStack = (
                           name={'spec.configuration.parameters'}
                           render={arrayHelpers => (
                             <>
-                              {map(remoteParameterFiles, (param: any, index: number) => (
+                              {map(remoteParameterFiles, (param: Parameter, index: number) => (
                                 <Layout.Horizontal
                                   key={`${param}-${index}`}
                                   flex={{ distribution: 'space-between' }}
@@ -563,7 +552,7 @@ export const CloudFormationCreateStack = (
                               data-name="config-edit"
                               onClick={() => setInlineParams(true)}
                             >
-                              {`${JSON.stringify(parameterOverrides)}` ||
+                              {parameterOverrides?.length > 0 ? `${JSON.stringify(parameterOverrides)}` :
                                 getString('cd.cloudFormation.specifyInlineParameterFiles')}
                             </a>
                           </div>
@@ -572,7 +561,7 @@ export const CloudFormationCreateStack = (
                     </Layout.Vertical>
                     <Layout.Vertical className={css.addMarginBottom}>
                       <Label style={{ color: Color.GREY_900 }} className={css.configLabel}>
-                        Role ARN
+                        {getString('connectors.awsKms.roleArnLabel')}
                       </Label>
                       <Layout.Horizontal>
                         <MultiTypeInput
