@@ -26,7 +26,13 @@ jest.mock('services/cv', () => ({
 const renderComponent = (): RenderResult => {
   return render(
     <TestWrapper>
-      <SLOAndErrorBudget monitoredServiceIdentifier={monitoredServiceIdentifier} startTime={1000} endTime={2000} />
+      <SLOAndErrorBudget
+        monitoredServiceIdentifier={monitoredServiceIdentifier}
+        startTime={1000}
+        endTime={2000}
+        eventTime={1500}
+        eventType="HarnessCDNextGen"
+      />
     </TestWrapper>
   )
 }
@@ -35,22 +41,21 @@ describe('SLOAndErrorBudget', () => {
   test('should render the component', async () => {
     renderComponent()
 
-    expect(screen.getByText('cv.pleaseSelectSLOToGetTheData')).toBeInTheDocument()
-
     await waitFor(() =>
       expect(cvServices.useGetSLODashboardWidgets).toHaveBeenLastCalledWith({
         queryParams: { monitoredServiceIdentifier }
       })
     )
 
-    userEvent.click(screen.getByText('SLO 1'))
-
-    expect(screen.queryByText('cv.pleaseSelectSLOToGetTheData')).not.toBeInTheDocument()
-    expect(screen.getAllByText('SLO 1')).toHaveLength(2)
-
-    userEvent.click(screen.getAllByText('SLO 1')[0])
+    userEvent.click(screen.getByRole('button', { name: /SLO 1/i }))
+    userEvent.click(screen.getByRole('button', { name: /SLO 2/i }))
+    userEvent.click(screen.getByRole('button', { name: /SLO 3/i }))
 
     expect(screen.getByText('cv.pleaseSelectSLOToGetTheData')).toBeInTheDocument()
+
+    userEvent.click(screen.getByRole('button', { name: /SLO 4/i }))
+
+    expect(screen.queryByText('cv.pleaseSelectSLOToGetTheData')).not.toBeInTheDocument()
   })
 
   test('should handle loading state of graph', () => {
@@ -60,9 +65,7 @@ describe('SLOAndErrorBudget', () => {
 
     const { container } = renderComponent()
 
-    userEvent.click(screen.getByText('SLO 1'))
-
-    expect(container.querySelector('span[data-icon="steps-spinner"]')).toBeInTheDocument()
+    expect(container.querySelectorAll('span[data-icon="steps-spinner"]')).toHaveLength(3)
   })
 
   test('should handle error state of graph', () => {
@@ -74,13 +77,23 @@ describe('SLOAndErrorBudget', () => {
 
     renderComponent()
 
-    userEvent.click(screen.getByText('SLO 1'))
+    expect(screen.getAllByText(errorMessage)).toHaveLength(3)
 
-    expect(screen.getByText(errorMessage)).toBeInTheDocument()
-
-    userEvent.click(screen.getByText('Retry'))
+    userEvent.click(screen.getAllByText('Retry')[0])
 
     expect(refetch).toBeCalled()
+  })
+
+  test('should handle no data of SLO widgets', () => {
+    jest
+      .spyOn(cvServices, 'useGetSLODashboardWidgets')
+      .mockImplementation(
+        () => ({ data: { data: { content: [] } }, loading: false, error: null, refetch: jest.fn() } as any)
+      )
+
+    renderComponent()
+
+    expect(screen.getByText('cv.noSLOHasBeenCreated')).toBeInTheDocument()
   })
 
   test('should handle loading of SLO widgets', () => {

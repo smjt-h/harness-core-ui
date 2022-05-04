@@ -6,6 +6,7 @@
  */
 
 import React, { useMemo, useState } from 'react'
+import { defaultTo } from 'lodash-es'
 import { Divider } from '@blueprintjs/core'
 import { Card, Container, Text } from '@wings-software/uicore'
 import { Color } from '@harness/design-system'
@@ -30,7 +31,8 @@ export default function HarnessNextGenEventCard({ data }: { data: ChangeEventDTO
   const changeTitleData: ChangeTitleData = useMemo(() => createChangeTitleData(data), [])
   const changeDetailsData: ChangeDetailsDataInterface = useMemo(() => createChangeDetailsData(data), [])
 
-  const { artifactType = '', artifactTag = '', verifyStepSummaries = [] } = data.metadata as HarnessCDEventMetadata
+  const metadata: HarnessCDEventMetadata = defaultTo(data.metadata, {})
+  const { artifactType = '', artifactTag = '', verifyStepSummaries } = metadata
   const changeInfoData = { artifactType, artifactTag }
 
   return (
@@ -45,12 +47,12 @@ export default function HarnessNextGenEventCard({ data }: { data: ChangeEventDTO
         </Text>
         <ChangeDetails ChangeDetailsData={{ details: changeInfoData }} />
         <DeploymentTimeDuration
-          startTime={data.metadata.deploymentStartTime}
-          endTime={data.metadata.deploymentEndTime}
+          startTime={data.metadata?.deploymentStartTime}
+          endTime={data.metadata?.deploymentEndTime}
         />
       </Container>
       <Divider className={css.divider} />
-      {verifyStepSummaries.length > 0 && (
+      {!!verifyStepSummaries?.length && (
         <Container margin={{ bottom: 'var(--spacing-small)' }}>
           <Text font={{ size: 'medium', weight: 'bold' }} color={Color.GREY_800}>
             {getString('cv.changeSource.changeSourceCard.deploymentHealth')}
@@ -84,6 +86,8 @@ export default function HarnessNextGenEventCard({ data }: { data: ChangeEventDTO
           monitoredServiceIdentifier={data.monitoredServiceIdentifier}
           startTime={timeStamps[0] || data.eventTime}
           endTime={timeStamps[1] || data.eventTime + TWO_HOURS_IN_MILLISECONDS}
+          eventTime={data.eventTime}
+          eventType={data.type}
         />
       )}
     </Card>

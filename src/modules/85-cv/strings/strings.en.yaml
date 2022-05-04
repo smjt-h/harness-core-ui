@@ -856,3 +856,4 @@ zoom: Zoom
 selectTimeRange: Select time range
 aMaximumOfThreeSLOCanBeComparedWithTheServiceHealth: A maximum of three SLO’s can be compared with the Service Health.
 pleaseSelectSLOToGetTheData: Please select a SLO to get the data.
+noSLOHasBeenCreated: No SLO has been created

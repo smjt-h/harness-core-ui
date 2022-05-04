@@ -5653,6 +5653,7 @@ export interface StringsMap {
   'cv.noAnalysis': string
   'cv.noAnomalies': string
   'cv.noPreviousErrorBudgetResetHistoryAvailable': string
+  'cv.noSLOHasBeenCreated': string
   'cv.nonAnomalous': string
   'cv.objectiveValue': string
   'cv.onboarding.activitySources.addMoreSources': string

@@ -61,6 +61,8 @@ export default function HarnessCDEventCard({ data }: { data: ChangeEventDTO }): 
           monitoredServiceIdentifier={data.monitoredServiceIdentifier}
           startTime={timeStamps[0] || data.eventTime}
           endTime={timeStamps[1] || data.eventTime + TWO_HOURS_IN_MILLISECONDS}
+          eventTime={data.eventTime}
+          eventType={data.type}
         />
       )}
     </Card>

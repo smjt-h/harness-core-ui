@@ -5,6 +5,13 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
+.noSLO {
+  text-align: center;
+  border-radius: 4px;
+  border: 1px solid var(--grey-100);
+  background-color: var(--grey-50) !important;
+}
+
 .pillToggle {
   :global(.PillToggle--item) {
     width: 100px !important;

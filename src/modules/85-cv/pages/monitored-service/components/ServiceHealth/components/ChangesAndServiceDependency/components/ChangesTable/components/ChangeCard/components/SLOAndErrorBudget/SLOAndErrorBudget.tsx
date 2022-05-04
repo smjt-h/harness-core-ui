@@ -5,13 +5,14 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import React, { useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { find } from 'lodash-es'
 import { Classes } from '@blueprintjs/core'
 import {
-  CardSelect,
-  CardSelectType,
+  Button,
+  ButtonSize,
+  ButtonVariation,
   Color,
   Container,
   FontVariation,
@@ -29,17 +30,19 @@ import SLOTargetChartWrapper from './SLOTargetChartWrapper'
 import { SelectedSLO, SLOAndErrorBudgetProps, SLOCardToggleViews } from './SLOAndErrorBudget.types'
 import css from './SLOAndErrorBudget.module.scss'
 
-const SLOAndErrorBudget: React.FC<SLOAndErrorBudgetProps> = ({ monitoredServiceIdentifier, startTime, endTime }) => {
+const SLOAndErrorBudget: React.FC<SLOAndErrorBudgetProps> = ({
+  monitoredServiceIdentifier,
+  startTime,
+  endTime,
+  eventTime,
+  eventType
+}) => {
   const { getString } = useStrings()
   const { accountId, orgIdentifier, projectIdentifier } = useParams<ProjectPathProps>()
   const [view, setView] = useState(SLOCardToggleViews.SLO)
   const [selectedSLOs, setSelectedSLOs] = useState<SelectedSLO[]>([])
 
-  const {
-    data: sloDashboardWidgets,
-    loading,
-    error
-  } = useGetSLODashboardWidgets({
+  const { data, loading, error } = useGetSLODashboardWidgets({
     queryParams: {
       accountId,
       orgIdentifier,
@@ -75,14 +78,28 @@ const SLOAndErrorBudget: React.FC<SLOAndErrorBudgetProps> = ({ monitoredServiceI
   }
 
   const serviceLevelObjectives: SelectedSLO[] = useMemo(
-    () =>
-      sloDashboardWidgets?.data?.content?.map(widget => ({ title: widget.title, identifier: widget.sloIdentifier })) ??
-      [],
-    [sloDashboardWidgets?.data?.content]
+    () => data?.data?.content?.map(widget => ({ title: widget.title, identifier: widget.sloIdentifier })) ?? [],
+    [data?.data?.content]
   )
 
+  useEffect(() => {
+    if (serviceLevelObjectives.length) {
+      setSelectedSLOs(serviceLevelObjectives.slice(0, 3))
+    }
+  }, [serviceLevelObjectives])
+
+  if (data?.data?.content?.length === 0) {
+    return (
+      <Container margin={{ top: 'large' }} padding="small" className={css.noSlo}>
+        <Text font={{ variation: FontVariation.SMALL }} color={Color.GREY_600}>
+          {getString('cv.noSLOHasBeenCreated')}
+        </Text>
+      </Container>
+    )
+  }
+
   return (
-    <Container margin={{ top: 'large' }} data-testid="SLO-and-errorBudget">
+    <Container margin={{ top: 'large' }}>
       <Container flex={{ justifyContent: 'center' }} padding={{ top: 'medium', bottom: 'medium' }}>
         <PillToggle {...toggleProps} />
       </Container>
@@ -96,10 +113,10 @@ const SLOAndErrorBudget: React.FC<SLOAndErrorBudgetProps> = ({ monitoredServiceI
         </Text>
         {loading && (
           <Layout.Horizontal spacing="small">
-            <Container height={18} width={100} className={Classes.SKELETON} />
-            <Container height={18} width={100} className={Classes.SKELETON} />
-            <Container height={18} width={100} className={Classes.SKELETON} />
-            <Container height={18} width={100} className={Classes.SKELETON} />
+            <Container height={24} width={100} className={Classes.SKELETON} />
+            <Container height={24} width={100} className={Classes.SKELETON} />
+            <Container height={24} width={100} className={Classes.SKELETON} />
+            <Container height={24} width={100} className={Classes.SKELETON} />
           </Layout.Horizontal>
         )}
         {!loading && error && (
@@ -108,19 +125,18 @@ const SLOAndErrorBudget: React.FC<SLOAndErrorBudgetProps> = ({ monitoredServiceI
           </Text>
         )}
         {!loading && !error && (
-          <CardSelect
-            multi
-            type={CardSelectType.CardView}
-            cardClassName={css.selectCard}
-            data={serviceLevelObjectives}
-            selected={selectedSLOs}
-            onChange={handleCardSelectChange}
-            renderItem={item => (
-              <Text font={{ variation: FontVariation.TINY }} color={Color.GREY_700}>
-                {item.title}
-              </Text>
-            )}
-          />
+          <Layout.Horizontal spacing="small">
+            {serviceLevelObjectives.map(item => (
+              <Button
+                key={item.identifier}
+                text={item.title}
+                size={ButtonSize.SMALL}
+                onClick={() => handleCardSelectChange(item)}
+                disabled={selectedSLOs.length === 3 && !find(selectedSLOs, item)}
+                variation={find(selectedSLOs, item) ? ButtonVariation.SECONDARY : ButtonVariation.TERTIARY}
+              />
+            ))}
+          </Layout.Horizontal>
         )}
       </Layout.Horizontal>
       <Text
@@ -140,6 +156,8 @@ const SLOAndErrorBudget: React.FC<SLOAndErrorBudgetProps> = ({ monitoredServiceI
             startTime={startTime}
             endTime={endTime}
             selectedSLO={serviceLevelObjective}
+            eventTime={eventTime}
+            eventType={eventType}
           />
         ))}
       </Layout.Vertical>
