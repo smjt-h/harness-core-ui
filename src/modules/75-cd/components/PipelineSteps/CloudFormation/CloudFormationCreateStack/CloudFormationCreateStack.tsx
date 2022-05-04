@@ -16,7 +16,7 @@ import { PipelineStep } from '@pipeline/components/PipelineSteps/PipelineStep'
 import { getDurationValidationSchema } from '@common/components/MultiTypeDuration/MultiTypeDuration'
 import type { CreateStackStepInfo, CreateStackData } from '../CloudFormationInterfaces'
 import { CloudFormationCreateStack } from './CloudFormationCreateStackRef'
-import CloudFormationCreateStackInputStep from '../InputSteps/CloudFormationInputStep'
+import CloudFormationCreateStackInputStep from './InputSteps/CloudFormationInputStep'
 const CloudFormationCreateStackWithRef = forwardRef(CloudFormationCreateStack)
 
 export class CFCreateStack extends PipelineStep<CreateStackStepInfo> {
@@ -236,7 +236,7 @@ export class CFCreateStack extends PipelineStep<CreateStackStepInfo> {
     return formData
   }
 
-  renderStep(props: StepProps<any, unknown>): JSX.Element {
+  renderStep(props: StepProps<CreateStackStepInfo, unknown>): JSX.Element {
     const {
       initialValues,
       onUpdate,

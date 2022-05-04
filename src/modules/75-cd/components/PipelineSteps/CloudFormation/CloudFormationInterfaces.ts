@@ -53,10 +53,12 @@ export interface Parameter {
     spec: {
       gitFetchType?: string
       connectorRef?: string
+      repoName?: string
       branch?: string
-      paths?: string[]
+      commitId?: string
+      paths?: string | string[]
       region?: string
-      urls?: string[]
+      urls?: string | string[]
     }
   };
 }
@@ -88,6 +90,16 @@ export interface CreateStackData extends StepElementConfig {
             type?: string
             templateBody?: string
             templateUrl?: string
+            store?: {
+              type?: string
+              spec?: {
+                connectorRef?: string | Connector
+                repoName?: string
+                branch?: string
+                commitId?: string
+                paths?: string
+              }
+            }
           }
         }
     }

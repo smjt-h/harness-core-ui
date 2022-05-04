@@ -10,15 +10,12 @@ import { useParams } from 'react-router-dom'
 import { isEmpty, map } from 'lodash-es'
 import cx from 'classnames'
 import {
-  getMultiTypeFromValue,
-  MultiTypeInputType,
   FormInput,
   FormikForm,
   Text,
   Color,
   MultiSelectOption,
   MultiSelectTypeInput,
-  SelectOption,
   Label,
   Layout
 } from '@harness/uicore'
@@ -32,13 +29,12 @@ import { useVariablesExpression } from '@pipeline/components/PipelineStudio/Pipl
 import { useListAwsRegions } from 'services/portal'
 import { useCFCapabilitiesForAws, useCFStatesForAws, useGetIamRolesForAws } from 'services/cd-ng'
 import MultiTypeFieldSelector from '@common/components/MultiTypeFieldSelector/MultiTypeFieldSelector'
-import { TFMonaco } from '../../Common/Terraform/Editview/TFMonacoEditor'
+import { TFMonaco } from '../../../Common/Terraform/Editview/TFMonacoEditor'
 import TemplateFileInputs from './TemplateFile'
-import type { CreateStackData, CreateStackProps } from '../CloudFormationInterfaces'
+import ParameterFileInputs from './ParameterInputs'
+import type { CreateStackData, CreateStackProps } from '../../CloudFormationInterfaces'
+import { isRuntime } from '../../CloudFormationHelper'
 import stepCss from '@pipeline/components/PipelineSteps/Steps/Steps.module.scss'
-
-const isRuntime = (value: string | undefined | SelectOption[]): boolean =>
-  getMultiTypeFromValue(value) === MultiTypeInputType.RUNTIME
 
 function CloudFormationCreateStackInputStepRef<T extends CreateStackData = CreateStackData>(
   props: CreateStackProps<T> & { formik?: FormikContext<any> }
@@ -53,7 +49,7 @@ function CloudFormationCreateStackInputStepRef<T extends CreateStackData = Creat
   const [capabilities, setCapabilities] = useState<MultiSelectOption[]>([])
   const [selectedCapabilities, setSelectedCapabilities] = useState<MultiSelectOption[]>([])
   const [selectedStackStatus, setSelectedStackStatus] = useState<MultiSelectOption[]>([])
-  const awsRef = inputSetData?.template?.spec?.configuration?.connectorRef
+  const [awsRef, setAwsRef] = useState(inputSetData?.template?.spec?.configuration?.connectorRef)
 
   useEffect(() => {
     if (selectedCapabilities.length > 0) {
@@ -109,7 +105,7 @@ function CloudFormationCreateStackInputStepRef<T extends CreateStackData = Creat
       accountId
     }
   })
-  const regionRequired = isRuntime(inputSetData?.template?.spec?.configuration?.region)
+  const regionRequired = isRuntime(inputSetData?.template?.spec?.configuration?.region as string)
   useEffect(() => {
     if (regionData) {
       const regionValues = map(regionData?.resource, reg => ({ label: reg.name, value: reg.value }))
@@ -128,11 +124,11 @@ function CloudFormationCreateStackInputStepRef<T extends CreateStackData = Creat
       accountIdentifier: accountId,
       orgIdentifier: orgIdentifier,
       projectIdentifier: projectIdentifier,
-      connectorRef: awsRef as string
+      awsConnectorRef: awsRef as string
     }
   })
 
-  const roleRequired = isRuntime(inputSetData?.template?.spec?.configuration?.roleArn)
+  const roleRequired = isRuntime(inputSetData?.template?.spec?.configuration?.roleArn as string)
   useEffect(() => {
     if (roleData) {
       const roleValues = map(roleData?.data, cap => ({ label: cap, value: cap }))
@@ -145,7 +141,7 @@ function CloudFormationCreateStackInputStepRef<T extends CreateStackData = Creat
 
   return (
     <FormikForm>
-      {getMultiTypeFromValue(inputSetData?.template?.timeout) === MultiTypeInputType.RUNTIME && (
+      {isRuntime(inputSetData?.template?.timeout as string) && (
         <div className={cx(stepCss.formGroup, stepCss.sm)}>
           <FormMultiTypeDurationField
             label={getString('pipelineSteps.timeoutLabel')}
@@ -160,8 +156,7 @@ function CloudFormationCreateStackInputStepRef<T extends CreateStackData = Creat
           />
         </div>
       )}
-      {getMultiTypeFromValue((inputSetData?.template as CreateStackData)?.spec?.provisionerIdentifier) ===
-        MultiTypeInputType.RUNTIME && (
+      {isRuntime(inputSetData?.template?.spec?.provisionerIdentifier as string) && (
         <div className={cx(stepCss.formGroup, stepCss.md)}>
           <FormInput.MultiTextInput
             name={`${path}.spec.provisionerIdentifier`}
@@ -174,8 +169,7 @@ function CloudFormationCreateStackInputStepRef<T extends CreateStackData = Creat
           />
         </div>
       )}
-      {getMultiTypeFromValue((inputSetData?.template as CreateStackData)?.spec?.configuration?.connectorRef) ===
-        MultiTypeInputType.RUNTIME && (
+      {isRuntime(inputSetData?.template?.spec?.configuration?.connectorRef as string) && (
         <div className={cx(stepCss.formGroup, stepCss.md)}>
           <FormMultiTypeConnectorField
             label={<Text color={Color.GREY_900}>{getString('pipelineSteps.awsConnectorLabel')}</Text>}
@@ -190,11 +184,14 @@ function CloudFormationCreateStackInputStepRef<T extends CreateStackData = Creat
             disabled={readonly}
             width={300}
             setRefValue
+            onChange={(value: any, _unused, _notUsed) => {
+              setAwsRef(value?.record?.identifier)
+              formik?.setFieldValue(`${path}.spec.configuration.connectorRef`, value?.record?.identifier)
+            }}
           />
         </div>
       )}
-      {getMultiTypeFromValue((inputSetData?.template as CreateStackData)?.spec?.configuration?.region) ===
-        MultiTypeInputType.RUNTIME && (
+      {isRuntime(inputSetData?.template?.spec?.configuration?.region as string) && (
         <div className={cx(stepCss.formGroup, stepCss.sm)}>
           <FormInput.MultiTypeInput
             label={getString('regionLabel')}
@@ -215,8 +212,8 @@ function CloudFormationCreateStackInputStepRef<T extends CreateStackData = Creat
         </div>
       )}
       <TemplateFileInputs {...props} />
-      {getMultiTypeFromValue((inputSetData?.template as CreateStackData)?.spec?.configuration?.stackName) ===
-        MultiTypeInputType.RUNTIME && (
+      <ParameterFileInputs {...props} />
+      {isRuntime(inputSetData?.template?.spec?.configuration?.stackName as string) && (
         <div className={cx(stepCss.formGroup, stepCss.md)}>
           <FormInput.MultiTextInput
             name={`${path}.spec.configuration.stackName`}
@@ -229,8 +226,7 @@ function CloudFormationCreateStackInputStepRef<T extends CreateStackData = Creat
           />
         </div>
       )}
-      {getMultiTypeFromValue((inputSetData?.template as CreateStackData)?.spec?.configuration?.roleArn) ===
-        MultiTypeInputType.RUNTIME && (
+      {isRuntime(inputSetData?.template?.spec?.configuration?.roleArn as string) && (
         <div className={cx(stepCss.formGroup, stepCss.sm)}>
           <FormInput.MultiTypeInput
             label={getString('connectors.awsKms.roleArnLabel')}
@@ -249,8 +245,7 @@ function CloudFormationCreateStackInputStepRef<T extends CreateStackData = Creat
           />
         </div>
       )}
-      {getMultiTypeFromValue(inputSetData?.template?.spec?.configuration?.capabilities) ===
-        MultiTypeInputType.RUNTIME && (
+      {isRuntime(inputSetData?.template?.spec?.configuration?.capabilities as string) && (
         <Layout.Vertical>
           <Label style={{ color: Color.GREY_900 }}>{getString('cd.cloudFormation.specifyCapabilities')}</Label>
           <MultiSelectTypeInput
@@ -265,8 +260,7 @@ function CloudFormationCreateStackInputStepRef<T extends CreateStackData = Creat
           />
         </Layout.Vertical>
       )}
-      {getMultiTypeFromValue((inputSetData?.template as CreateStackData)?.spec?.configuration?.tags?.spec?.content) ===
-        MultiTypeInputType.RUNTIME && (
+      {isRuntime(inputSetData?.template?.spec?.configuration?.tags?.spec?.content as string) && (
         <div className={cx(stepCss.formGroup, stepCss.md)}>
           <MultiTypeFieldSelector
             name={`${path}.spec.configuration.tags.spec.content`}
@@ -293,8 +287,7 @@ function CloudFormationCreateStackInputStepRef<T extends CreateStackData = Creat
           </MultiTypeFieldSelector>
         </div>
       )}
-      {getMultiTypeFromValue((inputSetData?.template as CreateStackData)?.spec?.configuration?.skipOnStackStatuses) ===
-        MultiTypeInputType.RUNTIME && (
+      {isRuntime(inputSetData?.template?.spec?.configuration?.skipOnStackStatuses as string) && (
         <Layout.Vertical>
           <Label style={{ color: Color.GREY_900 }}>{getString('cd.cloudFormation.continueStatus')}</Label>
           <MultiSelectTypeInput

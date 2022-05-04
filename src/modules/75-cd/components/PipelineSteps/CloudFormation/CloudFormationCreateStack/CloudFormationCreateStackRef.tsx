@@ -43,7 +43,7 @@ import { useListAwsRegions } from 'services/portal'
 import { useCFCapabilitiesForAws, useCFStatesForAws, useGetIamRolesForAws } from 'services/cd-ng'
 import { Connectors } from '@connectors/constants'
 import { TFMonaco } from '../../Common/Terraform/Editview/TFMonacoEditor'
-import CFRemoteWizard from '../RemoteFilesForm/CFRemoteWizard'
+import CFRemoteWizard from './RemoteFilesForm/CFRemoteWizard'
 import { InlineParameterFile } from './InlineParameterFile'
 import type { Parameter, CloudFormationCreateStackProps } from '../CloudFormationInterfaces'
 import { onDragStart, onDragEnd, onDragLeave, onDragOver, onDrop } from '../DragHelper'
@@ -118,7 +118,7 @@ export const CloudFormationCreateStack = (
       accountIdentifier: accountId,
       orgIdentifier: orgIdentifier,
       projectIdentifier: projectIdentifier,
-      connectorRef: awsRef
+      awsConnectorRef: awsRef
     }
   })
 
@@ -198,8 +198,7 @@ export const CloudFormationCreateStack = (
     >
       {formik => {
         setFormikRef(formikRef, formik)
-        const { values, setFieldValue, errors } = formik
-        window.console.log({ values, errors })
+        const { values, setFieldValue } = formik
         const awsConnector = values?.spec?.configuration?.connectorRef
         if (awsConnector?.value !== awsRef) {
           setAwsRef(awsConnector?.value)
@@ -354,8 +353,10 @@ export const CloudFormationCreateStack = (
                 >
                   <>
                     <a className={css.configPlaceHolder}>
-                      {remoteTemplateFile?.paths?.[0]
-                        ? `/${remoteTemplateFile?.paths?.[0]}`
+                      {getMultiTypeFromValue(remoteTemplateFile?.paths) === MultiTypeInputType.RUNTIME
+                        ? `/${remoteTemplateFile?.paths}`
+                        : remoteTemplateFile?.paths?.[0]
+                        ? remoteTemplateFile?.paths?.[0]
                         : getString('cd.cloudFormation.specifyTemplateFile')}
                     </a>
                     <Button
@@ -452,7 +453,7 @@ export const CloudFormationCreateStack = (
                   <div className={css.optionalDetails}>
                     <Layout.Vertical>
                       <Label style={{ color: Color.GREY_900 }} className={css.configLabel}>
-                        {getString('cd.cloudFormation.parameterFiles')}
+                        {getString('optionalField', { name: getString('cd.cloudFormation.parameterFiles') })}
                       </Label>
                       {remoteParameterFiles && (
                         <FieldArray
@@ -525,7 +526,7 @@ export const CloudFormationCreateStack = (
                     </Layout.Vertical>
                     <Layout.Vertical className={css.addMarginBottom}>
                       <Label style={{ color: Color.GREY_900 }} className={css.configLabel}>
-                        {getString('cd.cloudFormation.inlineParameterFiles')}
+                        {getString('optionalField', { name: getString('cd.cloudFormation.inlineParameterFiles') })}
                       </Label>
                       {inlineParameters?.length ? (
                         <div className={css.configField}>
@@ -561,7 +562,7 @@ export const CloudFormationCreateStack = (
                     </Layout.Vertical>
                     <Layout.Vertical className={css.addMarginBottom}>
                       <Label style={{ color: Color.GREY_900 }} className={css.configLabel}>
-                        {getString('connectors.awsKms.roleArnLabel')}
+                        {getString('optionalField', { name: getString('connectors.awsKms.roleArnLabel') })}
                       </Label>
                       <Layout.Horizontal>
                         <MultiTypeInput
@@ -577,13 +578,13 @@ export const CloudFormationCreateStack = (
                           onChange={({ value }: any) => {
                             setFieldValue('spec.configuration.roleArn', value)
                           }}
-                          value={find(awsRoles, ['value', awsRole])}
+                          value={find(awsRoles, ['value', awsRole]) || awsRole}
                         />
                       </Layout.Horizontal>
                     </Layout.Vertical>
                     <Layout.Vertical className={css.addMarginBottom}>
                       <Label style={{ color: Color.GREY_900 }} className={css.configLabel}>
-                        {getString('cd.cloudFormation.specifyCapabilities')}
+                        {getString('optionalField', { name: getString('cd.cloudFormation.specifyCapabilities') })}
                       </Label>
                       <Layout.Horizontal>
                         <MultiSelectTypeInput
@@ -645,7 +646,7 @@ export const CloudFormationCreateStack = (
                     </div>
                     <Layout.Vertical>
                       <Label style={{ color: Color.GREY_900 }} className={css.configLabel}>
-                        {getString('cd.cloudFormation.continueStatus')}
+                        {getString('optionalField', { name: getString('cd.cloudFormation.continueStatus') })}
                       </Label>
                       <Layout.Horizontal>
                         <MultiSelectTypeInput

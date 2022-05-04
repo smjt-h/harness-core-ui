@@ -5,9 +5,9 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 import React from 'react'
-import { map, get, isNumber } from 'lodash-es'
+import { get, isNumber } from 'lodash-es'
+import { getMultiTypeFromValue, MultiTypeInputType } from '@harness/uicore'
 import { Connectors, CONNECTOR_CREDENTIALS_STEP_IDENTIFIER } from '@connectors/constants'
-
 import type { ConnectorInfoDTO } from 'services/cd-ng'
 import type { StringKeys } from 'framework/strings'
 import type { StringsMap } from 'stringTypes'
@@ -156,8 +156,6 @@ export const GetNewConnector = (
   return null
 }
 
-const formatPaths = (paths: any) => map(paths, (item: string) => ({ path: item }))
-
 export const FormatFilePaths = (values: any, index: number | undefined) => {
   if (isNumber(index)) {
     let param = get(values, `spec.configuration.parameters[${index}]`)
@@ -166,7 +164,7 @@ export const FormatFilePaths = (values: any, index: number | undefined) => {
       store: {
         spec: {
           ...param?.store?.spec,
-          paths: param?.store?.spec?.paths?.length > 0 ? formatPaths(param?.store?.spec?.paths) : [{ path: '' }]
+          paths: [param?.store?.spec?.paths || '']
         }
       }
     }
@@ -188,7 +186,7 @@ export const FormatFilePaths = (values: any, index: number | undefined) => {
               ...values?.spec?.configuration?.templateFile?.spec?.store,
               spec: {
                 ...values?.spec?.configuration?.templateFile?.spec?.store?.spec,
-                paths: templateFile?.length > 0 ? formatPaths(templateFile) : [{ path: '' }]
+                paths: [templateFile || '']
               }
             }
           }
@@ -204,3 +202,5 @@ export const ConnectorStepTitle = (isParam: boolean): keyof StringsMap => {
   }
   return 'cd.cloudFormation.templateFileConnector'
 }
+
+export const isRuntime = (value: string): boolean => getMultiTypeFromValue(value) === MultiTypeInputType.RUNTIME

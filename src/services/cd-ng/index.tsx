@@ -342,12 +342,17 @@ export interface AccessControlCheckError {
 =======
     | 'AWS_IAM_ERROR'
     | 'AWS_CF_ERROR'
+<<<<<<< HEAD
 >>>>>>> 124daab078d9 (Add api requests)
 >>>>>>> cf70c33256ad (adds to yaml, need to format data. Waiting for UI to be confirmed before continuing)
 =======
     | 'AWS_IAM_ERROR'
     | 'AWS_CF_ERROR'
 >>>>>>> 5c7c3761e612 (Fix initial load of data)
+=======
+    | 'INVALID_AZURE_AKS_REQUEST'
+    | 'SERVERLESS_EXECUTION_ERROR'
+>>>>>>> 84e34bdda85e (Add inline temnplate runtime components)
   correlationId?: string
   detailedMessage?: string
   failedPermissionChecks?: PermissionCheck[]
@@ -1187,6 +1192,9 @@ export type AzureRepoUsernameToken = AzureRepoHttpCredentialsSpecDTO & {
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 84e34bdda85e (Add inline temnplate runtime components)
 export interface AzureResourceGroupDTO {
   resourceGroup: string
 }
@@ -1210,6 +1218,7 @@ export type AzureUserAssignedMSIAuth = AzureAuthCredentialDTO & {
   clientId: string
 }
 
+<<<<<<< HEAD
 =======
 =======
   auth: AzureAuthDTO
@@ -1221,6 +1230,8 @@ export type AzureUserAssignedMSIAuth = AzureAuthCredentialDTO & {
 >>>>>>> cf70c33256ad (adds to yaml, need to format data. Waiting for UI to be confirmed before continuing)
 =======
 >>>>>>> 5c7c3761e612 (Fix initial load of data)
+=======
+>>>>>>> 84e34bdda85e (Add inline temnplate runtime components)
 export interface BarrierInfoConfig {
   identifier: string
   name: string
@@ -1444,7 +1455,7 @@ export interface CloudformationCreateStackStepConfiguration {
   region: string
   roleArn?: string
   skipOnStackStatuses?: string[]
-  stackName?: string
+  stackName: string
   tags?: CloudformationTags
   templateFile: CloudformationTemplateFile
 }
@@ -1474,6 +1485,16 @@ export type CloudformationDeleteStackStepInfo = StepSpecType & {
 export interface CloudformationParametersFileSpec {
   identifier: string
   store: StoreConfigWrapper
+}
+
+export interface CloudformationRollbackStepConfiguration {
+  provisionerIdentifier: string
+}
+
+export type CloudformationRollbackStepInfo = StepSpecType & {
+  configuration: CloudformationRollbackStepConfiguration
+  delegateSelectors?: string[]
+  metadata?: string
 }
 
 export interface CloudformationTags {
@@ -2481,7 +2502,13 @@ export interface EntityDetail {
 =======
     | 'CreateStack'
     | 'DeleteStack'
+<<<<<<< HEAD
 >>>>>>> cf70c33256ad (adds to yaml, need to format data. Waiting for UI to be confirmed before continuing)
+=======
+    | 'ServerlessAwsLambdaDeploy'
+    | 'ServerlessAwsLambdaRollback'
+    | 'RollbackStack'
+>>>>>>> 84e34bdda85e (Add inline temnplate runtime components)
 }
 
 export interface EntityGitDetails {
@@ -2563,6 +2590,9 @@ export interface EnvironmentGroupDeleteResponse {
 
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 84e34bdda85e (Add inline temnplate runtime components)
 export type EnvironmentGroupFilterProperties = FilterProperties & {
   description?: string
   envGroupName?: string
@@ -2570,10 +2600,13 @@ export type EnvironmentGroupFilterProperties = FilterProperties & {
   envIdentifiers?: string[]
 }
 
+<<<<<<< HEAD
 =======
 >>>>>>> 124daab078d9 (Add api requests)
 =======
 >>>>>>> 5c7c3761e612 (Fix initial load of data)
+=======
+>>>>>>> 84e34bdda85e (Add inline temnplate runtime components)
 export interface EnvironmentGroupResponse {
   createdAt?: number
   envGroup?: EnvironmentGroupResponseDTO
@@ -2586,6 +2619,8 @@ export interface EnvironmentGroupResponseDTO {
   deleted?: boolean
   description?: string
   envIdentifiers?: string[]
+  envResponse?: EnvironmentResponse[]
+  gitDetails?: EntityGitDetails
   identifier?: string
   name?: string
   orgIdentifier?: string
@@ -2978,7 +3013,12 @@ export interface Error {
 =======
     | 'AWS_IAM_ERROR'
     | 'AWS_CF_ERROR'
+<<<<<<< HEAD
 >>>>>>> 5c7c3761e612 (Fix initial load of data)
+=======
+    | 'INVALID_AZURE_AKS_REQUEST'
+    | 'SERVERLESS_EXECUTION_ERROR'
+>>>>>>> 84e34bdda85e (Add inline temnplate runtime components)
   correlationId?: string
   detailedMessage?: string
   message?: string
@@ -3379,7 +3419,12 @@ export interface Failure {
 =======
     | 'AWS_IAM_ERROR'
     | 'AWS_CF_ERROR'
+<<<<<<< HEAD
 >>>>>>> 5c7c3761e612 (Fix initial load of data)
+=======
+    | 'INVALID_AZURE_AKS_REQUEST'
+    | 'SERVERLESS_EXECUTION_ERROR'
+>>>>>>> 84e34bdda85e (Add inline temnplate runtime components)
   correlationId?: string
   errors?: ValidationError[]
   message?: string
@@ -3445,6 +3490,7 @@ export interface FeatureRestrictionDetailListRequestDTO {
     | 'INTEGRATED_APPROVALS_WITH_SERVICE_NOW'
     | 'CREATE_STACK'
     | 'DELETE_STACK'
+    | 'ROLLBACK_STACK'
     | 'SECURITY'
     | 'DEVELOPERS'
     | 'MONTHLY_ACTIVE_USERS'
@@ -3500,6 +3546,7 @@ export interface FeatureRestrictionDetailRequestDTO {
     | 'INTEGRATED_APPROVALS_WITH_SERVICE_NOW'
     | 'CREATE_STACK'
     | 'DELETE_STACK'
+    | 'ROLLBACK_STACK'
     | 'SECURITY'
     | 'DEVELOPERS'
     | 'MONTHLY_ACTIVE_USERS'
@@ -3557,6 +3604,7 @@ export interface FeatureRestrictionDetailsDTO {
     | 'INTEGRATED_APPROVALS_WITH_SERVICE_NOW'
     | 'CREATE_STACK'
     | 'DELETE_STACK'
+    | 'ROLLBACK_STACK'
     | 'SECURITY'
     | 'DEVELOPERS'
     | 'MONTHLY_ACTIVE_USERS'
@@ -3622,6 +3670,7 @@ export interface FeatureRestrictionMetadataDTO {
     | 'INTEGRATED_APPROVALS_WITH_SERVICE_NOW'
     | 'CREATE_STACK'
     | 'DELETE_STACK'
+    | 'ROLLBACK_STACK'
     | 'SECURITY'
     | 'DEVELOPERS'
     | 'MONTHLY_ACTIVE_USERS'
@@ -3960,7 +4009,13 @@ export interface GitEntityBranchFilterSummaryProperties {
 =======
     | 'CreateStack'
     | 'DeleteStack'
+<<<<<<< HEAD
 >>>>>>> cf70c33256ad (adds to yaml, need to format data. Waiting for UI to be confirmed before continuing)
+=======
+    | 'ServerlessAwsLambdaDeploy'
+    | 'ServerlessAwsLambdaRollback'
+    | 'RollbackStack'
+>>>>>>> 84e34bdda85e (Add inline temnplate runtime components)
   )[]
   moduleType?: 'CD' | 'CI' | 'CV' | 'CF' | 'CE' | 'STO' | 'CORE' | 'PMS' | 'TEMPLATESERVICE' | 'GOVERNANCE'
   searchTerm?: string
@@ -4045,7 +4100,13 @@ export interface GitEntityFilterProperties {
 =======
     | 'CreateStack'
     | 'DeleteStack'
+<<<<<<< HEAD
 >>>>>>> cf70c33256ad (adds to yaml, need to format data. Waiting for UI to be confirmed before continuing)
+=======
+    | 'ServerlessAwsLambdaDeploy'
+    | 'ServerlessAwsLambdaRollback'
+    | 'RollbackStack'
+>>>>>>> 84e34bdda85e (Add inline temnplate runtime components)
   )[]
   gitSyncConfigIdentifiers?: string[]
   moduleType?: 'CD' | 'CI' | 'CV' | 'CF' | 'CE' | 'STO' | 'CORE' | 'PMS' | 'TEMPLATESERVICE' | 'GOVERNANCE'
@@ -4163,7 +4224,13 @@ export interface GitFullSyncEntityInfoDTO {
 =======
     | 'CreateStack'
     | 'DeleteStack'
+<<<<<<< HEAD
 >>>>>>> cf70c33256ad (adds to yaml, need to format data. Waiting for UI to be confirmed before continuing)
+=======
+    | 'ServerlessAwsLambdaDeploy'
+    | 'ServerlessAwsLambdaRollback'
+    | 'RollbackStack'
+>>>>>>> 84e34bdda85e (Add inline temnplate runtime components)
   errorMessage?: string
   filePath?: string
   identifier?: string
@@ -4256,7 +4323,13 @@ export interface GitFullSyncEntityInfoFilterKeys {
 =======
     | 'CreateStack'
     | 'DeleteStack'
+<<<<<<< HEAD
 >>>>>>> cf70c33256ad (adds to yaml, need to format data. Waiting for UI to be confirmed before continuing)
+=======
+    | 'ServerlessAwsLambdaDeploy'
+    | 'ServerlessAwsLambdaRollback'
+    | 'RollbackStack'
+>>>>>>> 84e34bdda85e (Add inline temnplate runtime components)
   )[]
   syncStatus?: 'QUEUED' | 'SUCCESS' | 'FAILED' | 'OVERRIDDEN'
 }
@@ -4436,7 +4509,13 @@ export interface GitSyncEntityDTO {
 =======
     | 'CreateStack'
     | 'DeleteStack'
+<<<<<<< HEAD
 >>>>>>> 5c7c3761e612 (Fix initial load of data)
+=======
+    | 'ServerlessAwsLambdaDeploy'
+    | 'ServerlessAwsLambdaRollback'
+    | 'RollbackStack'
+>>>>>>> 84e34bdda85e (Add inline temnplate runtime components)
   entityUrl?: string
   folderPath?: string
   gitConnectorId?: string
@@ -4525,7 +4604,13 @@ export interface GitSyncEntityListDTO {
 =======
     | 'CreateStack'
     | 'DeleteStack'
+<<<<<<< HEAD
 >>>>>>> cf70c33256ad (adds to yaml, need to format data. Waiting for UI to be confirmed before continuing)
+=======
+    | 'ServerlessAwsLambdaDeploy'
+    | 'ServerlessAwsLambdaRollback'
+    | 'RollbackStack'
+>>>>>>> 84e34bdda85e (Add inline temnplate runtime components)
   gitSyncEntities?: GitSyncEntityDTO[]
 }
 
@@ -4629,7 +4714,13 @@ export interface GitSyncErrorDTO {
 =======
     | 'CreateStack'
     | 'DeleteStack'
+<<<<<<< HEAD
 >>>>>>> cf70c33256ad (adds to yaml, need to format data. Waiting for UI to be confirmed before continuing)
+=======
+    | 'ServerlessAwsLambdaDeploy'
+    | 'ServerlessAwsLambdaRollback'
+    | 'RollbackStack'
+>>>>>>> 84e34bdda85e (Add inline temnplate runtime components)
   errorType?: 'GIT_TO_HARNESS' | 'CONNECTIVITY_ISSUE' | 'FULL_SYNC'
   failureReason?: string
   repoId?: string
@@ -5881,9 +5972,10 @@ export type NumberNGVariable = NGVariable & {
   value: number
 }
 
-export type OAuthSettings = NGAuthSettings & {
+export interface OAuthSettings {
   allowedProviders?: ('AZURE' | 'BITBUCKET' | 'GITHUB' | 'GITLAB' | 'GOOGLE' | 'LINKEDIN')[]
   filter?: string
+  settingsType?: 'USER_PASSWORD' | 'SAML' | 'LDAP' | 'OAUTH'
 }
 
 export interface OAuthSignupDTO {
@@ -7912,7 +8004,12 @@ export interface ResponseMessage {
 =======
     | 'AWS_IAM_ERROR'
     | 'AWS_CF_ERROR'
+<<<<<<< HEAD
 >>>>>>> 5c7c3761e612 (Fix initial load of data)
+=======
+    | 'INVALID_AZURE_AKS_REQUEST'
+    | 'SERVERLESS_EXECUTION_ERROR'
+>>>>>>> 84e34bdda85e (Add inline temnplate runtime components)
   exception?: Throwable
   failureTypes?: (
     | 'EXPIRED'
@@ -8410,6 +8507,9 @@ export interface ResponseSetString {
 }
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> 84e34bdda85e (Add inline temnplate runtime components)
 export interface ResponseSetupStatus {
   correlationId?: string
   data?:
@@ -8421,8 +8521,11 @@ export interface ResponseSetupStatus {
   status?: 'SUCCESS' | 'FAILURE' | 'ERROR'
 }
 
+<<<<<<< HEAD
 =======
 >>>>>>> cf70c33256ad (adds to yaml, need to format data. Waiting for UI to be confirmed before continuing)
+=======
+>>>>>>> 84e34bdda85e (Add inline temnplate runtime components)
 export interface ResponseSourceCodeManagerDTO {
   correlationId?: string
   data?: SourceCodeManagerDTO
@@ -9772,6 +9875,7 @@ export interface StepData {
     | 'TerraformRollback'
     | 'CreateStack'
     | 'DeleteStack'
+    | 'RollbackStack'
     | 'SHELL_SCRIPT_PROVISIONER'
     | 'JIRA'
     | 'SERVICENOW'
@@ -10443,6 +10547,7 @@ export interface WeightedVariation {
 export interface WinRmAuthDTO {
   spec: BaseWinRmSpecDTO
   type: 'NTLM' | 'Kerberos'
+<<<<<<< HEAD
 }
 
 export type WinRmCredentialsSpecDTO = SecretSpecDTO & {
@@ -10454,6 +10559,19 @@ export type WinRmCredentialsValidationMetadata = SecretValidationMetaData & {
   host: string
 }
 
+=======
+}
+
+export type WinRmCredentialsSpecDTO = SecretSpecDTO & {
+  auth: WinRmAuthDTO
+  port?: number
+}
+
+export type WinRmCredentialsValidationMetadata = SecretValidationMetaData & {
+  host: string
+}
+
+>>>>>>> 84e34bdda85e (Add inline temnplate runtime components)
 export type WinRmServiceSpec = ServiceSpec & {}
 
 export type WorkflowFilter = Filter & {
@@ -10543,6 +10661,8 @@ export type AccountSettingsRequestBody = AccountSettings
 
 export type ApiKeyDTORequestBody = ApiKeyDTO
 
+export type CFParametersForAwsBodyRequestBody = string
+
 export type ConnectorRequestBody = Connector
 
 export type DelegateGroupTagsRequestBody = DelegateGroupTags
@@ -10611,12 +10731,16 @@ export type UserGroupDTORequestBody = UserGroupDTO
 
 export type YamlSchemaDetailsWrapperRequestBody = YamlSchemaDetailsWrapper
 
+<<<<<<< HEAD
 export type CreateEnvironmentGroupBodyRequestBody = string
 
 <<<<<<< HEAD
 export type UnsubscribeBodyRequestBody = string[]
 =======
 export type GetBuildDetailsForEcrWithYamlBodyRequestBody = string
+=======
+export type GetBuildDetailsForAcrArtifactWithYamlBodyRequestBody = string
+>>>>>>> 84e34bdda85e (Add inline temnplate runtime components)
 
 export type ProcessPollingResultNgBodyRequestBody = string[]
 >>>>>>> cf70c33256ad (adds to yaml, need to format data. Waiting for UI to be confirmed before continuing)
@@ -11179,7 +11303,13 @@ export interface ListActivitiesQueryParams {
 =======
     | 'CreateStack'
     | 'DeleteStack'
+<<<<<<< HEAD
 >>>>>>> cf70c33256ad (adds to yaml, need to format data. Waiting for UI to be confirmed before continuing)
+=======
+    | 'ServerlessAwsLambdaDeploy'
+    | 'ServerlessAwsLambdaRollback'
+    | 'RollbackStack'
+>>>>>>> 84e34bdda85e (Add inline temnplate runtime components)
   referredByEntityType?:
     | 'Projects'
     | 'Pipelines'
@@ -11258,7 +11388,13 @@ export interface ListActivitiesQueryParams {
 =======
     | 'CreateStack'
     | 'DeleteStack'
+<<<<<<< HEAD
 >>>>>>> cf70c33256ad (adds to yaml, need to format data. Waiting for UI to be confirmed before continuing)
+=======
+    | 'ServerlessAwsLambdaDeploy'
+    | 'ServerlessAwsLambdaRollback'
+    | 'RollbackStack'
+>>>>>>> 84e34bdda85e (Add inline temnplate runtime components)
 }
 
 export type ListActivitiesProps = Omit<GetProps<ResponsePageActivity, unknown, ListActivitiesQueryParams, void>, 'path'>
@@ -11441,7 +11577,13 @@ export interface GetActivitiesSummaryQueryParams {
 =======
     | 'CreateStack'
     | 'DeleteStack'
+<<<<<<< HEAD
 >>>>>>> cf70c33256ad (adds to yaml, need to format data. Waiting for UI to be confirmed before continuing)
+=======
+    | 'ServerlessAwsLambdaDeploy'
+    | 'ServerlessAwsLambdaRollback'
+    | 'RollbackStack'
+>>>>>>> 84e34bdda85e (Add inline temnplate runtime components)
   referredByEntityType?:
     | 'Projects'
     | 'Pipelines'
@@ -11520,7 +11662,13 @@ export interface GetActivitiesSummaryQueryParams {
 =======
     | 'CreateStack'
     | 'DeleteStack'
+<<<<<<< HEAD
 >>>>>>> cf70c33256ad (adds to yaml, need to format data. Waiting for UI to be confirmed before continuing)
+=======
+    | 'ServerlessAwsLambdaDeploy'
+    | 'ServerlessAwsLambdaRollback'
+    | 'RollbackStack'
+>>>>>>> 84e34bdda85e (Add inline temnplate runtime components)
 }
 
 export type GetActivitiesSummaryProps = Omit<
@@ -12891,7 +13039,7 @@ export type GetBuildDetailsForArtifactoryArtifactWithYamlProps = Omit<
     ResponseArtifactoryResponseDTO,
     Failure | Error,
     GetBuildDetailsForArtifactoryArtifactWithYamlQueryParams,
-    CreateEnvironmentGroupBodyRequestBody,
+    UpdateEnvironmentGroupBodyRequestBody,
     void
   >,
   'path' | 'verb'
@@ -12907,7 +13055,7 @@ export const GetBuildDetailsForArtifactoryArtifactWithYaml = (
     ResponseArtifactoryResponseDTO,
     Failure | Error,
     GetBuildDetailsForArtifactoryArtifactWithYamlQueryParams,
-    CreateEnvironmentGroupBodyRequestBody,
+    UpdateEnvironmentGroupBodyRequestBody,
     void
   >
     verb="POST"
@@ -12922,7 +13070,7 @@ export type UseGetBuildDetailsForArtifactoryArtifactWithYamlProps = Omit<
     ResponseArtifactoryResponseDTO,
     Failure | Error,
     GetBuildDetailsForArtifactoryArtifactWithYamlQueryParams,
-    CreateEnvironmentGroupBodyRequestBody,
+    UpdateEnvironmentGroupBodyRequestBody,
     void
   >,
   'path' | 'verb'
@@ -12938,7 +13086,7 @@ export const useGetBuildDetailsForArtifactoryArtifactWithYaml = (
     ResponseArtifactoryResponseDTO,
     Failure | Error,
     GetBuildDetailsForArtifactoryArtifactWithYamlQueryParams,
-    CreateEnvironmentGroupBodyRequestBody,
+    UpdateEnvironmentGroupBodyRequestBody,
     void
   >('POST', `/artifacts/artifactory/getBuildDetailsV2`, { base: getConfig('ng/api'), ...props })
 
@@ -12950,7 +13098,7 @@ export const getBuildDetailsForArtifactoryArtifactWithYamlPromise = (
     ResponseArtifactoryResponseDTO,
     Failure | Error,
     GetBuildDetailsForArtifactoryArtifactWithYamlQueryParams,
-    CreateEnvironmentGroupBodyRequestBody,
+    UpdateEnvironmentGroupBodyRequestBody,
     void
   >,
   signal?: RequestInit['signal']
@@ -12959,7 +13107,7 @@ export const getBuildDetailsForArtifactoryArtifactWithYamlPromise = (
     ResponseArtifactoryResponseDTO,
     Failure | Error,
     GetBuildDetailsForArtifactoryArtifactWithYamlQueryParams,
-    CreateEnvironmentGroupBodyRequestBody,
+    UpdateEnvironmentGroupBodyRequestBody,
     void
   >('POST', getConfig('ng/api'), `/artifacts/artifactory/getBuildDetailsV2`, props, signal)
 
@@ -13237,7 +13385,7 @@ export type GetBuildDetailsForDockerWithYamlProps = Omit<
     ResponseDockerResponseDTO,
     Failure | Error,
     GetBuildDetailsForDockerWithYamlQueryParams,
-    CreateEnvironmentGroupBodyRequestBody,
+    UpdateEnvironmentGroupBodyRequestBody,
     void
   >,
   'path' | 'verb'
@@ -13251,7 +13399,7 @@ export const GetBuildDetailsForDockerWithYaml = (props: GetBuildDetailsForDocker
     ResponseDockerResponseDTO,
     Failure | Error,
     GetBuildDetailsForDockerWithYamlQueryParams,
-    CreateEnvironmentGroupBodyRequestBody,
+    UpdateEnvironmentGroupBodyRequestBody,
     void
   >
     verb="POST"
@@ -13266,7 +13414,7 @@ export type UseGetBuildDetailsForDockerWithYamlProps = Omit<
     ResponseDockerResponseDTO,
     Failure | Error,
     GetBuildDetailsForDockerWithYamlQueryParams,
-    CreateEnvironmentGroupBodyRequestBody,
+    UpdateEnvironmentGroupBodyRequestBody,
     void
   >,
   'path' | 'verb'
@@ -13280,7 +13428,7 @@ export const useGetBuildDetailsForDockerWithYaml = (props: UseGetBuildDetailsFor
     ResponseDockerResponseDTO,
     Failure | Error,
     GetBuildDetailsForDockerWithYamlQueryParams,
-    CreateEnvironmentGroupBodyRequestBody,
+    UpdateEnvironmentGroupBodyRequestBody,
     void
   >('POST', `/artifacts/docker/getBuildDetailsV2`, { base: getConfig('ng/api'), ...props })
 
@@ -13292,7 +13440,7 @@ export const getBuildDetailsForDockerWithYamlPromise = (
     ResponseDockerResponseDTO,
     Failure | Error,
     GetBuildDetailsForDockerWithYamlQueryParams,
-    CreateEnvironmentGroupBodyRequestBody,
+    UpdateEnvironmentGroupBodyRequestBody,
     void
   >,
   signal?: RequestInit['signal']
@@ -13301,7 +13449,7 @@ export const getBuildDetailsForDockerWithYamlPromise = (
     ResponseDockerResponseDTO,
     Failure | Error,
     GetBuildDetailsForDockerWithYamlQueryParams,
-    CreateEnvironmentGroupBodyRequestBody,
+    UpdateEnvironmentGroupBodyRequestBody,
     void
   >('POST', getConfig('ng/api'), `/artifacts/docker/getBuildDetailsV2`, props, signal)
 
@@ -14559,7 +14707,7 @@ export type GetBuildDetailsForNexusArtifactWithYamlProps = Omit<
     ResponseNexusResponseDTO,
     Failure | Error,
     GetBuildDetailsForNexusArtifactWithYamlQueryParams,
-    CreateEnvironmentGroupBodyRequestBody,
+    UpdateEnvironmentGroupBodyRequestBody,
     void
   >,
   'path' | 'verb'
@@ -14573,7 +14721,7 @@ export const GetBuildDetailsForNexusArtifactWithYaml = (props: GetBuildDetailsFo
     ResponseNexusResponseDTO,
     Failure | Error,
     GetBuildDetailsForNexusArtifactWithYamlQueryParams,
-    CreateEnvironmentGroupBodyRequestBody,
+    UpdateEnvironmentGroupBodyRequestBody,
     void
   >
     verb="POST"
@@ -14588,7 +14736,7 @@ export type UseGetBuildDetailsForNexusArtifactWithYamlProps = Omit<
     ResponseNexusResponseDTO,
     Failure | Error,
     GetBuildDetailsForNexusArtifactWithYamlQueryParams,
-    CreateEnvironmentGroupBodyRequestBody,
+    UpdateEnvironmentGroupBodyRequestBody,
     void
   >,
   'path' | 'verb'
@@ -14602,7 +14750,7 @@ export const useGetBuildDetailsForNexusArtifactWithYaml = (props: UseGetBuildDet
     ResponseNexusResponseDTO,
     Failure | Error,
     GetBuildDetailsForNexusArtifactWithYamlQueryParams,
-    CreateEnvironmentGroupBodyRequestBody,
+    UpdateEnvironmentGroupBodyRequestBody,
     void
   >('POST', `/artifacts/nexus/getBuildDetailsV2`, { base: getConfig('ng/api'), ...props })
 
@@ -14614,7 +14762,7 @@ export const getBuildDetailsForNexusArtifactWithYamlPromise = (
     ResponseNexusResponseDTO,
     Failure | Error,
     GetBuildDetailsForNexusArtifactWithYamlQueryParams,
-    CreateEnvironmentGroupBodyRequestBody,
+    UpdateEnvironmentGroupBodyRequestBody,
     void
   >,
   signal?: RequestInit['signal']
@@ -14623,7 +14771,7 @@ export const getBuildDetailsForNexusArtifactWithYamlPromise = (
     ResponseNexusResponseDTO,
     Failure | Error,
     GetBuildDetailsForNexusArtifactWithYamlQueryParams,
-    CreateEnvironmentGroupBodyRequestBody,
+    UpdateEnvironmentGroupBodyRequestBody,
     void
   >('POST', getConfig('ng/api'), `/artifacts/nexus/getBuildDetailsV2`, props, signal)
 
@@ -15519,21 +15667,21 @@ export type CFParametersForAwsProps = Omit<
     ResponseListAwsCFTemplateParamsData,
     Failure | Error,
     CFParametersForAwsQueryParams,
-    CreateEnvironmentGroupBodyRequestBody,
+    CFParametersForAwsBodyRequestBody,
     void
   >,
   'path' | 'verb'
 >
 
 /**
- * Send a CF Template to AWS and retrieve the parameters contained in that
+ * Get Cloudformation parameters from a template
  */
 export const CFParametersForAws = (props: CFParametersForAwsProps) => (
   <Mutate<
     ResponseListAwsCFTemplateParamsData,
     Failure | Error,
     CFParametersForAwsQueryParams,
-    CreateEnvironmentGroupBodyRequestBody,
+    CFParametersForAwsBodyRequestBody,
     void
   >
     verb="POST"
@@ -15548,33 +15696,33 @@ export type UseCFParametersForAwsProps = Omit<
     ResponseListAwsCFTemplateParamsData,
     Failure | Error,
     CFParametersForAwsQueryParams,
-    CreateEnvironmentGroupBodyRequestBody,
+    CFParametersForAwsBodyRequestBody,
     void
   >,
   'path' | 'verb'
 >
 
 /**
- * Send a CF Template to AWS and retrieve the parameters contained in that
+ * Get Cloudformation parameters from a template
  */
 export const useCFParametersForAws = (props: UseCFParametersForAwsProps) =>
   useMutate<
     ResponseListAwsCFTemplateParamsData,
     Failure | Error,
     CFParametersForAwsQueryParams,
-    CreateEnvironmentGroupBodyRequestBody,
+    CFParametersForAwsBodyRequestBody,
     void
   >('POST', `/aws/aws-helper/cf-parameters`, { base: getConfig('ng/api'), ...props })
 
 /**
- * Send a CF Template to AWS and retrieve the parameters contained in that
+ * Get Cloudformation parameters from a template
  */
 export const cFParametersForAwsPromise = (
   props: MutateUsingFetchProps<
     ResponseListAwsCFTemplateParamsData,
     Failure | Error,
     CFParametersForAwsQueryParams,
-    CreateEnvironmentGroupBodyRequestBody,
+    CFParametersForAwsBodyRequestBody,
     void
   >,
   signal?: RequestInit['signal']
@@ -15583,7 +15731,7 @@ export const cFParametersForAwsPromise = (
     ResponseListAwsCFTemplateParamsData,
     Failure | Error,
     CFParametersForAwsQueryParams,
-    CreateEnvironmentGroupBodyRequestBody,
+    CFParametersForAwsBodyRequestBody,
     void
   >('POST', getConfig('ng/api'), `/aws/aws-helper/cf-parameters`, props, signal)
 
@@ -15626,7 +15774,7 @@ export const cFStatesForAwsPromise = (
   )
 
 export interface GetIamRolesForAwsQueryParams {
-  connectorRef: string
+  awsConnectorRef: string
   accountIdentifier: string
   orgIdentifier: string
   projectIdentifier: string
@@ -15714,9 +15862,14 @@ export const regionsForAwsPromise = (
     signal
   )
 
+<<<<<<< HEAD
 export interface GetGCSBucketListQueryParams {
   connectorRef?: string
 >>>>>>> cf70c33256ad (adds to yaml, need to format data. Waiting for UI to be confirmed before continuing)
+=======
+export interface GetAzureSubscriptionsQueryParams {
+  connectorRef: string
+>>>>>>> 84e34bdda85e (Add inline temnplate runtime components)
   accountIdentifier: string
   orgIdentifier: string
   projectIdentifier: string
@@ -19928,6 +20081,7 @@ export interface FetchFeatureRestrictionMetadataPathParams {
     | 'INTEGRATED_APPROVALS_WITH_SERVICE_NOW'
     | 'CREATE_STACK'
     | 'DELETE_STACK'
+    | 'ROLLBACK_STACK'
     | 'SECURITY'
     | 'DEVELOPERS'
     | 'MONTHLY_ACTIVE_USERS'
@@ -20053,6 +20207,7 @@ export const fetchFeatureRestrictionMetadataPromise = (
       | 'INTEGRATED_APPROVALS_WITH_SERVICE_NOW'
       | 'CREATE_STACK'
       | 'DELETE_STACK'
+      | 'ROLLBACK_STACK'
       | 'SECURITY'
       | 'DEVELOPERS'
       | 'MONTHLY_ACTIVE_USERS'
@@ -20151,7 +20306,13 @@ export interface ListReferredByEntitiesQueryParams {
 =======
     | 'CreateStack'
     | 'DeleteStack'
+<<<<<<< HEAD
 >>>>>>> cf70c33256ad (adds to yaml, need to format data. Waiting for UI to be confirmed before continuing)
+=======
+    | 'ServerlessAwsLambdaDeploy'
+    | 'ServerlessAwsLambdaRollback'
+    | 'RollbackStack'
+>>>>>>> 84e34bdda85e (Add inline temnplate runtime components)
   searchTerm?: string
   branch?: string
   repoIdentifier?: string
@@ -20210,6 +20371,7 @@ export interface CreateEnvironmentGroupQueryParams {
   repoIdentifier?: string
   getDefaultFromOtherRepo?: boolean
 }
+<<<<<<< HEAD
 export interface GetEnvironmentGroupListQueryParams {
   accountIdentifier: string
   orgIdentifier: string
@@ -20435,13 +20597,15 @@ export interface CreateEnvironmentGroupQueryParams {
   repoIdentifier?: string
   getDefaultFromOtherRepo?: boolean
 }
+=======
+>>>>>>> 84e34bdda85e (Add inline temnplate runtime components)
 
 export type CreateEnvironmentGroupProps = Omit<
   MutateProps<
     ResponseEnvironmentGroupResponse,
     Failure | Error,
     CreateEnvironmentGroupQueryParams,
-    CreateEnvironmentGroupBodyRequestBody,
+    UpdateEnvironmentGroupBodyRequestBody,
     void
   >,
   'path' | 'verb'
@@ -20455,7 +20619,7 @@ export const CreateEnvironmentGroup = (props: CreateEnvironmentGroupProps) => (
     ResponseEnvironmentGroupResponse,
     Failure | Error,
     CreateEnvironmentGroupQueryParams,
-    CreateEnvironmentGroupBodyRequestBody,
+    UpdateEnvironmentGroupBodyRequestBody,
     void
   >
     verb="POST"
@@ -20470,7 +20634,7 @@ export type UseCreateEnvironmentGroupProps = Omit<
     ResponseEnvironmentGroupResponse,
     Failure | Error,
     CreateEnvironmentGroupQueryParams,
-    CreateEnvironmentGroupBodyRequestBody,
+    UpdateEnvironmentGroupBodyRequestBody,
     void
   >,
   'path' | 'verb'
@@ -20484,7 +20648,7 @@ export const useCreateEnvironmentGroup = (props: UseCreateEnvironmentGroupProps)
     ResponseEnvironmentGroupResponse,
     Failure | Error,
     CreateEnvironmentGroupQueryParams,
-    CreateEnvironmentGroupBodyRequestBody,
+    UpdateEnvironmentGroupBodyRequestBody,
     void
   >('POST', `/environmentGroup`, { base: getConfig('ng/api'), ...props })
 
@@ -20496,7 +20660,7 @@ export const createEnvironmentGroupPromise = (
     ResponseEnvironmentGroupResponse,
     Failure | Error,
     CreateEnvironmentGroupQueryParams,
-    CreateEnvironmentGroupBodyRequestBody,
+    UpdateEnvironmentGroupBodyRequestBody,
     void
   >,
   signal?: RequestInit['signal']
@@ -20505,7 +20669,7 @@ export const createEnvironmentGroupPromise = (
     ResponseEnvironmentGroupResponse,
     Failure | Error,
     CreateEnvironmentGroupQueryParams,
-    CreateEnvironmentGroupBodyRequestBody,
+    UpdateEnvironmentGroupBodyRequestBody,
     void
   >('POST', getConfig('ng/api'), `/environmentGroup`, props, signal)
 
@@ -20513,25 +20677,40 @@ export interface GetEnvironmentGroupListQueryParams {
   accountIdentifier: string
   orgIdentifier: string
   projectIdentifier: string
+  envGroupIdentifiers?: string[]
   searchTerm?: string
-  pageIndex?: number
-  pageSize?: number
-  sortOrders?: string[]
+  page?: number
+  size?: number
+  sort?: string[]
+  filterIdentifier?: string
   branch?: string
   repoIdentifier?: string
   getDefaultFromOtherRepo?: boolean
 }
 
 export type GetEnvironmentGroupListProps = Omit<
-  GetProps<ResponsePageEnvironmentGroupResponse, Failure | Error, GetEnvironmentGroupListQueryParams, void>,
-  'path'
+  MutateProps<
+    ResponsePageEnvironmentGroupResponse,
+    Failure | Error,
+    GetEnvironmentGroupListQueryParams,
+    FilterProperties,
+    void
+  >,
+  'path' | 'verb'
 >
 
 /**
  * Gets Environment Group list
  */
 export const GetEnvironmentGroupList = (props: GetEnvironmentGroupListProps) => (
-  <Get<ResponsePageEnvironmentGroupResponse, Failure | Error, GetEnvironmentGroupListQueryParams, void>
+  <Mutate<
+    ResponsePageEnvironmentGroupResponse,
+    Failure | Error,
+    GetEnvironmentGroupListQueryParams,
+    FilterProperties,
+    void
+  >
+    verb="POST"
     path={`/environmentGroup/list`}
     base={getConfig('ng/api')}
     {...props}
@@ -20539,37 +20718,48 @@ export const GetEnvironmentGroupList = (props: GetEnvironmentGroupListProps) => 
 )
 
 export type UseGetEnvironmentGroupListProps = Omit<
-  UseGetProps<ResponsePageEnvironmentGroupResponse, Failure | Error, GetEnvironmentGroupListQueryParams, void>,
-  'path'
+  UseMutateProps<
+    ResponsePageEnvironmentGroupResponse,
+    Failure | Error,
+    GetEnvironmentGroupListQueryParams,
+    FilterProperties,
+    void
+  >,
+  'path' | 'verb'
 >
 
 /**
  * Gets Environment Group list
  */
 export const useGetEnvironmentGroupList = (props: UseGetEnvironmentGroupListProps) =>
-  useGet<ResponsePageEnvironmentGroupResponse, Failure | Error, GetEnvironmentGroupListQueryParams, void>(
-    `/environmentGroup/list`,
-    { base: getConfig('ng/api'), ...props }
-  )
+  useMutate<
+    ResponsePageEnvironmentGroupResponse,
+    Failure | Error,
+    GetEnvironmentGroupListQueryParams,
+    FilterProperties,
+    void
+  >('POST', `/environmentGroup/list`, { base: getConfig('ng/api'), ...props })
 
 /**
  * Gets Environment Group list
  */
 export const getEnvironmentGroupListPromise = (
-  props: GetUsingFetchProps<
+  props: MutateUsingFetchProps<
     ResponsePageEnvironmentGroupResponse,
     Failure | Error,
     GetEnvironmentGroupListQueryParams,
+    FilterProperties,
     void
   >,
   signal?: RequestInit['signal']
 ) =>
-  getUsingFetch<ResponsePageEnvironmentGroupResponse, Failure | Error, GetEnvironmentGroupListQueryParams, void>(
-    getConfig('ng/api'),
-    `/environmentGroup/list`,
-    props,
-    signal
-  )
+  mutateUsingFetch<
+    ResponsePageEnvironmentGroupResponse,
+    Failure | Error,
+    GetEnvironmentGroupListQueryParams,
+    FilterProperties,
+    void
+  >('POST', getConfig('ng/api'), `/environmentGroup/list`, props, signal)
 
 export interface DeleteEnvironmentGroupQueryParams {
   accountIdentifier: string
@@ -20725,6 +20915,108 @@ export const getEnvironmentGroupPromise = (
     GetEnvironmentGroupQueryParams,
     GetEnvironmentGroupPathParams
   >(getConfig('ng/api'), `/environmentGroup/${envGroupIdentifier}`, props, signal)
+
+export interface UpdateEnvironmentGroupQueryParams {
+  accountIdentifier: string
+  orgIdentifier: string
+  projectIdentifier: string
+  branch?: string
+  repoIdentifier?: string
+  rootFolder?: string
+  filePath?: string
+  commitMsg?: string
+  lastObjectId?: string
+  resolvedConflictCommitId?: string
+  baseBranch?: string
+  connectorRef?: string
+  storeType?: 'INLINE' | 'REMOTE'
+}
+
+export interface UpdateEnvironmentGroupPathParams {
+  envGroupIdentifier: string
+}
+
+export type UpdateEnvironmentGroupProps = Omit<
+  MutateProps<
+    ResponseEnvironmentGroupResponse,
+    Failure | Error,
+    UpdateEnvironmentGroupQueryParams,
+    UpdateEnvironmentGroupBodyRequestBody,
+    UpdateEnvironmentGroupPathParams
+  >,
+  'path' | 'verb'
+> &
+  UpdateEnvironmentGroupPathParams
+
+/**
+ * Update an Environment Group by Identifier
+ */
+export const UpdateEnvironmentGroup = ({ envGroupIdentifier, ...props }: UpdateEnvironmentGroupProps) => (
+  <Mutate<
+    ResponseEnvironmentGroupResponse,
+    Failure | Error,
+    UpdateEnvironmentGroupQueryParams,
+    UpdateEnvironmentGroupBodyRequestBody,
+    UpdateEnvironmentGroupPathParams
+  >
+    verb="PUT"
+    path={`/environmentGroup/${envGroupIdentifier}`}
+    base={getConfig('ng/api')}
+    {...props}
+  />
+)
+
+export type UseUpdateEnvironmentGroupProps = Omit<
+  UseMutateProps<
+    ResponseEnvironmentGroupResponse,
+    Failure | Error,
+    UpdateEnvironmentGroupQueryParams,
+    UpdateEnvironmentGroupBodyRequestBody,
+    UpdateEnvironmentGroupPathParams
+  >,
+  'path' | 'verb'
+> &
+  UpdateEnvironmentGroupPathParams
+
+/**
+ * Update an Environment Group by Identifier
+ */
+export const useUpdateEnvironmentGroup = ({ envGroupIdentifier, ...props }: UseUpdateEnvironmentGroupProps) =>
+  useMutate<
+    ResponseEnvironmentGroupResponse,
+    Failure | Error,
+    UpdateEnvironmentGroupQueryParams,
+    UpdateEnvironmentGroupBodyRequestBody,
+    UpdateEnvironmentGroupPathParams
+  >('PUT', (paramsInPath: UpdateEnvironmentGroupPathParams) => `/environmentGroup/${paramsInPath.envGroupIdentifier}`, {
+    base: getConfig('ng/api'),
+    pathParams: { envGroupIdentifier },
+    ...props
+  })
+
+/**
+ * Update an Environment Group by Identifier
+ */
+export const updateEnvironmentGroupPromise = (
+  {
+    envGroupIdentifier,
+    ...props
+  }: MutateUsingFetchProps<
+    ResponseEnvironmentGroupResponse,
+    Failure | Error,
+    UpdateEnvironmentGroupQueryParams,
+    UpdateEnvironmentGroupBodyRequestBody,
+    UpdateEnvironmentGroupPathParams
+  > & { envGroupIdentifier: string },
+  signal?: RequestInit['signal']
+) =>
+  mutateUsingFetch<
+    ResponseEnvironmentGroupResponse,
+    Failure | Error,
+    UpdateEnvironmentGroupQueryParams,
+    UpdateEnvironmentGroupBodyRequestBody,
+    UpdateEnvironmentGroupPathParams
+  >('PUT', getConfig('ng/api'), `/environmentGroup/${envGroupIdentifier}`, props, signal)
 
 export interface GetEnvironmentListForProjectQueryParams {
   page?: number
@@ -22445,8 +22737,16 @@ export interface GetReferencedByQueryParams {
     | 'BuildAndPushGCR'
     | 'BuildAndPushECR'
     | 'BuildAndPushDockerRegistry'
+<<<<<<< HEAD
     | 'ServerlessAwsLambdaDeploy'
     | 'ServerlessAwsLambdaRollback'
+=======
+    | 'CreateStack'
+    | 'DeleteStack'
+    | 'ServerlessAwsLambdaDeploy'
+    | 'ServerlessAwsLambdaRollback'
+    | 'RollbackStack'
+>>>>>>> 84e34bdda85e (Add inline temnplate runtime components)
   searchTerm?: string
 }
 
@@ -23732,7 +24032,13 @@ export interface ListGitSyncEntitiesByTypePathParams {
 =======
     | 'CreateStack'
     | 'DeleteStack'
+<<<<<<< HEAD
 >>>>>>> cf70c33256ad (adds to yaml, need to format data. Waiting for UI to be confirmed before continuing)
+=======
+    | 'ServerlessAwsLambdaDeploy'
+    | 'ServerlessAwsLambdaRollback'
+    | 'RollbackStack'
+>>>>>>> 84e34bdda85e (Add inline temnplate runtime components)
 }
 
 export type ListGitSyncEntitiesByTypeProps = Omit<
@@ -23879,7 +24185,13 @@ export const listGitSyncEntitiesByTypePromise = (
 =======
       | 'CreateStack'
       | 'DeleteStack'
+<<<<<<< HEAD
 >>>>>>> cf70c33256ad (adds to yaml, need to format data. Waiting for UI to be confirmed before continuing)
+=======
+      | 'ServerlessAwsLambdaDeploy'
+      | 'ServerlessAwsLambdaRollback'
+      | 'RollbackStack'
+>>>>>>> 84e34bdda85e (Add inline temnplate runtime components)
   },
   signal?: RequestInit['signal']
 ) =>
@@ -27312,7 +27624,13 @@ export interface GetStepYamlSchemaQueryParams {
 =======
     | 'CreateStack'
     | 'DeleteStack'
+<<<<<<< HEAD
 >>>>>>> cf70c33256ad (adds to yaml, need to format data. Waiting for UI to be confirmed before continuing)
+=======
+    | 'ServerlessAwsLambdaDeploy'
+    | 'ServerlessAwsLambdaRollback'
+    | 'RollbackStack'
+>>>>>>> 84e34bdda85e (Add inline temnplate runtime components)
   yamlGroup?: string
 }
 
@@ -29660,7 +29978,11 @@ export interface GetListOfBranchesByRefConnectorV2QueryParams {
   accountIdentifier?: string
   orgIdentifier?: string
   projectIdentifier?: string
+<<<<<<< HEAD
   repoName?: string
+=======
+  repoURL?: string
+>>>>>>> 84e34bdda85e (Add inline temnplate runtime components)
   connectorRef?: string
   page?: number
   size?: number
@@ -36968,7 +37290,7 @@ export interface WebhookEndpointQueryParams {
 }
 
 export type WebhookEndpointProps = Omit<
-  MutateProps<ResponseString, Failure | Error, WebhookEndpointQueryParams, string, void>,
+  MutateProps<ResponseString, Failure | Error, WebhookEndpointQueryParams, CFParametersForAwsBodyRequestBody, void>,
   'path' | 'verb'
 >
 
@@ -36976,7 +37298,7 @@ export type WebhookEndpointProps = Omit<
  * accept webhook event
  */
 export const WebhookEndpoint = (props: WebhookEndpointProps) => (
-  <Mutate<ResponseString, Failure | Error, WebhookEndpointQueryParams, string, void>
+  <Mutate<ResponseString, Failure | Error, WebhookEndpointQueryParams, CFParametersForAwsBodyRequestBody, void>
     verb="POST"
     path={`/webhook`}
     base={getConfig('ng/api')}
@@ -36985,7 +37307,7 @@ export const WebhookEndpoint = (props: WebhookEndpointProps) => (
 )
 
 export type UseWebhookEndpointProps = Omit<
-  UseMutateProps<ResponseString, Failure | Error, WebhookEndpointQueryParams, string, void>,
+  UseMutateProps<ResponseString, Failure | Error, WebhookEndpointQueryParams, CFParametersForAwsBodyRequestBody, void>,
   'path' | 'verb'
 >
 
@@ -36993,25 +37315,32 @@ export type UseWebhookEndpointProps = Omit<
  * accept webhook event
  */
 export const useWebhookEndpoint = (props: UseWebhookEndpointProps) =>
-  useMutate<ResponseString, Failure | Error, WebhookEndpointQueryParams, string, void>('POST', `/webhook`, {
-    base: getConfig('ng/api'),
-    ...props
-  })
+  useMutate<ResponseString, Failure | Error, WebhookEndpointQueryParams, CFParametersForAwsBodyRequestBody, void>(
+    'POST',
+    `/webhook`,
+    { base: getConfig('ng/api'), ...props }
+  )
 
 /**
  * accept webhook event
  */
 export const webhookEndpointPromise = (
-  props: MutateUsingFetchProps<ResponseString, Failure | Error, WebhookEndpointQueryParams, string, void>,
+  props: MutateUsingFetchProps<
+    ResponseString,
+    Failure | Error,
+    WebhookEndpointQueryParams,
+    CFParametersForAwsBodyRequestBody,
+    void
+  >,
   signal?: RequestInit['signal']
 ) =>
-  mutateUsingFetch<ResponseString, Failure | Error, WebhookEndpointQueryParams, string, void>(
-    'POST',
-    getConfig('ng/api'),
-    `/webhook`,
-    props,
-    signal
-  )
+  mutateUsingFetch<
+    ResponseString,
+    Failure | Error,
+    WebhookEndpointQueryParams,
+    CFParametersForAwsBodyRequestBody,
+    void
+  >('POST', getConfig('ng/api'), `/webhook`, props, signal)
 
 export interface GetYamlSchemaQueryParams {
   entityType:
@@ -37092,7 +37421,13 @@ export interface GetYamlSchemaQueryParams {
 =======
     | 'CreateStack'
     | 'DeleteStack'
+<<<<<<< HEAD
 >>>>>>> cf70c33256ad (adds to yaml, need to format data. Waiting for UI to be confirmed before continuing)
+=======
+    | 'ServerlessAwsLambdaDeploy'
+    | 'ServerlessAwsLambdaRollback'
+    | 'RollbackStack'
+>>>>>>> 84e34bdda85e (Add inline temnplate runtime components)
   subtype?:
     | 'K8sCluster'
     | 'Git'

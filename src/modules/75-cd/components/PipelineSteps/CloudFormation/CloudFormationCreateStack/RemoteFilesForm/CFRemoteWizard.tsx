@@ -9,7 +9,14 @@ import React, { useState } from 'react'
 import cx from 'classnames'
 import { isNumber } from 'lodash-es'
 import { useParams } from 'react-router-dom'
-import { Button, ButtonVariation, StepWizard, MultiTypeInputType, SelectOption, getMultiTypeFromValue } from '@harness/uicore'
+import {
+  Button,
+  ButtonVariation,
+  StepWizard,
+  MultiTypeInputType,
+  SelectOption,
+  getMultiTypeFromValue
+} from '@harness/uicore'
 import { Classes, Dialog, IDialogProps } from '@blueprintjs/core'
 import { useStrings } from 'framework/strings'
 import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
@@ -24,10 +31,10 @@ import {
   ConnectorTypes,
   GetNewConnector,
   ConnectorStepTitle
-} from '../CloudFormationHelper'
-import ConnectorStepOne from './RemoteStepOne'
-import { CFFileStore } from './RemoteStepTwo'
-import css from '../CloudFormation.module.scss'
+} from '../../CloudFormationHelper'
+import RemoteStepOne from './RemoteStepOne'
+import RemoteStepTwo from './RemoteStepTwo'
+import css from '../../CloudFormation.module.scss'
 
 const DIALOG_PROPS = {
   usePortal: true,
@@ -43,9 +50,6 @@ const DIALOG_PROPS = {
     position: 'relative',
     overflow: 'hidden'
   }
-}
-interface Path {
-  [key: string]: string
 }
 
 interface CFRemoteWizardProps {
@@ -139,21 +143,22 @@ const CFRemoteWizard = ({
     if (isNumber(index)) {
       connectorRef = connector?.spec?.configuration?.parameters?.store?.spec?.connectorRef
       paths = config?.parameters?.store?.spec?.paths
+      paths = getMultiTypeFromValue(paths[0]) === MultiTypeInputType.RUNTIME ? paths[0] : paths
       const data = {
-        identifier: values.spec.configuration.parameters.identifier,
+        identifier: values?.spec?.configuration?.parameters?.identifier,
         store: {
           type: connector?.selectedConnector === Connectors.AWS ? 'S3Url' : connector?.selectedConnector,
           spec: {
-            ...values.spec.configuration.templateFile.spec.store.spec,
-            region: connector?.spec.configuration.parameters.store.spec?.region,
-            paths: paths.map((filePath: Path) => filePath.path),
+            ...values?.spec?.configuration?.parameters?.store?.spec,
+            region: connector?.spec?.configuration?.parameters?.store?.spec?.region,
+            paths,
             connectorRef
           }
         }
       }
       setFieldValue(`spec.configuration.parameters[${index}]`, data)
     } else {
-      paths = getMultiTypeFromValue(paths[0]?.path) === MultiTypeInputType.RUNTIME ? paths[0]?.path : [paths[0]?.path]
+      paths = getMultiTypeFromValue(paths[0]) === MultiTypeInputType.RUNTIME ? paths[0] : paths
       const data = {
         type: connector?.selectedConnector,
         spec: {
@@ -185,7 +190,7 @@ const CFRemoteWizard = ({
             size: 50
           }}
         >
-          <ConnectorStepOne
+          <RemoteStepOne
             isReadonly={readonly}
             allowableTypes={allowableTypes}
             name={connectorStepTitle}
@@ -198,7 +203,7 @@ const CFRemoteWizard = ({
             regions={regions}
           />
           {showNewConnector ? newConnector() : null}
-          <CFFileStore
+          <RemoteStepTwo
             name={fileStoreTitle}
             allowableTypes={allowableTypes}
             initialValues={initialValues}

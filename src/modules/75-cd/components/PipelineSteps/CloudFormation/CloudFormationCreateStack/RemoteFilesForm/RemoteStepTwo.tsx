@@ -25,22 +25,21 @@ import {
 } from '@harness/uicore'
 import MultiTypeFieldSelector from '@common/components/MultiTypeFieldSelector/MultiTypeFieldSelector'
 import { useVariablesExpression } from '@pipeline/components/PipelineStudio/PiplineHooks/useVariablesExpression'
-import { ConfigureOptions } from '@common/components/ConfigureOptions/ConfigureOptions'
 import { useStrings } from 'framework/strings'
-import { FormatFilePaths } from '../CloudFormationHelper'
-import { onDragStart, onDragEnd, onDragLeave, onDragOver, onDrop } from '../DragHelper'
+import { FormatFilePaths } from '../../CloudFormationHelper'
+import { onDragStart, onDragEnd, onDragLeave, onDragOver, onDrop } from '../../DragHelper'
 import { ParameterRepoDetails } from './ParameterRepoDetails'
 import stepCss from '@pipeline/components/PipelineSteps/Steps/Steps.module.scss'
-import css from '../CloudFormation.module.scss'
+import css from '../../CloudFormation.module.scss'
 
-interface CFFileStoreProps {
+interface RemoteStepTwoProps {
   allowableTypes: MultiTypeInputType[]
   initialValues: any
   onSubmit: (values: any, connector: any) => void
   index?: number
 }
 
-export const CFFileStore: React.FC<StepProps<any> & CFFileStoreProps> = ({
+const RemoteStepTwo: React.FC<StepProps<any> & RemoteStepTwoProps> = ({
   previousStep,
   prevStepData,
   allowableTypes,
@@ -53,11 +52,7 @@ export const CFFileStore: React.FC<StepProps<any> & CFFileStoreProps> = ({
   const title = getString(isNumber(index) ? 'filePaths' : 'common.git.filePath')
   const pathSchema = Yup.lazy((value): Yup.Schema<unknown> => {
     if (getMultiTypeFromValue(value as any) === MultiTypeInputType.FIXED) {
-      return Yup.array().of(
-        Yup.object().shape({
-          path: Yup.string().required(getString('cd.pathCannotBeEmpty'))
-        })
-      )
+      return Yup.array().of(Yup.string().required(getString('cd.pathCannotBeEmpty')))
     }
     return Yup.string().required(getString('cd.pathCannotBeEmpty'))
   })
@@ -114,14 +109,14 @@ export const CFFileStore: React.FC<StepProps<any> & CFFileStoreProps> = ({
         {title}
       </Text>
       <Formik
-        formName="cfFileStore"
+        formName="RemoteStepTwo"
         initialValues={FormatFilePaths(initialValues, index)}
         enableReinitialize
         validationSchema={isNumber(index) ? paramSchema : templateSchema}
         onSubmit={data => onSubmit(data, prevStepData)}
       >
         {({ values }) => {
-          let name = 'spec.configuration.templateFile.spec.store.spec.paths[0].path'
+          let name = 'spec.configuration.templateFile.spec.store.spec.paths[0]'
           let filePaths = values?.spec?.configuration?.templateFile?.spec?.store?.spec?.paths
           let connector = prevStepData?.spec?.configuration?.templateFile?.spec?.store?.spec?.connectorRef
           if (isNumber(index)) {
@@ -134,23 +129,7 @@ export const CFFileStore: React.FC<StepProps<any> & CFFileStoreProps> = ({
               <div className={css.filePathForm}>
                 {isNumber(index) && (
                   <div className={cx(stepCss.formGroup, stepCss.md)}>
-                    <FormInput.MultiTextInput
-                      label={getString('identifier')}
-                      name={`spec.configuration.parameters.identifier`}
-                      multiTextInputProps={{ expressions, allowableTypes }}
-                    />
-                    {getMultiTypeFromValue(values?.spec?.configuration?.parameters?.identifier) ===
-                      MultiTypeInputType.RUNTIME && (
-                      <ConfigureOptions
-                        style={{ alignSelf: 'center', marginTop: 1 }}
-                        value={values?.spec?.configuration?.parameters?.identifier as string}
-                        type="String"
-                        variableName={`spec.configuration.parameters.identifier`}
-                        showRequiredField={false}
-                        showDefaultField={false}
-                        showAdvanced={true}
-                      />
-                    )}
+                    <FormInput.Text name="spec.configuration.parameters.identifier" label={getString('identifier')} />
                   </div>
                 )}
                 {connector?.connector?.type !== 'Aws' && (
@@ -181,9 +160,9 @@ export const CFFileStore: React.FC<StepProps<any> & CFFileStoreProps> = ({
                         name={name}
                         render={arrayHelpers => (
                           <>
-                            {map(filePaths, (path: string, i: number) => (
+                            {map(filePaths, (_: string, i: number) => (
                               <Layout.Horizontal
-                                key={`${path}-${i}`}
+                                key={`${name}-${i}`}
                                 flex={{ distribution: 'space-between' }}
                                 style={{ alignItems: 'end' }}
                               >
@@ -191,7 +170,7 @@ export const CFFileStore: React.FC<StepProps<any> & CFFileStoreProps> = ({
                                   spacing="medium"
                                   style={{ alignItems: 'baseline' }}
                                   className={css.formContainer}
-                                  key={`${path}-${i}`}
+                                  key={`${name}-${i}`}
                                   draggable={true}
                                   onDragEnd={onDragEnd}
                                   onDragOver={onDragOver}
@@ -202,7 +181,7 @@ export const CFFileStore: React.FC<StepProps<any> & CFFileStoreProps> = ({
                                   <Icon name="drag-handle-vertical" className={css.drag} />
                                   <Text width={12}>{`${i + 1}.`}</Text>
                                   <FormInput.MultiTextInput
-                                    name={`${name}[${i}].path`}
+                                    name={`${name}[${i}]`}
                                     label=""
                                     multiTextInputProps={{
                                       expressions,
@@ -223,7 +202,7 @@ export const CFFileStore: React.FC<StepProps<any> & CFFileStoreProps> = ({
                               icon="plus"
                               variation={ButtonVariation.LINK}
                               data-testid="add-header"
-                              onClick={() => arrayHelpers.push({ path: '' })}
+                              onClick={() => arrayHelpers.push('')}
                             >
                               {getString('cd.addTFVarFileLabel')}
                             </Button>
@@ -257,3 +236,5 @@ export const CFFileStore: React.FC<StepProps<any> & CFFileStoreProps> = ({
     </Layout.Vertical>
   )
 }
+
+export default RemoteStepTwo
