@@ -373,7 +373,7 @@ export function PipelineCanvas({
         <PipelineVariablesContextProvider pipeline={pipeline}>
           <Dialog
             style={{
-              width: isGitSyncEnabled ? '614px' : '385px',
+              width: isGitSyncEnabled ? '614px' : '800px',
               background: 'var(--form-bg)',
               paddingTop: '36px'
             }}

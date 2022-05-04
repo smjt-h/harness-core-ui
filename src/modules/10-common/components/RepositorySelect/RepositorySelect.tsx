@@ -1,0 +1,128 @@
+import React, { useState, useEffect } from 'react'
+import {
+  Dialog,
+  FormInput,
+  getErrorInfoFromErrorObject,
+  Icon,
+  Layout,
+  ModalErrorHandlerBinding,
+  SelectOption,
+  Text,
+  useToggleOpen
+} from '@harness/uicore'
+import { Color } from '@harness/design-system'
+import { useParams } from 'react-router-dom'
+import { defaultTo, isEmpty } from 'lodash-es'
+import { useStrings } from 'framework/strings'
+import { Error, GitRepositoryResponseDTO, useGetListOfReposByRefConnector } from 'services/cd-ng'
+import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
+import { ErrorHandler } from '@common/components/ErrorHandler/ErrorHandler'
+import css from './RepositorySelect.module.scss'
+
+export interface RepositorySelectProps {
+  modalErrorHandler?: ModalErrorHandlerBinding
+  connectorRef?: string
+  selectedValue?: string
+  onChange?: (selected: SelectOption, options?: SelectOption[]) => void
+  formik?: any
+}
+
+const getRepoSelectOptions = (data: GitRepositoryResponseDTO[] = []) => {
+  return data.map((repo: GitRepositoryResponseDTO) => {
+    return {
+      label: defaultTo(repo.name, ''),
+      value: defaultTo(repo.name, '')
+    }
+  })
+}
+
+const RepositorySelect: React.FC<RepositorySelectProps> = props => {
+  const { modalErrorHandler, connectorRef, selectedValue } = props
+  const { getString } = useStrings()
+  const { accountId, projectIdentifier, orgIdentifier } = useParams<ProjectPathProps>()
+  const [repoSelectOptions, setRepoSelectOptions] = useState<SelectOption[]>([])
+
+  const {
+    data: response,
+    error,
+    loading,
+    refetch
+  } = useGetListOfReposByRefConnector({
+    queryParams: {
+      connectorRef,
+      accountIdentifier: accountId,
+      orgIdentifier,
+      projectIdentifier,
+      page: 0,
+      size: 100
+    },
+    lazy: true
+  })
+
+  const { isOpen, open, close } = useToggleOpen()
+
+  useEffect(() => {
+    if (connectorRef) {
+      refetch()
+    } else {
+      setRepoSelectOptions([])
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [connectorRef])
+
+  const handleError = (errorMessage: string): void => {
+    modalErrorHandler?.showDanger(errorMessage)
+  }
+
+  useEffect(() => {
+    if (loading) {
+      return
+    }
+    modalErrorHandler?.hide()
+
+    if (error) {
+      if ((error?.data as Error)?.responseMessages?.length) {
+        open()
+      } else {
+        handleError(getErrorInfoFromErrorObject(error))
+      }
+      return
+    }
+
+    if (response?.status !== 'SUCCESS') {
+      response && handleError(getErrorInfoFromErrorObject(response))
+    } else {
+      console.log('response', response)
+      if (!isEmpty(response?.data)) {
+        const selectOptions = getRepoSelectOptions(response?.data)
+        setRepoSelectOptions(selectOptions)
+        if (selectOptions.length === 1) {
+          props.onChange?.(selectOptions[0], repoSelectOptions)
+        }
+      } else {
+        modalErrorHandler?.showDanger('noRepoFound')
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [loading])
+
+  const responseMessages = (error?.data as Error)?.responseMessages
+  return (
+    <Layout.Horizontal>
+      <FormInput.Select
+        name="repository"
+        label={'Select Repository'}
+        placeholder={loading ? 'Loading...' : 'Select'}
+        disabled={loading}
+        items={repoSelectOptions}
+        value={{ label: selectedValue || '', value: selectedValue || '' }}
+        onChange={selected => props.onChange?.(selected, repoSelectOptions)}
+        selectProps={{ usePortal: true, popoverClassName: css.gitBranchSelectorPopover }}
+      />
+      {/* <Dialog isOpen={isOpen} enforceFocus={false} title={'repoFetchFailed'} onClose={close}>
+        {responseMessages ? <ErrorHandler responseMessages={responseMessages} /> : undefined}
+      </Dialog> */}
+    </Layout.Horizontal>
+  )
+}
+export default RepositorySelect

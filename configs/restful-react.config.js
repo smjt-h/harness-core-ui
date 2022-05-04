@@ -34,7 +34,8 @@ module.exports = {
     customGenerator: arg => customGenerator(arg, "getConfig('ng/api')"),
     ...(process.env.cdng_schema_path
       ? { file: process.env.cdng_schema_path }
-      : { url: 'http://localhost:7457/swagger.json' })
+      : // : { url: 'http://localhost:7457/swagger.json' })
+        { url: 'https://pr.harness.io/pl-24528/ng/api/swagger.json' })
   },
   'pipeline-ng': {
     output: 'src/services/pipeline-ng/index.tsx',

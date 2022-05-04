@@ -5,13 +5,25 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import React, { useEffect } from 'react'
-import { Container, Formik, FormikForm, Button, ButtonVariation, Text } from '@wings-software/uicore'
-import { Color } from '@wings-software/design-system'
+import React, { useEffect, useState } from 'react'
+import {
+  Container,
+  Formik,
+  FormikForm,
+  Button,
+  ButtonVariation,
+  Text,
+  IconName,
+  CardSelect,
+  Layout,
+  Icon
+} from '@wings-software/uicore'
+import { Color, FontVariation } from '@wings-software/design-system'
 import * as Yup from 'yup'
-import { omit } from 'lodash-es'
+import { noop, omit } from 'lodash-es'
 import { useParams } from 'react-router-dom'
-
+import { FeatureFlag } from '@common/featureFlags'
+import { useFeatureFlag } from '@common/hooks/useFeatureFlag'
 import { useStrings } from 'framework/strings'
 import { loggerFor } from 'framework/logging/logging'
 import { ModuleName } from 'framework/types/ModuleName'
@@ -28,8 +40,17 @@ import { getTemplateNameWithLabel } from '@pipeline/utils/templateUtils'
 import type { TemplateSummaryResponse } from 'services/template-ng'
 import { DefaultNewPipelineId } from '../PipelineContext/PipelineActions'
 import css from './PipelineCreate.module.scss'
+import { GitSyncForm } from '@common/components/GitSyncForm/GitSyncForm'
 
 const logger = loggerFor(ModuleName.CD)
+
+interface CardInterface {
+  type: string
+  title: string
+  info: string
+  icon: IconName
+  disabled?: boolean
+}
 
 interface PipelineInfoConfigWithGitDetails extends PipelineInfoConfig {
   repo: string
@@ -60,7 +81,24 @@ export default function CreatePipelines({
   const { getString } = useStrings()
   const { pipelineIdentifier } = useParams<{ pipelineIdentifier: string }>()
   const { isGitSyncEnabled } = useAppStore()
+  const gitSimplification: boolean = useFeatureFlag(FeatureFlag.GIT_SIMPLIFICATION)
+  const [pipelineMode, setPipelineMode] = useState<CardInterface | undefined>()
   const { trackEvent } = useTelemetry()
+
+  const PipelineModeCards: CardInterface[] = [
+    {
+      type: 'inline',
+      title: 'Inline',
+      info: 'Pipeline content is stored in Harness',
+      icon: 'repository'
+    },
+    {
+      type: 'remote',
+      title: 'Remote',
+      info: 'Pipeline content is stored in a Git repository',
+      icon: 'pipeline'
+    }
+  ]
 
   const identifier = initialValues?.identifier
   if (identifier === DefaultNewPipelineId) {
@@ -109,11 +147,37 @@ export default function CreatePipelines({
             tooltipProps={{ dataTooltipId: 'pipelineCreate' }}
             className={css.pipelineCreateNameIdDescriptionTags}
           />
-          {isGitSyncEnabled && (
+
+          {gitSimplification ? (
+            <CardSelect
+              data={PipelineModeCards}
+              cornerSelected={true}
+              cardClassName={css.pipelineModeCard}
+              renderItem={(item: CardInterface) => (
+                <Layout.Horizontal flex spacing={'small'}>
+                  <Icon name={item.icon} />
+                  <Container>
+                    <Text font={{ variation: FontVariation.FORM_TITLE }}>{item.title}</Text>
+                    <Text>{item.info}</Text>
+                  </Container>
+                </Layout.Horizontal>
+              )}
+              selected={pipelineMode}
+              onChange={(item: CardInterface) => {
+                formikProps?.setFieldValue('pipelineMode', item.type)
+                formikProps?.setFieldValue('remoteType', item.type === 'remote' ? 'new' : '')
+                setPipelineMode(item)
+              }}
+            />
+          ) : isGitSyncEnabled ? (
             <GitSyncStoreProvider>
               <GitContextForm formikProps={formikProps} gitDetails={gitDetails} />
             </GitSyncStoreProvider>
-          )}
+          ) : null}
+
+          {pipelineMode?.type === 'remote' ? (
+            <GitSyncForm formikProps={formikProps} handleSubmit={noop}></GitSyncForm>
+          ) : null}
           {usingTemplate && (
             <Text
               icon={'template-library'}
