@@ -6,6 +6,7 @@
  */
 
 import React from 'react'
+import { useParams } from 'react-router-dom'
 import { isEmpty, startCase } from 'lodash-es'
 import cx from 'classnames'
 import { Container, Layout, MultiTypeInputType, Text, FormInput } from '@wings-software/uicore'
@@ -20,8 +21,14 @@ import MultiTypeList from '@common/components/MultiTypeList/MultiTypeList'
 import { MultiTypeListInputSet } from '@common/components/MultiTypeListInputSet/MultiTypeListInputSet'
 import { useVariablesExpression } from '@pipeline/components/PipelineStudio/PiplineHooks/useVariablesExpression'
 import { StepViewType } from '@pipeline/components/AbstractSteps/Step'
-import { getAllowedValuesFromTemplate, shouldRenderRunTimeInputViewWithAllowedValues } from '@pipeline/utils/CIUtils'
+import {
+  getAllowedValuesFromTemplate,
+  getConnectorRefWidth,
+  shouldRenderRunTimeInputViewWithAllowedValues,
+  useGitScope
+} from '@pipeline/utils/CIUtils'
 import { MultiTypeSelectField } from '@common/components/MultiTypeSelect/MultiTypeSelect'
+import { FormMultiTypeConnectorField } from '@connectors/components/ConnectorReferenceField/FormMultiTypeConnectorField'
 import { ArchiveFormatOptions } from '../../../constants/Constants'
 import {
   AllMultiTypeInputTypesForInputSet,
@@ -31,6 +38,7 @@ import {
   SupportedInputTypesForListItems,
   SupportedInputTypesForListTypeFieldInInputSetView
 } from './StepUtils'
+import { renderLabel } from './CIStep'
 import css from '@pipeline/components/PipelineSteps/Steps/Steps.module.scss'
 
 export interface CIStepOptionalConfigProps {
@@ -168,6 +176,12 @@ export const CIStepOptionalConfig: React.FC<CIStepOptionalConfigProps> = props =
   const { getString } = useStrings()
   const { expressions } = useVariablesExpression()
   const prefix = isEmpty(path) ? '' : `${path}.`
+  const { accountId, projectIdentifier, orgIdentifier } = useParams<{
+    projectIdentifier: string
+    orgIdentifier: string
+    accountId: string
+  }>()
+  const gitScope = useGitScope()
 
   const stepCss = stepViewType === StepViewType.DeploymentForm ? css.sm : css.lg
 
@@ -383,6 +397,34 @@ export const CIStepOptionalConfig: React.FC<CIStepOptionalConfigProps> = props =
 
   return (
     <>
+      {Object.prototype.hasOwnProperty.call(enableFields, 'spec.baseImageConnectorRefs') ? (
+        <Container className={cx(css.formGroup, stepCss, css.bottomMargin5)}>
+          <Container className={css.bottomMargin3}>
+            <FormMultiTypeConnectorField
+              label={renderLabel({
+                labelKey: enableFields['spec.baseImageConnectorRefs'].label.labelKey,
+                tooltipId: enableFields['spec.baseImageConnectorRefs'].label?.tooltipId,
+                getString
+              })}
+              type={enableFields['spec.baseImageConnectorRefs'].type}
+              width={getConnectorRefWidth(stepViewType)}
+              name={`${prefix}${'spec.baseImageConnectorRefs'}`}
+              placeholder={getString('select')}
+              accountIdentifier={accountId}
+              projectIdentifier={projectIdentifier}
+              orgIdentifier={orgIdentifier}
+              multiTypeProps={{
+                expressions,
+                allowableTypes: isInputSetView ? AllMultiTypeInputTypesForInputSet : AllMultiTypeInputTypesForStep,
+                disabled: readonly,
+                ...enableFields['spec.baseImageConnectorRefs'].multiTypeProps
+              }}
+              gitScope={gitScope}
+              setRefValue
+            />
+          </Container>
+        </Container>
+      ) : null}
       {/* Tag is not an optional configuration but due to some weird error, it's being placed here for time being till real reason is figured out.*/}
       {Object.prototype.hasOwnProperty.call(enableFields, 'spec.tags') ? (
         <Container className={cx(css.formGroup, css.bottomMargin5, css.md)}>

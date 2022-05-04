@@ -99,10 +99,6 @@ export const ECRStepBase = (
               enableFields={{
                 name: {},
                 'spec.imageName': {},
-                'spec.baseImageConnectorRefs': {
-                  label: { labelKey: 'ci.baseConnectorImage', tooltipId: 'baseConnectorImage' },
-                  type: Connectors.AWS
-                },
                 'spec.connectorRef': {
                   label: { labelKey: 'pipelineSteps.awsConnectorLabel' },
                   type: Connectors.AWS
@@ -123,6 +119,10 @@ export const ECRStepBase = (
                       stepViewType={stepViewType}
                       readonly={readonly}
                       enableFields={{
+                        'spec.baseImageConnectorRefs': {
+                          label: { labelKey: 'ci.baseConnectorImage', tooltipId: 'baseConnectorImage' },
+                          type: Connectors.AWS
+                        },
                         'spec.optimize': { shouldHide: buildInfrastructureType === 'VM' },
                         'spec.dockerfile': {},
                         'spec.context': {},

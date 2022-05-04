@@ -33,6 +33,13 @@ export const ArtifactStepCommon: React.FC<ArtifactStepCommonProps> = ({
       stepViewType={stepViewType}
       readonly={readonly}
       enableFields={{
+        ...(artifactConnectorType === Connectors.AWS &&
+          getMultiTypeFromValue(get(template, 'spec.baseImageConnectorRefs')) === MultiTypeInputType.RUNTIME && {
+            'spec.baseImageConnectorRefs': {
+              label: { labelKey: 'ci.baseConnectorImage', tooltipId: 'baseConnectorImage' },
+              type: Connectors.AWS
+            }
+          }),
         ...(shouldRenderRunTimeInputView(template?.spec?.tags) && {
           'spec.tags': {}
         }),
