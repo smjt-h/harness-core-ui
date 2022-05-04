@@ -8,7 +8,7 @@
 import React, { forwardRef } from 'react'
 import * as Yup from 'yup'
 import { isEmpty, map, set } from 'lodash-es'
-import { IconName, MultiTypeInputType, getMultiTypeFromValue } from '@harness/uicore'
+import { IconName, MultiTypeInputType, getMultiTypeFromValue, SelectOption } from '@harness/uicore'
 import { yupToFormErrors, FormikErrors } from 'formik'
 import { StepViewType, StepProps, ValidateInputSetProps } from '@pipeline/components/AbstractSteps/Step'
 import { StepType } from '@pipeline/components/PipelineSteps/PipelineStepInterface'
@@ -16,7 +16,7 @@ import { PipelineStep } from '@pipeline/components/PipelineSteps/PipelineStep'
 import { getDurationValidationSchema } from '@common/components/MultiTypeDuration/MultiTypeDuration'
 import type { CreateStackStepInfo, CreateStackData } from '../CloudFormationInterfaces'
 import { CloudFormationCreateStack } from './CloudFormationCreateStackRef'
-
+import CloudFormationCreateStackInputStep from '../InputSteps/CloudFormationInputStep'
 const CloudFormationCreateStackWithRef = forwardRef(CloudFormationCreateStack)
 
 export class CFCreateStack extends PipelineStep<CreateStackStepInfo> {
@@ -93,7 +93,7 @@ export class CFCreateStack extends PipelineStep<CreateStackStepInfo> {
   }
   /* istanbul ignore next */
   processFormData(data: any): CreateStackStepInfo {
-    const awsConnRef = data.spec.configuration.connectorRef.value
+    const awsConnRef = data.spec.configuration.connectorRef?.value || data.spec.configuration.connectorRef
     let templateFile = data.spec.configuration.templateFile
 
     if (data?.spec?.configuration?.templateFile?.type === 'Remote') {
@@ -139,21 +139,19 @@ export class CFCreateStack extends PipelineStep<CreateStackStepInfo> {
     }
 
     if (!isEmpty(data?.spec?.configuration?.skipOnStackStatuses)) {
-      const statuses = data?.spec?.configuration?.skipOnStackStatuses
-      set(
-        data,
-        'spec.configuration.skipOnStackStatuses',
-        map(statuses, status => status?.value || status)
-      )
+      let statuses = data?.spec?.configuration?.skipOnStackStatuses
+      if (getMultiTypeFromValue(statuses) === MultiTypeInputType.FIXED) {
+        statuses = map(statuses, status => status?.value || status)
+      }
+      set(data, 'spec.configuration.skipOnStackStatuses', statuses)
     }
 
     if (!isEmpty(data?.spec?.configuration?.capabilities)) {
-      const capabilities = data.spec.configuration.capabilities
-      set(
-        data,
-        'spec.configuration.capabilities',
-        map(capabilities, cap => cap?.value || cap)
-      )
+      let capabilities = data.spec.configuration.capabilities
+      if (getMultiTypeFromValue(capabilities) === MultiTypeInputType.FIXED) {
+        capabilities = map(capabilities, cap => cap?.value || cap)
+      }
+      set(data, 'spec.configuration.capabilities', capabilities)
     }
 
     if (isEmpty(data.spec.configuration?.roleArn)) {
@@ -188,6 +186,15 @@ export class CFCreateStack extends PipelineStep<CreateStackStepInfo> {
   }
 
   private getInitialValues(data: CreateStackStepInfo): CreateStackData {
+    let capabilities, skipOnStackStatuses: string | string[] | SelectOption[] | string | undefined
+    capabilities = data?.spec?.configuration?.capabilities
+    if (getMultiTypeFromValue(capabilities) === MultiTypeInputType.FIXED) {
+      capabilities = map(data?.spec?.configuration?.capabilities, item => ({ label: item, value: item }))
+    }
+    skipOnStackStatuses = data?.spec?.configuration?.skipOnStackStatuses
+    if (getMultiTypeFromValue(skipOnStackStatuses) === MultiTypeInputType.FIXED) {
+      skipOnStackStatuses = map(data?.spec?.configuration?.skipOnStackStatuses, item => ({ label: item, value: item }))
+    }
     const formData = {
       ...data,
       spec: {
@@ -196,7 +203,7 @@ export class CFCreateStack extends PipelineStep<CreateStackStepInfo> {
         configuration: {
           ...data?.spec?.configuration,
           connectorRef: data?.spec?.configuration?.connectorRef || '',
-          capabilities: map(data?.spec?.configuration?.capabilities, cap => ({ label: cap, value: cap })) || [],
+          capabilities,
           parameterOverrides: data?.spec?.configuration?.parameterOverrides || [],
           parameters:
             map(data?.spec?.configuration?.parameters, param => {
@@ -216,10 +223,9 @@ export class CFCreateStack extends PipelineStep<CreateStackStepInfo> {
             }) || [],
           region: data?.spec?.configuration?.region || '',
           roleArn: data?.spec?.configuration?.roleArn || '',
-          skipOnStackStatuses:
-            map(data?.spec?.configuration?.skipOnStackStatuses, status => ({ label: status, value: status })) || [],
+          skipOnStackStatuses,
           stackName: data?.spec?.configuration?.stackName || '',
-          tags: data?.spec?.configuration?.tags || '',
+          tags: data?.spec?.configuration?.tags,
           templateFile: data?.spec?.configuration?.templateFile || {
             type: 'Remote',
             spec: {}
@@ -231,24 +237,36 @@ export class CFCreateStack extends PipelineStep<CreateStackStepInfo> {
   }
 
   renderStep(props: StepProps<any, unknown>): JSX.Element {
-    const { initialValues, onUpdate, onChange, allowableTypes, stepViewType, formikRef, isNewStep, readonly } = props
+    const {
+      initialValues,
+      onUpdate,
+      onChange,
+      allowableTypes,
+      stepViewType,
+      formikRef,
+      isNewStep,
+      readonly,
+      inputSetData,
+      path
+    } = props
 
-    // if (stepViewType === StepViewType.InputSet || stepViewType === StepViewType.DeploymentForm) {
-    //   return (
-    //     <TerraformInputStep
-    //       initialValues={initialValues}
-    //       onUpdate={onUpdate}
-    //       allValues={inputSetData?.allValues}
-    //       stepViewType={stepViewType}
-    //       readonly={inputSetData?.readonly}
-    //       inputSetData={inputSetData}
-    //       path={inputSetData?.path}
-    //       allowableTypes={allowableTypes}
-    //     />
-    //   )
-    // } else if (stepViewType === StepViewType.InputVariable) {
-    //   return ()
-    // }
+    if (stepViewType === StepViewType.InputSet || stepViewType === StepViewType.DeploymentForm) {
+      return (
+        <CloudFormationCreateStackInputStep
+          initialValues={initialValues}
+          onUpdate={data => onUpdate?.(this.processFormData(data))}
+          onChange={data => onChange?.(this.processFormData(data))}
+          allowableTypes={allowableTypes}
+          allValues={inputSetData?.allValues}
+          stepViewType={stepViewType}
+          readonly={inputSetData?.readonly}
+          inputSetData={inputSetData}
+          path={path}
+        />
+      )
+    } else if (stepViewType === StepViewType.InputVariable) {
+      return <></>
+    }
 
     return (
       <CloudFormationCreateStackWithRef

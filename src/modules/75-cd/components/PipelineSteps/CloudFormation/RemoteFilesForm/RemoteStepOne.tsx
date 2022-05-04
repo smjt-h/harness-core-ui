@@ -6,7 +6,7 @@
  */
 
 import React, { useEffect, useState } from 'react'
-import {find} from 'lodash-es'
+import { find, isNumber } from 'lodash-es'
 import { Form } from 'formik'
 import { useParams } from 'react-router-dom'
 import {
@@ -23,11 +23,13 @@ import {
   StepProps,
   MultiTypeInputType,
   MultiTypeInput,
-  MultiSelectOption
+  MultiSelectOption,
+  getMultiTypeFromValue
 } from '@harness/uicore'
 import * as Yup from 'yup'
 import { useStrings } from 'framework/strings'
 import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
+import type { ConnectorSelectedValue } from '@connectors/components/ConnectorReferenceField/ConnectorReferenceField'
 import { FormMultiTypeConnectorField } from '@connectors/components/ConnectorReferenceField/FormMultiTypeConnectorField'
 import { useVariablesExpression } from '@pipeline/components/PipelineStudio/PiplineHooks/useVariablesExpression'
 import { AllowedTypes, ConnectorIcons, ConnectorMap, ConnectorLabelMap, ConnectorTypes } from '../CloudFormationHelper'
@@ -43,7 +45,6 @@ interface ConnectorStepOneProps {
   selectedConnector: string
   setSelectedConnector: (type: string) => void
   initialValues: any
-  isParam: boolean
   index?: number
   regions: MultiSelectOption[]
 }
@@ -57,38 +58,37 @@ const ConnectorStepOne: React.FC<StepProps<any> & ConnectorStepOneProps> = ({
   selectedConnector,
   setSelectedConnector,
   initialValues,
-  isParam,
   index,
   regions
 }) => {
   const { getString } = useStrings()
   const { expressions } = useVariablesExpression()
   const { accountId, projectIdentifier, orgIdentifier } = useParams<ProjectPathProps>()
-  const title = isParam ? 'cd.cloudFormation.paramFileConnector' : 'cd.cloudFormation.templateFileConnector'
+  const title = index ? 'cd.cloudFormation.paramFileConnector' : 'cd.cloudFormation.templateFileConnector'
   const [allowedTypes, setAllowedTypes] = useState<string[]>(AllowedTypes)
   const newConnectorLabel = `${getString('newLabel')} ${
     !!selectedConnector && getString(ConnectorLabelMap[selectedConnector as ConnectorTypes])
   } ${getString('connector')}`
 
   useEffect(() => {
-    const connectorType = isParam
+    const connectorType = isNumber(index)
       ? initialValues.spec.configuration.parameters[index!]?.store?.type
       : initialValues?.spec?.configuration?.templateFile?.spec?.store?.type
-    setSelectedConnector(connectorType === "S3Url" ? 'S3' : connectorType)
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    setSelectedConnector(connectorType === 'S3Url' ? 'S3' : connectorType)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialValues])
 
   useEffect(() => {
-    if (!isParam) {
+    if (!isNumber(index)) {
       setAllowedTypes(AllowedTypes.filter(item => item !== 'S3'))
     }
-  }, [isParam])
+  }, [index])
 
   useEffect(() => {
     if (showNewConnector) {
       nextStep?.()
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [showNewConnector])
 
   const isS3 = selectedConnector && selectedConnector === 'S3'
@@ -114,14 +114,14 @@ const ConnectorStepOne: React.FC<StepProps<any> & ConnectorStepOneProps> = ({
     spec: Yup.object().shape({
       configuration: Yup.object().shape({
         templateFile: Yup.object().shape({
-          spec:Yup.object().shape({
+          spec: Yup.object().shape({
             ...connectorSchema
           })
         })
       })
     })
   }
-  const validationSchema = isParam ? paramSchema : templateSchema
+  const validationSchema = isNumber(index) ? paramSchema : templateSchema
   return (
     <Layout.Vertical padding="small" className={css.awsForm}>
       <Heading level={2} style={{ color: Color.BLACK, fontSize: 24, fontWeight: 'bold' }} margin={{ bottom: 'xlarge' }}>
@@ -135,22 +135,22 @@ const ConnectorStepOne: React.FC<StepProps<any> & ConnectorStepOneProps> = ({
           nextStep?.(data)
         }}
         initialValues={
-          isParam
+          isNumber(index)
             ? { spec: { configuration: { parameters: { ...initialValues.spec.configuration.parameters[index!] } } } }
             : { ...initialValues }
         }
         validationSchema={validationSchema}
       >
         {({ values, setFieldValue }) => {
-          let disabled = !values?.spec?.configuration?.templateFile?.spec?.store?.spec?.connectorRef
+          let connectorRef = values?.spec?.configuration?.templateFile?.spec?.store?.spec?.connectorRef
           let name = 'spec.configuration.templateFile.spec.store.spec.connectorRef'
-          if (isParam) {
-            disabled = !(
-              values?.spec?.configuration?.parameters?.store?.spec?.connectorRef &&
-              values?.spec?.configuration?.parameters?.store?.spec?.region
-            )
+          let isFixedValue = getMultiTypeFromValue(connectorRef) === MultiTypeInputType.FIXED
+          if (isNumber(index)) {
+            connectorRef = values?.spec?.configuration?.parameters?.store?.spec?.connectorRef
+            isFixedValue = getMultiTypeFromValue(connectorRef) === MultiTypeInputType.FIXED
             name = `spec.configuration.parameters.store.spec.connectorRef`
           }
+          const disabled = !selectedConnector || (isFixedValue && !(connectorRef as ConnectorSelectedValue)?.connector)
           return (
             <>
               <Layout.Horizontal className={css.horizontalFlex} margin={{ top: 'xlarge', bottom: 'xlarge' }}>
@@ -160,7 +160,12 @@ const ConnectorStepOne: React.FC<StepProps<any> & ConnectorStepOneProps> = ({
                       className={css.connectorIcon}
                       selected={item === selectedConnector}
                       data-testid={`connector-${item}`}
-                      onClick={() => setSelectedConnector(item as ConnectorTypes)}
+                      onClick={() => {
+                        setSelectedConnector(item as ConnectorTypes)
+                        if (isFixedValue) {
+                          setFieldValue(name, '')
+                        }
+                      }}
                     >
                       <Icon name={ConnectorIcons[item]} size={26} />
                     </Card>

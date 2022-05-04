@@ -5,39 +5,123 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import React from 'react'
+import React, { useState, useEffect } from 'react'
+import { useParams } from 'react-router-dom'
+import { isEmpty, map } from 'lodash-es'
 import cx from 'classnames'
-import { isEmpty } from 'lodash-es'
-
 import {
   getMultiTypeFromValue,
   MultiTypeInputType,
   FormInput,
-  FormikForm
-  // Text,
-  // Container,
-  // Color,
-  // Label
+  FormikForm,
+  Text,
+  Color,
+  MultiSelectOption,
+  SelectOption
 } from '@harness/uicore'
 import { useStrings } from 'framework/strings'
+import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
 import { FormMultiTypeDurationField } from '@common/components/MultiTypeDuration/MultiTypeDuration'
+import { FormMultiTypeConnectorField } from '@connectors/components/ConnectorReferenceField/FormMultiTypeConnectorField'
+import { Connectors } from '@connectors/constants'
 import { useVariablesExpression } from '@pipeline/components/PipelineStudio/PiplineHooks/useVariablesExpression'
+import { useListAwsRegions } from 'services/portal'
+import { useCFCapabilitiesForAws, useCFStatesForAws, useGetIamRolesForAws } from 'services/cd-ng'
 import type { CreateStackData, CreateStackProps } from '../CloudFormationInterfaces'
-
 import stepCss from '@pipeline/components/PipelineSteps/Steps/Steps.module.scss'
 
-export default function TerraformInputStep<T extends CreateStackData = CreateStackData>(
+const isRuntime = (value: string | undefined | SelectOption[]): boolean =>
+  getMultiTypeFromValue(value) === MultiTypeInputType.RUNTIME
+
+export default function CloudFormationCreateStackInputStep<T extends CreateStackData = CreateStackData>(
   props: CreateStackProps<T>
 ): React.ReactElement {
   const { inputSetData, readonly, path, allowableTypes } = props
+  console.log('inputSetData: ', inputSetData)
   const { getString } = useStrings()
   const { expressions } = useVariablesExpression()
+  const { accountId, projectIdentifier, orgIdentifier } = useParams<ProjectPathProps>()
+  const [regions, setRegions] = useState<MultiSelectOption[]>([])
+  const [awsRoles, setAwsRoles] = useState<MultiSelectOption[]>([])
+  const [awsStatuses, setAwsStates] = useState<MultiSelectOption[]>([])
+  const [capabilities, setCapabilities] = useState<MultiSelectOption[]>([])
+  const awsRef = inputSetData?.template?.spec?.configuration?.connectorRef
   // const onUpdateRef = (arg: any): void => {
   //   onUpdate?.(arg)
   // }
   // const onChangeRef = (arg: any): void => {
   //   onChange?.(arg)
   // }
+
+  const capabilitiesRequired = isRuntime(inputSetData?.template?.spec?.configuration?.capabilities as string)
+  const { data: capabilitiesData, refetch: getAwsCapabilities } = useCFCapabilitiesForAws({})
+  useEffect(() => {
+    if (capabilitiesData) {
+      const capabilitiesValues = map(capabilitiesData?.data, cap => ({ label: cap, value: cap }))
+      setCapabilities(capabilitiesValues as MultiSelectOption[])
+    }
+
+    if (!capabilitiesData && capabilitiesRequired) {
+      getAwsCapabilities()
+    }
+  }, [capabilitiesData, capabilitiesRequired])
+
+  const awsStatusRequired = isRuntime(inputSetData?.template?.spec?.configuration?.skipOnStackStatuses as string)
+  const { data: awsStatusData, refetch: getAwsStatuses } = useCFStatesForAws({})
+  useEffect(() => {
+    if (awsStatusData) {
+      const awsStatesValues = map(awsStatusData?.data, cap => ({ label: cap, value: cap }))
+      setAwsStates(awsStatesValues as MultiSelectOption[])
+    }
+
+    if (!awsStatusData && awsStatusRequired) {
+      getAwsStatuses()
+    }
+  }, [awsStatusData, awsStatusRequired])
+
+  const {
+    data: regionData,
+    loading: regionsLoading,
+    refetch: getRegions
+  } = useListAwsRegions({
+    queryParams: {
+      accountId
+    }
+  })
+  const regionRequired = isRuntime(inputSetData?.template?.spec?.configuration?.region)
+  useEffect(() => {
+    if (regionData) {
+      const regionValues = map(regionData?.resource, reg => ({ label: reg.name, value: reg.value }))
+      setRegions(regionValues as MultiSelectOption[])
+    }
+
+    if (!regionData && regionRequired) {
+      getRegions()
+    }
+  }, [regionData, regionRequired])
+
+  const { data: roleData, refetch: getRoles } = useGetIamRolesForAws({
+    lazy: true,
+    debounce: 500,
+    queryParams: {
+      accountIdentifier: accountId,
+      orgIdentifier: orgIdentifier,
+      projectIdentifier: projectIdentifier,
+      connectorRef: awsRef as string
+    }
+  })
+  
+  const roleRequired = isRuntime(inputSetData?.template?.spec?.configuration?.roleArn)
+  useEffect(() => {
+    if (roleData) {
+      const roleValues = map(roleData?.data, cap => ({ label: cap, value: cap }))
+      setAwsRoles(roleValues as MultiSelectOption[])
+    }
+    if (!roleData && roleRequired && awsRef) {
+      getRoles()
+    }
+  }, [roleData, roleRequired, awsRef])
+
   return (
     <FormikForm>
       {getMultiTypeFromValue(inputSetData?.template?.timeout) === MultiTypeInputType.RUNTIME && (
@@ -55,7 +139,8 @@ export default function TerraformInputStep<T extends CreateStackData = CreateSta
           />
         </div>
       )}
-      {getMultiTypeFromValue(inputSetData?.template?.spec?.provisionerIdentifier) === MultiTypeInputType.RUNTIME && (
+      {getMultiTypeFromValue((inputSetData?.template as CreateStackData)?.spec?.provisionerIdentifier) ===
+        MultiTypeInputType.RUNTIME && (
         <div className={cx(stepCss.formGroup, stepCss.md)}>
           <FormInput.MultiTextInput
             name={`${path}.spec.provisionerIdentifier`}
@@ -68,20 +153,48 @@ export default function TerraformInputStep<T extends CreateStackData = CreateSta
           />
         </div>
       )}
-      {getMultiTypeFromValue(inputSetData?.template?.spec?.configuration?.awsRegion) === MultiTypeInputType.RUNTIME && (
+      {getMultiTypeFromValue((inputSetData?.template as CreateStackData)?.spec?.configuration?.connectorRef) ===
+        MultiTypeInputType.RUNTIME && (
         <div className={cx(stepCss.formGroup, stepCss.md)}>
-          <FormInput.MultiTextInput
-            name={`${path}.spec.configuration.awsRegion`}
-            label={getString('regionLabel')}
+          <FormMultiTypeConnectorField
+            label={<Text color={Color.GREY_900}>{getString('pipelineSteps.awsConnectorLabel')}</Text>}
+            type={Connectors.AWS}
+            name={`${path}.spec.configuration.connectorRef`}
+            placeholder={getString('select')}
+            accountIdentifier={accountId}
+            projectIdentifier={projectIdentifier}
+            orgIdentifier={orgIdentifier}
+            style={{ marginBottom: 10 }}
+            multiTypeProps={{ expressions, allowableTypes }}
             disabled={readonly}
-            multiTextInputProps={{
-              expressions,
-              allowableTypes
-            }}
+            width={300}
+            setRefValue
           />
         </div>
       )}
-      {getMultiTypeFromValue(inputSetData?.template?.spec?.configuration?.stackName) === MultiTypeInputType.RUNTIME && (
+      {getMultiTypeFromValue((inputSetData?.template as CreateStackData)?.spec?.configuration?.region) ===
+        MultiTypeInputType.RUNTIME && (
+        <div className={cx(stepCss.formGroup, stepCss.sm)}>
+          <FormInput.MultiTypeInput
+            label={getString('regionLabel')}
+            name={`${path}.spec.configuration.region`}
+            placeholder={getString(regionsLoading ? 'common.loading' : 'pipeline.regionPlaceholder')}
+            disabled={readonly}
+            useValue
+            multiTypeInputProps={{
+              selectProps: {
+                allowCreatingNewItems: true,
+                items: regions ? regions : []
+              },
+              expressions,
+              allowableTypes
+            }}
+            selectItems={regions ? regions : []}
+          />
+        </div>
+      )}
+      {getMultiTypeFromValue((inputSetData?.template as CreateStackData)?.spec?.configuration?.stackName) ===
+        MultiTypeInputType.RUNTIME && (
         <div className={cx(stepCss.formGroup, stepCss.md)}>
           <FormInput.MultiTextInput
             name={`${path}.spec.configuration.stackName`}
@@ -94,54 +207,72 @@ export default function TerraformInputStep<T extends CreateStackData = CreateSta
           />
         </div>
       )}
-      {/*
-      <ConfigInputs {...props} onUpdate={onUpdateRef} onChange={onChangeRef} />
-      {inputSetData?.template?.spec?.configuration?.template?.type?.length && (
-        <Label style={{ color: Color.GREY_900, paddingBottom: 'var(--spacing-medium)' }}>
-          {getString('cd.cloudFormation.cfTemplateFile')}
-        </Label>
-      )}
-      {inputSetData?.template?.spec?.configuration?.template?.type === StoreTypes.Inline ? (
-        <Fragment key={`${path}.spec.configuration.spec.varFiles[${index}]`}>
-          <Container flex width={120} padding={{ bottom: 'small' }}>
-            <Text font={{ weight: 'bold' }}>{getString('cd.varFile')}:</Text>
-            {varFile?.varFile?.identifier}
-          </Container>
-
-          {getMultiTypeFromValue(varFile?.varFile?.spec?.content) === MultiTypeInputType.RUNTIME && (
-            <div className={cx(stepCss.formGroup, stepCss.md)}>
-              <FormInput.MultiTextInput
-                name={`${path}.spec.configuration.spec.varFiles[${index}].varFile.spec.content`}
-                label={getString('pipelineSteps.content')}
-                multiTextInputProps={{
-                  expressions,
-                  allowableTypes
-                }}
-              />
-            </div>
-          )}
-        </Fragment>
-      ) : inputSetData?.template?.spec?.configuration?.template?.type === StoreTypes.Remote ? (
-        <TFRemoteSection remoteVar={varFile} index={index} {...props} onUpdate={onUpdateRef} onChange={onChangeRef} />
-      ) : (
-        <></>
-      )}
-      {getMultiTypeFromValue(inputSetData?.template?.spec?.configuration?.awsCapabilities) ===
+      {getMultiTypeFromValue((inputSetData?.template as CreateStackData)?.spec?.configuration?.roleArn) ===
         MultiTypeInputType.RUNTIME && (
-        <div className={cx(stepCss.formGroup, stepCss.md)}>
-          <FormInput.TextArea
-            name={`${path}.spec.configuration.awsCapabilities`}
-            label={getString('cd.cloudFormation.specifyCapabilities')}
+        <div className={cx(stepCss.formGroup, stepCss.sm)}>
+          <FormInput.MultiTypeInput
+            label={getString('connectors.awsKms.roleArnLabel')}
+            name={`${path}.spec.configuration.roleARN`}
+            disabled={readonly}
+            useValue
+            multiTypeInputProps={{
+              selectProps: {
+                allowCreatingNewItems: false,
+                items: awsRoles ? awsRoles : []
+              },
+              expressions,
+              allowableTypes
+            }}
+            selectItems={awsRoles ? awsRoles : []}
           />
         </div>
       )}
-      {getMultiTypeFromValue(inputSetData?.template?.spec?.configuration?.tags?.spec?.content) ===
+      {getMultiTypeFromValue((inputSetData?.template as CreateStackData)?.spec?.configuration?.capabilities) ===
         MultiTypeInputType.RUNTIME && (
         <div className={cx(stepCss.formGroup, stepCss.md)}>
-          <FormInput.TextArea name={`${path}.spec.configuration.tags.spec.content`} label={getString('tagsLabel')} />
+          <FormInput.MultiSelectTypeInput
+            name={`${path}.spec.configuration.capabilities`}
+            label={getString('cd.cloudFormation.specifyCapabilities')}
+            disabled={readonly}
+            style={{ maxWidth: 500 }}
+            selectItems={capabilities ? capabilities : []}
+            multiSelectTypeInputProps={{
+              allowableTypes,
+              expressions
+            }}
+          />
         </div>
       )}
-        */}
+      {getMultiTypeFromValue((inputSetData?.template as CreateStackData)?.spec?.configuration?.tags?.spec?.content) ===
+        MultiTypeInputType.RUNTIME && (
+        <div className={cx(stepCss.formGroup, stepCss.md)}>
+          <FormInput.MultiTextInput
+            name={`${path}.spec.configuration.tags.spec.content`}
+            label={getString('tagsLabel')}
+            disabled={readonly}
+            multiTextInputProps={{
+              expressions,
+              allowableTypes
+            }}
+          />
+        </div>
+      )}
+      {getMultiTypeFromValue((inputSetData?.template as CreateStackData)?.spec?.configuration?.skipOnStackStatuses) ===
+        MultiTypeInputType.RUNTIME && (
+        <div className={cx(stepCss.formGroup, stepCss.md)}>
+          <FormInput.MultiSelectTypeInput
+            name={`${path}.spec.configuration.skipOnStackStatuses`}
+            label={getString('cd.cloudFormation.continueStatus')}
+            disabled={readonly}
+            style={{ maxWidth: 500 }}
+            selectItems={awsStatuses ? awsStatuses : []}
+            multiSelectTypeInputProps={{
+              allowableTypes,
+              expressions
+            }}
+          />
+        </div>
+      )}
     </FormikForm>
   )
 }

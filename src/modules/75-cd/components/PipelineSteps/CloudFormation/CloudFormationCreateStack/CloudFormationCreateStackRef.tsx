@@ -43,7 +43,7 @@ import { useListAwsRegions } from 'services/portal'
 import { useCFCapabilitiesForAws, useCFStatesForAws, useGetIamRolesForAws } from 'services/cd-ng'
 import { Connectors } from '@connectors/constants'
 import { TFMonaco } from '../../Common/Terraform/Editview/TFMonacoEditor'
-import CFRemoteWizard from '../ConnectorStep/CFRemoteWizard'
+import CFRemoteWizard from '../RemoteFilesForm/CFRemoteWizard'
 import { InlineParameterFile } from './InlineParameterFile'
 import type { Parameter, CloudFormationCreateStackProps } from '../CloudFormationInterfaces'
 import { onDragStart, onDragEnd, onDragLeave, onDragOver, onDrop } from '../DragHelper'
@@ -73,8 +73,7 @@ export const CloudFormationCreateStack = (
   const { expressions } = useVariablesExpression()
   const [showModal, setShowModal] = useState(false)
   const [showInlineParams, setInlineParams] = useState(false)
-  const [showParam, setShowParam] = useState(false)
-  const [paramIndex, setParamIndex] = useState(0)
+  const [paramIndex, setParamIndex] = useState<number | undefined>()
   const [regions, setRegions] = useState<MultiSelectOption[]>([])
   const [capabilities, setCapabilities] = useState<MultiSelectOption[]>([])
   const [awsStates, setAwsStates] = useState<MultiSelectOption[]>([])
@@ -199,7 +198,9 @@ export const CloudFormationCreateStack = (
     >
       {formik => {
         setFormikRef(formikRef, formik)
-        const { values, setFieldValue } = formik
+        const { values, setFieldValue, errors } = formik
+        console.log('errors: ', errors)
+        console.log('values: ', values)
         const awsConnector = values?.spec?.configuration?.connectorRef
         if (awsConnector?.value !== awsRef) {
           setAwsRef(awsConnector?.value)
@@ -276,20 +277,22 @@ export const CloudFormationCreateStack = (
               />
             </div>
             <Layout.Vertical className={css.addMarginBottom}>
-              <Label style={{ color: Color.GREY_900 }} className={css.configLabel}>
-                {getString('regionLabel')}
-              </Label>
               <Layout.Horizontal className={stepCss.formGroup}>
-                <MultiTypeInput
-                  name="spec.configuration.region"
-                  selectProps={{
-                    addClearBtn: false,
-                    items: regions
-                  }}
+                <FormInput.MultiTypeInput
+                  label={getString('regionLabel')}
+                  name='spec.configuration.region'
                   disabled={readonly}
-                  onChange={({ value }: any) => setFieldValue('spec.configuration.region', value)}
-                  width={300}
-                  value={find(regions, ['value', awsRegion])}
+                  useValue
+                  multiTypeInputProps={{
+                    selectProps: {
+                      allowCreatingNewItems: false,
+                      items: regions ? regions : []
+                    },
+                    expressions,
+                    allowableTypes,
+                    width:300
+                  }}
+                  selectItems={regions ? regions : []}
                 />
               </Layout.Horizontal>
             </Layout.Vertical>
@@ -337,8 +340,8 @@ export const CloudFormationCreateStack = (
                       }
                     }}
                   >
-                    <option value={TemplateTypes.Remote}>{getString("remote")}</option>
-                    <option value={TemplateTypes.Inline}>{getString("inline")}</option>
+                    <option value={TemplateTypes.Remote}>{getString('remote')}</option>
+                    <option value={TemplateTypes.Inline}>{getString('inline')}</option>
                     <option value={TemplateTypes.S3URL}>{getString('cd.cloudFormation.awsURL')}</option>
                   </select>
                 </Layout.Vertical>
@@ -347,7 +350,6 @@ export const CloudFormationCreateStack = (
                 <div
                   className={cx(css.configFile, css.configField, css.addMarginBottom)}
                   onClick={() => {
-                    setShowParam(false)
                     setShowModal(true)
                   }}
                 >
@@ -489,7 +491,6 @@ export const CloudFormationCreateStack = (
                                         iconProps={{ size: 16 }}
                                         onClick={() => {
                                           setParamIndex(index)
-                                          setShowParam(true)
                                           setShowModal(true)
                                         }}
                                         data-name="config-edit"
@@ -516,7 +517,6 @@ export const CloudFormationCreateStack = (
                           data-name="config-edit"
                           onClick={() => {
                             setParamIndex(remoteParameterFiles.length)
-                            setShowParam(true)
                             setShowModal(true)
                           }}
                         >
@@ -552,8 +552,9 @@ export const CloudFormationCreateStack = (
                               data-name="config-edit"
                               onClick={() => setInlineParams(true)}
                             >
-                              {parameterOverrides?.length > 0 ? `${JSON.stringify(parameterOverrides)}` :
-                                getString('cd.cloudFormation.specifyInlineParameterFiles')}
+                              {parameterOverrides?.length > 0
+                                ? `${JSON.stringify(parameterOverrides)}`
+                                : getString('cd.cloudFormation.specifyInlineParameterFiles')}
                             </a>
                           </div>
                         </div>
@@ -671,10 +672,9 @@ export const CloudFormationCreateStack = (
               allowableTypes={allowableTypes}
               showModal={showModal}
               onClose={() => {
-                setShowParam(false)
+                setParamIndex(undefined)
                 setShowModal(false)
               }}
-              isParam={showParam}
               initialValues={values}
               setFieldValue={setFieldValue}
               index={paramIndex}
