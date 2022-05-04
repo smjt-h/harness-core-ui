@@ -5,11 +5,13 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import { isEmpty } from 'lodash-es'
+import { isEmpty, isEqual, startsWith } from 'lodash-es'
+import { RUNTIME_INPUT_VALUE } from '@wings-software/uicore'
+import get from 'lodash-es/get'
 import type { UseStringsReturn } from 'framework/strings'
 import { Scope } from '@common/interfaces/SecretsInterface'
 import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
-import type { TemplateSummaryResponse } from 'services/template-ng'
+import type { NGTemplateInfoConfig, TemplateSummaryResponse } from 'services/template-ng'
 
 export enum TemplateType {
   Step = 'Step',
@@ -100,4 +102,41 @@ export const getVersionLabelText = (template: TemplateSummaryResponse, getString
     : template.stableTemplate
     ? getString('templatesLibrary.stableVersion', { entity: template.versionLabel })
     : template.versionLabel
+}
+
+export const getTemplateInputsCount = (temp: NGTemplateInfoConfig): number =>
+  (JSON.stringify(temp)?.match(/<\+input>/g) || []).length
+
+export const hasSameRunTimeInputs = (a: any, b: any): boolean => {
+  if (isEqual(a, b)) {
+    return true
+  } else if (startsWith(a, RUNTIME_INPUT_VALUE) || startsWith(b, RUNTIME_INPUT_VALUE)) {
+    return false
+  } else if (typeof a !== 'object' || typeof b !== 'object') {
+    return getTemplateInputsCount(a) === 0 && getTemplateInputsCount(b) === 0
+  } else {
+    if (Array.isArray(a) && Array.isArray(b)) {
+      return a
+        .filter(item => {
+          for (const val in Object.values(item)) {
+            if (startsWith(val, RUNTIME_INPUT_VALUE)) {
+              return true
+            }
+          }
+          return false
+        })
+        .every(item1 => {
+          for (const item2 in b) {
+            if (Object.entries(item1).every(([key, value]) => get(item2, key) === value)) {
+              return true
+            }
+          }
+          return false
+        })
+    } else if (!Array.isArray(a) && !Array.isArray(b)) {
+      return Object.keys(a).every(k => hasSameRunTimeInputs(a[k], b[k]))
+    } else {
+      return getTemplateInputsCount(a) === 0 && getTemplateInputsCount(b) === 0
+    }
+  }
 }

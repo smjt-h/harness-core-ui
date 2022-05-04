@@ -39,8 +39,7 @@ import type {
   PipelineType,
   GitQueryParams,
   PipelineStudioQueryParams,
-  RunPipelineQueryParams,
-  UseTemplateQueryParams
+  RunPipelineQueryParams
 } from '@common/interfaces/RouteInterfaces'
 import RbacButton from '@rbac/components/Button/Button'
 import { ResourceType } from '@rbac/interfaces/ResourceType'
@@ -65,7 +64,7 @@ import NoEntityFound from '@pipeline/pages/utils/NoEntityFound/NoEntityFound'
 import { getFeaturePropsForRunPipelineButton } from '@pipeline/utils/runPipelineUtils'
 import { RunPipelineForm } from '@pipeline/components/RunPipelineModal/RunPipelineForm'
 import { EvaluationModal } from '@governance/EvaluationModal'
-import { createTemplate, getScopeBasedTemplateRef } from '@pipeline/utils/templateUtils'
+import { createTemplate } from '@pipeline/utils/templateUtils'
 import { getStepFromStage } from '@pipeline/components/PipelineStudio/StepUtil'
 import { updateStepWithinStage } from '@pipeline/components/PipelineStudio/RightDrawer/RightDrawer'
 import type { TemplateSummaryResponse } from 'services/template-ng'
@@ -131,8 +130,7 @@ export function PipelineCanvas({
     state: {
       selectionState: { selectedStageId },
       templateTypes,
-      pipelineView: { drawerData },
-      templateView: { isTemplateDrawerOpened }
+      pipelineView: { drawerData }
     },
     updatePipeline,
     updateGitDetails,
@@ -158,9 +156,8 @@ export function PipelineCanvas({
     inputSetLabel,
     inputSetRepoIdentifier,
     inputSetBranch,
-    stagesExecuted,
-    useTemplate
-  } = useQueryParams<GitQueryParams & RunPipelineQueryParams & UseTemplateQueryParams>()
+    stagesExecuted
+  } = useQueryParams<GitQueryParams & RunPipelineQueryParams>()
   const { updateQueryParams, replaceQueryParams } = useUpdateQueryParams<PipelineStudioQueryParams>()
   const {
     pipeline,
@@ -229,6 +226,7 @@ export function PipelineCanvas({
   const [disableVisualView, setDisableVisualView] = React.useState(entityValidityDetails?.valid === false)
   const { OPA_PIPELINE_GOVERNANCE } = useFeatureFlags()
   const [governanceMetadata, setGovernanceMetadata] = useState<GovernanceMetadata>()
+  const [useTemplate, setUseTemplate] = React.useState<boolean>(false)
   const shouldShowGovernanceEvaluation =
     OPA_PIPELINE_GOVERNANCE && (governanceMetadata?.status === 'error' || governanceMetadata?.status === 'warning')
 
@@ -356,9 +354,6 @@ export function PipelineCanvas({
     }
   }
 
-  const [usingTemplate, setUsingTemplate] = React.useState<TemplateSummaryResponse>()
-  const [copyingTemplate, setCopyingTemplate] = React.useState<TemplateSummaryResponse>()
-
   const [showModal, hideModal] = useModalHook(() => {
     if (getOtherModal) {
       pipeline.identifier = ''
@@ -395,31 +390,12 @@ export function PipelineCanvas({
               })}
               closeModal={onCloseCreate}
               gitDetails={gitDetails as IGitContextFormProps}
-              usingTemplate={usingTemplate}
-              copyingTemplate={copyingTemplate}
             />
           </Dialog>
         </PipelineVariablesContextProvider>
       )
     }
-  }, [pipeline?.identifier, pipeline, usingTemplate, copyingTemplate])
-
-  const addTemplate = async () => {
-    if (!isTemplateDrawerOpened && !usingTemplate && !copyingTemplate) {
-      try {
-        const { template: newTemplate, isCopied } = await getTemplate({ templateType: 'Pipeline' })
-        if (isCopied) {
-          setCopyingTemplate(newTemplate)
-        } else {
-          setUsingTemplate(newTemplate)
-        }
-        showModal()
-      } catch (_) {
-        // user cancelled template selection
-        onCloseCreate()
-      }
-    }
-  }
+  }, [pipeline?.identifier, pipeline])
 
   React.useEffect(() => {
     // for new pipeline always use UI as default view
@@ -444,11 +420,7 @@ export function PipelineCanvas({
   React.useEffect(() => {
     if (isInitialized) {
       if (pipeline?.identifier === DefaultNewPipelineId) {
-        if (useTemplate) {
-          addTemplate()
-        } else {
-          showModal()
-        }
+        showModal()
       }
       if (isBEPipelineUpdated && !discardBEUpdateDialog) {
         openConfirmBEUpdateError()
@@ -477,9 +449,7 @@ export function PipelineCanvas({
 
   const onCloseCreate = React.useCallback(() => {
     if (pipelineIdentifier === DefaultNewPipelineId || getOtherModal) {
-      if (getOtherModal) {
-        deletePipelineCache(gitDetails)
-      }
+      deletePipelineCache(gitDetails)
       history.push(toPipelineList({ orgIdentifier, projectIdentifier, accountId, module }))
     }
     hideModal()
@@ -495,28 +465,16 @@ export function PipelineCanvas({
     projectIdentifier,
     toPipelineList,
     getOtherModal,
+    gitDetails,
     deletePipelineCache
   ])
 
   const onSubmit = React.useCallback(
-    (
-      values: PipelineInfoConfig,
-      updatedGitDetails?: EntityGitDetails,
-      using?: TemplateSummaryResponse,
-      copying?: TemplateSummaryResponse
-    ) => {
+    (values: PipelineInfoConfig, updatedGitDetails?: EntityGitDetails, shouldUseTemplate = false) => {
       pipeline.name = values.name
       pipeline.description = values.description
       pipeline.identifier = values.identifier
       pipeline.tags = values.tags ?? {}
-      if (using) {
-        set(pipeline, 'template.templateRef', getScopeBasedTemplateRef(using))
-        if (using.versionLabel) {
-          set(pipeline, 'template.versionLabel', using.versionLabel)
-        }
-      } else if (copying) {
-        merge(pipeline, parse(copying?.yaml || '')?.template.spec)
-      }
       delete (pipeline as PipelineWithGitContextFormProps).repo
       delete (pipeline as PipelineWithGitContextFormProps).branch
       updatePipeline(pipeline)
@@ -533,13 +491,40 @@ export function PipelineCanvas({
           }
         })
       }
+      setUseTemplate(shouldUseTemplate)
       hideModal()
-      setUsingTemplate(undefined)
-      setCopyingTemplate(undefined)
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [hideModal, pipeline, updatePipeline]
   )
+
+  const getPipelineTemplate = async () => {
+    const { template: newTemplate, isCopied } = await getTemplate({ templateType: 'Pipeline' })
+    const processNode = isCopied
+      ? produce(defaultTo(parse(newTemplate?.yaml || '')?.template.spec, {}) as PipelineInfoConfig, draft => {
+          draft.name = defaultTo(pipeline?.name, '')
+          draft.identifier = defaultTo(pipeline?.identifier, '')
+        })
+      : createTemplate(pipeline, newTemplate)
+    processNode.description = pipeline.description
+    processNode.tags = pipeline.tags
+    processNode.projectIdentifier = pipeline.projectIdentifier
+    processNode.orgIdentifier = pipeline.orgIdentifier
+    await updatePipeline(processNode)
+  }
+
+  React.useEffect(() => {
+    if (
+      pipeline.identifier !== DefaultNewPipelineId &&
+      useTemplate &&
+      !pipeline.template &&
+      (!isGitSyncEnabled || !isEmpty(gitDetails))
+    ) {
+      getPipelineTemplate().catch(_error => {
+        onCloseCreate()
+      })
+    }
+  }, [pipeline.identifier, gitDetails, useTemplate])
 
   function handleViewChange(newView: SelectedView): boolean {
     if (newView === view) return false
@@ -775,7 +760,8 @@ export function PipelineCanvas({
               !matchDefault?.isExact &&
               localUpdated &&
               !isReadonly &&
-              !(pipelineIdentifier === DefaultNewPipelineId && isEmpty(pipeline?.name))
+              !(pipelineIdentifier === DefaultNewPipelineId && isEmpty(pipeline?.name)) &&
+              !(useTemplate && isEmpty(pipeline?.template))
             )
           }}
           textProps={{
