@@ -9,7 +9,7 @@ import React, { useEffect } from 'react'
 import * as yup from 'yup'
 import { Accordion, Card, Formik, FormikForm, Switch, Text, MultiTypeInputType } from '@wings-software/uicore'
 import { v4 as nameSpace, v5 as uuid } from 'uuid'
-import { cloneDeep, debounce, defaultTo, isEqual, uniqBy } from 'lodash-es'
+import { cloneDeep, debounce, defaultTo, isEqual, unset, uniqBy } from 'lodash-es'
 import cx from 'classnames'
 import { produce } from 'immer'
 import type { FormikProps } from 'formik'
@@ -53,10 +53,12 @@ export default function BuildStageSpecifications({ children }: React.PropsWithCh
 
   const {
     state: {
+      pipeline,
       selectionState: { selectedStageId }
     },
     getStageFromPipeline,
     updateStage,
+    updatePipeline,
     stepsFactory,
     contextType,
     allowableTypes,
@@ -241,7 +243,16 @@ export default function BuildStageSpecifications({ children }: React.PropsWithCh
                       <Switch
                         checked={formValues.cloneCodebase}
                         label={getString('cloneCodebaseLabel')}
-                        onChange={e => setFieldValue('cloneCodebase', e.currentTarget.checked)}
+                        onChange={e => {
+                          const flag = e.currentTarget.checked
+                          if (!flag) {
+                            const clonedPipeline = { ...pipeline }
+                            if (unset(clonedPipeline, 'properties.ci')) {
+                              updatePipeline(clonedPipeline)
+                            }
+                          }
+                          setFieldValue('cloneCodebase', flag)
+                        }}
                         disabled={isReadonly}
                         tooltipProps={{ tooltipId: 'cloneCodebase' }}
                       />
