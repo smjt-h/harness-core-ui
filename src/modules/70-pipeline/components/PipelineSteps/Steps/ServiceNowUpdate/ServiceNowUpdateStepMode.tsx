@@ -74,6 +74,7 @@ import css from './ServiceNowUpdate.module.scss'
 import stepCss from '@pipeline/components/PipelineSteps/Steps/Steps.module.scss'
 
 const fetchingTicketTypesPlaceholder: StringKeys = 'pipeline.serviceNowApprovalStep.fetchingTicketTypesPlaceholder'
+
 function FormContent({
   formik,
   isNewStep,
@@ -300,6 +301,9 @@ function FormContent({
             enableConfigureOptions: false,
             allowableTypes
           }}
+          tooltipProps={{
+            dataTooltipId: 'serviceNowCreateTimeout'
+          }}
         />
         {getMultiTypeFromValue(formik.values.timeout) === MultiTypeInputType.RUNTIME && (
           <ConfigureOptions
@@ -346,6 +350,9 @@ function FormContent({
           }}
           disabled={isApprovalStepFieldDisabled(readonly)}
           gitScope={{ repo: defaultTo(repoIdentifier, ''), branch, getDefaultFromOtherRepo: true }}
+          tooltipProps={{
+            dataTooltipId: 'serviceNowCreateConnector'
+          }}
         />
         {getMultiTypeFromValue(formik.values.spec.connectorRef) === MultiTypeInputType.RUNTIME && (
           <ConfigureOptions
@@ -439,6 +446,9 @@ function FormContent({
       <div className={stepCss.divider} />
       <React.Fragment>
         <FormInput.RadioGroup
+          tooltipProps={{
+            dataTooltipId: 'serviceNowCreatefieldType'
+          }}
           disabled={isApprovalStepFieldDisabled(readonly)}
           radioGroup={{ inline: true }}
           name="spec.fieldType"
@@ -476,6 +486,9 @@ function FormContent({
                     placeholder={getString('pipeline.serviceNowCreateStep.descriptionPlaceholder')}
                     multiTypeTextArea={{ enableConfigureOptions: false, expressions, allowableTypes }}
                     disabled={isApprovalStepFieldDisabled(readonly)}
+                    tooltipProps={{
+                      dataTooltipId: 'serviceNowCreateDescription'
+                    }}
                   />
                   {getMultiTypeFromValue(formik.values.spec.description) === MultiTypeInputType.RUNTIME && (
                     <ConfigureOptions
@@ -497,6 +510,9 @@ function FormContent({
                     placeholder={getString('pipeline.serviceNowCreateStep.shortDescriptionPlaceholder')}
                     multiTypeTextArea={{ enableConfigureOptions: false, expressions, allowableTypes }}
                     disabled={isApprovalStepFieldDisabled(readonly)}
+                    tooltipProps={{
+                      dataTooltipId: 'serviceNowCreateShortDesc'
+                    }}
                   />
                   {getMultiTypeFromValue(formik.values.spec.shortDescription) === MultiTypeInputType.RUNTIME && (
                     <ConfigureOptions
@@ -596,6 +612,9 @@ function FormContent({
                         }
                       },
                       allowableTypes: [MultiTypeInputType.FIXED, MultiTypeInputType.RUNTIME]
+                    }}
+                    tooltipProps={{
+                      dataTooltipId: 'serviceNowCreateTemplateName'
                     }}
                   />
                   {getMultiTypeFromValue(formik.values.spec.templateName) === MultiTypeInputType.RUNTIME && (
