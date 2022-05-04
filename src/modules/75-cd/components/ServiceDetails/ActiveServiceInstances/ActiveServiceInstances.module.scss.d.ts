@@ -12,6 +12,7 @@ declare const styles: {
   readonly activeServiceInstances: string
   readonly activeServiceInstancesEmpty: string
   readonly activeServiceInstancesHeader: string
+  readonly envContainer: string
   readonly environmentRow: string
   readonly hex: string
   readonly hexContainer: string
@@ -24,5 +25,6 @@ declare const styles: {
   readonly pieChartLabelStyles: string
   readonly sectionValue: string
   readonly seeMore: string
+  readonly tabsStyle: string
 }
 export default styles

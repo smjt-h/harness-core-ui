@@ -3407,6 +3407,7 @@ export interface StringsMap {
   'cd.artifactName': string
   'cd.artifactPaths': string
   'cd.artifactRepoTooltip': string
+  'cd.artifactVersion': string
   'cd.backEndConfig': string
   'cd.cdLaunchText': string
   'cd.cdSwitchToFirstGen.description1': string
