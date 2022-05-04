@@ -29,12 +29,6 @@ export const ECRStepInputSetBasic: React.FC<ECRStepProps> = ({
         readonly={readonly}
         stepViewType={stepViewType}
         enableFields={{
-          ...(getMultiTypeFromValue(template?.spec?.connectorRef) === MultiTypeInputType.RUNTIME && {
-            'spec.connectorRef': {
-              label: { labelKey: 'pipelineSteps.awsConnectorLabel', tooltipId: 'ecrConnector' },
-              type: Connectors.AWS
-            }
-          }),
           ...(getMultiTypeFromValue(template?.spec?.region) === MultiTypeInputType.RUNTIME && {
             'spec.region': {}
           }),
