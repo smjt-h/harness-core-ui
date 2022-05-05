@@ -24,7 +24,6 @@ import ConnectorDetailsStep from '@connectors/components/CreateConnector/commonS
 import VerifyOutOfClusterDelegate from '@connectors/common/VerifyOutOfClusterDelegate/VerifyOutOfClusterDelegate'
 import GitDetailsStep from '@connectors/components/CreateConnector/commonSteps/GitDetailsStep'
 import DelegateSelectorStep from '@connectors/components/CreateConnector/commonSteps/DelegateSelectorStep/DelegateSelectorStep'
-import { Connectors } from '@connectors/constants'
 import {
   ConnectorMap,
   getBuildPayload,
@@ -135,36 +134,31 @@ const CFRemoteWizard = ({
     )
   }
 
-  const onSubmit = (values: any, connector: any) => {
+  const onSubmit = (values: any) => {
     const config = values?.spec?.configuration
-    let paths = config?.templateFile?.spec?.store?.spec?.paths
-    let connectorRef = connector?.spec?.configuration?.templateFile?.spec?.store?.spec?.connectorRef
 
     if (isNumber(index)) {
-      connectorRef = connector?.spec?.configuration?.parameters?.store?.spec?.connectorRef
-      paths = config?.parameters?.store?.spec?.paths
+      let paths = config?.parameters?.store?.spec?.paths
       paths = getMultiTypeFromValue(paths[0]) === MultiTypeInputType.RUNTIME ? paths[0] : paths
       const data = {
         identifier: values?.spec?.configuration?.parameters?.identifier,
         store: {
-          type: connector?.selectedConnector === Connectors.AWS ? 'S3Url' : connector?.selectedConnector,
+          ...values?.spec?.configuration?.parameters?.store,
           spec: {
             ...values?.spec?.configuration?.parameters?.store?.spec,
-            region: connector?.spec?.configuration?.parameters?.store?.spec?.region,
-            paths,
-            connectorRef
+            paths
           }
         }
       }
       setFieldValue(`spec.configuration.parameters[${index}]`, data)
     } else {
+      let paths = config?.templateFile?.spec?.store?.spec?.paths
       paths = getMultiTypeFromValue(paths[0]) === MultiTypeInputType.RUNTIME ? paths[0] : paths
       const data = {
-        type: connector?.selectedConnector,
+        ...values.spec.configuration.templateFile.spec.store,
         spec: {
           ...values.spec.configuration.templateFile.spec.store.spec,
-          paths,
-          connectorRef
+          paths
         }
       }
       setFieldValue(`spec.configuration.templateFile.spec.store`, data)

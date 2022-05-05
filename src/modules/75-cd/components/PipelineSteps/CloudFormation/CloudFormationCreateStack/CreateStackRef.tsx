@@ -80,7 +80,7 @@ export const CreateStack = (
   const [awsRoles, setAwsRoles] = useState<MultiSelectOption[]>([])
   const [awsRef, setAwsRef] = useState<string>('')
 
-  const { data: regionData } = useListAwsRegions({
+  const { data: regionData, loading: regionLoading } = useListAwsRegions({
     queryParams: {
       accountId
     }
@@ -93,7 +93,7 @@ export const CreateStack = (
     }
   }, [regionData])
 
-  const { data: capabilitiesData } = useCFCapabilitiesForAws({})
+  const { data: capabilitiesData, loading: capabilitiesLoading } = useCFCapabilitiesForAws({})
 
   useEffect(() => {
     if (capabilitiesData) {
@@ -102,7 +102,7 @@ export const CreateStack = (
     }
   }, [capabilitiesData])
 
-  const { data: awsStatesData } = useCFStatesForAws({})
+  const { data: awsStatesData, loading: statesLoading } = useCFStatesForAws({})
 
   useEffect(() => {
     if (awsStatesData) {
@@ -111,7 +111,11 @@ export const CreateStack = (
     }
   }, [awsStatesData])
 
-  const { data: roleData, refetch } = useGetIamRolesForAws({
+  const {
+    data: roleData,
+    refetch,
+    loading: rolesLoading
+  } = useGetIamRolesForAws({
     lazy: true,
     debounce: 500,
     queryParams: {
@@ -200,8 +204,8 @@ export const CreateStack = (
         setFormikRef(formikRef, formik)
         const { values, setFieldValue } = formik
         const awsConnector = values?.spec?.configuration?.connectorRef
-        if (awsConnector?.value !== awsRef) {
-          setAwsRef(awsConnector?.value)
+        if (awsConnector !== awsRef) {
+          setAwsRef(awsConnector)
         }
         const config = values?.spec?.configuration
         const templateFileType = config?.templateFile?.type
@@ -292,6 +296,7 @@ export const CreateStack = (
                     width: 300
                   }}
                   selectItems={regions ? regions : []}
+                  placeholder={regionLoading ? getString('loading') : getString('select')}
                 />
               </Layout.Horizontal>
             </Layout.Vertical>
@@ -580,6 +585,7 @@ export const CreateStack = (
                             setFieldValue('spec.configuration.roleArn', value)
                           }}
                           value={find(awsRoles, ['value', awsRole]) || awsRole}
+                          placeholder={rolesLoading ? getString('loading') : getString('select')}
                         />
                       </Layout.Horizontal>
                     </Layout.Vertical>
@@ -600,6 +606,7 @@ export const CreateStack = (
                           onChange={value => {
                             setFieldValue('spec.configuration.capabilities', value)
                           }}
+                          placeholder={capabilitiesLoading ? getString('loading') : getString('select')}
                         />
                       </Layout.Horizontal>
                     </Layout.Vertical>
@@ -661,6 +668,7 @@ export const CreateStack = (
                           onChange={value => {
                             setFieldValue('spec.configuration.skipOnStackStatuses', value)
                           }}
+                          placeholder={statesLoading ? getString('loading') : getString('select')}
                         />
                       </Layout.Horizontal>
                     </Layout.Vertical>

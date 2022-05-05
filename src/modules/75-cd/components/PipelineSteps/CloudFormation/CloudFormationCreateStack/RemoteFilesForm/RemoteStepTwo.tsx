@@ -35,7 +35,7 @@ import css from '../../CloudFormation.module.scss'
 interface RemoteStepTwoProps {
   allowableTypes: MultiTypeInputType[]
   initialValues: any
-  onSubmit: (values: any, connector: any) => void
+  onSubmit: (values: any) => void
   index?: number
 }
 
@@ -86,17 +86,24 @@ const RemoteStepTwo: React.FC<StepProps<any> & RemoteStepTwoProps> = ({
         parameters: Yup.object().shape({
           identifier: Yup.string().required(getString('cd.pathCannotBeEmpty')),
           store: Yup.object().shape({
-            spec: Yup.object().shape({
-              gitFetchType: Yup.string().required(getString('cd.gitFetchTypeRequired')),
-              branch: Yup.string().when('gitFetchType', {
-                is: 'Branch',
-                then: Yup.string().trim().required(getString('validation.branchName'))
+            type: Yup.string(),
+            spec: Yup.object().when('type', {
+              is: value => value !== 'S3Url',
+              then: Yup.object().shape({
+                gitFetchType: Yup.string().required(getString('cd.gitFetchTypeRequired')),
+                branch: Yup.string().when('gitFetchType', {
+                  is: 'Branch',
+                  then: Yup.string().trim().required(getString('validation.branchName'))
+                }),
+                commitId: Yup.string().when('gitFetchType', {
+                  is: 'Commit',
+                  then: Yup.string().trim().required(getString('validation.commitId'))
+                }),
+                paths: pathSchema
               }),
-              commitId: Yup.string().when('gitFetchType', {
-                is: 'Commit',
-                then: Yup.string().trim().required(getString('validation.commitId'))
-              }),
-              paths: pathSchema
+              otherwise: Yup.object().shape({
+                paths: pathSchema
+              })
             })
           })
         })
@@ -110,10 +117,10 @@ const RemoteStepTwo: React.FC<StepProps<any> & RemoteStepTwoProps> = ({
       </Text>
       <Formik
         formName="RemoteStepTwo"
-        initialValues={FormatFilePaths(initialValues, index)}
+        initialValues={FormatFilePaths(initialValues, prevStepData, index)}
         enableReinitialize
         validationSchema={isNumber(index) ? paramSchema : templateSchema}
-        onSubmit={data => onSubmit(data, prevStepData)}
+        onSubmit={data => onSubmit(data)}
       >
         {({ values }) => {
           let name = 'spec.configuration.templateFile.spec.store.spec.paths[0]'

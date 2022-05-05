@@ -70,6 +70,12 @@ export interface Parameter {
   }
 }
 
+export interface Tags {
+  spec: {
+    content: string
+  }
+}
+
 export interface CreateStackData extends StepElementConfig {
   type: string
   name: string
@@ -78,17 +84,11 @@ export interface CreateStackData extends StepElementConfig {
   spec: {
     provisionerIdentifier: string
     configuration: {
-      tags?:
-        | {
-            spec?: {
-              content?: string
-            }
-          }
-        | CloudformationTags
+      tags?: CloudformationTags | Tags
       stackName: string
       connectorRef: string
       region: string
-      parameterOverrides?: { name: string, value: string }[] | NGVariable[]
+      parameterOverrides?: { name: string; value: string }[] | NGVariable[]
       skipOnStackStatuses?: string[] | SelectOption[] | string
       capabilities?: SelectOption[] | string[] | string
       parameters?: Parameter[]

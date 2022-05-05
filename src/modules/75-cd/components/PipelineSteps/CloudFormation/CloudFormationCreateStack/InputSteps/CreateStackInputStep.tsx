@@ -32,7 +32,7 @@ import MultiTypeFieldSelector from '@common/components/MultiTypeFieldSelector/Mu
 import { TFMonaco } from '../../../Common/Terraform/Editview/TFMonacoEditor'
 import TemplateFileInputs from './TemplateFile'
 import ParameterFileInputs from './ParameterInputs'
-import type { CreateStackData, CreateStackProps } from '../../CloudFormationInterfaces'
+import type { CreateStackData, CreateStackProps, Tags } from '../../CloudFormationInterfaces'
 import { isRuntime } from '../../CloudFormationHelper'
 import stepCss from '@pipeline/components/PipelineSteps/Steps/Steps.module.scss'
 
@@ -260,7 +260,7 @@ function CreateStackInputStepRef<T extends CreateStackData = CreateStackData>(
           />
         </Layout.Vertical>
       )}
-      {isRuntime(inputSetData?.template?.spec?.configuration?.tags?.spec?.content as string) && (
+      {isRuntime((inputSetData?.template?.spec?.configuration?.tags as Tags)?.spec?.content) && (
         <div className={cx(stepCss.formGroup, stepCss.md)}>
           <MultiTypeFieldSelector
             name={`${path}.spec.configuration.tags.spec.content`}

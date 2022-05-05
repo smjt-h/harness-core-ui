@@ -156,15 +156,23 @@ export const GetNewConnector = (
   return null
 }
 
-export const FormatFilePaths = (values: any, index: number | undefined) => {
+export const FormatFilePaths = (values: any, prevStepData: any, index?: number) => {
+  // checking for number as index 0 produces false
   if (isNumber(index)) {
     let param = get(values, `spec.configuration.parameters[${index}]`)
+    const connector = prevStepData?.spec?.configuration?.parameters?.store?.spec
     param = {
       identifier: param?.identifier,
       store: {
+        type: prevStepData?.selectedConnector === 'S3' ? 'S3Url' : prevStepData?.selectedConnector,
         spec: {
-          ...param?.store?.spec,
-          paths: [param?.store?.spec?.paths || '']
+          connectorRef: connector?.connectorRef?.value,
+          ...(connector?.region
+            ? {
+                region: connector?.region,
+                paths: param?.store?.spec?.urls || ['']
+              }
+            : { paths: param?.store?.spec?.paths || [''], ...param?.store?.spec })
         }
       }
     }
@@ -183,10 +191,12 @@ export const FormatFilePaths = (values: any, index: number | undefined) => {
         templateFile: {
           spec: {
             store: {
+              type: prevStepData?.selectedConnector,
               ...values?.spec?.configuration?.templateFile?.spec?.store,
               spec: {
                 ...values?.spec?.configuration?.templateFile?.spec?.store?.spec,
-                paths: [templateFile || '']
+                paths: [templateFile || ''],
+                connectorRef: prevStepData?.spec?.configuration?.templateFile?.spec?.store?.spec?.connectorRef?.value
               }
             }
           }

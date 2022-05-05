@@ -119,21 +119,21 @@ export class CFCreateStack extends PipelineStep<CreateStackStepInfo> {
       set(
         data,
         'spec.configuration.parameters',
-        map(params, param => {
-          return {
-            ...param,
-            store: {
-              ...param?.store,
-              spec: {
-                ...param?.store?.spec,
-                connectorRef: param.store.spec.connectorRef?.value || param.store.spec.connectorRef,
-                ...(param?.store?.spec?.region
-                  ? { urls: param?.store?.spec?.paths || param?.store?.spec?.urls }
-                  : { paths: param?.store?.spec?.paths })
-              }
+        map(params, param => ({
+          ...param,
+          store: {
+            ...param?.store,
+            spec: {
+              connectorRef: param.store.spec.connectorRef,
+              ...(param?.store?.spec?.region
+                ? {
+                    urls: param?.store?.spec?.paths || param?.store?.spec?.urls,
+                    region: param?.store?.spec.region
+                  }
+                : { paths: param?.store?.spec?.paths, ...param?.store?.spec })
             }
           }
-        })
+        }))
       )
     } else {
       delete data.spec.configuration.parameters

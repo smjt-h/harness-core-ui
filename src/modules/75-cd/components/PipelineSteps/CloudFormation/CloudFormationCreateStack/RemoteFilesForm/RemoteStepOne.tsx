@@ -31,7 +31,13 @@ import { useStrings } from 'framework/strings'
 import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
 import { FormMultiTypeConnectorField } from '@connectors/components/ConnectorReferenceField/FormMultiTypeConnectorField'
 import { useVariablesExpression } from '@pipeline/components/PipelineStudio/PiplineHooks/useVariablesExpression'
-import { AllowedTypes, ConnectorIcons, ConnectorMap, ConnectorLabelMap, ConnectorTypes } from '../../CloudFormationHelper'
+import {
+  AllowedTypes,
+  ConnectorIcons,
+  ConnectorMap,
+  ConnectorLabelMap,
+  ConnectorTypes
+} from '../../CloudFormationHelper'
 
 import stepCss from '@pipeline/components/PipelineSteps/Steps/Steps.module.scss'
 import css from './AWSConnector.module.scss'
@@ -73,11 +79,11 @@ const ConnectorStepOne: React.FC<StepProps<any> & ConnectorStepOneProps> = ({
     const connectorType = isNumber(index)
       ? initialValues.spec.configuration.parameters[index!]?.store?.type
       : initialValues?.spec?.configuration?.templateFile?.spec?.store?.type
-      if (connectorType) {
-        setSelectedConnector(connectorType === 'S3Url' ? 'S3' : connectorType)
-      } else {
-        setSelectedConnector(allowedTypes[0])
-      }
+    if (connectorType) {
+      setSelectedConnector(connectorType === 'S3Url' ? 'S3' : connectorType)
+    } else {
+      setSelectedConnector(allowedTypes[0])
+    }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [initialValues])
@@ -136,7 +142,7 @@ const ConnectorStepOne: React.FC<StepProps<any> & ConnectorStepOneProps> = ({
         enableReinitialize={true}
         onSubmit={data => {
           setSelectedConnector('')
-          nextStep?.({...data, selectedConnector})
+          nextStep?.({ ...data, selectedConnector })
         }}
         initialValues={
           isNumber(index)
@@ -154,7 +160,7 @@ const ConnectorStepOne: React.FC<StepProps<any> & ConnectorStepOneProps> = ({
             isFixedValue = getMultiTypeFromValue(connectorRef) === MultiTypeInputType.FIXED
             name = `spec.configuration.parameters.store.spec.connectorRef`
           }
-          const disabled = !selectedConnector || (isFixedValue && !connectorRef)
+          const disabled = !selectedConnector || (isFixedValue && !connectorRef?.connector)
           return (
             <>
               <Layout.Horizontal className={css.horizontalFlex} margin={{ top: 'xlarge', bottom: 'xlarge' }}>
@@ -202,7 +208,6 @@ const ConnectorStepOne: React.FC<StepProps<any> & ConnectorStepOneProps> = ({
                       style={{ marginBottom: 10 }}
                       multiTypeProps={{ expressions, allowableTypes }}
                       disabled={!selectedConnector}
-                      setRefValue
                     />
                     {selectedConnector && (
                       <Button
