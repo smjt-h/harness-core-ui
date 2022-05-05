@@ -274,7 +274,7 @@ export const includeProjects = (orgScopes?: ScopeSelector[]): boolean => {
 export const getAllProjects = (orgScopes?: ScopeSelector[]): string[] => {
   return (
     orgScopes
-      ?.filter(item => item.filter === 'EXCLUDING_CHILD_SCOPES' || !!item.projectIdentifier)
+      ?.filter(item => item.filter === 'EXCLUDING_CHILD_SCOPES' && !!item.projectIdentifier)
       .map(item => item.projectIdentifier || '') || []
   )
 }

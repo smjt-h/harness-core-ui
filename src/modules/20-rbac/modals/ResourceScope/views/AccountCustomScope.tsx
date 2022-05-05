@@ -72,12 +72,13 @@ const AccountCustomScope: React.FC<AccountCustomScopeProps> = ({
         {selectedScopes.map((scope, index) => {
           const org = scope?.[0]?.orgIdentifier
           return includesCurrentScope(scope, Scope.ACCOUNT) ? null : (
-            <Card key={org}>
+            <Card key={`${scope}-${index}-${org}`}>
               <Label>{getString('rbac.resourceScope.selectOrg')}</Label>
               <DropDown
                 value={org}
                 items={organizations}
                 width={200}
+                usePortal={true}
                 onChange={item => {
                   setSelectedScopes(
                     produce(selectedScopes, draft => {

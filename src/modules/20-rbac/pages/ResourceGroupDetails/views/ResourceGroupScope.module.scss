@@ -15,8 +15,9 @@
 
 .projectSelection {
   border: 1px solid var(--grey-200);
-  &.tags {
-    background-color: var(--primary-2);
-    color: var(--primary-7);
-  }
+}
+
+.projectTags {
+  background-color: var(--primary-2) !important;
+  color: var(--primary-7) !important;
 }

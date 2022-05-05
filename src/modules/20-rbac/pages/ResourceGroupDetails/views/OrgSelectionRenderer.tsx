@@ -5,7 +5,7 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import React, { useEffect, useMemo } from 'react'
+import React, { useMemo } from 'react'
 import { Color, Layout, PageSpinner, Table, Tag, TagsPopover, Text } from '@harness/uicore'
 import { useParams } from 'react-router-dom'
 import type { CellProps, Column, Renderer } from 'react-table'
@@ -16,6 +16,7 @@ import type { ScopeSelector } from 'services/resourcegroups'
 import { Organization, useGetOrganizationList, useGetProjectList } from 'services/cd-ng'
 import DescriptionPopover from '@common/components/DescriptionPopover.tsx/DescriptionPopover'
 import { getAllProjects, includeProjects } from '../utils'
+import css from './ResourceGroupScope.module.scss'
 
 interface OrgSelectionRendererProps {
   includedScopes: ScopeSelector[]
@@ -29,28 +30,28 @@ const RenderColumnProject: Renderer<CellProps<OrgSelector>> = ({ row }) => {
   const { accountId } = useParams<ResourceGroupDetailsPathProps & ModulePathParams>()
   const hasProjects = includeProjects(row.original.scopes)
   const projects = getAllProjects(row.original.scopes)
-
-  const { data, refetch } = useGetProjectList({
-    lazy: true
-  })
   const { getString } = useStrings()
-  useEffect(() => {
-    if (hasProjects) {
-      refetch({
-        queryParams: {
-          accountIdentifier: accountId,
-          orgIdentifier: row.original.organization?.identifier,
-          identifiers: projects
-        }
-      })
+
+  const { data } = useGetProjectList({
+    queryParams: {
+      accountIdentifier: accountId,
+      orgIdentifier: row.original.organization?.identifier,
+      identifiers: projects
+    },
+    queryParamStringifyOptions: {
+      arrayFormat: 'repeat'
     }
-  }, [hasProjects])
+  })
 
   if (!hasProjects) return <></>
   return projects.length ? (
     <Layout.Horizontal spacing="xsmall">
       {data?.data?.content?.map(({ project }) => (
-        <Tag key={project.identifier}>{`${project.name} (${getString('idLabel', { id: project.identifier })})`}</Tag>
+        <Tag key={`${project.orgIdentifier}-${project.identifier}`} className={css.projectTags}>{`${
+          project.name
+        } (${getString('idLabel', {
+          id: project.identifier
+        })})`}</Tag>
       ))}
     </Layout.Horizontal>
   ) : (

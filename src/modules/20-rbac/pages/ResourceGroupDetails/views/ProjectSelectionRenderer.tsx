@@ -36,7 +36,7 @@ const ProjectSelectionRenderer: React.FC<ProjectSelectionRendererProps> = ({ inc
   return (
     <Layout.Horizontal spacing="xsmall" padding="xsmall" className={css.projectSelection}>
       {data?.data?.content?.map(({ project }) => (
-        <Tag key={project.identifier} className={css.tags}>{`${project.name} (${getString('idLabel', {
+        <Tag key={project.identifier} className={css.projectTags}>{`${project.name} (${getString('idLabel', {
           id: project.identifier
         })})`}</Tag>
       ))}

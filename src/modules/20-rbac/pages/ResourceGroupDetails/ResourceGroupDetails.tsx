@@ -11,7 +11,7 @@ import { Color } from '@harness/design-system'
 
 import { useParams } from 'react-router-dom'
 import ReactTimeago from 'react-timeago'
-import { defaultTo } from 'lodash-es'
+import { defaultTo, uniqWith, isEqual } from 'lodash-es'
 import type { ModulePathParams, ResourceGroupDetailsPathProps } from '@common/interfaces/RouteInterfaces'
 import { useStrings } from 'framework/strings'
 import ResourceTypeList from '@rbac/components/ResourceTypeList/ResourceTypeList'
@@ -145,7 +145,7 @@ const ResourceGroupDetails: React.FC = () => {
     const dataToSubmit: ResourceGroupV2Request = getFormattedDataForApi(
       data,
       selectionType,
-      includedScopes,
+      uniqWith(includedScopes, isEqual),
       resourceSelectors
     )
 

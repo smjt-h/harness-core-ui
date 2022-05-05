@@ -10,6 +10,6 @@ declare const styles: {
   readonly card: string
   readonly dropdown: string
   readonly projectSelection: string
-  readonly tags: string
+  readonly projectTags: string
 }
 export default styles
