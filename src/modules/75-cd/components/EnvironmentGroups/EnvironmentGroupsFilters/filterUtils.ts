@@ -7,8 +7,7 @@
 
 import type { MultiSelectOption, SelectOption } from '@harness/uicore'
 
-import type { EnvironmentGroupFilterProperties, NGTag } from 'services/cd-ng'
-import type { FilterDTO } from 'services/pipeline-ng'
+import type { EnvironmentGroupFilterProperties, NGTag, FilterDTO } from 'services/cd-ng'
 
 import { StringUtils } from '@common/exports'
 import type { FilterDataInterface, FilterInterface } from '@common/components/Filter/Constants'

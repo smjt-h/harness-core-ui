@@ -155,6 +155,8 @@ export interface StringsMap {
   'common.connectivityErrors': string
   'common.contactSupport': string
   'common.copy': string
+  'common.copyFqn': string
+  'common.copyVariableName': string
   'common.createPipeline': string
   'common.creating': string
   'common.current': string
@@ -591,6 +593,7 @@ export interface StringsMap {
   'common.selectAVersion.title': string
   'common.selectBranch': string
   'common.selectDefaultExperience': string
+  'common.selectType': string
   'common.selectUserGroups': string
   'common.selectVersion': string
   'common.selected': string
@@ -730,6 +733,7 @@ export interface StringsMap {
   'common.validation.email.format': string
   'common.validation.email.required': string
   'common.validation.entityIdIsRequired': string
+  'common.validation.fieldCanNotHaveWhitespace': string
   'common.validation.fieldCannotbeLongerThanN': string
   'common.validation.fieldIsRequired': string
   'common.validation.fieldMustBeAlphanumeric': string
@@ -756,6 +760,7 @@ export interface StringsMap {
   'common.validation.variableAlreadyExists': string
   'common.validation.yamlFilePath': string
   'common.valuePlaceholder': string
+  'common.variables': string
   'common.videoNotSupportedError': string
   'common.viewContent': string
   'common.viewLatest': string
@@ -1238,6 +1243,12 @@ export interface StringsMap {
   'secrets.titleCreate': string
   'secrets.titleSelect': string
   'secrets.typeSSH': string
+  'variables.allowedValues': string
+  'variables.defaultValue': string
+  'variables.newVariable': string
+  'variables.validation.fixedValue': string
+  'variables.validation.type': string
+  'variables.validation.validation': string
   'authSettings.SAMLProvider': string
   'authSettings.WhitelistedDomainsUpdated': string
   'authSettings.accountOrOAuthLogin': string
@@ -1437,6 +1448,15 @@ export interface StringsMap {
   'connectors.awsKms.validation.selectDelegate': string
   'connectors.awsKms.validation.selectRegion': string
   'connectors.awsSecretManager.secretNamePrefix': string
+  'connectors.azure.applicationId': string
+  'connectors.azure.auth.certificate': string
+  'connectors.azure.clientId': string
+  'connectors.azure.delegateInClusterInfo': string
+  'connectors.azure.environments.azureGlobal': string
+  'connectors.azure.environments.usGov': string
+  'connectors.azure.managedIdentities.systemAssigned': string
+  'connectors.azure.managedIdentities.userAssigned': string
+  'connectors.azure.managedIdentity': string
   'connectors.azureKeyVault.labels.fetchVault': string
   'connectors.azureKeyVault.labels.setupVault': string
   'connectors.azureKeyVault.labels.subscription': string
@@ -1795,8 +1815,7 @@ export interface StringsMap {
   'connectors.ceK8.secretCreationStep.step3': string
   'connectors.ceK8.secretCreationStep.step4': string
   'connectors.ceK8.selectConnectorLabel': string
-  'connectors.chooseMethodForGCPConnection': string
-  'connectors.chooseMethodForK8sConnection': string
+  'connectors.chooseMethodForConnection': string
   'connectors.click': string
   'connectors.confirmDelete': string
   'connectors.confirmDeleteTitle': string
@@ -1927,6 +1946,7 @@ export interface StringsMap {
   'connectors.k8.serviceAccountToken': string
   'connectors.k8.skipDefaultValidation': string
   'connectors.k8.validation.clientKeyAlgo': string
+  'connectors.k8sConnection': string
   'connectors.loginToMasterAccount': string
   'connectors.name': string
   'connectors.name_labels.AWS': string
@@ -2042,6 +2062,7 @@ export interface StringsMap {
   'connectors.title.awsCodeCommit': string
   'connectors.title.awsKms': string
   'connectors.title.awsSecretManager': string
+  'connectors.title.azure': string
   'connectors.title.azureKeyVault': string
   'connectors.title.bitbucketConnector': string
   'connectors.title.ceAws': string
@@ -3407,6 +3428,7 @@ export interface StringsMap {
   'cd.artifactName': string
   'cd.artifactPaths': string
   'cd.artifactRepoTooltip': string
+  'cd.artifactVersion': string
   'cd.backEndConfig': string
   'cd.cdLaunchText': string
   'cd.cdSwitchToFirstGen.description1': string
@@ -4500,7 +4522,8 @@ export interface StringsMap {
   'cf.environments.apiKeys.emptyName': string
   'cf.environments.apiKeys.keyType': string
   'cf.environments.apiKeys.message': string
-  'cf.environments.apiKeys.noKeysFound': string
+  'cf.environments.apiKeys.noKeysFoundMessage': string
+  'cf.environments.apiKeys.noKeysFoundTitle': string
   'cf.environments.apiKeys.redactionWarning': string
   'cf.environments.apiKeys.serverType': string
   'cf.environments.apiKeys.title': string
@@ -4871,8 +4894,8 @@ export interface StringsMap {
   'cf.targetDetail.deleteTargetSuccess': string
   'cf.targetDetail.environmentLine': string
   'cf.targetDetail.exclude': string
+  'cf.targetDetail.excludeFromSegment': string
   'cf.targetDetail.excludeTargetFromSegment': string
-  'cf.targetDetail.excludefromSegment': string
   'cf.targetDetail.exclusionList': string
   'cf.targetDetail.flagDisabled': string
   'cf.targetDetail.flagSetting': string
@@ -5021,6 +5044,8 @@ export interface StringsMap {
   'ci.getStartedWithCI.parameterization': string
   'ci.getStartedWithCI.parameterizationHelpText': string
   'ci.getStartedWithCI.provisionSecureEnv': string
+  'ci.getStartedWithCI.provisioningFailed': string
+  'ci.getStartedWithCI.provisioningSuccessful': string
   'ci.getStartedWithCI.quicklyCreate': string
   'ci.getStartedWithCI.searchRepo': string
   'ci.getStartedWithCI.security': string
@@ -5820,6 +5845,7 @@ export interface StringsMap {
   'cv.zoom': string
   'stoSteps.securityStage.description': string
   'stoSteps.stepDescription.ZeroNorth': string
+  'stoSteps.targets.testTargets': string
   'stoSteps.zeroNorthImagePlaceholder': string
   /**
    * @deprecated migrate this string to module level file
@@ -8008,10 +8034,6 @@ export interface StringsMap {
   /**
    * @deprecated migrate this string to module level file
    */
-  'pipelineSteps.build.stageSpecifications.variablesCell': string
-  /**
-   * @deprecated migrate this string to module level file
-   */
   'pipelineSteps.buildArgsLabel': string
   /**
    * @deprecated migrate this string to module level file
@@ -9713,18 +9735,6 @@ export interface StringsMap {
    * @deprecated migrate this string to module level file
    */
   variableNameLabel: string
-  /**
-   * @deprecated migrate this string to module level file
-   */
-  'variables.copyFqn': string
-  /**
-   * @deprecated migrate this string to module level file
-   */
-  'variables.copyVariableName': string
-  /**
-   * @deprecated migrate this string to module level file
-   */
-  variablesText: string
   /**
    * @deprecated migrate this string to module level file
    */

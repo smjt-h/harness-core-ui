@@ -69,6 +69,10 @@ My: My
 ok: OK
 ID: Id
 org: Org
+variables: Variables
+copyVariableName: Copy variable name
+copyFqn: Copy fully qualified name
+selectType: Select Type
 accountSetting:
   connector:
     loading: 'Loading settings...'
@@ -148,6 +152,7 @@ validation:
   yamlFilePath: 'File path can only contain valid file/folder name (should contain alphanumerics, _ and -) separated by / and should end with .yaml.'
   variableAlreadyExists: Variable with same name already exists
   fieldIsRequired: '{{ name }} is required'
+  fieldCanNotHaveWhitespace: '{{ name }} should not contain whitespaces'
   fieldMustStartWithAlphanumericAndCanNotHaveSpace: '{{ name }} must start with alphanumerics and should not contain whitespaces'
   fieldCannotbeLongerThanN: '{{ name }} cannot be longer than {{ n }} characters'
   fieldMustBeAlphanumeric: '{{ name }} can only contain alphanumerics, _ and $'

@@ -1,0 +1,7 @@
+newVariable: New Variable
+defaultValue: Default Value
+allowedValues: Allowed Values
+validation:
+  type: 'Type is a required field'
+  validation: 'Please select a validation type'
+  fixedValue: 'Fixed Value is a required field'

@@ -4,7 +4,7 @@ import {
   pipelinesExecutionDelegateRoute
 } from '../../support/70-pipeline/constants'
 
-describe('Delegate Selection on Execution View', () => {
+describe.skip('Delegate Selection on Execution View', () => {
   beforeEach(() => {
     cy.on('uncaught:exception', () => {
       // returning false here prevents Cypress from

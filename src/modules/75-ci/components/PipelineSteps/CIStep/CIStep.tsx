@@ -25,7 +25,13 @@ import { useVariablesExpression } from '@pipeline/components/PipelineStudio/Pipl
 import { FormMultiTypeConnectorField } from '@connectors/components/ConnectorReferenceField/FormMultiTypeConnectorField'
 import { useStrings } from 'framework/strings'
 import type { StringsMap } from 'stringTypes'
-import { AllMultiTypeInputTypesForInputSet, AllMultiTypeInputTypesForStep } from './StepUtils'
+import {
+  AllMultiTypeInputTypesForInputSet,
+  AllMultiTypeInputTypesForStep,
+  SupportedInputTypesForListItems,
+  SupportedInputTypesForListTypeField,
+  SupportedInputTypesForListTypeFieldInInputSetView
+} from './StepUtils'
 import { renderMultiTypeInputWithAllowedValues, renderMultiTypeListInputSet } from './CIStepOptionalConfig'
 import css from '@pipeline/components/PipelineSteps/Steps/Steps.module.scss'
 
@@ -110,15 +116,17 @@ export const CIStep: React.FC<CIStepProps> = props => {
     ({
       name,
       labelKey,
-      allowableTypes
+      allowedTypes,
+      allowedTypesForEntries
     }: {
       name: string
       labelKey: keyof StringsMap
-      allowableTypes: MultiTypeInputType[]
+      allowedTypes: MultiTypeInputType[]
+      allowedTypesForEntries: MultiTypeInputType[]
     }) => (
       <MultiTypeList
         name={name}
-        multiTextInputProps={{ expressions, allowableTypes }}
+        multiTextInputProps={{ expressions, allowableTypes: allowedTypesForEntries }}
         multiTypeFieldSelectorProps={{
           label: (
             <Text
@@ -129,7 +137,8 @@ export const CIStep: React.FC<CIStepProps> = props => {
             >
               {getString(labelKey)}
             </Text>
-          )
+          ),
+          allowedTypes
         }}
         disabled={readonly}
       />
@@ -374,7 +383,8 @@ export const CIStep: React.FC<CIStepProps> = props => {
               name: `${prefix}spec.sourcePaths`,
               tooltipId: 'sourcePaths',
               labelKey: 'pipelineSteps.sourcePathsLabel',
-              allowedTypes: AllMultiTypeInputTypesForInputSet,
+              allowedTypes: SupportedInputTypesForListTypeFieldInInputSetView,
+              allowedTypesForEntries: SupportedInputTypesForListItems,
               expressions,
               getString,
               readonly,
@@ -386,7 +396,8 @@ export const CIStep: React.FC<CIStepProps> = props => {
             {renderMultiTypeList({
               name: `${prefix}spec.sourcePaths`,
               labelKey: 'pipelineSteps.sourcePathsLabel',
-              allowableTypes: isInputSetView ? AllMultiTypeInputTypesForInputSet : AllMultiTypeInputTypesForStep
+              allowedTypes: SupportedInputTypesForListTypeField,
+              allowedTypesForEntries: SupportedInputTypesForListItems
             })}
           </Container>
         )
@@ -444,11 +455,15 @@ export const CIStep: React.FC<CIStepProps> = props => {
       ) : null}
       {Object.prototype.hasOwnProperty.call(enableFields, 'spec.tags') ? (
         <Container className={cx(css.formGroup, stepCss, css.bottomMargin5)}>
-          {renderMultiTypeList({
-            name: `${prefix}spec.tags`,
-            labelKey: 'tagsLabel',
-            allowableTypes: isInputSetView ? AllMultiTypeInputTypesForInputSet : AllMultiTypeInputTypesForStep
-          })}
+          {/* Corresponding input set view is handled in ArtifactStepCommon.tsx */}
+          {!isInputSetView
+            ? renderMultiTypeList({
+                name: `${prefix}spec.tags`,
+                labelKey: 'tagsLabel',
+                allowedTypes: SupportedInputTypesForListTypeField,
+                allowedTypesForEntries: SupportedInputTypesForListItems
+              })
+            : null}
         </Container>
       ) : null}
     </>

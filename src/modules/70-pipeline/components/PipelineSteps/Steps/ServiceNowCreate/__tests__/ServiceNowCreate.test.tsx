@@ -249,7 +249,6 @@ describe('ServiceNow Create tests', () => {
       spec: {
         connectorRef: 'cid1',
         useServiceNowTemplate: false,
-        templateName: '',
         ticketType: 'INCIDENT',
         delegateSelectors: undefined,
         fields: [

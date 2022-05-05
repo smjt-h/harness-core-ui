@@ -55,6 +55,8 @@ export enum EnvironmentGroupDetailsTab {
 }
 
 export interface EnvironmentGroupListQueryParams
-  extends Partial<Omit<GetEnvironmentGroupListQueryParams, 'sort' | 'getDefaultFromOtherRepo'>> {
+  extends Partial<
+    Omit<GetEnvironmentGroupListQueryParams, 'sort' | 'getDefaultFromOtherRepo' | 'envGroupIdentifiers'>
+  > {
   filters?: EnvironmentGroupFilterProperties
 }

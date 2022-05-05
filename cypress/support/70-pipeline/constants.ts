@@ -65,8 +65,8 @@ export const envUpdateList = `/ng/api/environmentsV2?routingId=${accountId}&acco
 export const connectorList = `/ng/api/connectors/connector?routingId=${accountId}&accountIdentifier=${accountId}&orgIdentifier=${orgIdentifier}&projectIdentifier=${projectId}`
 export const serverlessRepositoriesDetails = `/ng/api/artifacts/artifactory/repositoriesDetails?routingId=${accountId}&connectorRef=${connectorRef}&accountIdentifier=${accountId}&orgIdentifier=${orgIdentifier}&projectIdentifier=${projectId}&repositoryType=${repositoryType}`
 export const serverlessBuildDetails = `/ng/api/artifacts/artifactory/getBuildDetails?routingId=${accountId}&artifactPath=${artifactPath}&repository=${repository}&repositoryFormat=${repositoryType}&connectorRef=${connectorRef}&accountIdentifier=${accountId}&orgIdentifier=${orgIdentifier}&projectIdentifier=${projectId}`
-export const pipelineHealthCall = `/pipeline/api/pipelines/pipelineHealth?routingId=${accountId}&accountIdentifier=${accountId}&projectIdentifier=${projectId}&orgIdentifier=${orgIdentifier}*`
-export const pipelineExecutionCall = `/pipeline/api/pipelines/pipelineExecution?routingId=${accountId}&accountIdentifier=${accountId}&projectIdentifier=${projectId}&orgIdentifier=${orgIdentifier}*`
+export const pipelineHealthCall = `/pipeline/api/dashboard/pipelineHealth?routingId=${accountId}&accountIdentifier=${accountId}&projectIdentifier=${projectId}&orgIdentifier=${orgIdentifier}*`
+export const pipelineExecutionCall = `/pipeline/api/dashboard/pipelineExecution?routingId=${accountId}&accountIdentifier=${accountId}&projectIdentifier=${projectId}&orgIdentifier=${orgIdentifier}*`
 export const abortPipelineCall = `pipeline/api/pipeline/execute/interrupt/${executionId}?routingId=${accountId}&orgIdentifier=${orgIdentifier}&accountIdentifier=${accountId}&projectIdentifier=${projectId}&interruptType=AbortAll`
 
 // Routes
