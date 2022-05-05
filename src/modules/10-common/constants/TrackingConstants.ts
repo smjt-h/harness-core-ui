@@ -190,3 +190,8 @@ export enum FeatureActions {
   CreateSDKKeySubmit = 'Create SDK Key Submitted',
   CreateSDKKeyCancel = 'Create SDK Key Cancel Clicked'
 }
+
+export enum CCMActions {
+  CCMStartPlanModal = 'CCM Start Plan Modal Loaded',
+  CCMStartPlanContinue = 'CCM Start Plan Modal Continue Clicked'
+}
