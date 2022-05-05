@@ -32,7 +32,7 @@ import { InfraProvisioning } from './InfraProvisioning/InfraProvisioning'
 import { GcpInfrastructureSpec } from './GcpInfrastructureSpec/GcpInfrastructureSpec'
 import { PolicyStep } from './PolicyStep/PolicyStep'
 import { CFCreateStack } from './CloudFormation/CloudFormationCreateStack/CloudFormationCreateStack'
-import { CFDeleteStack } from './CloudFormation/CloudFormationDeleteStack/CloudFormationDeleteStack'
+import { CFDeleteStack } from './CloudFormation/CloudFormationDeleteStack/DeleteStack'
 
 factory.registerStep(new HttpStep())
 factory.registerStep(new K8RolloutDeployStep())

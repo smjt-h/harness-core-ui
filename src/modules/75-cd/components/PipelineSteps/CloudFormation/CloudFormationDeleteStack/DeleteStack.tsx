@@ -15,7 +15,7 @@ import { StepType } from '@pipeline/components/PipelineSteps/PipelineStepInterfa
 import { PipelineStep } from '@pipeline/components/PipelineSteps/PipelineStep'
 import { getDurationValidationSchema } from '@common/components/MultiTypeDuration/MultiTypeDuration'
 import { DeleteStackData, DeleteStackTypes, CFDeleteStackStepInfo } from '../CloudFormationInterfaces'
-import { CloudFormationDeleteStack } from './CloudFormationDeleteStackRef'
+import { CloudFormationDeleteStack } from './DeleteStackRef'
 import CloudFormationDeleteStackInputStep from './DeleteStackInputSteps'
 const CloudFormationDeleteStackWithRef = forwardRef(CloudFormationDeleteStack)
 

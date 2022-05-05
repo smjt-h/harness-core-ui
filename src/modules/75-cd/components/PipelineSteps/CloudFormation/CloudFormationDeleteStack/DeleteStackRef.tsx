@@ -16,12 +16,10 @@ import {
   MultiTypeInputType,
   Color,
   Layout,
-  Label,
   Text,
-  MultiTypeInput,
   MultiSelectOption
 } from '@harness/uicore'
-import { map, find } from 'lodash-es'
+import { map } from 'lodash-es'
 import { useStrings } from 'framework/strings'
 import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
 import {
@@ -58,7 +56,7 @@ export const CloudFormationDeleteStack = (
   const [awsRoles, setAwsRoles] = useState<MultiSelectOption[]>([])
   const [awsRef, setAwsRef] = useState('')
 
-  const { data: regionData } = useListAwsRegions({
+  const { data: regionData, loading: regionLoading } = useListAwsRegions({
     queryParams: {
       accountId
     }
@@ -71,7 +69,7 @@ export const CloudFormationDeleteStack = (
     }
   }, [regionData])
 
-  const { data: roleData, refetch } = useGetIamRolesForAws({
+  const { data: roleData, refetch, loading: rolesLoading } = useGetIamRolesForAws({
     lazy: true,
     debounce: 500,
     queryParams: {
@@ -145,11 +143,10 @@ export const CloudFormationDeleteStack = (
     >
       {formik => {
         setFormikRef(formikRef, formik)
-        const { values, setFieldValue } = formik
+        const { values } = formik
         const config = values?.spec?.configuration
         const provisionerIdentifier = config?.spec?.provisionerIdentifier
         const stackName = config?.spec?.stackName
-        const roleArn = config?.spec?.roleArn
         const stepType = config?.type
         const awsConnector = config?.spec?.connectorRef
         if (awsConnector !== awsRef) {
@@ -234,6 +231,7 @@ export const CloudFormationDeleteStack = (
                     name="spec.configuration.spec.region"
                     disabled={readonly}
                     useValue
+                    placeholder={regionLoading ? getString('loading') : getString('select')}
                     multiTypeInputProps={{
                       selectProps: {
                         allowCreatingNewItems: false,
@@ -247,26 +245,23 @@ export const CloudFormationDeleteStack = (
                   />
                 </Layout.Horizontal>
                 <Layout.Vertical className={css.addMarginBottom}>
-                  <Label style={{ color: Color.GREY_900 }} className={css.configLabel}>
-                    {getString('connectors.awsKms.roleArnLabel')}
-                  </Label>
-                  <Layout.Horizontal>
-                    <MultiTypeInput
-                      name="spec.configuration.spec.roleArn"
-                      expressions={expressions}
-                      allowableTypes={allowableTypes}
-                      selectProps={{
-                        addClearBtn: false,
-                        items: [{ label: 'test', value: 'test' }]
-                      }}
-                      disabled={readonly}
-                      width={300}
-                      onChange={(value: any) => {
-                        setFieldValue('spec.configuration.spec.roleArn', value?.value || value)
-                      }}
-                      value={find(awsRoles, ['value', roleArn]) || roleArn}
-                    />
-                  </Layout.Horizontal>
+                  <FormInput.MultiTypeInput
+                    label={getString('connectors.awsKms.roleArnLabel')}
+                    name="spec.configuration.spec.roleArn"
+                    placeholder={rolesLoading ? getString('loading') : getString('select')}
+                    multiTypeInputProps={{
+                      selectProps: {
+                        allowCreatingNewItems: false,
+                        items: awsRoles || []
+                      },
+                      expressions,
+                      allowableTypes,
+                      width: 300
+                    }}
+                    disabled={readonly}
+                    selectItems={awsRoles || []}
+                    useValue
+                  />
                 </Layout.Vertical>
                 <div className={cx(stepCss.formGroup)}>
                   <FormInput.MultiTextInput

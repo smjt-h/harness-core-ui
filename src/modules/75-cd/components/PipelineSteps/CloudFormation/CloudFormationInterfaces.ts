@@ -16,6 +16,7 @@ import type {
   NGVariable,
   CloudformationTags
 } from 'services/cd-ng'
+import type { VariableMergeServiceResponse } from 'services/pipeline-ng'
 
 export const StoreTypes = {
   Inline: 'Inline',
@@ -198,4 +199,14 @@ export interface DeleteStackProps<T = DeleteStackData> {
   path?: string
   stepType?: string
   allValues?: T
+}
+
+export interface DeleteStackVariableStepProps {
+  initialValues: DeleteStackData
+  originalData?: DeleteStackData
+  stageIdentifier?: string
+  onUpdate?(data: DeleteStackData): void
+  metadataMap: Required<VariableMergeServiceResponse>['metadataMap']
+  variablesData?: DeleteStackData
+  stepType?: string
 }
