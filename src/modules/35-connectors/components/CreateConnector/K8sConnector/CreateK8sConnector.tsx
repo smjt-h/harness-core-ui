@@ -47,12 +47,14 @@ const CreateK8sConnector: React.FC<CreateConnectorModalProps> = props => {
         connectorInfo={props.connectorInfo}
         gitDetails={props.gitDetails}
         mock={props.mock}
+        setConnectorWizardOptions={props.setConnectorWizardOptions}
       />
       <Stepk8ClusterDetails
         name={getString('details')}
         identifier={CONNECTOR_CREDENTIALS_STEP_IDENTIFIER}
         onConnectorCreated={props.onSuccess}
         hideModal={props.onClose}
+        setConnectorWizardOptions={props.setConnectorWizardOptions}
         {...commonProps}
       />
       <DelegateSelectorStep

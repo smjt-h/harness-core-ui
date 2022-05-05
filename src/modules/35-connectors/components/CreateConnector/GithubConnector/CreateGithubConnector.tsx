@@ -53,6 +53,7 @@ const CreateGithubConnector = (props: CreateConnectorModalProps): JSX.Element =>
         connectorInfo={props.connectorInfo}
         gitDetails={props.gitDetails}
         mock={props.mock}
+        setConnectorWizardOptions={props.setConnectorWizardOptions}
       />
       <GitDetailsStep
         type={Connectors.GITHUB}
@@ -60,6 +61,7 @@ const CreateGithubConnector = (props: CreateConnectorModalProps): JSX.Element =>
         isEditMode={props.isEditMode}
         connectorInfo={props.connectorInfo}
         mock={props.mock}
+        setConnectorWizardOptions={props.setConnectorWizardOptions}
       />
       <StepGithubAuthentication
         name={getString('credentials')}
@@ -80,6 +82,7 @@ const CreateGithubConnector = (props: CreateConnectorModalProps): JSX.Element =>
         setConnectivityMode={props.setConnectivityMode}
         hideModal={props.onClose}
         onConnectorCreated={props.onSuccess}
+        setConnectorWizardOptions={props.setConnectorWizardOptions}
       />
 
       {props.connectivityMode === ConnectivityModeType.Delegate ? (

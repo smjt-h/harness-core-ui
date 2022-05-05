@@ -42,6 +42,14 @@ export interface ConnectorCreateEditProps {
   payload?: Connector
 }
 
+export interface HelpPanelOptions {
+  contentWidth: number
+  referenceId: string
+}
+export interface ConnectorWizardOptions {
+  helpPanel?: HelpPanelOptions
+}
+
 export interface CreateConnectorModalProps {
   onClose: () => void
   onSuccess: (data?: ConnectorRequestBody) => void | Promise<void>
@@ -55,6 +63,7 @@ export interface CreateConnectorModalProps {
   orgIdentifier: string
   projectIdentifier: string
   mock?: ResponseBoolean
+  setConnectorWizardOptions?: (options: ConnectorWizardOptions) => void
 }
 
 export const Connectors: ConnectorType = {

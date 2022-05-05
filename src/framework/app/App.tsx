@@ -13,6 +13,7 @@ import { FocusStyleManager } from '@blueprintjs/core'
 import { TooltipContextProvider, PageSpinner } from '@wings-software/uicore'
 import { tooltipDictionary } from '@wings-software/ng-tooltip'
 import { setAutoFreeze, enableMapSet } from 'immer'
+import { HelpPanelContextProvider, HelpPanelEnvironment } from '@harness/help-panel'
 import SessionToken from 'framework/utils/SessionToken'
 
 import { AppStoreProvider } from 'framework/AppStore/AppStoreContext'
@@ -194,18 +195,24 @@ export function AppWithAuthentication(props: AppProps): React.ReactElement {
               <AppErrorBoundary>
                 <FeaturesProvider>
                   <LicenseStoreProvider>
-                    <PermissionsProvider>
-                      <SideNavProvider>
-                        <Suspense fallback={<PageSpinner />}>
-                          <RouteDestinations />
-                        </Suspense>
-                        <NGTooltipEditorPortal
-                          showTooltipEditor={showTooltipEditor}
-                          onEditorClose={onEditorClose}
-                          setPreviewDatasetFromLocalStorage={onPreviewDatasetFromLocalStorage}
-                        />
-                      </SideNavProvider>
-                    </PermissionsProvider>
+                    <HelpPanelContextProvider
+                      accessToken="5EHT-ZBWYjweBLS62PNKf-vp3ZbXAylRUlPRPcHwqAg"
+                      space="jj62blws1bo9"
+                      environment={HelpPanelEnvironment.qa}
+                    >
+                      <PermissionsProvider>
+                        <SideNavProvider>
+                          <Suspense fallback={<PageSpinner />}>
+                            <RouteDestinations />
+                          </Suspense>
+                          <NGTooltipEditorPortal
+                            showTooltipEditor={showTooltipEditor}
+                            onEditorClose={onEditorClose}
+                            setPreviewDatasetFromLocalStorage={onPreviewDatasetFromLocalStorage}
+                          />
+                        </SideNavProvider>
+                      </PermissionsProvider>
+                    </HelpPanelContextProvider>
                     <ThirdPartyIntegrations />
                   </LicenseStoreProvider>
                 </FeaturesProvider>
