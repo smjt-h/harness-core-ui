@@ -48,7 +48,8 @@ const ApiKeyForm: React.FC<ApiKeyModalData> = ({ data, isEdit, onSubmit, apiKeyT
   const { showSuccess } = useToaster()
   const { mutate: createApiKey, loading: saving } = useCreateApiKey({ queryParams: { accountIdentifier: accountId } })
   const { mutate: editApiKey, loading: updating } = useUpdateApiKey({
-    identifier: data?.identifier || /* istanbul ignore next */ '', queryParams: { accountIdentifier: accountId }
+    identifier: data?.identifier || /* istanbul ignore next */ '',
+    queryParams: { accountIdentifier: accountId }
   })
 
   const handleSubmit = async (values: ApiKeyDTO): Promise<void> => {

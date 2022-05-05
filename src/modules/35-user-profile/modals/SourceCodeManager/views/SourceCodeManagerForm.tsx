@@ -160,7 +160,10 @@ const SourceCodeManagerForm: React.FC<SourceCodeManagerProps> = props => {
   const [loading, setLoading] = useState(isEditMode)
 
   const { mutate: saveSourceCodeManager } = useSaveSourceCodeManagers({ queryParams: { accountIdentifier: accountId } })
-  const { mutate: updateSourceCodeManage } = useUpdateSourceCodeManagers({ identifier: initialValues?.id as string, queryParams: { accountIdentifier: accountId } })
+  const { mutate: updateSourceCodeManage } = useUpdateSourceCodeManagers({
+    identifier: initialValues?.id as string,
+    queryParams: { accountIdentifier: accountId }
+  })
 
   const sourceCodeManagers: SourceCodeType[] = [
     {
