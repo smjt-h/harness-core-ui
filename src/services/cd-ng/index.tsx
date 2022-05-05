@@ -220,7 +220,6 @@ export interface AccessControlCheckError {
     | 'OAUTH_LOGIN_FAILED'
     | 'INVALID_TERRAFORM_TARGETS_REQUEST'
     | 'TERRAFORM_EXECUTION_ERROR'
-    | 'SERVERLESS_EXECUTION_ERROR'
     | 'FILE_READ_FAILED'
     | 'FILE_SIZE_EXCEEDS_LIMIT'
     | 'CLUSTER_NOT_FOUND'
@@ -335,6 +334,7 @@ export interface AccessControlCheckError {
     | 'AZURE_AUTHENTICATION_ERROR'
     | 'AZURE_CONFIG_ERROR'
     | 'DATA_PROCESSING_ERROR'
+    | 'INVALID_AZURE_AKS_REQUEST'
   correlationId?: string
   detailedMessage?: string
   failedPermissionChecks?: PermissionCheck[]
@@ -514,10 +514,9 @@ export interface AccountSettings {
 
 export type AcrArtifactConfig = ArtifactConfig & {
   connectorRef: string
-  metadata?: string
   registry: string
   repository: string
-  subscription: string
+  subscriptionId: string
   tag?: string
   tagRegex?: string
 }
@@ -532,6 +531,22 @@ export interface AcrBuildDetailsDTO {
   }
   repository?: string
   tag?: string
+}
+
+export interface AcrRegistriesDTO {
+  registries?: AcrRegistryDTO[]
+}
+
+export interface AcrRegistryDTO {
+  registry: string
+}
+
+export interface AcrRepositoriesDTO {
+  repositories?: AcrRepositoryDTO[]
+}
+
+export interface AcrRepositoryDTO {
+  repository: string
 }
 
 export interface AcrResponseDTO {
@@ -564,7 +579,6 @@ export interface ActivityDetail {
 export interface ActivitySummary {
   endTime?: number
   failedActivitiesCount?: number
-  get_id?: number
   heartBeatFailuresCount?: number
   startTime?: number
   successfulActivitiesCount?: number
@@ -756,7 +770,6 @@ export interface ArtifactConfig {
 }
 
 export interface ArtifactListConfig {
-  metadata?: string
   primary?: PrimaryArtifact
   sidecars?: SidecarArtifactWrapper[]
 }
@@ -804,7 +817,6 @@ export type ArtifactoryRegistryArtifactConfig = ArtifactConfig & {
   artifactPath?: string
   artifactPathFilter?: string
   connectorRef: string
-  metadata?: string
   repository: string
   repositoryFormat: 'docker' | 'generic'
   repositoryUrl?: string
@@ -867,7 +879,7 @@ export type AuditFilterProperties = FilterProperties & {
   )[]
   endTime?: number
   environments?: Environment[]
-  modules?: ('CD' | 'CI' | 'CV' | 'CF' | 'CE' | 'CORE' | 'PMS' | 'TEMPLATESERVICE')[]
+  modules?: ('CD' | 'CI' | 'CV' | 'CF' | 'CE' | 'STO' | 'CORE' | 'PMS' | 'TEMPLATESERVICE' | 'GOVERNANCE')[]
   principals?: Principal[]
   resources?: ResourceDTO[]
   scopes?: ResourceScopeDTO[]
@@ -1038,6 +1050,14 @@ export type AzureClientSecretKeyDTO = AzureAuthCredentialDTO & {
   secretRef: string
 }
 
+export interface AzureClusterDTO {
+  cluster: string
+}
+
+export interface AzureClustersDTO {
+  clusters?: AzureClusterDTO[]
+}
+
 export type AzureConnector = ConnectorConfigDTO & {
   azureEnvironmentType: 'AZURE' | 'AZURE_US_GOVERNMENT'
   credential: AzureCredential
@@ -1053,8 +1073,8 @@ export interface AzureCredentialSpec {
   [key: string]: any
 }
 
-export type AzureDevOpsSCMDTO = SourceCodeManagerDTO & {
-  authentication?: GithubAuthentication
+export type AzureInheritFromDelegateDetails = AzureCredentialSpec & {
+  auth: AzureMSIAuth
 }
 
 export type AzureKeyVaultConnectorDTO = ConnectorConfigDTO & {
@@ -1081,6 +1101,10 @@ export type AzureKeyVaultMetadataSpecDTO = SecretManagerMetadataSpecDTO & {
   vaultNames?: string[]
 }
 
+export interface AzureMSIAuth {
+  [key: string]: any
+}
+
 export type AzureManualDetails = AzureCredentialSpec & {
   applicationId: string
   auth: AzureAuthDTO
@@ -1105,7 +1129,7 @@ export type AzureRepoConnector = ConnectorConfigDTO & {
   apiAccess?: AzureRepoApiAccess
   authentication: AzureRepoAuthentication
   delegateSelectors?: string[]
-  type: 'Organization' | 'Repo'
+  type: 'Account' | 'Repo'
   url: string
   validationRepo?: string
 }
@@ -1123,6 +1147,10 @@ export interface AzureRepoHttpCredentialsSpecDTO {
   [key: string]: any
 }
 
+export type AzureRepoSCMDTO = SourceCodeManagerDTO & {
+  authentication?: AzureRepoAuthentication
+}
+
 export type AzureRepoSshCredentials = AzureRepoCredentialsDTO & {
   sshKeyRef: string
 }
@@ -1137,6 +1165,29 @@ export type AzureRepoUsernameToken = AzureRepoHttpCredentialsSpecDTO & {
   usernameRef?: string
 }
 
+export interface AzureResourceGroupDTO {
+  resourceGroup: string
+}
+
+export interface AzureResourceGroupsDTO {
+  resourceGroups?: AzureResourceGroupDTO[]
+}
+
+export interface AzureSubscriptionDTO {
+  subscriptionId: string
+  subscriptionName: string
+}
+
+export interface AzureSubscriptionsDTO {
+  subscriptions?: AzureSubscriptionDTO[]
+}
+
+export type AzureSystemAssignedMSIAuth = AzureAuthCredentialDTO & { [key: string]: any }
+
+export type AzureUserAssignedMSIAuth = AzureAuthCredentialDTO & {
+  clientId: string
+}
+
 export interface BarrierInfoConfig {
   identifier: string
   name: string
@@ -1147,6 +1198,10 @@ export type BarrierStepInfo = StepSpecType & {
 }
 
 export interface BaseSSHSpecDTO {
+  [key: string]: any
+}
+
+export interface BaseWinRmSpecDTO {
   [key: string]: any
 }
 
@@ -1208,7 +1263,6 @@ export type BitbucketStore = StoreConfig & {
   connectorRef: string
   folderPath?: string
   gitFetchType: 'Branch' | 'Commit'
-  metadata?: string
   paths?: string[]
   repoName?: string
 }
@@ -1772,7 +1826,6 @@ export type DatadogConnectorDTO = ConnectorConfigDTO & {
 }
 
 export interface DelegateConfiguration {
-  accountVersion?: boolean
   action?: 'SELF_DESTRUCT'
   delegateVersions?: string[]
   validUntil?: number
@@ -1881,6 +1934,20 @@ export interface DelegateMetaInfo {
   id?: string
 }
 
+export interface DelegateMtlsEndpointDetails {
+  accountId?: string
+  caCertificates?: string
+  fqdn?: string
+  mode?: 'LOOSE' | 'STRICT'
+  uuid?: string
+}
+
+export interface DelegateMtlsEndpointRequest {
+  caCertificates?: string
+  domainPrefix?: string
+  mode?: 'LOOSE' | 'STRICT'
+}
+
 export interface DelegateProfileDetailsNg {
   accountId?: string
   approvalRequired?: boolean
@@ -1914,6 +1981,9 @@ export interface DelegateProfileFilterProperties {
     | 'Audit'
     | 'Template'
     | 'EnvironmentGroup'
+    | 'FileStore'
+    | 'CCMRecommendation'
+    | 'Anomaly'
   identifier?: string
   name?: string
   selectors?: string[]
@@ -2058,7 +2128,6 @@ export type DockerConnectorDTO = ConnectorConfigDTO & {
 export type DockerHubArtifactConfig = ArtifactConfig & {
   connectorRef: string
   imagePath: string
-  metadata?: string
   tag?: string
   tagRegex?: string
 }
@@ -2272,6 +2341,7 @@ export interface EntityDetail {
     | 'HelmRollback'
     | 'Connectors'
     | 'Secrets'
+    | 'Files'
     | 'Service'
     | 'Environment'
     | 'EnvironmentGroup'
@@ -2283,6 +2353,8 @@ export interface EntityDetail {
     | 'CvVerificationJob'
     | 'IntegrationStage'
     | 'IntegrationSteps'
+    | 'SecurityStage'
+    | 'SecuritySteps'
     | 'CvKubernetesActivitySource'
     | 'DeploymentSteps'
     | 'DeploymentStage'
@@ -2297,7 +2369,7 @@ export interface EntityDetail {
     | 'ServiceNowCreate'
     | 'ServiceNowUpdate'
     | 'GovernancePolicies'
-    | 'POLICY_STEP'
+    | 'Policy'
     | 'Run'
     | 'RunTests'
     | 'Plugin'
@@ -2385,6 +2457,7 @@ export interface Environment {
 export interface EnvironmentDeploymentInfo {
   environmentInfoByServiceId?: EnvironmentInfoByServiceId[]
 }
+
 export interface EnvironmentGroupDeleteResponse {
   accountId?: string
   deleted?: boolean
@@ -2421,7 +2494,6 @@ export interface EnvironmentGroupResponseDTO {
   tags?: {
     [key: string]: string
   }
-  version?: number
 }
 
 export interface EnvironmentInfoByServiceId {
@@ -2434,6 +2506,7 @@ export interface EnvironmentInfoByServiceId {
   service_startTs?: number
   tag?: string
 }
+
 export interface EnvironmentRequestDTO {
   color?: string
   description?: string
@@ -2466,7 +2539,6 @@ export interface EnvironmentResponseDTO {
     [key: string]: string
   }
   type?: 'PreProduction' | 'Production'
-  version?: number
   yaml?: string
 }
 
@@ -2679,7 +2751,6 @@ export interface Error {
     | 'OAUTH_LOGIN_FAILED'
     | 'INVALID_TERRAFORM_TARGETS_REQUEST'
     | 'TERRAFORM_EXECUTION_ERROR'
-    | 'SERVERLESS_EXECUTION_ERROR'
     | 'FILE_READ_FAILED'
     | 'FILE_SIZE_EXCEEDS_LIMIT'
     | 'CLUSTER_NOT_FOUND'
@@ -2794,6 +2865,7 @@ export interface Error {
     | 'AZURE_AUTHENTICATION_ERROR'
     | 'AZURE_CONFIG_ERROR'
     | 'DATA_PROCESSING_ERROR'
+    | 'INVALID_AZURE_AKS_REQUEST'
   correlationId?: string
   detailedMessage?: string
   message?: string
@@ -3067,7 +3139,6 @@ export interface Failure {
     | 'OAUTH_LOGIN_FAILED'
     | 'INVALID_TERRAFORM_TARGETS_REQUEST'
     | 'TERRAFORM_EXECUTION_ERROR'
-    | 'SERVERLESS_EXECUTION_ERROR'
     | 'FILE_READ_FAILED'
     | 'FILE_SIZE_EXCEEDS_LIMIT'
     | 'CLUSTER_NOT_FOUND'
@@ -3182,6 +3253,7 @@ export interface Failure {
     | 'AZURE_AUTHENTICATION_ERROR'
     | 'AZURE_CONFIG_ERROR'
     | 'DATA_PROCESSING_ERROR'
+    | 'INVALID_AZURE_AKS_REQUEST'
   correlationId?: string
   errors?: ValidationError[]
   message?: string
@@ -3306,7 +3378,7 @@ export interface FeatureRestrictionDetailRequestDTO {
 export interface FeatureRestrictionDetailsDTO {
   allowed?: boolean
   description?: string
-  moduleType?: 'CD' | 'CI' | 'CV' | 'CF' | 'CE' | 'CORE' | 'PMS' | 'TEMPLATESERVICE'
+  moduleType?: 'CD' | 'CI' | 'CV' | 'CF' | 'CE' | 'STO' | 'CORE' | 'PMS' | 'TEMPLATESERVICE' | 'GOVERNANCE'
   name?:
     | 'TEST1'
     | 'TEST2'
@@ -3369,7 +3441,7 @@ export interface FeatureRestrictionDetailsDTO {
 
 export interface FeatureRestrictionMetadataDTO {
   edition?: 'COMMUNITY' | 'FREE' | 'TEAM' | 'ENTERPRISE'
-  moduleType?: 'CD' | 'CI' | 'CV' | 'CF' | 'CE' | 'CORE' | 'PMS' | 'TEMPLATESERVICE'
+  moduleType?: 'CD' | 'CI' | 'CV' | 'CF' | 'CE' | 'STO' | 'CORE' | 'PMS' | 'TEMPLATESERVICE' | 'GOVERNANCE'
   name?:
     | 'TEST1'
     | 'TEST2'
@@ -3427,7 +3499,7 @@ export interface FeatureRestrictionMetadataDTO {
 export interface FeedbackFormDTO {
   accountId?: string
   email?: string
-  moduleType?: 'CD' | 'CI' | 'CV' | 'CF' | 'CE' | 'CORE' | 'PMS' | 'TEMPLATESERVICE'
+  moduleType?: 'CD' | 'CI' | 'CV' | 'CF' | 'CE' | 'STO' | 'CORE' | 'PMS' | 'TEMPLATESERVICE' | 'GOVERNANCE'
   score?: number
   suggestion?: string
 }
@@ -3435,6 +3507,56 @@ export interface FeedbackFormDTO {
 export interface FieldValues {
   fieldValues?: {
     [key: string]: string[]
+  }
+}
+
+export interface FileDTO {
+  accountIdentifier: string
+  createdBy?: string
+  description?: string
+  draft?: boolean
+  fileUsage?: 'MANIFEST_FILE' | 'CONFIG' | 'SCRIPT'
+  identifier: string
+  mimeType?: string
+  name: string
+  orgIdentifier?: string
+  parentIdentifier: string
+  projectIdentifier?: string
+  tags?: NGTag[]
+  type: 'FILE' | 'FOLDER'
+}
+
+export interface FileDtoYamlWrapper {
+  file: FileDTO
+}
+
+export type FileNodeDTO = FileStoreNodeDTO & {}
+
+export interface FileStoreNodeDTO {
+  identifier: string
+  name: string
+  type: 'FILE' | 'FOLDER'
+}
+
+export interface FilesFilterProperties {
+  createdBy?: string
+  fileUsage?: 'MANIFEST_FILE' | 'CONFIG' | 'SCRIPT'
+  filterType?:
+    | 'Connector'
+    | 'DelegateProfile'
+    | 'Delegate'
+    | 'PipelineSetup'
+    | 'PipelineExecution'
+    | 'Deployment'
+    | 'Audit'
+    | 'Template'
+    | 'EnvironmentGroup'
+    | 'FileStore'
+    | 'CCMRecommendation'
+    | 'Anomaly'
+  referencedBy?: string
+  tags?: {
+    [key: string]: string
   }
 }
 
@@ -3462,6 +3584,9 @@ export interface FilterProperties {
     | 'Audit'
     | 'Template'
     | 'EnvironmentGroup'
+    | 'FileStore'
+    | 'CCMRecommendation'
+    | 'Anomaly'
   tags?: {
     [key: string]: string
   }
@@ -3475,6 +3600,13 @@ export type FlagConfigurationStepInfo = StepSpecType & {
 
 export interface FlowControlConfig {
   barriers?: BarrierInfoConfig[]
+}
+
+export interface FolderNodeDTO {
+  children?: FileStoreNodeDTO[]
+  identifier: string
+  name: string
+  type: 'FILE' | 'FOLDER'
 }
 
 export interface GatewayAccountRequestDTO {
@@ -3499,7 +3631,7 @@ export type GcpCloudCostConnector = ConnectorConfigDTO & {
 }
 
 export type GcpConnector = ConnectorConfigDTO & {
-  credential?: GcpConnectorCredential
+  credential: GcpConnectorCredential
   delegateSelectors?: string[]
 }
 
@@ -3533,7 +3665,6 @@ export interface GcpResponseDTO {
 export type GcrArtifactConfig = ArtifactConfig & {
   connectorRef: string
   imagePath: string
-  metadata?: string
   registryHostname: string
   tag?: string
   tagRegex?: string
@@ -3571,6 +3702,10 @@ export type GcsStoreConfig = StoreConfig & {
 
 export type GenericEntityFilter = Filter & {
   filterType?: string
+}
+
+export interface GetFileResponse {
+  [key: string]: any
 }
 
 export interface GitAuthenticationDTO {
@@ -3633,6 +3768,7 @@ export interface GitEntityBranchFilterSummaryProperties {
     | 'HelmRollback'
     | 'Connectors'
     | 'Secrets'
+    | 'Files'
     | 'Service'
     | 'Environment'
     | 'EnvironmentGroup'
@@ -3644,6 +3780,8 @@ export interface GitEntityBranchFilterSummaryProperties {
     | 'CvVerificationJob'
     | 'IntegrationStage'
     | 'IntegrationSteps'
+    | 'SecurityStage'
+    | 'SecuritySteps'
     | 'CvKubernetesActivitySource'
     | 'DeploymentSteps'
     | 'DeploymentStage'
@@ -3658,7 +3796,7 @@ export interface GitEntityBranchFilterSummaryProperties {
     | 'ServiceNowCreate'
     | 'ServiceNowUpdate'
     | 'GovernancePolicies'
-    | 'POLICY_STEP'
+    | 'Policy'
     | 'Run'
     | 'RunTests'
     | 'Plugin'
@@ -3676,7 +3814,7 @@ export interface GitEntityBranchFilterSummaryProperties {
     | 'ServerlessAwsLambdaDeploy'
     | 'ServerlessAwsLambdaRollback'
   )[]
-  moduleType?: 'CD' | 'CI' | 'CV' | 'CF' | 'CE' | 'CORE' | 'PMS' | 'TEMPLATESERVICE'
+  moduleType?: 'CD' | 'CI' | 'CV' | 'CF' | 'CE' | 'STO' | 'CORE' | 'PMS' | 'TEMPLATESERVICE' | 'GOVERNANCE'
   searchTerm?: string
 }
 
@@ -3710,6 +3848,7 @@ export interface GitEntityFilterProperties {
     | 'HelmRollback'
     | 'Connectors'
     | 'Secrets'
+    | 'Files'
     | 'Service'
     | 'Environment'
     | 'EnvironmentGroup'
@@ -3721,6 +3860,8 @@ export interface GitEntityFilterProperties {
     | 'CvVerificationJob'
     | 'IntegrationStage'
     | 'IntegrationSteps'
+    | 'SecurityStage'
+    | 'SecuritySteps'
     | 'CvKubernetesActivitySource'
     | 'DeploymentSteps'
     | 'DeploymentStage'
@@ -3735,7 +3876,7 @@ export interface GitEntityFilterProperties {
     | 'ServiceNowCreate'
     | 'ServiceNowUpdate'
     | 'GovernancePolicies'
-    | 'POLICY_STEP'
+    | 'Policy'
     | 'Run'
     | 'RunTests'
     | 'Plugin'
@@ -3754,7 +3895,7 @@ export interface GitEntityFilterProperties {
     | 'ServerlessAwsLambdaRollback'
   )[]
   gitSyncConfigIdentifiers?: string[]
-  moduleType?: 'CD' | 'CI' | 'CV' | 'CF' | 'CE' | 'CORE' | 'PMS' | 'TEMPLATESERVICE'
+  moduleType?: 'CD' | 'CI' | 'CV' | 'CF' | 'CE' | 'STO' | 'CORE' | 'PMS' | 'TEMPLATESERVICE' | 'GOVERNANCE'
   searchTerm?: string
 }
 
@@ -3820,6 +3961,7 @@ export interface GitFullSyncEntityInfoDTO {
     | 'HelmRollback'
     | 'Connectors'
     | 'Secrets'
+    | 'Files'
     | 'Service'
     | 'Environment'
     | 'EnvironmentGroup'
@@ -3831,6 +3973,8 @@ export interface GitFullSyncEntityInfoDTO {
     | 'CvVerificationJob'
     | 'IntegrationStage'
     | 'IntegrationSteps'
+    | 'SecurityStage'
+    | 'SecuritySteps'
     | 'CvKubernetesActivitySource'
     | 'DeploymentSteps'
     | 'DeploymentStage'
@@ -3845,7 +3989,7 @@ export interface GitFullSyncEntityInfoDTO {
     | 'ServiceNowCreate'
     | 'ServiceNowUpdate'
     | 'GovernancePolicies'
-    | 'POLICY_STEP'
+    | 'Policy'
     | 'Run'
     | 'RunTests'
     | 'Plugin'
@@ -3905,6 +4049,7 @@ export interface GitFullSyncEntityInfoFilterKeys {
     | 'HelmRollback'
     | 'Connectors'
     | 'Secrets'
+    | 'Files'
     | 'Service'
     | 'Environment'
     | 'EnvironmentGroup'
@@ -3916,6 +4061,8 @@ export interface GitFullSyncEntityInfoFilterKeys {
     | 'CvVerificationJob'
     | 'IntegrationStage'
     | 'IntegrationSteps'
+    | 'SecurityStage'
+    | 'SecuritySteps'
     | 'CvKubernetesActivitySource'
     | 'DeploymentSteps'
     | 'DeploymentStage'
@@ -3930,7 +4077,7 @@ export interface GitFullSyncEntityInfoFilterKeys {
     | 'ServiceNowCreate'
     | 'ServiceNowUpdate'
     | 'GovernancePolicies'
-    | 'POLICY_STEP'
+    | 'Policy'
     | 'Run'
     | 'RunTests'
     | 'Plugin'
@@ -3972,7 +4119,6 @@ export type GitLabStore = StoreConfig & {
   connectorRef: string
   folderPath?: string
   gitFetchType: 'Branch' | 'Commit'
-  metadata?: string
   paths?: string[]
   repoName?: string
 }
@@ -4004,6 +4150,10 @@ export interface GitPRCreateRequest {
   yamlGitConfigRef: string
 }
 
+export interface GitRepositoryResponseDTO {
+  name?: string
+}
+
 export type GitSSHAuthenticationDTO = GitAuthenticationDTO & {
   sshKeyRef: string
 }
@@ -4014,7 +4164,6 @@ export type GitStore = StoreConfig & {
   connectorRef: string
   folderPath?: string
   gitFetchType: 'Branch' | 'Commit'
-  metadata?: string
   paths?: string[]
   repoName?: string
 }
@@ -4032,7 +4181,6 @@ export interface GitSyncConfig {
 }
 
 export interface GitSyncEntityDTO {
-  accountId?: string
   branch?: string
   entityGitPath?: string
   entityIdentifier?: string
@@ -4067,6 +4215,7 @@ export interface GitSyncEntityDTO {
     | 'HelmRollback'
     | 'Connectors'
     | 'Secrets'
+    | 'Files'
     | 'Service'
     | 'Environment'
     | 'EnvironmentGroup'
@@ -4078,6 +4227,8 @@ export interface GitSyncEntityDTO {
     | 'CvVerificationJob'
     | 'IntegrationStage'
     | 'IntegrationSteps'
+    | 'SecurityStage'
+    | 'SecuritySteps'
     | 'CvKubernetesActivitySource'
     | 'DeploymentSteps'
     | 'DeploymentStage'
@@ -4092,7 +4243,7 @@ export interface GitSyncEntityDTO {
     | 'ServiceNowCreate'
     | 'ServiceNowUpdate'
     | 'GovernancePolicies'
-    | 'POLICY_STEP'
+    | 'Policy'
     | 'Run'
     | 'RunTests'
     | 'Plugin'
@@ -4112,8 +4263,6 @@ export interface GitSyncEntityDTO {
   entityUrl?: string
   folderPath?: string
   gitConnectorId?: string
-  lastCommitId?: string
-  repoProvider?: 'github' | 'gitlab' | 'bitbucket' | 'unknown'
   repoUrl?: string
 }
 
@@ -4148,6 +4297,7 @@ export interface GitSyncEntityListDTO {
     | 'HelmRollback'
     | 'Connectors'
     | 'Secrets'
+    | 'Files'
     | 'Service'
     | 'Environment'
     | 'EnvironmentGroup'
@@ -4159,6 +4309,8 @@ export interface GitSyncEntityListDTO {
     | 'CvVerificationJob'
     | 'IntegrationStage'
     | 'IntegrationSteps'
+    | 'SecurityStage'
+    | 'SecuritySteps'
     | 'CvKubernetesActivitySource'
     | 'DeploymentSteps'
     | 'DeploymentStage'
@@ -4173,7 +4325,7 @@ export interface GitSyncEntityListDTO {
     | 'ServiceNowCreate'
     | 'ServiceNowUpdate'
     | 'GovernancePolicies'
-    | 'POLICY_STEP'
+    | 'Policy'
     | 'Run'
     | 'RunTests'
     | 'Plugin'
@@ -4244,6 +4396,7 @@ export interface GitSyncErrorDTO {
     | 'HelmRollback'
     | 'Connectors'
     | 'Secrets'
+    | 'Files'
     | 'Service'
     | 'Environment'
     | 'EnvironmentGroup'
@@ -4255,6 +4408,8 @@ export interface GitSyncErrorDTO {
     | 'CvVerificationJob'
     | 'IntegrationStage'
     | 'IntegrationSteps'
+    | 'SecurityStage'
+    | 'SecuritySteps'
     | 'CvKubernetesActivitySource'
     | 'DeploymentSteps'
     | 'DeploymentStage'
@@ -4269,7 +4424,7 @@ export interface GitSyncErrorDTO {
     | 'ServiceNowCreate'
     | 'ServiceNowUpdate'
     | 'GovernancePolicies'
-    | 'POLICY_STEP'
+    | 'Policy'
     | 'Run'
     | 'RunTests'
     | 'Plugin'
@@ -4289,7 +4444,6 @@ export interface GitSyncErrorDTO {
   errorType?: 'GIT_TO_HARNESS' | 'CONNECTIVITY_ISSUE' | 'FULL_SYNC'
   failureReason?: string
   repoId?: string
-  repoProvider?: 'github' | 'gitlab' | 'bitbucket' | 'unknown'
   repoUrl?: string
   scopes?: Scope[]
   status?: 'ACTIVE' | 'DISCARDED' | 'EXPIRED' | 'RESOLVED' | 'OVERRIDDEN'
@@ -4311,7 +4465,7 @@ export interface GitSyncRepoFiles {
 
 export interface GitSyncRepoFilesList {
   gitSyncRepoFilesList?: GitSyncRepoFiles[]
-  moduleType?: 'CD' | 'CI' | 'CV' | 'CF' | 'CE' | 'CORE' | 'PMS' | 'TEMPLATESERVICE'
+  moduleType?: 'CD' | 'CI' | 'CV' | 'CF' | 'CE' | 'STO' | 'CORE' | 'PMS' | 'TEMPLATESERVICE' | 'GOVERNANCE'
 }
 
 export interface GitSyncSettingsDTO {
@@ -4378,7 +4532,6 @@ export type GithubStore = StoreConfig & {
   connectorRef: string
   folderPath?: string
   gitFetchType: 'Branch' | 'Commit'
-  metadata?: string
   paths?: string[]
   repoName?: string
 }
@@ -4516,9 +4669,7 @@ export type HelmChartManifest = ManifestAttributes & {
   store?: StoreConfigWrapper
 }
 
-export type HelmDeployStepInfo = StepSpecType & {
-  delegateSelectors?: string[]
-}
+export type HelmDeployStepInfo = StepSpecType & { [key: string]: any }
 
 export interface HelmManifestCommandFlag {
   commandType:
@@ -4535,9 +4686,7 @@ export interface HelmManifestCommandFlag {
   flag?: string
 }
 
-export type HelmRollbackStepInfo = StepSpecType & {
-  delegateSelectors?: string[]
-}
+export type HelmRollbackStepInfo = StepSpecType & { [key: string]: any }
 
 export interface HoldingScope {
   nodeSetupId: string
@@ -4560,6 +4709,11 @@ export interface HostValidationDTO {
   error?: ErrorDetail
   host?: string
   status?: 'SUCCESS' | 'FAILED'
+}
+
+export interface HostValidationParams {
+  hosts?: string[]
+  tags?: string[]
 }
 
 export interface HttpHeaderConfig {
@@ -4644,7 +4798,6 @@ export type HttpStateExecutionData = DelegateResponseData & {
 
 export type HttpStepInfo = StepSpecType & {
   assertion?: string
-  delegateSelectors?: string[]
   headers?: HttpHeaderConfig[]
   method: string
   outputVariables?: NGVariable[]
@@ -4692,7 +4845,7 @@ export interface Infrastructure {
 export interface InfrastructureDef {
   provisioner?: ExecutionElementConfig
   spec: Infrastructure
-  type: 'KubernetesDirect' | 'KubernetesGcp' | 'ServerlessAwsLambda' | 'Pdc'
+  type: 'KubernetesDirect' | 'KubernetesGcp' | 'KubernetesAzure' | 'Pdc' | 'ServerlessAwsLambda'
 }
 
 export interface InfrastructureDetails {
@@ -4784,7 +4937,6 @@ export type JexlCriteriaSpec = CriteriaSpec & {
 export type JiraApprovalStepInfo = StepSpecType & {
   approvalCriteria: CriteriaSpecWrapper
   connectorRef: string
-  delegateSelectors?: string[]
   issueKey: string
   rejectionCriteria?: CriteriaSpecWrapper
 }
@@ -4799,7 +4951,6 @@ export type JiraConnector = ConnectorConfigDTO & {
 
 export type JiraCreateStepInfo = StepSpecType & {
   connectorRef: string
-  delegateSelectors?: string[]
   fields?: JiraField[]
   issueType: string
   projectKey: string
@@ -4884,34 +5035,13 @@ export interface JiraStatusNG {
 
 export type JiraUpdateStepInfo = StepSpecType & {
   connectorRef: string
-  delegateSelectors?: string[]
   fields?: JiraField[]
   issueKey: string
   transitionTo?: TransitionTo
 }
 
 export interface JsonNode {
-  array?: boolean
-  bigDecimal?: boolean
-  bigInteger?: boolean
-  binary?: boolean
-  boolean?: boolean
-  containerNode?: boolean
-  double?: boolean
-  float?: boolean
-  floatingPointNumber?: boolean
-  int?: boolean
-  integralNumber?: boolean
-  long?: boolean
-  missingNode?: boolean
-  nodeType?: 'ARRAY' | 'BINARY' | 'BOOLEAN' | 'MISSING' | 'NULL' | 'NUMBER' | 'OBJECT' | 'POJO' | 'STRING'
-  null?: boolean
-  number?: boolean
-  object?: boolean
-  pojo?: boolean
-  short?: boolean
-  textual?: boolean
-  valueNode?: boolean
+  [key: string]: any
 }
 
 export type K8SDirectInfrastructure = Infrastructure & {
@@ -4921,29 +5051,33 @@ export type K8SDirectInfrastructure = Infrastructure & {
 }
 
 export type K8sApplyStepInfo = StepSpecType & {
-  delegateSelectors?: string[]
   filePaths?: string[]
   skipDryRun?: boolean
   skipSteadyStateCheck?: boolean
 }
 
+export type K8sAzureInfrastructure = Infrastructure & {
+  cluster: string
+  connectorRef: string
+  namespace: string
+  releaseName: string
+  resourceGroup: string
+  subscription: string
+}
+
 export type K8sBGSwapServicesStepInfo = StepSpecType & {
-  delegateSelectors?: string[]
   skipDryRun?: boolean
 }
 
 export type K8sBlueGreenStepInfo = StepSpecType & {
-  delegateSelectors?: string[]
   skipDryRun?: boolean
 }
 
 export type K8sCanaryDeleteStepInfo = StepSpecType & {
-  delegateSelectors?: string[]
   skipDryRun?: boolean
 }
 
 export type K8sCanaryStepInfo = StepSpecType & {
-  delegateSelectors?: string[]
   instanceSelection: InstanceSelectionWrapper
   skipDryRun?: boolean
 }
@@ -4960,7 +5094,6 @@ export interface K8sContainer {
 }
 
 export type K8sDeleteStepInfo = StepSpecType & {
-  delegateSelectors?: string[]
   deleteResources: DeleteResourcesWrapper
   skipDryRun?: boolean
 }
@@ -4994,17 +5127,14 @@ export type K8sManifest = ManifestAttributes & {
 }
 
 export type K8sRollingRollbackStepInfo = StepSpecType & {
-  delegateSelectors?: string[]
   skipDryRun?: boolean
 }
 
 export type K8sRollingStepInfo = StepSpecType & {
-  delegateSelectors?: string[]
   skipDryRun?: boolean
 }
 
 export type K8sScaleStepInfo = StepSpecType & {
-  delegateSelectors?: string[]
   instanceSelection: InstanceSelectionWrapper
   skipDryRun?: boolean
   skipSteadyStateCheck?: boolean
@@ -5016,6 +5146,16 @@ export type KerberosConfigDTO = BaseSSHSpecDTO & {
   realm: string
   spec?: TGTGenerationSpecDTO
   tgtGenerationMethod?: 'KeyTabFilePath' | 'Password'
+}
+
+export type KerberosWinRmConfigDTO = BaseWinRmSpecDTO & {
+  principal: string
+  realm: string
+  skipCertChecks?: boolean
+  spec?: TGTGenerationSpecDTO
+  tgtGenerationMethod?: 'KeyTabFilePath' | 'Password'
+  useNoProfile?: boolean
+  useSSL?: boolean
 }
 
 export interface KeyValuePair {
@@ -5079,9 +5219,7 @@ export type KubernetesServiceAccountDTO = KubernetesAuthCredentialDTO & {
   serviceAccountTokenRef: string
 }
 
-export type KubernetesServiceSpec = ServiceSpec & {
-  metadata?: string
-}
+export type KubernetesServiceSpec = ServiceSpec & {}
 
 export type KubernetesUserNamePasswordDTO = KubernetesAuthCredentialDTO & {
   passwordRef: string
@@ -5201,7 +5339,7 @@ export interface LicensesWithSummaryDTO {
   edition?: 'COMMUNITY' | 'FREE' | 'TEAM' | 'ENTERPRISE'
   licenseType?: 'TRIAL' | 'PAID'
   maxExpiryTime?: number
-  moduleType?: 'CD' | 'CI' | 'CV' | 'CF' | 'CE' | 'CORE' | 'PMS' | 'TEMPLATESERVICE'
+  moduleType?: 'CD' | 'CI' | 'CV' | 'CF' | 'CE' | 'STO' | 'CORE' | 'PMS' | 'TEMPLATESERVICE' | 'GOVERNANCE'
 }
 
 export interface Limits {
@@ -5302,7 +5440,7 @@ export interface ModuleLicenseDTO {
   id?: string
   lastModifiedAt?: number
   licenseType?: 'TRIAL' | 'PAID'
-  moduleType?: 'CD' | 'CI' | 'CV' | 'CF' | 'CE' | 'CORE' | 'PMS' | 'TEMPLATESERVICE'
+  moduleType?: 'CD' | 'CI' | 'CV' | 'CF' | 'CE' | 'STO' | 'CORE' | 'PMS' | 'TEMPLATESERVICE' | 'GOVERNANCE'
   startTime?: number
   status?: 'ACTIVE' | 'DELETED' | 'EXPIRED'
   trialExtended?: boolean
@@ -5338,6 +5476,15 @@ export interface NGVariableOverrideSets {
   variables?: NGVariable[]
 }
 
+export type NTLMConfigDTO = BaseWinRmSpecDTO & {
+  domain: string
+  password: string
+  skipCertChecks?: boolean
+  useNoProfile?: boolean
+  useSSL?: boolean
+  username: string
+}
+
 export interface NamedNodeMap {
   length?: number
 }
@@ -5351,9 +5498,7 @@ export type NativeHelmInstanceInfoDTO = InstanceInfoDTO & {
   releaseName?: string
 }
 
-export type NativeHelmServiceSpec = ServiceSpec & {
-  metadata?: string
-}
+export type NativeHelmServiceSpec = ServiceSpec & {}
 
 export type NewRelicConnectorDTO = ConnectorConfigDTO & {
   apiKeyRef: string
@@ -5490,9 +5635,10 @@ export type NumberNGVariable = NGVariable & {
   value: number
 }
 
-export type OAuthSettings = NGAuthSettings & {
+export interface OAuthSettings {
   allowedProviders?: ('AZURE' | 'BITBUCKET' | 'GITHUB' | 'GITLAB' | 'GOOGLE' | 'LINKEDIN')[]
   filter?: string
+  settingsType?: 'USER_PASSWORD' | 'SAML' | 'LDAP' | 'OAUTH'
 }
 
 export interface OAuthSignupDTO {
@@ -5691,6 +5837,20 @@ export interface PageEnvironmentResponseDTO {
   pageItemCount?: number
   pageSize?: number
   totalItems?: number
+  totalPages?: number
+}
+
+export interface PageFileDTO {
+  content?: FileDTO[]
+  empty?: boolean
+  first?: boolean
+  last?: boolean
+  number?: number
+  numberOfElements?: number
+  pageable?: Pageable
+  size?: number
+  sort?: Sort
+  totalElements?: number
   totalPages?: number
 }
 
@@ -6005,7 +6165,7 @@ export interface ParameterFieldString {
 }
 
 export interface PartialSchemaDTO {
-  moduleType?: 'CD' | 'CI' | 'CV' | 'CF' | 'CE' | 'CORE' | 'PMS' | 'TEMPLATESERVICE'
+  moduleType?: 'CD' | 'CI' | 'CV' | 'CF' | 'CE' | 'STO' | 'CORE' | 'PMS' | 'TEMPLATESERVICE' | 'GOVERNANCE'
   namespace?: string
   nodeName?: string
   nodeType?: string
@@ -6084,7 +6244,6 @@ export interface PermissionCheck {
 export type PhysicalDataCenterConnectorDTO = ConnectorConfigDTO & {
   delegateSelectors?: string[]
   hosts?: HostDTO[]
-  sshKeyRef: string
 }
 
 export interface PipelineConfig {
@@ -6141,9 +6300,9 @@ export interface PipelineInfoConfig {
   tags?: {
     [key: string]: string
   }
+  template?: TemplateLinkConfig
   timeout?: string
   variables?: NGVariable[]
-  template?: TemplateLinkConfig
 }
 
 export interface PipelineInfrastructure {
@@ -6203,7 +6362,7 @@ export interface PollingResponseDTO {
 
 export interface PrimaryArtifact {
   spec: ArtifactConfig
-  type: 'DockerRegistry' | 'Gcr' | 'Ecr' | 'Acr' | 'Nexus3Registry' | 'ArtifactoryRegistry' | 'CustomArtifact'
+  type: 'DockerRegistry' | 'Gcr' | 'Ecr' | 'Nexus3Registry' | 'ArtifactoryRegistry' | 'CustomArtifact' | 'Acr'
 }
 
 export interface Principal {
@@ -6218,7 +6377,7 @@ export interface Project {
   color?: string
   description?: string
   identifier: string
-  modules?: ('CD' | 'CI' | 'CV' | 'CF' | 'CE' | 'CORE' | 'PMS' | 'TEMPLATESERVICE')[]
+  modules?: ('CD' | 'CI' | 'CV' | 'CF' | 'CE' | 'STO' | 'CORE' | 'PMS' | 'TEMPLATESERVICE' | 'GOVERNANCE')[]
   name: string
   orgIdentifier?: string
   tags?: {
@@ -6365,6 +6524,8 @@ export interface ResourceDTO {
     | 'API_KEY'
     | 'TOKEN'
     | 'DELEGATE_TOKEN'
+    | 'GOVERNANCE_POLICY'
+    | 'GOVERNANCE_POLICY_SET'
 }
 
 export interface ResourceGroup {
@@ -6418,6 +6579,20 @@ export interface ResponseAccountResourcesDTO {
 export interface ResponseAccountSettingResponse {
   correlationId?: string
   data?: AccountSettingResponse
+  metaData?: { [key: string]: any }
+  status?: 'SUCCESS' | 'FAILURE' | 'ERROR'
+}
+
+export interface ResponseAcrRegistriesDTO {
+  correlationId?: string
+  data?: AcrRegistriesDTO
+  metaData?: { [key: string]: any }
+  status?: 'SUCCESS' | 'FAILURE' | 'ERROR'
+}
+
+export interface ResponseAcrRepositoriesDTO {
+  correlationId?: string
+  data?: AcrRepositoriesDTO
   metaData?: { [key: string]: any }
   status?: 'SUCCESS' | 'FAILURE' | 'ERROR'
 }
@@ -6481,6 +6656,27 @@ export interface ResponseArtifactoryRepoDetailsDTO {
 export interface ResponseArtifactoryResponseDTO {
   correlationId?: string
   data?: ArtifactoryResponseDTO
+  metaData?: { [key: string]: any }
+  status?: 'SUCCESS' | 'FAILURE' | 'ERROR'
+}
+
+export interface ResponseAzureClustersDTO {
+  correlationId?: string
+  data?: AzureClustersDTO
+  metaData?: { [key: string]: any }
+  status?: 'SUCCESS' | 'FAILURE' | 'ERROR'
+}
+
+export interface ResponseAzureResourceGroupsDTO {
+  correlationId?: string
+  data?: AzureResourceGroupsDTO
+  metaData?: { [key: string]: any }
+  status?: 'SUCCESS' | 'FAILURE' | 'ERROR'
+}
+
+export interface ResponseAzureSubscriptionsDTO {
+  correlationId?: string
+  data?: AzureSubscriptionsDTO
   metaData?: { [key: string]: any }
   status?: 'SUCCESS' | 'FAILURE' | 'ERROR'
 }
@@ -6562,6 +6758,13 @@ export interface ResponseDashboardWorkloadDeployment {
   status?: 'SUCCESS' | 'FAILURE' | 'ERROR'
 }
 
+export interface ResponseDelegateStatus {
+  correlationId?: string
+  data?: 'SUCCESS' | 'IN_PROGRESS' | 'FAILURE'
+  metaData?: { [key: string]: any }
+  status?: 'SUCCESS' | 'FAILURE' | 'ERROR'
+}
+
 export interface ResponseDeploymentStatsSummary {
   correlationId?: string
   data?: DeploymentStatsSummary
@@ -6631,6 +6834,7 @@ export interface ResponseEnvironmentDeploymentInfo {
   metaData?: { [key: string]: any }
   status?: 'SUCCESS' | 'FAILURE' | 'ERROR'
 }
+
 export interface ResponseEnvironmentGroupDeleteResponse {
   correlationId?: string
   data?: EnvironmentGroupDeleteResponse
@@ -6687,9 +6891,23 @@ export interface ResponseFieldValues {
   status?: 'SUCCESS' | 'FAILURE' | 'ERROR'
 }
 
+export interface ResponseFileDTO {
+  correlationId?: string
+  data?: FileDTO
+  metaData?: { [key: string]: any }
+  status?: 'SUCCESS' | 'FAILURE' | 'ERROR'
+}
+
 export interface ResponseFilterDTO {
   correlationId?: string
   data?: FilterDTO
+  metaData?: { [key: string]: any }
+  status?: 'SUCCESS' | 'FAILURE' | 'ERROR'
+}
+
+export interface ResponseFolderNodeDTO {
+  correlationId?: string
+  data?: FolderNodeDTO
   metaData?: { [key: string]: any }
   status?: 'SUCCESS' | 'FAILURE' | 'ERROR'
 }
@@ -6711,6 +6929,13 @@ export interface ResponseGcrBuildDetailsDTO {
 export interface ResponseGcrResponseDTO {
   correlationId?: string
   data?: GcrResponseDTO
+  metaData?: { [key: string]: any }
+  status?: 'SUCCESS' | 'FAILURE' | 'ERROR'
+}
+
+export interface ResponseGetFileResponse {
+  correlationId?: string
+  data?: GetFileResponse
   metaData?: { [key: string]: any }
   status?: 'SUCCESS' | 'FAILURE' | 'ERROR'
 }
@@ -6890,7 +7115,7 @@ export interface ResponseListExecutionStatus {
     | 'INTERVENTION_WAITING'
     | 'APPROVAL_WAITING'
     | 'APPROVAL_REJECTED'
-    | 'WAITING'
+    | 'Waiting'
   )[]
   metaData?: { [key: string]: any }
   status?: 'SUCCESS' | 'FAILURE' | 'ERROR'
@@ -6906,6 +7131,13 @@ export interface ResponseListFeatureRestrictionDetailsDTO {
 export interface ResponseListFeatureRestrictionMetadataDTO {
   correlationId?: string
   data?: FeatureRestrictionMetadataDTO[]
+  metaData?: { [key: string]: any }
+  status?: 'SUCCESS' | 'FAILURE' | 'ERROR'
+}
+
+export interface ResponseListGitRepositoryResponseDTO {
+  correlationId?: string
+  data?: GitRepositoryResponseDTO[]
   metaData?: { [key: string]: any }
   status?: 'SUCCESS' | 'FAILURE' | 'ERROR'
 }
@@ -6991,7 +7223,7 @@ export interface ResponseListServiceAccountDTO {
 
 export interface ResponseListServiceDefinitionType {
   correlationId?: string
-  data?: ('Kubernetes' | 'NativeHelm' | 'ServerlessAwsLambda' | 'Ssh' | 'WinRm')[]
+  data?: ('Kubernetes' | 'NativeHelm' | 'Ssh' | 'WinRm' | 'ServerlessAwsLambda')[]
   metaData?: { [key: string]: any }
   status?: 'SUCCESS' | 'FAILURE' | 'ERROR'
 }
@@ -7287,7 +7519,6 @@ export interface ResponseMessage {
     | 'OAUTH_LOGIN_FAILED'
     | 'INVALID_TERRAFORM_TARGETS_REQUEST'
     | 'TERRAFORM_EXECUTION_ERROR'
-    | 'SERVERLESS_EXECUTION_ERROR'
     | 'FILE_READ_FAILED'
     | 'FILE_SIZE_EXCEEDS_LIMIT'
     | 'CLUSTER_NOT_FOUND'
@@ -7402,6 +7633,7 @@ export interface ResponseMessage {
     | 'AZURE_AUTHENTICATION_ERROR'
     | 'AZURE_CONFIG_ERROR'
     | 'DATA_PROCESSING_ERROR'
+    | 'INVALID_AZURE_AKS_REQUEST'
   exception?: Throwable
   failureTypes?: (
     | 'EXPIRED'
@@ -7526,6 +7758,13 @@ export interface ResponsePageEnvironmentResponse {
 export interface ResponsePageEnvironmentResponseDTO {
   correlationId?: string
   data?: PageEnvironmentResponseDTO
+  metaData?: { [key: string]: any }
+  status?: 'SUCCESS' | 'FAILURE' | 'ERROR'
+}
+
+export interface ResponsePageFileDTO {
+  correlationId?: string
+  data?: PageFileDTO
   metaData?: { [key: string]: any }
   status?: 'SUCCESS' | 'FAILURE' | 'ERROR'
 }
@@ -7884,6 +8123,24 @@ export interface ResponseSetHelmCommandFlagType {
   status?: 'SUCCESS' | 'FAILURE' | 'ERROR'
 }
 
+export interface ResponseSetString {
+  correlationId?: string
+  data?: string[]
+  metaData?: { [key: string]: any }
+  status?: 'SUCCESS' | 'FAILURE' | 'ERROR'
+}
+
+export interface ResponseSetupStatus {
+  correlationId?: string
+  data?:
+    | 'SUCCESS'
+    | 'DELEGATE_PROVISION_FAILURE'
+    | 'K8S_CONNECTOR_PROVISION_FAILURE'
+    | 'DOCKER_CONNECTOR_PROVISION_FAILURE'
+  metaData?: { [key: string]: any }
+  status?: 'SUCCESS' | 'FAILURE' | 'ERROR'
+}
+
 export interface ResponseSourceCodeManagerDTO {
   correlationId?: string
   data?: SourceCodeManagerDTO
@@ -8034,6 +8291,14 @@ export interface RestResponseDelegateGroupListing {
     [key: string]: { [key: string]: any }
   }
   resource?: DelegateGroupListing
+  responseMessages?: ResponseMessage[]
+}
+
+export interface RestResponseDelegateMtlsEndpointDetails {
+  metaData?: {
+    [key: string]: { [key: string]: any }
+  }
+  resource?: DelegateMtlsEndpointDetails
   responseMessages?: ResponseMessage[]
 }
 
@@ -8194,6 +8459,7 @@ export interface RoleAssignmentFilter {
   disabledFilter?: boolean[]
   harnessManagedFilter?: boolean[]
   principalFilter?: Principal[]
+  principalScopeLevelFilter?: string[]
   principalTypeFilter?: ('USER' | 'USER_GROUP' | 'SERVICE' | 'API_KEY' | 'SERVICE_ACCOUNT')[]
   resourceGroupFilter?: string[]
   roleFilter?: string[]
@@ -8526,7 +8792,7 @@ export interface SecretDTOV2 {
   tags?: {
     [key: string]: string
   }
-  type: 'SecretFile' | 'SecretText' | 'SSHKey'
+  type: 'SecretFile' | 'SecretText' | 'SSHKey' | 'WinRmCredentials'
 }
 
 export type SecretFileSpecDTO = SecretSpecDTO & {
@@ -8600,7 +8866,7 @@ export interface SecretResourceFilterDTO {
   identifiers?: string[]
   includeSecretsFromEverySubScope?: boolean
   searchTerm?: string
-  secretTypes?: ('SecretFile' | 'SecretText' | 'SSHKey')[]
+  secretTypes?: ('SecretFile' | 'SecretText' | 'SSHKey' | 'WinRmCredentials')[]
   sourceCategory?:
     | 'CLOUD_PROVIDER'
     | 'SECRET_MANAGER'
@@ -8629,7 +8895,7 @@ export type SecretTextSpecDTO = SecretSpecDTO & {
 }
 
 export interface SecretValidationMetaData {
-  type: 'SecretFile' | 'SecretText' | 'SSHKey'
+  type: 'SecretFile' | 'SecretText' | 'SSHKey' | 'WinRmCredentials'
 }
 
 export interface SecretValidationResultDTO {
@@ -8644,7 +8910,6 @@ export interface Serve {
 
 export type ServerlessAwsLambdaDeployStepInfo = StepSpecType & {
   commandOptions?: string
-  delegateSelectors?: string[]
 }
 
 export type ServerlessAwsLambdaInfrastructure = Infrastructure & {
@@ -8660,13 +8925,9 @@ export type ServerlessAwsLambdaManifest = ManifestAttributes & {
   store?: StoreConfigWrapper
 }
 
-export type ServerlessAwsLambdaRollbackStepInfo = StepSpecType & {
-  delegateSelectors?: string[]
-}
+export type ServerlessAwsLambdaRollbackStepInfo = StepSpecType & { [key: string]: any }
 
-export type ServerlessAwsLambdaServiceSpec = ServiceSpec & {
-  metadata?: string
-}
+export type ServerlessAwsLambdaServiceSpec = ServiceSpec & {}
 
 export interface ServiceAccountAggregateDTO {
   createdAt: number
@@ -8723,7 +8984,7 @@ export interface ServiceDashboardInfo {
 
 export interface ServiceDefinition {
   spec: ServiceSpec
-  type: 'Kubernetes' | 'NativeHelm' | 'ServerlessAwsLambda' | 'Ssh' | 'WinRm'
+  type: 'Kubernetes' | 'NativeHelm' | 'Ssh' | 'WinRm' | 'ServerlessAwsLambda'
 }
 
 export interface ServiceDeployment {
@@ -8805,7 +9066,6 @@ export interface ServiceInstanceUsageDTO {
 export type ServiceNowApprovalStepInfo = StepSpecType & {
   approvalCriteria: CriteriaSpecWrapper
   connectorRef: string
-  delegateSelectors?: string[]
   rejectionCriteria?: CriteriaSpecWrapper
   ticketNumber: string
   ticketType: string
@@ -8821,11 +9081,10 @@ export type ServiceNowConnector = ConnectorConfigDTO & {
 
 export type ServiceNowCreateStepInfo = StepSpecType & {
   connectorRef: string
-  delegateSelectors?: string[]
   fields?: ServiceNowField[]
   templateName?: string
   ticketType: string
-  useServiceNowTemplate?: boolean
+  useServiceNowTemplate: boolean
 }
 
 export interface ServiceNowField {
@@ -8875,7 +9134,6 @@ export interface ServiceNowTicketTypeDTO {
 
 export type ServiceNowUpdateStepInfo = StepSpecType & {
   connectorRef: string
-  delegateSelectors?: string[]
   fields?: ServiceNowField[]
   templateName?: string
   ticketNumber: string
@@ -8926,7 +9184,6 @@ export interface ServiceResponseDTO {
   tags?: {
     [key: string]: string
   }
-  version?: number
   yaml?: string
 }
 
@@ -9032,7 +9289,6 @@ export interface ShellScriptSourceWrapper {
 }
 
 export type ShellScriptStepInfo = StepSpecType & {
-  delegateSelectors?: string[]
   environmentVariables?: NGVariable[]
   executionTarget?: ExecutionTarget
   metadata?: string
@@ -9045,7 +9301,7 @@ export type ShellScriptStepInfo = StepSpecType & {
 export interface SidecarArtifact {
   identifier: string
   spec: ArtifactConfig
-  type: 'DockerRegistry' | 'Gcr' | 'Ecr' | 'Acr' | 'Nexus3Registry' | 'ArtifactoryRegistry' | 'CustomArtifact'
+  type: 'DockerRegistry' | 'Gcr' | 'Ecr' | 'Nexus3Registry' | 'ArtifactoryRegistry' | 'CustomArtifact' | 'Acr'
 }
 
 export interface SidecarArtifactWrapper {
@@ -9102,7 +9358,7 @@ export interface SourceCodeManagerDTO {
   id?: string
   lastModifiedAt?: number
   name: string
-  type?: 'BITBUCKET' | 'GITHUB' | 'GITLAB' | 'AWS_CODE_COMMIT' | 'AZURE_DEV_OPS'
+  type?: 'BITBUCKET' | 'GITHUB' | 'GITLAB' | 'AWS_CODE_COMMIT' | 'AZURE_REPO'
   userIdentifier?: string
 }
 
@@ -9114,9 +9370,7 @@ export type SplunkConnectorDTO = ConnectorConfigDTO & {
   username?: string
 }
 
-export type SshServiceSpec = ServiceSpec & {
-  metadata?: string
-}
+export type SshServiceSpec = ServiceSpec & {}
 
 export interface StackTraceElement {
   className?: string
@@ -9171,7 +9425,7 @@ export interface StageWhenCondition {
 
 export interface StartTrialDTO {
   edition: 'COMMUNITY' | 'FREE' | 'TEAM' | 'ENTERPRISE'
-  moduleType: 'CD' | 'CI' | 'CV' | 'CF' | 'CE' | 'CORE' | 'PMS' | 'TEMPLATESERVICE'
+  moduleType: 'CD' | 'CI' | 'CV' | 'CF' | 'CE' | 'STO' | 'CORE' | 'PMS' | 'TEMPLATESERVICE' | 'GOVERNANCE'
 }
 
 export type StaticLimitRestrictionDTO = RestrictionDTO & {
@@ -9302,7 +9556,7 @@ export interface TechStack {
 export type TemplateFilterProperties = FilterProperties & {
   childTypes?: string[]
   description?: string
-  templateEntityTypes?: ('Step' | 'Stage' | 'Pipeline')[]
+  templateEntityTypes?: ('Step' | 'Stage' | 'Pipeline' | 'MonitoredService')[]
   templateIdentifiers?: string[]
   templateNames?: string[]
 }
@@ -9328,7 +9582,6 @@ export interface TemplateLinkConfig {
 
 export type TerraformApplyStepInfo = StepSpecType & {
   configuration: TerraformStepConfiguration
-  delegateSelectors?: string[]
   metadata?: string
   provisionerIdentifier: string
 }
@@ -9348,7 +9601,6 @@ export interface TerraformConfigFilesWrapper {
 
 export type TerraformDestroyStepInfo = StepSpecType & {
   configuration: TerraformStepConfiguration
-  delegateSelectors?: string[]
   metadata?: string
   provisionerIdentifier: string
 }
@@ -9375,12 +9627,10 @@ export interface TerraformPlanExecutionData {
 
 export type TerraformPlanStepInfo = StepSpecType & {
   configuration: TerraformPlanExecutionData
-  delegateSelectors?: string[]
   provisionerIdentifier: string
 }
 
 export type TerraformRollbackStepInfo = StepSpecType & {
-  delegateSelectors?: string[]
   provisionerIdentifier: string
 }
 
@@ -9405,6 +9655,7 @@ export interface TerraformVarFileWrapper {
 
 export interface Throwable {
   cause?: Throwable
+  detailMessage?: string
   localizedMessage?: string
   message?: string
   stackTrace?: StackTraceElement[]
@@ -9847,9 +10098,21 @@ export interface WeightedVariation {
   weight: number
 }
 
-export type WinRmServiceSpec = ServiceSpec & {
-  metadata?: string
+export interface WinRmAuthDTO {
+  spec: BaseWinRmSpecDTO
+  type: 'NTLM' | 'Kerberos'
 }
+
+export type WinRmCredentialsSpecDTO = SecretSpecDTO & {
+  auth: WinRmAuthDTO
+  port?: number
+}
+
+export type WinRmCredentialsValidationMetadata = SecretValidationMetaData & {
+  host: string
+}
+
+export type WinRmServiceSpec = ServiceSpec & {}
 
 export type WorkflowFilter = Filter & {
   filterTypes?: string[]
@@ -9904,7 +10167,7 @@ export type YamlSchemaErrorWrapperDTO = ErrorMetadataDTO & {
 export interface YamlSchemaMetadata {
   featureFlags?: string[]
   featureRestrictions?: string[]
-  modulesSupported?: ('CD' | 'CI' | 'CV' | 'CF' | 'CE' | 'CORE' | 'PMS' | 'TEMPLATESERVICE')[]
+  modulesSupported?: ('CD' | 'CI' | 'CV' | 'CF' | 'CE' | 'STO' | 'CORE' | 'PMS' | 'TEMPLATESERVICE' | 'GOVERNANCE')[]
   namespace?: string
   yamlGroup: YamlGroup
 }
@@ -9913,7 +10176,7 @@ export interface YamlSchemaWithDetails {
   availableAtAccountLevel?: boolean
   availableAtOrgLevel?: boolean
   availableAtProjectLevel?: boolean
-  moduleType?: 'CD' | 'CI' | 'CV' | 'CF' | 'CE' | 'CORE' | 'PMS' | 'TEMPLATESERVICE'
+  moduleType?: 'CD' | 'CI' | 'CV' | 'CF' | 'CE' | 'STO' | 'CORE' | 'PMS' | 'TEMPLATESERVICE' | 'GOVERNANCE'
   schema?: JsonNode
   schemaClassName?: string
   yamlSchemaMetadata?: YamlSchemaMetadata
@@ -9949,6 +10212,8 @@ export type DockerRequestDTORequestBody = DockerRequestDTO
 export type EcrRequestDTORequestBody = EcrRequestDTO
 
 export type EnvironmentRequestDTORequestBody = EnvironmentRequestDTO
+
+export type FileDtoYamlWrapperRequestBody = void
 
 export type FilterDTORequestBody = FilterDTO
 
@@ -10006,7 +10271,7 @@ export type YamlSchemaDetailsWrapperRequestBody = YamlSchemaDetailsWrapper
 
 export type GetBuildDetailsForAcrArtifactWithYamlBodyRequestBody = string
 
-export type SubscribeBodyRequestBody = string[]
+export type UnsubscribeBodyRequestBody = string[]
 
 export type UpdateEnvironmentGroupBodyRequestBody = string
 
@@ -10517,6 +10782,7 @@ export interface ListActivitiesQueryParams {
     | 'HelmRollback'
     | 'Connectors'
     | 'Secrets'
+    | 'Files'
     | 'Service'
     | 'Environment'
     | 'EnvironmentGroup'
@@ -10528,6 +10794,8 @@ export interface ListActivitiesQueryParams {
     | 'CvVerificationJob'
     | 'IntegrationStage'
     | 'IntegrationSteps'
+    | 'SecurityStage'
+    | 'SecuritySteps'
     | 'CvKubernetesActivitySource'
     | 'DeploymentSteps'
     | 'DeploymentStage'
@@ -10542,7 +10810,7 @@ export interface ListActivitiesQueryParams {
     | 'ServiceNowCreate'
     | 'ServiceNowUpdate'
     | 'GovernancePolicies'
-    | 'POLICY_STEP'
+    | 'Policy'
     | 'Run'
     | 'RunTests'
     | 'Plugin'
@@ -10588,6 +10856,7 @@ export interface ListActivitiesQueryParams {
     | 'HelmRollback'
     | 'Connectors'
     | 'Secrets'
+    | 'Files'
     | 'Service'
     | 'Environment'
     | 'EnvironmentGroup'
@@ -10599,6 +10868,8 @@ export interface ListActivitiesQueryParams {
     | 'CvVerificationJob'
     | 'IntegrationStage'
     | 'IntegrationSteps'
+    | 'SecurityStage'
+    | 'SecuritySteps'
     | 'CvKubernetesActivitySource'
     | 'DeploymentSteps'
     | 'DeploymentStage'
@@ -10613,7 +10884,7 @@ export interface ListActivitiesQueryParams {
     | 'ServiceNowCreate'
     | 'ServiceNowUpdate'
     | 'GovernancePolicies'
-    | 'POLICY_STEP'
+    | 'Policy'
     | 'Run'
     | 'RunTests'
     | 'Plugin'
@@ -10763,6 +11034,7 @@ export interface GetActivitiesSummaryQueryParams {
     | 'HelmRollback'
     | 'Connectors'
     | 'Secrets'
+    | 'Files'
     | 'Service'
     | 'Environment'
     | 'EnvironmentGroup'
@@ -10774,6 +11046,8 @@ export interface GetActivitiesSummaryQueryParams {
     | 'CvVerificationJob'
     | 'IntegrationStage'
     | 'IntegrationSteps'
+    | 'SecurityStage'
+    | 'SecuritySteps'
     | 'CvKubernetesActivitySource'
     | 'DeploymentSteps'
     | 'DeploymentStage'
@@ -10788,7 +11062,7 @@ export interface GetActivitiesSummaryQueryParams {
     | 'ServiceNowCreate'
     | 'ServiceNowUpdate'
     | 'GovernancePolicies'
-    | 'POLICY_STEP'
+    | 'Policy'
     | 'Run'
     | 'RunTests'
     | 'Plugin'
@@ -10834,6 +11108,7 @@ export interface GetActivitiesSummaryQueryParams {
     | 'HelmRollback'
     | 'Connectors'
     | 'Secrets'
+    | 'Files'
     | 'Service'
     | 'Environment'
     | 'EnvironmentGroup'
@@ -10845,6 +11120,8 @@ export interface GetActivitiesSummaryQueryParams {
     | 'CvVerificationJob'
     | 'IntegrationStage'
     | 'IntegrationSteps'
+    | 'SecurityStage'
+    | 'SecuritySteps'
     | 'CvKubernetesActivitySource'
     | 'DeploymentSteps'
     | 'DeploymentStage'
@@ -10859,7 +11136,7 @@ export interface GetActivitiesSummaryQueryParams {
     | 'ServiceNowCreate'
     | 'ServiceNowUpdate'
     | 'GovernancePolicies'
-    | 'POLICY_STEP'
+    | 'Policy'
     | 'Run'
     | 'RunTests'
     | 'Plugin'
@@ -11338,7 +11615,7 @@ export interface GetProjectAggregateDTOListQueryParams {
   accountIdentifier: string
   orgIdentifier?: string
   hasModule?: boolean
-  moduleType?: 'CD' | 'CI' | 'CV' | 'CF' | 'CE' | 'CORE' | 'PMS' | 'TEMPLATESERVICE'
+  moduleType?: 'CD' | 'CI' | 'CV' | 'CF' | 'CE' | 'STO' | 'CORE' | 'PMS' | 'TEMPLATESERVICE' | 'GOVERNANCE'
   searchTerm?: string
   pageIndex?: number
   pageSize?: number
@@ -11827,11 +12104,11 @@ export interface GetACRRegistriesBySubscriptionQueryParams {
   accountIdentifier: string
   orgIdentifier: string
   projectIdentifier: string
-  subscription: string
+  subscriptionId: string
 }
 
 export type GetACRRegistriesBySubscriptionProps = Omit<
-  GetProps<ResponseListString, Failure | Error, GetACRRegistriesBySubscriptionQueryParams, void>,
+  GetProps<ResponseAcrRegistriesDTO, Failure | Error, GetACRRegistriesBySubscriptionQueryParams, void>,
   'path'
 >
 
@@ -11839,7 +12116,7 @@ export type GetACRRegistriesBySubscriptionProps = Omit<
  * Gets ACR registries by subscription
  */
 export const GetACRRegistriesBySubscription = (props: GetACRRegistriesBySubscriptionProps) => (
-  <Get<ResponseListString, Failure | Error, GetACRRegistriesBySubscriptionQueryParams, void>
+  <Get<ResponseAcrRegistriesDTO, Failure | Error, GetACRRegistriesBySubscriptionQueryParams, void>
     path={`/artifacts/acr/container-registries`}
     base={getConfig('ng/api')}
     {...props}
@@ -11847,7 +12124,7 @@ export const GetACRRegistriesBySubscription = (props: GetACRRegistriesBySubscrip
 )
 
 export type UseGetACRRegistriesBySubscriptionProps = Omit<
-  UseGetProps<ResponseListString, Failure | Error, GetACRRegistriesBySubscriptionQueryParams, void>,
+  UseGetProps<ResponseAcrRegistriesDTO, Failure | Error, GetACRRegistriesBySubscriptionQueryParams, void>,
   'path'
 >
 
@@ -11855,7 +12132,7 @@ export type UseGetACRRegistriesBySubscriptionProps = Omit<
  * Gets ACR registries by subscription
  */
 export const useGetACRRegistriesBySubscription = (props: UseGetACRRegistriesBySubscriptionProps) =>
-  useGet<ResponseListString, Failure | Error, GetACRRegistriesBySubscriptionQueryParams, void>(
+  useGet<ResponseAcrRegistriesDTO, Failure | Error, GetACRRegistriesBySubscriptionQueryParams, void>(
     `/artifacts/acr/container-registries`,
     { base: getConfig('ng/api'), ...props }
   )
@@ -11864,10 +12141,10 @@ export const useGetACRRegistriesBySubscription = (props: UseGetACRRegistriesBySu
  * Gets ACR registries by subscription
  */
 export const getACRRegistriesBySubscriptionPromise = (
-  props: GetUsingFetchProps<ResponseListString, Failure | Error, GetACRRegistriesBySubscriptionQueryParams, void>,
+  props: GetUsingFetchProps<ResponseAcrRegistriesDTO, Failure | Error, GetACRRegistriesBySubscriptionQueryParams, void>,
   signal?: RequestInit['signal']
 ) =>
-  getUsingFetch<ResponseListString, Failure | Error, GetACRRegistriesBySubscriptionQueryParams, void>(
+  getUsingFetch<ResponseAcrRegistriesDTO, Failure | Error, GetACRRegistriesBySubscriptionQueryParams, void>(
     getConfig('ng/api'),
     `/artifacts/acr/container-registries`,
     props,
@@ -11879,7 +12156,7 @@ export interface GetACRRepositoriesQueryParams {
   accountIdentifier: string
   orgIdentifier: string
   projectIdentifier: string
-  subscription: string
+  subscriptionId: string
 }
 
 export interface GetACRRepositoriesPathParams {
@@ -11887,7 +12164,7 @@ export interface GetACRRepositoriesPathParams {
 }
 
 export type GetACRRepositoriesProps = Omit<
-  GetProps<ResponseListString, Failure | Error, GetACRRepositoriesQueryParams, GetACRRepositoriesPathParams>,
+  GetProps<ResponseAcrRepositoriesDTO, Failure | Error, GetACRRepositoriesQueryParams, GetACRRepositoriesPathParams>,
   'path'
 > &
   GetACRRepositoriesPathParams
@@ -11896,7 +12173,7 @@ export type GetACRRepositoriesProps = Omit<
  * Gets ACR repositories by subscription and container registry name
  */
 export const GetACRRepositories = ({ registry, ...props }: GetACRRepositoriesProps) => (
-  <Get<ResponseListString, Failure | Error, GetACRRepositoriesQueryParams, GetACRRepositoriesPathParams>
+  <Get<ResponseAcrRepositoriesDTO, Failure | Error, GetACRRepositoriesQueryParams, GetACRRepositoriesPathParams>
     path={`/artifacts/acr/container-registries/${registry}/repositories`}
     base={getConfig('ng/api')}
     {...props}
@@ -11904,7 +12181,7 @@ export const GetACRRepositories = ({ registry, ...props }: GetACRRepositoriesPro
 )
 
 export type UseGetACRRepositoriesProps = Omit<
-  UseGetProps<ResponseListString, Failure | Error, GetACRRepositoriesQueryParams, GetACRRepositoriesPathParams>,
+  UseGetProps<ResponseAcrRepositoriesDTO, Failure | Error, GetACRRepositoriesQueryParams, GetACRRepositoriesPathParams>,
   'path'
 > &
   GetACRRepositoriesPathParams
@@ -11913,7 +12190,7 @@ export type UseGetACRRepositoriesProps = Omit<
  * Gets ACR repositories by subscription and container registry name
  */
 export const useGetACRRepositories = ({ registry, ...props }: UseGetACRRepositoriesProps) =>
-  useGet<ResponseListString, Failure | Error, GetACRRepositoriesQueryParams, GetACRRepositoriesPathParams>(
+  useGet<ResponseAcrRepositoriesDTO, Failure | Error, GetACRRepositoriesQueryParams, GetACRRepositoriesPathParams>(
     (paramsInPath: GetACRRepositoriesPathParams) =>
       `/artifacts/acr/container-registries/${paramsInPath.registry}/repositories`,
     { base: getConfig('ng/api'), pathParams: { registry }, ...props }
@@ -11927,22 +12204,22 @@ export const getACRRepositoriesPromise = (
     registry,
     ...props
   }: GetUsingFetchProps<
-    ResponseListString,
+    ResponseAcrRepositoriesDTO,
     Failure | Error,
     GetACRRepositoriesQueryParams,
     GetACRRepositoriesPathParams
   > & { registry: string },
   signal?: RequestInit['signal']
 ) =>
-  getUsingFetch<ResponseListString, Failure | Error, GetACRRepositoriesQueryParams, GetACRRepositoriesPathParams>(
-    getConfig('ng/api'),
-    `/artifacts/acr/container-registries/${registry}/repositories`,
-    props,
-    signal
-  )
+  getUsingFetch<
+    ResponseAcrRepositoriesDTO,
+    Failure | Error,
+    GetACRRepositoriesQueryParams,
+    GetACRRepositoriesPathParams
+  >(getConfig('ng/api'), `/artifacts/acr/container-registries/${registry}/repositories`, props, signal)
 
 export interface GetBuildDetailsForACRRepositoryQueryParams {
-  subscription?: string
+  subscriptionId?: string
   registry?: string
   repository?: string
   connectorRef?: string
@@ -11999,7 +12276,7 @@ export const getBuildDetailsForACRRepositoryPromise = (
   )
 
 export interface GetBuildDetailsForAcrArtifactWithYamlQueryParams {
-  subscription?: string
+  subscriptionId?: string
   registry?: string
   repository?: string
   connectorRef?: string
@@ -14813,6 +15090,217 @@ export const updateWhitelistedDomainsPromise = (
     void
   >('PUT', getConfig('ng/api'), `/authentication-settings/whitelisted-domains`, props, signal)
 
+export interface GetAzureSubscriptionsQueryParams {
+  connectorRef: string
+  accountIdentifier: string
+  orgIdentifier: string
+  projectIdentifier: string
+}
+
+export type GetAzureSubscriptionsProps = Omit<
+  GetProps<ResponseAzureSubscriptionsDTO, Failure | Error, GetAzureSubscriptionsQueryParams, void>,
+  'path'
+>
+
+/**
+ * Gets azure subscriptions
+ */
+export const GetAzureSubscriptions = (props: GetAzureSubscriptionsProps) => (
+  <Get<ResponseAzureSubscriptionsDTO, Failure | Error, GetAzureSubscriptionsQueryParams, void>
+    path={`/azure/subscriptions`}
+    base={getConfig('ng/api')}
+    {...props}
+  />
+)
+
+export type UseGetAzureSubscriptionsProps = Omit<
+  UseGetProps<ResponseAzureSubscriptionsDTO, Failure | Error, GetAzureSubscriptionsQueryParams, void>,
+  'path'
+>
+
+/**
+ * Gets azure subscriptions
+ */
+export const useGetAzureSubscriptions = (props: UseGetAzureSubscriptionsProps) =>
+  useGet<ResponseAzureSubscriptionsDTO, Failure | Error, GetAzureSubscriptionsQueryParams, void>(
+    `/azure/subscriptions`,
+    { base: getConfig('ng/api'), ...props }
+  )
+
+/**
+ * Gets azure subscriptions
+ */
+export const getAzureSubscriptionsPromise = (
+  props: GetUsingFetchProps<ResponseAzureSubscriptionsDTO, Failure | Error, GetAzureSubscriptionsQueryParams, void>,
+  signal?: RequestInit['signal']
+) =>
+  getUsingFetch<ResponseAzureSubscriptionsDTO, Failure | Error, GetAzureSubscriptionsQueryParams, void>(
+    getConfig('ng/api'),
+    `/azure/subscriptions`,
+    props,
+    signal
+  )
+
+export interface GetAzureResourceGroupsBySubscriptionQueryParams {
+  connectorRef: string
+  accountIdentifier: string
+  orgIdentifier: string
+  projectIdentifier: string
+}
+
+export interface GetAzureResourceGroupsBySubscriptionPathParams {
+  subscriptionId: string
+}
+
+export type GetAzureResourceGroupsBySubscriptionProps = Omit<
+  GetProps<
+    ResponseAzureResourceGroupsDTO,
+    Failure | Error,
+    GetAzureResourceGroupsBySubscriptionQueryParams,
+    GetAzureResourceGroupsBySubscriptionPathParams
+  >,
+  'path'
+> &
+  GetAzureResourceGroupsBySubscriptionPathParams
+
+/**
+ * Gets azure resource groups by subscription
+ */
+export const GetAzureResourceGroupsBySubscription = ({
+  subscriptionId,
+  ...props
+}: GetAzureResourceGroupsBySubscriptionProps) => (
+  <Get<
+    ResponseAzureResourceGroupsDTO,
+    Failure | Error,
+    GetAzureResourceGroupsBySubscriptionQueryParams,
+    GetAzureResourceGroupsBySubscriptionPathParams
+  >
+    path={`/azure/subscriptions/${subscriptionId}/resourceGroups`}
+    base={getConfig('ng/api')}
+    {...props}
+  />
+)
+
+export type UseGetAzureResourceGroupsBySubscriptionProps = Omit<
+  UseGetProps<
+    ResponseAzureResourceGroupsDTO,
+    Failure | Error,
+    GetAzureResourceGroupsBySubscriptionQueryParams,
+    GetAzureResourceGroupsBySubscriptionPathParams
+  >,
+  'path'
+> &
+  GetAzureResourceGroupsBySubscriptionPathParams
+
+/**
+ * Gets azure resource groups by subscription
+ */
+export const useGetAzureResourceGroupsBySubscription = ({
+  subscriptionId,
+  ...props
+}: UseGetAzureResourceGroupsBySubscriptionProps) =>
+  useGet<
+    ResponseAzureResourceGroupsDTO,
+    Failure | Error,
+    GetAzureResourceGroupsBySubscriptionQueryParams,
+    GetAzureResourceGroupsBySubscriptionPathParams
+  >(
+    (paramsInPath: GetAzureResourceGroupsBySubscriptionPathParams) =>
+      `/azure/subscriptions/${paramsInPath.subscriptionId}/resourceGroups`,
+    { base: getConfig('ng/api'), pathParams: { subscriptionId }, ...props }
+  )
+
+/**
+ * Gets azure resource groups by subscription
+ */
+export const getAzureResourceGroupsBySubscriptionPromise = (
+  {
+    subscriptionId,
+    ...props
+  }: GetUsingFetchProps<
+    ResponseAzureResourceGroupsDTO,
+    Failure | Error,
+    GetAzureResourceGroupsBySubscriptionQueryParams,
+    GetAzureResourceGroupsBySubscriptionPathParams
+  > & { subscriptionId: string },
+  signal?: RequestInit['signal']
+) =>
+  getUsingFetch<
+    ResponseAzureResourceGroupsDTO,
+    Failure | Error,
+    GetAzureResourceGroupsBySubscriptionQueryParams,
+    GetAzureResourceGroupsBySubscriptionPathParams
+  >(getConfig('ng/api'), `/azure/subscriptions/${subscriptionId}/resourceGroups`, props, signal)
+
+export interface GetAzureClustersQueryParams {
+  connectorRef: string
+  accountIdentifier: string
+  orgIdentifier: string
+  projectIdentifier: string
+}
+
+export interface GetAzureClustersPathParams {
+  subscriptionId: string
+  resourceGroup: string
+}
+
+export type GetAzureClustersProps = Omit<
+  GetProps<ResponseAzureClustersDTO, Failure | Error, GetAzureClustersQueryParams, GetAzureClustersPathParams>,
+  'path'
+> &
+  GetAzureClustersPathParams
+
+/**
+ * Gets azure k8s clusters by subscription
+ */
+export const GetAzureClusters = ({ subscriptionId, resourceGroup, ...props }: GetAzureClustersProps) => (
+  <Get<ResponseAzureClustersDTO, Failure | Error, GetAzureClustersQueryParams, GetAzureClustersPathParams>
+    path={`/azure/subscriptions/${subscriptionId}/resourceGroups/${resourceGroup}/clusters`}
+    base={getConfig('ng/api')}
+    {...props}
+  />
+)
+
+export type UseGetAzureClustersProps = Omit<
+  UseGetProps<ResponseAzureClustersDTO, Failure | Error, GetAzureClustersQueryParams, GetAzureClustersPathParams>,
+  'path'
+> &
+  GetAzureClustersPathParams
+
+/**
+ * Gets azure k8s clusters by subscription
+ */
+export const useGetAzureClusters = ({ subscriptionId, resourceGroup, ...props }: UseGetAzureClustersProps) =>
+  useGet<ResponseAzureClustersDTO, Failure | Error, GetAzureClustersQueryParams, GetAzureClustersPathParams>(
+    (paramsInPath: GetAzureClustersPathParams) =>
+      `/azure/subscriptions/${paramsInPath.subscriptionId}/resourceGroups/${paramsInPath.resourceGroup}/clusters`,
+    { base: getConfig('ng/api'), pathParams: { subscriptionId, resourceGroup }, ...props }
+  )
+
+/**
+ * Gets azure k8s clusters by subscription
+ */
+export const getAzureClustersPromise = (
+  {
+    subscriptionId,
+    resourceGroup,
+    ...props
+  }: GetUsingFetchProps<
+    ResponseAzureClustersDTO,
+    Failure | Error,
+    GetAzureClustersQueryParams,
+    GetAzureClustersPathParams
+  > & { subscriptionId: string; resourceGroup: string },
+  signal?: RequestInit['signal']
+) =>
+  getUsingFetch<ResponseAzureClustersDTO, Failure | Error, GetAzureClustersQueryParams, GetAzureClustersPathParams>(
+    getConfig('ng/api'),
+    `/azure/subscriptions/${subscriptionId}/resourceGroups/${resourceGroup}/clusters`,
+    props,
+    signal
+  )
+
 export interface GetGCSBucketListQueryParams {
   connectorRef?: string
   accountIdentifier: string
@@ -15035,6 +15523,8 @@ export interface CreateConnectorQueryParams {
   commitMsg?: string
   isNewBranch?: boolean
   baseBranch?: string
+  connectorRef?: string
+  storeType?: 'INLINE' | 'REMOTE'
 }
 
 export type CreateConnectorProps = Omit<
@@ -15100,6 +15590,8 @@ export interface UpdateConnectorQueryParams {
   lastObjectId?: string
   resolvedConflictCommitId?: string
   baseBranch?: string
+  connectorRef?: string
+  storeType?: 'INLINE' | 'REMOTE'
 }
 
 export type UpdateConnectorProps = Omit<
@@ -16320,6 +16812,7 @@ export const getEnvArtifactDetailsByServiceIdPromise = (
     props,
     signal
   )
+
 export interface GetEnvBuildInstanceCountQueryParams {
   accountIdentifier: string
   orgIdentifier: string
@@ -17288,6 +17781,426 @@ export const updateTagsOfDelegateGroupPromise = (
     DelegateGroupTagsRequestBody,
     UpdateTagsOfDelegateGroupPathParams
   >('PUT', getConfig('ng/api'), `/delegate-group-tags/${groupIdentifier}`, props, signal)
+
+export interface CheckDelegateMtlsEndpointDomainPrefixAvailabilityQueryParams {
+  /**
+   * Account Identifier for the Entity.
+   */
+  accountIdentifier: string
+  /**
+   * The domain prefix to check.
+   */
+  domainPrefix: string
+}
+
+export type CheckDelegateMtlsEndpointDomainPrefixAvailabilityProps = Omit<
+  GetProps<RestResponseBoolean, unknown, CheckDelegateMtlsEndpointDomainPrefixAvailabilityQueryParams, void>,
+  'path'
+>
+
+/**
+ * Checks whether a given delegate mTLS endpoint domain prefix is available.
+ */
+export const CheckDelegateMtlsEndpointDomainPrefixAvailability = (
+  props: CheckDelegateMtlsEndpointDomainPrefixAvailabilityProps
+) => (
+  <Get<RestResponseBoolean, unknown, CheckDelegateMtlsEndpointDomainPrefixAvailabilityQueryParams, void>
+    path={`/delegate-mtls/check-availability`}
+    base={getConfig('ng/api')}
+    {...props}
+  />
+)
+
+export type UseCheckDelegateMtlsEndpointDomainPrefixAvailabilityProps = Omit<
+  UseGetProps<RestResponseBoolean, unknown, CheckDelegateMtlsEndpointDomainPrefixAvailabilityQueryParams, void>,
+  'path'
+>
+
+/**
+ * Checks whether a given delegate mTLS endpoint domain prefix is available.
+ */
+export const useCheckDelegateMtlsEndpointDomainPrefixAvailability = (
+  props: UseCheckDelegateMtlsEndpointDomainPrefixAvailabilityProps
+) =>
+  useGet<RestResponseBoolean, unknown, CheckDelegateMtlsEndpointDomainPrefixAvailabilityQueryParams, void>(
+    `/delegate-mtls/check-availability`,
+    { base: getConfig('ng/api'), ...props }
+  )
+
+/**
+ * Checks whether a given delegate mTLS endpoint domain prefix is available.
+ */
+export const checkDelegateMtlsEndpointDomainPrefixAvailabilityPromise = (
+  props: GetUsingFetchProps<
+    RestResponseBoolean,
+    unknown,
+    CheckDelegateMtlsEndpointDomainPrefixAvailabilityQueryParams,
+    void
+  >,
+  signal?: RequestInit['signal']
+) =>
+  getUsingFetch<RestResponseBoolean, unknown, CheckDelegateMtlsEndpointDomainPrefixAvailabilityQueryParams, void>(
+    getConfig('ng/api'),
+    `/delegate-mtls/check-availability`,
+    props,
+    signal
+  )
+
+export interface DeleteDelegateMtlsEndpointForAccountQueryParams {
+  /**
+   * Account Identifier for the Entity.
+   */
+  accountIdentifier: string
+}
+
+export type DeleteDelegateMtlsEndpointForAccountProps = Omit<
+  MutateProps<RestResponseBoolean, unknown, DeleteDelegateMtlsEndpointForAccountQueryParams, void, void>,
+  'path' | 'verb'
+>
+
+/**
+ * Removes the delegate mTLS endpoint for an account.
+ */
+export const DeleteDelegateMtlsEndpointForAccount = (props: DeleteDelegateMtlsEndpointForAccountProps) => (
+  <Mutate<RestResponseBoolean, unknown, DeleteDelegateMtlsEndpointForAccountQueryParams, void, void>
+    verb="DELETE"
+    path={`/delegate-mtls/endpoint`}
+    base={getConfig('ng/api')}
+    {...props}
+  />
+)
+
+export type UseDeleteDelegateMtlsEndpointForAccountProps = Omit<
+  UseMutateProps<RestResponseBoolean, unknown, DeleteDelegateMtlsEndpointForAccountQueryParams, void, void>,
+  'path' | 'verb'
+>
+
+/**
+ * Removes the delegate mTLS endpoint for an account.
+ */
+export const useDeleteDelegateMtlsEndpointForAccount = (props: UseDeleteDelegateMtlsEndpointForAccountProps) =>
+  useMutate<RestResponseBoolean, unknown, DeleteDelegateMtlsEndpointForAccountQueryParams, void, void>(
+    'DELETE',
+    `/delegate-mtls/endpoint`,
+    { base: getConfig('ng/api'), ...props }
+  )
+
+/**
+ * Removes the delegate mTLS endpoint for an account.
+ */
+export const deleteDelegateMtlsEndpointForAccountPromise = (
+  props: MutateUsingFetchProps<
+    RestResponseBoolean,
+    unknown,
+    DeleteDelegateMtlsEndpointForAccountQueryParams,
+    void,
+    void
+  >,
+  signal?: RequestInit['signal']
+) =>
+  mutateUsingFetch<RestResponseBoolean, unknown, DeleteDelegateMtlsEndpointForAccountQueryParams, void, void>(
+    'DELETE',
+    getConfig('ng/api'),
+    `/delegate-mtls/endpoint`,
+    props,
+    signal
+  )
+
+export interface GetDelegateMtlsEndpointForAccountQueryParams {
+  /**
+   * Account Identifier for the Entity.
+   */
+  accountIdentifier: string
+}
+
+export type GetDelegateMtlsEndpointForAccountProps = Omit<
+  GetProps<RestResponseDelegateMtlsEndpointDetails, unknown, GetDelegateMtlsEndpointForAccountQueryParams, void>,
+  'path'
+>
+
+/**
+ * Gets the delegate mTLS endpoint for an account.
+ */
+export const GetDelegateMtlsEndpointForAccount = (props: GetDelegateMtlsEndpointForAccountProps) => (
+  <Get<RestResponseDelegateMtlsEndpointDetails, unknown, GetDelegateMtlsEndpointForAccountQueryParams, void>
+    path={`/delegate-mtls/endpoint`}
+    base={getConfig('ng/api')}
+    {...props}
+  />
+)
+
+export type UseGetDelegateMtlsEndpointForAccountProps = Omit<
+  UseGetProps<RestResponseDelegateMtlsEndpointDetails, unknown, GetDelegateMtlsEndpointForAccountQueryParams, void>,
+  'path'
+>
+
+/**
+ * Gets the delegate mTLS endpoint for an account.
+ */
+export const useGetDelegateMtlsEndpointForAccount = (props: UseGetDelegateMtlsEndpointForAccountProps) =>
+  useGet<RestResponseDelegateMtlsEndpointDetails, unknown, GetDelegateMtlsEndpointForAccountQueryParams, void>(
+    `/delegate-mtls/endpoint`,
+    { base: getConfig('ng/api'), ...props }
+  )
+
+/**
+ * Gets the delegate mTLS endpoint for an account.
+ */
+export const getDelegateMtlsEndpointForAccountPromise = (
+  props: GetUsingFetchProps<
+    RestResponseDelegateMtlsEndpointDetails,
+    unknown,
+    GetDelegateMtlsEndpointForAccountQueryParams,
+    void
+  >,
+  signal?: RequestInit['signal']
+) =>
+  getUsingFetch<RestResponseDelegateMtlsEndpointDetails, unknown, GetDelegateMtlsEndpointForAccountQueryParams, void>(
+    getConfig('ng/api'),
+    `/delegate-mtls/endpoint`,
+    props,
+    signal
+  )
+
+export interface PatchDelegateMtlsEndpointForAccountQueryParams {
+  /**
+   * Account Identifier for the Entity.
+   */
+  accountIdentifier: string
+}
+
+export type PatchDelegateMtlsEndpointForAccountProps = Omit<
+  MutateProps<
+    RestResponseDelegateMtlsEndpointDetails,
+    unknown,
+    PatchDelegateMtlsEndpointForAccountQueryParams,
+    DelegateMtlsEndpointRequest,
+    void
+  >,
+  'path' | 'verb'
+>
+
+/**
+ * Updates selected properties of the existing delegate mTLS endpoint for an account.
+ */
+export const PatchDelegateMtlsEndpointForAccount = (props: PatchDelegateMtlsEndpointForAccountProps) => (
+  <Mutate<
+    RestResponseDelegateMtlsEndpointDetails,
+    unknown,
+    PatchDelegateMtlsEndpointForAccountQueryParams,
+    DelegateMtlsEndpointRequest,
+    void
+  >
+    verb="PATCH"
+    path={`/delegate-mtls/endpoint`}
+    base={getConfig('ng/api')}
+    {...props}
+  />
+)
+
+export type UsePatchDelegateMtlsEndpointForAccountProps = Omit<
+  UseMutateProps<
+    RestResponseDelegateMtlsEndpointDetails,
+    unknown,
+    PatchDelegateMtlsEndpointForAccountQueryParams,
+    DelegateMtlsEndpointRequest,
+    void
+  >,
+  'path' | 'verb'
+>
+
+/**
+ * Updates selected properties of the existing delegate mTLS endpoint for an account.
+ */
+export const usePatchDelegateMtlsEndpointForAccount = (props: UsePatchDelegateMtlsEndpointForAccountProps) =>
+  useMutate<
+    RestResponseDelegateMtlsEndpointDetails,
+    unknown,
+    PatchDelegateMtlsEndpointForAccountQueryParams,
+    DelegateMtlsEndpointRequest,
+    void
+  >('PATCH', `/delegate-mtls/endpoint`, { base: getConfig('ng/api'), ...props })
+
+/**
+ * Updates selected properties of the existing delegate mTLS endpoint for an account.
+ */
+export const patchDelegateMtlsEndpointForAccountPromise = (
+  props: MutateUsingFetchProps<
+    RestResponseDelegateMtlsEndpointDetails,
+    unknown,
+    PatchDelegateMtlsEndpointForAccountQueryParams,
+    DelegateMtlsEndpointRequest,
+    void
+  >,
+  signal?: RequestInit['signal']
+) =>
+  mutateUsingFetch<
+    RestResponseDelegateMtlsEndpointDetails,
+    unknown,
+    PatchDelegateMtlsEndpointForAccountQueryParams,
+    DelegateMtlsEndpointRequest,
+    void
+  >('PATCH', getConfig('ng/api'), `/delegate-mtls/endpoint`, props, signal)
+
+export interface CreateDelegateMtlsEndpointForAccountQueryParams {
+  /**
+   * Account Identifier for the Entity.
+   */
+  accountIdentifier: string
+}
+
+export type CreateDelegateMtlsEndpointForAccountProps = Omit<
+  MutateProps<
+    RestResponseDelegateMtlsEndpointDetails,
+    unknown,
+    CreateDelegateMtlsEndpointForAccountQueryParams,
+    DelegateMtlsEndpointRequest,
+    void
+  >,
+  'path' | 'verb'
+>
+
+/**
+ * Creates the delegate mTLS endpoint for an account.
+ */
+export const CreateDelegateMtlsEndpointForAccount = (props: CreateDelegateMtlsEndpointForAccountProps) => (
+  <Mutate<
+    RestResponseDelegateMtlsEndpointDetails,
+    unknown,
+    CreateDelegateMtlsEndpointForAccountQueryParams,
+    DelegateMtlsEndpointRequest,
+    void
+  >
+    verb="POST"
+    path={`/delegate-mtls/endpoint`}
+    base={getConfig('ng/api')}
+    {...props}
+  />
+)
+
+export type UseCreateDelegateMtlsEndpointForAccountProps = Omit<
+  UseMutateProps<
+    RestResponseDelegateMtlsEndpointDetails,
+    unknown,
+    CreateDelegateMtlsEndpointForAccountQueryParams,
+    DelegateMtlsEndpointRequest,
+    void
+  >,
+  'path' | 'verb'
+>
+
+/**
+ * Creates the delegate mTLS endpoint for an account.
+ */
+export const useCreateDelegateMtlsEndpointForAccount = (props: UseCreateDelegateMtlsEndpointForAccountProps) =>
+  useMutate<
+    RestResponseDelegateMtlsEndpointDetails,
+    unknown,
+    CreateDelegateMtlsEndpointForAccountQueryParams,
+    DelegateMtlsEndpointRequest,
+    void
+  >('POST', `/delegate-mtls/endpoint`, { base: getConfig('ng/api'), ...props })
+
+/**
+ * Creates the delegate mTLS endpoint for an account.
+ */
+export const createDelegateMtlsEndpointForAccountPromise = (
+  props: MutateUsingFetchProps<
+    RestResponseDelegateMtlsEndpointDetails,
+    unknown,
+    CreateDelegateMtlsEndpointForAccountQueryParams,
+    DelegateMtlsEndpointRequest,
+    void
+  >,
+  signal?: RequestInit['signal']
+) =>
+  mutateUsingFetch<
+    RestResponseDelegateMtlsEndpointDetails,
+    unknown,
+    CreateDelegateMtlsEndpointForAccountQueryParams,
+    DelegateMtlsEndpointRequest,
+    void
+  >('POST', getConfig('ng/api'), `/delegate-mtls/endpoint`, props, signal)
+
+export interface UpdateDelegateMtlsEndpointForAccountQueryParams {
+  /**
+   * Account Identifier for the Entity.
+   */
+  accountIdentifier: string
+}
+
+export type UpdateDelegateMtlsEndpointForAccountProps = Omit<
+  MutateProps<
+    RestResponseDelegateMtlsEndpointDetails,
+    unknown,
+    UpdateDelegateMtlsEndpointForAccountQueryParams,
+    DelegateMtlsEndpointRequest,
+    void
+  >,
+  'path' | 'verb'
+>
+
+/**
+ * Updates the existing delegate mTLS endpoint for an account.
+ */
+export const UpdateDelegateMtlsEndpointForAccount = (props: UpdateDelegateMtlsEndpointForAccountProps) => (
+  <Mutate<
+    RestResponseDelegateMtlsEndpointDetails,
+    unknown,
+    UpdateDelegateMtlsEndpointForAccountQueryParams,
+    DelegateMtlsEndpointRequest,
+    void
+  >
+    verb="PUT"
+    path={`/delegate-mtls/endpoint`}
+    base={getConfig('ng/api')}
+    {...props}
+  />
+)
+
+export type UseUpdateDelegateMtlsEndpointForAccountProps = Omit<
+  UseMutateProps<
+    RestResponseDelegateMtlsEndpointDetails,
+    unknown,
+    UpdateDelegateMtlsEndpointForAccountQueryParams,
+    DelegateMtlsEndpointRequest,
+    void
+  >,
+  'path' | 'verb'
+>
+
+/**
+ * Updates the existing delegate mTLS endpoint for an account.
+ */
+export const useUpdateDelegateMtlsEndpointForAccount = (props: UseUpdateDelegateMtlsEndpointForAccountProps) =>
+  useMutate<
+    RestResponseDelegateMtlsEndpointDetails,
+    unknown,
+    UpdateDelegateMtlsEndpointForAccountQueryParams,
+    DelegateMtlsEndpointRequest,
+    void
+  >('PUT', `/delegate-mtls/endpoint`, { base: getConfig('ng/api'), ...props })
+
+/**
+ * Updates the existing delegate mTLS endpoint for an account.
+ */
+export const updateDelegateMtlsEndpointForAccountPromise = (
+  props: MutateUsingFetchProps<
+    RestResponseDelegateMtlsEndpointDetails,
+    unknown,
+    UpdateDelegateMtlsEndpointForAccountQueryParams,
+    DelegateMtlsEndpointRequest,
+    void
+  >,
+  signal?: RequestInit['signal']
+) =>
+  mutateUsingFetch<
+    RestResponseDelegateMtlsEndpointDetails,
+    unknown,
+    UpdateDelegateMtlsEndpointForAccountQueryParams,
+    DelegateMtlsEndpointRequest,
+    void
+  >('PUT', getConfig('ng/api'), `/delegate-mtls/endpoint`, props, signal)
 
 export interface ListDelegateProfilesNgQueryParams {
   offset?: string
@@ -18561,6 +19474,7 @@ export interface ListReferredByEntitiesQueryParams {
     | 'HelmRollback'
     | 'Connectors'
     | 'Secrets'
+    | 'Files'
     | 'Service'
     | 'Environment'
     | 'EnvironmentGroup'
@@ -18572,6 +19486,8 @@ export interface ListReferredByEntitiesQueryParams {
     | 'CvVerificationJob'
     | 'IntegrationStage'
     | 'IntegrationSteps'
+    | 'SecurityStage'
+    | 'SecuritySteps'
     | 'CvKubernetesActivitySource'
     | 'DeploymentSteps'
     | 'DeploymentStage'
@@ -18586,7 +19502,7 @@ export interface ListReferredByEntitiesQueryParams {
     | 'ServiceNowCreate'
     | 'ServiceNowUpdate'
     | 'GovernancePolicies'
-    | 'POLICY_STEP'
+    | 'Policy'
     | 'Run'
     | 'RunTests'
     | 'Plugin'
@@ -18739,6 +19655,7 @@ export interface GetEnvironmentGroupListQueryParams {
   accountIdentifier: string
   orgIdentifier: string
   projectIdentifier: string
+  envGroupIdentifiers?: string[]
   searchTerm?: string
   page?: number
   size?: number
@@ -18989,6 +19906,8 @@ export interface UpdateEnvironmentGroupQueryParams {
   lastObjectId?: string
   resolvedConflictCommitId?: string
   baseBranch?: string
+  connectorRef?: string
+  storeType?: 'INLINE' | 'REMOTE'
 }
 
 export interface UpdateEnvironmentGroupPathParams {
@@ -20171,6 +21090,694 @@ export const saveFeedbackPromise = (
     signal
   )
 
+export interface CreateQueryParams {
+  accountIdentifier?: string
+  orgIdentifier?: string
+  projectIdentifier?: string
+}
+
+export type CreateProps = Omit<
+  MutateProps<ResponseFileDTO, Failure | Error, CreateQueryParams, void, void>,
+  'path' | 'verb'
+>
+
+/**
+ * Create file or folder
+ */
+export const Create = (props: CreateProps) => (
+  <Mutate<ResponseFileDTO, Failure | Error, CreateQueryParams, void, void>
+    verb="POST"
+    path={`/file-store`}
+    base={getConfig('ng/api')}
+    {...props}
+  />
+)
+
+export type UseCreateProps = Omit<
+  UseMutateProps<ResponseFileDTO, Failure | Error, CreateQueryParams, void, void>,
+  'path' | 'verb'
+>
+
+/**
+ * Create file or folder
+ */
+export const useCreate = (props: UseCreateProps) =>
+  useMutate<ResponseFileDTO, Failure | Error, CreateQueryParams, void, void>('POST', `/file-store`, {
+    base: getConfig('ng/api'),
+    ...props
+  })
+
+/**
+ * Create file or folder
+ */
+export const createPromise = (
+  props: MutateUsingFetchProps<ResponseFileDTO, Failure | Error, CreateQueryParams, void, void>,
+  signal?: RequestInit['signal']
+) =>
+  mutateUsingFetch<ResponseFileDTO, Failure | Error, CreateQueryParams, void, void>(
+    'POST',
+    getConfig('ng/api'),
+    `/file-store`,
+    props,
+    signal
+  )
+
+export interface GetCreatedByListQueryParams {
+  accountIdentifier?: string
+  orgIdentifier?: string
+  projectIdentifier?: string
+}
+
+export type GetCreatedByListProps = Omit<
+  GetProps<ResponseSetString, Failure | Error, GetCreatedByListQueryParams, void>,
+  'path'
+>
+
+/**
+ * Get list of created by usernames
+ */
+export const GetCreatedByList = (props: GetCreatedByListProps) => (
+  <Get<ResponseSetString, Failure | Error, GetCreatedByListQueryParams, void>
+    path={`/file-store/createdBy`}
+    base={getConfig('ng/api')}
+    {...props}
+  />
+)
+
+export type UseGetCreatedByListProps = Omit<
+  UseGetProps<ResponseSetString, Failure | Error, GetCreatedByListQueryParams, void>,
+  'path'
+>
+
+/**
+ * Get list of created by usernames
+ */
+export const useGetCreatedByList = (props: UseGetCreatedByListProps) =>
+  useGet<ResponseSetString, Failure | Error, GetCreatedByListQueryParams, void>(`/file-store/createdBy`, {
+    base: getConfig('ng/api'),
+    ...props
+  })
+
+/**
+ * Get list of created by usernames
+ */
+export const getCreatedByListPromise = (
+  props: GetUsingFetchProps<ResponseSetString, Failure | Error, GetCreatedByListQueryParams, void>,
+  signal?: RequestInit['signal']
+) =>
+  getUsingFetch<ResponseSetString, Failure | Error, GetCreatedByListQueryParams, void>(
+    getConfig('ng/api'),
+    `/file-store/createdBy`,
+    props,
+    signal
+  )
+
+export interface DownloadFileQueryParams {
+  accountIdentifier?: string
+  orgIdentifier?: string
+  projectIdentifier?: string
+}
+
+export interface DownloadFilePathParams {
+  fileIdentifier: string
+}
+
+export type DownloadFileProps = Omit<
+  GetProps<void, Failure | Error, DownloadFileQueryParams, DownloadFilePathParams>,
+  'path'
+> &
+  DownloadFilePathParams
+
+/**
+ * Download file
+ */
+export const DownloadFile = ({ fileIdentifier, ...props }: DownloadFileProps) => (
+  <Get<void, Failure | Error, DownloadFileQueryParams, DownloadFilePathParams>
+    path={`/file-store/file/${fileIdentifier}/download`}
+    base={getConfig('ng/api')}
+    {...props}
+  />
+)
+
+export type UseDownloadFileProps = Omit<
+  UseGetProps<void, Failure | Error, DownloadFileQueryParams, DownloadFilePathParams>,
+  'path'
+> &
+  DownloadFilePathParams
+
+/**
+ * Download file
+ */
+export const useDownloadFile = ({ fileIdentifier, ...props }: UseDownloadFileProps) =>
+  useGet<void, Failure | Error, DownloadFileQueryParams, DownloadFilePathParams>(
+    (paramsInPath: DownloadFilePathParams) => `/file-store/file/${paramsInPath.fileIdentifier}/download`,
+    { base: getConfig('ng/api'), pathParams: { fileIdentifier }, ...props }
+  )
+
+/**
+ * Download file
+ */
+export const downloadFilePromise = (
+  {
+    fileIdentifier,
+    ...props
+  }: GetUsingFetchProps<void, Failure | Error, DownloadFileQueryParams, DownloadFilePathParams> & {
+    fileIdentifier: string
+  },
+  signal?: RequestInit['signal']
+) =>
+  getUsingFetch<void, Failure | Error, DownloadFileQueryParams, DownloadFilePathParams>(
+    getConfig('ng/api'),
+    `/file-store/file/${fileIdentifier}/download`,
+    props,
+    signal
+  )
+
+export interface ListFilesWithFilterQueryParams {
+  pageIndex?: number
+  pageSize?: number
+  sortOrders?: string[]
+  accountIdentifier?: string
+  orgIdentifier?: string
+  projectIdentifier?: string
+  filterIdentifier?: string
+  searchTerm?: string
+}
+
+export type ListFilesWithFilterProps = Omit<
+  MutateProps<ResponsePageFileDTO, Failure | Error, ListFilesWithFilterQueryParams, FilesFilterProperties, void>,
+  'path' | 'verb'
+>
+
+/**
+ * Gets the filtered list of files
+ */
+export const ListFilesWithFilter = (props: ListFilesWithFilterProps) => (
+  <Mutate<ResponsePageFileDTO, Failure | Error, ListFilesWithFilterQueryParams, FilesFilterProperties, void>
+    verb="POST"
+    path={`/file-store/filter`}
+    base={getConfig('ng/api')}
+    {...props}
+  />
+)
+
+export type UseListFilesWithFilterProps = Omit<
+  UseMutateProps<ResponsePageFileDTO, Failure | Error, ListFilesWithFilterQueryParams, FilesFilterProperties, void>,
+  'path' | 'verb'
+>
+
+/**
+ * Gets the filtered list of files
+ */
+export const useListFilesWithFilter = (props: UseListFilesWithFilterProps) =>
+  useMutate<ResponsePageFileDTO, Failure | Error, ListFilesWithFilterQueryParams, FilesFilterProperties, void>(
+    'POST',
+    `/file-store/filter`,
+    { base: getConfig('ng/api'), ...props }
+  )
+
+/**
+ * Gets the filtered list of files
+ */
+export const listFilesWithFilterPromise = (
+  props: MutateUsingFetchProps<
+    ResponsePageFileDTO,
+    Failure | Error,
+    ListFilesWithFilterQueryParams,
+    FilesFilterProperties,
+    void
+  >,
+  signal?: RequestInit['signal']
+) =>
+  mutateUsingFetch<ResponsePageFileDTO, Failure | Error, ListFilesWithFilterQueryParams, FilesFilterProperties, void>(
+    'POST',
+    getConfig('ng/api'),
+    `/file-store/filter`,
+    props,
+    signal
+  )
+
+export interface GetFolderNodesQueryParams {
+  accountIdentifier?: string
+  orgIdentifier?: string
+  projectIdentifier?: string
+}
+
+export type GetFolderNodesProps = Omit<
+  MutateProps<ResponseFolderNodeDTO, Failure | Error, GetFolderNodesQueryParams, FolderNodeDTO, void>,
+  'path' | 'verb'
+>
+
+/**
+ * Get folder nodes
+ */
+export const GetFolderNodes = (props: GetFolderNodesProps) => (
+  <Mutate<ResponseFolderNodeDTO, Failure | Error, GetFolderNodesQueryParams, FolderNodeDTO, void>
+    verb="POST"
+    path={`/file-store/folder`}
+    base={getConfig('ng/api')}
+    {...props}
+  />
+)
+
+export type UseGetFolderNodesProps = Omit<
+  UseMutateProps<ResponseFolderNodeDTO, Failure | Error, GetFolderNodesQueryParams, FolderNodeDTO, void>,
+  'path' | 'verb'
+>
+
+/**
+ * Get folder nodes
+ */
+export const useGetFolderNodes = (props: UseGetFolderNodesProps) =>
+  useMutate<ResponseFolderNodeDTO, Failure | Error, GetFolderNodesQueryParams, FolderNodeDTO, void>(
+    'POST',
+    `/file-store/folder`,
+    { base: getConfig('ng/api'), ...props }
+  )
+
+/**
+ * Get folder nodes
+ */
+export const getFolderNodesPromise = (
+  props: MutateUsingFetchProps<ResponseFolderNodeDTO, Failure | Error, GetFolderNodesQueryParams, FolderNodeDTO, void>,
+  signal?: RequestInit['signal']
+) =>
+  mutateUsingFetch<ResponseFolderNodeDTO, Failure | Error, GetFolderNodesQueryParams, FolderNodeDTO, void>(
+    'POST',
+    getConfig('ng/api'),
+    `/file-store/folder`,
+    props,
+    signal
+  )
+
+export interface CreateViaYAMLQueryParams {
+  accountIdentifier?: string
+  orgIdentifier?: string
+  projectIdentifier?: string
+}
+
+export type CreateViaYAMLProps = Omit<
+  MutateProps<ResponseFileDTO, Failure | Error, CreateViaYAMLQueryParams, FileDtoYamlWrapperRequestBody, void>,
+  'path' | 'verb'
+>
+
+/**
+ * Create file or folder via YAML
+ */
+export const CreateViaYAML = (props: CreateViaYAMLProps) => (
+  <Mutate<ResponseFileDTO, Failure | Error, CreateViaYAMLQueryParams, FileDtoYamlWrapperRequestBody, void>
+    verb="POST"
+    path={`/file-store/yaml`}
+    base={getConfig('ng/api')}
+    {...props}
+  />
+)
+
+export type UseCreateViaYAMLProps = Omit<
+  UseMutateProps<ResponseFileDTO, Failure | Error, CreateViaYAMLQueryParams, FileDtoYamlWrapperRequestBody, void>,
+  'path' | 'verb'
+>
+
+/**
+ * Create file or folder via YAML
+ */
+export const useCreateViaYAML = (props: UseCreateViaYAMLProps) =>
+  useMutate<ResponseFileDTO, Failure | Error, CreateViaYAMLQueryParams, FileDtoYamlWrapperRequestBody, void>(
+    'POST',
+    `/file-store/yaml`,
+    { base: getConfig('ng/api'), ...props }
+  )
+
+/**
+ * Create file or folder via YAML
+ */
+export const createViaYAMLPromise = (
+  props: MutateUsingFetchProps<
+    ResponseFileDTO,
+    Failure | Error,
+    CreateViaYAMLQueryParams,
+    FileDtoYamlWrapperRequestBody,
+    void
+  >,
+  signal?: RequestInit['signal']
+) =>
+  mutateUsingFetch<ResponseFileDTO, Failure | Error, CreateViaYAMLQueryParams, FileDtoYamlWrapperRequestBody, void>(
+    'POST',
+    getConfig('ng/api'),
+    `/file-store/yaml`,
+    props,
+    signal
+  )
+
+export interface UpdateViaYAMLQueryParams {
+  accountIdentifier?: string
+  orgIdentifier?: string
+  projectIdentifier?: string
+}
+
+export interface UpdateViaYAMLPathParams {
+  identifier: string
+}
+
+export type UpdateViaYAMLProps = Omit<
+  MutateProps<
+    ResponseFileDTO,
+    Failure | Error,
+    UpdateViaYAMLQueryParams,
+    FileDtoYamlWrapperRequestBody,
+    UpdateViaYAMLPathParams
+  >,
+  'path' | 'verb'
+> &
+  UpdateViaYAMLPathParams
+
+/**
+ * Update file or folder via YAML
+ */
+export const UpdateViaYAML = ({ identifier, ...props }: UpdateViaYAMLProps) => (
+  <Mutate<
+    ResponseFileDTO,
+    Failure | Error,
+    UpdateViaYAMLQueryParams,
+    FileDtoYamlWrapperRequestBody,
+    UpdateViaYAMLPathParams
+  >
+    verb="PUT"
+    path={`/file-store/yaml/${identifier}`}
+    base={getConfig('ng/api')}
+    {...props}
+  />
+)
+
+export type UseUpdateViaYAMLProps = Omit<
+  UseMutateProps<
+    ResponseFileDTO,
+    Failure | Error,
+    UpdateViaYAMLQueryParams,
+    FileDtoYamlWrapperRequestBody,
+    UpdateViaYAMLPathParams
+  >,
+  'path' | 'verb'
+> &
+  UpdateViaYAMLPathParams
+
+/**
+ * Update file or folder via YAML
+ */
+export const useUpdateViaYAML = ({ identifier, ...props }: UseUpdateViaYAMLProps) =>
+  useMutate<
+    ResponseFileDTO,
+    Failure | Error,
+    UpdateViaYAMLQueryParams,
+    FileDtoYamlWrapperRequestBody,
+    UpdateViaYAMLPathParams
+  >('PUT', (paramsInPath: UpdateViaYAMLPathParams) => `/file-store/yaml/${paramsInPath.identifier}`, {
+    base: getConfig('ng/api'),
+    pathParams: { identifier },
+    ...props
+  })
+
+/**
+ * Update file or folder via YAML
+ */
+export const updateViaYAMLPromise = (
+  {
+    identifier,
+    ...props
+  }: MutateUsingFetchProps<
+    ResponseFileDTO,
+    Failure | Error,
+    UpdateViaYAMLQueryParams,
+    FileDtoYamlWrapperRequestBody,
+    UpdateViaYAMLPathParams
+  > & { identifier: string },
+  signal?: RequestInit['signal']
+) =>
+  mutateUsingFetch<
+    ResponseFileDTO,
+    Failure | Error,
+    UpdateViaYAMLQueryParams,
+    FileDtoYamlWrapperRequestBody,
+    UpdateViaYAMLPathParams
+  >('PUT', getConfig('ng/api'), `/file-store/yaml/${identifier}`, props, signal)
+
+export interface DeleteFileQueryParams {
+  accountIdentifier?: string
+  orgIdentifier?: string
+  projectIdentifier?: string
+}
+
+export type DeleteFileProps = Omit<
+  MutateProps<ResponseBoolean, Failure | Error, DeleteFileQueryParams, string, void>,
+  'path' | 'verb'
+>
+
+/**
+ * Delete file or folder by identifier
+ */
+export const DeleteFile = (props: DeleteFileProps) => (
+  <Mutate<ResponseBoolean, Failure | Error, DeleteFileQueryParams, string, void>
+    verb="DELETE"
+    path={`/file-store`}
+    base={getConfig('ng/api')}
+    {...props}
+  />
+)
+
+export type UseDeleteFileProps = Omit<
+  UseMutateProps<ResponseBoolean, Failure | Error, DeleteFileQueryParams, string, void>,
+  'path' | 'verb'
+>
+
+/**
+ * Delete file or folder by identifier
+ */
+export const useDeleteFile = (props: UseDeleteFileProps) =>
+  useMutate<ResponseBoolean, Failure | Error, DeleteFileQueryParams, string, void>('DELETE', `/file-store`, {
+    base: getConfig('ng/api'),
+    ...props
+  })
+
+/**
+ * Delete file or folder by identifier
+ */
+export const deleteFilePromise = (
+  props: MutateUsingFetchProps<ResponseBoolean, Failure | Error, DeleteFileQueryParams, string, void>,
+  signal?: RequestInit['signal']
+) =>
+  mutateUsingFetch<ResponseBoolean, Failure | Error, DeleteFileQueryParams, string, void>(
+    'DELETE',
+    getConfig('ng/api'),
+    `/file-store`,
+    props,
+    signal
+  )
+
+export interface UpdateQueryParams {
+  accountIdentifier?: string
+  orgIdentifier?: string
+  projectIdentifier?: string
+}
+
+export interface UpdatePathParams {
+  identifier: string
+}
+
+export type UpdateProps = Omit<
+  MutateProps<ResponseFileDTO, Failure | Error, UpdateQueryParams, void, UpdatePathParams>,
+  'path' | 'verb'
+> &
+  UpdatePathParams
+
+/**
+ * Update file or folder
+ */
+export const Update = ({ identifier, ...props }: UpdateProps) => (
+  <Mutate<ResponseFileDTO, Failure | Error, UpdateQueryParams, void, UpdatePathParams>
+    verb="PUT"
+    path={`/file-store/${identifier}`}
+    base={getConfig('ng/api')}
+    {...props}
+  />
+)
+
+export type UseUpdateProps = Omit<
+  UseMutateProps<ResponseFileDTO, Failure | Error, UpdateQueryParams, void, UpdatePathParams>,
+  'path' | 'verb'
+> &
+  UpdatePathParams
+
+/**
+ * Update file or folder
+ */
+export const useUpdate = ({ identifier, ...props }: UseUpdateProps) =>
+  useMutate<ResponseFileDTO, Failure | Error, UpdateQueryParams, void, UpdatePathParams>(
+    'PUT',
+    (paramsInPath: UpdatePathParams) => `/file-store/${paramsInPath.identifier}`,
+    { base: getConfig('ng/api'), pathParams: { identifier }, ...props }
+  )
+
+/**
+ * Update file or folder
+ */
+export const updatePromise = (
+  {
+    identifier,
+    ...props
+  }: MutateUsingFetchProps<ResponseFileDTO, Failure | Error, UpdateQueryParams, void, UpdatePathParams> & {
+    identifier: string
+  },
+  signal?: RequestInit['signal']
+) =>
+  mutateUsingFetch<ResponseFileDTO, Failure | Error, UpdateQueryParams, void, UpdatePathParams>(
+    'PUT',
+    getConfig('ng/api'),
+    `/file-store/${identifier}`,
+    props,
+    signal
+  )
+
+export interface GetReferencedByQueryParams {
+  pageIndex?: number
+  pageSize?: number
+  accountIdentifier?: string
+  orgIdentifier?: string
+  projectIdentifier?: string
+  entityType?:
+    | 'Projects'
+    | 'Pipelines'
+    | 'PipelineSteps'
+    | 'Http'
+    | 'JiraCreate'
+    | 'JiraUpdate'
+    | 'JiraApproval'
+    | 'HarnessApproval'
+    | 'Barrier'
+    | 'FlagConfiguration'
+    | 'ShellScript'
+    | 'K8sCanaryDeploy'
+    | 'K8sApply'
+    | 'K8sBlueGreenDeploy'
+    | 'K8sRollingDeploy'
+    | 'K8sRollingRollback'
+    | 'K8sScale'
+    | 'K8sDelete'
+    | 'K8sBGSwapServices'
+    | 'K8sCanaryDelete'
+    | 'TerraformApply'
+    | 'TerraformPlan'
+    | 'TerraformDestroy'
+    | 'TerraformRollback'
+    | 'HelmDeploy'
+    | 'HelmRollback'
+    | 'Connectors'
+    | 'Secrets'
+    | 'Files'
+    | 'Service'
+    | 'Environment'
+    | 'EnvironmentGroup'
+    | 'InputSets'
+    | 'CvConfig'
+    | 'Verify'
+    | 'Delegates'
+    | 'DelegateConfigurations'
+    | 'CvVerificationJob'
+    | 'IntegrationStage'
+    | 'IntegrationSteps'
+    | 'SecurityStage'
+    | 'SecuritySteps'
+    | 'CvKubernetesActivitySource'
+    | 'DeploymentSteps'
+    | 'DeploymentStage'
+    | 'ApprovalStage'
+    | 'FeatureFlagStage'
+    | 'Template'
+    | 'Triggers'
+    | 'MonitoredService'
+    | 'GitRepositories'
+    | 'FeatureFlags'
+    | 'ServiceNowApproval'
+    | 'ServiceNowCreate'
+    | 'ServiceNowUpdate'
+    | 'GovernancePolicies'
+    | 'Policy'
+    | 'Run'
+    | 'RunTests'
+    | 'Plugin'
+    | 'RestoreCacheGCS'
+    | 'RestoreCacheS3'
+    | 'SaveCacheGCS'
+    | 'SaveCacheS3'
+    | 'Security'
+    | 'ArtifactoryUpload'
+    | 'GCSUpload'
+    | 'S3Upload'
+    | 'BuildAndPushGCR'
+    | 'BuildAndPushECR'
+    | 'BuildAndPushDockerRegistry'
+    | 'ServerlessAwsLambdaDeploy'
+    | 'ServerlessAwsLambdaRollback'
+  searchTerm?: string
+}
+
+export interface GetReferencedByPathParams {
+  identifier: string
+}
+
+export type GetReferencedByProps = Omit<
+  GetProps<ResponsePageEntitySetupUsageDTO, Failure | Error, GetReferencedByQueryParams, GetReferencedByPathParams>,
+  'path'
+> &
+  GetReferencedByPathParams
+
+/**
+ * Get referenced by entities
+ */
+export const GetReferencedBy = ({ identifier, ...props }: GetReferencedByProps) => (
+  <Get<ResponsePageEntitySetupUsageDTO, Failure | Error, GetReferencedByQueryParams, GetReferencedByPathParams>
+    path={`/file-store/${identifier}/referenced-by`}
+    base={getConfig('ng/api')}
+    {...props}
+  />
+)
+
+export type UseGetReferencedByProps = Omit<
+  UseGetProps<ResponsePageEntitySetupUsageDTO, Failure | Error, GetReferencedByQueryParams, GetReferencedByPathParams>,
+  'path'
+> &
+  GetReferencedByPathParams
+
+/**
+ * Get referenced by entities
+ */
+export const useGetReferencedBy = ({ identifier, ...props }: UseGetReferencedByProps) =>
+  useGet<ResponsePageEntitySetupUsageDTO, Failure | Error, GetReferencedByQueryParams, GetReferencedByPathParams>(
+    (paramsInPath: GetReferencedByPathParams) => `/file-store/${paramsInPath.identifier}/referenced-by`,
+    { base: getConfig('ng/api'), pathParams: { identifier }, ...props }
+  )
+
+/**
+ * Get referenced by entities
+ */
+export const getReferencedByPromise = (
+  {
+    identifier,
+    ...props
+  }: GetUsingFetchProps<
+    ResponsePageEntitySetupUsageDTO,
+    Failure | Error,
+    GetReferencedByQueryParams,
+    GetReferencedByPathParams
+  > & { identifier: string },
+  signal?: RequestInit['signal']
+) =>
+  getUsingFetch<
+    ResponsePageEntitySetupUsageDTO,
+    Failure | Error,
+    GetReferencedByQueryParams,
+    GetReferencedByPathParams
+  >(getConfig('ng/api'), `/file-store/${identifier}/referenced-by`, props, signal)
+
 export interface GetFilterListQueryParams {
   pageIndex?: number
   pageSize?: number
@@ -20187,6 +21794,9 @@ export interface GetFilterListQueryParams {
     | 'Audit'
     | 'Template'
     | 'EnvironmentGroup'
+    | 'FileStore'
+    | 'CCMRecommendation'
+    | 'Anomaly'
 }
 
 export type GetFilterListProps = Omit<
@@ -20348,6 +21958,9 @@ export interface DeleteFilterQueryParams {
     | 'Audit'
     | 'Template'
     | 'EnvironmentGroup'
+    | 'FileStore'
+    | 'CCMRecommendation'
+    | 'Anomaly'
 }
 
 export type DeleteFilterProps = Omit<
@@ -20410,6 +22023,9 @@ export interface GetFilterQueryParams {
     | 'Audit'
     | 'Template'
     | 'EnvironmentGroup'
+    | 'FileStore'
+    | 'CCMRecommendation'
+    | 'Anomaly'
 }
 
 export interface GetFilterPathParams {
@@ -21337,6 +22953,7 @@ export interface ListGitSyncEntitiesByTypePathParams {
     | 'HelmRollback'
     | 'Connectors'
     | 'Secrets'
+    | 'Files'
     | 'Service'
     | 'Environment'
     | 'EnvironmentGroup'
@@ -21348,6 +22965,8 @@ export interface ListGitSyncEntitiesByTypePathParams {
     | 'CvVerificationJob'
     | 'IntegrationStage'
     | 'IntegrationSteps'
+    | 'SecurityStage'
+    | 'SecuritySteps'
     | 'CvKubernetesActivitySource'
     | 'DeploymentSteps'
     | 'DeploymentStage'
@@ -21362,7 +22981,7 @@ export interface ListGitSyncEntitiesByTypePathParams {
     | 'ServiceNowCreate'
     | 'ServiceNowUpdate'
     | 'GovernancePolicies'
-    | 'POLICY_STEP'
+    | 'Policy'
     | 'Run'
     | 'RunTests'
     | 'Plugin'
@@ -21476,6 +23095,7 @@ export const listGitSyncEntitiesByTypePromise = (
       | 'HelmRollback'
       | 'Connectors'
       | 'Secrets'
+      | 'Files'
       | 'Service'
       | 'Environment'
       | 'EnvironmentGroup'
@@ -21487,6 +23107,8 @@ export const listGitSyncEntitiesByTypePromise = (
       | 'CvVerificationJob'
       | 'IntegrationStage'
       | 'IntegrationSteps'
+      | 'SecurityStage'
+      | 'SecuritySteps'
       | 'CvKubernetesActivitySource'
       | 'DeploymentSteps'
       | 'DeploymentStage'
@@ -21501,7 +23123,7 @@ export const listGitSyncEntitiesByTypePromise = (
       | 'ServiceNowCreate'
       | 'ServiceNowUpdate'
       | 'GovernancePolicies'
-      | 'POLICY_STEP'
+      | 'Policy'
       | 'Run'
       | 'RunTests'
       | 'Plugin'
@@ -22112,6 +23734,8 @@ export interface CreateGitOpsProviderQueryParams {
   commitMsg?: string
   isNewBranch?: boolean
   baseBranch?: string
+  connectorRef?: string
+  storeType?: 'INLINE' | 'REMOTE'
 }
 
 export type CreateGitOpsProviderProps = Omit<
@@ -22198,6 +23822,8 @@ export interface UpdateGitOpsProviderQueryParams {
   commitMsg?: string
   isNewBranch?: boolean
   baseBranch?: string
+  connectorRef?: string
+  storeType?: 'INLINE' | 'REMOTE'
 }
 
 export type UpdateGitOpsProviderProps = Omit<
@@ -22534,13 +24160,7 @@ export interface ValidateSshHostsQueryParams {
 }
 
 export type ValidateSshHostsProps = Omit<
-  MutateProps<
-    ResponseListHostValidationDTO,
-    Failure | Error,
-    ValidateSshHostsQueryParams,
-    UpdateWhitelistedDomainsBodyRequestBody,
-    void
-  >,
+  MutateProps<ResponseListHostValidationDTO, Failure | Error, ValidateSshHostsQueryParams, HostValidationParams, void>,
   'path' | 'verb'
 >
 
@@ -22548,13 +24168,7 @@ export type ValidateSshHostsProps = Omit<
  * Validate SSH hosts connectivity
  */
 export const ValidateSshHosts = (props: ValidateSshHostsProps) => (
-  <Mutate<
-    ResponseListHostValidationDTO,
-    Failure | Error,
-    ValidateSshHostsQueryParams,
-    UpdateWhitelistedDomainsBodyRequestBody,
-    void
-  >
+  <Mutate<ResponseListHostValidationDTO, Failure | Error, ValidateSshHostsQueryParams, HostValidationParams, void>
     verb="POST"
     path={`/host-validation/ssh`}
     base={getConfig('ng/api')}
@@ -22567,7 +24181,7 @@ export type UseValidateSshHostsProps = Omit<
     ResponseListHostValidationDTO,
     Failure | Error,
     ValidateSshHostsQueryParams,
-    UpdateWhitelistedDomainsBodyRequestBody,
+    HostValidationParams,
     void
   >,
   'path' | 'verb'
@@ -22577,13 +24191,11 @@ export type UseValidateSshHostsProps = Omit<
  * Validate SSH hosts connectivity
  */
 export const useValidateSshHosts = (props: UseValidateSshHostsProps) =>
-  useMutate<
-    ResponseListHostValidationDTO,
-    Failure | Error,
-    ValidateSshHostsQueryParams,
-    UpdateWhitelistedDomainsBodyRequestBody,
-    void
-  >('POST', `/host-validation/ssh`, { base: getConfig('ng/api'), ...props })
+  useMutate<ResponseListHostValidationDTO, Failure | Error, ValidateSshHostsQueryParams, HostValidationParams, void>(
+    'POST',
+    `/host-validation/ssh`,
+    { base: getConfig('ng/api'), ...props }
+  )
 
 /**
  * Validate SSH hosts connectivity
@@ -22593,7 +24205,7 @@ export const validateSshHostsPromise = (
     ResponseListHostValidationDTO,
     Failure | Error,
     ValidateSshHostsQueryParams,
-    UpdateWhitelistedDomainsBodyRequestBody,
+    HostValidationParams,
     void
   >,
   signal?: RequestInit['signal']
@@ -22602,7 +24214,7 @@ export const validateSshHostsPromise = (
     ResponseListHostValidationDTO,
     Failure | Error,
     ValidateSshHostsQueryParams,
-    UpdateWhitelistedDomainsBodyRequestBody,
+    HostValidationParams,
     void
   >('POST', getConfig('ng/api'), `/host-validation/ssh`, props, signal)
 
@@ -23915,7 +25527,7 @@ export const getAccountLicensesPromise = (
 
 export interface GetEditionActionsQueryParams {
   accountIdentifier: string
-  moduleType: 'CD' | 'CI' | 'CV' | 'CF' | 'CE' | 'CORE' | 'PMS' | 'TEMPLATESERVICE'
+  moduleType: 'CD' | 'CI' | 'CV' | 'CF' | 'CE' | 'STO' | 'CORE' | 'PMS' | 'TEMPLATESERVICE' | 'GOVERNANCE'
 }
 
 export type GetEditionActionsProps = Omit<
@@ -23964,7 +25576,7 @@ export const getEditionActionsPromise = (
 
 export interface StartCommunityLicenseQueryParams {
   accountIdentifier: string
-  moduleType: 'CD' | 'CI' | 'CV' | 'CF' | 'CE' | 'CORE' | 'PMS' | 'TEMPLATESERVICE'
+  moduleType: 'CD' | 'CI' | 'CV' | 'CF' | 'CE' | 'STO' | 'CORE' | 'PMS' | 'TEMPLATESERVICE' | 'GOVERNANCE'
 }
 
 export type StartCommunityLicenseProps = Omit<
@@ -24079,7 +25691,7 @@ export const extendTrialLicensePromise = (
 
 export interface StartFreeLicenseQueryParams {
   accountIdentifier: string
-  moduleType: 'CD' | 'CI' | 'CV' | 'CF' | 'CE' | 'CORE' | 'PMS' | 'TEMPLATESERVICE'
+  moduleType: 'CD' | 'CI' | 'CV' | 'CF' | 'CE' | 'STO' | 'CORE' | 'PMS' | 'TEMPLATESERVICE' | 'GOVERNANCE'
 }
 
 export type StartFreeLicenseProps = Omit<
@@ -24130,7 +25742,7 @@ export const startFreeLicensePromise = (
   )
 
 export interface GetModuleLicensesByAccountAndModuleTypeQueryParams {
-  moduleType: 'CD' | 'CI' | 'CV' | 'CF' | 'CE' | 'CORE' | 'PMS' | 'TEMPLATESERVICE'
+  moduleType: 'CD' | 'CI' | 'CV' | 'CF' | 'CE' | 'STO' | 'CORE' | 'PMS' | 'TEMPLATESERVICE' | 'GOVERNANCE'
 }
 
 export interface GetModuleLicensesByAccountAndModuleTypePathParams {
@@ -24345,7 +25957,7 @@ export const getLastModifiedTimeForAllModuleTypesPromise = (
   >('POST', getConfig('ng/api'), `/licenses/versions`, props, signal)
 
 export interface GetLicensesAndSummaryQueryParams {
-  moduleType: 'CD' | 'CI' | 'CV' | 'CF' | 'CE' | 'CORE' | 'PMS' | 'TEMPLATESERVICE'
+  moduleType: 'CD' | 'CI' | 'CV' | 'CF' | 'CE' | 'STO' | 'CORE' | 'PMS' | 'TEMPLATESERVICE' | 'GOVERNANCE'
 }
 
 export interface GetLicensesAndSummaryPathParams {
@@ -24911,6 +26523,7 @@ export interface GetStepYamlSchemaQueryParams {
     | 'HelmRollback'
     | 'Connectors'
     | 'Secrets'
+    | 'Files'
     | 'Service'
     | 'Environment'
     | 'EnvironmentGroup'
@@ -24922,6 +26535,8 @@ export interface GetStepYamlSchemaQueryParams {
     | 'CvVerificationJob'
     | 'IntegrationStage'
     | 'IntegrationSteps'
+    | 'SecurityStage'
+    | 'SecuritySteps'
     | 'CvKubernetesActivitySource'
     | 'DeploymentSteps'
     | 'DeploymentStage'
@@ -24936,7 +26551,7 @@ export interface GetStepYamlSchemaQueryParams {
     | 'ServiceNowCreate'
     | 'ServiceNowUpdate'
     | 'GovernancePolicies'
-    | 'POLICY_STEP'
+    | 'Policy'
     | 'Run'
     | 'RunTests'
     | 'Plugin'
@@ -25287,7 +26902,7 @@ export const getServiceDefinitionTypesPromise = (
   )
 
 export interface GetStepsQueryParams {
-  serviceDefinitionType: 'Kubernetes' | 'NativeHelm' | 'ServerlessAwsLambda' | 'Ssh' | 'WinRm'
+  serviceDefinitionType: 'Kubernetes' | 'NativeHelm' | 'Ssh' | 'WinRm' | 'ServerlessAwsLambda'
 }
 
 export type GetStepsProps = Omit<GetProps<ResponseStepCategory, Failure | Error, GetStepsQueryParams, void>, 'path'>
@@ -25424,7 +27039,7 @@ export const getProvisionerExecutionStrategyYamlPromise = (
   )
 
 export interface GetExecutionStrategyYamlQueryParams {
-  serviceDefinitionType: 'Kubernetes' | 'NativeHelm' | 'ServerlessAwsLambda' | 'Ssh' | 'WinRm'
+  serviceDefinitionType: 'Kubernetes' | 'NativeHelm' | 'Ssh' | 'WinRm' | 'ServerlessAwsLambda'
   strategyType: 'Basic' | 'Canary' | 'BlueGreen' | 'Rolling' | 'Default'
   includeVerify?: boolean
 }
@@ -25486,7 +27101,7 @@ export type ProcessPollingResultNgProps = Omit<
     void,
     Failure | Error,
     ProcessPollingResultNgQueryParams,
-    SubscribeBodyRequestBody,
+    UnsubscribeBodyRequestBody,
     ProcessPollingResultNgPathParams
   >,
   'path' | 'verb'
@@ -25498,7 +27113,7 @@ export const ProcessPollingResultNg = ({ perpetualTaskId, ...props }: ProcessPol
     void,
     Failure | Error,
     ProcessPollingResultNgQueryParams,
-    SubscribeBodyRequestBody,
+    UnsubscribeBodyRequestBody,
     ProcessPollingResultNgPathParams
   >
     verb="POST"
@@ -25513,7 +27128,7 @@ export type UseProcessPollingResultNgProps = Omit<
     void,
     Failure | Error,
     ProcessPollingResultNgQueryParams,
-    SubscribeBodyRequestBody,
+    UnsubscribeBodyRequestBody,
     ProcessPollingResultNgPathParams
   >,
   'path' | 'verb'
@@ -25525,7 +27140,7 @@ export const useProcessPollingResultNg = ({ perpetualTaskId, ...props }: UseProc
     void,
     Failure | Error,
     ProcessPollingResultNgQueryParams,
-    SubscribeBodyRequestBody,
+    UnsubscribeBodyRequestBody,
     ProcessPollingResultNgPathParams
   >(
     'POST',
@@ -25541,7 +27156,7 @@ export const processPollingResultNgPromise = (
     void,
     Failure | Error,
     ProcessPollingResultNgQueryParams,
-    SubscribeBodyRequestBody,
+    UnsubscribeBodyRequestBody,
     ProcessPollingResultNgPathParams
   > & { perpetualTaskId: string },
   signal?: RequestInit['signal']
@@ -25550,17 +27165,17 @@ export const processPollingResultNgPromise = (
     void,
     Failure | Error,
     ProcessPollingResultNgQueryParams,
-    SubscribeBodyRequestBody,
+    UnsubscribeBodyRequestBody,
     ProcessPollingResultNgPathParams
   >('POST', getConfig('ng/api'), `/polling/delegate-response/${perpetualTaskId}`, props, signal)
 
 export type SubscribeProps = Omit<
-  MutateProps<ResponsePollingResponseDTO, Failure | Error, void, SubscribeBodyRequestBody, void>,
+  MutateProps<ResponsePollingResponseDTO, Failure | Error, void, UnsubscribeBodyRequestBody, void>,
   'path' | 'verb'
 >
 
 export const Subscribe = (props: SubscribeProps) => (
-  <Mutate<ResponsePollingResponseDTO, Failure | Error, void, SubscribeBodyRequestBody, void>
+  <Mutate<ResponsePollingResponseDTO, Failure | Error, void, UnsubscribeBodyRequestBody, void>
     verb="POST"
     path={`/polling/subscribe`}
     base={getConfig('ng/api')}
@@ -25569,22 +27184,22 @@ export const Subscribe = (props: SubscribeProps) => (
 )
 
 export type UseSubscribeProps = Omit<
-  UseMutateProps<ResponsePollingResponseDTO, Failure | Error, void, SubscribeBodyRequestBody, void>,
+  UseMutateProps<ResponsePollingResponseDTO, Failure | Error, void, UnsubscribeBodyRequestBody, void>,
   'path' | 'verb'
 >
 
 export const useSubscribe = (props: UseSubscribeProps) =>
-  useMutate<ResponsePollingResponseDTO, Failure | Error, void, SubscribeBodyRequestBody, void>(
+  useMutate<ResponsePollingResponseDTO, Failure | Error, void, UnsubscribeBodyRequestBody, void>(
     'POST',
     `/polling/subscribe`,
     { base: getConfig('ng/api'), ...props }
   )
 
 export const subscribePromise = (
-  props: MutateUsingFetchProps<ResponsePollingResponseDTO, Failure | Error, void, SubscribeBodyRequestBody, void>,
+  props: MutateUsingFetchProps<ResponsePollingResponseDTO, Failure | Error, void, UnsubscribeBodyRequestBody, void>,
   signal?: RequestInit['signal']
 ) =>
-  mutateUsingFetch<ResponsePollingResponseDTO, Failure | Error, void, SubscribeBodyRequestBody, void>(
+  mutateUsingFetch<ResponsePollingResponseDTO, Failure | Error, void, UnsubscribeBodyRequestBody, void>(
     'POST',
     getConfig('ng/api'),
     `/polling/subscribe`,
@@ -25593,12 +27208,12 @@ export const subscribePromise = (
   )
 
 export type UnsubscribeProps = Omit<
-  MutateProps<boolean, Failure | Error, void, SubscribeBodyRequestBody, void>,
+  MutateProps<boolean, Failure | Error, void, UnsubscribeBodyRequestBody, void>,
   'path' | 'verb'
 >
 
 export const Unsubscribe = (props: UnsubscribeProps) => (
-  <Mutate<boolean, Failure | Error, void, SubscribeBodyRequestBody, void>
+  <Mutate<boolean, Failure | Error, void, UnsubscribeBodyRequestBody, void>
     verb="POST"
     path={`/polling/unsubscribe`}
     base={getConfig('ng/api')}
@@ -25607,21 +27222,21 @@ export const Unsubscribe = (props: UnsubscribeProps) => (
 )
 
 export type UseUnsubscribeProps = Omit<
-  UseMutateProps<boolean, Failure | Error, void, SubscribeBodyRequestBody, void>,
+  UseMutateProps<boolean, Failure | Error, void, UnsubscribeBodyRequestBody, void>,
   'path' | 'verb'
 >
 
 export const useUnsubscribe = (props: UseUnsubscribeProps) =>
-  useMutate<boolean, Failure | Error, void, SubscribeBodyRequestBody, void>('POST', `/polling/unsubscribe`, {
+  useMutate<boolean, Failure | Error, void, UnsubscribeBodyRequestBody, void>('POST', `/polling/unsubscribe`, {
     base: getConfig('ng/api'),
     ...props
   })
 
 export const unsubscribePromise = (
-  props: MutateUsingFetchProps<boolean, Failure | Error, void, SubscribeBodyRequestBody, void>,
+  props: MutateUsingFetchProps<boolean, Failure | Error, void, UnsubscribeBodyRequestBody, void>,
   signal?: RequestInit['signal']
 ) =>
-  mutateUsingFetch<boolean, Failure | Error, void, SubscribeBodyRequestBody, void>(
+  mutateUsingFetch<boolean, Failure | Error, void, UnsubscribeBodyRequestBody, void>(
     'POST',
     getConfig('ng/api'),
     `/polling/unsubscribe`,
@@ -25634,7 +27249,7 @@ export interface GetProjectListQueryParams {
   orgIdentifier?: string
   hasModule?: boolean
   identifiers?: string[]
-  moduleType?: 'CD' | 'CI' | 'CV' | 'CF' | 'CE' | 'CORE' | 'PMS' | 'TEMPLATESERVICE'
+  moduleType?: 'CD' | 'CI' | 'CV' | 'CF' | 'CE' | 'STO' | 'CORE' | 'PMS' | 'TEMPLATESERVICE' | 'GOVERNANCE'
   searchTerm?: string
   pageIndex?: number
   pageSize?: number
@@ -25748,7 +27363,7 @@ export interface GetProjectListWithMultiOrgFilterQueryParams {
   orgIdentifiers?: string[]
   hasModule?: boolean
   identifiers?: string[]
-  moduleType?: 'CD' | 'CI' | 'CV' | 'CF' | 'CE' | 'CORE' | 'PMS' | 'TEMPLATESERVICE'
+  moduleType?: 'CD' | 'CI' | 'CV' | 'CF' | 'CE' | 'STO' | 'CORE' | 'PMS' | 'TEMPLATESERVICE' | 'GOVERNANCE'
   searchTerm?: string
   pageIndex?: number
   pageSize?: number
@@ -27115,6 +28730,58 @@ export const getFileContentPromise = (
     signal
   )
 
+export interface GetFileQueryParams {
+  accountIdentifier: string
+  orgIdentifier?: string
+  projectIdentifier?: string
+  RepoName: string
+  branch?: string
+  filePath: string
+  commitId?: string
+  ConnectorRef?: string
+}
+
+export type GetFileProps = Omit<GetProps<ResponseGetFileResponse, Failure | Error, GetFileQueryParams, void>, 'path'>
+
+/**
+ * get file
+ */
+export const GetFile = (props: GetFileProps) => (
+  <Get<ResponseGetFileResponse, Failure | Error, GetFileQueryParams, void>
+    path={`/scm/get-file`}
+    base={getConfig('ng/api')}
+    {...props}
+  />
+)
+
+export type UseGetFileProps = Omit<
+  UseGetProps<ResponseGetFileResponse, Failure | Error, GetFileQueryParams, void>,
+  'path'
+>
+
+/**
+ * get file
+ */
+export const useGetFile = (props: UseGetFileProps) =>
+  useGet<ResponseGetFileResponse, Failure | Error, GetFileQueryParams, void>(`/scm/get-file`, {
+    base: getConfig('ng/api'),
+    ...props
+  })
+
+/**
+ * get file
+ */
+export const getFilePromise = (
+  props: GetUsingFetchProps<ResponseGetFileResponse, Failure | Error, GetFileQueryParams, void>,
+  signal?: RequestInit['signal']
+) =>
+  getUsingFetch<ResponseGetFileResponse, Failure | Error, GetFileQueryParams, void>(
+    getConfig('ng/api'),
+    `/scm/get-file`,
+    props,
+    signal
+  )
+
 export interface IsSaasGitQueryParams {
   repoURL?: string
 }
@@ -27161,6 +28828,65 @@ export const isSaasGitPromise = (
     'POST',
     getConfig('ng/api'),
     `/scm/isSaasGit`,
+    props,
+    signal
+  )
+
+export interface GetListOfReposByRefConnectorQueryParams {
+  accountIdentifier?: string
+  orgIdentifier?: string
+  projectIdentifier?: string
+  connectorRef?: string
+  page?: number
+  size?: number
+  searchTerm?: string
+}
+
+export type GetListOfReposByRefConnectorProps = Omit<
+  GetProps<ResponseListGitRepositoryResponseDTO, Failure | Error, GetListOfReposByRefConnectorQueryParams, void>,
+  'path'
+>
+
+/**
+ * Lists Git Repos corresponding to given reference connector
+ */
+export const GetListOfReposByRefConnector = (props: GetListOfReposByRefConnectorProps) => (
+  <Get<ResponseListGitRepositoryResponseDTO, Failure | Error, GetListOfReposByRefConnectorQueryParams, void>
+    path={`/scm/list-repos-by-connector`}
+    base={getConfig('ng/api')}
+    {...props}
+  />
+)
+
+export type UseGetListOfReposByRefConnectorProps = Omit<
+  UseGetProps<ResponseListGitRepositoryResponseDTO, Failure | Error, GetListOfReposByRefConnectorQueryParams, void>,
+  'path'
+>
+
+/**
+ * Lists Git Repos corresponding to given reference connector
+ */
+export const useGetListOfReposByRefConnector = (props: UseGetListOfReposByRefConnectorProps) =>
+  useGet<ResponseListGitRepositoryResponseDTO, Failure | Error, GetListOfReposByRefConnectorQueryParams, void>(
+    `/scm/list-repos-by-connector`,
+    { base: getConfig('ng/api'), ...props }
+  )
+
+/**
+ * Lists Git Repos corresponding to given reference connector
+ */
+export const getListOfReposByRefConnectorPromise = (
+  props: GetUsingFetchProps<
+    ResponseListGitRepositoryResponseDTO,
+    Failure | Error,
+    GetListOfReposByRefConnectorQueryParams,
+    void
+  >,
+  signal?: RequestInit['signal']
+) =>
+  getUsingFetch<ResponseListGitRepositoryResponseDTO, Failure | Error, GetListOfReposByRefConnectorQueryParams, void>(
+    getConfig('ng/api'),
+    `/scm/list-repos-by-connector`,
     props,
     signal
   )
@@ -27884,16 +29610,7 @@ export const getServiceNowIssueCreateMetadataPromise = (
     props,
     signal
   )
-export interface GetServiceNowIssueMetadataQueryParams {
-  connectorRef: string
-  accountIdentifier: string
-  orgIdentifier?: string
-  projectIdentifier?: string
-  ticketType?: string
-  branch?: string
-  repoIdentifier?: string
-  getDefaultFromOtherRepo?: boolean
-}
+
 export interface GetServiceNowTemplateMetadataQueryParams {
   connectorRef: string
   accountIdentifier: string
@@ -27956,6 +29673,17 @@ export const getServiceNowTemplateMetadataPromise = (
     props,
     signal
   )
+
+export interface GetServiceNowIssueMetadataQueryParams {
+  connectorRef: string
+  accountIdentifier: string
+  orgIdentifier?: string
+  projectIdentifier?: string
+  ticketType?: string
+  branch?: string
+  repoIdentifier?: string
+  getDefaultFromOtherRepo?: boolean
+}
 
 export type GetServiceNowIssueMetadataProps = Omit<
   GetProps<ResponseListServiceNowFieldNG, Failure | Error, GetServiceNowIssueMetadataQueryParams, void>,
@@ -30216,6 +31944,105 @@ export const updateTokenPromise = (
     TokenDTORequestBody,
     UpdateTokenPathParams
   >('PUT', getConfig('ng/api'), `/token/${identifier}`, props, signal)
+
+export interface GetDelegateInstallStatusQueryParams {
+  accountIdentifier: string
+}
+
+export type GetDelegateInstallStatusProps = Omit<
+  GetProps<ResponseDelegateStatus, Failure | Error, GetDelegateInstallStatusQueryParams, void>,
+  'path'
+>
+
+/**
+ * Provision resources for signup
+ */
+export const GetDelegateInstallStatus = (props: GetDelegateInstallStatusProps) => (
+  <Get<ResponseDelegateStatus, Failure | Error, GetDelegateInstallStatusQueryParams, void>
+    path={`/trial-signup/delegate-install-status`}
+    base={getConfig('ng/api')}
+    {...props}
+  />
+)
+
+export type UseGetDelegateInstallStatusProps = Omit<
+  UseGetProps<ResponseDelegateStatus, Failure | Error, GetDelegateInstallStatusQueryParams, void>,
+  'path'
+>
+
+/**
+ * Provision resources for signup
+ */
+export const useGetDelegateInstallStatus = (props: UseGetDelegateInstallStatusProps) =>
+  useGet<ResponseDelegateStatus, Failure | Error, GetDelegateInstallStatusQueryParams, void>(
+    `/trial-signup/delegate-install-status`,
+    { base: getConfig('ng/api'), ...props }
+  )
+
+/**
+ * Provision resources for signup
+ */
+export const getDelegateInstallStatusPromise = (
+  props: GetUsingFetchProps<ResponseDelegateStatus, Failure | Error, GetDelegateInstallStatusQueryParams, void>,
+  signal?: RequestInit['signal']
+) =>
+  getUsingFetch<ResponseDelegateStatus, Failure | Error, GetDelegateInstallStatusQueryParams, void>(
+    getConfig('ng/api'),
+    `/trial-signup/delegate-install-status`,
+    props,
+    signal
+  )
+
+export interface ProvisionResourcesForCIQueryParams {
+  accountIdentifier: string
+}
+
+export type ProvisionResourcesForCIProps = Omit<
+  MutateProps<ResponseSetupStatus, Failure | Error, ProvisionResourcesForCIQueryParams, void, void>,
+  'path' | 'verb'
+>
+
+/**
+ * Provision resources for signup
+ */
+export const ProvisionResourcesForCI = (props: ProvisionResourcesForCIProps) => (
+  <Mutate<ResponseSetupStatus, Failure | Error, ProvisionResourcesForCIQueryParams, void, void>
+    verb="PUT"
+    path={`/trial-signup/provision`}
+    base={getConfig('ng/api')}
+    {...props}
+  />
+)
+
+export type UseProvisionResourcesForCIProps = Omit<
+  UseMutateProps<ResponseSetupStatus, Failure | Error, ProvisionResourcesForCIQueryParams, void, void>,
+  'path' | 'verb'
+>
+
+/**
+ * Provision resources for signup
+ */
+export const useProvisionResourcesForCI = (props: UseProvisionResourcesForCIProps) =>
+  useMutate<ResponseSetupStatus, Failure | Error, ProvisionResourcesForCIQueryParams, void, void>(
+    'PUT',
+    `/trial-signup/provision`,
+    { base: getConfig('ng/api'), ...props }
+  )
+
+/**
+ * Provision resources for signup
+ */
+export const provisionResourcesForCIPromise = (
+  props: MutateUsingFetchProps<ResponseSetupStatus, Failure | Error, ProvisionResourcesForCIQueryParams, void, void>,
+  signal?: RequestInit['signal']
+) =>
+  mutateUsingFetch<ResponseSetupStatus, Failure | Error, ProvisionResourcesForCIQueryParams, void, void>(
+    'PUT',
+    getConfig('ng/api'),
+    `/trial-signup/provision`,
+    props,
+    signal
+  )
 
 export interface GetCDLicenseUsageForServiceInstancesQueryParams {
   accountIdentifier?: string
@@ -33212,9 +35039,9 @@ export interface ListSecretsV2QueryParams {
   orgIdentifier?: string
   projectIdentifier?: string
   identifiers?: string[]
-  type?: 'SecretFile' | 'SecretText' | 'SSHKey'
+  type?: 'SecretFile' | 'SecretText' | 'SSHKey' | 'WinRmCredentials'
   searchTerm?: string
-  types?: ('SecretFile' | 'SecretText' | 'SSHKey')[]
+  types?: ('SecretFile' | 'SecretText' | 'SSHKey' | 'WinRmCredentials')[]
   source_category?:
     | 'CLOUD_PROVIDER'
     | 'SECRET_MANAGER'
@@ -34275,6 +36102,7 @@ export interface GetYamlSchemaQueryParams {
     | 'HelmRollback'
     | 'Connectors'
     | 'Secrets'
+    | 'Files'
     | 'Service'
     | 'Environment'
     | 'EnvironmentGroup'
@@ -34286,6 +36114,8 @@ export interface GetYamlSchemaQueryParams {
     | 'CvVerificationJob'
     | 'IntegrationStage'
     | 'IntegrationSteps'
+    | 'SecurityStage'
+    | 'SecuritySteps'
     | 'CvKubernetesActivitySource'
     | 'DeploymentSteps'
     | 'DeploymentStage'
@@ -34300,7 +36130,7 @@ export interface GetYamlSchemaQueryParams {
     | 'ServiceNowCreate'
     | 'ServiceNowUpdate'
     | 'GovernancePolicies'
-    | 'POLICY_STEP'
+    | 'Policy'
     | 'Run'
     | 'RunTests'
     | 'Plugin'
