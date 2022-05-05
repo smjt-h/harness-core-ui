@@ -178,3 +178,5 @@ export const connectorHelperUrls = {
   ceAzureBillingExport:
     'https://ngdocs.harness.io/article/v682mz6qfd-set-up-cost-visibility-for-azure#step_2_azure_billing_exports'
 }
+
+export const CONNECTOR_MODAL_MIN_WIDTH = 1175
