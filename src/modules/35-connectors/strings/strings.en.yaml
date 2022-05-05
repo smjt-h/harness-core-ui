@@ -100,7 +100,7 @@ title:
   awsKms: 'AWS Key Management Service'
   awsSecretManager: 'AWS Secrets Manager'
   delegateSelection: 'Delegate Selection'
-  ceAzureConnector: 'Azure Connector'
+  ceAzureConnector: '{{$.common.azureConnector}}'
   datadog: 'Datadog'
   azureKeyVault: 'Azure Key Vault'
   sumologic: 'SumoLogic'
@@ -491,7 +491,7 @@ azureKeyVault:
     setupVault: Setup Vault
   validation:
     tenantId: '{{ $.connectors.tenantIdRequired }}'
-    subscription: Subscription is required
+    subscription: '{{ $.common.validation.subscription }}'
     vaultName: Vault Name is required
 ceAws:
   steps:
@@ -709,7 +709,7 @@ ceAzure:
   existingExports:
     instruction: 'The following {{ reportCount }} Billing Exports are connected with your Harness Account.'
     createNewExportBtn: 'Create new Billing Export'
-    subscriptionId: Subscription Id
+    subscriptionId: '{{ $.common.subscriptionId }}'
     tenantId: '{{ $.connectors.tenantId }}'
     hints:
       nextStepHint1: 'If the Azure tenant ID you entered is covered by any of the above, select and click “Continue >” to proceed.'

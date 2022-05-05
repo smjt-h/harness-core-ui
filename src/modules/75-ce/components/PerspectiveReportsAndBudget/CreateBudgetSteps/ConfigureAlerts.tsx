@@ -24,10 +24,8 @@ import {
 import * as Yup from 'yup'
 import { TagInput } from '@blueprintjs/core'
 import { FontVariation } from '@harness/design-system'
-import moment from 'moment'
 import { useStrings } from 'framework/strings'
 import formatCost from '@ce/utils/formatCost'
-import { getGMTStartDateTime, CE_DATE_FORMAT_INTERNAL } from '@ce/utils/momentUtils'
 import { useCreateBudget, Budget, AlertThreshold, useUpdateBudget } from 'services/ce'
 import { EmailSchema } from '@common/utils/Validation'
 import type { BudgetStepData } from '../types'
@@ -104,7 +102,7 @@ const ConfigureAlerts: React.FC<StepProps<BudgetStepData> & Props> = props => {
       alertThresholds: altThresholds.filter(emptyThresholds),
       type: type === 'PREVIOUS_MONTH_SPEND' ? 'PREVIOUS_PERIOD_SPEND' : type,
       period,
-      startTime: getGMTStartDateTime(moment(startTime).format(CE_DATE_FORMAT_INTERNAL)),
+      startTime,
       growthRate: growthRate,
       budgetAmount: +budgetAmount,
       scope: {

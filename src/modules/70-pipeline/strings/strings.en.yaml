@@ -1007,11 +1007,19 @@ errorFramework:
   header10: 'some stages need'
   header11: 'some steps need'
   header12: 'it needs'
-ACR:
-  name: Acr
 delegate:
   DelegateSelectorOptional: 'Delegate Selector (optional)'
 cannotRunInvalidPipeline: Cannot run the pipeline because it's invalid, please review the configuration.
 cannotAddTriggerInvalidPipeline: Cannot add a trigger because pipeline is invalid, please review the configuration.
 cannotAddInputSetInvalidPipeline: Cannot add an input set because pipeline is invalid, please review the configuration.
 cannotEditTriggerInvalidPipeline: Cannot edit the trigger because pipeline is invalid, please review the configuration.
+ACR:
+  name: ACR
+  subscription: '{{ $.common.subscriptionId }}'
+  subscriptionPlaceholder: '{{ $.common.subscriptionPlaceholder }}'
+  subscriptionError: 'No subscription found with given Connector'
+  registry: 'Registry'
+  registryPlaceholder: 'Select or add Registry'
+  registryError: 'No registry found with given Subscription'
+  repositoryPlaceholder: 'Select or add Repository'
+  repositoryError: 'No repository found with given Registry'

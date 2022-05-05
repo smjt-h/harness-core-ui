@@ -58,6 +58,7 @@ export interface StringsMap {
   'common.auditTrail': string
   'common.aws': string
   'common.azure': string
+  'common.azureConnector': string
   'common.banners.email.description': string
   'common.banners.email.resend': string
   'common.banners.email.success': string
@@ -648,6 +649,8 @@ export interface StringsMap {
   'common.submittingRequest': string
   'common.submittingRequestToGitViaDelegate': string
   'common.subscribed': string
+  'common.subscriptionId': string
+  'common.subscriptionPlaceholder': string
   'common.subscriptions.banner.trial': string
   'common.subscriptions.ccm.cloudSpend': string
   'common.subscriptions.cd.serviceInstances': string
@@ -733,6 +736,7 @@ export interface StringsMap {
   'common.validation.email.format': string
   'common.validation.email.required': string
   'common.validation.entityIdIsRequired': string
+  'common.validation.environmentIsRequired': string
   'common.validation.fieldCanNotHaveWhitespace': string
   'common.validation.fieldCannotbeLongerThanN': string
   'common.validation.fieldIsRequired': string
@@ -749,7 +753,9 @@ export interface StringsMap {
   'common.validation.namePatternIsNotValid': string
   'common.validation.provisionerIdentifierIsRequired': string
   'common.validation.provisionerIdentifierPatternIsNotValid': string
+  'common.validation.repository': string
   'common.validation.repositoryName': string
+  'common.validation.subscription': string
   'common.validation.testRepoIsRequired': string
   'common.validation.typeIsRequired': string
   'common.validation.urlIsRequired': string
@@ -1245,7 +1251,10 @@ export interface StringsMap {
   'secrets.typeSSH': string
   'variables.allowedValues': string
   'variables.defaultValue': string
+  'variables.inputValidation': string
   'variables.newVariable': string
+  'variables.noVariableExist': string
+  'variables.noVariableFound': string
   'variables.validation.fixedValue': string
   'variables.validation.type': string
   'variables.validation.validation': string
@@ -2365,6 +2374,14 @@ export interface StringsMap {
   'projectsOrgs.whyCreateProject': string
   'projectsOrgs.youHaveNoProjects': string
   'pipeline.ACR.name': string
+  'pipeline.ACR.registry': string
+  'pipeline.ACR.registryError': string
+  'pipeline.ACR.registryPlaceholder': string
+  'pipeline.ACR.repositoryError': string
+  'pipeline.ACR.repositoryPlaceholder': string
+  'pipeline.ACR.subscription': string
+  'pipeline.ACR.subscriptionError': string
+  'pipeline.ACR.subscriptionPlaceholder': string
   'pipeline.aboutYourStage.stageNamePlaceholder': string
   'pipeline.addStage.description': string
   'pipeline.addStage.title': string
@@ -3577,9 +3594,16 @@ export interface StringsMap {
   'cd.specifyTargetHost': string
   'cd.specifyTfVarStore': string
   'cd.stepName': string
+  'cd.steps.azureInfraStep.azure': string
+  'cd.steps.azureInfraStep.clusterError': string
+  'cd.steps.azureInfraStep.resourceGroupError': string
+  'cd.steps.azureInfraStep.resourceGroupPlaceholder': string
+  'cd.steps.azureInfraStep.subscription': string
+  'cd.steps.azureInfraStep.subscriptionPlaceholder': string
   'cd.steps.common.clusterDetails': string
   'cd.steps.common.releaseNamePlaceholder': string
   'cd.steps.common.selectOrEnterClusterPlaceholder': string
+  'cd.steps.common.undefinedType': string
   'cd.steps.kubernetesGcpStep.stepName': string
   'cd.steps.serverless.regionPlaceholder': string
   'cd.steps.serverless.stagePlaceholder': string

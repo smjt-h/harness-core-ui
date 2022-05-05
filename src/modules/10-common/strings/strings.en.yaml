@@ -7,6 +7,7 @@ agent: Agent
 agents: Agents
 application: Application
 certificate: Certificate
+subscriptionId: Subscription Id
 repositoryCertificates: Repository Certificates
 notEnabled: 'Not Enabled'
 apiStatus: 'API Status'
@@ -172,6 +173,9 @@ validation:
     format: Please input valid email address
   repositoryName: Repository Name is required
   invalidYamlText: 'You have provided invalid or empty YAML. Please provide a valid YAML'
+  environmentIsRequired: 'Environment is required'
+  subscription: 'Subscription is required'
+  repository: 'Repository is required'
 specify: Specify
 role: Role
 projectViewer: Project Viewer
@@ -353,7 +357,7 @@ git:
     filePath: '{{$.common.git.filePath}} is required'
     commitMessage: '{{$.common.git.commitMessage}} is required'
     sameBranches: 'Source and target branches cannot be same for a pull request'
-    repoRequired: Repository is required
+    repoRequired: '{{ $.common.validation.repository }}'
     branchRequired: Branch is required
     targetBranch: Target branch is required for a pull request
     baseBranchRequired: Base branch is required
@@ -828,6 +832,8 @@ deleteEnvironment:
 90days: 90 Days
 180days: 180 Days
 noexpiration: No Expiration
+subscriptionPlaceholder: 'Select or add Subscription Id'
+azureConnector: Azure Connector
 environmentList: Environment List
 environment:
   fetchNext: Fetching Environments

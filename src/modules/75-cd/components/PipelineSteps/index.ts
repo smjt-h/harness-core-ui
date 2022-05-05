@@ -7,6 +7,7 @@
 
 import factory from '@pipeline/components/PipelineSteps/PipelineStepFactory'
 
+import { AzureInfrastructureSpec } from './AzureInfrastructureStep/AzureInfrastructureStep'
 import { HttpStep } from './HttpStep/HttpStep'
 import { K8RolloutDeployStep } from './K8sRolloutDeployStep/K8sRolloutDeployStep'
 import { ShellScriptStep } from './ShellScriptStep/ShellScriptStep'
@@ -68,3 +69,4 @@ factory.registerStep(new InfraProvisioning())
 factory.registerStep(new PolicyStep())
 factory.registerStep(new ServerlessAwsLambdaDeployStep())
 factory.registerStep(new ServerlessAwsLambdaRollbackStep())
+factory.registerStep(new AzureInfrastructureSpec())

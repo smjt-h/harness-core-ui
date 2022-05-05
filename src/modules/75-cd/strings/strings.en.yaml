@@ -11,13 +11,21 @@ dashboard:
 steps:
   common:
     clusterDetails: Cluster Details
-    selectOrEnterClusterPlaceholder: Select or add cluster
+    selectOrEnterClusterPlaceholder: Select or add Cluster
     releaseNamePlaceholder: Enter Release Name
+    undefinedType: Undefined deployment type
+  kubernetesGcpStep:
+    stepName: Specify your GCP Connector
+  azureInfraStep:
+    azure: 'Microsoft Azure'
+    subscription: '{{ $.common.subscriptionId }}'
+    subscriptionPlaceholder: '{{ $.common.subscriptionPlaceholder }}'
+    resourceGroupPlaceholder: 'Select or add Resource Group'
+    resourceGroupError: 'No resource groups found with given Subscription'
+    clusterError: 'No cluster found with given Resource Group'
   serverless:
     regionPlaceholder: Specify a region
     stagePlaceholder: Specify a stage
-  kubernetesGcpStep:
-    stepName: Specify your GCP Connector
 filePathPlaceholder: 'Enter path within manifest folder'
 resourceCannotBeEmpty: 'Resource cannot be empty'
 manifestPathsCannotBeEmpty: 'Manifest Paths cannot be empty'
@@ -76,7 +84,7 @@ pipelineSteps:
     selectEnvironment: '- Select Environment -'
     plusNewEnvironment: '+ {{$.newEnvironment}}'
     newEnvironment: '{{$.newEnvironment}}'
-    environmentIsRequired: Environment is required
+    environmentIsRequired: '{{ $.common.validation.environmentIsRequired }}'
   serviceTab:
     stageOverrides: Stage Overrides
     overrideChanges: Override artifacts, manifests, service variables for this stage

@@ -679,7 +679,7 @@ perspectives:
     nextButton: '{{$.next}}'
     prevButton: '{{$.previous}}'
     validationErrors:
-      nameLengthError: The name must be between 1 and 32 characters.
+      nameLengthError: The name must be between 1 and 80 characters.
       nameError: '{{$.validation.nameRequired}}'
       ruleError: 'values length should be greater than 1'
     filters:

@@ -14,6 +14,7 @@ import { StepViewType } from '@pipeline/components/AbstractSteps/Step'
 import {
   getProvisionerExecutionStrategyYamlPromise,
   Infrastructure,
+  K8sAzureInfrastructure,
   K8SDirectInfrastructure,
   K8sGcpInfrastructure,
   PipelineInfrastructure,
@@ -34,6 +35,7 @@ import { useValidationErrors } from '@pipeline/components/PipelineStudio/Pipline
 import type { DeploymentStageElementConfig, StageElementWrapper } from '@pipeline/utils/pipelineTypes'
 import SelectInfrastructureType from '@cd/components/PipelineStudio/DeployInfraSpecifications/SelectInfrastructureType/SelectInfrastructureType'
 import { Scope } from '@common/interfaces/SecretsInterface'
+import type { AzureInfrastructureSpec } from '@cd/components/PipelineSteps/AzureInfrastructureStep/AzureInfrastructureStep'
 import {
   getSelectedDeploymentType,
   isServerlessDeploymentType,
@@ -66,7 +68,7 @@ export const deploymentTypeInfraTypeMap = {
   AzureFunctions: InfraDeploymentType.AzureFunctions
 }
 
-type InfraTypes = K8SDirectInfrastructure | K8sGcpInfrastructure | ServerlessInfraTypes
+type InfraTypes = K8SDirectInfrastructure | K8sGcpInfrastructure | ServerlessInfraTypes | K8sAzureInfrastructure
 
 export default function DeployInfraSpecifications(props: React.PropsWithChildren<unknown>): JSX.Element {
   const [initialInfrastructureDefinitionValues, setInitialInfrastructureDefinitionValues] =
@@ -259,7 +261,7 @@ export default function DeployInfraSpecifications(props: React.PropsWithChildren
       return <div>Undefined deployment type</div>
     }
     switch (type) {
-      case 'KubernetesDirect': {
+      case InfraDeploymentType.KubernetesDirect: {
         return (
           <StepWidget<K8SDirectInfrastructure>
             factory={factory}
@@ -277,13 +279,13 @@ export default function DeployInfraSpecifications(props: React.PropsWithChildren
                   releaseName: value.releaseName,
                   allowSimultaneousDeployments: value.allowSimultaneousDeployments
                 },
-                'KubernetesDirect'
+                InfraDeploymentType.KubernetesDirect
               )
             }
           />
         )
       }
-      case 'KubernetesGcp': {
+      case InfraDeploymentType.KubernetesGcp: {
         return (
           <StepWidget<GcpInfrastructureSpec>
             factory={factory}
@@ -302,7 +304,34 @@ export default function DeployInfraSpecifications(props: React.PropsWithChildren
                   releaseName: value.releaseName,
                   allowSimultaneousDeployments: value.allowSimultaneousDeployments
                 },
-                'KubernetesGcp'
+                InfraDeploymentType.KubernetesGcp
+              )
+            }
+          />
+        )
+      }
+      case InfraDeploymentType.KubernetesAzure: {
+        return (
+          <StepWidget<AzureInfrastructureSpec>
+            factory={factory}
+            key={stage?.stage?.identifier}
+            readonly={isReadonly}
+            initialValues={initialInfrastructureDefinitionValues as AzureInfrastructureSpec}
+            type={StepType.KubernetesAzure}
+            stepViewType={StepViewType.Edit}
+            allowableTypes={allowableTypes}
+            onUpdate={value =>
+              onUpdateInfrastructureDefinition(
+                {
+                  connectorRef: value.connectorRef,
+                  subscription: value.subscription,
+                  resourceGroup: value.resourceGroup,
+                  cluster: value.cluster,
+                  namespace: value.namespace,
+                  releaseName: value.releaseName,
+                  allowSimultaneousDeployments: value.allowSimultaneousDeployments
+                },
+                InfraDeploymentType.KubernetesAzure
               )
             }
           />
@@ -382,7 +411,7 @@ export default function DeployInfraSpecifications(props: React.PropsWithChildren
         )
       }
       default: {
-        return <div>Undefined deployment type</div>
+        return <div>{getString('cd.steps.common.undefinedType')}</div>
       }
     }
   }

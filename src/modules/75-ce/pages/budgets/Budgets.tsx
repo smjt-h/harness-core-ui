@@ -299,7 +299,7 @@ const Budgets: () => JSX.Element = () => {
   const budgetData = (data?.budgetList || []) as unknown as BudgetSummary[]
 
   const filteredBudgetData = budgetData.filter(budget => {
-    if (!budget.name) {
+    if (!budget || !budget.name) {
       return false
     }
     return budget.name?.toLocaleLowerCase().indexOf(searchParam.toLowerCase()) < 0 ? false : true

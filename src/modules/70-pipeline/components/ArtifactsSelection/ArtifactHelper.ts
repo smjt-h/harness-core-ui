@@ -30,6 +30,7 @@ export const ArtifactIconByType: Record<ArtifactType, IconName> = {
   CustomArtifact: 'custom-artifact',
   Acr: 'service-azure'
 }
+
 export const ArtifactTitleIdByType: Record<ArtifactType, StringKeys> = {
   DockerRegistry: 'dockerRegistry',
   Gcr: 'connectors.GCR.name',
@@ -65,7 +66,7 @@ export const ArtifactConnectorLabelMap: Record<string, string> = {
   Ecr: 'AWS',
   Nexus3Registry: 'Nexus',
   ArtifactoryRegistry: 'Artifactory',
-  Azure: 'Azure'
+  Acr: 'Azure'
 }
 
 export const allowedArtifactTypes: Record<ServiceDefinition['type'], Array<ArtifactType>> = {

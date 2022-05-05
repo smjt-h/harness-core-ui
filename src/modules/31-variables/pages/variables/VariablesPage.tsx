@@ -4,9 +4,9 @@
  * that can be found in the licenses directory at the root of this repository, also available at
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
-import React from 'react'
+import React, { useState } from 'react'
 import { useParams } from 'react-router-dom'
-import { ButtonVariation, Layout, ExpandingSearchInput } from '@harness/uicore'
+import { ButtonVariation, Layout, ExpandingSearchInput, Button } from '@harness/uicore'
 import { useDocumentTitle } from '@common/hooks/useDocumentTitle'
 
 import RbacButton from '@rbac/components/Button/Button'
@@ -19,15 +19,38 @@ import { getLinkForAccountResources } from '@common/utils/BreadcrumbUtils'
 import ScopedTitle from '@common/components/Title/ScopedTitle'
 import { Scope } from '@common/interfaces/SecretsInterface'
 import useCreateEditVariableModal from '@variables/modals/CreateEditVariableModal/useCreateEditVariableModal'
+import { useGetVariablesList } from 'services/cd-ng'
+import VariableListView from './views/VariableListView'
 import css from './VariablesPage.module.scss'
 
 const VariablesPage: React.FC = () => {
   const { accountId, orgIdentifier, projectIdentifier } = useParams<ProjectPathProps & ModulePathParams>()
   const { getString } = useStrings()
   const variableLabel = getString('common.variables')
+  const [searchTerm, setSearchTerm] = useState<string | undefined>()
+  const [page, setPage] = useState(0)
+
   useDocumentTitle(variableLabel)
 
-  const { openCreateUpdateVariableModal } = useCreateEditVariableModal({})
+  const {
+    data: variableResponse,
+    loading,
+    error,
+    refetch
+  } = useGetVariablesList({
+    queryParams: {
+      pageIndex: page,
+      pageSize: 10,
+      projectIdentifier,
+      orgIdentifier,
+      accountIdentifier: accountId,
+      searchTerm
+    }
+  })
+
+  const { openCreateUpdateVariableModal } = useCreateEditVariableModal({
+    onSuccess: refetch
+  })
 
   return (
     <>
@@ -59,10 +82,44 @@ const VariablesPage: React.FC = () => {
             onClick={() => openCreateUpdateVariableModal()}
           />
         </Layout.Horizontal>
-        <ExpandingSearchInput alwaysExpanded width={200} placeholder={getString('search')} throttle={200} />
+        <ExpandingSearchInput
+          alwaysExpanded
+          onChange={text => {
+            setSearchTerm(text.trim())
+            setPage(0)
+          }}
+          width={250}
+        />
       </Layout.Horizontal>
 
-      <Page.Body>{/* TODO */}</Page.Body>
+      <Page.Body
+        className={css.listBody}
+        loading={loading}
+        retryOnError={() => refetch()}
+        error={(error?.data as Error)?.message || error?.message}
+        noData={{
+          when: () => !variableResponse?.data?.content?.length,
+          message: !searchTerm
+            ? getString('variables.noVariableExist', {
+                resourceName: projectIdentifier ? 'project' : orgIdentifier ? 'organization' : 'account'
+              })
+            : getString('variables.noVariableFound'),
+          button: !searchTerm ? (
+            <Button
+              icon="plus"
+              text={getString('variables.newVariable')}
+              variation={ButtonVariation.PRIMARY}
+              onClick={() => openCreateUpdateVariableModal()}
+            />
+          ) : undefined
+        }}
+      >
+        <VariableListView
+          variables={variableResponse?.data}
+          gotoPage={pageNumber => setPage(pageNumber)}
+          refetch={refetch}
+        />
+      </Page.Body>
     </>
   )
 }
