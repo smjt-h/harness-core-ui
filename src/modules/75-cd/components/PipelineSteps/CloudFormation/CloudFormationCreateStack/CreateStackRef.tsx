@@ -20,13 +20,12 @@ import {
   Layout,
   Label,
   Text,
-  MultiTypeInput,
   MultiSelectTypeInput,
   MultiSelectOption,
   Button,
   Icon
 } from '@harness/uicore'
-import { map, find } from 'lodash-es'
+import { map } from 'lodash-es'
 import { useStrings } from 'framework/strings'
 import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
 import {
@@ -217,7 +216,6 @@ export const CreateStack = (
         const awsRegion = config?.region
         const stackStatus = config?.skipOnStackStatuses
         const awsCapabilities = config?.capabilities
-        const awsRole = config?.roleArn
         const parameterOverrides = config?.parameterOverrides
         return (
           <>
@@ -566,28 +564,24 @@ export const CreateStack = (
                         </div>
                       )}
                     </Layout.Vertical>
-                    <Layout.Vertical className={css.addMarginBottom}>
-                      <Label style={{ color: Color.GREY_900 }} className={css.configLabel}>
-                        {getString('optionalField', { name: getString('connectors.awsKms.roleArnLabel') })}
-                      </Label>
-                      <Layout.Horizontal>
-                        <MultiTypeInput
-                          name="spec.configuration.roleARN"
-                          expressions={expressions}
-                          allowableTypes={allowableTypes}
-                          selectProps={{
-                            addClearBtn: false,
-                            items: awsRoles
-                          }}
-                          disabled={readonly}
-                          width={300}
-                          onChange={({ value }: any) => {
-                            setFieldValue('spec.configuration.roleArn', value)
-                          }}
-                          value={find(awsRoles, ['value', awsRole]) || awsRole}
-                          placeholder={rolesLoading ? getString('loading') : getString('select')}
-                        />
-                      </Layout.Horizontal>
+                    <Layout.Vertical>
+                      <FormInput.MultiTypeInput
+                        label={getString('optionalField', { name: getString('connectors.awsKms.roleArnLabel') })}
+                        name="spec.configuration.roleARN"
+                        placeholder={getString(rolesLoading ? 'common.loading' : 'select')}
+                        disabled={readonly}
+                        useValue
+                        multiTypeInputProps={{
+                          selectProps: {
+                            allowCreatingNewItems: true,
+                            items: awsRoles || []
+                          },
+                          expressions,
+                          allowableTypes,
+                          width: 300
+                        }}
+                        selectItems={awsRoles || []}
+                      />
                     </Layout.Vertical>
                     <Layout.Vertical className={css.addMarginBottom}>
                       <Label style={{ color: Color.GREY_900 }} className={css.configLabel}>
