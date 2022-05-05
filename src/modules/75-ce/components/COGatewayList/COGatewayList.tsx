@@ -826,10 +826,10 @@ const COGatewayList: React.FC = () => {
     )
   }
 
-  // Only for ACTIVE MODE
   // Render empty page component when:
   // no data is available
   // search is not active
+  // and no 'mode' query param is present
   if (!isLoadingPage && _isEmpty(modeQueryText.current) && _isEmpty(tableData) && !searchParams.isActive) {
     return <EmptyListPage featureDetail={featureDetail} />
   }

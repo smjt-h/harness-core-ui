@@ -190,6 +190,7 @@ co:
       serviceDetails: 'Service details'
       rdsDetails: 'RDS details'
       hideProgressPage: 'Hide progress page'
+      dryRunMode: 'Dry run mode'
       setupAccessDetails: 'Setup Access details'
       dnsLinkMapping: 'DNS Link mapping'
       instanceFulfilment: 'Instance fulfilment'

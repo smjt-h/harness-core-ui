@@ -3913,6 +3913,7 @@ export interface StringsMap {
   'ce.co.autoStoppingRule.review.cloudAccountDetails': string
   'ce.co.autoStoppingRule.review.configDetails': string
   'ce.co.autoStoppingRule.review.dnsLinkMapping': string
+  'ce.co.autoStoppingRule.review.dryRunMode': string
   'ce.co.autoStoppingRule.review.hideProgressPage': string
   'ce.co.autoStoppingRule.review.idleTimeMins': string
   'ce.co.autoStoppingRule.review.instanceDetails': string
