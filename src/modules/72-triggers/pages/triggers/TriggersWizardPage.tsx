@@ -235,7 +235,8 @@ const getArtifactManifestTriggerYaml = ({
   } = val
 
   replaceRunTimeVariables({ manifestType, artifactType, selectedArtifact })
-  let newPipelineObj = { ...pipelineRuntimeInput }
+  let newPipeline = cloneDeep(pipelineRuntimeInput)
+  const newPipelineObj = newPipeline.template ? newPipeline.template.templateInputs : newPipeline
   const filteredStage = newPipelineObj.stages?.find((item: any) => item.stage?.identifier === stageId)
   if (manifestType) {
     replaceStageManifests({ filteredStage, selectedArtifact })
@@ -244,11 +245,11 @@ const getArtifactManifestTriggerYaml = ({
   }
 
   // Manually clear null or undefined artifact identifier
-  newPipelineObj = clearUndefinedArtifactId(newPipelineObj)
+  newPipeline = clearUndefinedArtifactId(newPipeline)
 
   // actions will be required thru validation
   const stringifyPipelineRuntimeInput = yamlStringify({
-    pipeline: clearNullUndefined(newPipelineObj)
+    pipeline: clearNullUndefined(newPipeline)
   })
 
   // clears any runtime inputs

@@ -5,17 +5,10 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import { set, unset } from 'lodash-es'
-import produce from 'immer'
-import { RUNTIME_INPUT_VALUE } from '@harness/uicore'
+import { unset } from 'lodash-es'
 import type { StringKeys } from 'framework/strings'
-import { stageTemplateMock, stepTemplateMock } from '@templates-library/components/TemplateStudio/__tests__/stateMock'
-import {
-  getScopeBasedQueryParams,
-  getTemplateInputsCount,
-  getVersionLabelText,
-  hasSameRunTimeInputs
-} from '@templates-library/utils/templatesUtils'
+import { stageTemplateMock } from '@templates-library/components/TemplateStudio/__tests__/stateMock'
+import { getScopeBasedQueryParams, getVersionLabelText } from '@templates-library/utils/templatesUtils'
 import { Scope } from '@common/interfaces/SecretsInterface'
 import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
 
@@ -51,21 +44,5 @@ describe('templatesUtils tests', () => {
     expect(getScopeBasedQueryParams(queryParams, Scope.ACCOUNT)).toEqual({
       accountIdentifier: 'accountId'
     })
-  })
-
-  test('Test getTemplateInputsCount method', () => {
-    expect(getTemplateInputsCount(stepTemplateMock)).toEqual(2)
-    expect(getTemplateInputsCount(stageTemplateMock)).toEqual(2)
-  })
-
-  test('Test hasSameRunTimeInputs method', () => {
-    const example1 = produce(stageTemplateMock, draft => {
-      set(draft, 'spec.spec.serviceConfig.serviceRef', 'another_Service')
-    })
-    expect(hasSameRunTimeInputs(stageTemplateMock, example1)).toEqual(true)
-    const example2 = produce(stageTemplateMock, draft => {
-      set(draft, 'spec.spec.serviceConfig.serviceRef', RUNTIME_INPUT_VALUE)
-    })
-    expect(hasSameRunTimeInputs(stageTemplateMock, example2)).toEqual(false)
   })
 })

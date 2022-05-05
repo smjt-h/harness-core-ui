@@ -514,17 +514,16 @@ export function PipelineCanvas({
   }
 
   React.useEffect(() => {
-    if (
-      pipeline.identifier !== DefaultNewPipelineId &&
-      useTemplate &&
-      !pipeline.template &&
-      (!isGitSyncEnabled || !isEmpty(gitDetails))
-    ) {
-      getPipelineTemplate().catch(_error => {
-        onCloseCreate()
-      })
+    if (useTemplate && (!isGitSyncEnabled || !isEmpty(gitDetails))) {
+      getPipelineTemplate()
+        .catch(_error => {
+          onCloseCreate()
+        })
+        .finally(() => {
+          setUseTemplate(false)
+        })
     }
-  }, [pipeline.identifier, gitDetails, useTemplate])
+  }, [useTemplate, gitDetails])
 
   function handleViewChange(newView: SelectedView): boolean {
     if (newView === view) return false
