@@ -489,6 +489,46 @@
         }
       }
     },
+    "/accounts/{account_id}/autostopping/rules/{rule_id}/toggle_dry_run": {
+      "parameters": [
+        {
+          "name": "account_id",
+          "in": "path",
+          "required": true,
+          "type": "string"
+        },
+        {
+          "name": "rule_id",
+          "in": "path",
+          "required": true,
+          "type": "number"
+        },
+        {
+          "name": "accountIdentifier",
+          "in": "query",
+          "required": true,
+          "type": "string"
+        }
+      ],
+      "post": {
+        "tags": ["toggleRule"],
+        "summary": "Toggle rule state from/to dryn_run_mode",
+        "description": "Toggle rule state from/to dryn_run_mode",
+        "operationId": "ToggleRuleState",
+        "produces": ["application/json"],
+        "parameters": [
+          {
+            "in": "body",
+            "name": "body",
+            "description": "Toggle rule details",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/ToggleRuleDetails"
+            }
+          }
+        ]
+      }
+    },
     "/accounts/{account_id}/autostopping/rules/savings/cumulative": {
       "parameters": [
         {
@@ -2339,6 +2379,14 @@
         },
         "apply_now": {
           "type": "boolean"
+        }
+      }
+    },
+    "ToggleRuleDetails": {
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "integer"
         }
       }
     },

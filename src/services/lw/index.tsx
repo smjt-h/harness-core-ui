@@ -775,6 +775,10 @@ export interface TimeSchedule {
   }
 }
 
+export interface ToggleRuleDetails {
+  id?: number
+}
+
 export interface ValidateSchedulesBody {
   /**
    * List of static schedules
@@ -1871,6 +1875,54 @@ export const useGetServiceStats = ({ account_id, rule_id, ...props }: UseGetServ
   useGet<ServiceStatsResponse, void, GetServiceStatsQueryParams, GetServiceStatsPathParams>(
     (paramsInPath: GetServiceStatsPathParams) =>
       `/accounts/${paramsInPath.account_id}/autostopping/rules/${paramsInPath.rule_id}/stats`,
+    { base: getConfig('lw/api'), pathParams: { account_id, rule_id }, ...props }
+  )
+
+export interface ToggleRuleStateQueryParams {
+  accountIdentifier: string
+}
+
+export interface ToggleRuleStatePathParams {
+  account_id: string
+  rule_id: number
+}
+
+export type ToggleRuleStateProps = Omit<
+  MutateProps<void, void, ToggleRuleStateQueryParams, ToggleRuleDetails, ToggleRuleStatePathParams>,
+  'path' | 'verb'
+> &
+  ToggleRuleStatePathParams
+
+/**
+ * Toggle rule state from/to dryn_run_mode
+ *
+ * Toggle rule state from/to dryn_run_mode
+ */
+export const ToggleRuleState = ({ account_id, rule_id, ...props }: ToggleRuleStateProps) => (
+  <Mutate<void, void, ToggleRuleStateQueryParams, ToggleRuleDetails, ToggleRuleStatePathParams>
+    verb="POST"
+    path={`/accounts/${account_id}/autostopping/rules/${rule_id}/toggle_dry_run`}
+    base={getConfig('lw/api')}
+    {...props}
+  />
+)
+
+export type UseToggleRuleStateProps = Omit<
+  UseMutateProps<void, void, ToggleRuleStateQueryParams, ToggleRuleDetails, ToggleRuleStatePathParams>,
+  'path' | 'verb'
+> &
+  ToggleRuleStatePathParams
+
+/**
+ * Toggle rule state from/to dryn_run_mode
+ *
+ * Toggle rule state from/to dryn_run_mode
+ */
+export const useToggleRuleState = ({ account_id, rule_id, ...props }: UseToggleRuleStateProps) =>
+  useMutate<void, void, ToggleRuleStateQueryParams, ToggleRuleDetails, ToggleRuleStatePathParams>(
+    'POST',
+    (paramsInPath: ToggleRuleStatePathParams) =>
+      `/accounts/${paramsInPath.account_id}/autostopping/rules/${paramsInPath.rule_id}/toggle_dry_run`,
     { base: getConfig('lw/api'), pathParams: { account_id, rule_id }, ...props }
   )
 
