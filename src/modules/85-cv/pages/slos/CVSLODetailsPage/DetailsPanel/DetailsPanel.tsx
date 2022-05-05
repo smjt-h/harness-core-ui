@@ -6,8 +6,11 @@
  */
 
 import React, { useState } from 'react'
+import { useParams } from 'react-router-dom'
 import { Card, Color, Container, FontVariation, Heading, Page, Text } from '@harness/uicore'
 import { useStrings } from 'framework/strings'
+import { useGetSLODetails } from 'services/cv'
+import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
 import ChangesSourceCard from '@cv/pages/monitored-service/components/ServiceHealth/components/ChangesSourceCard/ChangesSourceCard'
 import ChangesTable from '@cv/pages/monitored-service/components/ServiceHealth/components/ChangesAndServiceDependency/components/ChangesTable/ChangesTable'
 import ServiceDetails from './views/ServiceDetails'
@@ -23,11 +26,26 @@ const DetailsPanel: React.FC<DetailsPanelProps> = ({
   timeRangeFilters
 }) => {
   const { getString } = useStrings()
+  const { accountId, orgIdentifier, projectIdentifier, identifier } = useParams<
+    ProjectPathProps & { identifier: string }
+  >()
+
   const { currentPeriodStartTime = 0, currentPeriodEndTime = 0 } = sloDashboardWidget ?? {}
   const [chartTimeRange, setChartTimeRange] = useState<{ startTime: number; endTime: number }>()
   const [sliderTimeRange, setSliderTimeRange] = useState<{ startTime: number; endTime: number }>()
 
   const { startTime = currentPeriodStartTime, endTime = currentPeriodEndTime } = sliderTimeRange ?? chartTimeRange ?? {}
+
+  const { data } = useGetSLODetails({
+    identifier,
+    queryParams: {
+      accountId,
+      orgIdentifier,
+      projectIdentifier,
+      startTime: chartTimeRange?.startTime,
+      endTime: chartTimeRange?.endTime
+    }
+  })
 
   return (
     <Page.Body
@@ -49,6 +67,7 @@ const DetailsPanel: React.FC<DetailsPanelProps> = ({
             sliderTimeRange={sliderTimeRange}
             setSliderTimeRange={setSliderTimeRange}
             serviceLevelObjective={sloDashboardWidget}
+            filteredServiceLevelObjective={data?.data?.sloDashboardWidget}
             timeRangeFilters={timeRangeFilters}
           />
 

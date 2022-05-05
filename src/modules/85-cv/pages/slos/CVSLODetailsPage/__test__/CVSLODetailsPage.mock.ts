@@ -31,6 +31,8 @@ const monitoredServiceIdentifier = 'Service_1_Environment_1'
 
 const { accountId, orgIdentifier, projectIdentifier } = pathParams
 
+export const SLODetailsResetParams = { accountId, orgIdentifier, projectIdentifier }
+
 export const changeEventSummaryRestParams = { accountId, orgIdentifier, projectIdentifier, monitoredServiceIdentifier }
 
 export const ChangeEventListResetParams = {
