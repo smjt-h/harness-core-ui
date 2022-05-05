@@ -511,19 +511,19 @@
         }
       ],
       "post": {
-        "tags": ["toggleRule"],
-        "summary": "Toggle rule state from/to dryn_run_mode",
-        "description": "Toggle rule state from/to dryn_run_mode",
-        "operationId": "ToggleRuleState",
+        "tags": ["toggleRuleMode"],
+        "summary": "Toggle rule mode from/to dryn_run_mode",
+        "description": "Toggle rule mode from/to dryn_run_mode",
+        "operationId": "ToggleRuleMode",
         "produces": ["application/json"],
         "parameters": [
           {
             "in": "body",
             "name": "body",
-            "description": "Toggle rule details",
+            "description": "Toggle rule mode",
             "required": true,
             "schema": {
-              "$ref": "#/definitions/ToggleRuleDetails"
+              "$ref": "#/definitions/ToggleRuleModeDetails"
             }
           }
         ]
@@ -2382,7 +2382,7 @@
         }
       }
     },
-    "ToggleRuleDetails": {
+    "ToggleRuleModeDetails": {
       "type": "object",
       "properties": {
         "id": {

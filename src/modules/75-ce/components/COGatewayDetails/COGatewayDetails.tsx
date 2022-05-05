@@ -6,7 +6,7 @@
  */
 
 import React, { useState } from 'react'
-import { defaultTo as _defaultTo } from 'lodash-es'
+import { defaultTo as _defaultTo, isBoolean } from 'lodash-es'
 import { Layout, Tabs, Tab, Button, Container, Icon } from '@wings-software/uicore'
 import { useParams, useHistory } from 'react-router-dom'
 import { useToaster } from '@common/exports'
@@ -18,7 +18,14 @@ import routes from '@common/RouteDefinitions'
 import { Utils } from '@ce/common/Utils'
 import { useTelemetry } from '@common/hooks/useTelemetry'
 import { useStrings } from 'framework/strings'
-import { useSaveService, Service, useGetServices, useCreateStaticSchedules, useDeleteStaticSchedule } from 'services/lw'
+import {
+  useSaveService,
+  Service,
+  useGetServices,
+  useCreateStaticSchedules,
+  useDeleteStaticSchedule,
+  useToggleRuleMode
+} from 'services/lw'
 import { Breadcrumbs } from '@common/components/Breadcrumbs/Breadcrumbs'
 import { ASRuleTabs } from '@ce/constants'
 import { GatewayContextProvider } from '@ce/context/GatewayContext'
@@ -34,6 +41,7 @@ interface COGatewayDetailsProps {
   setGatewayDetails: (gwDetails: GatewayDetails) => void
   activeTab?: ASRuleTabs
   isEditFlow: boolean
+  originalRuleDetails?: Service
 }
 const COGatewayDetails: React.FC<COGatewayDetailsProps> = props => {
   const { accountId, orgIdentifier, projectIdentifier } = useParams<{
@@ -84,6 +92,12 @@ const COGatewayDetails: React.FC<COGatewayDetailsProps> = props => {
 
   const { mutate: deleteSchedule } = useDeleteStaticSchedule({
     account_id: accountId,
+    queryParams: { accountIdentifier: accountId }
+  })
+
+  const { mutate: toggleMode } = useToggleRuleMode({
+    account_id: accountId,
+    rule_id: _defaultTo(props.originalRuleDetails?.id, 0),
     queryParams: { accountIdentifier: accountId }
   })
 
@@ -154,6 +168,18 @@ const COGatewayDetails: React.FC<COGatewayDetailsProps> = props => {
     }
   }
 
+  const handleModeToggle = async (currRuleDetails: Service) => {
+    if (
+      props.isEditFlow &&
+      isBoolean(currRuleDetails?.opts?.dry_run) &&
+      currRuleDetails?.opts?.dry_run !== props.originalRuleDetails?.opts?.dry_run
+    ) {
+      await toggleMode({
+        id: _defaultTo(props.originalRuleDetails?.id, 0)
+      })
+    }
+  }
+
   const onSave = async (): Promise<void> => {
     try {
       setSaveInProgress(true)
@@ -164,6 +190,7 @@ const COGatewayDetails: React.FC<COGatewayDetailsProps> = props => {
         accountId,
         serverNames
       )
+      handleModeToggle(gateway)
       const result = await saveGateway({ service: gateway, deps: props.gatewayDetails.deps, apply_now: false }) // eslint-disable-line
       // Rule creation is halted until the access point creation takes place successfully.
       // Informing the user regarding the same

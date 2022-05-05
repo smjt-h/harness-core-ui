@@ -775,7 +775,7 @@ export interface TimeSchedule {
   }
 }
 
-export interface ToggleRuleDetails {
+export interface ToggleRuleModeDetails {
   id?: number
 }
 
@@ -1878,28 +1878,28 @@ export const useGetServiceStats = ({ account_id, rule_id, ...props }: UseGetServ
     { base: getConfig('lw/api'), pathParams: { account_id, rule_id }, ...props }
   )
 
-export interface ToggleRuleStateQueryParams {
+export interface ToggleRuleModeQueryParams {
   accountIdentifier: string
 }
 
-export interface ToggleRuleStatePathParams {
+export interface ToggleRuleModePathParams {
   account_id: string
   rule_id: number
 }
 
-export type ToggleRuleStateProps = Omit<
-  MutateProps<void, void, ToggleRuleStateQueryParams, ToggleRuleDetails, ToggleRuleStatePathParams>,
+export type ToggleRuleModeProps = Omit<
+  MutateProps<void, void, ToggleRuleModeQueryParams, ToggleRuleModeDetails, ToggleRuleModePathParams>,
   'path' | 'verb'
 > &
-  ToggleRuleStatePathParams
+  ToggleRuleModePathParams
 
 /**
- * Toggle rule state from/to dryn_run_mode
+ * Toggle rule mode from/to dryn_run_mode
  *
- * Toggle rule state from/to dryn_run_mode
+ * Toggle rule mode from/to dryn_run_mode
  */
-export const ToggleRuleState = ({ account_id, rule_id, ...props }: ToggleRuleStateProps) => (
-  <Mutate<void, void, ToggleRuleStateQueryParams, ToggleRuleDetails, ToggleRuleStatePathParams>
+export const ToggleRuleMode = ({ account_id, rule_id, ...props }: ToggleRuleModeProps) => (
+  <Mutate<void, void, ToggleRuleModeQueryParams, ToggleRuleModeDetails, ToggleRuleModePathParams>
     verb="POST"
     path={`/accounts/${account_id}/autostopping/rules/${rule_id}/toggle_dry_run`}
     base={getConfig('lw/api')}
@@ -1907,21 +1907,21 @@ export const ToggleRuleState = ({ account_id, rule_id, ...props }: ToggleRuleSta
   />
 )
 
-export type UseToggleRuleStateProps = Omit<
-  UseMutateProps<void, void, ToggleRuleStateQueryParams, ToggleRuleDetails, ToggleRuleStatePathParams>,
+export type UseToggleRuleModeProps = Omit<
+  UseMutateProps<void, void, ToggleRuleModeQueryParams, ToggleRuleModeDetails, ToggleRuleModePathParams>,
   'path' | 'verb'
 > &
-  ToggleRuleStatePathParams
+  ToggleRuleModePathParams
 
 /**
- * Toggle rule state from/to dryn_run_mode
+ * Toggle rule mode from/to dryn_run_mode
  *
- * Toggle rule state from/to dryn_run_mode
+ * Toggle rule mode from/to dryn_run_mode
  */
-export const useToggleRuleState = ({ account_id, rule_id, ...props }: UseToggleRuleStateProps) =>
-  useMutate<void, void, ToggleRuleStateQueryParams, ToggleRuleDetails, ToggleRuleStatePathParams>(
+export const useToggleRuleMode = ({ account_id, rule_id, ...props }: UseToggleRuleModeProps) =>
+  useMutate<void, void, ToggleRuleModeQueryParams, ToggleRuleModeDetails, ToggleRuleModePathParams>(
     'POST',
-    (paramsInPath: ToggleRuleStatePathParams) =>
+    (paramsInPath: ToggleRuleModePathParams) =>
       `/accounts/${paramsInPath.account_id}/autostopping/rules/${paramsInPath.rule_id}/toggle_dry_run`,
     { base: getConfig('lw/api'), pathParams: { account_id, rule_id }, ...props }
   )

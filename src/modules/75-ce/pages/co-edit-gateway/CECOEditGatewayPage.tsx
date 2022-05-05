@@ -188,6 +188,7 @@ export const CECOEditGatewayPage: React.FC = () => {
           setGatewayDetails={setGatewayDetails}
           previousTab={() => undefined}
           isEditFlow={true}
+          originalRuleDetails={data?.response?.service}
         />
       ) : (
         <div style={{ position: 'relative', height: 'calc(100vh - 128px)' }}>
