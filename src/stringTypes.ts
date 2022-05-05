@@ -2527,7 +2527,11 @@ export interface StringsMap {
   'pipeline.ciCodebase.prCloneStrategy': string
   'pipeline.ciCodebase.pullRequestNumber': string
   'pipeline.ciCodebase.validation.oneOfValues': string
-  'pipeline.ciCodebase.validation.sslVerifyBoolean': string
+  'pipeline.ciCodebase.validation.optionalDepth': string
+  'pipeline.ciCodebase.validation.optionalLimitCPU': string
+  'pipeline.ciCodebase.validation.optionalLimitMemory': string
+  'pipeline.ciCodebase.validation.optionalPrCloneStrategy': string
+  'pipeline.ciCodebase.validation.optionalSslVerify': string
   'pipeline.clickHere': string
   'pipeline.clickToExpandErrorDetails': string
   'pipeline.closeStepConfig': string

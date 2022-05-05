@@ -52,7 +52,6 @@ export interface PipelineInputSetFormProps {
   maybeContainerClass?: string
   viewType: StepViewType
   isRunPipelineForm?: boolean
-  isTriggerForm?: boolean
   listOfSelectedStages?: string[]
   isRetryFormStageSelected?: boolean
   allowableTypes?: MultiTypeInputType[]
@@ -204,7 +203,6 @@ export function PipelineInputSetFormInternal(props: PipelineInputSetFormProps): 
     viewType,
     maybeContainerClass = '',
     executionIdentifier,
-    isTriggerForm,
     allowableTypes = [MultiTypeInputType.FIXED, MultiTypeInputType.EXPRESSION]
   } = props
   const { getString } = useStrings()
@@ -318,7 +316,6 @@ export function PipelineInputSetFormInternal(props: PipelineInputSetFormProps): 
                     originalPipeline={props.originalPipeline}
                     template={template}
                     viewType={viewType}
-                    isTriggerForm={isTriggerForm}
                   />
                 </div>
               </div>

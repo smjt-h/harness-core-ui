@@ -45,7 +45,7 @@ export const getConnectorRefWidth = (viewType: StepViewType): number =>
   Object.entries(ConnectorRefWidth).find(key => key[0] === viewType)?.[1] || ConnectorRefWidth.DefaultView
 
 export const getPrCloneStrategyOptions = (getString: UseStringsReturn['getString']): SelectOption[] => [
-  { label: getString('pipeline.rightBar.mergeCommit'), value: 'MergeCommit' },
+  { label: getString('pipeline.rightBar.mergeCommit'), value: 'MergeCommit' }, // should keep as index 0 for default value
   { label: getString('common.sourceBranch'), value: 'SourceBranch' }
 ]
 

@@ -31,6 +31,7 @@ import { getDurationValidationSchema } from '@common/components/MultiTypeDuratio
 import type { TemplateStepNode } from 'services/pipeline-ng'
 import { ServiceDeploymentType } from '@pipeline/utils/stageHelpers'
 import { getPrCloneStrategyOptions } from '@pipeline/utils/constants'
+import { CodebaseTypes } from '@pipeline/utils/CIUtils'
 import factory from '../PipelineSteps/PipelineStepFactory'
 import { StepType } from '../PipelineSteps/PipelineStepInterface'
 // eslint-disable-next-line no-restricted-imports
@@ -357,8 +358,10 @@ export const validateCICodebase = ({
   getString
 }: ValidatePipelineProps): FormikErrors<PipelineInfoConfig> => {
   const errors = {}
-  const shouldValidateCICodebase = originalPipeline?.stages?.some(stage =>
-    Object.is(get(stage, 'stage.spec.cloneCodebase'), true)
+  const requiresConnectorRuntimeInputValue =
+    template?.properties?.ci?.codebase?.connectorRef && !pipeline?.properties?.ci?.codebase?.connectorRef
+  const shouldValidateCICodebase = originalPipeline?.stages?.some(
+    stage => Object.is(get(stage, 'stage.spec.cloneCodebase'), true) && !requiresConnectorRuntimeInputValue // ci codebase field is hidden until connector is selected
   )
 
   if (
@@ -385,7 +388,7 @@ export const validateCICodebase = ({
     }
 
     if (
-      pipeline?.properties?.ci?.codebase?.build?.type === 'branch' &&
+      pipeline?.properties?.ci?.codebase?.build?.type === CodebaseTypes.branch &&
       isEmpty(pipeline?.properties?.ci?.codebase?.build?.spec?.branch)
     ) {
       set(
@@ -396,14 +399,14 @@ export const validateCICodebase = ({
     }
 
     if (
-      pipeline?.properties?.ci?.codebase?.build?.type === 'tag' &&
+      pipeline?.properties?.ci?.codebase?.build?.type === CodebaseTypes.tag &&
       isEmpty(pipeline?.properties?.ci?.codebase?.build?.spec?.tag)
     ) {
       set(errors, 'properties.ci.codebase.build.spec.tag', getString?.('fieldRequired', { field: getString('gitTag') }))
     }
 
     if (
-      pipeline?.properties?.ci?.codebase?.build?.type === 'PR' &&
+      pipeline?.properties?.ci?.codebase?.build?.type === CodebaseTypes.PR &&
       isEmpty(pipeline?.properties?.ci?.codebase?.build?.spec?.number)
     ) {
       set(
@@ -414,37 +417,39 @@ export const validateCICodebase = ({
     }
   }
 
-  if (template?.properties?.ci?.codebase?.connectorRef) {
-    if (!pipeline?.properties?.ci?.codebase?.connectorRef) {
-      set(
-        errors,
-        'properties.ci.codebase.connectorRef',
-        getString?.('fieldRequired', { field: getString?.('connector') })
-      )
-    }
+  if (requiresConnectorRuntimeInputValue) {
+    set(
+      errors,
+      'properties.ci.codebase.connectorRef',
+      getString?.('fieldRequired', { field: getString?.('connector') })
+    )
   }
 
-  if (template?.properties?.ci?.codebase?.repoName) {
-    if (!pipeline?.properties?.ci?.codebase?.repoName) {
-      set(
-        errors,
-        'properties.ci.codebase.repoName',
-        getString?.('fieldRequired', { field: getString?.('common.repositoryName') })
-      )
-    }
+  if (template?.properties?.ci?.codebase?.repoName && pipeline?.properties?.ci?.codebase?.repoName?.trim() === '') {
+    // connector with account url type will remove repoName requirement
+    set(
+      errors,
+      'properties.ci.codebase.repoName',
+      getString?.('fieldRequired', { field: getString?.('common.repositoryName') })
+    )
   }
 
   if (template?.properties?.ci?.codebase?.depth) {
     const depth = pipeline?.properties?.ci?.codebase?.depth
-    if (depth && (typeof depth !== 'number' || (typeof depth === 'string' && parseInt(depth) < 1))) {
-      set(errors, 'properties.ci.codebase.depth', getString?.('pipeline.onlyPositiveInteger'))
+    if (
+      (depth || depth == 0) &&
+      ((typeof depth === 'number' && depth < 1) ||
+        typeof depth !== 'number' ||
+        (typeof depth === 'string' && parseInt(depth) < 1))
+    ) {
+      set(errors, 'properties.ci.codebase.depth', getString?.('pipeline.ciCodebase.validation.optionalDepth'))
     }
   }
 
   if (template?.properties?.ci?.codebase?.sslVerify) {
     const sslVerify = pipeline?.properties?.ci?.codebase?.sslVerify
     if (sslVerify && !isBoolean(sslVerify)) {
-      set(errors, 'properties.ci.codebase.sslVerify', getString?.('pipeline.ciCodebase.validation.sslVerifyBoolean'))
+      set(errors, 'properties.ci.codebase.sslVerify', getString?.('pipeline.ciCodebase.validation.optionalSslVerify'))
     }
   }
 
@@ -457,19 +462,24 @@ export const validateCICodebase = ({
       set(
         errors,
         'properties.ci.codebase.prCloneStrategy',
-        getString?.('pipeline.ciCodebase.validation.oneOfValues', { values: prCloneStrategyOptionsValues.join(', ') })
+        getString?.('pipeline.ciCodebase.validation.optionalPrCloneStrategy', {
+          values: prCloneStrategyOptionsValues.join(', ')
+        })
       )
     }
   }
 
   if (template?.properties?.ci?.codebase?.resources?.limits?.memory) {
     const memoryLimit = pipeline?.properties?.ci?.codebase?.resources?.limits?.memory
-    const pattern = /^\d+(\.\d+)?$|^\d+(\.\d+)?(G|M|Gi|Mi)$|^$/
-    if (memoryLimit && (!pattern.test(memoryLimit) || !isNaN(memoryLimit as unknown as number))) {
+    const pattern = /^\d+(\.\d+)?$|^\d+(\.\d+)?(G|M|Gi|Mi|MiB)$|^$/
+    if (
+      memoryLimit === '' ||
+      (memoryLimit && (!pattern.test(memoryLimit) || !isNaN(memoryLimit as unknown as number)))
+    ) {
       set(
         errors,
         'properties.ci.codebase.resources.limits.memory',
-        getString?.('pipeline.stepCommonFields.validation.invalidLimitMemory')
+        getString?.('pipeline.ciCodebase.validation.optionalLimitMemory')
       )
     }
   }
@@ -477,11 +487,11 @@ export const validateCICodebase = ({
   if (template?.properties?.ci?.codebase?.resources?.limits?.cpu) {
     const cpuLimit = pipeline?.properties?.ci?.codebase?.resources?.limits?.cpu
     const pattern = /^\d+(\.\d+)?$|^\d+m$|^$/
-    if (cpuLimit && (!pattern.test(cpuLimit) || !isNaN(cpuLimit as unknown as number))) {
+    if (cpuLimit === '' || (cpuLimit && (!pattern.test(cpuLimit) || !isNaN(cpuLimit as unknown as number)))) {
       set(
         errors,
         'properties.ci.codebase.resources.limits.cpu',
-        getString?.('pipeline.stepCommonFields.validation.invalidLimitCPU')
+        getString?.('pipeline.ciCodebase.validation.optionalLimitCPU')
       )
     }
   }
