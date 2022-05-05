@@ -115,7 +115,11 @@ export interface PipelineCanvasProps {
   toPipelineList: PathFn<PipelineType<ProjectPathProps>>
   toPipelineProject: PathFn<PipelineType<ProjectPathProps>>
   getOtherModal?: (
-    onSubmit: (values: PipelineInfoConfig, gitDetails?: EntityGitDetails) => void,
+    onSubmit: (
+      values: PipelineInfoConfig,
+      storeMetadata: { connectorRef?: string; storeType?: string },
+      gitDetails?: EntityGitDetails
+    ) => void,
     onClose: () => void
   ) => React.ReactElement<OtherModalProps>
 }
@@ -135,6 +139,7 @@ export function PipelineCanvas({
       templateView: { isTemplateDrawerOpened }
     },
     updatePipeline,
+    updatePipelineStoreMetadata,
     updateGitDetails,
     deletePipelineCache,
     fetchPipeline,
@@ -501,6 +506,7 @@ export function PipelineCanvas({
   const onSubmit = React.useCallback(
     (
       values: PipelineInfoConfig,
+      storeMetadata: { connectorRef?: string; storeType?: string },
       updatedGitDetails?: EntityGitDetails,
       using?: TemplateSummaryResponse,
       copying?: TemplateSummaryResponse
@@ -520,6 +526,10 @@ export function PipelineCanvas({
       delete (pipeline as PipelineWithGitContextFormProps).repo
       delete (pipeline as PipelineWithGitContextFormProps).branch
       updatePipeline(pipeline)
+      if (storeMetadata.storeType) {
+        console.log('pipelinecanvas storeMetadata.storeType', storeMetadata.storeType)
+        updatePipelineStoreMetadata(storeMetadata, gitDetails)
+      }
       if (updatedGitDetails) {
         if (gitDetails?.objectId) {
           updatedGitDetails = { ...gitDetails, ...updatedGitDetails }

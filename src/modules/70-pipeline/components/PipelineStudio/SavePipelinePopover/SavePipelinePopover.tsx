@@ -89,7 +89,7 @@ export function SavePipelinePopover({
 }: SavePipelinePopoverProps): React.ReactElement {
   const { isGitSyncEnabled } = React.useContext(AppStoreContext)
   const {
-    state: { pipeline, yamlHandler, gitDetails, pipelineView, isUpdated },
+    state: { pipeline, yamlHandler, storeMetadata, gitDetails, pipelineView, isUpdated },
     deletePipelineCache,
     fetchPipeline,
     view,
@@ -182,6 +182,7 @@ export function SavePipelinePopover({
 
   const saveAndPublishPipeline = async (
     latestPipeline: PipelineInfoConfig,
+    storeMetadata: any,
     updatedGitDetails?: SaveToGitFormInterface,
     lastObject?: { lastObjectId?: string }
   ): Promise<UseSaveSuccessResponse> => {
@@ -193,6 +194,7 @@ export function SavePipelinePopover({
         accountIdentifier: accountId,
         projectIdentifier,
         orgIdentifier,
+        ...(storeMetadata.storeType ? { storeType: storeMetadata.storeType } : {}),
         ...(updatedGitDetails ?? {}),
         ...(lastObject ?? {}),
         ...(updatedGitDetails && updatedGitDetails.isNewBranch ? { baseBranch: branch } : {})
@@ -330,7 +332,8 @@ export function SavePipelinePopover({
     }
 
     // if Git sync enabled then display modal
-    if (isGitSyncEnabled) {
+    console.log('storeMetadata', storeMetadata)
+    if (isGitSyncEnabled || storeMetadata.storeType === 'remote') {
       if (isEmpty(gitDetails.repoIdentifier) || isEmpty(gitDetails.branch)) {
         clear()
         showError(getString('pipeline.gitExperience.selectRepoBranch'))
@@ -358,7 +361,7 @@ export function SavePipelinePopover({
         payload: { pipeline: omit(latestPipeline, 'repo', 'branch') }
       })
     } else {
-      await saveAndPublishPipeline(latestPipeline)
+      await saveAndPublishPipeline(latestPipeline, storeMetadata)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [

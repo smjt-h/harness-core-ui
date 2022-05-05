@@ -143,7 +143,7 @@ export interface SelectionState {
 }
 
 export interface PipelineReducerState {
-  pipeline: PipelineInfoConfig
+  pipeline: PipelineInfoConfig & { storeType?: string }
   yamlHandler?: YamlBuilderHandlerBinding
   originalPipeline: PipelineInfoConfig
   pipelineView: PipelineViewData
@@ -152,6 +152,7 @@ export interface PipelineReducerState {
   error?: string
   schemaErrors: boolean
   templateTypes: { [key: string]: string }
+  storeMetadata?: any
   gitDetails: EntityGitDetails
   entityValidityDetails: EntityValidityDetails
   isDBInitialized: boolean
@@ -173,6 +174,7 @@ export interface ActionResponse {
   error?: string
   schemaErrors?: boolean
   isUpdated?: boolean
+  storeMetadata?: any
   gitDetails?: EntityGitDetails
   entityValidityDetails?: EntityValidityDetails
   pipeline?: PipelineInfoConfig
@@ -261,6 +263,7 @@ export const initialState: PipelineReducerState = {
     templateDrawerData: { type: TemplateDrawerTypes.UseTemplate }
   },
   schemaErrors: false,
+  storeMetadata: {},
   gitDetails: {},
   entityValidityDetails: {},
   templateTypes: {},

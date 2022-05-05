@@ -23,8 +23,8 @@ interface GitSyncFormProps<T> {
 }
 
 interface GitSyncFormFields {
-  importYaml: string
-  gitConnector: ConnectorSelectedValue
+  importYaml?: string
+  connectorRef?: ConnectorSelectedValue
   repository?: string
   branch?: string
 }
@@ -53,10 +53,10 @@ export function GitSyncForm(props: GitSyncFormProps<GitSyncFormFields>): React.R
         ]}
       />
       <ConnectorReferenceField
-        name="gitConnector"
+        name="connectorRef"
         width={350}
         type={['Github', 'Bitbucket']}
-        selected={formikProps.values.gitConnector}
+        selected={formikProps.values.connectorRef}
         label={'Select Git Connector'}
         placeholder={getString('select')}
         accountIdentifier={accountId}
@@ -64,7 +64,7 @@ export function GitSyncForm(props: GitSyncFormProps<GitSyncFormFields>): React.R
         orgIdentifier={orgIdentifier}
         onChange={(value, scope) => {
           // modalErrorHandler?.hide()
-          formikProps.setFieldValue('gitConnector', {
+          formikProps.setFieldValue('connectorRef', {
             label: defaultTo(value.name, ''),
             value: getConnectorIdentifierWithScope(scope, value?.identifier),
             scope: scope,
@@ -76,9 +76,9 @@ export function GitSyncForm(props: GitSyncFormProps<GitSyncFormFields>): React.R
       />
 
       <RepositorySelect
-        key={formikProps.values.gitConnector?.value} // Branch select must be reset if repositoryURL changes
+        key={formikProps.values.connectorRef?.value} // Branch select must be reset if repositoryURL changes
         formikProps={formikProps}
-        connectorRef={formikProps.values.gitConnector?.value}
+        connectorRef={formikProps.values.connectorRef?.value}
         //modalErrorHandler={modalErrorHandler}
         onChange={(selected: SelectOption, options?: SelectOption[]) => {
           if (!options?.find(repo => repo.value === selected.value)) {
@@ -89,7 +89,7 @@ export function GitSyncForm(props: GitSyncFormProps<GitSyncFormFields>): React.R
       />
       <RepoBranchSelectV2
         key={formikProps.values.repository} // Branch select must be reset if repositoryURL changes
-        connectorIdentifierRef={formikProps.values.gitConnector?.value}
+        connectorIdentifierRef={formikProps.values.connectorRef?.value}
         repoName={formikProps.values.repository}
         modalErrorHandler={modalErrorHandler}
         onChange={(selected: SelectOption, options?: SelectOption[]) => {

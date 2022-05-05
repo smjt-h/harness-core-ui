@@ -55,10 +55,14 @@ interface CardInterface {
 interface PipelineInfoConfigWithGitDetails extends PipelineInfoConfig {
   repo: string
   branch: string
+  connectorRef?: string
+  storeType?: string
+  importYaml?: string
 }
 export interface PipelineCreateProps {
   afterSave?: (
     values: PipelineInfoConfig,
+    storeMetadata: { connectorRef?: string; storeType?: string },
     gitDetails?: EntityGitDetails,
     usingTemplate?: TemplateSummaryResponse,
     copyingTemplate?: TemplateSummaryResponse
@@ -72,7 +76,16 @@ export interface PipelineCreateProps {
 
 export default function CreatePipelines({
   afterSave,
-  initialValues = { identifier: '', name: '', description: '', tags: {}, repo: '', branch: '', stages: [] },
+  initialValues = {
+    identifier: '',
+    name: '',
+    description: '',
+    tags: {},
+    repo: '',
+    branch: '',
+    stages: [],
+    storeType: 'inline'
+  },
   closeModal,
   gitDetails,
   usingTemplate,
@@ -82,7 +95,7 @@ export default function CreatePipelines({
   const { pipelineIdentifier } = useParams<{ pipelineIdentifier: string }>()
   const { isGitSyncEnabled } = useAppStore()
   const gitSimplification: boolean = useFeatureFlag(FeatureFlag.GIT_SIMPLIFICATION)
-  const [pipelineMode, setPipelineMode] = useState<CardInterface | undefined>()
+  const [storeType, setStoreType] = useState<CardInterface | undefined>()
   const { trackEvent } = useTelemetry()
 
   const PipelineModeCards: CardInterface[] = [
@@ -135,7 +148,14 @@ export default function CreatePipelines({
             values.repo && values.repo.trim().length > 0
               ? { repoIdentifier: values.repo, branch: values.branch }
               : undefined
-          afterSave && afterSave(omit(values, 'repo', 'branch'), formGitDetails, usingTemplate, copyingTemplate)
+          afterSave &&
+            afterSave(
+              omit(values, 'repo', 'branch', 'storeType', 'connectorRef'),
+              { connectorRef: values.connectorRef, storeType: values.storeType },
+              formGitDetails,
+              usingTemplate,
+              copyingTemplate
+            )
         }}
       >
         {formikProps => (
@@ -146,7 +166,6 @@ export default function CreatePipelines({
                 isIdentifierEditable: pipelineIdentifier === DefaultNewPipelineId
               }}
               tooltipProps={{ dataTooltipId: 'pipelineCreate' }}
-              className={css.pipelineCreateNameIdDescriptionTags}
             />
 
             {gitSimplification ? (
@@ -163,11 +182,11 @@ export default function CreatePipelines({
                     </Container>
                   </Layout.Horizontal>
                 )}
-                selected={pipelineMode}
+                selected={storeType}
                 onChange={(item: CardInterface) => {
-                  formikProps?.setFieldValue('pipelineMode', item.type)
+                  formikProps?.setFieldValue('storeType', item.type)
                   formikProps?.setFieldValue('remoteType', item.type === 'remote' ? 'new' : '')
-                  setPipelineMode(item)
+                  setStoreType(item)
                 }}
               />
             ) : isGitSyncEnabled ? (
@@ -176,7 +195,7 @@ export default function CreatePipelines({
               </GitSyncStoreProvider>
             ) : null}
 
-            {pipelineMode?.type === 'remote' ? (
+            {storeType?.type === 'remote' ? (
               <GitSyncForm formikProps={formikProps} handleSubmit={noop}></GitSyncForm>
             ) : null}
             {usingTemplate && (
