@@ -8,7 +8,15 @@ import type { MultiTypeInputType } from '@harness/uicore'
 import type { Scope } from '@common/interfaces/SecretsInterface'
 import type { StepViewType } from '@pipeline/components/AbstractSteps/Step'
 import type { SelectOption } from '@pipeline/components/PipelineSteps/Steps/StepsTypes'
-import type { StepElementConfig, ExecutionElementConfig, CloudformationCreateStackStepInfo, NGVariable, CloudformationTags, CloudformationRollbackStepInfo } from 'services/cd-ng'
+import type {
+  StepElementConfig,
+  ExecutionElementConfig,
+  CloudformationCreateStackStepInfo,
+  NGVariable,
+  CloudformationTags,
+  CloudformationRollbackStepInfo
+} from 'services/cd-ng'
+import type { VariableMergeServiceResponse } from 'services/pipeline-ng'
 
 export const StoreTypes = {
   Inline: 'Inline',
@@ -60,7 +68,7 @@ export interface Parameter {
       region?: string
       urls?: string | string[]
     }
-  };
+  }
 }
 
 export interface CreateStackData extends StepElementConfig {
@@ -71,11 +79,13 @@ export interface CreateStackData extends StepElementConfig {
   spec: {
     provisionerIdentifier: string
     configuration: {
-      tags?: {
-        spec?: {
-          content?: string
-        }
-      } | CloudformationTags
+      tags?:
+        | {
+            spec?: {
+              content?: string
+            }
+          }
+        | CloudformationTags
       stackName: string
       connectorRef: string | Connector
       region: string
@@ -85,23 +95,23 @@ export interface CreateStackData extends StepElementConfig {
       parameters?: Parameter[]
       roleArn?: string
       templateFile: {
-          type: string
-          spec: {
+        type: string
+        spec: {
+          type?: string
+          templateBody?: string
+          templateUrl?: string
+          store?: {
             type?: string
-            templateBody?: string
-            templateUrl?: string
-            store?: {
-              type?: string
-              spec?: {
-                connectorRef?: string | Connector
-                repoName?: string
-                branch?: string
-                commitId?: string
-                paths?: string
-              }
+            spec?: {
+              connectorRef?: string | Connector
+              repoName?: string
+              branch?: string
+              commitId?: string
+              paths?: string
             }
           }
         }
+      }
     }
   }
 }
@@ -148,8 +158,8 @@ export interface RollbackStackData {
   name: string
   identifier: string
   spec: {
-      configuration: {
-          provisionerIdentifier: string
+    configuration: {
+      provisionerIdentifier: string
     }
   }
   timeout: string
@@ -179,4 +189,14 @@ export interface RollbackStackStepInfo {
   identifier: string
   timeout: string
   type: string
+}
+
+export interface RollbackVariableStepProps {
+  initialValues: RollbackStackData
+  originalData?: RollbackStackData
+  stageIdentifier?: string
+  onUpdate?(data: RollbackStackData): void
+  metadataMap: Required<VariableMergeServiceResponse>['metadataMap']
+  variablesData?: RollbackStackData
+  stepType?: string
 }

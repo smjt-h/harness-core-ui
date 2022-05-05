@@ -18,11 +18,21 @@ import { IdentifierSchemaWithOutName, NameSchema } from '@common/utils/Validatio
 import { useVariablesExpression } from '@pipeline/components/PipelineStudio/PiplineHooks/useVariablesExpression'
 import { ConfigureOptions } from '@common/components/ConfigureOptions/ConfigureOptions'
 import { setFormikRef, StepFormikFowardRef } from '@pipeline/components/AbstractSteps/Step'
+import type { RollbackStackData } from '../CloudFormationInterfaces'
 import stepCss from '@pipeline/components/PipelineSteps/Steps/Steps.module.scss'
 import css from '../CloudFormation.module.scss'
 
+interface RollbackStackProps {
+  allowableTypes: MultiTypeInputType[]
+  isNewStep?: boolean
+  readonly?: boolean
+  initialValues: RollbackStackData
+  onUpdate: (data: RollbackStackData) => void
+  onChange: (data: RollbackStackData) => void
+}
+
 export const RollbackStack = (
-  { allowableTypes, isNewStep = true, readonly = false, initialValues, onUpdate, onChange }: any,
+  { allowableTypes, isNewStep = true, readonly = false, initialValues, onUpdate, onChange }: RollbackStackProps,
   formikRef: StepFormikFowardRef
 ): JSX.Element => {
   const { getString } = useStrings()
@@ -66,8 +76,7 @@ export const RollbackStack = (
     >
       {formik => {
         setFormikRef(formikRef, formik)
-        const { values, errors } = formik
-        console.log('errors: ', errors)
+        const { values } = formik
         const config = values?.spec?.configuration
         const provisionerIdentifier = config?.provisionerIdentifier
         return (

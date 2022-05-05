@@ -14,8 +14,9 @@ import { StepViewType, StepProps, ValidateInputSetProps } from '@pipeline/compon
 import { StepType } from '@pipeline/components/PipelineSteps/PipelineStepInterface'
 import { PipelineStep } from '@pipeline/components/PipelineSteps/PipelineStep'
 import { getDurationValidationSchema } from '@common/components/MultiTypeDuration/MultiTypeDuration'
-import type { RollbackStackData, RollbackStackStepInfo } from '../CloudFormationInterfaces'
+import type { RollbackStackData, RollbackStackStepInfo, RollbackVariableStepProps } from '../CloudFormationInterfaces'
 import { RollbackStack } from './RollbackStepRef'
+import { RollbackVariableStep } from './RollbackStepVariableView'
 import RollbackStackInputStep from './RollbackStackInputSteps'
 const RollbackStackWithRef = forwardRef(RollbackStack)
 
@@ -42,12 +43,7 @@ export class CFRollbackStack extends PipelineStep<RollbackStackStepInfo> {
     }
   }
 
-  validateInputSet({
-    data,
-    template,
-    getString,
-    viewType
-  }: ValidateInputSetProps<any>): FormikErrors<any> {
+  validateInputSet({ data, template, getString, viewType }: ValidateInputSetProps<any>): FormikErrors<any> {
     /* istanbul ignore next */
     const errors = {} as any
     /* istanbul ignore next */
@@ -99,7 +95,8 @@ export class CFRollbackStack extends PipelineStep<RollbackStackStepInfo> {
       isNewStep,
       readonly,
       inputSetData,
-      path
+      path,
+      customStepProps
     } = props
 
     if (stepViewType === StepViewType.InputSet || stepViewType === StepViewType.DeploymentForm) {
@@ -117,19 +114,24 @@ export class CFRollbackStack extends PipelineStep<RollbackStackStepInfo> {
         />
       )
     } else if (stepViewType === StepViewType.InputVariable) {
-      return <></>
+      return (
+        <RollbackVariableStep
+          {...(customStepProps as RollbackVariableStepProps)}
+          initialValues={initialValues}
+          onUpdate={data => onUpdate?.(this.processFormData(data))}
+        />
+      )
     }
 
     return (
       <RollbackStackWithRef
         initialValues={this.getInitialValues(initialValues)}
-        onUpdate={(data: any) => onUpdate?.(this.processFormData(data))}
-        onChange={(data: any) => onChange?.(this.processFormData(data))}
+        onUpdate={data => onUpdate?.(this.processFormData(data))}
+        onChange={data => onChange?.(this.processFormData(data))}
         allowableTypes={allowableTypes}
         isNewStep={isNewStep}
         ref={formikRef}
         readonly={readonly}
-        stepViewType={stepViewType}
       />
     )
   }
