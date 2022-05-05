@@ -85,7 +85,7 @@ const SLOTargetChartWrapper: React.FC<SLOTargetChartWrapperProps> = ({
       {!loading && !error && serviceLevelObjective && (
         <div>
           <div ref={mainRef} style={{ position: 'relative' }}>
-            {markerPosition && (
+            {!!markerPosition && (
               <div style={{ position: 'absolute', top: 20 }}>
                 <ColumnChartEventMarker
                   columnHeight={110}
