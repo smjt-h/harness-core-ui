@@ -315,7 +315,7 @@ export const getDefaultIncludedScope = (
       accountIdentifier,
       orgIdentifier,
       projectIdentifier,
-      filter: 'EXCLUDING_CHILD_SCOPES'
+      filter: 'INCLUDING_CHILD_SCOPES'
     }
   ]
 }
