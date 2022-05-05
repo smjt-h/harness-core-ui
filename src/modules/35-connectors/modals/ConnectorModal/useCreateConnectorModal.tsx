@@ -39,6 +39,8 @@ export interface UseCreateConnectorModalReturn {
   hideConnectorModal: () => void
 }
 
+export const CONNECTOR_MODAL_MIN_WIDTH = 1175
+
 const useCreateConnectorModal = (props: UseCreateConnectorModalProps): UseCreateConnectorModalReturn => {
   const [isEditMode, setIsEditMode] = useState(false)
   const [type, setType] = useState(Connectors.KUBERNETES_CLUSTER)
@@ -52,12 +54,11 @@ const useCreateConnectorModal = (props: UseCreateConnectorModalProps): UseCreate
     enforceFocus: false,
     style: {
       width: 'auto',
-      minWidth: 1175,
+      minWidth: CONNECTOR_MODAL_MIN_WIDTH,
       minHeight: 640,
       borderLeft: 0,
       paddingBottom: 0,
-      position: 'relative',
-      overflow: 'auto'
+      position: 'relative'
     }
   })
   const { accountId, projectIdentifier, orgIdentifier } = useParams<ProjectPathProps>()

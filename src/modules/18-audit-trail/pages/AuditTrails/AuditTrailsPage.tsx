@@ -8,6 +8,7 @@
 import React, { useState } from 'react'
 import { DateRangePickerButton, Layout, DropDown, SelectOption } from '@wings-software/uicore'
 import { useParams } from 'react-router-dom'
+import { HelpPanel, HelpPanelType } from '@harness/help-panel'
 import { Page } from '@common/exports'
 import { useGetAuditEventList } from 'services/audit'
 import { useStrings } from 'framework/strings'
@@ -79,6 +80,7 @@ const AuditTrailsPage: React.FC = () => {
   const auditTrailTitle = getString('common.auditTrail')
   return (
     <>
+      <HelpPanel referenceId="gitHubConnector" type={HelpPanelType.FLOATING_CONTAINER} />
       <Page.Header
         title={
           <ScopedTitle
