@@ -5,10 +5,10 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import { Button, Layout, TableV2, Text, useConfirmationDialog, useToaster } from '@harness/uicore'
+import { Layout, TableV2, Text, useConfirmationDialog, useToaster } from '@harness/uicore'
 import { useParams } from 'react-router-dom'
-import { Menu, Position, Classes, Intent, Popover } from '@blueprintjs/core'
-import React, { useMemo, useState } from 'react'
+import { Intent, PopoverPosition } from '@blueprintjs/core'
+import React, { useMemo } from 'react'
 import type { CellProps, Column, Renderer } from 'react-table'
 import { Color, FontVariation } from '@harness/design-system'
 import { String, useStrings } from 'framework/strings'
@@ -23,7 +23,10 @@ import { getValueFromVariableAndValidationType } from '@variables/utils/Variable
 import useRBACError from '@rbac/utils/useRBACError/useRBACError'
 import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
 import type { UseCreateUpdateVariableModalReturn } from '@variables/modals/CreateEditVariableModal/useCreateEditVariableModal'
-import RbacMenuItem from '@rbac/components/MenuItem/MenuItem'
+import { PermissionIdentifier } from '@rbac/interfaces/PermissionIdentifier'
+import { ResourceType } from '@rbac/interfaces/ResourceType'
+
+import RbacOptionsMenuButton from '@rbac/components/RbacOptionsMenuButton/RbacOptionsMenuButton'
 import css from './VariableListView.module.scss'
 
 interface SecretsListProps {
@@ -96,7 +99,6 @@ const VariableListView: React.FC<SecretsListProps> = props => {
     const { accountId, projectIdentifier, orgIdentifier } = useParams<ProjectPathProps>()
     const { getRBACErrorMessage } = useRBACError()
     const { showSuccess, showError } = useToaster()
-    const [menuOpen, setMenuOpen] = useState(false)
     const { mutate: deleteVariable } = useDeleteVariable({
       queryParams: { accountIdentifier: accountId, projectIdentifier, orgIdentifier },
       requestOptions: { headers: { 'content-type': 'application/json' } }
@@ -123,39 +125,44 @@ const VariableListView: React.FC<SecretsListProps> = props => {
 
     const handleDelete = (e: React.MouseEvent<HTMLElement, MouseEvent>): void => {
       e.stopPropagation()
-      setMenuOpen(false)
       openDialog()
     }
 
     const handleEdit = (e: React.MouseEvent<HTMLElement, MouseEvent>): void => {
       e.stopPropagation()
-      setMenuOpen(false)
       ;(column as any).openCreateUpdateVariableModal({ variable: data })
     }
 
     return (
       <Layout.Horizontal flex={{ alignItems: 'flex-end' }}>
-        <Popover
-          isOpen={menuOpen}
-          onInteraction={nextOpenState => {
-            setMenuOpen(nextOpenState)
+        <RbacOptionsMenuButton
+          tooltipProps={{
+            position: PopoverPosition.LEFT_TOP,
+            isDark: true,
+            interactionKind: 'click',
+            hasBackdrop: true
           }}
-          className={Classes.DARK}
-          position={Position.RIGHT_TOP}
-        >
-          <Button
-            minimal
-            icon="Options"
-            onClick={e => {
-              e.stopPropagation()
-              setMenuOpen(true)
-            }}
-          />
-          <Menu>
-            <RbacMenuItem icon="edit" text={getString('edit')} onClick={handleEdit} />
-            <RbacMenuItem icon="trash" text={getString('delete')} onClick={handleDelete} />
-          </Menu>
-        </Popover>
+          items={[
+            {
+              icon: 'edit',
+              text: getString('edit'),
+              onClick: handleEdit,
+              permission: {
+                resource: { resourceType: ResourceType.VARIABLE },
+                permission: PermissionIdentifier.EDIT_VARIABLE
+              }
+            },
+            {
+              icon: 'trash',
+              text: getString('delete'),
+              onClick: handleDelete,
+              permission: {
+                resource: { resourceType: ResourceType.VARIABLE },
+                permission: PermissionIdentifier.DELETE_VARIABLE
+              }
+            }
+          ]}
+        />
       </Layout.Horizontal>
     )
   }
