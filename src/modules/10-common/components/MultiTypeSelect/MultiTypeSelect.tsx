@@ -42,6 +42,7 @@ export interface MultiTypeSelectProps {
   configureOptionsProps?: MultiTypeSelectConfigureOptionsProps
   style?: React.CSSProperties
   disabled?: boolean
+  useValue?: boolean
 }
 
 export function MultiTypeSelect(props: MultiTypeSelectProps): React.ReactElement {
@@ -54,7 +55,8 @@ export function MultiTypeSelect(props: MultiTypeSelectProps): React.ReactElement
     enableConfigureOptions = true,
     configureOptionsProps,
     style,
-    disabled = false
+    disabled = false,
+    useValue
   } = props
 
   const value = get(formik?.values, name, '')
@@ -70,6 +72,7 @@ export function MultiTypeSelect(props: MultiTypeSelectProps): React.ReactElement
           label=""
           style={{ marginBottom: 0, flexGrow: 1 }}
           {...multiTypeInputProps}
+          {...(useValue && { useValue: true })}
         />
         {enableConfigureOptions && getMultiTypeFromValue(value) === MultiTypeInputType.RUNTIME && (
           <ConfigureOptions
