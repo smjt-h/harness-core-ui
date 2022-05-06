@@ -27,6 +27,7 @@ import { isRuntimeInput } from '@pipeline/utils/CIUtils'
 import { Connectors } from '@connectors/constants'
 import css from './RightBar.module.scss'
 
+const onlyPositiveIntegerKeyRef = 'pipeline.onlyPositiveInteger'
 export interface CodebaseRuntimeInputsInterface {
   connectorRef?: boolean
   repoName?: boolean
@@ -180,9 +181,9 @@ export const validateCIForm = ({
     try {
       Yup.number()
         .notRequired()
-        .integer(getString('pipeline.onlyPositiveInteger'))
-        .positive(getString('pipeline.onlyPositiveInteger'))
-        .typeError(getString('pipeline.onlyPositiveInteger'))
+        .integer(getString(onlyPositiveIntegerKeyRef))
+        .positive(getString(onlyPositiveIntegerKeyRef))
+        .typeError(getString(onlyPositiveIntegerKeyRef))
         .validateSync(values.depth === '' ? undefined : values.depth)
     } catch (error) {
       set(errors, 'depth', error.message)
