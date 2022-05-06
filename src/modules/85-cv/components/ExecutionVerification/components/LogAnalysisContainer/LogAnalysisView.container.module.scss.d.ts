@@ -9,5 +9,6 @@
 declare const styles: {
   readonly logAnalysis: string
   readonly main: string
+  readonly noDataContainer: string
 }
 export default styles

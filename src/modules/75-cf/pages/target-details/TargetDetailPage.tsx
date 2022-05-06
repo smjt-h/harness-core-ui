@@ -88,7 +88,7 @@ export const TargetDetailPage: React.FC = () => {
 
   const deleteTargetConfirm = useConfirmAction({
     title: getString('cf.targets.deleteTarget'),
-    message: <String stringID="cf.targets.deleteTargetMessage" vars={{ name: target?.name }} />,
+    message: <String stringID="cf.targets.deleteTargetMessage" vars={{ name: target?.name }} useRichText />,
     intent: Intent.DANGER,
     action: async () => {
       clear()

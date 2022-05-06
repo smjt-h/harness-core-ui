@@ -7,10 +7,10 @@
 
 import React, { ReactNode, useMemo, FC } from 'react'
 import { Breadcrumb, Page, FontVariation, Heading, HarnessDocTooltip } from '@harness/uicore'
+import { get } from 'lodash-es'
 import { NGBreadcrumbs } from '@common/components/NGBreadcrumbs/NGBreadcrumbs'
 import { ContainerSpinner } from '@common/components/ContainerSpinner/ContainerSpinner'
 import { useDocumentTitle } from '@common/hooks/useDocumentTitle'
-import useRBACError, { RBACError } from '@rbac/utils/useRBACError/useRBACError'
 import css from './EnvironmentsList.module.scss'
 
 interface EnvironmentPageHeadingProps {
@@ -23,11 +23,14 @@ export interface EnvironmentPageTemplateProps {
   titleTooltipId?: string
   headerContent?: ReactNode
   toolbar?: ReactNode
+  headerToolbar?: ReactNode
   pagination?: ReactNode
   loading?: boolean
   error?: unknown
   retryOnError?: () => void
 }
+
+const getErrorMessage = (error: any): string => get(error, 'data.error', get(error, 'data.message', error?.message))
 
 const EnvironmentPageHeading: FC<EnvironmentPageHeadingProps> = ({ tooltipId, children }) => {
   return (
@@ -44,6 +47,7 @@ const EnvironmentListingPageTemplate: React.FC<EnvironmentPageTemplateProps> = (
   titleTooltipId,
   headerContent,
   toolbar,
+  headerToolbar,
   pagination,
   error,
   retryOnError,
@@ -51,7 +55,6 @@ const EnvironmentListingPageTemplate: React.FC<EnvironmentPageTemplateProps> = (
   children
 }) => {
   useDocumentTitle(title)
-  const { getRBACErrorMessage } = useRBACError()
 
   enum STATUS {
     'loading',
@@ -82,14 +85,13 @@ const EnvironmentListingPageTemplate: React.FC<EnvironmentPageTemplateProps> = (
         breadcrumbs={<NGBreadcrumbs customPathParams={{ module: 'cd' }} links={breadcrumbs} />}
         className={css.header}
         content={headerContent}
+        toolbar={headerToolbar}
       />
 
       {toolbar && <Page.SubHeader className={css.toolbar}>{toolbar}</Page.SubHeader>}
 
       <div className={css.content}>
-        {state === STATUS.error && (
-          <Page.Error message={getRBACErrorMessage(error as RBACError) as string} onClick={retryOnError} />
-        )}
+        {state === STATUS.error && <Page.Error message={getErrorMessage(error)} onClick={retryOnError} />}
         {state === STATUS.ok && children}
       </div>
 

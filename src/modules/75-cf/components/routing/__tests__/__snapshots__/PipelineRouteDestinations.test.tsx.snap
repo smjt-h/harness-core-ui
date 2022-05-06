@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`PipelineRouteDestinations it should return the pipeline routes when the FF_PIPELINE feature flag is true 1`] = `
+exports[`PipelineRouteDestinations it should return the pipeline routes 1`] = `
 <React.Fragment>
   <RouteWithLayout
     exact={true}

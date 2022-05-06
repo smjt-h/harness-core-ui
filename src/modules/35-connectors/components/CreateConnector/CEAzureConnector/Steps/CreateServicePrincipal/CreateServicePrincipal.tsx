@@ -10,7 +10,6 @@ import { pick } from 'lodash-es'
 import { useParams } from 'react-router-dom'
 import {
   Button,
-  Heading,
   Layout,
   Text,
   StepProps,
@@ -18,6 +17,7 @@ import {
   ModalErrorHandler,
   ModalErrorHandlerBinding
 } from '@wings-software/uicore'
+import { FontVariation, Color } from '@harness/design-system'
 import { useStrings } from 'framework/strings'
 import { useCreateConnector, useUpdateConnector, Failure } from 'services/cd-ng'
 import { useAzureappclientid } from 'services/ce/index'
@@ -112,13 +112,16 @@ const CreateServicePrincipal: React.FC<StepProps<CEAzureDTO>> = (props): JSX.Ele
   // If only BILLING is selected, we need to show 1 and 2.
   if (ENABLED.BILLING || ENABLED.VISIBILITY) {
     commands.push(
-      <Commands comment={'# Register the Harness app'} command={`az ad sp create --id ${appId}`} />,
       <Commands
-        comment={'# Role assignment for enabling CCM Billing and Visibility'}
+        comment={getString('connectors.ceAzure.servicePrincipal.registerCommand')}
+        command={`az ad sp create --id ${appId}`}
+      />,
+      <Commands
+        comment={getString('connectors.ceAzure.servicePrincipal.costVisibilityCmd')}
         command={`SCOPE=\`az storage account show --name ${storageAccountName} --query "id" | xargs\``}
       />,
       <Commands
-        comment={'# Assign role to the app on the scope fetched above'}
+        comment={getString('connectors.ceAzure.servicePrincipal.assignRoleCmd')}
         command={`az role assignment create --assignee ${appId}  --role 'Storage Blob Data Reader' --scope $SCOPE`}
       />
     )
@@ -129,7 +132,7 @@ const CreateServicePrincipal: React.FC<StepProps<CEAzureDTO>> = (props): JSX.Ele
   if (ENABLED.BILLING && ENABLED.OPTIMIZATION) {
     commands.push(
       <Commands
-        comment={'# Role assignment for enabling CCM Optimisation'}
+        comment={getString('connectors.ceAzure.servicePrincipal.optimisationCmd')}
         command={`az role assignment create --assignee ${appId} --role 'Contributor' --scope /subscriptions/${subscriptionId}`}
       />
     )
@@ -142,7 +145,7 @@ const CreateServicePrincipal: React.FC<StepProps<CEAzureDTO>> = (props): JSX.Ele
     commands = [
       <Commands
         key={'opt'}
-        comment={'# Role assignment for enabling CCM Optimisation'}
+        comment={getString('connectors.ceAzure.servicePrincipal.optimisationCmd')}
         command={`az role assignment create --assignee ${appId} --role 'Contributor' --scope /subscriptions/${subscriptionId}`}
       />
     ]
@@ -151,10 +154,15 @@ const CreateServicePrincipal: React.FC<StepProps<CEAzureDTO>> = (props): JSX.Ele
   return (
     <Layout.Vertical spacing="large" className={css.stepContainer}>
       <ModalErrorHandler bind={setModalErrorHandler} />
-      <Heading color="grey800" level={2} style={{ fontSize: 20 }}>
+      <Text font={{ variation: FontVariation.H3 }} tooltipProps={{ dataTooltipId: 'servicePrincipal' }}>
         {getString('connectors.ceAzure.servicePrincipal.heading')}
-      </Heading>
-      <Text>{getString('connectors.ceAzure.servicePrincipal.subHeading')}</Text>
+      </Text>
+      <Text font={{ variation: FontVariation.BODY }} color={Color.GREY_800}>
+        {getString('connectors.ceAzure.servicePrincipal.subHeading1')}
+      </Text>
+      <Text font={{ variation: FontVariation.BODY }} color={Color.GREY_800}>
+        {getString('connectors.ceAzure.servicePrincipal.subHeading2')}
+      </Text>
       <Container className={css.commandsContainer}>{commands}</Container>
       <Layout.Horizontal spacing="medium" className={css.continueAndPreviousBtns}>
         <Button text="Previous" icon="chevron-left" onClick={() => previousStep?.(prevStepData)} />

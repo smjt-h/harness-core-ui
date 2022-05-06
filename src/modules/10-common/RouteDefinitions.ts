@@ -42,7 +42,10 @@ import type {
   TemplateStudioPathProps,
   TemplateStudioQueryParams,
   GovernancePathProps,
-  PipelineLogsPathProps
+  PipelineLogsPathProps,
+  EnvironmentGroupPathProps,
+  EnvironmentGroupQueryParams,
+  VariablesPathProps
 } from '@common/interfaces/RouteInterfaces'
 
 const CV_HOME = `/cv/home`
@@ -248,6 +251,39 @@ const routes = {
       })
     }
   ),
+  toVariables: withAccountId(
+    ({ orgIdentifier, projectIdentifier, module }: Partial<ProjectPathProps & ModulePathParams>) => {
+      const path = `resources/variables`
+      return getScopeBasedRoute({
+        scope: {
+          orgIdentifier,
+          projectIdentifier,
+          module
+        },
+        path
+      })
+    }
+  ),
+
+  toVariableDetails: withAccountId(
+    ({
+      orgIdentifier,
+      projectIdentifier,
+      module,
+      variableId
+    }: Partial<ProjectPathProps & ModulePathParams & VariablesPathProps>) => {
+      const path = `resources/variables/${variableId}`
+      return getScopeBasedRoute({
+        scope: {
+          orgIdentifier,
+          projectIdentifier,
+          module
+        },
+        path
+      })
+    }
+  ),
+
   toSecrets: withAccountId(
     ({ orgIdentifier, projectIdentifier, module }: Partial<ProjectPathProps & ModulePathParams>) => {
       const path = `resources/secrets`
@@ -649,7 +685,7 @@ const routes = {
     ({ orgIdentifier, projectIdentifier, module }: PipelineType<ProjectPathProps>) =>
       `/${module}/orgs/${orgIdentifier}/projects/${projectIdentifier}/deployments`
   ),
-  toCIGetStarted: withAccountId(
+  toGetStartedWithCI: withAccountId(
     ({ orgIdentifier, projectIdentifier, module }: PipelineType<ProjectPathProps>) =>
       `/${module}/orgs/${orgIdentifier}/projects/${projectIdentifier}/get-started`
   ),
@@ -689,6 +725,27 @@ const routes = {
   toEnvironment: withAccountId(
     ({ orgIdentifier, projectIdentifier, module }: PipelineType<ProjectPathProps>) =>
       `/${module}/orgs/${orgIdentifier}/projects/${projectIdentifier}/environment`
+  ),
+  toEnvironmentGroups: withAccountId(
+    ({ orgIdentifier, projectIdentifier, module }: PipelineType<ProjectPathProps>) =>
+      `/${module}/orgs/${orgIdentifier}/projects/${projectIdentifier}/environment-group`
+  ),
+  toEnvironmentGroupDetails: withAccountId(
+    ({
+      accountId,
+      orgIdentifier,
+      projectIdentifier,
+      environmentGroupIdentifier,
+      module,
+      ...rest
+    }: PipelineType<ProjectPathProps & EnvironmentGroupPathProps & EnvironmentGroupQueryParams>) => {
+      const queryString = qs.stringify(rest, { skipNulls: true })
+      if (queryString.length > 0) {
+        return `/${module}/orgs/${orgIdentifier}/projects/${projectIdentifier}/environment-group/${environmentGroupIdentifier}/details?${queryString}`
+      } else {
+        return `/${module}/orgs/${orgIdentifier}/projects/${projectIdentifier}/environment-group/${environmentGroupIdentifier}/details`
+      }
+    }
   ),
   toPipelineDetail: withAccountId(
     ({ orgIdentifier, projectIdentifier, pipelineIdentifier, module }: PipelineType<PipelinePathProps>) =>
@@ -1415,6 +1472,10 @@ const routes = {
   toCEPerspectiveDashboard: withAccountId(() => `/ce/perspective`),
   toCEAnomalyDetection: withAccountId(() => `/ce/anomaly-detection`),
   toBusinessMapping: withAccountId(() => `/ce/cost-categories/`),
+  toCEECSRecommendationDetails: withAccountId(
+    ({ recommendation, recommendationName }: { recommendation: string; recommendationName: string }) =>
+      `/ce/ecs-recommendations/${recommendation}/name/${recommendationName}/details`
+  ),
   /********************************************************************************************************************/
   toSTO: withAccountId(() => `/sto`),
   toSTOHome: withAccountId(() => `/sto/home`),
@@ -1422,6 +1483,11 @@ const routes = {
   toSTOProjectOverview: withAccountId(
     ({ orgIdentifier, projectIdentifier }: ProjectPathProps) =>
       `/sto/orgs/${orgIdentifier}/projects/${projectIdentifier}/overview`
+  ),
+  toSTOTargets: withAccountId(() => '/sto/targets'),
+  toSTOProjectTargets: withAccountId(
+    ({ orgIdentifier, projectIdentifier }: ProjectPathProps) =>
+      `/sto/orgs/${orgIdentifier}/projects/${projectIdentifier}/targets`
   ),
   /********************************************************************************************************************/
   toOldCustomDashboard: withAccountId(() => '/home/dashboards*'),

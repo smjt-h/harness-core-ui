@@ -39,7 +39,7 @@ describe('ManifestSelection tests', () => {
   test(`renders without crashing`, () => {
     const { container } = render(
       <TestWrapper>
-        <ManifestSelection isForOverrideSets={false} isForPredefinedSets={false} />
+        <ManifestSelection deploymentType="Kubernetes" isForOverrideSets={false} isForPredefinedSets={false} />
       </TestWrapper>
     )
     expect(container).toMatchSnapshot()
@@ -49,7 +49,7 @@ describe('ManifestSelection tests', () => {
     const { container } = render(
       <TestWrapper>
         <PipelineContext.Provider value={getContextValue()}>
-          <ManifestSelection isForOverrideSets={false} isForPredefinedSets={false} />
+          <ManifestSelection deploymentType="Kubernetes" isForOverrideSets={false} isForPredefinedSets={false} />
         </PipelineContext.Provider>
       </TestWrapper>
     )
@@ -70,7 +70,7 @@ describe('ManifestSelection tests', () => {
     const { container } = render(
       <TestWrapper>
         <PipelineContext.Provider value={getContextValue()}>
-          <ManifestSelection isForOverrideSets={false} isForPredefinedSets={false} />
+          <ManifestSelection deploymentType="Kubernetes" isForOverrideSets={false} isForPredefinedSets={false} />
         </PipelineContext.Provider>
       </TestWrapper>
     )
@@ -95,7 +95,7 @@ describe('ManifestSelection tests', () => {
     const { container } = render(
       <TestWrapper>
         <PipelineContext.Provider value={getContextValue()}>
-          <ManifestSelection isForOverrideSets={true} isForPredefinedSets={false} />
+          <ManifestSelection deploymentType="Kubernetes" isForOverrideSets={true} isForPredefinedSets={false} />
         </PipelineContext.Provider>
       </TestWrapper>
     )
@@ -113,7 +113,7 @@ describe('ManifestSelection tests', () => {
     const { container } = render(
       <TestWrapper>
         <PipelineContext.Provider value={getContextValue()}>
-          <ManifestSelection isForOverrideSets={false} isForPredefinedSets={true} />
+          <ManifestSelection deploymentType="Kubernetes" isForOverrideSets={false} isForPredefinedSets={true} />
         </PipelineContext.Provider>
       </TestWrapper>
     )
@@ -132,6 +132,7 @@ describe('ManifestSelection tests', () => {
       <TestWrapper>
         <PipelineContext.Provider value={getContextValue()}>
           <ManifestSelection
+            deploymentType="Kubernetes"
             overrideSetIdentifier={'overrideSetIdentifier'}
             isForOverrideSets={false}
             isForPredefinedSets={false}
@@ -149,6 +150,7 @@ describe('ManifestSelection tests', () => {
       <TestWrapper>
         <PipelineContext.Provider value={getContextValue()}>
           <ManifestSelection
+            deploymentType="Kubernetes"
             overrideSetIdentifier={''}
             isForOverrideSets={false}
             isForPredefinedSets={false}

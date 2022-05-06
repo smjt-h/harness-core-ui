@@ -24,13 +24,7 @@ import { Page } from '@common/exports'
 import { useStrings } from 'framework/strings'
 import { Sort, SortFields, TemplateListType } from '@templates-library/pages/TemplatesPage/TemplatesPageUtils'
 import { TemplateDetailsDrawer } from '@templates-library/components/TemplateDetailDrawer/TemplateDetailDrawer'
-import {
-  Failure,
-  Error,
-  PageTemplateSummaryResponse,
-  TemplateSummaryResponse,
-  useGetTemplateList
-} from 'services/template-ng'
+import { TemplateSummaryResponse, useGetTemplateList } from 'services/template-ng'
 import type { ModulePathParams, ProjectPathProps } from '@common/interfaces/RouteInterfaces'
 import { NGBreadcrumbs } from '@common/components/NGBreadcrumbs/NGBreadcrumbs'
 import { NewTemplatePopover } from '@templates-library/pages/TemplatesPage/views/NewTemplatePopover/NewTemplatePopover'
@@ -60,8 +54,6 @@ export default function TemplatesPage(): React.ReactElement {
   const [type, setType] = useState<keyof typeof TemplateType | null>(null)
   const [searchParam, setSearchParam] = useState('')
   const [templateToDelete, setTemplateToDelete] = React.useState<TemplateSummaryResponse>({})
-  const [templateList, setTemplateListList] = useState<PageTemplateSummaryResponse>()
-  const [localError, setLocalError] = useState<Error | Failure | null>(null)
   const [templateIdentifierToSettings, setTemplateIdentifierToSettings] = React.useState<string>()
   const [selectedTemplate, setSelectedTemplate] = React.useState<TemplateSummaryResponse | undefined>()
   const [gitFilter, setGitFilter] = useState<GitFilterScope | null>(null)
@@ -103,15 +95,6 @@ export default function TemplatesPage(): React.ReactElement {
     },
     queryParamStringifyOptions: { arrayFormat: 'comma' }
   })
-
-  React.useEffect(() => {
-    setTemplateListList(templateData?.data)
-    setLocalError(null)
-  }, [templateData])
-
-  React.useEffect(() => {
-    setLocalError(error as Error)
-  }, [error])
 
   const reset = React.useCallback((): void => {
     searchRef.current.clear()
@@ -229,25 +212,25 @@ export default function TemplatesPage(): React.ReactElement {
       </Page.SubHeader>
       <Page.Body
         loading={loading}
-        error={localError?.message}
+        error={(error?.data as Error)?.message || error?.message}
         className={css.pageBody}
         retryOnError={/* istanbul ignore next */ () => reloadTemplates()}
       >
         <Container height={'100%'} style={{ overflow: 'auto' }}>
-          {!templateList?.content?.length && (
+          {!templateData?.data?.content?.length && (
             <NoResultsView
               hasSearchParam={!!searchParam || !!type}
               onReset={reset}
               text={getString('templatesLibrary.templatesPage.noTemplates', { scope })}
             />
           )}
-          {!!templateList?.content?.length && (
+          {!!templateData?.data?.content?.length && (
             <Layout.Vertical height={'100%'} margin={{ left: 'xlarge', right: 'xlarge' }}>
-              <ResultsViewHeader templateData={templateList} setPage={setPage} setSort={setSort} />
+              <ResultsViewHeader templateData={templateData?.data} setPage={setPage} setSort={setSort} />
               <Container style={{ flexGrow: 1 }} padding={{ bottom: 'large' }}>
                 <TemplatesView
                   gotoPage={setPage}
-                  data={templateList}
+                  data={templateData?.data}
                   onSelect={setSelectedTemplate}
                   selectedIdentifier={selectedTemplate?.identifier}
                   onPreview={setSelectedTemplate}

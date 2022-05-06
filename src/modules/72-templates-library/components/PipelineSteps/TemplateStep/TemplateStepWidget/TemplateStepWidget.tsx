@@ -198,7 +198,7 @@ function TemplateStepWidget(
                   formik.values.allValues && (
                     <Layout.Vertical padding={{ top: 'large', bottom: 'large' }} spacing={'large'}>
                       <Heading level={5} color={Color.BLACK}>
-                        {getString('templatesLibrary.templateInputs')}
+                        {getString('pipeline.templateInputs')}
                       </Heading>
                       <StepForm
                         key={`${formik.values.template.templateRef}-${defaultTo(

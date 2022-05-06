@@ -6,7 +6,7 @@
  */
 
 import React, { ReactElement } from 'react'
-import { FormikForm, Formik, Layout, Button } from '@wings-software/uicore'
+import { FormikForm, Formik, Layout, Button, ButtonVariation } from '@wings-software/uicore'
 import * as Yup from 'yup'
 import { useStrings } from 'framework/strings'
 import { PageSpinner } from '@common/components'
@@ -59,6 +59,7 @@ const SaveFlagRepoStep = ({
         <Layout.Horizontal spacing="small" margin={{ top: 'large' }}>
           <Button
             text={getString('back')}
+            variation={ButtonVariation.SECONDARY}
             onClick={event => {
               event.preventDefault()
               previousStep?.(prevStepData)
@@ -68,6 +69,7 @@ const SaveFlagRepoStep = ({
             type="submit"
             intent="primary"
             text={getString('cf.creationModal.saveAndClose')}
+            variation={ButtonVariation.PRIMARY}
             disabled={isLoadingCreateFeatureFlag}
             loading={isLoadingCreateFeatureFlag}
           />

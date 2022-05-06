@@ -1,3 +1,10 @@
+/*
+ * Copyright 2022 Harness Inc. All rights reserved.
+ * Use of this source code is governed by the PolyForm Shield 1.0.0 license
+ * that can be found in the licenses directory at the root of this repository, also available at
+ * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
+ */
+
 import gql from 'graphql-tag'
 import * as Urql from 'urql'
 export type Maybe<T> = T | null
@@ -246,7 +253,7 @@ export const FetchNodeRecommendationRequestDocument = gql`
 `
 
 export function useFetchNodeRecommendationRequestQuery(
-  options: Omit<Urql.UseQueryArgs<FetchNodeRecommendationRequestQueryVariables>, 'query'> = {}
+  options: Omit<Urql.UseQueryArgs<FetchNodeRecommendationRequestQueryVariables>, 'query'>
 ) {
   return Urql.useQuery<FetchNodeRecommendationRequestQuery>({
     query: FetchNodeRecommendationRequestDocument,
@@ -880,6 +887,38 @@ export const FetchRecommendationDocument = gql`
           sumMem
         }
       }
+      ... on ECSRecommendationDTO {
+        clusterName
+        id
+        percentileBased
+        serviceArn
+        serviceName
+        currentResources: current
+        lastDayCost {
+          cpu
+          memory
+        }
+        cpuHistogram {
+          bucketWeights
+          firstBucketSize
+          growthRatio
+          maxBucket
+          minBucket
+          numBuckets
+          precomputed
+          totalWeight
+        }
+        memoryHistogram {
+          bucketWeights
+          firstBucketSize
+          growthRatio
+          maxBucket
+          minBucket
+          numBuckets
+          precomputed
+          totalWeight
+        }
+      }
     }
   }
 `
@@ -1369,17 +1408,17 @@ export type FetchNodeRecommendationRequestQueryVariables = Exact<{
 
 export type FetchNodeRecommendationRequestQuery = {
   __typename?: 'Query'
-  nodeRecommendationRequest: Maybe<{
+  nodeRecommendationRequest: {
     __typename?: 'RecommendNodePoolClusterRequest'
-    recommendClusterRequest: Maybe<{
+    recommendClusterRequest: {
       __typename?: 'RecommendClusterRequest'
-      maxNodes: Maybe<any>
-      minNodes: Maybe<any>
-      sumCpu: Maybe<number>
-      sumMem: Maybe<number>
-    }>
-    totalResourceUsage: Maybe<{ __typename?: 'TotalResourceUsage'; maxcpu: number; maxmemory: number }>
-  }>
+      maxNodes: any | null
+      minNodes: any | null
+      sumCpu: number | null
+      sumMem: number | null
+    } | null
+    totalResourceUsage: { __typename?: 'TotalResourceUsage'; maxcpu: number; maxmemory: number } | null
+  } | null
 }
 
 export type FetchNodeSummaryQueryVariables = Exact<{
@@ -1821,6 +1860,38 @@ export type FetchRecommendationQuery = {
   } | null
   recommendationDetails:
     | {
+        __typename?: 'ECSRecommendationDTO'
+        clusterName: string | null
+        id: string | null
+        percentileBased: any | null
+        serviceArn: string | null
+        serviceName: string | null
+        currentResources: any | null
+        lastDayCost: { __typename?: 'Cost'; cpu: any | null; memory: any | null } | null
+        cpuHistogram: {
+          __typename?: 'HistogramExp'
+          bucketWeights: Array<number | null> | null
+          firstBucketSize: number
+          growthRatio: number
+          maxBucket: number
+          minBucket: number
+          numBuckets: number
+          precomputed: Array<number | null> | null
+          totalWeight: number
+        } | null
+        memoryHistogram: {
+          __typename?: 'HistogramExp'
+          bucketWeights: Array<number | null> | null
+          firstBucketSize: number
+          growthRatio: number
+          maxBucket: number
+          minBucket: number
+          numBuckets: number
+          precomputed: Array<number | null> | null
+          totalWeight: number
+        } | null
+      }
+    | {
         __typename?: 'NodeRecommendationDTO'
         id: string | null
         totalResourceUsage: { __typename?: 'TotalResourceUsage'; maxcpu: number; maxmemory: number } | null
@@ -2149,6 +2220,8 @@ export type Scalars = {
   /** Built-in scalar for map-like structures */
   Map_String_ContainerRecommendationScalar: any
   /** Built-in scalar for map-like structures */
+  Map_String_Map_String_StringScalar: any
+  /** Built-in scalar for map-like structures */
   Map_String_ResourceRequirementScalar: any
   /** Built-in scalar for map-like structures */
   Map_String_StringScalar: any
@@ -2453,6 +2526,19 @@ export type DataPoint = {
   __typename?: 'DataPoint'
   key: Reference
   value: Scalars['BigDecimal']
+}
+
+export type EcsRecommendationDto = {
+  __typename?: 'ECSRecommendationDTO'
+  clusterName: Maybe<Scalars['String']>
+  cpuHistogram: Maybe<HistogramExp>
+  current: Maybe<Scalars['Map_String_StringScalar']>
+  id: Maybe<Scalars['String']>
+  lastDayCost: Maybe<Cost>
+  memoryHistogram: Maybe<HistogramExp>
+  percentileBased: Maybe<Scalars['Map_String_Map_String_StringScalar']>
+  serviceArn: Maybe<Scalars['String']>
+  serviceName: Maybe<Scalars['String']>
 }
 
 export type EfficiencyScoreStats = {
@@ -3097,6 +3183,7 @@ export type ResourceRequirement = {
 }
 
 export enum ResourceType {
+  EcsService = 'ECS_SERVICE',
   NodePool = 'NODE_POOL',
   Workload = 'WORKLOAD'
 }
@@ -3226,4 +3313,4 @@ export type WorkloadRecommendationDto = {
 }
 
 /** This union of all types of recommendations */
-export type RecommendationDetails = NodeRecommendationDto | WorkloadRecommendationDto
+export type RecommendationDetails = EcsRecommendationDto | NodeRecommendationDto | WorkloadRecommendationDto

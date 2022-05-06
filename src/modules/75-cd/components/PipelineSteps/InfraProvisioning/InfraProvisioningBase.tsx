@@ -32,6 +32,7 @@ import { useMutateAsGet } from '@common/hooks'
 import { getStepPaletteModuleInfosFromStage } from '@pipeline/utils/stepUtils'
 import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
 import { useTemplateSelector } from '@pipeline/utils/useTemplateSelector'
+import { getFlattenedStages } from '@pipeline/components/PipelineStudio/StageBuilder/StageBuilderUtil'
 import useChooseProvisioner from './ChooseProvisioner'
 import type { InfraProvisioningData, InfraProvisioningDataUI, InfraProvisioningProps } from './InfraProvisioning'
 import { transformValuesFieldsConfig } from './InfraProvisioningFunctionConfigs'
@@ -46,7 +47,8 @@ export const InfraProvisioningBase = (
     state: {
       pipelineView,
       selectionState: { selectedStageId = '' },
-      templateTypes
+      templateTypes,
+      pipeline
     },
     updateStage,
     updatePipelineView,
@@ -80,7 +82,12 @@ export const InfraProvisioningBase = (
   } = useMutateAsGet(useGetStepsV2, {
     queryParams: { accountId },
     body: {
-      stepPalleteModuleInfos: getStepPaletteModuleInfosFromStage(selectedStage?.stage?.type, undefined, 'Provisioner')
+      stepPalleteModuleInfos: getStepPaletteModuleInfosFromStage(
+        selectedStage?.stage?.type,
+        undefined,
+        'Provisioner',
+        getFlattenedStages(pipeline).stages
+      )
     },
     lazy: true
   })

@@ -8,7 +8,7 @@
 import React, { useEffect, useMemo, useState } from 'react'
 import cx from 'classnames'
 import { Pagination, Layout, Text, Container, Heading, TableV2 } from '@wings-software/uicore'
-import { defaultTo } from 'lodash-es'
+import { defaultTo, get } from 'lodash-es'
 import { useParams } from 'react-router-dom'
 import type { Column } from 'react-table'
 import { useModalHook } from '@harness/use-modal'
@@ -17,7 +17,6 @@ import { useEnvironmentStore, ParamsType } from '@cd/components/Environments/com
 import { EnvironmentResponseDTO, useDeleteEnvironmentV2, useGetEnvironmentList } from 'services/cd-ng'
 import { useToaster } from '@common/exports'
 import RbacButton from '@rbac/components/Button/Button'
-import useRBACError, { RBACError } from '@rbac/utils/useRBACError/useRBACError'
 import { PermissionIdentifier } from '@rbac/interfaces/PermissionIdentifier'
 import { useStrings } from 'framework/strings'
 import { NewEditEnvironmentModal } from '@cd/components/PipelineSteps/DeployEnvStep/DeployEnvStep'
@@ -29,6 +28,7 @@ import {
   EnvironmentName,
   EnvironmentTypes
 } from '../EnvironmentsListColumns/EnvironmentsListColumns'
+import EnvironmentTabs from '../EnvironmentTabs'
 import EmptyContent from './EmptyContent.svg'
 import css from './EnvironmentsList.module.scss'
 
@@ -36,7 +36,6 @@ export const EnvironmentList: React.FC = () => {
   const { getString } = useStrings()
   const { accountId, orgIdentifier, projectIdentifier } = useParams<ParamsType>()
   const { showError, showSuccess } = useToaster()
-  const { getRBACErrorMessage } = useRBACError()
   const [page, setPage] = useState(0)
   const { fetchDeploymentList } = useEnvironmentStore()
   const [rowData, setRowData] = React.useState<EnvironmentResponseDTO>()
@@ -73,10 +72,12 @@ export const EnvironmentList: React.FC = () => {
         enforceFocus={false}
         canEscapeKeyClose
         canOutsideClickClose
-        onClose={() => {
-          hideModal()
-          setEditable(false)
-        }}
+        onClose={
+          /* istanbul ignore next*/ () => {
+            hideModal()
+            setEditable(false)
+          }
+        }
         title={editable ? getString('editEnvironment') : getString('cd.addEnvironment')}
         isCloseButtonShown
         className={cx('padded-dialog', css.dialogStylesEnv)}
@@ -132,7 +133,7 @@ export const EnvironmentList: React.FC = () => {
       showSuccess(`Successfully deleted environment ${id}`)
       refetch()
     } catch (e) {
-      showError(getRBACErrorMessage(e as RBACError), 0, 'cf.delete.env.error')
+      showError(get(e, 'data.message', e?.message), 0, 'cf.delete.env.error')
     }
   }
   type CustomColumn<T extends Record<string, any>> = Column<T>
@@ -203,6 +204,7 @@ export const EnvironmentList: React.FC = () => {
             </Layout.Horizontal>
           </Layout.Horizontal>
         }
+        headerToolbar={<EnvironmentTabs />}
         pagination={
           <Pagination
             itemCount={envData?.data?.totalItems || 0}

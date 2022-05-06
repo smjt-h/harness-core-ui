@@ -5,10 +5,22 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import { unset } from 'lodash-es'
+import { set, unset } from 'lodash-es'
+import produce from 'immer'
+import { RUNTIME_INPUT_VALUE } from '@harness/uicore'
 import type { StringKeys } from 'framework/strings'
-import { stageTemplateMock } from '@templates-library/components/TemplateStudio/__tests__/stateMock'
-import { getScopeBasedQueryParams, getVersionLabelText } from '@templates-library/utils/templatesUtils'
+import {
+  pipelineTemplateMock,
+  stageTemplateMock,
+  stepTemplateMock
+} from '@templates-library/components/TemplateStudio/__tests__/stateMock'
+import {
+  getAllowedTemplateTypes,
+  getScopeBasedQueryParams,
+  getTemplateInputsCount,
+  getVersionLabelText,
+  hasSameRunTimeInputs
+} from '@templates-library/utils/templatesUtils'
 import { Scope } from '@common/interfaces/SecretsInterface'
 import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
 
@@ -24,6 +36,27 @@ describe('templatesUtils tests', () => {
     )
     unset(stageTemplateMock, 'versionLabel')
     expect(getVersionLabelText(stageTemplateMock, getString)).toEqual('templatesLibrary.alwaysUseStableVersion')
+  })
+
+  test('Test getAllowedTemplateTypes method', () => {
+    expect(getAllowedTemplateTypes(getString, 'cd', true)).toEqual([
+      { disabled: false, label: 'step', value: 'Step' },
+      { disabled: false, label: 'common.stage', value: 'Stage' },
+      { disabled: false, label: 'common.pipeline', value: 'Pipeline' },
+      { disabled: true, label: 'service', value: 'Service' },
+      { disabled: true, label: 'infrastructureText', value: 'Infrastructure' },
+      { disabled: true, label: 'stepGroup', value: 'StepGroup' },
+      { disabled: true, label: 'executionText', value: 'Execution' }
+    ])
+    expect(getAllowedTemplateTypes(getString, 'cv', false)).toEqual(
+      expect.arrayContaining([
+        {
+          disabled: false,
+          label: 'connectors.cdng.monitoredService.label',
+          value: 'MonitoredService'
+        }
+      ])
+    )
   })
 
   test('Test getScopeBasedQueryParams method', () => {
@@ -44,5 +77,22 @@ describe('templatesUtils tests', () => {
     expect(getScopeBasedQueryParams(queryParams, Scope.ACCOUNT)).toEqual({
       accountIdentifier: 'accountId'
     })
+  })
+
+  test('Test getTemplateInputsCount method', () => {
+    expect(getTemplateInputsCount(stepTemplateMock)).toEqual(2)
+    expect(getTemplateInputsCount(stageTemplateMock)).toEqual(2)
+    expect(getTemplateInputsCount(pipelineTemplateMock)).toEqual(0)
+  })
+
+  test('Test hasSameRunTimeInputs method', () => {
+    const example1 = produce(stageTemplateMock, draft => {
+      set(draft, 'spec.spec.serviceConfig.serviceRef', 'another_Service')
+    })
+    expect(hasSameRunTimeInputs(stageTemplateMock, example1)).toEqual(true)
+    const example2 = produce(stageTemplateMock, draft => {
+      set(draft, 'spec.spec.serviceConfig.serviceRef', RUNTIME_INPUT_VALUE)
+    })
+    expect(hasSameRunTimeInputs(stageTemplateMock, example2)).toEqual(false)
   })
 })

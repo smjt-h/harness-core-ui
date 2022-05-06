@@ -26,8 +26,6 @@ const modalPropsLight: IDialogProps = {
 
 interface DeleteAccessPointProps {
   accessPoints: AccessPoint[]
-  orgID: string
-  projectID: string
   accountId: string
   refresh: () => void
 }

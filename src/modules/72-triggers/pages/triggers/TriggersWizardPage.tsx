@@ -76,17 +76,11 @@ import {
   getConnectorValue,
   isRowFilled,
   isArtifactOrManifestTrigger,
-  FlatValidArtifactFormikValuesInterface,
   clearRuntimeInputValue,
   replaceTriggerDefaultBuild,
   TriggerDefaultFieldList,
   PRIMARY_ARTIFACT,
   clearNullUndefined,
-  ConnectorRefInterface,
-  FlatInitialValuesInterface,
-  FlatOnEditValuesInterface,
-  FlatValidWebhookFormikValuesInterface,
-  FlatValidScheduleFormikValuesInterface,
   getQueryParamsOnNew,
   getWizardMap,
   PayloadConditionTypes,
@@ -95,9 +89,7 @@ import {
   TriggerTypes,
   scheduledTypes,
   getValidationSchema,
-  TriggerConfigDTO,
   eventTypes,
-  FlatValidFormikValuesInterface,
   displayPipelineIntegrityResponse,
   getOrderedPipelineVariableValues,
   clearUndefinedArtifactId
@@ -112,6 +104,16 @@ import {
 } from './views'
 import ArtifactConditionsPanel from './views/ArtifactConditionsPanel'
 
+import type {
+  ConnectorRefInterface,
+  FlatInitialValuesInterface,
+  FlatOnEditValuesInterface,
+  FlatValidWebhookFormikValuesInterface,
+  FlatValidScheduleFormikValuesInterface,
+  FlatValidArtifactFormikValuesInterface,
+  TriggerConfigDTO,
+  FlatValidFormikValuesInterface
+} from './interface/TriggersWizardInterface'
 import css from './TriggersWizardPage.module.scss'
 
 const replaceRunTimeVariables = ({
@@ -233,7 +235,8 @@ const getArtifactManifestTriggerYaml = ({
   } = val
 
   replaceRunTimeVariables({ manifestType, artifactType, selectedArtifact })
-  let newPipelineObj = { ...pipelineRuntimeInput }
+  let newPipeline = cloneDeep(pipelineRuntimeInput)
+  const newPipelineObj = newPipeline.template ? newPipeline.template.templateInputs : newPipeline
   const filteredStage = newPipelineObj.stages?.find((item: any) => item.stage?.identifier === stageId)
   if (manifestType) {
     replaceStageManifests({ filteredStage, selectedArtifact })
@@ -242,11 +245,11 @@ const getArtifactManifestTriggerYaml = ({
   }
 
   // Manually clear null or undefined artifact identifier
-  newPipelineObj = clearUndefinedArtifactId(newPipelineObj)
+  newPipeline = clearUndefinedArtifactId(newPipeline)
 
   // actions will be required thru validation
   const stringifyPipelineRuntimeInput = yamlStringify({
-    pipeline: clearNullUndefined(newPipelineObj)
+    pipeline: clearNullUndefined(newPipeline)
   })
 
   // clears any runtime inputs
@@ -1760,7 +1763,6 @@ const TriggersWizardPage: React.FC = (): JSX.Element => {
         tabWidth="200px"
         tabChevronOffset="178px"
         onHide={returnToTriggersPage}
-        // defaultTabId="Schedule"
         submitLabel={isEdit ? getString('triggers.updateTrigger') : getString('triggers.createTrigger')}
         wizardType="artifacts"
         disableSubmit={loadingGetTrigger || createTriggerLoading || updateTriggerLoading || isTriggerRbacDisabled}

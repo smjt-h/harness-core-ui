@@ -79,17 +79,14 @@ import { NavigatedToPage } from '@common/constants/TrackingConstants'
 import { useTelemetry } from '@common/hooks/useTelemetry'
 import { GitSyncStoreProvider } from 'framework/GitRepoStore/GitSyncStoreContext'
 import { NGBreadcrumbs } from '@common/components/NGBreadcrumbs/NGBreadcrumbs'
-import { useFeatureFlag, useFeatureFlags } from '@common/hooks/useFeatureFlag'
-import { FeatureFlag } from '@common/featureFlags'
 import useRBACError from '@rbac/utils/useRBACError/useRBACError'
-import { NewPipelinePopover } from '@pipeline/pages/pipelines/views/NewPipelinePopover/NewPipelinePopover'
+import { deploymentTypeLabel } from '@pipeline/utils/DeploymentTypeUtils'
 import { PipelineGridView } from './views/PipelineGridView'
 import { PipelineListView } from './views/PipelineListView'
 import PipelineFilterForm from '../pipeline-deployment-list/PipelineFilterForm/PipelineFilterForm'
 import pipelineIllustration from './images/deploypipeline-illustration.svg'
 import buildpipelineIllustration from './images/buildpipeline-illustration.svg'
 import flagpipelineIllustration from './images/flagpipeline-illustration.svg'
-import { deploymentTypeLabel } from './PipelineListUtils'
 import css from './PipelinesPage.module.scss'
 
 export enum Sort {
@@ -170,16 +167,11 @@ function PipelinesPage({ mockData }: CDPipelinesPageProps): React.ReactElement {
   const isCIModule = module === 'ci'
   const isCFModule = module === 'cf'
   const searchRef = useRef<ExpandingSearchInputHandle>({} as ExpandingSearchInputHandle)
-  const { NG_NATIVE_HELM } = useFeatureFlags()
   const emptyStagePipelineImage = isCIModule
     ? buildpipelineIllustration
     : isCFModule
     ? flagpipelineIllustration
     : pipelineIllustration
-
-  const templatesFeatureFlagEnabled = useFeatureFlag(FeatureFlag.NG_TEMPLATES)
-  const pipelineTemplatesFeatureFlagEnabled = useFeatureFlag(FeatureFlag.NG_PIPELINE_TEMPLATE)
-  const isPipelineTemplateEnabled = templatesFeatureFlagEnabled && pipelineTemplatesFeatureFlagEnabled
 
   const goToPipelineDetail = useCallback(
     (/* istanbul ignore next */ pipeline?: PMSPipelineSummaryResponse) => {
@@ -457,9 +449,7 @@ function PipelinesPage({ mockData }: CDPipelinesPageProps): React.ReactElement {
             initialValues={{
               environments: getMultiSelectFormOptions(environmentsResponse?.data?.content),
               services: getMultiSelectFormOptions(servicesResponse?.data?.content),
-              deploymentType: NG_NATIVE_HELM
-                ? deploymentTypeSelectOptions
-                : deploymentTypeSelectOptions.filter(deploymentType => deploymentType.value !== 'NativeHelm')
+              deploymentType: deploymentTypeSelectOptions
             }}
             type="PipelineSetup"
           />
@@ -643,26 +633,22 @@ function PipelinesPage({ mockData }: CDPipelinesPageProps): React.ReactElement {
       {(isReseting || !!pipelineList?.content?.length || appliedFilter || isGitSyncEnabled || searchParam) && (
         <Page.SubHeader>
           <Layout.Horizontal>
-            {isPipelineTemplateEnabled ? (
-              <NewPipelinePopover />
-            ) : (
-              <RbacButton
-                variation={ButtonVariation.PRIMARY}
-                data-testid="add-pipeline"
-                icon="plus"
-                text={getString('pipeline.newPipelineText')}
-                onClick={() => goToPipeline()}
-                tooltipProps={{
-                  dataTooltipId: 'addPipeline'
-                }}
-                permission={{
-                  permission: PermissionIdentifier.EDIT_PIPELINE,
-                  resource: {
-                    resourceType: ResourceType.PIPELINE
-                  }
-                }}
-              />
-            )}
+            <RbacButton
+              variation={ButtonVariation.PRIMARY}
+              data-testid="add-pipeline"
+              icon="plus"
+              text={getString('pipeline.newPipelineText')}
+              onClick={() => goToPipeline()}
+              tooltipProps={{
+                dataTooltipId: 'addPipeline'
+              }}
+              permission={{
+                permission: PermissionIdentifier.EDIT_PIPELINE,
+                resource: {
+                  resourceType: ResourceType.PIPELINE
+                }
+              }}
+            />
             {isGitSyncEnabled && (
               <GitSyncStoreProvider>
                 <GitFilters
@@ -768,26 +754,22 @@ function PipelinesPage({ mockData }: CDPipelinesPageProps): React.ReactElement {
                 <Text className={css.aboutPipeline} margin={{ top: 'xsmall', bottom: 'xlarge' }}>
                   {getString('pipeline-list.aboutPipeline')}
                 </Text>
-                {isPipelineTemplateEnabled ? (
-                  <NewPipelinePopover text={getString('common.createPipeline')} />
-                ) : (
-                  <RbacButton
-                    variation={ButtonVariation.PRIMARY}
-                    onClick={() => goToPipeline()}
-                    text={getString('common.createPipeline')}
-                    permission={{
-                      permission: PermissionIdentifier.EDIT_PIPELINE,
-                      resource: {
-                        resourceType: ResourceType.PIPELINE
-                      },
-                      resourceScope: {
-                        accountIdentifier: accountId,
-                        orgIdentifier,
-                        projectIdentifier
-                      }
-                    }}
-                  />
-                )}
+                <RbacButton
+                  variation={ButtonVariation.PRIMARY}
+                  onClick={() => goToPipeline()}
+                  text={getString('common.createPipeline')}
+                  permission={{
+                    permission: PermissionIdentifier.EDIT_PIPELINE,
+                    resource: {
+                      resourceType: ResourceType.PIPELINE
+                    },
+                    resourceScope: {
+                      accountIdentifier: accountId,
+                      orgIdentifier,
+                      projectIdentifier
+                    }
+                  }}
+                />
               </Layout.Vertical>
             )}
           </div>

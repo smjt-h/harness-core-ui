@@ -26,6 +26,6 @@ describe('GitPopover', () => {
       </TestWrapper>
     )
 
-    expect(container).toMatchInlineSnapshot(`<div />`)
+    expect(container).toMatchSnapshot()
   })
 })

@@ -390,14 +390,23 @@ export const VariationSelect: React.FC<VariationSelectProps> = ({
         await gitSync.handleAutoCommit(gitSyncFormValues.autoCommit)
       }
 
-      await _useServeFlagVariationToTargets(feature, variations[index].identifier, [target.identifier], gitDetails)
+      const response = await _useServeFlagVariationToTargets(
+        feature,
+        variations[index].identifier,
+        [target.identifier],
+        gitDetails
+      )
+
+      if (isGovernanceError(response)) {
+        handleGovernanceError(response)
+      }
 
       previousSelectedIdentifier.current = index
     } catch (e: any) {
       if (e.status === GIT_SYNC_ERROR_CODE) {
         gitSync.handleError(e.data as GitSyncErrorResponse)
       } else {
-        if (isGovernanceError(e)) {
+        if (isGovernanceError(e?.data)) {
           handleGovernanceError(e.data)
         } else {
           showError(getErrorMessage(e), 0, 'cf.serve.flag.variant.error')

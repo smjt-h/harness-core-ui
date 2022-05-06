@@ -12,7 +12,7 @@ import { get, isEmpty, pickBy } from 'lodash-es'
 import { Text, Icon, PageError, PageSpinner, Layout } from '@wings-software/uicore'
 import { FontVariation, Color } from '@harness/design-system'
 import { DeprecatedImageInfo, useGetExecutionConfig } from 'services/ci'
-import { GovernanceMetadata, useGetExecutionDetail, ResponsePipelineExecutionDetail } from 'services/pipeline-ng'
+import { GovernanceMetadata, ResponsePipelineExecutionDetail, useGetExecutionDetailV2 } from 'services/pipeline-ng'
 import type { ExecutionNode } from 'services/pipeline-ng'
 import { ExecutionStatus, isExecutionComplete } from '@pipeline/utils/statusHelpers'
 import {
@@ -121,7 +121,7 @@ export default function ExecutionLandingPage(props: React.PropsWithChildren<unkn
     zoom: 100
   })
 
-  const { data, refetch, loading, error } = useGetExecutionDetail({
+  const { data, refetch, loading, error } = useGetExecutionDetailV2({
     planExecutionId: executionIdentifier,
     queryParams: {
       orgIdentifier,

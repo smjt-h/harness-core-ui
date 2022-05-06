@@ -28,6 +28,7 @@ import type {
 import type { UseStringsReturn } from 'framework/strings'
 import { getDurationValidationSchema } from '@common/components/MultiTypeDuration/MultiTypeDuration'
 import type { TemplateStepNode } from 'services/pipeline-ng'
+import { ServiceDeploymentType } from '@pipeline/utils/stageHelpers'
 import factory from '../PipelineSteps/PipelineStepFactory'
 import { StepType } from '../PipelineSteps/PipelineStepInterface'
 // eslint-disable-next-line no-restricted-imports
@@ -275,8 +276,11 @@ export const validateStage = ({
         set(errors, 'variables', errorsResponse?.variables)
       }
     }
-    if (originalStageConfig?.serviceConfig?.serviceDefinition?.type === 'Kubernetes') {
-      const step = factory.getStep(StepType.K8sServiceSpec)
+    if (
+      originalStageConfig?.serviceConfig?.serviceDefinition?.type === ServiceDeploymentType.Kubernetes ||
+      originalStageConfig?.serviceConfig?.serviceDefinition?.type === ServiceDeploymentType.ServerlessAwsLambda
+    ) {
+      const step = factory.getStep(originalStageConfig?.serviceConfig?.serviceDefinition?.type)
       const errorsResponse = step?.validateInputSet({
         data: stageConfig?.serviceConfig?.serviceDefinition?.spec,
         template: templateStageConfig?.serviceConfig?.serviceDefinition?.spec,
@@ -334,7 +338,7 @@ export const validateStage = ({
 
 interface ValidatePipelineProps {
   pipeline: PipelineInfoConfig
-  template: PipelineInfoConfig
+  template?: PipelineInfoConfig
   viewType: StepViewType
   originalPipeline?: PipelineInfoConfig
   getString?: UseStringsReturn['getString']
@@ -418,7 +422,7 @@ export const validatePipeline = ({
   getString,
   path
 }: ValidatePipelineProps): FormikErrors<PipelineInfoConfig> => {
-  if (template.template) {
+  if (template?.template) {
     const errors = validatePipeline({
       pipeline: pipeline.template?.templateInputs as PipelineInfoConfig,
       template: template.template?.templateInputs as PipelineInfoConfig,

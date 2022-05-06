@@ -6,7 +6,7 @@
  */
 
 import type { IconName } from '@wings-software/uicore'
-import { defaultTo, get } from 'lodash-es'
+import { get } from 'lodash-es'
 import type { UseStringsReturn } from 'framework/strings'
 import { TemplateType } from '@templates-library/utils/templatesUtils'
 import type { TemplateSummaryResponse } from 'services/template-ng'
@@ -120,18 +120,20 @@ export enum SortFields {
 }
 
 export const getTypeForTemplate = (
-  template: TemplateSummaryResponse,
-  getString: UseStringsReturn['getString']
-): string => {
-  const entityType = template.templateEntityType as TemplateType
-  const type = defaultTo(template.childType, '')
-  switch (entityType) {
+  getString: UseStringsReturn['getString'],
+  template?: NGTemplateInfoConfigWithGitDetails | TemplateSummaryResponse
+): string | undefined => {
+  const templateTye =
+    (template as TemplateSummaryResponse)?.templateEntityType || (template as NGTemplateInfoConfigWithGitDetails)?.type
+  const childType =
+    (template as TemplateSummaryResponse)?.childType || get(template as NGTemplateInfoConfigWithGitDetails, 'spec.type')
+  switch (templateTye) {
     case TemplateType.Step:
-      return defaultTo(factory.getStepName(type), '')
+      return factory.getStepName(childType)
     case TemplateType.Stage:
-      return defaultTo(stagesCollection.getStageAttributes(type, getString)?.name, '')
+      return stagesCollection.getStageAttributes(childType, getString)?.name
     default:
-      return ''
+      return undefined
   }
 }
 

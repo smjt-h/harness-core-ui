@@ -16,10 +16,6 @@ import { useQueryParams } from '@common/hooks'
 import TriggersList from './views/TriggersList'
 import type { TriggerDataInterface } from './utils/TriggersListUtils'
 
-// interface TriggerDataInterface {
-//   triggerType: string
-//   sourceRepo?: string
-// }
 const TriggersPage: React.FC = (): React.ReactElement => {
   const { orgIdentifier, projectIdentifier, accountId, pipelineIdentifier, module } = useParams<
     PipelineType<{

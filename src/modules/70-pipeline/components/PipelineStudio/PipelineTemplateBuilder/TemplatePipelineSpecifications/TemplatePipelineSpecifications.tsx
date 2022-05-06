@@ -113,13 +113,15 @@ export function TemplatePipelineSpecifications(): JSX.Element {
   }, [pipelineResponse?.data?.mergedPipelineYaml])
 
   React.useEffect(() => {
-    try {
-      const mergedTemplateInputs = merge({}, inputsTemplate, pipeline.template?.templateInputs)
-      setTemplateInputs(pipeline, mergedTemplateInputs)
-      updatePipeline(pipeline)
-      setInitialValues(cloneDeep(pipeline))
-    } catch (error) {
-      showError(error.message, undefined, 'template.parse.inputSet.error')
+    if (inputsTemplate !== undefined) {
+      try {
+        const mergedTemplateInputs = merge({}, inputsTemplate, pipeline.template?.templateInputs)
+        setTemplateInputs(pipeline, mergedTemplateInputs)
+        updatePipeline(pipeline)
+        setInitialValues(cloneDeep(pipeline))
+      } catch (error) {
+        showError(error.message, undefined, 'template.parse.inputSet.error')
+      }
     }
   }, [inputsTemplate])
 

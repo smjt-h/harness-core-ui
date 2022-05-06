@@ -957,7 +957,7 @@ export function PipelineProvider({
       selectedSectionId: queryParamStateSelection.sectionId as string
     })
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [queryParamStateSelection.stepId, queryParamStateSelection.stageId])
+  }, [queryParamStateSelection.stepId, queryParamStateSelection.stageId, queryParamStateSelection.sectionId])
 
   const getStageFromPipeline = React.useCallback(
     <T extends StageElementConfig = StageElementConfig>(

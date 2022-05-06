@@ -166,6 +166,10 @@ getStartedWithCI:
   searchRepo: Search Repository
   learnMoreAboutPermissions: Learn more about the required permissions
   verifyConnection: Verify connection before you can continue
+  appPassword: Application Password
+  apiUrlLabel: API URL
+  provisioningSuccessful: Provisioning successful
+  provisioningFailed: Provisioning failed
   carousel:
     labels:
       harnessCIFeatures: Harness CI

@@ -5,7 +5,7 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import * as Yup from 'yup'
 import {
@@ -14,26 +14,27 @@ import {
   Formik,
   FormikForm,
   FormInput,
-  Heading,
   Layout,
   ModalErrorHandler,
   ModalErrorHandlerBinding,
   getErrorInfoFromErrorObject,
   StepProps,
   Icon,
-  Text
+  Text,
+  ButtonSize,
+  ButtonVariation
 } from '@wings-software/uicore'
+import { FontVariation, Color } from '@harness/design-system'
 import { pick } from 'lodash-es'
 import { useStrings } from 'framework/strings'
 import { CrossAccountAccess, useCreateConnector, useUpdateConnector, Failure } from 'services/cd-ng'
 import { useAwsaccountconnectiondetail } from 'services/ce/index'
-import LabelWithTooltip from '@connectors/common/LabelWithTooltip/LabelWithTooltip'
-import { DialogExtensionContext } from '@connectors/common/ConnectorExtention/DialogExtention'
 import { CE_AWS_CONNECTOR_CREATION_EVENTS } from '@connectors/trackingConstants'
 import { useStepLoadTelemetry } from '@connectors/common/useTrackStepLoad/useStepLoadTelemetry'
+import ConnectorInstructionList from '@connectors/common/ConnectorCreationInstructionList/ConnectorCreationInstructionList'
+import { connectorHelperUrls } from '@connectors/constants'
 import type { FeaturesString } from './CrossAccountRoleStep1'
 import type { CEAwsConnectorDTO } from './OverviewStep'
-import CrossAccountRoleExtension from './CrossAccountRoleExtension'
 import css from '../CreateCeAwsConnector.module.scss'
 
 const CrossAccountRoleStep2: React.FC<StepProps<CEAwsConnectorDTO>> = props => {
@@ -45,7 +46,6 @@ const CrossAccountRoleStep2: React.FC<StepProps<CEAwsConnectorDTO>> = props => {
     accountId: string
   }>()
   const { prevStepData, nextStep, previousStep } = props
-  const { triggerExtension, closeExtension } = useContext(DialogExtensionContext)
   const [externalId, setExternalId] = useState<string>('')
   const { mutate: createConnector } = useCreateConnector({
     queryParams: { accountIdentifier: accountId }
@@ -62,14 +62,6 @@ const CrossAccountRoleStep2: React.FC<StepProps<CEAwsConnectorDTO>> = props => {
   const randomString = (): string => {
     return Math.random().toString(36).substring(2, 8) + Math.random().toString(36).substring(2, 8)
   }
-
-  useEffect(() => {
-    if (awsUrlTemplateData?.status == 'SUCCESS') {
-      triggerExtension(
-        <CrossAccountRoleExtension previewTemplateLink={awsUrlTemplateData?.data?.cloudFormationTemplateLink} />
-      )
-    }
-  }, [awsUrlTemplateLoading])
 
   useEffect(() => {
     if (awsUrlTemplateData?.status == 'SUCCESS' && !prevStepData?.isEditMode)
@@ -120,7 +112,6 @@ const CrossAccountRoleStep2: React.FC<StepProps<CEAwsConnectorDTO>> = props => {
             throw response as Failure
           }
         }
-        closeExtension()
         nextStep?.(prevStepData)
       }
     } catch (e) {
@@ -130,36 +121,79 @@ const CrossAccountRoleStep2: React.FC<StepProps<CEAwsConnectorDTO>> = props => {
   }
 
   const handleprev = () => {
-    closeExtension()
     previousStep?.({ ...(prevStepData as CEAwsConnectorDTO) })
   }
 
+  const instructionsList = [
+    {
+      type: 'hybrid',
+      renderer: function instructionRenderer() {
+        return (
+          <>
+            <Text font={{ variation: FontVariation.BODY }} color={Color.GREY_800}>
+              {getString('connectors.ceAws.crossAccountRoleStep2.instructions.i1')}
+              <Button
+                text={getString('connectors.ceAws.crossAccountRoleStep2.launchTemplate')}
+                rightIcon="main-share"
+                variation={ButtonVariation.SECONDARY}
+                size={ButtonSize.SMALL}
+                iconProps={{ size: 12, margin: { left: 'xsmall' } }}
+                onClick={() => {
+                  makeTemplateUrl()
+                }}
+              />
+            </Text>
+            <Text font={{ variation: FontVariation.BODY }} color={Color.GREY_800}>
+              {getString('connectors.ceAws.crossAccountRoleStep2.instructions.i2')}
+              <a href={awsUrlTemplateData?.data?.cloudFormationTemplateLink || ''} target="_blank" rel="noreferrer">
+                {getString('connectors.ceAws.crossAccountRoleStep2.instructions.templateRedirection')}
+              </a>
+              {'.)'}
+            </Text>
+          </>
+        )
+      }
+    },
+    {
+      type: 'text',
+      text: 'connectors.ceAws.crossAccountRoleStep2.instructions.i3',
+      listClassName: 'instructionList'
+    },
+    {
+      type: 'hybrid',
+      listClassName: 'instructionList',
+      renderer: function instructionRenderer() {
+        return (
+          <Text font={{ variation: FontVariation.BODY }} color={Color.GREY_800}>
+            {getString('connectors.ceAws.cur.instructions.i2')}
+            <a href={connectorHelperUrls.ceAwsRoleARNsteps} target="_blank" rel="noreferrer">
+              {getString('connectors.ceAws.crossAccountRoleStep2.instructions.i4')}
+              <Icon name="main-share" size={16} color={Color.PRIMARY_7} />
+            </a>
+          </Text>
+        )
+      }
+    },
+    {
+      type: 'text',
+      text: 'connectors.ceAws.crossAccountRoleStep2.instructions.i5',
+      listClassName: 'instructionList'
+    }
+  ]
+
   return (
     <Layout.Vertical className={css.stepContainer}>
-      <Heading level={2} className={css.header}>
+      <Text
+        font={{ variation: FontVariation.H3 }}
+        tooltipProps={{ dataTooltipId: 'awsConnectorCreateRole' }}
+        margin={{ bottom: 'large' }}
+      >
         {getString('connectors.ceAws.crossAccountRoleStep2.heading')}
-        <span>{getString('connectors.ceAws.crossAccountRoleStep2.createRole')}</span>
-      </Heading>
-      <div style={{ marginBottom: 25 }} className={css.infobox}>
+      </Text>
+      <Text color={Color.GREY_800} font={{ variation: FontVariation.BODY }} margin={{ bottom: 'large' }}>
         {getString('connectors.ceAws.crossAccountRoleStep2.subHeading')}
-      </div>
-      <Container style={{ paddingBottom: 40 }}>
-        <Layout.Vertical style={{ width: '65%' }}>
-          <Button
-            className={css.launchTemplateBut}
-            text={getString('connectors.ceAws.crossAccountRoleStep2.launchTemplate')}
-            icon="main-share"
-            iconProps={{ size: 12, margin: { right: 'xsmall' } }}
-            disabled={awsUrlTemplateLoading}
-            onClick={() => {
-              makeTemplateUrl()
-            }}
-          />
-          <Text font="small" style={{ textAlign: 'center' }}>
-            {getString('connectors.ceAws.crossAccountRoleStep2.followInstructions')}
-          </Text>
-        </Layout.Vertical>
-      </Container>
+      </Text>
+      <ConnectorInstructionList instructionsList={instructionsList} />
       <div style={{ flex: 1 }}>
         <Formik<CrossAccountAccess>
           formName="crossAccountRoleStep2Form"
@@ -186,39 +220,30 @@ const CrossAccountRoleStep2: React.FC<StepProps<CEAwsConnectorDTO>> = props => {
               <Container className={css.main}>
                 <FormInput.Text
                   name="crossAccountRoleArn"
-                  label={
-                    <LabelWithTooltip
-                      label={getString('connectors.ceAws.crossAccountRoleStep2.roleArn')}
-                      extentionComponent={
-                        <CrossAccountRoleExtension
-                          previewTemplateLink={awsUrlTemplateData?.data?.cloudFormationTemplateLink}
-                        />
-                      }
-                    />
-                  }
+                  label={getString('connectors.ceAws.crossAccountRoleStep2.roleArn')}
                   className={css.dataFields}
+                  tooltipProps={{ dataTooltipId: 'crossAccountRoleArn' }}
                 />
 
                 <FormInput.Text
                   name="externalId"
-                  label={
-                    <LabelWithTooltip
-                      label={getString('connectors.ceAws.crossAccountRoleStep2.extId')}
-                      extentionComponent={
-                        <CrossAccountRoleExtension
-                          previewTemplateLink={awsUrlTemplateData?.data?.cloudFormationTemplateLink}
-                        />
-                      }
-                    />
-                  }
+                  label={getString('connectors.ceAws.crossAccountRoleStep2.extId')}
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                     setExternalId(e.target.value)
                   }}
                   disabled={awsUrlTemplateLoading}
                   className={css.dataFields}
+                  tooltipProps={{ dataTooltipId: 'externalId' }}
                 />
               </Container>
-              <a>{getString('connectors.ceAws.crossAccountRoleStep2.dontHaveAccess')}</a>
+              <a
+                href={connectorHelperUrls.ceAwsNoAccount}
+                target="_blank"
+                rel="noreferrer"
+                className={css.noAccountLink}
+              >
+                {getString('connectors.ceAws.crossAccountRoleStep2.dontHaveAccess')}
+              </a>
               <Layout.Horizontal className={css.buttonPanel} spacing="small">
                 <Button
                   text={getString('previous')}

@@ -51,7 +51,7 @@ const CreateCeAzureConnector: React.FC<CreateConnectorModalProps> = props => {
           type={Connectors.CE_AZURE}
           onClose={() => {
             trackEvent(CCM_CONNECTOR_SAVE_EVENT, { type: Connectors.CE_AZURE })
-            props.onClose?.()
+            props.onClose()
           }}
         />
       </StepWizard>

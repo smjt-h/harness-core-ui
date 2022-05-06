@@ -93,14 +93,14 @@ const FlagWizard: React.FC<FlagWizardProps> = props => {
 
     if (formData) {
       createFeatureFlag(formData)
-        .then(async () => {
+        .then(async response => {
           if (!isAutoCommitEnabled && formData.autoCommit) {
             await handleAutoCommit(formData.autoCommit)
           }
           events.createFeatureFlagCompleted()
           hideModal()
-          history.push(
-            withActiveEnvironment(
+          history.push({
+            pathname: withActiveEnvironment(
               routes.toCFFeatureFlagsDetail({
                 orgIdentifier: orgIdentifier as string,
                 projectIdentifier: projectIdentifier as string,
@@ -108,15 +108,18 @@ const FlagWizard: React.FC<FlagWizardProps> = props => {
                 accountId: accountIdentifier
               }),
               environmentIdentifier
-            )
-          )
+            ),
+            state: {
+              governanceMetadata: response?.details?.governanceMetadata
+            }
+          })
           showToaster(getString('cf.messages.flagCreated'))
         })
         .catch(error => {
           if (error.status === GIT_SYNC_ERROR_CODE) {
             handleError(error.data as GitSyncErrorResponse)
           } else {
-            if (isGovernanceError(error)) {
+            if (isGovernanceError(error.data)) {
               handleGovernanceError(error.data)
             } else {
               showError(getErrorMessage(error), 0, 'cf.savegw.error')

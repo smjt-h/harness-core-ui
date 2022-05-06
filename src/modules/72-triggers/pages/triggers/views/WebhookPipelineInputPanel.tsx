@@ -10,8 +10,9 @@ import { useParams } from 'react-router-dom'
 import { Layout, Text, NestedAccordionProvider, HarnessDocTooltip, PageSpinner } from '@wings-software/uicore'
 import { parse } from 'yaml'
 import { pick, merge, cloneDeep, isEmpty, defaultTo } from 'lodash-es'
+import type { FormikProps } from 'formik'
 import { InputSetSelector, InputSetSelectorProps } from '@pipeline/components/InputSetSelector/InputSetSelector'
-import type { PipelineInfoConfig } from 'services/cd-ng'
+import type { PipelineInfoConfig, StageElementWrapperConfig } from 'services/cd-ng'
 import {
   useGetTemplateFromPipeline,
   getInputSetForPipelinePromise,
@@ -37,7 +38,7 @@ interface WebhookPipelineInputPanelPropsInterface {
   formikProps?: any
 }
 
-const applyArtifactToPipeline = (newPipelineObject: any, formikProps: any) => {
+const applyArtifactToPipeline = (newPipelineObject: any, formikProps: FormikProps<any>): PipelineInfoConfig => {
   const artifactIndex = filterArtifactIndex({
     runtimeData: newPipelineObject?.stages,
     stageId: formikProps?.values?.stageId,
@@ -77,12 +78,15 @@ const applyArtifactToPipeline = (newPipelineObject: any, formikProps: any) => {
 // Selected Artifact is applied to inputYaml on Pipeline Input Panel in KubernetesManifests.tsx
 // This is to apply the selected artifact values
 // to the applied input sets pipeline stage values
-const applySelectedArtifactToPipelineObject = (pipelineObj: any, formikProps: any) => {
+const applySelectedArtifactToPipelineObject = (
+  pipelineObj: PipelineInfoConfig,
+  formikProps: FormikProps<any>
+): PipelineInfoConfig => {
   // Cloning or making into a new object
   // so the original pipeline is not effected
   const newPipelineObject = { ...pipelineObj }
   if (!newPipelineObject) {
-    return {}
+    return {} as PipelineInfoConfig
   }
 
   const { triggerType } = formikProps.values
@@ -97,7 +101,7 @@ const applySelectedArtifactToPipelineObject = (pipelineObj: any, formikProps: an
     if (artifactIndex >= 0) {
       const filteredStage =
         (newPipelineObject?.stages || []).find(
-          (stage: any) => stage.stage.identifier === formikProps?.values?.stageId
+          (stage: StageElementWrapperConfig) => stage.stage?.identifier === formikProps?.values?.stageId
         ) || {}
 
       const selectedArtifact = {
@@ -109,7 +113,8 @@ const applySelectedArtifactToPipelineObject = (pipelineObj: any, formikProps: an
         }
       }
 
-      const filteredStageManifests = filteredStage.stage?.spec?.serviceConfig?.serviceDefinition?.spec?.manifests
+      const filteredStageManifests = (filteredStage.stage?.spec as any)?.serviceConfig?.serviceDefinition?.spec
+        ?.manifests
       filteredStageManifests[artifactIndex] = selectedArtifact
     }
   } else if (triggerType === TriggerTypes.ARTIFACT && newPipelineObject) {
@@ -118,13 +123,19 @@ const applySelectedArtifactToPipelineObject = (pipelineObj: any, formikProps: an
   return newPipelineObject
 }
 
-const WebhookPipelineInputPanelForm: React.FC<WebhookPipelineInputPanelPropsInterface> = ({
-  formikProps
-}): JSX.Element => {
+function WebhookPipelineInputPanelForm({ formikProps }: WebhookPipelineInputPanelPropsInterface): React.ReactElement {
   const {
     values: { inputSetSelected, pipeline, resolvedPipeline },
     values
   } = formikProps
+
+  const { getString } = useStrings()
+  const ciCodebaseBuildValue = formikProps.values?.pipeline?.properties?.ci?.codebase?.build
+
+  const [selectedInputSets, setSelectedInputSets] = useState<InputSetSelectorProps['value']>(inputSetSelected)
+  const [hasEverRendered, setHasEverRendered] = useState(
+    typeof ciCodebaseBuildValue === 'object' && !isEmpty(ciCodebaseBuildValue)
+  )
 
   const { orgIdentifier, accountId, projectIdentifier, pipelineIdentifier } = useParams<{
     projectIdentifier: string
@@ -133,6 +144,7 @@ const WebhookPipelineInputPanelForm: React.FC<WebhookPipelineInputPanelPropsInte
     pipelineIdentifier: string
     triggerIdentifier: string
   }>()
+
   const { data: template, loading } = useMutateAsGet(useGetTemplateFromPipeline, {
     queryParams: {
       accountIdentifier: accountId,
@@ -144,10 +156,15 @@ const WebhookPipelineInputPanelForm: React.FC<WebhookPipelineInputPanelPropsInte
       stageIdentifiers: []
     }
   })
-  const [selectedInputSets, setSelectedInputSets] = useState<InputSetSelectorProps['value']>(inputSetSelected)
-  const { getString } = useStrings()
-  const ciCodebaseBuildValue = formikProps.values?.pipeline?.properties?.ci?.codebase?.build
-  let hasEverRendered = typeof ciCodebaseBuildValue === 'object' && !isEmpty(ciCodebaseBuildValue)
+
+  const { mutate: mergeInputSet } = useGetMergeInputSetFromPipelineTemplateWithListInput({
+    queryParams: {
+      accountIdentifier: accountId,
+      projectIdentifier,
+      orgIdentifier,
+      pipelineIdentifier
+    }
+  })
 
   useEffect(() => {
     const shouldInjectCloneCodebase =
@@ -185,21 +202,12 @@ const WebhookPipelineInputPanelForm: React.FC<WebhookPipelineInputPanelPropsInte
       formikProps.setValues(formikValues)
     }
 
-    hasEverRendered = true
-  }, [hasEverRendered])
+    setHasEverRendered(true)
+  }, [formikProps, hasEverRendered, resolvedPipeline?.properties?.ci?.codebase, resolvedPipeline?.stages])
 
   useEffect(() => {
     setSelectedInputSets(inputSetSelected)
   }, [inputSetSelected])
-
-  const { mutate: mergeInputSet } = useGetMergeInputSetFromPipelineTemplateWithListInput({
-    queryParams: {
-      accountIdentifier: accountId,
-      projectIdentifier,
-      orgIdentifier,
-      pipelineIdentifier
-    }
-  })
 
   useEffect(() => {
     if (template?.data?.inputSetTemplateYaml) {
@@ -210,7 +218,7 @@ const WebhookPipelineInputPanelForm: React.FC<WebhookPipelineInputPanelPropsInte
           })
           if (data?.data?.pipelineYaml) {
             const pipelineObject = parse(data.data.pipelineYaml) as {
-              pipeline: PipelineInfoConfig | any
+              pipeline: PipelineInfoConfig
             }
             const newPipelineObject = applySelectedArtifactToPipelineObject(pipelineObject.pipeline, formikProps)
             formikProps.setValues({
@@ -235,11 +243,10 @@ const WebhookPipelineInputPanelForm: React.FC<WebhookPipelineInputPanelPropsInte
           if (data?.data?.inputSetYaml) {
             if (selectedInputSets[0].type === 'INPUT_SET') {
               const pipelineObject = pick(parse(data.data.inputSetYaml)?.inputSet, 'pipeline') as {
-                pipeline: PipelineInfoConfig | any
+                pipeline: PipelineInfoConfig
               }
 
               const newPipelineObject = applySelectedArtifactToPipelineObject(pipelineObject.pipeline, formikProps)
-
               formikProps.setValues({
                 ...values,
                 inputSetSelected: selectedInputSets,
@@ -251,6 +258,7 @@ const WebhookPipelineInputPanelForm: React.FC<WebhookPipelineInputPanelPropsInte
         fetchData()
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     template?.data?.inputSetTemplateYaml,
     selectedInputSets?.length,
@@ -268,7 +276,7 @@ const WebhookPipelineInputPanelForm: React.FC<WebhookPipelineInputPanelPropsInte
           <PageSpinner />
         </div>
       )}
-      {pipeline && template?.data?.inputSetTemplateYaml ? (
+      {!isEmpty(pipeline) && template?.data?.inputSetTemplateYaml ? (
         <div className={css.inputsetGrid}>
           <div className={css.inputSetContent}>
             <div className={css.pipelineInputRow}>
@@ -291,7 +299,8 @@ const WebhookPipelineInputPanelForm: React.FC<WebhookPipelineInputPanelPropsInte
             <PipelineInputSetForm
               originalPipeline={resolvedPipeline}
               template={
-                (template?.data?.inputSetTemplateYaml && parse(template.data.inputSetTemplateYaml).pipeline) || {}
+                !isEmpty(template?.data?.inputSetTemplateYaml) &&
+                defaultTo(parse(template.data.inputSetTemplateYaml).pipeline, {})
               }
               path="pipeline"
               viewType={StepViewType.InputSet}
@@ -301,9 +310,8 @@ const WebhookPipelineInputPanelForm: React.FC<WebhookPipelineInputPanelPropsInte
         </div>
       ) : (
         <Layout.Vertical style={{ padding: '0 var(--spacing-small)' }} margin="large" spacing="large">
-          <Text className={css.formContentTitle} inline={true} data-tooltip-id="pipelineInputLabel">
+          <Text className={css.formContentTitle} inline={true} tooltipProps={{ dataTooltipId: 'pipelineInputLabel' }}>
             {getString('triggers.pipelineInputLabel')}
-            <HarnessDocTooltip tooltipId="pipelineInputLabel" useStandAlone={true} />
           </Text>
           <Layout.Vertical className={css.formContent}>
             <Text>{getString('pipeline.pipelineInputPanel.noRuntimeInputs')}</Text>

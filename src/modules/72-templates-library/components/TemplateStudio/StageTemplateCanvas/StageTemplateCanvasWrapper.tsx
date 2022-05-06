@@ -53,21 +53,17 @@ const StageTemplateCanvasWrapper = (_props: unknown, formikRef: TemplateFormRef)
     await updateTemplate(template)
   }
 
-  if (pipeline) {
-    return (
-      <TemplatePipelineProvider
-        queryParams={{ accountIdentifier: accountId, orgIdentifier, projectIdentifier, repoIdentifier, branch }}
-        initialValue={pipeline as PipelineInfoConfig}
-        onUpdatePipeline={onUpdatePipeline}
-        contextType={PipelineContextType.StageTemplate}
-        isReadOnly={isReadonly}
-      >
-        <StageTemplateCanvasWithRef ref={formikRef} />
-      </TemplatePipelineProvider>
-    )
-  } else {
-    return <></>
-  }
+  return (
+    <TemplatePipelineProvider
+      queryParams={{ accountIdentifier: accountId, orgIdentifier, projectIdentifier, repoIdentifier, branch }}
+      initialValue={pipeline as PipelineInfoConfig}
+      onUpdatePipeline={onUpdatePipeline}
+      contextType={PipelineContextType.StageTemplate}
+      isReadOnly={isReadonly}
+    >
+      <StageTemplateCanvasWithRef ref={formikRef} />
+    </TemplatePipelineProvider>
+  )
 }
 
 export const StageTemplateCanvasWrapperWithRef = React.forwardRef(StageTemplateCanvasWrapper)

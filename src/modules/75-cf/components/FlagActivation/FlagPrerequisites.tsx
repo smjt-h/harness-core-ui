@@ -64,6 +64,7 @@ interface FlagPrerequisitesProps {
   featureFlag: Feature
   gitSync: UseGitSync
   refetchFlag: () => void
+  setGovernanceMetadata: (governanceMetadata: any) => void
 }
 
 interface PrerequisiteEntry {
@@ -72,7 +73,7 @@ interface PrerequisiteEntry {
 }
 
 export const FlagPrerequisites: React.FC<FlagPrerequisitesProps> = props => {
-  const { featureFlag, refetchFlag, gitSync } = props
+  const { featureFlag, refetchFlag, gitSync, setGovernanceMetadata } = props
   const { showError } = useToaster()
   const { getString } = useStrings()
   const {
@@ -202,11 +203,12 @@ export const FlagPrerequisites: React.FC<FlagPrerequisitesProps> = props => {
                 }
               : data
           )
-            .then(async () => {
+            .then(async response => {
               if (!gitSync?.isAutoCommitEnabled && prereqValues?.autoCommit) {
                 await gitSync?.handleAutoCommit(prereqValues.autoCommit)
               }
 
+              setGovernanceMetadata(response?.details?.governanceMetadata)
               hideModalPrerequisites()
               refetchFlag()
             })
@@ -214,8 +216,8 @@ export const FlagPrerequisites: React.FC<FlagPrerequisitesProps> = props => {
               if (err.status === GIT_SYNC_ERROR_CODE) {
                 gitSync.handleError(err.data as GitSyncErrorResponse)
               } else {
-                if (isGovernanceError(err)) {
-                  handleGovernanceError(err.data)
+                if (isGovernanceError(err?.data)) {
+                  handleGovernanceError(err?.data)
                 } else {
                   showError(get(err, 'data.message', err?.message), undefined, 'cf.patch.req.error')
                 }

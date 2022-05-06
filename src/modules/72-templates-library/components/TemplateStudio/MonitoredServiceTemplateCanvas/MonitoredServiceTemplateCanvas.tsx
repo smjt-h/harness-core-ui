@@ -6,19 +6,35 @@
  */
 
 import React from 'react'
+import { isEqual } from 'lodash-es'
 // eslint-disable-next-line
-import Configurations from '@cv/pages/monitored-service/components/Configurations/Configurations'
-import type { NGTemplateInfoConfigWithMonitoredService } from '@templates-library/components/Templates/MonitoredServiceTemplate/MonitoredServiceTemplate'
+import { ConfigurationsWithRef } from '@cv/pages/monitored-service/components/Configurations/Configurations'
+// eslint-disable-next-line
+import type { MonitoredServiceForm } from '@cv/pages/monitored-service/components/Configurations/components/Service/Service.types'
+import type { JsonNode } from 'services/template-ng'
 import { TemplateContext } from '../TemplateContext/TemplateContext'
+import type { TemplateFormRef } from '../TemplateStudio'
 
-const MonitoredServiceTemplateCanvas = () => {
-  const { updateTemplate } = React.useContext(TemplateContext)
-  return (
-    <Configurations
-      isTemplate={true}
-      updateTemplate={updateTemplate as (template: NGTemplateInfoConfigWithMonitoredService) => Promise<void>}
-    />
-  )
+const MonitoredServiceTemplateCanvas = (_props: unknown, formikRef: TemplateFormRef) => {
+  const { state, updateTemplate } = React.useContext(TemplateContext)
+  const onUpdate = (formikValue: MonitoredServiceForm) => {
+    if (
+      !isEqual(state.template.spec, {
+        serviceRef: formikValue?.serviceRef,
+        environmentRef: formikValue?.environmentRef
+      })
+    ) {
+      updateTemplate({
+        ...state.template,
+        spec: {
+          serviceRef: formikValue?.serviceRef,
+          environmentRef: formikValue?.environmentRef,
+          type: 'MonitoredService'
+        } as JsonNode
+      })
+    }
+  }
+  return <ConfigurationsWithRef isTemplate={true} ref={formikRef} updateTemplate={onUpdate} />
 }
 
 export const MonitoredTemplateCanvasWithRef = React.forwardRef(MonitoredServiceTemplateCanvas)

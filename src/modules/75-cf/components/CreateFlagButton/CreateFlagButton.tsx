@@ -6,6 +6,7 @@
  */
 
 import React, { ReactElement } from 'react'
+import { ButtonVariation } from '@wings-software/uicore'
 import RbacButton from '@rbac/components/Button/Button'
 import { ResourceType } from '@rbac/interfaces/ResourceType'
 import { PermissionIdentifier } from '@rbac/interfaces/PermissionIdentifier'
@@ -42,6 +43,7 @@ const CreateFlagButton = (props: CreateFlagButtonProps): ReactElement => {
       disabled={disabled}
       text={getString('cf.featureFlags.newFlag')}
       intent="primary"
+      variation={ButtonVariation.PRIMARY}
       onClick={() => {
         events.createFeatureFlagStart()
         showModal()

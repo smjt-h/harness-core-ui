@@ -271,6 +271,25 @@ export const cleanUpResourcesMap = (
   return selectedResourcesMap
 }
 
+export const getDefaultIncludedScope = (
+  accountIdentifier: string,
+  orgIdentifier?: string,
+  projectIdentifier?: string,
+  includedScopes?: ScopeSelector[]
+): ScopeSelector[] => {
+  if (includedScopes?.length) {
+    return includedScopes
+  }
+  return [
+    {
+      accountIdentifier,
+      orgIdentifier,
+      projectIdentifier,
+      filter: 'EXCLUDING_CHILD_SCOPES'
+    }
+  ]
+}
+
 export const getIncludedScopes = (type: SelectorScope, resourceGroup: ResourceGroupV2): ScopeSelector[] => {
   const { accountIdentifier, orgIdentifier, projectIdentifier } = resourceGroup
   switch (type) {

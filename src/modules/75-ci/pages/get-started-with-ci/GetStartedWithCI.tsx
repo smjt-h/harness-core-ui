@@ -12,6 +12,7 @@ import { useStrings } from 'framework/strings'
 import type { StringsMap } from 'stringTypes'
 import { InfraProvisioningWizard } from './InfraProvisioningWizard/InfraProvisioningWizard'
 import { InfraProvisioningCarousel } from './InfraProvisioningCarousel/InfraProvisioningCarousel'
+import { ProvisioningStatus } from './InfraProvisioningWizard/Constants'
 
 import samplePipelineImg from '../../assets/images/sample-pipeline.svg'
 
@@ -174,7 +175,7 @@ export default function GetStartedWithCI(): React.ReactElement {
               <InfraProvisioningCarousel
                 show={showDialog}
                 onClose={() => setShowDialog(false)}
-                provisioningStatus="IN_PROGRESS"
+                provisioningStatus={ProvisioningStatus.IN_PROGRESS}
               />
             ) : null}
           </Layout.Horizontal>

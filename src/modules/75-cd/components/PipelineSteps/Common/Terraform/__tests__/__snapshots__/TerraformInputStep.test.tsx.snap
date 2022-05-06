@@ -321,7 +321,7 @@ exports[`Test terraform input set should render edit view as new step 1`] = `
                     class="Tooltip--acenter"
                     data-tooltip-id="wrapperComponentTestForm_test.spec.configuration.spec.configFiles.store.spec.folderPath"
                   >
-                    cd.folderPath
+                    common.git.folderPath
                   </span>
                    
                   <span

@@ -34,7 +34,7 @@ function TemplateInputsWrapper({ templateDetails }: { templateDetails: NGTemplat
   const TemplateInputsHeader = (
     <Layout.Horizontal padding="xlarge" border={{ bottom: true, color: Color.GREY_200 }}>
       <Icon name="template-inputs" size={24} color={Color.PRIMARY_7} margin={{ right: 'small' }} />
-      <Text font={{ variation: FontVariation.H4 }}>{getString('templatesLibrary.templateInputs')}</Text>
+      <Text font={{ variation: FontVariation.H4 }}>{getString('pipeline.templateInputs')}</Text>
     </Layout.Horizontal>
   )
   return (

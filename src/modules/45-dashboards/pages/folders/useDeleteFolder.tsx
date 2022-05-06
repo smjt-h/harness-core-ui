@@ -8,7 +8,7 @@
 import { Intent } from '@blueprintjs/core'
 import { useParams } from 'react-router-dom'
 import { useMutate } from 'restful-react'
-import { useToaster, useConfirmationDialog } from '@wings-software/uicore'
+import { useToaster, useConfirmationDialog } from '@harness/uicore'
 import { useStrings } from 'framework/strings'
 
 import type { AccountPathProps } from '@common/interfaces/RouteInterfaces'

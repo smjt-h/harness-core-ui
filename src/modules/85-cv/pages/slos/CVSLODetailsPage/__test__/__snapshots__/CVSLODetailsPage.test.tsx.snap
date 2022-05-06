@@ -135,6 +135,21 @@ exports[`Test cases for CVSLODetailsPage it should render the component and take
         </p>
       </div>
     </div>
+    <div
+      class="Layout--vertical StyledProps--main StyledProps--flex StyledProps--flex-justifyContent-flex-end StyledProps--flex-alignItems-end"
+      style="height: 100%;"
+    >
+      <p
+        class="StyledProps--font StyledProps--main StyledProps--font-variation-tiny-semi StyledProps--color StyledProps--color-grey500"
+      >
+        cv.lastModifiedOn 2 Apr 2022 12:00:00 AM
+      </p>
+      <p
+        class="StyledProps--font StyledProps--main StyledProps--font-variation-tiny-semi StyledProps--color StyledProps--color-grey500"
+      >
+        cv.createdOn 2 Apr 2022 12:00:00 AM
+      </p>
+    </div>
   </div>
   <div
     class="StyledProps--font StyledProps--main tabContainer"

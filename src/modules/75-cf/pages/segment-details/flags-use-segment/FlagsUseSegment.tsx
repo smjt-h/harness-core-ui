@@ -97,7 +97,12 @@ export const FlagsUseSegment = ({ gitSync }: FlagsUseSegmentProps): ReactElement
         )
       })
     )
-      .then(async () => {
+      .then(async responses => {
+        responses.forEach(response => {
+          if (isGovernanceError(response)) {
+            handleGovernanceError(response)
+          }
+        })
         if (gitFormValues?.autoCommit) {
           await gitSync.handleAutoCommit(gitFormValues?.autoCommit)
         }
@@ -107,7 +112,7 @@ export const FlagsUseSegment = ({ gitSync }: FlagsUseSegmentProps): ReactElement
         if (e.status === GIT_SYNC_ERROR_CODE) {
           gitSync.handleError(e.data as GitSyncErrorResponse)
         } else {
-          if (isGovernanceError(e)) {
+          if (isGovernanceError(e?.data)) {
             handleGovernanceError(e.data)
           } else {
             showError(getErrorMessage(e), undefined, 'cf.path.feature.error')

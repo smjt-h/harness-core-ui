@@ -7,6 +7,7 @@
 
 import React from 'react'
 import moment from 'moment'
+import type { DateRange } from '@blueprintjs/datetime'
 import {
   Button,
   ButtonSize,
@@ -41,6 +42,12 @@ const TimeRangeFilter: React.FC<SLOTargetChartWithChangeTimelineProps> = ({
   const _endTime = (type === SLOCardToggleViews.SLO ? SLOEndTime : errorBudgetEndTime) ?? currentPeriodStartTime
 
   const { startTime = currentPeriodStartTime, endTime = _endTime } = chartTimeRange ?? {}
+
+  const getDefaultValue = (): DateRange | undefined => {
+    if (customTimeFilter) {
+      return [new Date(startTime), new Date(endTime)]
+    }
+  }
 
   return (
     <Layout.Horizontal>
@@ -93,6 +100,7 @@ const TimeRangeFilter: React.FC<SLOTargetChartWithChangeTimelineProps> = ({
         }
         dateRangePickerProps={{
           shortcuts: false,
+          defaultValue: getDefaultValue(),
           minDate: new Date(currentPeriodStartTime),
           maxDate: new Date(currentPeriodEndTime)
         }}

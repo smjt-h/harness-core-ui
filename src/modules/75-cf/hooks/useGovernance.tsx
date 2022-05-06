@@ -30,8 +30,11 @@ export const useGovernance = (): UseGovernancePayload => {
 
   const { accountId: accountIdentifier } = useParams<ProjectPathProps & ModulePathParams>()
 
-  function isGovernanceError(err: any): boolean {
-    return !!err?.data?.details?.governanceMetadata
+  function isGovernanceError(response: any): boolean {
+    return (
+      response?.details?.governanceMetadata?.status === 'error' ||
+      response?.details?.governanceMetadata?.status === 'warning'
+    )
   }
 
   const [governanceError, setGovernanceError] = useState<any>()
@@ -49,6 +52,7 @@ export const useGovernance = (): UseGovernancePayload => {
         module="cf"
         metadata={governanceError}
         headingErrorMessage={getString('cf.policyEvaluations.failedToSave')}
+        headingWarningMessage={getString('cf.policyEvaluations.warning')}
       />
     ),
     [governanceError]

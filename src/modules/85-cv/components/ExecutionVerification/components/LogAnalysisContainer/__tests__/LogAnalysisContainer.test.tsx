@@ -397,4 +397,23 @@ describe('Unit tests for LogAnalysisContainer', () => {
       })
     )
   })
+
+  test('should show only one no matching data if both APIs returns have data to display', () => {
+    jest.spyOn(cvService, 'useGetVerifyStepDeploymentLogAnalysisRadarChartResult').mockReturnValue({
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      data: { data: { resource: { ...mockedLogAnalysisData.resource, logAnalysisRadarCharts: { content: [] } } } },
+      refetch: fetchLogsAnalysisData
+    })
+
+    jest.spyOn(cvService, 'useGetVerifyStepDeploymentRadarChartLogAnalysisClusters').mockReturnValue({
+      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+      // @ts-ignore
+      data: { data: { resource: [] } }
+    })
+    render(<WrapperComponent {...initialProps} />)
+
+    expect(screen.getByTestId(/LogAnalysis_common_noData/)).toBeInTheDocument()
+    expect(screen.getAllByText(/cv.monitoredServices.noMatchingData/)).toHaveLength(1)
+  })
 })

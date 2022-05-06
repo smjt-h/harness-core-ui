@@ -127,10 +127,15 @@ export const RenderColumnFlag: React.FC<RenderColumnFlagProps> = ({
     }
 
     try {
+      let response
       if (status) {
-        await toggleFeatureFlag.off(data.identifier, gitDetails)
+        response = await toggleFeatureFlag.off(data.identifier, gitDetails)
       } else {
-        await toggleFeatureFlag.on(data.identifier, gitDetails)
+        response = await toggleFeatureFlag.on(data.identifier, gitDetails)
+      }
+
+      if (isGovernanceError(response)) {
+        handleGovernanceError(response)
       }
 
       if (gitSyncFormValues?.autoCommit) {
@@ -143,7 +148,7 @@ export const RenderColumnFlag: React.FC<RenderColumnFlagProps> = ({
       if (error.status === GIT_SYNC_ERROR_CODE) {
         gitSync.handleError(error.data as GitSyncErrorResponse)
       } else {
-        if (isGovernanceError(error)) {
+        if (isGovernanceError(error?.data)) {
           handleGovernanceError(error.data)
         } else {
           showError(getErrorMessage(error), 0, 'cf.toggle.ff.status.error')

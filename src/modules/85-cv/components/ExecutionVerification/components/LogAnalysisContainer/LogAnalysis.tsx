@@ -63,7 +63,9 @@ export default function LogAnalysis(props: LogAnalysisProps): JSX.Element {
           <PageError message={getErrorMessage(logsError)} onClick={refetchLogAnalysis} className={styles.noData} />
         </Container>
       )
-    } else if (!logAnalysisData.length) {
+      // adding clusterChartLoading here inorder to prevent this visible before cluster chart loads
+      // this prevents showing two no data text and then change to one
+    } else if (!logAnalysisData.length && !clusterChartLoading) {
       return (
         <Container className={styles.noData} data-testid="LogAnalysisList_NoData">
           <NoDataCard message={getString('cv.monitoredServices.noMatchingData')} image={noDataImage} />
@@ -103,6 +105,7 @@ export default function LogAnalysis(props: LogAnalysisProps): JSX.Element {
           onRadarPointClick={handleLogSelection}
           clusterChartError={clusterChartError}
           refetchClusterAnalysis={refetchClusterAnalysis}
+          logsLoading={logsLoading}
         />
       </Container>
       <Container className={styles.tableContent}>{renderLogsData()}</Container>

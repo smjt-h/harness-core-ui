@@ -23,7 +23,7 @@ import {
   SelectOption,
   ExpandingSearchInput,
   TableV2
-} from '@wings-software/uicore'
+} from '@harness/uicore'
 import { useModalHook } from '@harness/use-modal'
 import { FontVariation, Color } from '@harness/design-system'
 import { Select } from '@blueprintjs/select'

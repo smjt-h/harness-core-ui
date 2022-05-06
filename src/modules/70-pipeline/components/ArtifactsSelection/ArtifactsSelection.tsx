@@ -55,7 +55,7 @@ import type { Scope } from '@common/interfaces/SecretsInterface'
 import { useTelemetry } from '@common/hooks/useTelemetry'
 import { ArtifactActions } from '@common/constants/TrackingConstants'
 import type { DeploymentStageElementConfig, StageElementWrapper } from '@pipeline/utils/pipelineTypes'
-import { getSelectedDeploymentType } from '@pipeline/utils/stageHelpers'
+import { isServerlessDeploymentType } from '@pipeline/utils/stageHelpers'
 import StepNexusAuthentication from '@connectors/components/CreateConnector/NexusConnector/StepAuth/StepNexusAuthentication'
 import StepArtifactoryAuthentication from '@connectors/components/CreateConnector/ArtifactoryConnector/StepAuth/StepArtifactoryAuthentication'
 import { useFeatureFlags } from '@common/hooks/useFeatureFlag'
@@ -92,7 +92,8 @@ export default function ArtifactsSelection({
   identifierName,
   isForPredefinedSets = false,
   isPropagating = false,
-  overrideSetIdentifier = ''
+  overrideSetIdentifier = '',
+  deploymentType
 }: ArtifactsSelectionProps): JSX.Element {
   const {
     state: {
@@ -121,12 +122,12 @@ export default function ArtifactsSelection({
   const stepWizardTitle = getString('connectors.createNewConnector')
   const { NG_NEXUS_ARTIFACTORY, CUSTOM_ARTIFACT_NG } = useFeatureFlags()
   const { stage } = getStageFromPipeline<DeploymentStageElementConfig>(selectedStageId || '')
-  const deploymentType = getSelectedDeploymentType(stage, getStageFromPipeline, isPropagating)
 
   useEffect(() => {
     if (
       NG_NEXUS_ARTIFACTORY &&
-      !allowedArtifactTypes[deploymentType]?.includes(ENABLED_ARTIFACT_TYPES.Nexus3Registry)
+      !allowedArtifactTypes[deploymentType]?.includes(ENABLED_ARTIFACT_TYPES.Nexus3Registry) &&
+      !isServerlessDeploymentType(deploymentType)
     ) {
       allowedArtifactTypes[deploymentType].push(
         ENABLED_ARTIFACT_TYPES.Nexus3Registry,
@@ -566,7 +567,8 @@ export default function ArtifactsSelection({
       },
       artifactIdentifiers: sideCarArtifact?.map((item: SidecarArtifactWrapper) => item.sidecar?.identifier as string),
       isReadonly: isReadonly,
-      selectedArtifact
+      selectedArtifact,
+      selectedDeploymentType: deploymentType
     }
   }, [
     addArtifact,
@@ -745,6 +747,7 @@ export default function ArtifactsSelection({
       accountId={accountId}
       refetchConnectors={refetchConnectorList}
       isReadonly={isReadonly}
+      allowSidecar={!isServerlessDeploymentType(deploymentType)}
     />
   )
 }

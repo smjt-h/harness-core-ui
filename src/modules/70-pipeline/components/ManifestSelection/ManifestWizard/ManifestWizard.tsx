@@ -73,7 +73,10 @@ export function ManifestWizard({
       return (
         <div className={css.subtitle} style={{ display: 'flex' }}>
           <Icon {...iconsProps} size={26} />
-          <Text style={{ alignSelf: 'center', marginLeft: 'var(--spacing-small)' }} color={Color.WHITE}>
+          <Text
+            style={{ alignSelf: 'center', marginLeft: 'var(--spacing-small)', wordBreak: 'normal' }}
+            color={Color.WHITE}
+          >
             {stringId}
           </Text>
         </div>

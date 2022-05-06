@@ -72,7 +72,7 @@ const SelectModuleList: React.FC<SelectModuleListProps> = ({ onModuleClick, modu
                   setUpCI(accountId, Editions.FREE, ({ orgId, projectId }: StartFreeLicenseAndSetupProjectCallback) => {
                     setSetupInProgress(false)
                     history.push(
-                      routes.toCIGetStarted({
+                      routes.toGetStartedWithCI({
                         accountId,
                         module: 'ci',
                         orgIdentifier: orgId,
