@@ -59,12 +59,12 @@ import type { GovernanceMetadata } from 'services/pipeline-ng'
 import PipelineErrors from '@pipeline/components/PipelineStudio/PipelineCanvas/PipelineErrors/PipelineErrors'
 import type { AccessControlCheckError } from 'services/rbac'
 import useRBACError from '@rbac/utils/useRBACError/useRBACError'
+import { EvaluationModal } from '@governance/EvaluationModal'
 import css from './SavePipelinePopover.module.scss'
 
 export interface SavePipelinePopoverProps extends PopoverProps {
   className?: string
   toPipelineStudio: PathFn<PipelineType<PipelinePathProps> & PipelineStudioQueryParams>
-  setGovernanceMetadata: (data: GovernanceMetadata | undefined) => void
   isValidYaml: () => boolean
 }
 
@@ -81,13 +81,13 @@ interface SavePipelineMenuItem {
 
 export function SavePipelinePopover({
   toPipelineStudio,
-  setGovernanceMetadata,
   isValidYaml,
   className = '',
   portalClassName,
   ...popoverProps
 }: SavePipelinePopoverProps): React.ReactElement {
   const { isGitSyncEnabled } = React.useContext(AppStoreContext)
+
   const {
     state: { pipeline, yamlHandler, gitDetails, pipelineView, isUpdated },
     deletePipelineCache,
@@ -114,6 +114,18 @@ export function SavePipelinePopover({
   const templatesFeatureFlagEnabled = useFeatureFlag(FeatureFlag.NG_TEMPLATES)
   const pipelineTemplatesFeatureFlagEnabled = useFeatureFlag(FeatureFlag.NG_PIPELINE_TEMPLATE)
   const [updatePipelineAPIResponse, setUpdatePipelineAPIResponse] = React.useState<any>()
+  const [governanceMetadata, setGovernanceMetadata] = React.useState<GovernanceMetadata>()
+
+  const [showOPAErrorModal] = useModalHook(
+    () => (
+      <EvaluationModal
+        accountId={accountId}
+        metadata={governanceMetadata}
+        headingErrorMessage={getString('pipeline.policyEvaluations.failedToSavePipeline')}
+      />
+    ),
+    [governanceMetadata]
+  )
   const { enabled: templatesFeatureEnabled } = useFeature({
     featureRequest: {
       featureName: FeatureIdentifier.TEMPLATE_SERVICE
@@ -207,7 +219,12 @@ export function SavePipelinePopover({
     if (response && response.status === 'SUCCESS') {
       const governanceData: GovernanceMetadata | undefined = get(response, 'data.governanceMetadata')
       setGovernanceMetadata(governanceData)
-
+      if (
+        OPA_PIPELINE_GOVERNANCE &&
+        (governanceMetadata?.status === 'error' || governanceMetadata?.status === 'warning')
+      ) {
+        showOPAErrorModal()
+      }
       // Handling cache and page navigation only when Governance is disabled, or Governance Evaluation is successful
       // Otherwise, keep current pipeline editing states, and show Governance evaluation error
       if (governanceData?.status !== 'error') {
