@@ -143,7 +143,7 @@ export interface SelectionState {
 }
 
 export interface PipelineReducerState {
-  pipeline: PipelineInfoConfig & { storeType?: string }
+  pipeline: PipelineInfoConfig
   yamlHandler?: YamlBuilderHandlerBinding
   originalPipeline: PipelineInfoConfig
   pipelineView: PipelineViewData

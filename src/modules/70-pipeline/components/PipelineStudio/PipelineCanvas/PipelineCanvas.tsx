@@ -396,7 +396,7 @@ export function PipelineCanvas({
               afterSave={onSubmit}
               initialValues={merge(pipeline, {
                 repo: gitDetails.repoIdentifier || '',
-                branch: gitDetails.branch || ''
+                branch: gitDetails.branch || '' //todo: initialize for edit
               })}
               closeModal={onCloseCreate}
               gitDetails={gitDetails as IGitContextFormProps}
@@ -530,12 +530,14 @@ export function PipelineCanvas({
         console.log('pipelinecanvas storeMetadata.storeType', storeMetadata.storeType)
         updatePipelineStoreMetadata(storeMetadata, gitDetails)
       }
+
+      console.log('updatedGitDetails', updatedGitDetails)
       if (updatedGitDetails) {
         if (gitDetails?.objectId) {
           updatedGitDetails = { ...gitDetails, ...updatedGitDetails }
         }
         updateGitDetails(updatedGitDetails).then(() => {
-          if (updatedGitDetails) {
+          if (updatedGitDetails && !storeMetadata.storeType) {
             updateQueryParams(
               { repoIdentifier: updatedGitDetails.repoIdentifier, branch: updatedGitDetails.branch },
               { skipNulls: true }

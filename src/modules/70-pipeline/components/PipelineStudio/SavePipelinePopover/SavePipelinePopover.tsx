@@ -60,6 +60,7 @@ import PipelineErrors from '@pipeline/components/PipelineStudio/PipelineCanvas/P
 import type { AccessControlCheckError } from 'services/rbac'
 import useRBACError from '@rbac/utils/useRBACError/useRBACError'
 import css from './SavePipelinePopover.module.scss'
+import type { SaveToGitFormV2Interface } from '@common/components/SaveToGitFormV2/SaveToGitFormV2'
 
 export interface SavePipelinePopoverProps extends PopoverProps {
   className?: string
@@ -189,12 +190,15 @@ export function SavePipelinePopover({
     setLoading(true)
     setSchemaErrorView(false)
     const isEdit = pipelineIdentifier !== DefaultNewPipelineId
+    console.log('saveAndPublishPipeline: storeMetadata', storeMetadata)
+    console.log('saveAndPublishPipeline: updatedGitDetails', updatedGitDetails)
     const response = await savePipeline(
       {
         accountIdentifier: accountId,
         projectIdentifier,
         orgIdentifier,
         ...(storeMetadata.storeType ? { storeType: storeMetadata.storeType } : {}),
+        ...(storeMetadata.storeType === 'remote' ? { connectorRef: storeMetadata.connectorRef } : {}),
         ...(updatedGitDetails ?? {}),
         ...(lastObject ?? {}),
         ...(updatedGitDetails && updatedGitDetails.isNewBranch ? { baseBranch: branch } : {})
@@ -260,7 +264,7 @@ export function SavePipelinePopover({
   }
 
   const saveAngPublishWithGitInfo = async (
-    updatedGitDetails: SaveToGitFormInterface,
+    updatedGitDetails: SaveToGitFormInterface | SaveToGitFormV2Interface,
     payload?: SavePipelineObj,
     objectId?: string
   ): Promise<UseSaveSuccessResponse> => {
@@ -274,9 +278,12 @@ export function SavePipelinePopover({
       }
     }
 
+    console.log('saveAngPublishWithGitInfo updatedGitDetails', updatedGitDetails)
+    console.log('saveAngPublishWithGitInfo storeMetadata', storeMetadata)
     const response = await saveAndPublishPipeline(
       latestPipeline,
-      omit(updatedGitDetails, 'name', 'identifier'),
+      storeMetadata,
+      { ...updatedGitDetails, isNewBranch: false, createPr: false },
       pipelineIdentifier !== DefaultNewPipelineId ? { lastObjectId: objectId } : {}
     )
 
@@ -287,7 +294,7 @@ export function SavePipelinePopover({
 
   const { openSaveToGitDialog } = useSaveToGitDialog<SavePipelineObj>({
     onSuccess: (
-      gitData: SaveToGitFormInterface,
+      gitData: SaveToGitFormV2Interface,
       payload?: SavePipelineObj,
       objectId?: string
     ): Promise<UseSaveSuccessResponse> =>
@@ -332,9 +339,10 @@ export function SavePipelinePopover({
     }
 
     // if Git sync enabled then display modal
-    console.log('storeMetadata', storeMetadata)
+    console.log('SavePipelinePopover: storeMetadata', storeMetadata)
+    console.log('SavePipelinePopover: gitDetails', gitDetails)
     if (isGitSyncEnabled || storeMetadata.storeType === 'remote') {
-      if (isEmpty(gitDetails.repoIdentifier) || isEmpty(gitDetails.branch)) {
+      if ((storeMetadata.storeType !== 'remote' && isEmpty(gitDetails.repoIdentifier)) || isEmpty(gitDetails.branch)) {
         clear()
         showError(getString('pipeline.gitExperience.selectRepoBranch'))
         return
@@ -356,7 +364,8 @@ export function SavePipelinePopover({
           type: 'Pipelines',
           name: latestPipeline.name,
           identifier: latestPipeline.identifier,
-          gitDetails: gitDetails ?? {}
+          gitDetails: gitDetails ?? {},
+          storeMetadata: storeMetadata.storetype ? storeMetadata : undefined
         },
         payload: { pipeline: omit(latestPipeline, 'repo', 'branch') }
       })

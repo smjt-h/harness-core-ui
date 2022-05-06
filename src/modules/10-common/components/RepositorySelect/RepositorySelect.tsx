@@ -99,7 +99,7 @@ const RepositorySelect: React.FC<RepositorySelectProps<any>> = props => {
         const selectOptions = getRepoSelectOptions(response?.data)
         setRepoSelectOptions(selectOptions)
         if (selectOptions.length === 1) {
-          formikProps.setFieldValue('repository', selectOptions[0].value)
+          formikProps.setFieldValue('repoName', selectOptions[0].value)
           props.onChange?.(selectOptions[0], repoSelectOptions)
         }
       } else {
@@ -113,7 +113,7 @@ const RepositorySelect: React.FC<RepositorySelectProps<any>> = props => {
   return (
     <Layout.Horizontal>
       <FormInput.Select
-        name="repository"
+        name="repoName"
         label={'Select Repository'}
         placeholder={loading ? 'Loading...' : 'Select'}
         disabled={loading}

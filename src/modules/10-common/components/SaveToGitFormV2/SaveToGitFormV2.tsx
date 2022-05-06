@@ -5,7 +5,7 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import React, { useEffect, useRef, useState } from 'react'
+import React, { useRef, useState } from 'react'
 import { Popover, Position } from '@blueprintjs/core'
 import {
   Container,
@@ -18,33 +18,23 @@ import {
   SelectOption,
   Radio,
   Icon,
-  Avatar,
   ModalErrorHandler,
-  ModalErrorHandlerBinding,
-  PageSpinner
+  ModalErrorHandlerBinding
 } from '@wings-software/uicore'
 import { Color } from '@harness/design-system'
 import * as Yup from 'yup'
 import { debounce, isEmpty, pick, defaultTo } from 'lodash-es'
 import type { FormikContext } from 'formik'
-import { Link } from 'react-router-dom'
 import {
-  GitSyncConfig,
   GitSyncEntityDTO,
-  GitSyncFolderConfigDTO,
   EntityGitDetails,
   GitBranchDTO,
   getListOfBranchesWithStatusPromise,
   ResponseGitBranchListDTO
 } from 'services/cd-ng'
 import { useStrings } from 'framework/strings'
-import { useGitSyncStore } from 'framework/GitRepoStore/GitSyncStoreContext'
-import { useAppStore } from 'framework/AppStore/AppStoreContext'
 import { getEntityNameFromType } from '@common/utils/StringUtils'
-import paths from '@common/RouteDefinitions'
-import { validateFilePath } from '@common/utils/gitSyncUtils'
-import { NameId } from '../NameIdDescriptionTags/NameIdDescriptionTags'
-import css from './SaveToGitForm.module.scss'
+import css from './SaveToGitFormV2.module.scss'
 
 export interface GitResourceInterface {
   type: GitSyncEntityDTO['entityType']
@@ -54,7 +44,7 @@ export interface GitResourceInterface {
   storeMetadata?: { connectorRef?: string; storeType?: string }
 }
 
-interface SaveToGitFormProps {
+interface SaveToGitFormV2Props {
   accountId: string
   orgIdentifier: string
   projectIdentifier: string
@@ -64,15 +54,10 @@ interface SaveToGitFormProps {
 
 interface ModalConfigureProps {
   onClose?: () => void
-  onSuccess?: (data: SaveToGitFormInterface) => void
+  onSuccess?: (data: SaveToGitFormV2Interface) => void
 }
 
-export interface SaveToGitFormInterface {
-  name?: string
-  identifier?: string
-  repoIdentifier: string
-  rootFolder: string
-  filePath: string
+export interface SaveToGitFormV2Interface {
   isNewBranch: boolean
   branch: string
   targetBranch?: string
@@ -80,28 +65,18 @@ export interface SaveToGitFormInterface {
   createPr: boolean
 }
 
-const SaveToGitForm: React.FC<ModalConfigureProps & SaveToGitFormProps> = props => {
+const SaveToGitFormV2: React.FC<ModalConfigureProps & SaveToGitFormV2Props> = props => {
   const { accountId, projectIdentifier, orgIdentifier, isEditing = false, resource } = props
   const { getString } = useStrings()
-  const { currentUserInfo: currentLoggedInUser } = useAppStore()
-  const { gitSyncRepos, loadingRepos, codeManagers, loadingCodeManagers } = useGitSyncStore()
-  const [rootFolderSelectOptions, setRootFolderSelectOptions] = React.useState<SelectOption[]>([])
-  const [repoSelectOptions, setRepoSelectOptions] = React.useState<SelectOption[]>([])
   const [isNewBranch, setIsNewBranch] = React.useState(false)
-  const [currentUserInfo, setCurrentUserInfo] = React.useState('')
   const [branches, setBranches] = React.useState<SelectOption[]>()
   const [modalErrorHandler, setModalErrorHandler] = React.useState<ModalErrorHandlerBinding>()
-  const formikRef = useRef<FormikContext<SaveToGitFormInterface>>()
+  const formikRef = useRef<FormikContext<SaveToGitFormV2Interface>>()
   const [disableCreatePR, setDisableCreatePR] = useState<boolean>()
   const [showCreatePRWarning, setShowCreatePRWarning] = useState<boolean>(false)
   const [disableBranchSelection, setDisableBranchSelection] = useState<boolean>(true)
 
-  const defaultInitialFormData: SaveToGitFormInterface = {
-    name: resource.name,
-    identifier: resource.identifier,
-    repoIdentifier: defaultTo(resource.gitDetails?.repoIdentifier, ''),
-    rootFolder: defaultTo(resource.gitDetails?.rootFolder, ''),
-    filePath: defaultTo(resource.gitDetails?.filePath, `${resource.identifier}.yaml`),
+  const defaultInitialFormData: SaveToGitFormV2Interface = {
     isNewBranch: false,
     branch: defaultTo(resource.gitDetails?.branch, ''),
     commitMsg: getString(isEditing ? 'common.gitSync.updateResource' : 'common.gitSync.createResource', {
@@ -113,16 +88,7 @@ const SaveToGitForm: React.FC<ModalConfigureProps & SaveToGitFormProps> = props 
     targetBranch: ''
   }
 
-  useEffect(() => {
-    setCurrentUserInfo(
-      defaultTo(
-        codeManagers?.[0]?.authentication?.spec?.spec?.username,
-        codeManagers?.[0]?.authentication?.spec?.spec?.usernameRef
-      )
-    )
-  }, [codeManagers])
-
-  const handleBranchTypeChange = (isNew: boolean, formik: FormikContext<SaveToGitFormInterface>): void => {
+  const handleBranchTypeChange = (isNew: boolean, formik: FormikContext<SaveToGitFormV2Interface>): void => {
     if (isNewBranch !== isNew) {
       setIsNewBranch(isNew)
       formik.setFieldValue('branch', `${resource.gitDetails?.branch}-patch`)
@@ -135,43 +101,6 @@ const SaveToGitForm: React.FC<ModalConfigureProps & SaveToGitFormProps> = props 
     setDisableCreatePR(false)
     setDisableBranchSelection(true)
   }
-
-  const getRootFolderSelectOptions = (folders: GitSyncFolderConfigDTO[] | undefined): SelectOption[] => {
-    return folders?.length
-      ? folders.map((folder: GitSyncFolderConfigDTO) => {
-          return {
-            label: defaultTo(folder.rootFolder, ''),
-            value: defaultTo(folder.rootFolder, '')
-          }
-        })
-      : []
-  }
-
-  useEffect(() => {
-    if (projectIdentifier && gitSyncRepos?.length) {
-      defaultInitialFormData.repoIdentifier = defaultInitialFormData.repoIdentifier || gitSyncRepos[0].identifier || ''
-      const selectedRepo = gitSyncRepos.find(
-        (repo: GitSyncConfig) => repo.identifier === defaultInitialFormData.repoIdentifier
-      )
-
-      setRepoSelectOptions(
-        gitSyncRepos?.map((gitRepo: GitSyncConfig) => {
-          return {
-            label: defaultTo(gitRepo.name, ''),
-            value: defaultTo(gitRepo.identifier, '')
-          }
-        })
-      )
-
-      setRootFolderSelectOptions(getRootFolderSelectOptions(selectedRepo?.gitSyncFolderConfigDTOs))
-
-      const defaultRootFolder = selectedRepo?.gitSyncFolderConfigDTOs?.find(
-        (folder: GitSyncFolderConfigDTO) => folder.isDefault
-      )
-      defaultInitialFormData.rootFolder = defaultInitialFormData.rootFolder || defaultRootFolder?.rootFolder || ''
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [gitSyncRepos, projectIdentifier])
 
   const fetchBranches = (query?: string): void => {
     getListOfBranchesWithStatusPromise({
@@ -271,19 +200,9 @@ const SaveToGitForm: React.FC<ModalConfigureProps & SaveToGitFormProps> = props 
     )
   }, [disableCreatePR, disableBranchSelection, branches, isNewBranch, formikRef.current?.values, showCreatePRWarning])
 
-  return loadingRepos ? (
-    <PageSpinner />
-  ) : (
+  return (
     <Container height={'inherit'} className={css.modalContainer}>
       <ModalErrorHandler bind={setModalErrorHandler} />
-      {currentUserInfo && (
-        <Layout.Horizontal className={css.userInfo} flex={{ alignItems: 'center' }} margin={{ top: 'xsmall' }}>
-          <Avatar size="small" name={currentLoggedInUser.name} backgroundColor={Color.PRIMARY_7} hoverCard={false} />
-          <Text color={Color.GREY_700}>
-            {getString('common.git.currentUserLabel', { user: currentLoggedInUser.name })}
-          </Text>
-        </Layout.Horizontal>
-      )}
       <Text
         className={css.modalHeader}
         font={{ weight: 'semi-bold' }}
@@ -293,31 +212,12 @@ const SaveToGitForm: React.FC<ModalConfigureProps & SaveToGitFormProps> = props 
       >
         {getString('common.git.saveResourceLabel', { resource: props.resource.type })}
       </Text>
-      {!loadingCodeManagers && !currentUserInfo && (
-        <Layout.Horizontal className={css.addUserContainer} spacing="small">
-          <Icon name="warning-sign" color={Color.ORANGE_700}></Icon>
-          <div>
-            <Text font={{ size: 'small' }} color={Color.BLACK}>
-              {getString('common.git.noUserLabel')}
-            </Text>
-            <Link to={paths.toUserProfile({ accountId })} target="_blank" onClick={() => props.onClose?.()}>
-              <Text inline margin={{ top: 'xsmall' }} font={{ size: 'small', weight: 'bold' }} color={Color.PRIMARY_7}>
-                {getString('common.git.addUserCredentialLabel')}
-              </Text>
-            </Link>
-          </div>
-        </Layout.Horizontal>
-      )}
+
       <Container className={css.modalBody}>
-        <Formik<SaveToGitFormInterface>
+        <Formik<SaveToGitFormV2Interface>
           initialValues={defaultInitialFormData}
-          formName="saveToGitForm"
+          formName="saveToGitFormV2"
           validationSchema={Yup.object().shape({
-            repoIdentifier: Yup.string().trim().required(getString('common.validation.repositoryName')),
-            filePath: Yup.string()
-              .trim()
-              .required(getString('common.git.validation.filePath'))
-              .test('filePath', getString('common.validation.yamlFilePath'), validateFilePath),
             branch: Yup.string()
               .trim()
               .required(getString('validation.branchName'))
@@ -335,7 +235,7 @@ const SaveToGitForm: React.FC<ModalConfigureProps & SaveToGitFormProps> = props 
           })}
           onSubmit={formData => {
             props.onSuccess?.({
-              ...pick(formData, ['repoIdentifier', 'rootFolder', 'filePath', 'commitMsg', 'createPr', 'targetBranch']),
+              ...pick(formData, ['commitMsg', 'createPr', 'targetBranch']),
               isNewBranch,
               branch: isNewBranch ? formData.branch : defaultInitialFormData.branch
             })
@@ -346,37 +246,7 @@ const SaveToGitForm: React.FC<ModalConfigureProps & SaveToGitFormProps> = props 
             return (
               <FormikForm>
                 <Container className={css.formBody}>
-                  <NameId
-                    identifierProps={{
-                      inputName: 'name',
-                      isIdentifierEditable: false,
-                      inputGroupProps: { disabled: true }
-                    }}
-                  />
-                  <Text margin={{ bottom: 'small' }} font={{ size: 'medium' }} color={Color.GREY_700}>
-                    {getString('common.gitSync.harnessFolderLabel')}
-                  </Text>
-                  <Layout.Horizontal spacing="medium" className={css.formRow}>
-                    <FormInput.Select
-                      name="repoIdentifier"
-                      label={getString('common.git.selectRepoLabel')}
-                      items={repoSelectOptions}
-                      disabled
-                    />
-                    <FormInput.Select
-                      name="rootFolder"
-                      label={getString('common.gitSync.harnessFolderLabel')}
-                      items={rootFolderSelectOptions}
-                      disabled={isEditing}
-                    />
-                  </Layout.Horizontal>
-
-                  <FormInput.Text name="filePath" label={getString('common.git.filePath')} disabled={isEditing} />
-                  <Text margin={{ bottom: 'small', top: 'large' }} font={{ size: 'medium' }} color={Color.GREY_700}>
-                    {getString('common.gitSync.commitDetailsLabel')}
-                  </Text>
                   <FormInput.TextArea name="commitMsg" label={getString('common.git.commitMessage')} />
-
                   <Text
                     font={{ size: 'medium' }}
                     color={Color.GREY_600}
@@ -443,13 +313,7 @@ const SaveToGitForm: React.FC<ModalConfigureProps & SaveToGitFormProps> = props 
                 </Container>
 
                 <Layout.Horizontal padding={{ top: 'medium' }} spacing="medium">
-                  <Button
-                    className={css.formButton}
-                    type="submit"
-                    intent="primary"
-                    text={getString('save')}
-                    disabled={!currentUserInfo || loadingCodeManagers}
-                  />
+                  <Button className={css.formButton} type="submit" intent="primary" text={getString('save')} />
                   <Button
                     className={css.formButton}
                     text={getString('cancel')}
@@ -466,4 +330,4 @@ const SaveToGitForm: React.FC<ModalConfigureProps & SaveToGitFormProps> = props 
   )
 }
 
-export default SaveToGitForm
+export default SaveToGitFormV2

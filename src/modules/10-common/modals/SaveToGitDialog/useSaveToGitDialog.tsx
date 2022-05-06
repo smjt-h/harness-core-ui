@@ -6,7 +6,7 @@
  */
 
 import React, { useState } from 'react'
-import { Button, getErrorInfoFromErrorObject } from '@wings-software/uicore'
+import { Button, Dialog as UICoreDialog, getErrorInfoFromErrorObject } from '@wings-software/uicore'
 import { Classes, Dialog, IDialogProps } from '@blueprintjs/core'
 import { useParams } from 'react-router-dom'
 import { defaultTo, noop } from 'lodash-es'
@@ -16,6 +16,7 @@ import SaveToGitForm, {
   GitResourceInterface,
   SaveToGitFormInterface
 } from '@common/components/SaveToGitForm/SaveToGitForm'
+import SaveToGitFormV2, { SaveToGitFormV2Interface } from '@common/components/SaveToGitFormV2/SaveToGitFormV2'
 import { GitSyncStoreProvider } from 'framework/GitRepoStore/GitSyncStoreContext'
 import { getEntityNameFromType } from '@common/utils/StringUtils'
 import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
@@ -32,7 +33,7 @@ export interface UseSaveSuccessResponse {
 
 export interface UseSaveToGitDialogProps<T> {
   onSuccess?: (
-    data: SaveToGitFormInterface,
+    data: SaveToGitFormInterface | SaveToGitFormV2Interface,
     payload?: T,
     objectId?: EntityGitDetails['objectId'],
     isEdit?: boolean
@@ -292,6 +293,29 @@ export function useSaveToGitDialog<T = Record<string, string>>(
       })
   }
 
+  const handleSuccessV2 = (
+    data: SaveToGitFormV2Interface,
+    diffData?: T,
+    objectId?: EntityGitDetails['objectId']
+  ): void => {
+    setPRMetaData({ branch: data?.branch, targetBranch: data?.targetBranch, isNewBranch: data?.isNewBranch })
+    setCreateUpdateStatus('IN_PROGRESS')
+    if (data?.createPr) {
+      setPRCreateStatus('IN_PROGRESS')
+      showCreateUpdateWithPRCreationModal()
+    } else {
+      showCreateUpdateModal()
+    }
+    props
+      .onSuccess?.(data, diffData, objectId, isEditMode)
+      .then(async response => {
+        createPRHandler(data, response)
+      })
+      .catch(e => {
+        handleCreateUpdateError(e, data)
+      })
+  }
+
   const [showModal, hideModal] = useModalHook(() => {
     const closeHandler = (): void => {
       props.onClose?.()
@@ -299,20 +323,35 @@ export function useSaveToGitDialog<T = Record<string, string>>(
     }
     return (
       <Dialog className={css.gitDialog} {...modalProps}>
-        <GitSyncStoreProvider>
-          <SaveToGitForm
+        {resource?.storeMetadata?.storeType ? (
+          <GitSyncStoreProvider>
+            <SaveToGitForm
+              accountId={accountId}
+              orgIdentifier={orgIdentifier}
+              projectIdentifier={projectIdentifier}
+              isEditing={isEditMode}
+              resource={resource}
+              onSuccess={data => {
+                handleSuccess(data, payloadData, resource.gitDetails?.objectId)
+                hideModal()
+              }}
+              onClose={closeHandler}
+            />
+          </GitSyncStoreProvider>
+        ) : (
+          <SaveToGitFormV2
             accountId={accountId}
             orgIdentifier={orgIdentifier}
             projectIdentifier={projectIdentifier}
             isEditing={isEditMode}
             resource={resource}
             onSuccess={data => {
-              handleSuccess(data, payloadData, resource.gitDetails?.objectId)
+              handleSuccessV2(data, payloadData, resource.gitDetails?.objectId)
               hideModal()
             }}
             onClose={closeHandler}
           />
-        </GitSyncStoreProvider>
+        )}
         <Button minimal icon="cross" iconProps={{ size: 18 }} className={css.crossIcon} onClick={closeHandler} />
       </Dialog>
     )

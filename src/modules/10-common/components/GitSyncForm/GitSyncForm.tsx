@@ -15,6 +15,7 @@ import RepositorySelect from '../RepositorySelect/RepositorySelect'
 import RepoBranchSelectV2 from '../RepoBranchSelectV2/RepoBranchSelectV2'
 
 interface GitSyncFormProps<T> {
+  identifier?: string
   formikProps: FormikContext<T>
   defaultValue?: any
   modalErrorHandler?: any
@@ -23,10 +24,12 @@ interface GitSyncFormProps<T> {
 }
 
 interface GitSyncFormFields {
-  importYaml?: string
+  identifier?: string
+  remoteType?: string
   connectorRef?: ConnectorSelectedValue
-  repository?: string
+  repoName?: string
   branch?: string
+  filePath?: string
 }
 
 const getConnectorIdentifierWithScope = (scope: Scope, identifier: string): string => {
@@ -34,12 +37,12 @@ const getConnectorIdentifierWithScope = (scope: Scope, identifier: string): stri
 }
 
 export function GitSyncForm(props: GitSyncFormProps<GitSyncFormFields>): React.ReactElement {
-  const { formikProps, defaultValue = { importYaml: 'create' }, modalErrorHandler } = props
+  const { formikProps, modalErrorHandler } = props
   const { accountId, projectIdentifier, orgIdentifier } = useParams<ProjectPathProps>()
   const { getString } = useStrings()
 
   useEffect(() => {
-    formikProps.setFieldValue('importYaml', 'create')
+    formikProps.setFieldValue('remoteType', 'create')
   }, [])
 
   return (
@@ -48,9 +51,15 @@ export function GitSyncForm(props: GitSyncFormProps<GitSyncFormFields>): React.R
         name="remoteType"
         radioGroup={{ inline: true }}
         items={[
-          { label: 'Use Existing Yaml', value: 'remote', disabled: true },
-          { label: 'Create New Yaml', value: 'new' }
+          { label: 'Use Existing Yaml', value: 'import', disabled: true },
+          { label: 'Create New Yaml', value: 'create' }
         ]}
+        onChange={elm => {
+          formikProps.setFieldValue(
+            'filePath',
+            (elm.target as HTMLInputElement).value === 'import' ? '' : `${formikProps?.values?.identifier}.yaml`
+          )
+        }}
       />
       <ConnectorReferenceField
         name="connectorRef"
@@ -85,12 +94,12 @@ export function GitSyncForm(props: GitSyncFormProps<GitSyncFormFields>): React.R
             formikProps.setFieldValue?.('repository', '')
           }
         }}
-        selectedValue={formikProps.values.repository}
+        selectedValue={formikProps.values.repoName}
       />
       <RepoBranchSelectV2
-        key={formikProps.values.repository} // Branch select must be reset if repositoryURL changes
+        key={formikProps.values.repoName} // Branch select must be reset if repositoryURL changes
         connectorIdentifierRef={formikProps.values.connectorRef?.value}
-        repoName={formikProps.values.repository}
+        repoName={formikProps.values.repoName}
         modalErrorHandler={modalErrorHandler}
         onChange={(selected: SelectOption, options?: SelectOption[]) => {
           if (!options?.find(branch => branch.value === selected.value)) {

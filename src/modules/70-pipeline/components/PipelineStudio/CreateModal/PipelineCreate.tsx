@@ -55,9 +55,11 @@ interface CardInterface {
 interface PipelineInfoConfigWithGitDetails extends PipelineInfoConfig {
   repo: string
   branch: string
-  connectorRef?: string
+  connectorRef?: any
   storeType?: string
   importYaml?: string
+  repoName?: string
+  filePath?: string
 }
 export interface PipelineCreateProps {
   afterSave?: (
@@ -145,13 +147,15 @@ export default function CreatePipelines({
         onSubmit={values => {
           logger.info(JSON.stringify(values))
           const formGitDetails =
-            values.repo && values.repo.trim().length > 0
+            gitSimplification && values.storeType === 'remote'
+              ? { repoName: values.repoName, branch: values.branch, yamlPath: values.filePath }
+              : values.repo && values.repo.trim().length > 0
               ? { repoIdentifier: values.repo, branch: values.branch }
               : undefined
           afterSave &&
             afterSave(
               omit(values, 'repo', 'branch', 'storeType', 'connectorRef'),
-              { connectorRef: values.connectorRef, storeType: values.storeType },
+              { connectorRef: values.connectorRef?.value, storeType: values.storeType },
               formGitDetails,
               usingTemplate,
               copyingTemplate
