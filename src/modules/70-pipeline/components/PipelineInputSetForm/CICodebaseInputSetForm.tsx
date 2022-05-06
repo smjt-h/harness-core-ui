@@ -34,8 +34,7 @@ import { MultiTypeTextField } from '@common/components/MultiTypeText/MultiTypeTe
 import { MultiTypeSelectField } from '@common/components/MultiTypeSelect/MultiTypeSelect'
 import type { GitQueryParams } from '@common/interfaces/RouteInterfaces'
 import { useQueryParams } from '@common/hooks'
-import { CodebaseTypes, getConnectorRefWidth } from '@pipeline/utils/CIUtils'
-import { isRuntimeInput } from '../PipelineStudio/RightBar/RightBarUtils'
+import { CodebaseTypes, getConnectorRefWidth, isRuntimeInput } from '@pipeline/utils/CIUtils'
 import { StepViewType } from '../AbstractSteps/Step'
 import css from './CICodebaseInputSetForm.module.scss'
 export interface CICodebaseInputSetFormProps {

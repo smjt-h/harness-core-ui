@@ -58,10 +58,11 @@ import { useFeatureFlag } from '@common/hooks/useFeatureFlag'
 import { FeatureFlag } from '@common/featureFlags'
 import { Connectors } from '@connectors/constants'
 import { useQueryParams } from '@common/hooks'
+import { isRuntimeInput } from '@pipeline/utils/CIUtils'
 import { PipelineContextType, usePipelineContext } from '../PipelineContext/PipelineContext'
 import { DrawerTypes } from '../PipelineContext/PipelineActions'
 import { RightDrawer } from '../RightDrawer/RightDrawer'
-import { isRuntimeInput, renderConnectorAndRepoName, validateCIForm } from './RightBarUtils'
+import { renderConnectorAndRepoName, validateCIForm } from './RightBarUtils'
 import css from './RightBar.module.scss'
 
 export interface CodebaseRuntimeInputsInterface {

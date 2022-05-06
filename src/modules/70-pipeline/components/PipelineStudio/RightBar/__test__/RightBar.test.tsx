@@ -11,8 +11,8 @@ import { MultiTypeInputType, RUNTIME_INPUT_VALUE } from '@wings-software/uicore'
 import { TestWrapper, findDialogContainer } from '@common/utils/testUtils'
 import { factory } from '@pipeline/components/PipelineSteps/Steps/__tests__/StepTestUtil'
 import { Scope } from '@common/interfaces/SecretsInterface'
+import { isRuntimeInput } from '@pipeline/utils/CIUtils'
 import { RightBar } from '../RightBar'
-import { isRuntimeInput } from '../RightBarUtils'
 import { PipelineContext, PipelineContextInterface } from '../../PipelineContext/PipelineContext'
 
 jest.mock('services/cd-ng', () => ({

@@ -31,15 +31,15 @@ import { isDuplicateStageId } from '@pipeline/components/PipelineStudio/StageBui
 import { useVariablesExpression } from '@pipeline/components/PipelineStudio/PiplineHooks/useVariablesExpression'
 import type { GitQueryParams } from '@common/interfaces/RouteInterfaces'
 import { useQueryParams } from '@common/hooks'
-import { useGitScope } from '@pipeline/utils/CIUtils'
+import { useGitScope, isRuntimeInput } from '@pipeline/utils/CIUtils'
 import type { BuildStageElementConfig, StageElementWrapper } from '@pipeline/utils/pipelineTypes'
 import type { TemplateSummaryResponse } from 'services/template-ng'
 import { createTemplate, getTemplateNameWithLabel } from '@pipeline/utils/templateUtils'
 import { useTelemetry } from '@common/hooks/useTelemetry'
 import { Category, StageActions } from '@common/constants/TrackingConstants'
 import { isContextTypeNotStageTemplate } from '@pipeline/components/PipelineStudio/PipelineUtils'
+
 import {
-  isRuntimeInput,
   renderConnectorAndRepoName,
   CodebaseRuntimeInputsInterface
 } from '@pipeline/components/PipelineStudio/RightBar/RightBarUtils'

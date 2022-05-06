@@ -107,3 +107,5 @@ export const shouldRenderRunTimeInputViewWithAllowedValues = (
 
 export const getConnectorRefWidth = (viewType: StepViewType | string): number =>
   Object.entries(ConnectorRefWidth).find(key => key[0] === viewType)?.[1] || ConnectorRefWidth.DefaultView
+
+export const isRuntimeInput = (str: unknown): boolean => typeof str === 'string' && str?.includes(RUNTIME_INPUT_VALUE)

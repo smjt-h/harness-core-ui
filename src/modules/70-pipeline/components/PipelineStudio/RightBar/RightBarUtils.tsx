@@ -7,14 +7,7 @@
 import React, { SetStateAction, Dispatch } from 'react'
 import * as Yup from 'yup'
 
-import {
-  RUNTIME_INPUT_VALUE,
-  TextInput,
-  Text,
-  MultiTypeInputType,
-  Container,
-  getMultiTypeFromValue
-} from '@wings-software/uicore'
+import { TextInput, Text, MultiTypeInputType, Container, getMultiTypeFromValue } from '@wings-software/uicore'
 import { set } from 'lodash-es'
 import { FontVariation } from '@harness/design-system'
 import type { UseStringsReturn } from 'framework/strings'
@@ -30,6 +23,7 @@ import {
   ConnectionType,
   ConnectorRefInterface
 } from '@pipeline/components/PipelineInputSetForm/CICodebaseInputSetForm'
+import { isRuntimeInput } from '@pipeline/utils/CIUtils'
 import { Connectors } from '@connectors/constants'
 import css from './RightBar.module.scss'
 
@@ -37,8 +31,6 @@ export interface CodebaseRuntimeInputsInterface {
   connectorRef?: boolean
   repoName?: boolean
 }
-
-export const isRuntimeInput = (str: unknown): boolean => typeof str === 'string' && str?.includes(RUNTIME_INPUT_VALUE)
 
 const getConnectorWidth = ({
   connectorWidth,
