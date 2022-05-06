@@ -1200,22 +1200,17 @@ exports[`CI enabled Render CI Codebase all runtime inputs: all inputs as runtime
                     class="Layout--horizontal StyledProps--main inpLabel"
                     style="display: flex; align-items: baseline;"
                   >
-                    <p
-                      class="StyledProps--font StyledProps--main StyledProps--font-variation-form-label"
-                    >
-                      pipeline.depth
-                    </p>
-                     
                     <div
                       class="Text--withDocsTooltip"
                       data-tooltip-id="depth"
                     >
                       <p
-                        class="StyledProps--font StyledProps--main capitalize StyledProps--color StyledProps--color-grey400 StyledProps--font-size-small StyledProps--font-weight-semi-bold"
+                        class="StyledProps--font StyledProps--main StyledProps--font-variation-form-label"
                       >
-                        common.optionalLabel
+                        pipeline.depth
                       </p>
                     </div>
+                     
                   </div>
                   <div
                     style="display: flex; align-items: center;"
@@ -1258,22 +1253,17 @@ exports[`CI enabled Render CI Codebase all runtime inputs: all inputs as runtime
                     class="Layout--horizontal StyledProps--main inpLabel"
                     style="display: flex; align-items: baseline;"
                   >
-                    <p
-                      class="StyledProps--font StyledProps--main StyledProps--color StyledProps--color-grey600 StyledProps--font-size-small StyledProps--font-weight-semi-bold"
-                    >
-                      pipeline.sslVerify
-                    </p>
-                     
                     <div
                       class="Text--withDocsTooltip"
                       data-tooltip-id="sslVerify"
                     >
                       <p
-                        class="StyledProps--font StyledProps--main capitalize StyledProps--color StyledProps--color-grey400 StyledProps--font-size-small StyledProps--font-weight-semi-bold"
+                        class="StyledProps--font StyledProps--main StyledProps--color StyledProps--color-grey600 StyledProps--font-size-small StyledProps--font-weight-semi-bold"
                       >
-                        common.optionalLabel
+                        pipeline.sslVerify
                       </p>
                     </div>
+                     
                   </div>
                   <div
                     style="display: flex; align-items: center;"
@@ -1349,22 +1339,17 @@ exports[`CI enabled Render CI Codebase all runtime inputs: all inputs as runtime
                     class="Layout--horizontal StyledProps--main inpLabel"
                     style="display: flex; align-items: baseline;"
                   >
-                    <p
-                      class="StyledProps--font StyledProps--main StyledProps--color StyledProps--color-grey600 StyledProps--font-size-small StyledProps--font-weight-semi-bold"
-                    >
-                      pipeline.ciCodebase.prCloneStrategy
-                    </p>
-                     
                     <div
                       class="Text--withDocsTooltip"
                       data-tooltip-id="prCloneStrategy"
                     >
                       <p
-                        class="StyledProps--font StyledProps--main capitalize StyledProps--color StyledProps--color-grey400 StyledProps--font-size-small StyledProps--font-weight-semi-bold"
+                        class="StyledProps--font StyledProps--main StyledProps--color StyledProps--color-grey600 StyledProps--font-size-small StyledProps--font-weight-semi-bold"
                       >
-                        common.optionalLabel
+                        pipeline.ciCodebase.prCloneStrategy
                       </p>
                     </div>
+                     
                   </div>
                   <div
                     style="display: flex; align-items: center;"
@@ -1455,22 +1440,17 @@ exports[`CI enabled Render CI Codebase all runtime inputs: all inputs as runtime
                       class="Layout--horizontal StyledProps--main"
                       style="display: flex; align-items: baseline;"
                     >
-                      <p
-                        class="StyledProps--font StyledProps--main inpLabel StyledProps--color StyledProps--color-grey600 StyledProps--font-size-small StyledProps--font-weight-semi-bold"
-                      >
-                        pipelineSteps.limitMemoryLabel
-                      </p>
-                       
                       <div
                         class="Text--withDocsTooltip"
                         data-tooltip-id="limitMemory"
                       >
                         <p
-                          class="StyledProps--font StyledProps--main capitalize StyledProps--color StyledProps--color-grey400 StyledProps--font-size-small StyledProps--font-weight-semi-bold"
+                          class="StyledProps--font StyledProps--main inpLabel StyledProps--color StyledProps--color-grey600 StyledProps--font-size-small StyledProps--font-weight-semi-bold"
                         >
-                          common.optionalLabel
+                          pipelineSteps.limitMemoryLabel
                         </p>
                       </div>
+                       
                     </div>
                     <div
                       style="display: flex; align-items: center;"
@@ -1510,22 +1490,17 @@ exports[`CI enabled Render CI Codebase all runtime inputs: all inputs as runtime
                       class="Layout--horizontal StyledProps--main"
                       style="display: flex; align-items: baseline;"
                     >
-                      <p
-                        class="StyledProps--font StyledProps--main inpLabel StyledProps--color StyledProps--color-grey600 StyledProps--font-size-small StyledProps--font-weight-semi-bold"
-                      >
-                        pipelineSteps.limitCPULabel
-                      </p>
-                       
                       <div
                         class="Text--withDocsTooltip"
                         data-tooltip-id="limitCPULabel"
                       >
                         <p
-                          class="StyledProps--font StyledProps--main capitalize StyledProps--color StyledProps--color-grey400 StyledProps--font-size-small StyledProps--font-weight-semi-bold"
+                          class="StyledProps--font StyledProps--main inpLabel StyledProps--color StyledProps--color-grey600 StyledProps--font-size-small StyledProps--font-weight-semi-bold"
                         >
-                          common.optionalLabel
+                          pipelineSteps.limitCPULabel
                         </p>
                       </div>
+                       
                     </div>
                     <div
                       style="display: flex; align-items: center;"
