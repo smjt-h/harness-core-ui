@@ -12,6 +12,11 @@ import { accountPathProps, variablePathProps } from '@common/utils/routeUtils'
 
 import { AccountSideNavProps } from '@common/RouteDestinations'
 import AuditTrailFactory from '@audit-trail/factories/AuditTrailFactory'
+import RbacFactory from '@rbac/factories/RbacFactory'
+import { ResourceType, ResourceCategory } from '@rbac/interfaces/ResourceType'
+import { PermissionIdentifier } from '@rbac/interfaces/PermissionIdentifier'
+import { String } from 'framework/strings'
+import VariableResourceModalBody from '@variables/components/VariableResourceModalBody/VariableResourceModalBody'
 import VariablesPage from './pages/variables/VariablesPage'
 
 const platformLabel = 'auditTrail.Platform'
@@ -21,6 +26,20 @@ AuditTrailFactory.registerResourceHandler('VARIABLE', {
   },
   moduleLabel: platformLabel,
   resourceLabel: 'common.variables'
+})
+
+RbacFactory.registerResourceTypeHandler(ResourceType.VARIABLE, {
+  icon: 'variable',
+  label: 'variableLabel',
+  category: ResourceCategory.SHARED_RESOURCES,
+  permissionLabels: {
+    [PermissionIdentifier.VIEW_VARIABLE]: <String stringID="rbac.permissionLabels.view" />,
+    [PermissionIdentifier.EDIT_VARIABLE]: <String stringID="rbac.permissionLabels.createEdit" />,
+    [PermissionIdentifier.DELETE_VARIABLE]: <String stringID="rbac.permissionLabels.delete" />,
+    [PermissionIdentifier.ACCESS_VARIABLE]: <String stringID="rbac.permissionLabels.access" />
+  },
+  // eslint-disable-next-line react/display-name
+  addResourceModalBody: props => <VariableResourceModalBody {...props} />
 })
 
 export default (

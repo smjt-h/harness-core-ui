@@ -19,6 +19,8 @@ import { getLinkForAccountResources } from '@common/utils/BreadcrumbUtils'
 import ScopedTitle from '@common/components/Title/ScopedTitle'
 import { Scope } from '@common/interfaces/SecretsInterface'
 import useCreateEditVariableModal from '@variables/modals/CreateEditVariableModal/useCreateEditVariableModal'
+import { PermissionIdentifier } from '@rbac/interfaces/PermissionIdentifier'
+import { ResourceType } from '@rbac/interfaces/ResourceType'
 import { useGetVariablesList } from 'services/cd-ng'
 import VariableListView from './views/VariableListView'
 import css from './VariablesPage.module.scss'
@@ -80,6 +82,12 @@ const VariablesPage: React.FC = () => {
             id="newVariableBtn"
             data-test="newVariableButton"
             onClick={() => openCreateUpdateVariableModal()}
+            permission={{
+              permission: PermissionIdentifier.EDIT_VARIABLE,
+              resource: {
+                resourceType: ResourceType.VARIABLE
+              }
+            }}
           />
         </Layout.Horizontal>
         <ExpandingSearchInput

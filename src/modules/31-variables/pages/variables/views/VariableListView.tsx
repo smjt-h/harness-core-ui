@@ -33,62 +33,63 @@ interface SecretsListProps {
   openCreateUpdateVariableModal: UseCreateUpdateVariableModalReturn['openCreateUpdateVariableModal']
 }
 
+export const RenderColumnVariable: Renderer<CellProps<VariableResponseDTO>> = ({ row }) => {
+  const data = row.original.variable
+  const { getString } = useStrings()
+  return (
+    <Layout.Horizontal>
+      <Layout.Vertical>
+        <Text color={Color.BLACK} lineClamp={1} width={230}>
+          {data.name}
+        </Text>
+
+        <Text color={Color.GREY_600} font={{ variation: FontVariation.SMALL }} width={230} lineClamp={1}>
+          {`${getString('common.ID')}: ${data.identifier}`}
+        </Text>
+      </Layout.Vertical>
+    </Layout.Horizontal>
+  )
+}
+
+export const RenderColumnType: Renderer<CellProps<VariableResponseDTO>> = ({ row }) => {
+  const data = row.original.variable
+  return (
+    <Text color={Color.BLACK} font={{ variation: FontVariation.BODY }}>
+      {data.type}
+    </Text>
+  )
+}
+export const RenderColumnValidation: Renderer<CellProps<VariableResponseDTO>> = ({ row }) => {
+  const data = row.original.variable
+  return (
+    <Text color={Color.BLACK} font={{ variation: FontVariation.BODY }}>
+      {data.spec.valueType}
+    </Text>
+  )
+}
+
+export const RenderColumnValue: Renderer<CellProps<VariableResponseDTO>> = ({ row }) => {
+  const data = row.original.variable
+
+  return (
+    <Text color={Color.GREY_600} font={{ variation: FontVariation.FORM_INPUT_TEXT }}>
+      {getValueFromVariableAndValidationType(data)}
+    </Text>
+  )
+}
+export const RenderColumnDefaultValue: Renderer<CellProps<VariableResponseDTO>> = ({ row }) => {
+  const data = row.original.variable
+  return (
+    <Text color={Color.GREY_600} font={{ variation: FontVariation.FORM_INPUT_TEXT }}>
+      {(data.spec as StringVariableConfigDTO)?.defaultValue}
+    </Text>
+  )
+}
+
 const VariableListView: React.FC<SecretsListProps> = props => {
   const { variables, gotoPage, refetch } = props
   const variablesList: VariableResponseDTO[] = useMemo(() => variables?.content || [], [variables?.content])
   const { getString } = useStrings()
-
-  const RenderColumnVariable: Renderer<CellProps<VariableResponseDTO>> = ({ row }) => {
-    const data = row.original.variable
-    return (
-      <Layout.Horizontal>
-        <Layout.Vertical>
-          <Text color={Color.BLACK} lineClamp={1} width={230}>
-            {data.name}
-          </Text>
-
-          <Text color={Color.GREY_600} font={{ variation: FontVariation.SMALL }} width={230} lineClamp={1}>
-            {`${getString('common.ID')}: ${data.identifier}`}
-          </Text>
-        </Layout.Vertical>
-      </Layout.Horizontal>
-    )
-  }
-
-  const RenderColumnType: Renderer<CellProps<VariableResponseDTO>> = ({ row }) => {
-    const data = row.original.variable
-    return (
-      <Text color={Color.BLACK} font={{ variation: FontVariation.BODY }}>
-        {data.type}
-      </Text>
-    )
-  }
-  const RenderColumnValidation: Renderer<CellProps<VariableResponseDTO>> = ({ row }) => {
-    const data = row.original.variable
-    return (
-      <Text color={Color.BLACK} font={{ variation: FontVariation.BODY }}>
-        {data.spec.valueType}
-      </Text>
-    )
-  }
-
-  const RenderColumnValue: Renderer<CellProps<VariableResponseDTO>> = ({ row }) => {
-    const data = row.original.variable
-
-    return (
-      <Text color={Color.GREY_600} font={{ variation: FontVariation.FORM_INPUT_TEXT }}>
-        {getValueFromVariableAndValidationType(data)}
-      </Text>
-    )
-  }
-  const RenderColumnDefaultValue: Renderer<CellProps<VariableResponseDTO>> = ({ row }) => {
-    const data = row.original.variable
-    return (
-      <Text color={Color.GREY_600} font={{ variation: FontVariation.FORM_INPUT_TEXT }}>
-        {(data.spec as StringVariableConfigDTO)?.defaultValue}
-      </Text>
-    )
-  }
 
   const RenderColumnAction: Renderer<CellProps<VariableResponseDTO>> = ({ row, column }) => {
     const data = row.original.variable
