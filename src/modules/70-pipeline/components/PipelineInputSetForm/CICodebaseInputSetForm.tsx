@@ -34,7 +34,6 @@ import { MultiTypeTextField } from '@common/components/MultiTypeText/MultiTypeTe
 import { MultiTypeSelectField } from '@common/components/MultiTypeSelect/MultiTypeSelect'
 import type { GitQueryParams } from '@common/interfaces/RouteInterfaces'
 import { useQueryParams } from '@common/hooks'
-import { getOptionalSubLabel } from '@pipeline/components/Volumes/Volumes'
 import { CodebaseTypes, getConnectorRefWidth } from '@pipeline/utils/CIUtils'
 import { isRuntimeInput } from '../PipelineStudio/RightBar/RightBarUtils'
 import { StepViewType } from '../AbstractSteps/Step'
@@ -88,11 +87,14 @@ const renderLabel = ({
   keyString: StringKeys
 }): JSX.Element => (
   <Layout.Horizontal className={css.inpLabel} style={{ display: 'flex', alignItems: 'baseline' }}>
-    <Text color={Color.GREY_600} font={{ size: 'small', weight: 'semi-bold' }}>
+    <Text
+      color={Color.GREY_600}
+      font={{ size: 'small', weight: 'semi-bold' }}
+      tooltipProps={{ dataTooltipId: tooltip }}
+    >
       {getString(keyString)}
     </Text>
     &nbsp;
-    {getOptionalSubLabel(getString, tooltip)}
   </Layout.Horizontal>
 )
 
@@ -194,6 +196,7 @@ function CICodebaseInputSetFormInternal({
     tag: getString('gitTag'),
     PR: getString('pipeline.gitPullRequest')
   }
+  const codebaseTypeError = get(formik?.errors, codeBaseTypePath)
 
   const inputLabels = {
     branch: getString('common.branchName'),
@@ -360,7 +363,7 @@ function CICodebaseInputSetFormInternal({
       </Container>
     )
   }
-
+  console.log(get(formik?.errors, codeBaseTypePath))
   return (
     <Layout.Vertical spacing="small">
       {loadingConnectorDetails ? (
@@ -508,7 +511,7 @@ function CICodebaseInputSetFormInternal({
                   />
                 ) : null}
               </Layout.Horizontal>
-
+              {codebaseTypeError && formik.submitCount > 0 && <Text color={Color.RED_600}>{codebaseTypeError}</Text>}
               <Container width={'50%'}>
                 {codeBaseType === CodebaseTypes.branch ? renderCodeBaseTypeInput('branch') : null}
                 {codeBaseType === CodebaseTypes.tag ? renderCodeBaseTypeInput('tag') : null}
@@ -533,9 +536,10 @@ function CICodebaseInputSetFormInternal({
               <MultiTypeTextField
                 label={
                   <Layout.Horizontal className={css.inpLabel} style={{ display: 'flex', alignItems: 'baseline' }}>
-                    <Text font={{ variation: FontVariation.FORM_LABEL }}>{getString('pipeline.depth')}</Text>
+                    <Text font={{ variation: FontVariation.FORM_LABEL }} tooltipProps={{ dataTooltipId: 'depth' }}>
+                      {getString('pipeline.depth')}
+                    </Text>
                     &nbsp;
-                    {getOptionalSubLabel(getString, 'depth')}
                   </Layout.Horizontal>
                 }
                 name={codeBaseInputFieldFormName.depth}
@@ -620,11 +624,11 @@ function CICodebaseInputSetFormInternal({
                           className={css.inpLabel}
                           color={Color.GREY_600}
                           font={{ size: 'small', weight: 'semi-bold' }}
+                          tooltipProps={{ dataTooltipId: 'limitMemory' }}
                         >
                           {getString('pipelineSteps.limitMemoryLabel')}
                         </Text>
                         &nbsp;
-                        {getOptionalSubLabel(getString, 'limitMemory')}
                       </Layout.Horizontal>
                     }
                     multiTextInputProps={{
@@ -648,11 +652,11 @@ function CICodebaseInputSetFormInternal({
                           className={css.inpLabel}
                           color={Color.GREY_600}
                           font={{ size: 'small', weight: 'semi-bold' }}
+                          tooltipProps={{ dataTooltipId: 'limitCPULabel' }}
                         >
                           {getString('pipelineSteps.limitCPULabel')}
                         </Text>
                         &nbsp;
-                        {getOptionalSubLabel(getString, 'limitCPULabel')}
                       </Layout.Horizontal>
                     }
                     multiTextInputProps={{
