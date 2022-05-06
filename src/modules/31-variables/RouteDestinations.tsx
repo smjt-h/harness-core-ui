@@ -33,7 +33,7 @@ export default (
       path={routes.toVariableDetails({ ...accountPathProps, ...variablePathProps })}
       exact
     >
-      {/* TODO */}
+      {/* TODO ok */}
     </RouteWithLayout>
   </>
 )
