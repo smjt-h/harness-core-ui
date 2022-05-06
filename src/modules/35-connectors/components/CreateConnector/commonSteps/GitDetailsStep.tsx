@@ -107,7 +107,7 @@ const GitDetailsStep: React.FC<StepProps<ConnectorConfigDTO> & ConnectorDetailsS
   useEffect(() => {
     props.setConnectorWizardOptions?.({
       helpPanel: {
-        referenceId: 'gitHubConnector',
+        referenceId: 'gitHubConnectorDetails',
         contentWidth: 1000
       }
     })

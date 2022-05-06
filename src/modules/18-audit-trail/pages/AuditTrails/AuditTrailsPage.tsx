@@ -80,7 +80,7 @@ const AuditTrailsPage: React.FC = () => {
   const auditTrailTitle = getString('common.auditTrail')
   return (
     <>
-      <HelpPanel referenceId="gitHubConnector" type={HelpPanelType.FLOATING_CONTAINER} />
+      <HelpPanel referenceId="gitHubConnectorOverview" type={HelpPanelType.FLOATING_CONTAINER} />
       <Page.Header
         title={
           <ScopedTitle

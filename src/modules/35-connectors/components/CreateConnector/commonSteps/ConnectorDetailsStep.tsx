@@ -63,7 +63,7 @@ type Params = {
 
 const connectorTypeHelpPanelMap = {
   [Connectors.KUBERNETES_CLUSTER]: 'manifestDetails',
-  [Connectors.GITHUB]: 'gitHubConnector'
+  [Connectors.GITHUB]: 'gitHubConnectorOverview'
 }
 
 const ConnectorDetailsStep: React.FC<StepProps<ConnectorConfigDTO> & ConnectorDetailsStepProps> = props => {

@@ -68,6 +68,7 @@ const CreateGithubConnector = (props: CreateConnectorModalProps): JSX.Element =>
         identifier={CONNECTOR_CREDENTIALS_STEP_IDENTIFIER}
         {...commonProps}
         onConnectorCreated={props.onSuccess}
+        setConnectorWizardOptions={props.setConnectorWizardOptions}
       />
 
       <ConnectivityModeStep

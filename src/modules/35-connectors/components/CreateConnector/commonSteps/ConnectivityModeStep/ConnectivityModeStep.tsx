@@ -96,7 +96,7 @@ const ConnectivityModeStep: React.FC<StepProps<ConnectorConfigDTO> & Connectivit
   useEffect(() => {
     props.setConnectorWizardOptions?.({
       helpPanel: {
-        referenceId: 'gitHubConnector',
+        referenceId: 'gitHubConnectorConnectToTheProvider',
         contentWidth: 1100
       }
     })
