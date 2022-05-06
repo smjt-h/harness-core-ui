@@ -8,7 +8,10 @@
 // this is an auto-generated file, do not update this manually
 declare const styles: {
   readonly header: string
+  readonly logsCtaContainer: string
+  readonly mainTabPanel: string
   readonly metricsAndLogsCard: string
+  readonly metricsLogsTab: string
   readonly noDataCard: string
   readonly noDataCardContainer: string
   readonly noServiceImage: string

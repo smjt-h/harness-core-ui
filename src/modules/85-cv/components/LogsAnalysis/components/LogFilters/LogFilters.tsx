@@ -9,6 +9,7 @@ import type { LogFiltersProps } from './LogFilters.types'
 import type { EventTypeFullName } from '../../../ExecutionVerification/components/LogAnalysisContainer/LogAnalysis.constants'
 import { getClusterTypes } from '../../../ExecutionVerification/components/LogAnalysisContainer/LogAnalysis.utils'
 import css from '../../../ExecutionVerification/components/LogAnalysisContainer/components/ClusterTypeFiltersForLogs.module.scss'
+import { getFilterDisplayText } from '@cv/components/ExecutionVerification/components/DeploymentMetrics/DeploymentMetrics.utils'
 
 const LogFilters: React.FC<LogFiltersProps> = ({
   clusterTypeFilters,
@@ -23,18 +24,20 @@ const LogFilters: React.FC<LogFiltersProps> = ({
 
   const { accountId, projectIdentifier, orgIdentifier } = useParams<ProjectPathProps>()
 
-  // const getFilteredText = useCallback(
-  //   (selectedOptions: MultiSelectOption[] = [], filterText = ' '): string => {
-  //     const baseText = getString(filterText)
-  //     return getFilterDisplayText(selectedOptions, baseText, getString('all'))
-  //   },
-  //   [getString]
-  // )
+  const getFilteredText = useCallback(
+    (selectedOptions: MultiSelectOption[] = [], filterText = ' '): string => {
+      const baseText = getString(filterText)
+      return getFilterDisplayText(selectedOptions, baseText, getString('all'))
+    },
+    [getString]
+  )
 
   const { data, error, loading } = useGetAllHealthSourcesForMonitoredServiceIdentifier({
     monitoredServiceIdentifier,
     queryParams: { accountId, projectIdentifier, orgIdentifier }
   })
+
+  console.log('loading', loading)
 
   return (
     <Container className={css.main}>

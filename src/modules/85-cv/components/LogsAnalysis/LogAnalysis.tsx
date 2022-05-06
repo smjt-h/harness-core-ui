@@ -5,7 +5,7 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import React, { useCallback, useMemo, useState } from 'react'
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { Container, Icon, Pagination, NoDataCard, PageError, MultiSelectOption } from '@wings-software/uicore'
 import { Color } from '@harness/design-system'
@@ -88,6 +88,8 @@ export const LogAnalysisContent: React.FC<LogAnalysisContentProps> = ({
   const { getString } = useStrings()
   const { orgIdentifier, projectIdentifier, accountId } = useParams<ProjectPathProps>()
 
+  const isFirstFilterCall = useRef(true)
+
   const [clusterTypeFilters, setClusterTypeFilters] = useState<ClusterTypes>(() => {
     return getClusterTypes(getString).map(i => i.value) as ClusterTypes
   })
@@ -95,6 +97,35 @@ export const LogAnalysisContent: React.FC<LogAnalysisContentProps> = ({
   const [logEvent, setLogEvent] = useState<LogEvents>()
   const [minMaxAngle, setMinMaxAngle] = useState({ min: RadarChartAngleLimits.MIN, max: RadarChartAngleLimits.MAX })
   const [selectedHealthSources, setSelectedHealthSources] = useState<MultiSelectOption[]>([])
+
+  const [logsDataQueryParams, setLogsDataQueryParams] = useState(() => {
+    return {
+      accountId,
+      page: 0,
+      size: PAGE_SIZE,
+      orgIdentifier,
+      projectIdentifier,
+      monitoredServiceIdentifier,
+      minAngle: minMaxAngle.min,
+      maxAngle: minMaxAngle.max,
+      startTime,
+      endTime,
+      // clusterTypes: clusterTypeFilters?.length ? clusterTypeFilters : undefined,
+      healthSources: selectedHealthSources.length
+        ? (selectedHealthSources.map(item => item.value) as string[])
+        : undefined
+    }
+  })
+
+  // const [radarChartDataQueryParams, setradarChartDataQueryParams] =
+  //   useState<GetVerifyStepDeploymentRadarChartLogAnalysisClustersQueryParams>(() => {
+  //     return {
+  //       accountId,
+  //       hostNames: getQueryParamForHostname(hostName),
+  //       clusterTypes: clusterTypeFilters?.length ? clusterTypeFilters : undefined,
+  //       healthSources: selectedHealthSource ? [selectedHealthSource] : undefined
+  //     }
+  //   })
 
   const queryParams = useMemo(() => {
     return {
@@ -127,11 +158,44 @@ export const LogAnalysisContent: React.FC<LogAnalysisContentProps> = ({
     loading: logsLoading,
     error: logsError
   } = useGetAllLogsData({
-    queryParams,
+    queryParams: logsDataQueryParams,
     queryParamStringifyOptions: {
       arrayFormat: 'repeat'
     }
   })
+
+  useEffect(() => {
+    if (!isFirstFilterCall.current) {
+      setLogsDataQueryParams({
+        ...logsDataQueryParams,
+        minAngle: minMaxAngle.min,
+        maxAngle: minMaxAngle.max
+      })
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [minMaxAngle])
+
+  useEffect(() => {
+    if (!isFirstFilterCall.current) {
+      const updatedLogsDataParams = {
+        ...logsDataQueryParams,
+        clusterTypes: clusterTypeFilters?.length ? clusterTypeFilters : undefined
+      }
+
+      // TODO: ADD RADAR CHART PROPS
+      // const updatedRadarChartDataParams = {
+      //   ...radarChartDataQueryParams,
+      //   clusterTypes: clusterTypeFilters?.length ? clusterTypeFilters : undefined
+      // }
+
+      setLogsDataQueryParams(updatedLogsDataParams)
+      // setradarChartDataQueryParams(updatedRadarChartDataParams)
+      setMinMaxAngle({ min: RadarChartAngleLimits.MIN, max: RadarChartAngleLimits.MAX })
+    } else {
+      isFirstFilterCall.current = false
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [clusterTypeFilters])
 
   const handleClustersFilterChange = useCallback((checked: boolean, filterName: EventTypeFullName): void => {
     setClusterTypeFilters(currentFilters => {
@@ -190,10 +254,12 @@ export const LogAnalysisContent: React.FC<LogAnalysisContentProps> = ({
           radius: 0.5,
           angle: 0,
           clusterType: 'BASELINE',
-          hasControlData: false
+          hasControlData: false,
+          clusterId: 1
         },
         clusterType: 'KNOWN_EVENT',
-        hasControlData: true
+        hasControlData: true,
+        clusterId: 1
       },
       {
         label: 2,
@@ -208,10 +274,12 @@ export const LogAnalysisContent: React.FC<LogAnalysisContentProps> = ({
           radius: 0.2,
           angle: 120,
           clusterType: 'BASELINE',
-          hasControlData: false
+          hasControlData: false,
+          clusterId: 2
         },
         clusterType: 'KNOWN_EVENT',
-        hasControlData: true
+        hasControlData: true,
+        clusterId: 2
       },
       {
         label: 1,
@@ -226,10 +294,12 @@ export const LogAnalysisContent: React.FC<LogAnalysisContentProps> = ({
           radius: 0.3698184595475662,
           angle: 240,
           clusterType: 'BASELINE',
-          hasControlData: false
+          hasControlData: false,
+          clusterId: 3
         },
         clusterType: 'KNOWN_EVENT',
-        hasControlData: true
+        hasControlData: true,
+        clusterId: 3
       }
     ]
   }
@@ -267,7 +337,7 @@ export const LogAnalysisContent: React.FC<LogAnalysisContentProps> = ({
               hasControlData: false
             },
             hasControlData: true,
-            cluterId: 1
+            clusterId: 1
           },
           {
             message:
@@ -279,7 +349,7 @@ export const LogAnalysisContent: React.FC<LogAnalysisContentProps> = ({
             frequencyData: [1.0],
             baseline: null,
             hasControlData: false,
-            cluterId: 2
+            clusterId: 2
           },
           {
             message:
@@ -291,7 +361,7 @@ export const LogAnalysisContent: React.FC<LogAnalysisContentProps> = ({
             frequencyData: [1.0],
             baseline: null,
             hasControlData: false,
-            cluterId: 3
+            clusterId: 3
           },
           {
             message:
@@ -303,7 +373,7 @@ export const LogAnalysisContent: React.FC<LogAnalysisContentProps> = ({
             frequencyData: [1.0],
             baseline: null,
             hasControlData: false,
-            cluterId: 4
+            clusterId: 4
           },
           {
             message:
@@ -315,7 +385,7 @@ export const LogAnalysisContent: React.FC<LogAnalysisContentProps> = ({
             frequencyData: [1.0],
             baseline: null,
             hasControlData: false,
-            cluterId: 5
+            clusterId: 5
           },
           {
             message: '{ [2938 bytes data]\n',
@@ -335,7 +405,7 @@ export const LogAnalysisContent: React.FC<LogAnalysisContentProps> = ({
               hasControlData: false
             },
             hasControlData: true,
-            cluterId: 6
+            clusterId: 6
           },
           {
             message:
@@ -357,7 +427,7 @@ export const LogAnalysisContent: React.FC<LogAnalysisContentProps> = ({
               hasControlData: false
             },
             hasControlData: true,
-            cluterId: 7
+            clusterId: 7
           },
           {
             message: '< Location: display.jsp\r\n',
@@ -377,7 +447,7 @@ export const LogAnalysisContent: React.FC<LogAnalysisContentProps> = ({
               hasControlData: false
             },
             hasControlData: true,
-            cluterId: 8
+            clusterId: 8
           },
           {
             message: '< Date: Thu, 10 Feb 2022 07:22:58 GMT\r\n',
@@ -397,7 +467,7 @@ export const LogAnalysisContent: React.FC<LogAnalysisContentProps> = ({
               hasControlData: false
             },
             hasControlData: true,
-            cluterId: 9
+            clusterId: 9
           },
           {
             message: '* upload completely sent off: 47 out of 47 bytes\n',
@@ -417,7 +487,7 @@ export const LogAnalysisContent: React.FC<LogAnalysisContentProps> = ({
               hasControlData: false
             },
             hasControlData: true,
-            cluterId: 10
+            clusterId: 10
           }
         ],
         pageIndex: 0,
@@ -428,13 +498,14 @@ export const LogAnalysisContent: React.FC<LogAnalysisContentProps> = ({
   }
 
   const getContents = (): JSX.Element => {
-    if (logsLoading) {
-      return (
-        <Container flex={{ justifyContent: 'center' }} className={css.loadingContainer}>
-          <Icon name="steps-spinner" color={Color.GREY_400} size={30} />
-        </Container>
-      )
-    }
+    // TODO: ADD IT WHEN BOTH API LOADS
+    // if (logsLoading && clusterChartLoading) {
+    //   return (
+    //     <Container flex={{ justifyContent: 'center' }} className={css.loadingContainer}>
+    //       <Icon name="steps-spinner" color={Color.GREY_400} size={30} />
+    //     </Container>
+    //   )
+    // }
 
     if (logsError) {
       return <PageError message={getErrorMessage(logsError)} onClick={() => fetchLogAnalysis()} />
@@ -464,18 +535,16 @@ export const LogAnalysisContent: React.FC<LogAnalysisContentProps> = ({
           clusterChartError={null}
           clusterChartLoading={false}
           goToPage={goToLogsPage}
-          activityId={null}
-          isErrorTracking={false}
           handleAngleChange={handleMinMaxChange}
           isServicePage
         />
-        <Pagination
+        {/* <Pagination
           pageSize={pageSize}
           pageCount={totalPages}
           itemCount={totalItems}
           pageIndex={pageIndex}
           gotoPage={goToLogsPage}
-        />
+        /> */}
       </>
     )
   }

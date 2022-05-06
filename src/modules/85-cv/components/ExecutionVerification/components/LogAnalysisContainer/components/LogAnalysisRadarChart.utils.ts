@@ -267,6 +267,9 @@ export function getLogAnalysisSpiderChartOptionsWithoutBaseline(
         point: {
           events: {
             click: e => {
+              console.log('click event', e)
+              console.log('e.point.series.userOptions.clusterId', e.point.series.userOptions.clusterId)
+
               // eslint-disable-next-line @typescript-eslint/ban-ts-comment
               // @ts-ignore
               handleRadarPointClick(e.point.series.userOptions.clusterId)

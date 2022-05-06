@@ -228,9 +228,10 @@ export default function ServiceHealth({
           startTime={timeRange?.startTime}
           endTime={timeRange?.endTime}
           showTimelineSlider={showTimelineSlider}
+          isErrorTrackingEnabled={isErrorTrackingEnabled}
         />
 
-        {isErrorTrackingEnabled && (
+        {/* {isErrorTrackingEnabled && (
           <ErrorTracking
             monitoredServiceIdentifier={monitoredServiceIdentifier}
             serviceIdentifier={serviceIdentifier}
@@ -238,7 +239,7 @@ export default function ServiceHealth({
             startTime={timeRange?.startTime}
             endTime={timeRange?.endTime}
           />
-        )}
+        )} */}
       </Container>
     </>
   )

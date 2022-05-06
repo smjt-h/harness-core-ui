@@ -28,6 +28,7 @@ export interface LogAnalysisRowProps {
   selectedLog?: string | null
   resetSelectedLog?: () => void
   activityId?: string
+  hidePageNumberInPagination?: boolean
 }
 
 export interface LogAnalysisDataRowProps {

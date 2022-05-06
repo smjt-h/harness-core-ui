@@ -98,7 +98,16 @@ function DataRow(props: LogAnalysisDataRowProps): JSX.Element {
 }
 
 export function LogAnalysisRow(props: LogAnalysisRowProps): JSX.Element {
-  const { data = [], isErrorTracking, logResourceData, selectedLog, activityId, resetSelectedLog, goToPage } = props
+  const {
+    data = [],
+    isErrorTracking,
+    logResourceData,
+    selectedLog,
+    activityId,
+    resetSelectedLog,
+    goToPage,
+    hidePageNumberInPagination
+  } = props
   const [dataToCompare, setDataToCompare] = useState<CompareLogEventsInfo[]>([])
 
   const [riskEditModalData, setRiskEditModalData] = useState<{
@@ -162,6 +171,8 @@ export function LogAnalysisRow(props: LogAnalysisRowProps): JSX.Element {
   }, [])
 
   useEffect(() => {
+    console.log('selectedLog row', selectedLog)
+
     if (isNoLogSelected(selectedLog)) {
       onDrawerHide()
     } else {
@@ -252,7 +263,7 @@ export function LogAnalysisRow(props: LogAnalysisRowProps): JSX.Element {
           itemCount={logResourceData.totalItems as number}
           pageIndex={logResourceData.pageIndex}
           gotoPage={goToPage}
-          hidePageNumbers
+          hidePageNumbers={hidePageNumberInPagination}
         />
       ) : null}
     </Container>

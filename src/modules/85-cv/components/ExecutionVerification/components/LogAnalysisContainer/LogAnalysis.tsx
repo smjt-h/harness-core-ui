@@ -8,7 +8,6 @@
 import React, { useCallback, useMemo, useState } from 'react'
 import { Container, Icon, NoDataCard, PageError } from '@wings-software/uicore'
 import { Color } from '@harness/design-system'
-import cx from 'classnames'
 import { useStrings } from 'framework/strings'
 import noDataImage from '@cv/assets/noData.svg'
 import { getErrorMessage } from '@cv/utils/CommonUtils'
@@ -45,6 +44,8 @@ export default function LogAnalysis(props: LogAnalysisProps): JSX.Element {
   const [selectedLog, setSelectedLog] = useState<string | null>(null)
 
   const handleLogSelection = useCallback((logClusterId: string): void => {
+    console.log('logClusterId', logClusterId)
+
     setSelectedLog(logClusterId)
   }, [])
 
@@ -84,6 +85,7 @@ export default function LogAnalysis(props: LogAnalysisProps): JSX.Element {
           selectedLog={selectedLog}
           resetSelectedLog={resetSelectedLog}
           activityId={activityId}
+          hidePageNumberInPagination={!isServicePage}
         />
       )
     }
@@ -91,11 +93,7 @@ export default function LogAnalysis(props: LogAnalysisProps): JSX.Element {
   }, [logsLoading, logAnalysisData.length, selectedLog])
 
   return (
-    <Container
-      className={cx(styles.logsTab, {
-        [styles.logsTabServiceScreen]: isServicePage
-      })}
-    >
+    <Container className={styles.logsTab}>
       <Container className={styles.clusterChart}>
         {!clusterChartLoading && !logsError && (
           <LogAnalysisRadarChartHeader
