@@ -135,6 +135,38 @@ export const CreateStack = (
     }
   }, [roleData, awsRef])
 
+  const onSelectChange = (
+    e: React.ChangeEvent<HTMLSelectElement>,
+    setFieldValue: (field: string, value: any) => void
+  ) => {
+    if (e.target.value === TemplateTypes.Inline) {
+      setFieldValue('spec.configuration.templateFile', {
+        type: TemplateTypes.Inline,
+        spec: {
+          templateBody: ''
+        }
+      })
+    } else if (e.target.value === TemplateTypes.Remote) {
+      setFieldValue('spec.configuration.templateFile', {
+        type: TemplateTypes.Remote,
+        spec: {
+          store: {
+            spec: {
+              connectorRef: undefined
+            }
+          }
+        }
+      })
+    } else {
+      setFieldValue('spec.configuration.templateFile', {
+        type: TemplateTypes.S3URL,
+        spec: {
+          templateUrl: ''
+        }
+      })
+    }
+  }
+
   return (
     <Formik
       enableReinitialize={true}
@@ -287,13 +319,13 @@ export const CreateStack = (
                   multiTypeInputProps={{
                     selectProps: {
                       allowCreatingNewItems: false,
-                      items: regions ? regions : []
+                      items: regions
                     },
                     expressions,
                     allowableTypes,
                     width: 300
                   }}
-                  selectItems={regions ? regions : []}
+                  selectItems={regions}
                   placeholder={regionLoading ? getString('loading') : getString('select')}
                 />
               </Layout.Horizontal>
@@ -313,34 +345,7 @@ export const CreateStack = (
                     name="spec.configuration.templateFile.type"
                     disabled={readonly}
                     value={templateFileType}
-                    onChange={e => {
-                      if (e.target.value === TemplateTypes.Inline) {
-                        setFieldValue('spec.configuration.templateFile', {
-                          type: TemplateTypes.Inline,
-                          spec: {
-                            templateBody: ''
-                          }
-                        })
-                      } else if (e.target.value === TemplateTypes.Remote) {
-                        setFieldValue('spec.configuration.templateFile', {
-                          type: TemplateTypes.Remote,
-                          spec: {
-                            store: {
-                              spec: {
-                                connectorRef: undefined
-                              }
-                            }
-                          }
-                        })
-                      } else {
-                        setFieldValue('spec.configuration.templateFile', {
-                          type: TemplateTypes.S3URL,
-                          spec: {
-                            templateUrl: ''
-                          }
-                        })
-                      }
-                    }}
+                    onChange={e => onSelectChange(e, setFieldValue)}
                   >
                     <option value={TemplateTypes.Remote}>{getString('remote')}</option>
                     <option value={TemplateTypes.Inline}>{getString('inline')}</option>
