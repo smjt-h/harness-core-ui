@@ -73,12 +73,12 @@ exports[`stageinputset tests viewType DeploymentForm initial render 1`] = `
                   >
                     <div
                       class="Layout--horizontal StyledProps--main MultiTypeInput--main"
-                      style="width: 385px;"
+                      style="width: 320px;"
                     >
                       <button
                         class="bp3-button bp3-minimal Button--button StyledProps--font StyledProps--main container Button--iconOnly Button--without-shadow Button--withRightIcon"
                         data-testid="cr-field-stages[0].stage.spec.infrastructure.spec.connectorRef"
-                        style="width: 385px;"
+                        style="width: 320px;"
                         type="button"
                       >
                         <span
@@ -981,12 +981,12 @@ exports[`stageinputset tests viewType DeploymentForm initial render2 1`] = `
                   >
                     <div
                       class="Layout--horizontal StyledProps--main MultiTypeInput--main"
-                      style="width: 385px;"
+                      style="width: 320px;"
                     >
                       <button
                         class="bp3-button bp3-minimal Button--button StyledProps--font StyledProps--main container Button--iconOnly Button--without-shadow Button--withRightIcon"
                         data-testid="cr-field-stages[0].stage.spec.infrastructure.spec.connectorRef"
-                        style="width: 385px;"
+                        style="width: 320px;"
                         type="button"
                       >
                         <span

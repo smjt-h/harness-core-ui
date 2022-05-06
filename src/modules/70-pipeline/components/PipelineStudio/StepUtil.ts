@@ -14,6 +14,7 @@ import set from 'lodash-es/set'
 import reduce from 'lodash-es/reduce'
 import isObject from 'lodash-es/isObject'
 import memoize from 'lodash-es/memoize'
+import isBoolean from 'lodash-es/isBoolean'
 import get from 'lodash-es/get'
 import type {
   StageElementConfig,
@@ -29,6 +30,8 @@ import type { UseStringsReturn } from 'framework/strings'
 import { getDurationValidationSchema } from '@common/components/MultiTypeDuration/MultiTypeDuration'
 import type { TemplateStepNode } from 'services/pipeline-ng'
 import { ServiceDeploymentType } from '@pipeline/utils/stageHelpers'
+import { getPrCloneStrategyOptions } from '@pipeline/utils/constants'
+import { CodebaseTypes } from '@pipeline/utils/CIUtils'
 import factory from '../PipelineSteps/PipelineStepFactory'
 import { StepType } from '../PipelineSteps/PipelineStepInterface'
 // eslint-disable-next-line no-restricted-imports
@@ -39,6 +42,7 @@ import '@ci/components/PipelineSteps'
 import '@sto-steps/components/PipelineSteps'
 import { StepViewType } from '../AbstractSteps/Step'
 
+const cloneCodebaseKeyRef = 'stage.spec.cloneCodebase'
 export const clearRuntimeInput = (template: PipelineInfoConfig): PipelineInfoConfig => {
   return JSON.parse(
     JSON.stringify(template || {}).replace(/"<\+input>.?(?:allowedValues\((.*?)\)|regex\((.*?)\))?"/g, '""')
@@ -355,8 +359,10 @@ export const validateCICodebase = ({
   getString
 }: ValidatePipelineProps): FormikErrors<PipelineInfoConfig> => {
   const errors = {}
-  const shouldValidateCICodebase = originalPipeline?.stages?.some(stage =>
-    Object.is(get(stage, 'stage.spec.cloneCodebase'), true)
+  const requiresConnectorRuntimeInputValue =
+    template?.properties?.ci?.codebase?.connectorRef && !pipeline?.properties?.ci?.codebase?.connectorRef
+  const shouldValidateCICodebase = originalPipeline?.stages?.some(
+    stage => Object.is(get(stage, cloneCodebaseKeyRef), true) && !requiresConnectorRuntimeInputValue // ci codebase field is hidden until connector is selected
   )
 
   if (
@@ -378,12 +384,12 @@ export const validateCICodebase = ({
       set(
         errors,
         'properties.ci.codebase.build.type',
-        getString?.('fieldRequired', { field: getString?.('pipeline.ciCodebase.buildType') })
+        getString?.('fieldRequired', { field: getString?.('pipeline.ciCodebase.ciCodebaseBuildType') })
       )
     }
 
     if (
-      pipeline?.properties?.ci?.codebase?.build?.type === 'branch' &&
+      pipeline?.properties?.ci?.codebase?.build?.type === CodebaseTypes.branch &&
       isEmpty(pipeline?.properties?.ci?.codebase?.build?.spec?.branch)
     ) {
       set(
@@ -394,20 +400,102 @@ export const validateCICodebase = ({
     }
 
     if (
-      pipeline?.properties?.ci?.codebase?.build?.type === 'tag' &&
+      pipeline?.properties?.ci?.codebase?.build?.type === CodebaseTypes.tag &&
       isEmpty(pipeline?.properties?.ci?.codebase?.build?.spec?.tag)
     ) {
       set(errors, 'properties.ci.codebase.build.spec.tag', getString?.('fieldRequired', { field: getString('gitTag') }))
     }
 
     if (
-      pipeline?.properties?.ci?.codebase?.build?.type === 'PR' &&
+      pipeline?.properties?.ci?.codebase?.build?.type === CodebaseTypes.PR &&
       isEmpty(pipeline?.properties?.ci?.codebase?.build?.spec?.number)
     ) {
       set(
         errors,
         'properties.ci.codebase.build.spec.number',
         getString?.('fieldRequired', { field: getString?.('pipeline.gitPullRequestNumber') })
+      )
+    }
+  }
+
+  if (requiresConnectorRuntimeInputValue) {
+    set(
+      errors,
+      'properties.ci.codebase.connectorRef',
+      getString?.('fieldRequired', { field: getString?.('connector') })
+    )
+  }
+
+  if (template?.properties?.ci?.codebase?.repoName && pipeline?.properties?.ci?.codebase?.repoName?.trim() === '') {
+    // connector with account url type will remove repoName requirement
+    set(
+      errors,
+      'properties.ci.codebase.repoName',
+      getString?.('fieldRequired', { field: getString?.('common.repositoryName') })
+    )
+  }
+
+  if (template?.properties?.ci?.codebase?.depth) {
+    const depth = pipeline?.properties?.ci?.codebase?.depth
+    if (
+      (depth || depth === ('' as any) || depth === 0) &&
+      ((typeof depth === 'number' && depth < 1) ||
+        typeof depth !== 'number' ||
+        (typeof depth === 'string' && parseInt(depth) < 1))
+    ) {
+      set(errors, 'properties.ci.codebase.depth', getString?.('pipeline.ciCodebase.validation.optionalDepth'))
+    }
+  }
+
+  if (template?.properties?.ci?.codebase?.sslVerify) {
+    const sslVerify = pipeline?.properties?.ci?.codebase?.sslVerify
+    if (sslVerify === ('' as any) || !isBoolean(sslVerify)) {
+      set(errors, 'properties.ci.codebase.sslVerify', getString?.('pipeline.ciCodebase.validation.optionalSslVerify'))
+    }
+  }
+
+  if (template?.properties?.ci?.codebase?.prCloneStrategy) {
+    // error will appear in yaml view
+    const prCloneStrategy = pipeline?.properties?.ci?.codebase?.prCloneStrategy
+    const prCloneStrategyOptions = (getString && getPrCloneStrategyOptions(getString)) || []
+    const prCloneStrategyOptionsValues = prCloneStrategyOptions.map(option => option.value)
+    if (
+      prCloneStrategy === ('' as any) ||
+      (prCloneStrategy && !prCloneStrategyOptionsValues.some(value => value === prCloneStrategy))
+    ) {
+      set(
+        errors,
+        'properties.ci.codebase.prCloneStrategy',
+        getString?.('pipeline.ciCodebase.validation.optionalPrCloneStrategy', {
+          values: prCloneStrategyOptionsValues.join(', ')
+        })
+      )
+    }
+  }
+
+  if (template?.properties?.ci?.codebase?.resources?.limits?.memory) {
+    const memoryLimit = pipeline?.properties?.ci?.codebase?.resources?.limits?.memory
+    const pattern = /^\d+(\.\d+)?$|^\d+(\.\d+)?(G|M|Gi|Mi|MiB)$|^$/
+    if (
+      memoryLimit === '' ||
+      (memoryLimit && (!pattern.test(memoryLimit) || !isNaN(memoryLimit as unknown as number)))
+    ) {
+      set(
+        errors,
+        'properties.ci.codebase.resources.limits.memory',
+        getString?.('pipeline.ciCodebase.validation.optionalLimitMemory')
+      )
+    }
+  }
+
+  if (template?.properties?.ci?.codebase?.resources?.limits?.cpu) {
+    const cpuLimit = pipeline?.properties?.ci?.codebase?.resources?.limits?.cpu
+    const pattern = /^\d+(\.\d+)?$|^\d+m$|^$/
+    if (cpuLimit === '' || (cpuLimit && (!pattern.test(cpuLimit) || !isNaN(cpuLimit as unknown as number)))) {
+      set(
+        errors,
+        'properties.ci.codebase.resources.limits.cpu',
+        getString?.('pipeline.ciCodebase.validation.optionalLimitCPU')
       )
     }
   }
@@ -553,8 +641,8 @@ export const getErrorsList = memoize((errors: any): { errorStrings: string[]; er
 export const validateCICodebaseConfiguration = ({ pipeline, getString }: Partial<ValidatePipelineProps>): string => {
   const shouldValidateCICodebase = pipeline?.stages?.some(
     stage =>
-      Object.is(get(stage, 'stage.spec.cloneCodebase'), true) ||
-      stage.parallel?.some(parallelStage => Object.is(get(parallelStage, 'stage.spec.cloneCodebase'), true))
+      Object.is(get(stage, cloneCodebaseKeyRef), true) ||
+      stage.parallel?.some(parallelStage => Object.is(get(parallelStage, cloneCodebaseKeyRef), true))
   )
   if (
     shouldValidateCICodebase &&
