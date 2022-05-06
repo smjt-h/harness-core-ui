@@ -174,13 +174,7 @@ if (isCypress && isCypressCoverage) {
     }
   })
 } else if (!DISABLE_TYPECHECK) {
-  mergedConfig.plugins.push(
-    new ForkTsCheckerWebpackPlugin({
-      typescript: {
-        memoryLimit: 4096
-      }
-    })
-  )
+  mergedConfig.plugins.push(new ForkTsCheckerWebpackPlugin())
 }
 
 module.exports = mergedConfig
