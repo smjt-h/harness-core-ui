@@ -22,20 +22,14 @@ export function CreateStackVariableStep({
   return (
     <>
       <VariablesListTable
-        data={variablesData.spec?.provisionerIdentifier}
-        originalData={initialValues.spec?.provisionerIdentifier}
+        data={variablesData.spec}
+        originalData={initialValues.spec}
         metadataMap={metadataMap}
         className={pipelineVariableCss.variablePaddingL3}
       />
       <VariablesListTable
-        data={variablesData.spec?.configuration?.connectorRef}
-        originalData={initialValues.spec?.configuration?.connectorRef}
-        metadataMap={metadataMap}
-        className={pipelineVariableCss.variablePaddingL3}
-      />
-      <VariablesListTable
-        data={variablesData.spec?.configuration?.region}
-        originalData={initialValues.spec?.configuration?.region}
+        data={variablesData.spec?.configuration}
+        originalData={initialValues.spec?.configuration}
         metadataMap={metadataMap}
         className={pipelineVariableCss.variablePaddingL3}
       />
@@ -52,7 +46,7 @@ export function CreateStackVariableStep({
         metadataMap={metadataMap}
         className={pipelineVariableCss.variablePaddingL3}
       />
-      {variablesData.spec?.configuration?.parameters && (
+      {variablesData.spec?.configuration?.parameters?.length && (
         <Text className={css.title}>{getString('cd.cloudFormation.parameterFileDetails')}</Text>
       )}
       {((variablesData.spec?.configuration?.parameters as []) || [])?.map((envVar, index) => (
@@ -64,7 +58,7 @@ export function CreateStackVariableStep({
           className={pipelineVariableCss.variablePaddingL3}
         />
       ))}
-      {variablesData.spec?.configuration?.parameterOverrides && (
+      {variablesData.spec?.configuration?.parameterOverrides?.length && (
         <Text className={css.title}>{getString('cd.cloudFormation.inlineParameterFiles')}</Text>
       )}
       {((variablesData.spec?.configuration?.parameterOverrides as []) || [])?.map((envVar, index) => (
