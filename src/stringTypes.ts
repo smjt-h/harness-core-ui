@@ -2523,7 +2523,6 @@ export interface StringsMap {
   'pipeline.ci.validations.pathRequiredForHostPath': string
   'pipeline.ci.validations.port': string
   'pipeline.ci.validations.serviceDependencyIdentifier': string
-  'pipeline.ciCodebase.buildType': string
   'pipeline.ciCodebase.ciCodebaseBuildType': string
   'pipeline.ciCodebase.prCloneStrategy': string
   'pipeline.ciCodebase.pullRequestNumber': string
