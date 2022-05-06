@@ -28,14 +28,14 @@ import { Scope } from '@common/interfaces/SecretsInterface'
 import { Connectors } from '@connectors/constants'
 import { useVariablesExpression } from '@pipeline/components/PipelineStudio/PiplineHooks/useVariablesExpression'
 import { ConnectorInfoDTO, PipelineInfoConfig, useGetConnector } from 'services/cd-ng'
-import { getConnectorRefWidth, getPrCloneStrategyOptions, sslVerifyOptions } from '@pipeline/utils/constants'
+import { getPrCloneStrategyOptions, sslVerifyOptions } from '@pipeline/utils/constants'
 import { FormMultiTypeConnectorField } from '@connectors/components/ConnectorReferenceField/FormMultiTypeConnectorField'
 import { MultiTypeTextField } from '@common/components/MultiTypeText/MultiTypeText'
 import { MultiTypeSelectField } from '@common/components/MultiTypeSelect/MultiTypeSelect'
 import type { GitQueryParams } from '@common/interfaces/RouteInterfaces'
 import { useQueryParams } from '@common/hooks'
 import { getOptionalSubLabel } from '@pipeline/components/Volumes/Volumes'
-import { CodebaseTypes } from '@pipeline/utils/CIUtils'
+import { CodebaseTypes, getConnectorRefWidth } from '@pipeline/utils/CIUtils'
 import { isRuntimeInput } from '../PipelineStudio/RightBar/RightBarUtils'
 import { StepViewType } from '../AbstractSteps/Step'
 import css from './CICodebaseInputSetForm.module.scss'
@@ -162,6 +162,7 @@ function CICodebaseInputSetFormInternal({
   const [connectorRef, setConnectorRef] = useState<string>('')
   const [codeBaseType, setCodeBaseType] = useState<CodeBaseType>()
 
+  const connectorWidth = getConnectorRefWidth(viewType === StepViewType.DeploymentForm ? 'DefaultView' : viewType)
   const [connectionType, setConnectionType] = React.useState('')
   const [connectorUrl, setConnectorUrl] = React.useState('')
   const isConnectorRuntimeInput = template?.properties?.ci?.codebase?.connectorRef
@@ -372,7 +373,7 @@ function CICodebaseInputSetFormInternal({
             <Container width="50%">
               <FormMultiTypeConnectorField
                 name={codeBaseInputFieldFormName.connectorRef}
-                width={getConnectorRefWidth(viewType)}
+                width={connectorWidth}
                 error={formik?.errors?.connectorRef}
                 type={[
                   Connectors.GIT,
@@ -452,7 +453,7 @@ function CICodebaseInputSetFormInternal({
                 !isRuntimeInput(formik?.values.repoName) &&
                 connectorUrl?.length > 0 ? (
                   <div className={css.predefinedValue}>
-                    <Text lineClamp={1} width="460px">
+                    <Text lineClamp={1} width={connectorWidth ? connectorWidth : '460px'}>
                       {(connectorUrl[connectorUrl.length - 1] === '/' ? connectorUrl : connectorUrl + '/') +
                         get(formik?.values, codeBaseInputFieldFormName.repoName, '')}
                     </Text>

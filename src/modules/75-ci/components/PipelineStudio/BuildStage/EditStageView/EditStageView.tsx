@@ -39,10 +39,10 @@ import { useTelemetry } from '@common/hooks/useTelemetry'
 import { Category, StageActions } from '@common/constants/TrackingConstants'
 import { isContextTypeNotStageTemplate } from '@pipeline/components/PipelineStudio/PipelineUtils'
 import {
+  isRuntimeInput,
   renderConnectorAndRepoName,
   CodebaseRuntimeInputsInterface
-} from '@pipeline/components/PipelineStudio/RightBar/RightBar'
-import { isRuntimeInput } from '@pipeline/components/PipelineStudio/RightBar/RightBarUtils'
+} from '@pipeline/components/PipelineStudio/RightBar/RightBarUtils'
 import css from './EditStageView.module.scss'
 
 export interface EditStageView {

@@ -5,7 +5,7 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import React, { SetStateAction, Dispatch } from 'react'
+import React from 'react'
 import * as Yup from 'yup'
 import cx from 'classnames'
 import {
@@ -15,7 +15,6 @@ import {
   Formik,
   FormikForm,
   RUNTIME_INPUT_VALUE,
-  TextInput,
   Text,
   Layout,
   getMultiTypeFromValue,
@@ -31,7 +30,7 @@ import { Color, FontVariation } from '@harness/design-system'
 
 import { Classes, Dialog } from '@blueprintjs/core'
 import produce from 'immer'
-import { useStrings, UseStringsReturn } from 'framework/strings'
+import { useStrings } from 'framework/strings'
 import type { MultiTypeSelectOption } from '@pipeline/components/PipelineSteps/Steps/StepsTypes'
 import {
   ConnectorInfoDTO,
@@ -42,7 +41,6 @@ import {
   useGetConnector
 } from 'services/cd-ng'
 import type { ConnectorReferenceFieldProps } from '@connectors/components/ConnectorReferenceField/ConnectorReferenceField'
-import { FormMultiTypeConnectorField } from '@connectors/components/ConnectorReferenceField/FormMultiTypeConnectorField'
 import { MultiTypeTextField } from '@common/components/MultiTypeText/MultiTypeText'
 import { MultiTypeSelectField } from '@common/components/MultiTypeSelect/MultiTypeSelect'
 import {
@@ -51,27 +49,19 @@ import {
   getScopeFromValue
 } from '@common/components/EntityReference/EntityReference'
 import { useVariablesExpression } from '@pipeline/components/PipelineStudio/PiplineHooks/useVariablesExpression'
-import { ConnectorRefWidth, getPrCloneStrategyOptions, sslVerifyOptions } from '@pipeline/utils/constants'
+import { getPrCloneStrategyOptions, sslVerifyOptions } from '@pipeline/utils/constants'
 import { getOptionalSubLabel } from '@pipeline/components/Volumes/Volumes'
-import {
-  handleCIConnectorRefOnChange,
-  ConnectionType,
-  ConnectorRefInterface
-} from '@pipeline/components/PipelineInputSetForm/CICodebaseInputSetForm'
+import { ConnectionType } from '@pipeline/components/PipelineInputSetForm/CICodebaseInputSetForm'
 import type { PipelineType, GitQueryParams } from '@common/interfaces/RouteInterfaces'
 import { Scope } from '@common/interfaces/SecretsInterface'
 import { useFeatureFlag } from '@common/hooks/useFeatureFlag'
 import { FeatureFlag } from '@common/featureFlags'
-import {
-  generateSchemaForLimitCPU,
-  generateSchemaForLimitMemory
-} from '@pipeline/components/PipelineSteps/Steps/StepsValidateUtils'
 import { Connectors } from '@connectors/constants'
 import { useQueryParams } from '@common/hooks'
 import { PipelineContextType, usePipelineContext } from '../PipelineContext/PipelineContext'
-import { isRuntimeInput } from './RightBarUtils'
 import { DrawerTypes } from '../PipelineContext/PipelineActions'
 import { RightDrawer } from '../RightDrawer/RightDrawer'
+import { isRuntimeInput, renderConnectorAndRepoName, validateCIForm } from './RightBarUtils'
 import css from './RightBar.module.scss'
 
 export interface CodebaseRuntimeInputsInterface {
@@ -109,140 +99,6 @@ declare global {
     OPEN_PIPELINE_TEMPLATE_RIGHT_DRAWER: CustomEvent
   }
 }
-
-const getConnectorWidth = ({
-  connectorWidth,
-  connectorRef
-}: {
-  connectorWidth?: number
-  connectorRef?: string
-}): number | undefined => {
-  if (connectorWidth) {
-    return !isRuntimeInput(connectorRef) ? ConnectorRefWidth.EditStageView : ConnectorRefWidth.EditStageViewInputSet
-  }
-  return (!isRuntimeInput(connectorRef) && ConnectorRefWidth.RightBarView) || undefined
-}
-
-export const renderConnectorAndRepoName = ({
-  values,
-  setFieldValue,
-  connectorUrl,
-  connectionType,
-  setConnectionType,
-  setConnectorUrl,
-  getString,
-  errors,
-  loading,
-  accountId,
-  projectIdentifier,
-  orgIdentifier,
-  repoIdentifier,
-  branch,
-  expressions,
-  isReadonly,
-  setCodebaseRuntimeInputs,
-  codebaseRuntimeInputs,
-  connectorWidth
-}: {
-  values: { [key: string]: any }
-  setFieldValue: (field: string, value: any) => void
-  connectorUrl: string
-  connectionType: string
-  setConnectionType: Dispatch<SetStateAction<string>>
-  setConnectorUrl: Dispatch<SetStateAction<string>>
-  getString: UseStringsReturn['getString']
-  errors: { [key: string]: any }
-  loading: boolean
-  accountId: string
-  projectIdentifier: string
-  orgIdentifier: string
-  repoIdentifier?: string
-  branch?: string
-  expressions: string[]
-  isReadonly: boolean
-  setCodebaseRuntimeInputs: Dispatch<SetStateAction<CodebaseRuntimeInputsInterface>>
-  codebaseRuntimeInputs: CodebaseRuntimeInputsInterface
-  connectorWidth?: number
-}): JSX.Element => (
-  <>
-    <Container className={css.bottomMargin3}>
-      <FormMultiTypeConnectorField
-        name="connectorRef"
-        type={[Connectors.GIT, Connectors.GITHUB, Connectors.GITLAB, Connectors.BITBUCKET, Connectors.AWS_CODECOMMIT]}
-        label={getString('connector')}
-        width={getConnectorWidth({ connectorWidth, connectorRef: values.connectorRef })}
-        error={errors?.connectorRef}
-        placeholder={loading ? getString('loading') : getString('connectors.selectConnector')}
-        accountIdentifier={accountId}
-        projectIdentifier={projectIdentifier}
-        orgIdentifier={orgIdentifier}
-        gitScope={{ repo: repoIdentifier || '', branch, getDefaultFromOtherRepo: true }}
-        multiTypeProps={{
-          expressions,
-          disabled: isReadonly,
-          allowableTypes: [MultiTypeInputType.FIXED, MultiTypeInputType.RUNTIME] // BE does not support expressions
-        }}
-        onChange={(value, _valueType, connectorRefType) => {
-          handleCIConnectorRefOnChange({
-            value: value as ConnectorRefInterface,
-            connectorRefType,
-            setConnectionType,
-            setConnectorUrl,
-            setFieldValue
-          })
-
-          setCodebaseRuntimeInputs({
-            ...codebaseRuntimeInputs,
-            connectorRef: isRuntimeInput(value),
-            repoName: connectorRefType === MultiTypeInputType.RUNTIME
-          })
-        }}
-      />
-    </Container>
-
-    {!isRuntimeInput(values.connectorRef) && connectionType === ConnectionType.Repo ? (
-      <>
-        <Text font={{ variation: FontVariation.FORM_LABEL }} margin={{ bottom: 'xsmall' }}>
-          {getString('common.repositoryName')}
-        </Text>
-        <TextInput name="repoName" value={connectorUrl} style={{ flexGrow: 1 }} disabled />
-      </>
-    ) : (
-      <>
-        <Container className={css.bottomMargin3}>
-          <MultiTypeTextField
-            key={`connector-runtimeinput-${codebaseRuntimeInputs.connectorRef}`} // handle reload RepoName from ConnectorRef as Runtime to Fixed
-            label={
-              <Text
-                font={{ variation: FontVariation.FORM_LABEL }}
-                margin={{ bottom: 'xsmall' }}
-                tooltipProps={{ dataTooltipId: 'rightBarForm_repoName' }}
-              >
-                {getString('common.repositoryName')}
-              </Text>
-            }
-            name="repoName"
-            multiTextInputProps={{
-              multiTextInputProps: {
-                expressions,
-                allowableTypes: [MultiTypeInputType.FIXED, MultiTypeInputType.RUNTIME]
-              },
-              disabled: isReadonly || (isRuntimeInput(values.connectorRef) && isRuntimeInput(values.repoName)) // connector is a runtime input
-            }}
-          />
-        </Container>
-        {!isRuntimeInput(values.connectorRef) && !isRuntimeInput(values.repoName) && connectorUrl?.length > 0 ? (
-          <div className={css.predefinedValue}>
-            <Text lineClamp={1} width={connectorWidth ? connectorWidth : '460px'}>
-              {(connectorUrl[connectorUrl.length - 1] === '/' ? connectorUrl : connectorUrl + '/') +
-                (values.repoName ? values.repoName : '')}
-            </Text>
-          </div>
-        ) : null}
-      </>
-    )}
-  </>
-)
 
 export function RightBar(): JSX.Element {
   const {
@@ -646,32 +502,7 @@ export function RightBar(): JSX.Element {
                   repoName: Yup.string().required(getString('common.validation.repositoryName'))
                 })
             })}
-            validate={values => {
-              const errors = {}
-              if (getMultiTypeFromValue(values.depth) === MultiTypeInputType.FIXED) {
-                try {
-                  Yup.number()
-                    .notRequired()
-                    .integer(getString('pipeline.onlyPositiveInteger'))
-                    .positive(getString('pipeline.onlyPositiveInteger'))
-                    .typeError(getString('pipeline.onlyPositiveInteger'))
-                    .validateSync(values.depth === '' ? undefined : values.depth)
-                } catch (error) {
-                  set(errors, 'depth', error.message)
-                }
-              }
-              try {
-                generateSchemaForLimitMemory({ getString }).validateSync(values.memoryLimit)
-              } catch (error) {
-                set(errors, 'memoryLimit', error.message)
-              }
-              try {
-                generateSchemaForLimitCPU({ getString }).validateSync(values.cpuLimit)
-              } catch (error) {
-                set(errors, 'cpuLimit', error.message)
-              }
-              return errors
-            }}
+            validate={values => validateCIForm({ values, getString })}
             onSubmit={(values): void => {
               const pipelineData = produce(pipeline, draft => {
                 set(draft, 'properties.ci.codebase', {

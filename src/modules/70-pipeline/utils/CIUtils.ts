@@ -105,5 +105,5 @@ export const shouldRenderRunTimeInputViewWithAllowedValues = (
   return shouldRenderRunTimeInputView(allowedValues) && RegExAllowedInputExpression.test(allowedValues)
 }
 
-export const getConnectorRefWidth = (viewType: StepViewType): number =>
+export const getConnectorRefWidth = (viewType: StepViewType | string): number =>
   Object.entries(ConnectorRefWidth).find(key => key[0] === viewType)?.[1] || ConnectorRefWidth.DefaultView

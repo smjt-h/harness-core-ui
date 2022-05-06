@@ -42,6 +42,7 @@ import '@ci/components/PipelineSteps'
 import '@sto-steps/components/PipelineSteps'
 import { StepViewType } from '../AbstractSteps/Step'
 
+const cloneCodebaseKeyRef = 'stage.spec.cloneCodebase'
 export const clearRuntimeInput = (template: PipelineInfoConfig): PipelineInfoConfig => {
   return JSON.parse(
     JSON.stringify(template || {}).replace(/"<\+input>.?(?:allowedValues\((.*?)\)|regex\((.*?)\))?"/g, '""')
@@ -361,7 +362,7 @@ export const validateCICodebase = ({
   const requiresConnectorRuntimeInputValue =
     template?.properties?.ci?.codebase?.connectorRef && !pipeline?.properties?.ci?.codebase?.connectorRef
   const shouldValidateCICodebase = originalPipeline?.stages?.some(
-    stage => Object.is(get(stage, 'stage.spec.cloneCodebase'), true) && !requiresConnectorRuntimeInputValue // ci codebase field is hidden until connector is selected
+    stage => Object.is(get(stage, cloneCodebaseKeyRef), true) && !requiresConnectorRuntimeInputValue // ci codebase field is hidden until connector is selected
   )
 
   if (
@@ -437,7 +438,7 @@ export const validateCICodebase = ({
   if (template?.properties?.ci?.codebase?.depth) {
     const depth = pipeline?.properties?.ci?.codebase?.depth
     if (
-      (depth || depth == 0) &&
+      (depth || depth === ('' as any) || depth === 0) &&
       ((typeof depth === 'number' && depth < 1) ||
         typeof depth !== 'number' ||
         (typeof depth === 'string' && parseInt(depth) < 1))
@@ -448,7 +449,7 @@ export const validateCICodebase = ({
 
   if (template?.properties?.ci?.codebase?.sslVerify) {
     const sslVerify = pipeline?.properties?.ci?.codebase?.sslVerify
-    if (sslVerify && !isBoolean(sslVerify)) {
+    if (sslVerify === ('' as any) || !isBoolean(sslVerify)) {
       set(errors, 'properties.ci.codebase.sslVerify', getString?.('pipeline.ciCodebase.validation.optionalSslVerify'))
     }
   }
@@ -458,7 +459,10 @@ export const validateCICodebase = ({
     const prCloneStrategy = pipeline?.properties?.ci?.codebase?.prCloneStrategy
     const prCloneStrategyOptions = (getString && getPrCloneStrategyOptions(getString)) || []
     const prCloneStrategyOptionsValues = prCloneStrategyOptions.map(option => option.value)
-    if (prCloneStrategy && !prCloneStrategyOptionsValues.some(value => value === prCloneStrategy)) {
+    if (
+      prCloneStrategy === ('' as any) ||
+      (prCloneStrategy && !prCloneStrategyOptionsValues.some(value => value === prCloneStrategy))
+    ) {
       set(
         errors,
         'properties.ci.codebase.prCloneStrategy',
@@ -637,8 +641,8 @@ export const getErrorsList = memoize((errors: any): { errorStrings: string[]; er
 export const validateCICodebaseConfiguration = ({ pipeline, getString }: Partial<ValidatePipelineProps>): string => {
   const shouldValidateCICodebase = pipeline?.stages?.some(
     stage =>
-      Object.is(get(stage, 'stage.spec.cloneCodebase'), true) ||
-      stage.parallel?.some(parallelStage => Object.is(get(parallelStage, 'stage.spec.cloneCodebase'), true))
+      Object.is(get(stage, cloneCodebaseKeyRef), true) ||
+      stage.parallel?.some(parallelStage => Object.is(get(parallelStage, cloneCodebaseKeyRef), true))
   )
   if (
     shouldValidateCICodebase &&
