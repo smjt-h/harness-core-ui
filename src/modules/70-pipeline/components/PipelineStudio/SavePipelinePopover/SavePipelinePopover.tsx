@@ -116,12 +116,19 @@ export function SavePipelinePopover({
   const [updatePipelineAPIResponse, setUpdatePipelineAPIResponse] = React.useState<any>()
   const [governanceMetadata, setGovernanceMetadata] = React.useState<GovernanceMetadata>()
 
-  const [showOPAErrorModal] = useModalHook(
+  const [showOPAErrorModal, closeOPAErrorModal] = useModalHook(
     () => (
       <EvaluationModal
         accountId={accountId}
         metadata={governanceMetadata}
         headingErrorMessage={getString('pipeline.policyEvaluations.failedToSavePipeline')}
+        closeModal={() => {
+          closeOPAErrorModal()
+          const { status, newPipelineId, updatedGitDetails } = governanceMetadata as GovernanceMetadata
+          if (status === 'warning') {
+            publishPipeline(newPipelineId, updatedGitDetails)
+          }
+        }}
       />
     ),
     [governanceMetadata]
@@ -192,6 +199,24 @@ export function SavePipelinePopover({
     [updatePipelineAPIResponse]
   )
 
+  const publishPipeline = async (newPipelineId: string, updatedGitDetails?: SaveToGitFormInterface) => {
+    if (pipelineIdentifier === DefaultNewPipelineId) {
+      await deletePipelineCache(gitDetails)
+
+      showSuccess(getString('pipelines-studio.publishPipeline'))
+
+      navigateToLocation(newPipelineId, updatedGitDetails)
+      // note: without setTimeout does not redirect properly after save
+      await fetchPipeline({ forceFetch: true, forceUpdate: true, newPipelineId })
+    } else {
+      await fetchPipeline({ forceFetch: true, forceUpdate: true })
+    }
+    if (updatedGitDetails?.isNewBranch) {
+      navigateToLocation(newPipelineId, updatedGitDetails)
+      location.reload()
+    }
+  }
+
   const saveAndPublishPipeline = async (
     latestPipeline: PipelineInfoConfig,
     updatedGitDetails?: SaveToGitFormInterface,
@@ -218,31 +243,14 @@ export function SavePipelinePopover({
 
     if (response && response.status === 'SUCCESS') {
       const governanceData: GovernanceMetadata | undefined = get(response, 'data.governanceMetadata')
-      setGovernanceMetadata(governanceData)
-      if (
-        OPA_PIPELINE_GOVERNANCE &&
-        (governanceMetadata?.status === 'error' || governanceMetadata?.status === 'warning')
-      ) {
+      setGovernanceMetadata({ ...governanceData, newPipelineId, updatedGitDetails })
+      if (OPA_PIPELINE_GOVERNANCE && (governanceData?.status === 'error' || governanceData?.status === 'warning')) {
         showOPAErrorModal()
       }
       // Handling cache and page navigation only when Governance is disabled, or Governance Evaluation is successful
       // Otherwise, keep current pipeline editing states, and show Governance evaluation error
-      if (governanceData?.status !== 'error') {
-        if (pipelineIdentifier === DefaultNewPipelineId) {
-          await deletePipelineCache(gitDetails)
-
-          showSuccess(getString('pipelines-studio.publishPipeline'))
-
-          navigateToLocation(newPipelineId, updatedGitDetails)
-          // note: without setTimeout does not redirect properly after save
-          await fetchPipeline({ forceFetch: true, forceUpdate: true, newPipelineId })
-        } else {
-          await fetchPipeline({ forceFetch: true, forceUpdate: true })
-        }
-        if (updatedGitDetails?.isNewBranch) {
-          navigateToLocation(newPipelineId, updatedGitDetails)
-          location.reload()
-        }
+      if (governanceData?.status !== 'error' && governanceData?.status !== 'warning') {
+        await publishPipeline(newPipelineId, updatedGitDetails)
       }
       if (isEdit) {
         trackEvent(isYaml ? PipelineActions.PipelineUpdatedViaYAML : PipelineActions.PipelineUpdatedViaVisual, {})
