@@ -335,7 +335,7 @@ describe('RightBar', () => {
     act(() => {
       fireEvent.click(applyBtn)
     })
-    expect(dialog).toMatchSnapshot('temp')
+    expect(dialog).toMatchSnapshot()
   })
 
   test('Renders validation errors', async () => {
