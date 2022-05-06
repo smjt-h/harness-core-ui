@@ -6,7 +6,7 @@
  */
 
 import type { NotificationChannelWrapper } from 'services/cd-ng'
-import type { NotificationRule } from '../ConfigureAlertConditions/ConfigureAlertConditions.types'
+import type { NotificationRule } from '../../NotificationsContainer.types'
 
 export interface SRMNotificationRules {
   enabled?: boolean

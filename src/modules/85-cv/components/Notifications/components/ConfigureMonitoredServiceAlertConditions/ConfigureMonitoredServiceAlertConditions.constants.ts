@@ -24,5 +24,3 @@ export const changeTypeOptions: SelectOption[] = [
   { label: 'Infrastructure', value: ChangeType.INFRASTRUCTURE },
   { label: 'Incident', value: ChangeType.INCIDENT }
 ]
-
-export const defaultOption = { label: '', value: '' }

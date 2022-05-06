@@ -6,9 +6,10 @@
  */
 
 import type { StepProps, SelectOption, MultiSelectOption } from '@harness/uicore'
-import type { SRMNotificationRules } from '../SRMNotificationTable/SRMNotificationTable.types'
+import type { NotificationChannelWrapper } from 'services/cd-ng'
 
-export type ConfigureAlertConditionsProps = StepProps<SRMNotificationRules>
+export type ConfigureMonitoredServiceAlertConditionsProps = StepProps<SRMNotificationRules>
+export type ConfigureSLOAlertConditionsProps = StepProps<SRMNotificationRules>
 
 export type NotificationConditions = StepProps<SRMNotificationRules> & {
   notificationRules: NotificationRule[]
@@ -20,4 +21,16 @@ export interface NotificationRule {
   changeType?: MultiSelectOption[]
   value?: string | SelectOption
   duration?: string | SelectOption
+}
+
+export interface SRMNotificationRules {
+  enabled?: boolean
+  name?: string
+  notificationMethod?: NotificationChannelWrapper
+  notificationRules?: NotificationRule[]
+}
+
+export interface NotificationRulesItem {
+  index: number
+  notificationRules: SRMNotificationRules
 }

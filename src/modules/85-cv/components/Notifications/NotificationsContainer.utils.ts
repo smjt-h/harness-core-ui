@@ -7,9 +7,8 @@
 
 import type { MultiSelectOption, SelectOption } from '@harness/uicore'
 import { v4 as uuid } from 'uuid'
-import type { SRMNotificationRules } from '../SRMNotificationTable/SRMNotificationTable.types'
-import { defaultOption } from './ConfigureAlertConditions.constants'
-import type { NotificationRule } from './ConfigureAlertConditions.types'
+import { defaultOption } from './NotificationsContainer.constants'
+import type { NotificationRule, SRMNotificationRules } from './NotificationsContainer.types'
 
 export const createNotificationRule = (): NotificationRule => {
   return {

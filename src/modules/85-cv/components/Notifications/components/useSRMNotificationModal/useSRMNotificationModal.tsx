@@ -11,20 +11,23 @@ import { StepWizard, Button } from '@wings-software/uicore'
 import { useModalHook } from '@harness/use-modal'
 import { Dialog, Classes } from '@blueprintjs/core'
 import cx from 'classnames'
+import { useParams } from 'react-router'
 import { useStrings } from 'framework/strings'
 import NotificationMethods from '@pipeline/components/Notifications/Steps/NotificationMethods'
 import { NotificationTypeSelectOptions } from '@notifications/constants'
 import { Actions } from '@pipeline/components/Notifications/NotificationUtils'
 
 import Overview from '@pipeline/components/Notifications/Steps/Overview'
-import ConfigureAlertConditions from '../ConfigureAlertConditions/ConfigureAlertConditions'
+import { useSaveNotificationRuleData } from 'services/cv'
 import type { SRMNotificationRules } from '../SRMNotificationTable/SRMNotificationTable.types'
 import css from './useSRMNotificationModal.module.scss'
+import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
 
 export interface UseNotificationModalProps {
   onCloseModal?: () => void
   onCreateOrUpdate?: (data?: SRMNotificationRules, index?: number, action?: Actions) => void
   getExistingNotificationNames?: (skipIndex?: number) => string[]
+  notificationRulesComponent: JSX.Element
 }
 
 export interface UseNotificationModalReturn {
@@ -40,14 +43,36 @@ enum Views {
 export const useSRMNotificationModal = ({
   onCreateOrUpdate,
   onCloseModal,
-  getExistingNotificationNames
+  getExistingNotificationNames,
+  notificationRulesComponent
 }: UseNotificationModalProps): UseNotificationModalReturn => {
+  const { accountId, orgIdentifier, projectIdentifier } = useParams<ProjectPathProps>()
+
   const [view, setView] = useState(Views.CREATE)
   const [index, setIndex] = useState<number>()
   const [notificationRules, setNotificationRules] = useState<SRMNotificationRules>()
   const { getString } = useStrings()
+
+  const {
+    mutate: saveNotificationRuleData,
+    loading: timeSeriesDataLoading,
+    error: timeseriesDataError
+  } = useSaveNotificationRuleData({
+    queryParams: {
+      accountId
+    }
+  })
+
   const wizardCompleteHandler = async (wizardData?: SRMNotificationRules): Promise<void> => {
-    onCreateOrUpdate?.(wizardData, index, view === Views.CREATE ? Actions.Added : Actions.Update)
+    // onCreateOrUpdate?.(wizardData, index, view === Views.CREATE ? Actions.Added : Actions.Update)
+    saveNotificationRuleData({
+      identifier: wizardData?.name as string,
+      name: wizardData?.name as string,
+      orgIdentifier,
+      projectIdentifier,
+      spec: {},
+      type: 'slo'
+    })
   }
 
   const [showModal, hideModal] = useModalHook(
@@ -74,7 +99,8 @@ export const useSRMNotificationModal = ({
             data={notificationRules}
             existingNotificationNames={getExistingNotificationNames?.(index)}
           />
-          <ConfigureAlertConditions name={'Conditions'} />
+          {/* <ConfigureMonitoredServiceAlertConditions name={'Conditions'} /> */}
+          {notificationRulesComponent}
           <NotificationMethods
             name={getString('notifications.notificationMethod')}
             typeOptions={NotificationTypeSelectOptions}

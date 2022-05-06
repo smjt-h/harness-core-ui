@@ -23,6 +23,7 @@ import { useDrawer } from '@cv/hooks/useDrawerHook/useDrawerHook'
 import { ChangeSourceDrawer } from '@cv/pages/ChangeSource/ChangeSourceDrawer/ChangeSourceDrawer'
 import SaveAndDiscardButton from '@cv/components/SaveAndDiscardButton/SaveAndDiscardButton'
 import NotificationsContainer from '@cv/components/Notifications/NotificationsContainer'
+import ConfigureMonitoredServiceAlertConditions from '@cv/components/Notifications/components/ConfigureMonitoredServiceAlertConditions/ConfigureMonitoredServiceAlertConditions'
 import HealthSourceTableContainer from './components/HealthSourceTableContainer/HealthSourceTableContainer'
 import type { MonitoredServiceForm } from './Service.types'
 import MonitoredServiceOverview from './components/MonitoredServiceOverview/MonitoredServiceOverview'
@@ -217,7 +218,9 @@ function Service(
                   healthSourceListFromAPI={initialValues.sources?.healthSources}
                   serviceFormFormik={formik}
                 />
-                <NotificationsContainer />
+                <NotificationsContainer>
+                  <ConfigureMonitoredServiceAlertConditions name={'Conditions'} />
+                </NotificationsContainer>
               </>
             )}
           </div>

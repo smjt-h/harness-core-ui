@@ -24,24 +24,25 @@ import RbacButton from '@rbac/components/Button/Button'
 import { PermissionIdentifier } from '@rbac/interfaces/PermissionIdentifier'
 import { ResourceType } from '@rbac/interfaces/ResourceType'
 import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
-import type {
-  ConfigureAlertConditionsProps,
-  NotificationConditions,
-  NotificationRule
-} from './ConfigureAlertConditions.types'
+
 import {
   createNotificationRule,
   getInitialNotificationRules,
   getUpdatedNotificationRules
-} from './ConfigureAlertConditions.utils'
-import NotificationRuleRow from './components/NotificationRuleRow/NotificationRuleRow'
-import css from './ConfigureAlertConditions.module.scss'
+} from '@cv/components/Notifications/NotificationsContainer.utils'
+import type {
+  ConfigureSLOAlertConditionsProps,
+  NotificationConditions,
+  NotificationRule
+} from '@cv/components/Notifications/NotificationsContainer.types'
+import SLONotificationRuleRow from '../SLONotificationRuleRow/SLONotificationRuleRow'
+import css from './ConfigureSLOAlertConditions.module.scss'
 
-export default function ConfigureAlertConditions({
+export default function ConfigureSLOAlertConditions({
   prevStepData,
   nextStep,
   previousStep
-}: ConfigureAlertConditionsProps): JSX.Element {
+}: ConfigureSLOAlertConditionsProps): JSX.Element {
   const { projectIdentifier } = useParams<ProjectPathProps>()
   const [notificationRules, setNotificationRules] = useState<NotificationRule[]>(
     getInitialNotificationRules(prevStepData)
@@ -98,7 +99,7 @@ export default function ConfigureAlertConditions({
         {notificationRules.length
           ? notificationRules.map(notificationRule => {
               return (
-                <NotificationRuleRow
+                <SLONotificationRuleRow
                   key={notificationRule?.id}
                   showDeleteNotificationsIcon={showDeleteNotificationsIcon}
                   notificationRule={notificationRule}
@@ -134,10 +135,10 @@ export default function ConfigureAlertConditions({
         {'Configure the alert conditions for which you want to be notified.'}
       </Text>
       <Text color={Color.BLACK} font={{ weight: 'semi-bold', size: 'normal' }} padding={{ top: 'large' }}>
-        {'Category: Changes and Service Health'}
+        {'Category: SLO'}
       </Text>
       <Text font={{ size: 'small' }} padding={{ top: 'small' }}>
-        {"Focuses on changes to a service's code, configuration, behaviour, deployment and infrastructure."}
+        {'Focuses on SLO target and error budget changes on a given SLO.'}
       </Text>
       <Formik<NotificationConditions>
         initialValues={{ ...prevStepData, notificationRules: [createNotificationRule()] }}

@@ -47,6 +47,7 @@ export interface SRMNotificationTableProps {
   pageSize: number
   pageIndex: number
   getExistingNotificationNames?: (skipIndex?: number) => string[]
+  notificationRulesComponent: JSX.Element
 }
 
 type CustomColumn<T extends Record<string, any>> = Column<T> & {
@@ -150,6 +151,7 @@ function SRMNotificationTable(props: SRMNotificationTableProps): React.ReactElem
     totalItems,
     pageSize,
     pageIndex,
+    notificationRulesComponent,
     getExistingNotificationNames = (_skipIndex?: number) => []
   } = props
   const { getString } = useStrings()
@@ -159,7 +161,8 @@ function SRMNotificationTable(props: SRMNotificationTableProps): React.ReactElem
     onCreateOrUpdate: (_data?: SRMNotificationRules, _index?: number, _action?: Actions) => {
       onUpdate?.({ notificationRules: _data!, index: _index! }, _action, closeNotificationModal)
     },
-    getExistingNotificationNames
+    getExistingNotificationNames,
+    notificationRulesComponent
   })
 
   const getAddNotificationButton = (): JSX.Element => (

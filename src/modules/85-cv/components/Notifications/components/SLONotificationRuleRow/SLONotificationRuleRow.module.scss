@@ -1,0 +1,28 @@
+.sloConditionField {
+  max-width: 180px !important;
+}
+
+.field {
+  max-width: 150px !important;
+}
+
+.separator {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  opacity: 0.34;
+  border: 0.5px solid #cdd3dd;
+}
+
+h2 {
+  width: 100%;
+  text-align: center;
+  opacity: 0.34;
+  border-bottom: 0.5px solid #cdd3dd;
+  margin: 10px 0 20px;
+}
+
+h2 span {
+  background: #fff;
+  padding: 0 10px;
+}

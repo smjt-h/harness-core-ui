@@ -6,7 +6,7 @@
  */
 
 import type { MultiSelectOption, SelectOption } from '@harness/uicore'
-import type { NotificationRule } from '../../ConfigureAlertConditions.types'
+import type { NotificationRule } from '../../NotificationsContainer.types'
 
 export interface NotificationRuleRowProps {
   notificationRule: NotificationRule

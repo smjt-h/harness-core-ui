@@ -16,7 +16,12 @@ import css from './NotificationsContainer.module.scss'
 
 const PAGE_SIZE = 10
 
-export default function NotificationsContainer(): JSX.Element {
+interface NotificationsContainerProps {
+  children: JSX.Element
+}
+
+export default function NotificationsContainer(props: NotificationsContainerProps): JSX.Element {
+  const { children } = props
   const { projectIdentifier, accountId, orgIdentifier } = useParams<ProjectPathProps & { identifier: string }>()
   const [page, setPage] = useState(0)
 
@@ -44,6 +49,7 @@ export default function NotificationsContainer(): JSX.Element {
       </Text>
       <SRMNotificationTable
         data={notificationData?.slice(page * PAGE_SIZE, (page + 1) * PAGE_SIZE)}
+        notificationRulesComponent={children}
         // getExistingNotificationNames={(skipIndex?: number),[] => {
         //   return allRowsData.filter(item => item.index !== skipIndex).map(item => item.notificationRules.name!)
         // }}

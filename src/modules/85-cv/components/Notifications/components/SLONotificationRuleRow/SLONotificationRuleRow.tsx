@@ -5,15 +5,14 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import { Button, Container, Layout, MultiSelectDropDown, Select, Text, TextInput } from '@harness/uicore'
+import { Button, Container, Layout, Select, Text, TextInput } from '@harness/uicore'
 import React from 'react'
-import { conditionOptions, changeTypeOptions } from '../../ConfigureAlertConditions.constants'
+import type { NotificationRuleRowProps } from './SLONotificationRuleRow.types'
+import { getValueFromEvent } from './SLONotificationRuleRow.utils'
+import { sloConditionOptions } from './SLONotificationRuleRow.constants'
+import css from './SLONotificationRuleRow.module.scss'
 
-import type { NotificationRuleRowProps } from './NotificationRuleRow.types'
-import { getValueFromEvent } from './NotificationRuleRow.utils'
-import css from './NotificationRuleRow.module.scss'
-
-export default function NotificationRuleRow({
+export default function SLONotificationRuleRow({
   notificationRule,
   showDeleteNotificationsIcon,
   handleDeleteNotificationRule,
@@ -27,27 +26,14 @@ export default function NotificationRuleRow({
           <Text>{'Condition'}</Text>
           <Select
             name={`${id}.condition`}
-            className={css.field}
+            className={css.sloConditionField}
             value={condition}
-            items={conditionOptions}
+            items={sloConditionOptions}
             onChange={option => {
-              handleChangeField(notificationRule, option, 'condition', 'changeType', changeType)
+              handleChangeField(notificationRule, option, 'condition', 'value', changeType)
             }}
           />
         </Layout.Vertical>
-        {changeType ? (
-          <Layout.Vertical spacing="xsmall" padding={{ left: 'small', right: 'small' }}>
-            <Text>{'Change Type'}</Text>
-            <MultiSelectDropDown
-              value={Array.isArray(changeType) ? changeType : []}
-              items={changeTypeOptions}
-              className={css.field}
-              onChange={option => {
-                handleChangeField(notificationRule, option, 'changeType', 'value', value)
-              }}
-            />
-          </Layout.Vertical>
-        ) : null}
         {value ? (
           <Layout.Vertical spacing="xsmall" padding={{ left: 'small' }}>
             <Text>{'Value is below'}</Text>

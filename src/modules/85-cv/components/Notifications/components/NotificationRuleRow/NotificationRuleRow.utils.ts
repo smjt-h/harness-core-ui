@@ -6,7 +6,7 @@
  */
 
 import type { SelectOption } from '@harness/uicore'
-import { defaultOption } from '../../ConfigureAlertConditions.constants'
+import { defaultOption } from '../../NotificationsContainer.constants'
 
 export const getValueFromEvent = (e: React.FormEvent<HTMLElement>): string | SelectOption => {
   return (e?.target as any)?.value || defaultOption

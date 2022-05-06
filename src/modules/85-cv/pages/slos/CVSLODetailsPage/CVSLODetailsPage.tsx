@@ -16,6 +16,8 @@ import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
 import { NGBreadcrumbs } from '@common/components/NGBreadcrumbs/NGBreadcrumbs'
 import { getErrorMessage, getSearchString } from '@cv/utils/CommonUtils'
 import CVCreateSLO from '@cv/pages/slos/components/CVCreateSLO/CVCreateSLO'
+import NotificationsContainer from '@cv/components/Notifications/NotificationsContainer'
+import ConfigureSLOAlertConditions from '@cv/components/Notifications/components/ConfigureSLOAlertConditions/ConfigureSLOAlertConditions'
 import HeaderTitle from './views/HeaderTitle'
 import DetailsPanel from './DetailsPanel/DetailsPanel'
 import TabToolbar from './DetailsPanel/views/TabToolbar'
@@ -152,6 +154,9 @@ const CVSLODetailsPage: React.FC = () => {
             />
           )}
         </Tabs>
+        <NotificationsContainer>
+          <ConfigureSLOAlertConditions name={'Conditions'} />
+        </NotificationsContainer>
       </Container>
     </>
   )
