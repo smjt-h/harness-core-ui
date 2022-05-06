@@ -331,6 +331,68 @@ describe('RightBar', () => {
       fireEvent.click(advancedTitle)
     })
     expect(dialog).toMatchSnapshot()
+    const applyBtn = getByText('applyChanges')
+    act(() => {
+      fireEvent.click(applyBtn)
+    })
+    expect(dialog).toMatchSnapshot('temp')
+  })
+
+  test('Renders validation errors', async () => {
+    const newPipelineContext = { ...pipelineContext }
+    if (newPipelineContext?.state?.pipeline?.properties?.ci?.codebase) {
+      newPipelineContext.state.pipeline.properties.ci.codebase = {
+        connectorRef: 'Git5',
+        repoName: 'reponame',
+        build: RUNTIME_INPUT_VALUE as any,
+        depth: 'invalid' as any,
+        sslVerify: true as any,
+        prCloneStrategy: 'MergeCommit' as any,
+        resources: {
+          limits: {
+            memory: 'invalid',
+            cpu: 'invalid'
+          }
+        }
+      }
+    }
+    const { getByText } = render(
+      <TestWrapper>
+        <PipelineContext.Provider value={newPipelineContext}>
+          <RightBar />
+        </PipelineContext.Provider>
+      </TestWrapper>
+    )
+    const codebaseConfigurationBtn = getByText('codebase')
+    act(() => {
+      fireEvent.click(codebaseConfigurationBtn)
+    })
+    await waitFor(() => expect(pipelineContext.updatePipelineView).toHaveBeenCalled())
+    expect(pipelineContext.updatePipelineView).toHaveBeenCalledWith({
+      drawerData: {
+        type: 'AddCommand'
+      },
+      isDrawerOpened: false,
+      isSplitViewOpen: false,
+      splitViewData: {}
+    })
+    let dialog
+    await waitFor(() => {
+      dialog = findDialogContainer()
+      if (!dialog) {
+        throw Error('cannot find dialogue')
+      }
+    })
+    const advancedTitle = getByText('advancedTitle')
+    act(() => {
+      fireEvent.click(advancedTitle)
+    })
+    expect(dialog).toMatchSnapshot()
+    const applyBtn = getByText('applyChanges')
+    act(() => {
+      fireEvent.click(applyBtn)
+    })
+    await waitFor(() => expect(getByText('pipeline.onlyPositiveInteger')).toBeInTheDocument())
   })
 
   test('Renders all ci codebase inputs as runtime inputs', async () => {

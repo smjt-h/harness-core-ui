@@ -105,6 +105,8 @@ export const renderConnectorAndRepoName = ({
           allowableTypes: [MultiTypeInputType.FIXED, MultiTypeInputType.RUNTIME] // BE does not support expressions
         }}
         onChange={(value, _valueType, connectorRefType) => {
+          // add coverage once connector select available in jest tests
+          /* istanbul ignore next */
           handleCIConnectorRefOnChange({
             value: value as ConnectorRefInterface,
             connectorRefType,
@@ -112,7 +114,7 @@ export const renderConnectorAndRepoName = ({
             setConnectorUrl,
             setFieldValue
           })
-
+          /* istanbul ignore next */
           setCodebaseRuntimeInputs({
             ...codebaseRuntimeInputs,
             connectorRef: isRuntimeInput(value),

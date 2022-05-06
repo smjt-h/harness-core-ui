@@ -362,7 +362,6 @@ function CICodebaseInputSetFormInternal({
       </Container>
     )
   }
-  console.log(get(formik?.errors, codeBaseTypePath))
   return (
     <Layout.Vertical spacing="small">
       {loadingConnectorDetails ? (
