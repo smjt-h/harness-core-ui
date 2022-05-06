@@ -79,26 +79,20 @@ export interface ConnectorRefInterface {
 }
 
 const renderLabel = ({
-  isDeploymentOrTriggerForm,
   getString,
   tooltip,
   keyString
 }: {
-  isDeploymentOrTriggerForm: boolean
   getString: UseStringsReturn['getString']
   tooltip?: string
   keyString: StringKeys
 }): JSX.Element => (
   <Layout.Horizontal className={css.inpLabel} style={{ display: 'flex', alignItems: 'baseline' }}>
-    <Text
-      color={Color.GREY_600}
-      font={{ size: 'small', weight: 'semi-bold' }}
-      {...(!isDeploymentOrTriggerForm && { tooltipProps: { dataTooltipId: tooltip } })}
-    >
+    <Text color={Color.GREY_600} font={{ size: 'small', weight: 'semi-bold' }}>
       {getString(keyString)}
     </Text>
     &nbsp;
-    {isDeploymentOrTriggerForm && getOptionalSubLabel(getString, tooltip)}
+    {getOptionalSubLabel(getString, tooltip)}
   </Layout.Horizontal>
 )
 
@@ -129,14 +123,14 @@ export const handleCIConnectorRefOnChange = ({
     } else if (connectionType === ConnectionType.Repo || connectionType === ConnectionType.Region) {
       setConnectionType(connectionType)
       setConnectorUrl(newConnectorRef.record?.spec?.url || '')
-      //  clear repoName from yaml
+      //  clear repoName from yaml so it is not required
       setFieldValue(codeBaseInputFieldFormName?.repoName || 'repoName', undefined)
     } else {
       setConnectionType('')
       setConnectorUrl('')
+      setFieldValue(codeBaseInputFieldFormName?.repoName || 'repoName', '')
     }
     setIsConnectorExpression?.(false)
-    setFieldValue(codeBaseInputFieldFormName?.repoName || 'repoName', '')
   } else if (connectorRefType === MultiTypeInputType.EXPRESSION) {
     setConnectionType('')
     setConnectorUrl('')
@@ -162,7 +156,6 @@ function CICodebaseInputSetFormInternal({
   viewType
 }: CICodebaseInputSetFormProps): JSX.Element {
   const { triggerIdentifier, accountId, projectIdentifier, orgIdentifier } = useParams<Record<string, string>>()
-
   const [isInputTouched, setIsInputTouched] = useState(false)
   const [connectorType, setConnectorType] = useState<ConnectorInfoDTO['type']>()
   const [connectorId, setConnectorId] = useState<string>('')
@@ -178,7 +171,7 @@ function CICodebaseInputSetFormInternal({
   const isRepoNameRuntimeInput = template?.properties?.ci?.codebase?.repoName
   const isCpuLimitRuntimeInput = template?.properties?.ci?.codebase?.resources?.limits?.cpu
   const isMemoryLimitRuntimeInput = template?.properties?.ci?.codebase?.resources?.limits?.memory
-  const isDeploymentOrTriggerForm = viewType === StepViewType.DeploymentForm || !!triggerIdentifier
+  const isDeploymentForm = viewType === StepViewType.DeploymentForm
   const showSetContainerResources = isCpuLimitRuntimeInput || isMemoryLimitRuntimeInput
   const [isConnectorExpression, setIsConnectorExpression] = useState<boolean>(false)
   const savedValues = useRef<Record<string, string>>({
@@ -222,7 +215,7 @@ function CICodebaseInputSetFormInternal({
 
   const codeBaseInputDefaultValue = {
     depth: 50,
-    sslVerify: false,
+    sslVerify: true,
     prCloneStrategy: prCloneStrategyOptions?.[0]?.value,
     memoryLimit: '500Mi',
     cpuLimit: '400m',
@@ -292,41 +285,38 @@ function CICodebaseInputSetFormInternal({
   }, [formik?.values])
 
   useEffect(() => {
-    const newInitialValues = { ...formik.values }
-    // TriggerForm does not instantiate each runtime input with empty string yet but we want default values there
-    const codeBaseSpecPathValue = get(newInitialValues, buildSpecPath)
-    if (!codeBaseSpecPathValue) {
-      set(newInitialValues, buildPath, codeBaseInputDefaultValue.build)
-    }
-    if (isDepthRuntimeInput && (get(newInitialValues, codeBaseInputFieldFormName.depth) === '' || triggerIdentifier)) {
-      set(newInitialValues, codeBaseInputFieldFormName.depth, codeBaseInputDefaultValue.depth)
-    }
     if (
-      isSslVerifyRuntimeInput &&
-      typeof (get(newInitialValues, codeBaseInputFieldFormName.sslVerify) !== 'boolean' || triggerIdentifier)
+      (viewType === StepViewType.InputSet && formik?.values?.pipeline?.identifier) ||
+      (viewType === StepViewType.DeploymentForm && formik?.values?.identifier)
     ) {
-      set(newInitialValues, codeBaseInputFieldFormName.sslVerify, codeBaseInputDefaultValue.sslVerify)
+      const newInitialValues = { ...formik.values }
+      // TriggerForm does not instantiate each runtime input with empty string yet but we want default values there
+      const codeBaseSpecPathValue = get(newInitialValues, buildSpecPath)
+      if (!codeBaseSpecPathValue && isDeploymentForm) {
+        // only deployment form as it instantiates build with ''
+        set(newInitialValues, buildPath, codeBaseInputDefaultValue.build)
+      }
+      if (isDepthRuntimeInput && typeof get(newInitialValues, codeBaseInputFieldFormName.depth)) {
+        set(newInitialValues, codeBaseInputFieldFormName.depth, codeBaseInputDefaultValue.depth)
+      }
+      if (
+        isSslVerifyRuntimeInput &&
+        typeof (get(newInitialValues, codeBaseInputFieldFormName.sslVerify) !== 'boolean')
+      ) {
+        set(newInitialValues, codeBaseInputFieldFormName.sslVerify, codeBaseInputDefaultValue.sslVerify)
+      }
+      if (isPrCloneStrategyRuntimeInput && !get(newInitialValues, codeBaseInputFieldFormName.prCloneStrategy)) {
+        set(newInitialValues, codeBaseInputFieldFormName.prCloneStrategy, codeBaseInputDefaultValue.prCloneStrategy)
+      }
+      if (isMemoryLimitRuntimeInput && !get(newInitialValues, codeBaseInputFieldFormName.memoryLimit)) {
+        set(newInitialValues, codeBaseInputFieldFormName.memoryLimit, codeBaseInputDefaultValue.memoryLimit)
+      }
+      if (isCpuLimitRuntimeInput && !get(newInitialValues, codeBaseInputFieldFormName.cpuLimit)) {
+        set(newInitialValues, codeBaseInputFieldFormName.cpuLimit, codeBaseInputDefaultValue.cpuLimit)
+      }
+      formik?.setValues(newInitialValues)
     }
-    if (
-      isPrCloneStrategyRuntimeInput &&
-      (get(newInitialValues, codeBaseInputFieldFormName.prCloneStrategy) === '' || triggerIdentifier)
-    ) {
-      set(newInitialValues, codeBaseInputFieldFormName.prCloneStrategy, codeBaseInputDefaultValue.prCloneStrategy)
-    }
-    if (
-      isMemoryLimitRuntimeInput &&
-      (get(newInitialValues, codeBaseInputFieldFormName.memoryLimit) === '' || triggerIdentifier)
-    ) {
-      set(newInitialValues, codeBaseInputFieldFormName.memoryLimit, codeBaseInputDefaultValue.memoryLimit)
-    }
-    if (
-      isCpuLimitRuntimeInput &&
-      (get(newInitialValues, codeBaseInputFieldFormName.cpuLimit) === '' || triggerIdentifier)
-    ) {
-      set(newInitialValues, codeBaseInputFieldFormName.cpuLimit, codeBaseInputDefaultValue.cpuLimit)
-    }
-    formik?.setValues(newInitialValues)
-  }, [])
+  }, [formik?.values?.pipeline?.identifier, formik?.values?.identifier])
 
   useEffect(() => {
     // OnEdit Case, persists saved ciCodebase build spec
@@ -379,7 +369,7 @@ function CICodebaseInputSetFormInternal({
       ) : (
         <>
           {isConnectorRuntimeInput && (
-            <Container width="50%" className={css.bottomMargin3}>
+            <Container width="50%">
               <FormMultiTypeConnectorField
                 name={codeBaseInputFieldFormName.connectorRef}
                 width={getConnectorRefWidth(viewType)}
@@ -452,7 +442,7 @@ function CICodebaseInputSetFormInternal({
                     multiTextInputProps={{
                       multiTextInputProps: {
                         expressions,
-                        allowableTypes: [MultiTypeInputType.FIXED, MultiTypeInputType.EXPRESSION]
+                        allowableTypes: [MultiTypeInputType.FIXED]
                       },
                       disabled: readonly
                     }}
@@ -474,12 +464,11 @@ function CICodebaseInputSetFormInternal({
             (isConnectorRuntimeInput && get(formik?.values, codeBaseInputFieldFormName.connectorRef))) && (
             <>
               <Text
-                className={css.inpLabel}
                 color={Color.GREY_600}
                 font={{ size: 'small', weight: 'semi-bold' }}
                 tooltipProps={{ dataTooltipId: 'ciCodebaseBuildType' }}
               >
-                {getString('pipeline.ciCodebase.buildType')}
+                {getString('filters.executions.buildType')}
               </Text>
               <Layout.Horizontal
                 flex={{ justifyContent: 'start' }}
@@ -531,7 +520,6 @@ function CICodebaseInputSetFormInternal({
             isPrCloneStrategyRuntimeInput ||
             showSetContainerResources) && (
             <Text
-              className={css.inpLabel}
               color={Color.GREY_600}
               font={{ size: 'small', weight: 'semi-bold' }}
               tooltipProps={{ dataTooltipId: 'advanced' }}
@@ -544,14 +532,9 @@ function CICodebaseInputSetFormInternal({
               <MultiTypeTextField
                 label={
                   <Layout.Horizontal className={css.inpLabel} style={{ display: 'flex', alignItems: 'baseline' }}>
-                    <Text
-                      font={{ variation: FontVariation.FORM_LABEL }}
-                      {...(!isDeploymentOrTriggerForm && { tooltipProps: { dataTooltipId: 'depth' } })}
-                    >
-                      {getString('pipeline.depth')}
-                    </Text>
+                    <Text font={{ variation: FontVariation.FORM_LABEL }}>{getString('pipeline.depth')}</Text>
                     &nbsp;
-                    {isDeploymentOrTriggerForm && getOptionalSubLabel(getString, 'depth')}
+                    {getOptionalSubLabel(getString, 'depth')}
                   </Layout.Horizontal>
                 }
                 name={codeBaseInputFieldFormName.depth}
@@ -571,7 +554,6 @@ function CICodebaseInputSetFormInternal({
               <MultiTypeSelectField
                 name={codeBaseInputFieldFormName.sslVerify}
                 label={renderLabel({
-                  isDeploymentOrTriggerForm,
                   getString,
                   tooltip: 'sslVerify',
                   keyString: 'pipeline.sslVerify'
@@ -599,7 +581,6 @@ function CICodebaseInputSetFormInternal({
               <MultiTypeSelectField
                 name={codeBaseInputFieldFormName.prCloneStrategy}
                 label={renderLabel({
-                  isDeploymentOrTriggerForm,
                   getString,
                   tooltip: 'prCloneStrategy',
                   keyString: 'pipeline.ciCodebase.prCloneStrategy'
@@ -622,7 +603,6 @@ function CICodebaseInputSetFormInternal({
           {showSetContainerResources && (
             <Layout.Vertical width={'50%'} className={css.bottomMargin3} spacing="medium">
               <Text
-                className={css.inpLabel}
                 color={Color.GREY_600}
                 font={{ size: 'small', weight: 'semi-bold' }}
                 tooltipProps={{ dataTooltipId: 'setContainerResources' }}
@@ -639,12 +619,11 @@ function CICodebaseInputSetFormInternal({
                           className={css.inpLabel}
                           color={Color.GREY_600}
                           font={{ size: 'small', weight: 'semi-bold' }}
-                          {...(!isDeploymentOrTriggerForm && { tooltipProps: { dataTooltipId: 'limitMemory' } })}
                         >
                           {getString('pipelineSteps.limitMemoryLabel')}
                         </Text>
                         &nbsp;
-                        {isDeploymentOrTriggerForm && getOptionalSubLabel(getString, 'limitMemory')}
+                        {getOptionalSubLabel(getString, 'limitMemory')}
                       </Layout.Horizontal>
                     }
                     multiTextInputProps={{
@@ -668,12 +647,11 @@ function CICodebaseInputSetFormInternal({
                           className={css.inpLabel}
                           color={Color.GREY_600}
                           font={{ size: 'small', weight: 'semi-bold' }}
-                          {...(!isDeploymentOrTriggerForm && { tooltipProps: { dataTooltipId: 'limitCPULabel' } })}
                         >
                           {getString('pipelineSteps.limitCPULabel')}
                         </Text>
                         &nbsp;
-                        {isDeploymentOrTriggerForm && getOptionalSubLabel(getString, 'limitCPULabel')}
+                        {getOptionalSubLabel(getString, 'limitCPULabel')}
                       </Layout.Horizontal>
                     }
                     multiTextInputProps={{

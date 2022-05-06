@@ -762,7 +762,7 @@ stepCommonFields:
     invalidLimitCPU: Invalid Limit CPU. To learn more, hover over the Set Container Resources tooltip.
 ciCodebase:
   prCloneStrategy: Pull Request Clone Strategy
-  buildType: CI Codebase Build Type
+  ciCodebaseBuildType: CI Codebase Build Type
   pullRequestNumber: Pull Request Number
   validation:
     oneOfValues: Value must be one of these values [{{values}}]

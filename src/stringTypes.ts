@@ -2524,6 +2524,7 @@ export interface StringsMap {
   'pipeline.ci.validations.port': string
   'pipeline.ci.validations.serviceDependencyIdentifier': string
   'pipeline.ciCodebase.buildType': string
+  'pipeline.ciCodebase.ciCodebaseBuildType': string
   'pipeline.ciCodebase.prCloneStrategy': string
   'pipeline.ciCodebase.pullRequestNumber': string
   'pipeline.ciCodebase.validation.oneOfValues': string

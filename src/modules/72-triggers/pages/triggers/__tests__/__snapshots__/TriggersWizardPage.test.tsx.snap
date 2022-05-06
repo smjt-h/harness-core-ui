@@ -459,7 +459,7 @@ exports[`TriggersWizardPage Triggers tests Payload/Values Comparison Existing Tr
                                           class="bp3-input"
                                           name="pipeline.variables[1].value"
                                           type="text"
-                                          value="1"
+                                          value=""
                                         />
                                       </div>
                                       <span
@@ -537,7 +537,7 @@ exports[`TriggersWizardPage Triggers tests Payload/Values Comparison Existing Tr
                                               placeholder="Search..."
                                               style="padding-right: 0px;"
                                               type="text"
-                                              value="val1"
+                                              value=""
                                             />
                                             <span
                                               class="bp3-input-action"
@@ -626,6 +626,16 @@ exports[`TriggersWizardPage Triggers tests Payload/Values Comparison Existing Tr
                                 <div
                                   class="Layout--vertical Layout--layout-spacing-small StyledProps--main"
                                 >
+                                  <div
+                                    class="Text--withDocsTooltip"
+                                    data-tooltip-id="ciCodebaseBuildType"
+                                  >
+                                    <p
+                                      class="StyledProps--font StyledProps--main StyledProps--color StyledProps--color-grey600 StyledProps--font-size-small StyledProps--font-weight-semi-bold"
+                                    >
+                                      filters.executions.buildType
+                                    </p>
+                                  </div>
                                   <div
                                     class="Layout--horizontal StyledProps--main StyledProps--flex StyledProps--flex-justifyContent-start StyledProps--padding-top-small StyledProps--padding-left-xsmall StyledProps--padding-bottom-xsmall StyledProps--margin-left-large"
                                   >

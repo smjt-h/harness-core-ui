@@ -383,7 +383,7 @@ export const validateCICodebase = ({
       set(
         errors,
         'properties.ci.codebase.build.type',
-        getString?.('fieldRequired', { field: getString?.('pipeline.ciCodebase.buildType') })
+        getString?.('fieldRequired', { field: getString?.('pipeline.ciCodebase.ciCodebaseBuildType') })
       )
     }
 

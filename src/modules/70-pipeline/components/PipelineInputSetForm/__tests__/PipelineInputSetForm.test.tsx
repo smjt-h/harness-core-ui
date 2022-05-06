@@ -74,10 +74,18 @@ const getPropsForVariables = (): PipelineInputSetFormProps => ({
 const getPropsForCIStage = ({
   connectorRefAsRuntime,
   repoNameAsRuntime,
+  depthAsRuntime,
+  sslVerifyAsRuntime,
+  prCloneStrategyAsRuntime,
+  limitMemoryAndLimitCPUAsRuntime,
   path
 }: {
   connectorRefAsRuntime?: boolean
   repoNameAsRuntime?: boolean
+  depthAsRuntime?: boolean
+  sslVerifyAsRuntime?: boolean
+  prCloneStrategyAsRuntime?: boolean
+  limitMemoryAndLimitCPUAsRuntime?: boolean
   path?: string
 }): PipelineInputSetFormProps => ({
   originalPipeline: {
@@ -86,9 +94,15 @@ const getPropsForCIStage = ({
     properties: {
       ci: {
         codebase: {
-          connectorRef: connectorRefAsRuntime ? '<+input>' : 'testConnectorRef',
-          repoName: repoNameAsRuntime ? '<+input>' : 'repo',
-          build: RUNTIME_INPUT_VALUE as any
+          connectorRef: connectorRefAsRuntime ? RUNTIME_INPUT_VALUE : 'testConnectorRef',
+          repoName: repoNameAsRuntime ? RUNTIME_INPUT_VALUE : 'repo',
+          build: RUNTIME_INPUT_VALUE as any,
+          ...(depthAsRuntime ? { depth: RUNTIME_INPUT_VALUE as any } : {}),
+          ...(sslVerifyAsRuntime ? { sslVerify: RUNTIME_INPUT_VALUE as any } : {}),
+          ...(prCloneStrategyAsRuntime ? { prCloneStrategy: RUNTIME_INPUT_VALUE as any } : {}),
+          ...(limitMemoryAndLimitCPUAsRuntime
+            ? { resources: { limits: { memory: RUNTIME_INPUT_VALUE, cpu: RUNTIME_INPUT_VALUE } } }
+            : {})
         }
       }
     },
@@ -113,7 +127,13 @@ const getPropsForCIStage = ({
         codebase: {
           ...(connectorRefAsRuntime ? { connectorRef: RUNTIME_INPUT_VALUE } : {}),
           ...(repoNameAsRuntime ? { repoName: RUNTIME_INPUT_VALUE } : {}),
-          build: RUNTIME_INPUT_VALUE as any
+          build: RUNTIME_INPUT_VALUE as any,
+          ...(depthAsRuntime ? { depth: RUNTIME_INPUT_VALUE } : {}),
+          ...(sslVerifyAsRuntime ? { sslVerify: RUNTIME_INPUT_VALUE } : {}),
+          ...(prCloneStrategyAsRuntime ? { prCloneStrategy: RUNTIME_INPUT_VALUE } : {}),
+          ...(limitMemoryAndLimitCPUAsRuntime
+            ? { resources: { limits: { memory: RUNTIME_INPUT_VALUE, cpu: RUNTIME_INPUT_VALUE } } }
+            : {})
         } as any // codebase in template does not require connectorRef if connectorRef is not a runtime input
       }
     },
@@ -476,6 +496,42 @@ describe('CI enabled', () => {
     // since the connector is not an account type due to the dummy connector, we should not see the whole repo below
     // Need to refactor so that each test takes its own connector
     await waitFor(() => expect(container.querySelector('[class*="predefinedValue"')).toBeFalsy())
+  })
+
+  test('Render CI Codebase all runtime inputs', async () => {
+    connector.data.connector.type = 'Gitlab'
+    jest.mock('services/cd-ng', () => ({
+      useGetConnector: jest.fn().mockImplementation(() => {
+        return { data: connector, refetch: jest.fn(), error: null, loading: false }
+      })
+    }))
+    // with connectoRef as runtime input, we will prompt for Git Branch, Git Tag, and Git Pull Request
+    const props = getPropsForCIStage({
+      connectorRefAsRuntime: true,
+      repoNameAsRuntime: true,
+      depthAsRuntime: true,
+      sslVerifyAsRuntime: true,
+      prCloneStrategyAsRuntime: true,
+      limitMemoryAndLimitCPUAsRuntime: true,
+      path: 'pipeline'
+    })
+    const { container } = render(
+      <Formik
+        initialValues={{ pipeline: { properties: { ci: { codebase: { connectorRef: 'account.gitlab' } } } } }}
+        formName="pipelineInputSetFormTest"
+        onSubmit={jest.fn()}
+      >
+        {() => (
+          <TestWrapper>
+            <PipelineInputSetForm {...props} readonly={true} />
+          </TestWrapper>
+        )}
+      </Formik>
+    )
+
+    // since the connector is not an account type due to the dummy connector, we should not see the whole repo below
+    // Need to refactor so that each test takes its own connector
+    expect(container).toMatchSnapshot('all inputs as runtime inputs and prompts for values')
   })
 
   test('PR Number build radio option should not be visible for CodeCommit type connector', () => {

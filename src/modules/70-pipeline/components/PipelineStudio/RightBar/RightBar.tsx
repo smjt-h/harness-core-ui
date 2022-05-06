@@ -225,7 +225,7 @@ export const renderConnectorAndRepoName = ({
             multiTextInputProps={{
               multiTextInputProps: {
                 expressions,
-                allowableTypes: [MultiTypeInputType.FIXED, MultiTypeInputType.EXPRESSION, MultiTypeInputType.RUNTIME]
+                allowableTypes: [MultiTypeInputType.FIXED, MultiTypeInputType.RUNTIME]
               },
               disabled: isReadonly || (isRuntimeInput(values.connectorRef) && isRuntimeInput(values.repoName)) // connector is a runtime input
             }}
@@ -233,7 +233,7 @@ export const renderConnectorAndRepoName = ({
         </Container>
         {!isRuntimeInput(values.connectorRef) && !isRuntimeInput(values.repoName) && connectorUrl?.length > 0 ? (
           <div className={css.predefinedValue}>
-            <Text lineClamp={1} width="460px">
+            <Text lineClamp={1} width={connectorWidth ? connectorWidth : '460px'}>
               {(connectorUrl[connectorUrl.length - 1] === '/' ? connectorUrl : connectorUrl + '/') +
                 (values.repoName ? values.repoName : '')}
             </Text>
