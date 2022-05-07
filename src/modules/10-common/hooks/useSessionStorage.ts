@@ -5,8 +5,7 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import { useState } from 'react'
-import type { Dispatch, SetStateAction } from 'react'
+import { useState, Dispatch, SetStateAction } from 'react'
 import SessionToken from 'framework/utils/SessionToken'
 
 // eslint-disable-next-line @typescript-eslint/ban-types
@@ -56,16 +55,17 @@ export const useSessionStorage = <T>(
     }
   }
 
-  //if true then on new login/ re-login data will be set to default
+  //this is so that on new login/ re-login sessionStorage data will clear
   const storedToken = storage.getItem('tokenStored')
+
   if (storedToken && storedToken !== SessionToken.getToken()) {
     setStoredValue(defaultValue)
-    // storage.setItem(keyName, JSON.stringify(defaultValue))
     storage.clear()
     storage.setItem('tokenStored', SessionToken.getToken())
 
     return [defaultValue, setStoredValue]
   }
   storage.setItem('tokenStored', SessionToken.getToken())
+
   return [storedValue, setValue]
 }
