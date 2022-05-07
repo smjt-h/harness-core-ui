@@ -17,7 +17,7 @@ const ResourceGroups: React.FC = () => {
   const { getString } = useStrings()
   const isCommunity = isCommunityPlan()
 
-  if (isCommunity) {
+  if (false) {
     return (
       <FeatureWarningBanner
         featureName={FeatureIdentifier.CUSTOM_RESOURCE_GROUPS}

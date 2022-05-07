@@ -17,7 +17,7 @@ const Roles: React.FC = () => {
   const { getString } = useStrings()
   const isCommunity = isCommunityPlan()
 
-  if (isCommunity) {
+  if (false) {
     return (
       <FeatureWarningBanner
         featureName={FeatureIdentifier.CUSTOM_ROLES}
