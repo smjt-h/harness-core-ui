@@ -345,7 +345,7 @@ const ActiveUserListView: React.FC<ActiveUserListViewProps> = ({
   const history = useHistory()
   const { accountId, orgIdentifier, projectIdentifier, module } = useParams<PipelineType<ProjectPathProps>>()
   const [page, setPage] = useState(0)
-  const isCommunity = isCommunityPlan()
+  const isCommunity = false
 
   const { data, loading, error, refetch } = useMutateAsGet(useGetAggregatedUsers, {
     body: {},
