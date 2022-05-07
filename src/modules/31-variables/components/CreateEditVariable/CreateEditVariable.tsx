@@ -127,7 +127,7 @@ const CreateEditVariable: React.FC<CreateEditVariableProps> = props => {
             <Layout.Horizontal spacing="small" padding={{ top: 'small' }}>
               <Button
                 type="submit"
-                loading={creating || updating}
+                disabled={creating || updating}
                 variation={ButtonVariation.PRIMARY}
                 text={getString('save')}
                 data-testid="addVariableSave"
