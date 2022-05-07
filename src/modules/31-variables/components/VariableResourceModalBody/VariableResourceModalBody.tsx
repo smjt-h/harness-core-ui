@@ -63,7 +63,7 @@ const VariableResourceModalBody: React.FC<RbacResourceModalProps> = ({
           pageSize: variableResponse?.data?.pageSize || 10,
           pageCount: variableResponse?.data?.totalPages || -1,
           pageIndex: variableResponse?.data?.pageIndex || 0,
-          gotoPage: pageNumber => setPage(pageNumber)
+          gotoPage: /* istanbul ignore next */ pageNumber => setPage(pageNumber)
         }}
         onSelectChange={onSelectChange}
       />

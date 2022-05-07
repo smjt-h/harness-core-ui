@@ -64,7 +64,7 @@ exports[`Secret Resource Modal Body test initializes ok  1`] = `
           class="TableV2--cell"
           colspan="1"
           role="columnheader"
-          style="width: 30%;"
+          style="width: 20%;"
         >
           <p
             class="StyledProps--font StyledProps--main StyledProps--font-variation-table-headers"
@@ -76,7 +76,7 @@ exports[`Secret Resource Modal Body test initializes ok  1`] = `
           class="TableV2--cell"
           colspan="1"
           role="columnheader"
-          style="width: 15%;"
+          style="width: 20%;"
         >
           <p
             class="StyledProps--font StyledProps--main StyledProps--font-variation-table-headers"
@@ -159,7 +159,7 @@ exports[`Secret Resource Modal Body test initializes ok  1`] = `
           <div
             class="TableV2--cell"
             role="cell"
-            style="width: 30%;"
+            style="width: 20%;"
           >
             <p
               class="StyledProps--font StyledProps--main StyledProps--color StyledProps--color-grey600 StyledProps--font-variation-form-input-text"
@@ -170,7 +170,7 @@ exports[`Secret Resource Modal Body test initializes ok  1`] = `
           <div
             class="TableV2--cell"
             role="cell"
-            style="width: 15%;"
+            style="width: 20%;"
           >
             <p
               class="StyledProps--font StyledProps--main StyledProps--color StyledProps--color-grey600 StyledProps--font-variation-form-input-text"
