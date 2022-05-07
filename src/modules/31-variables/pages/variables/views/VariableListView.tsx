@@ -11,7 +11,7 @@ import { Intent, PopoverPosition } from '@blueprintjs/core'
 import React, { useMemo } from 'react'
 import type { CellProps, Column, Renderer } from 'react-table'
 import { Color, FontVariation } from '@harness/design-system'
-import { String, useStrings } from 'framework/strings'
+import { String, useStrings, UseStringsReturn } from 'framework/strings'
 import {
   PageVariableResponseDTO,
   StringVariableConfigDTO,
@@ -87,6 +87,46 @@ export const RenderColumnDefaultValue: Renderer<CellProps<VariableResponseDTO>> 
       {(data.spec as StringVariableConfigDTO)?.defaultValue}
     </Text>
   )
+}
+
+export function VariableListColumnHeader(getString: UseStringsReturn['getString']): Column<VariableResponseDTO>[] {
+  return [
+    {
+      Header: getString('variableLabel'),
+      accessor: row => row.variable.name,
+      id: 'name',
+      width: '25%',
+      Cell: RenderColumnVariable
+    },
+    {
+      Header: getString('typeLabel'),
+      accessor: row => row.variable.type,
+      id: 'type',
+      width: '15%',
+      Cell: RenderColumnType
+    },
+    {
+      Header: getString('variables.inputValidation'),
+      accessor: row => row.variable.spec.valueType,
+      id: 'validation',
+      width: '15%',
+      Cell: RenderColumnValidation
+    },
+    {
+      Header: getString('valueLabel'),
+      accessor: row => row.variable.spec.value,
+      id: 'value',
+      width: '20%',
+      Cell: RenderColumnValue
+    },
+    {
+      Header: getString('variables.defaultValue'),
+      accessor: row => row.variable.spec,
+      id: 'defaultValue',
+      width: '20%',
+      Cell: RenderColumnDefaultValue
+    }
+  ]
 }
 
 const VariableListView: React.FC<SecretsListProps> = props => {
@@ -169,41 +209,7 @@ const VariableListView: React.FC<SecretsListProps> = props => {
 
   const columns: Column<VariableResponseDTO>[] = useMemo(
     () => [
-      {
-        Header: getString('variableLabel'),
-        accessor: row => row.variable.name,
-        id: 'name',
-        width: '25%',
-        Cell: RenderColumnVariable
-      },
-      {
-        Header: getString('typeLabel'),
-        accessor: row => row.variable.type,
-        id: 'type',
-        width: '15%',
-        Cell: RenderColumnType
-      },
-      {
-        Header: getString('variables.inputValidation'),
-        accessor: row => row.variable.spec.valueType,
-        id: 'validation',
-        width: '15%',
-        Cell: RenderColumnValidation
-      },
-      {
-        Header: getString('valueLabel'),
-        accessor: row => row.variable.spec.value,
-        id: 'value',
-        width: '20%',
-        Cell: RenderColumnValue
-      },
-      {
-        Header: getString('variables.defaultValue'),
-        accessor: row => row.variable.spec,
-        id: 'defaultValue',
-        width: '20%',
-        Cell: RenderColumnDefaultValue
-      },
+      ...VariableListColumnHeader(getString),
       {
         Header: '',
         accessor: row => row.variable.identifier,

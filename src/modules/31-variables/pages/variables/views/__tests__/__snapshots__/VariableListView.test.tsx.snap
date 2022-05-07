@@ -434,7 +434,7 @@ exports[`VariableListView render component at account level 1`] = `
             class="Layout--horizontal StyledProps--main StyledProps--flex StyledProps--flex-alignItems-flex-end"
           >
             <span
-              class="bp3-popover-wrapper bp3-dark"
+              class="bp3-popover-wrapper"
             >
               <span
                 class="bp3-popover-target"
@@ -763,7 +763,7 @@ exports[`VariableListView render component with initial page render - paged metr
             class="Layout--horizontal StyledProps--main StyledProps--flex StyledProps--flex-alignItems-flex-end"
           >
             <span
-              class="bp3-popover-wrapper bp3-dark"
+              class="bp3-popover-wrapper"
             >
               <span
                 class="bp3-popover-target"

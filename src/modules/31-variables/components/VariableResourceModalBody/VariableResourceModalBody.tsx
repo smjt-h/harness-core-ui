@@ -15,13 +15,7 @@ import { PageSpinner } from '@common/components'
 import type { RbacResourceModalProps } from '@rbac/factories/RbacFactory'
 
 import { useStrings } from 'framework/strings'
-import {
-  RenderColumnDefaultValue,
-  RenderColumnType,
-  RenderColumnValidation,
-  RenderColumnValue,
-  RenderColumnVariable
-} from '@variables/pages/variables/views/VariableListView'
+import { VariableListColumnHeader } from '@variables/pages/variables/views/VariableListView'
 
 type ParsedColumnContent = VariableResponseDTO & { identifier: string }
 const VariableResourceModalBody: React.FC<RbacResourceModalProps> = ({
@@ -52,43 +46,7 @@ const VariableResourceModalBody: React.FC<RbacResourceModalProps> = ({
   }))
 
   const columns: Column<ParsedColumnContent>[] = useMemo(
-    () => [
-      {
-        Header: getString('variableLabel'),
-        accessor: row => row.variable.name,
-        id: 'name',
-        width: '25%',
-        Cell: RenderColumnVariable
-      },
-      {
-        Header: getString('typeLabel'),
-        accessor: row => row.variable.type,
-        id: 'type',
-        width: '15%',
-        Cell: RenderColumnType
-      },
-      {
-        Header: getString('variables.inputValidation'),
-        accessor: row => row.variable.spec.valueType,
-        id: 'validation',
-        width: '15%',
-        Cell: RenderColumnValidation
-      },
-      {
-        Header: getString('valueLabel'),
-        accessor: row => row.variable.identifier,
-        id: 'value',
-        width: '30%',
-        Cell: RenderColumnValue
-      },
-      {
-        Header: getString('variables.defaultValue'),
-        accessor: row => row.variable.spec,
-        id: 'defaultValue',
-        width: '15%',
-        Cell: RenderColumnDefaultValue
-      }
-    ],
+    () => VariableListColumnHeader(getString) as Column<ParsedColumnContent>[],
     []
   )
   if (loading) return <PageSpinner />

@@ -344,7 +344,7 @@ exports[`Variables Page render page at account level 1`] = `
               class="Layout--horizontal StyledProps--main StyledProps--flex StyledProps--flex-alignItems-flex-end"
             >
               <span
-                class="bp3-popover-wrapper bp3-dark"
+                class="bp3-popover-wrapper"
               >
                 <span
                   class="bp3-popover-target"

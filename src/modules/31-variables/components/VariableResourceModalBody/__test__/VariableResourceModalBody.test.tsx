@@ -8,8 +8,8 @@
 import React from 'react'
 import { render, waitFor } from '@testing-library/react'
 import { TestWrapper } from '@common/utils/testUtils'
-import VariableResourceModalBody from '../VariableResourceModalBody'
 import { VariableSuccessResponseWithData } from '@variables/pages/variables/__tests__/mock/variableResponse'
+import VariableResourceModalBody from '../VariableResourceModalBody'
 
 const props = {
   searchTerm: '',
