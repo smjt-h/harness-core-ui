@@ -24,7 +24,18 @@ export const ConnectorRefWidth = {
   DefaultView: 385,
   EditStageView: 366,
   EditStageViewInputSet: 308,
-  RightBarView: 460
+  RightBarView: 460,
+  TemplateBuilder: 361,
+  TemplateDetailDrawer: 298,
+  Trigger: 433
+}
+
+// more keys that aren't StepViewType
+export const ConnectorRefWidthKeys = {
+  TemplateBuilder: 'TemplateBuilder',
+  TemplateDetailDrawer: 'TemplateDetailDrawer',
+  Trigger: 'Trigger',
+  DefaultView: 'DefaultView'
 }
 
 export const connectorTypes: { [key: string]: ConnectorInfoDTO['type'] } = {

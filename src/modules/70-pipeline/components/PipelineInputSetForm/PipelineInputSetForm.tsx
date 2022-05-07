@@ -55,6 +55,7 @@ export interface PipelineInputSetFormProps {
   listOfSelectedStages?: string[]
   isRetryFormStageSelected?: boolean
   allowableTypes?: MultiTypeInputType[]
+  viewTypeMetadata?: Record<string, boolean>
 }
 
 export const stageTypeToIconMap: Record<string, IconName> = {
@@ -203,10 +204,10 @@ export function PipelineInputSetFormInternal(props: PipelineInputSetFormProps): 
     viewType,
     maybeContainerClass = '',
     executionIdentifier,
+    viewTypeMetadata,
     allowableTypes = [MultiTypeInputType.FIXED, MultiTypeInputType.EXPRESSION]
   } = props
   const { getString } = useStrings()
-
   const isTemplatePipeline = !!template.template
   const finalTemplate = isTemplatePipeline ? (template?.template?.templateInputs as PipelineInfoConfig) : template
   const finalPath = isTemplatePipeline
@@ -220,7 +221,7 @@ export function PipelineInputSetFormInternal(props: PipelineInputSetFormProps): 
       Object.is(get(stage, 'stage.spec.cloneCodebase'), true) ||
       stage.parallel?.some(parallelStage => Object.is(get(parallelStage, 'stage.spec.cloneCodebase'), true))
   )
-
+  const isCodebaseFieldsRuntimeInputs = Object.keys(template?.properties?.ci?.codebase || {})?.length > 1 // show codebase when more fields needed
   const { expressions } = useVariablesExpression()
 
   const isInputStageDisabled = (stageId: string): boolean => {
@@ -293,7 +294,7 @@ export function PipelineInputSetFormInternal(props: PipelineInputSetFormProps): 
           />
         </>
       )}
-      {isCloneCodebaseEnabledAtLeastAtOneStage &&
+      {(isCloneCodebaseEnabledAtLeastAtOneStage || isCodebaseFieldsRuntimeInputs) &&
         getMultiTypeFromValue(finalTemplate?.properties?.ci?.codebase?.build as unknown as string) ===
           MultiTypeInputType.RUNTIME && (
           <>
@@ -316,6 +317,7 @@ export function PipelineInputSetFormInternal(props: PipelineInputSetFormProps): 
                     originalPipeline={props.originalPipeline}
                     template={template}
                     viewType={viewType}
+                    viewTypeMetadata={viewTypeMetadata}
                   />
                 </div>
               </div>

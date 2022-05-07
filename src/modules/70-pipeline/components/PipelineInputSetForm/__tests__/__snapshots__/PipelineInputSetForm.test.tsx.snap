@@ -1074,23 +1074,19 @@ exports[`CI enabled Render CI Codebase all runtime inputs: all inputs as runtime
                 </div>
               </div>
               <div
-                class="StyledProps--font StyledProps--main bottomMargin3"
+                class="StyledProps--font StyledProps--main"
                 style="width: 50%;"
               >
                 <div>
                   <div
-                    class="Layout--horizontal StyledProps--main inpLabel"
+                    class="Text--withDocsTooltip"
+                    data-tooltip-id="rightBarForm_repoName"
                   >
-                    <div
-                      class="Text--withDocsTooltip"
-                      data-tooltip-id="rightBarForm_repoName"
+                    <p
+                      class="StyledProps--font StyledProps--main inpLabel StyledProps--font-variation-form-label"
                     >
-                      <p
-                        class="StyledProps--font StyledProps--main StyledProps--font-variation-form-label"
-                      >
-                        common.repositoryName
-                      </p>
-                    </div>
+                      common.repositoryName
+                    </p>
                   </div>
                   <div
                     style="display: flex; align-items: center;"

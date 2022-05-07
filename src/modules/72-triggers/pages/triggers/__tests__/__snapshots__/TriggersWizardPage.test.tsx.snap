@@ -644,6 +644,7 @@ exports[`TriggersWizardPage Triggers tests Payload/Values Comparison Existing Tr
                                       style="width: 110px;"
                                     >
                                       <input
+                                        checked=""
                                         type="radio"
                                       />
                                       <span

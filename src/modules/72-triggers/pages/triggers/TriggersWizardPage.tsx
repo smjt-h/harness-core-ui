@@ -1178,7 +1178,8 @@ const TriggersWizardPage: React.FC = (): JSX.Element => {
                 template: latestYamlTemplate,
                 originalPipeline: orgPipeline,
                 getString,
-                viewType: StepViewType.TriggerForm
+                viewType: StepViewType.TriggerForm,
+                viewTypeMetadata: { isTrigger: true }
               }) as any) || formErrors
             resolve(validatedErrors)
           } catch (e) {

@@ -305,6 +305,7 @@ function WebhookPipelineInputPanelForm({ formikProps }: WebhookPipelineInputPane
               path="pipeline"
               viewType={StepViewType.InputSet}
               maybeContainerClass={css.pipelineInputSetForm}
+              viewTypeMetadata={{ isTrigger: true }}
             />
           </div>
         </div>

@@ -28,7 +28,7 @@ import { Scope } from '@common/interfaces/SecretsInterface'
 import { Connectors } from '@connectors/constants'
 import { useVariablesExpression } from '@pipeline/components/PipelineStudio/PiplineHooks/useVariablesExpression'
 import { ConnectorInfoDTO, PipelineInfoConfig, useGetConnector } from 'services/cd-ng'
-import { getPrCloneStrategyOptions, sslVerifyOptions } from '@pipeline/utils/constants'
+import { ConnectorRefWidthKeys, getPrCloneStrategyOptions, sslVerifyOptions } from '@pipeline/utils/constants'
 import { FormMultiTypeConnectorField } from '@connectors/components/ConnectorReferenceField/FormMultiTypeConnectorField'
 import { MultiTypeTextField } from '@common/components/MultiTypeText/MultiTypeText'
 import { MultiTypeSelectField } from '@common/components/MultiTypeSelect/MultiTypeSelect'
@@ -44,6 +44,7 @@ export interface CICodebaseInputSetFormProps {
   template?: PipelineInfoConfig
   originalPipeline: PipelineInfoConfig
   viewType: StepViewType
+  viewTypeMetadata?: Record<string, boolean>
 }
 
 type CodeBaseType = 'branch' | 'tag' | 'PR'
@@ -147,35 +148,57 @@ export const handleCIConnectorRefOnChange = ({
     )
   }
 }
-
+const getViewType = ({
+  viewType,
+  viewTypeMetadata
+}: {
+  viewType: StepViewType
+  viewTypeMetadata?: Record<string, boolean>
+}): StepViewType | string => {
+  if (viewTypeMetadata?.isTemplateBuilder) {
+    return ConnectorRefWidthKeys.TemplateBuilder
+  } else if (viewTypeMetadata?.isTemplateDetailDrawer) {
+    return ConnectorRefWidthKeys.TemplateDetailDrawer
+  } else if (viewTypeMetadata?.isTrigger) {
+    return ConnectorRefWidthKeys.Trigger
+  } else if (viewType === StepViewType.DeploymentForm) {
+    return ConnectorRefWidthKeys.DefaultView // override current DeploymentForm width
+  }
+  return viewType
+}
 function CICodebaseInputSetFormInternal({
   path,
   readonly,
   formik,
   template,
   originalPipeline,
-  viewType
+  viewType,
+  viewTypeMetadata
 }: CICodebaseInputSetFormProps): JSX.Element {
   const { triggerIdentifier, accountId, projectIdentifier, orgIdentifier } = useParams<Record<string, string>>()
   const [isInputTouched, setIsInputTouched] = useState(false)
   const [connectorType, setConnectorType] = useState<ConnectorInfoDTO['type']>()
   const [connectorId, setConnectorId] = useState<string>('')
   const [connectorRef, setConnectorRef] = useState<string>('')
-  const [codeBaseType, setCodeBaseType] = useState<CodeBaseType>()
-
-  const connectorWidth = getConnectorRefWidth(viewType === StepViewType.DeploymentForm ? 'DefaultView' : viewType)
+  const connectorWidth = getConnectorRefWidth(getViewType({ viewType, viewTypeMetadata }))
   const [connectionType, setConnectionType] = React.useState('')
   const [connectorUrl, setConnectorUrl] = React.useState('')
-  const isConnectorRuntimeInput = template?.properties?.ci?.codebase?.connectorRef
-  const isDepthRuntimeInput = template?.properties?.ci?.codebase?.depth
-  const isSslVerifyRuntimeInput = template?.properties?.ci?.codebase?.sslVerify
-  const isPrCloneStrategyRuntimeInput = template?.properties?.ci?.codebase?.prCloneStrategy
-  const isRepoNameRuntimeInput = template?.properties?.ci?.codebase?.repoName
-  const isCpuLimitRuntimeInput = template?.properties?.ci?.codebase?.resources?.limits?.cpu
-  const isMemoryLimitRuntimeInput = template?.properties?.ci?.codebase?.resources?.limits?.memory
+  const templateInputsProperties = (template?.template?.templateInputs as any)?.properties
+  const isConnectorRuntimeInput = (template?.properties || templateInputsProperties)?.ci?.codebase?.connectorRef
+  const isDepthRuntimeInput = (template?.properties || templateInputsProperties)?.ci?.codebase?.depth
+  const isSslVerifyRuntimeInput = (template?.properties || templateInputsProperties)?.ci?.codebase?.sslVerify
+  const isPrCloneStrategyRuntimeInput = (template?.properties || templateInputsProperties)?.ci?.codebase
+    ?.prCloneStrategy
+  const isRepoNameRuntimeInput = (template?.properties || templateInputsProperties)?.ci?.codebase?.repoName
+  const isCpuLimitRuntimeInput = (template?.properties || templateInputsProperties)?.ci?.codebase?.resources?.limits
+    ?.cpu
+  const isMemoryLimitRuntimeInput = (template?.properties || templateInputsProperties)?.ci?.codebase?.resources?.limits
+    ?.memory
   const isDeploymentForm = viewType === StepViewType.DeploymentForm
   const showSetContainerResources = isCpuLimitRuntimeInput || isMemoryLimitRuntimeInput
   const [isConnectorExpression, setIsConnectorExpression] = useState<boolean>(false)
+  const containerWidth = viewTypeMetadata?.isTemplateDetailDrawer ? '100%' : '50%' // drawer view is much smaller 50% would cut out
+  const showBuildAsDisabledTextField = viewTypeMetadata?.isTemplateBuilder || viewTypeMetadata?.isTemplateDetailDrawer // should disable when template is applied to pipeline
   const savedValues = useRef<Record<string, string>>({
     branch: '',
     tag: '',
@@ -187,9 +210,11 @@ function CICodebaseInputSetFormInternal({
   const { expressions } = useVariablesExpression()
   const formattedPath = isEmpty(path) ? '' : `${path}.`
   const buildPath = `${formattedPath}properties.ci.codebase.build`
-  const codeBaseTypePath = `${formattedPath}properties.ci.codebase.build.type`
   const buildSpecPath = `${formattedPath}properties.ci.codebase.build.spec`
+  const codeBaseTypePath = `${formattedPath}properties.ci.codebase.build.type`
   const prCloneStrategyOptions = getPrCloneStrategyOptions(getString)
+  const [codeBaseType, setCodeBaseType] = useState<CodeBaseType>(get(formik?.values, codeBaseTypePath))
+
   const radioLabels = {
     branch: getString('gitBranch'),
     tag: getString('gitTag'),
@@ -371,7 +396,7 @@ function CICodebaseInputSetFormInternal({
       ) : (
         <>
           {isConnectorRuntimeInput && (
-            <Container width="50%">
+            <Container width={containerWidth}>
               <FormMultiTypeConnectorField
                 name={codeBaseInputFieldFormName.connectorRef}
                 width={connectorWidth}
@@ -411,7 +436,7 @@ function CICodebaseInputSetFormInternal({
           )}
           {isRepoNameRuntimeInput &&
             (!isRuntimeInput(formik?.values.connectorRef) && connectionType === ConnectionType.Repo ? (
-              <Container width={'50%'}>
+              <Container width={containerWidth}>
                 <Text
                   font={{ variation: FontVariation.FORM_LABEL }}
                   margin={{ bottom: 'xsmall' }}
@@ -428,17 +453,16 @@ function CICodebaseInputSetFormInternal({
               </Container>
             ) : (
               <>
-                <Container width={'50%'} className={css.bottomMargin3}>
+                <Container width={containerWidth}>
                   <MultiTypeTextField
                     label={
-                      <Layout.Horizontal className={css.inpLabel}>
-                        <Text
-                          font={{ variation: FontVariation.FORM_LABEL }}
-                          tooltipProps={{ dataTooltipId: 'rightBarForm_repoName' }}
-                        >
-                          {getString('common.repositoryName')}
-                        </Text>
-                      </Layout.Horizontal>
+                      <Text
+                        className={css.inpLabel}
+                        font={{ variation: FontVariation.FORM_LABEL }}
+                        tooltipProps={{ dataTooltipId: 'rightBarForm_repoName' }}
+                      >
+                        {getString('common.repositoryName')}
+                      </Text>
                     }
                     name={codeBaseInputFieldFormName.repoName}
                     multiTextInputProps={{
@@ -472,45 +496,61 @@ function CICodebaseInputSetFormInternal({
               >
                 {getString('filters.executions.buildType')}
               </Text>
-              <Layout.Horizontal
-                flex={{ justifyContent: 'start' }}
-                padding={{ top: 'small', left: 'xsmall', bottom: 'xsmall' }}
-                margin={{ left: 'large' }}
-              >
-                <Radio
-                  label={radioLabels['branch']}
-                  width={110}
-                  onClick={() => handleTypeChange('branch')}
-                  checked={codeBaseType === CodebaseTypes.branch}
-                  disabled={readonly}
-                  font={{ variation: FontVariation.FORM_LABEL }}
-                  key="branch-radio-option"
-                />
-                <Radio
-                  label={radioLabels['tag']}
-                  width={90}
-                  margin={{ left: 'huge' }}
-                  onClick={() => handleTypeChange('tag')}
-                  checked={codeBaseType === CodebaseTypes.tag}
-                  disabled={readonly}
-                  font={{ variation: FontVariation.FORM_LABEL }}
-                  key="tag-radio-option"
-                />
-                {connectorType !== 'Codecommit' ? (
+              {showBuildAsDisabledTextField ? (
+                <Container width={containerWidth} className={css.bottomMargin3}>
+                  <FormInput.MultiTextInput
+                    name={buildPath}
+                    label=""
+                    // value="<+input>"
+                    multiTextInputProps={{
+                      expressions,
+                      allowableTypes: [MultiTypeInputType.FIXED]
+                    }}
+                    disabled={true}
+                    style={{ marginBottom: 0, flexGrow: 1 }}
+                  />
+                </Container>
+              ) : (
+                <Layout.Horizontal
+                  flex={{ justifyContent: 'start' }}
+                  padding={{ top: 'small', left: 'xsmall', bottom: 'xsmall' }}
+                  margin={{ left: 'large' }}
+                >
                   <Radio
-                    label={radioLabels['PR']}
+                    label={radioLabels['branch']}
                     width={110}
-                    margin={{ left: 'huge' }}
-                    onClick={() => handleTypeChange('PR')}
-                    checked={codeBaseType === CodebaseTypes.PR}
+                    onClick={() => handleTypeChange('branch')}
+                    checked={codeBaseType === CodebaseTypes.branch}
                     disabled={readonly}
                     font={{ variation: FontVariation.FORM_LABEL }}
-                    key="pr-radio-option"
+                    key="branch-radio-option"
                   />
-                ) : null}
-              </Layout.Horizontal>
+                  <Radio
+                    label={radioLabels['tag']}
+                    width={90}
+                    margin={{ left: 'huge' }}
+                    onClick={() => handleTypeChange('tag')}
+                    checked={codeBaseType === CodebaseTypes.tag}
+                    disabled={readonly}
+                    font={{ variation: FontVariation.FORM_LABEL }}
+                    key="tag-radio-option"
+                  />
+                  {connectorType !== 'Codecommit' ? (
+                    <Radio
+                      label={radioLabels['PR']}
+                      width={110}
+                      margin={{ left: 'huge' }}
+                      onClick={() => handleTypeChange('PR')}
+                      checked={codeBaseType === CodebaseTypes.PR}
+                      disabled={readonly}
+                      font={{ variation: FontVariation.FORM_LABEL }}
+                      key="pr-radio-option"
+                    />
+                  ) : null}
+                </Layout.Horizontal>
+              )}
               {codebaseTypeError && formik.submitCount > 0 && <Text color={Color.RED_600}>{codebaseTypeError}</Text>}
-              <Container width={'50%'}>
+              <Container width={containerWidth}>
                 {codeBaseType === CodebaseTypes.branch ? renderCodeBaseTypeInput('branch') : null}
                 {codeBaseType === CodebaseTypes.tag ? renderCodeBaseTypeInput('tag') : null}
                 {codeBaseType === CodebaseTypes.PR ? renderCodeBaseTypeInput('PR') : null}
@@ -530,7 +570,7 @@ function CICodebaseInputSetFormInternal({
             </Text>
           )}
           {isDepthRuntimeInput && (
-            <Container width={'50%'} className={css.bottomMargin3}>
+            <Container width={containerWidth} className={css.bottomMargin3}>
               <MultiTypeTextField
                 label={
                   <Layout.Horizontal className={css.inpLabel} style={{ display: 'flex', alignItems: 'baseline' }}>
@@ -553,7 +593,7 @@ function CICodebaseInputSetFormInternal({
             </Container>
           )}
           {isSslVerifyRuntimeInput && (
-            <Container width={'50%'} className={css.bottomMargin3}>
+            <Container width={containerWidth} className={css.bottomMargin3}>
               <MultiTypeSelectField
                 name={codeBaseInputFieldFormName.sslVerify}
                 label={renderLabel({
@@ -580,7 +620,7 @@ function CICodebaseInputSetFormInternal({
             </Container>
           )}
           {isPrCloneStrategyRuntimeInput && (
-            <Container width={'50%'} className={css.bottomMargin3}>
+            <Container width={containerWidth} className={css.bottomMargin3}>
               <MultiTypeSelectField
                 name={codeBaseInputFieldFormName.prCloneStrategy}
                 label={renderLabel({
@@ -604,7 +644,7 @@ function CICodebaseInputSetFormInternal({
             </Container>
           )}
           {showSetContainerResources && (
-            <Layout.Vertical width={'50%'} className={css.bottomMargin3} spacing="medium">
+            <Layout.Vertical width={containerWidth} className={css.bottomMargin3} spacing="medium">
               <Text
                 color={Color.GREY_600}
                 font={{ size: 'small', weight: 'semi-bold' }}
