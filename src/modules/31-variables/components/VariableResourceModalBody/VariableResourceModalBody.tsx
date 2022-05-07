@@ -49,7 +49,9 @@ const VariableResourceModalBody: React.FC<RbacResourceModalProps> = ({
     () => VariableListColumnHeader(getString) as Column<ParsedColumnContent>[],
     []
   )
-  if (loading) return <PageSpinner />
+  if (loading) {
+    return <PageSpinner />
+  }
   return variableList?.length ? (
     <Container>
       <ResourceHandlerTable
