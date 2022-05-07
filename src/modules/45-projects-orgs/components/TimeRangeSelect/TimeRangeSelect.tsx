@@ -15,7 +15,7 @@ interface TimeRangeSelectProps {
 }
 
 const TimeRangeSelect: React.FC<TimeRangeSelectProps> = props => {
-  const { selectTimeRange } = useLandingDashboardContext()
+  const { selectTimeRange, selectedTimeRange } = useLandingDashboardContext()
   const { getString } = useStrings()
 
   const options: SelectOption[] = [
@@ -24,6 +24,8 @@ const TimeRangeSelect: React.FC<TimeRangeSelectProps> = props => {
     { label: getString('projectsOrgs.landingDashboard.last90Days'), value: DashboardTimeRange['90Days'] },
     { label: getString('projectsOrgs.landingDashboard.last1Year'), value: DashboardTimeRange['1Year'] }
   ]
+  const defaultTime = options.filter(i => i.value === selectedTimeRange)
+
   return (
     <Select
       items={options}
@@ -31,7 +33,7 @@ const TimeRangeSelect: React.FC<TimeRangeSelectProps> = props => {
         selectTimeRange(option.value as DashboardTimeRange)
       }}
       className={props.className}
-      defaultSelectedItem={options[0]}
+      defaultSelectedItem={defaultTime.length ? defaultTime[0] : options[0]}
     />
   )
 }

@@ -138,7 +138,7 @@ const OverviewGlanceCards: React.FC<OverviewGlanceCardsProp> = props => {
       })
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedTimeRange])
+  }, [selectedTimeRange, pageLoadGlanceCardData])
 
   const hasAPIFailed = !(
     countResponse?.data?.executionStatus === 'SUCCESS' || glanceCardData?.data?.executionStatus === 'SUCCESS'

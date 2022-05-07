@@ -5,10 +5,11 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import React, { createContext, useContext, useState } from 'react'
+import React, { createContext, useContext } from 'react'
 import { useParams } from 'react-router-dom'
 import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
 import type { Scope } from 'services/cd-ng'
+import { useSessionStorage } from '@common/hooks/useSessionStorage'
 
 export enum DashboardTimeRange {
   '30Days' = '30Days',
@@ -37,7 +38,8 @@ const LandingDashboardContext = createContext<LandingDashboardContextProps>({
 })
 
 export function LandingDashboardContextProvider(props: React.PropsWithChildren<unknown>): React.ReactElement {
-  const [selectedTimeRange, setSelectedTimeRange] = useState(DashboardTimeRange['30Days'])
+  const [selectedTimeRange, setSelectedTimeRange] = useSessionStorage('timeRangeHome', DashboardTimeRange['30Days'])
+
   const { accountId, orgIdentifier, projectIdentifier } = useParams<ProjectPathProps>()
 
   const selectTimeRange = (timeRange: DashboardTimeRange): void => {

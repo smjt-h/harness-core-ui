@@ -5,7 +5,7 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import React, { useState } from 'react'
+import React from 'react'
 import { Container, PageHeader } from '@wings-software/uicore'
 import { useHistory, useParams } from 'react-router-dom'
 import { defaultTo, get } from 'lodash-es'
@@ -37,6 +37,7 @@ import {
 import { DeploymentsTimeRangeContext } from '@cd/components/Services/common'
 
 import { TitleWithToolTipId } from '@common/components/Title/TitleWithToolTipId'
+import { useSessionStorage } from '@common/hooks/useSessionStorage'
 import DeploymentsHealthCards from './DeploymentsHealthCards'
 import DeploymentExecutionsChart from './DeploymentExecutionsChart'
 import WorkloadCard from './DeploymentCards/WorkloadCard'
@@ -88,10 +89,17 @@ export function executionStatusInfoToExecutionSummary(info: ExecutionStatusInfo)
 export const CDDashboardPage: React.FC = () => {
   const { projectIdentifier, orgIdentifier, accountId } = useParams<ProjectPathProps>()
   const { getString } = useStrings()
-  const [timeRange, setTimeRange] = useState<TimeRangeSelectorProps>({
+
+  const [timeRange, setTimeRange] = useSessionStorage<TimeRangeSelectorProps>('timeRangeCDDashboard', {
     range: [startOfDay(moment().subtract(1, 'month').add(1, 'day')), startOfDay(moment())],
     label: getString('common.duration.month')
   })
+  //convert to valid format if string
+  if (typeof timeRange.range[0] === 'string') {
+    timeRange.range[0] = new Date(defaultTo(timeRange.range[0], ''))
+    timeRange.range[1] = new Date(defaultTo(timeRange.range[1], ''))
+  }
+
   const history = useHistory()
 
   useDocumentTitle([getString('deploymentsText'), getString('overview')])

@@ -5,9 +5,10 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 import moment from 'moment'
+import { defaultTo } from 'lodash-es'
 import { Card, Layout } from '@wings-software/uicore'
 import { Page } from '@common/exports'
 import { GetServiceDetailsQueryParams, useGetServiceDetails } from 'services/cd-ng'
@@ -20,6 +21,7 @@ import { MostActiveServicesWidget } from '@cd/components/Services/MostActiveServ
 import { startOfDay, TimeRangeSelectorProps } from '@common/components/TimeRangeSelector/TimeRangeSelector'
 import { DeploymentsWidget } from '@cd/components/Services/DeploymentsWidget/DeploymentsWidget'
 import { ServicesList, ServicesListProps } from '@cd/components/Services/ServicesList/ServicesList'
+import { useSessionStorage } from '@common/hooks/useSessionStorage'
 import type { ModulePathParams, ProjectPathProps } from '@common/interfaces/RouteInterfaces'
 import { useDocumentTitle } from '@common/hooks/useDocumentTitle'
 import { useStrings } from 'framework/strings'
@@ -29,10 +31,16 @@ export const ServicesContent: React.FC = () => {
   const { view, fetchDeploymentList } = useServiceStore()
   const { getString } = useStrings()
 
-  const [timeRange, setTimeRange] = useState<TimeRangeSelectorProps>({
+  const [timeRange, setTimeRange] = useSessionStorage<TimeRangeSelectorProps>('timeRangeServiceDashboard', {
     range: [startOfDay(moment().subtract(1, 'month').add(1, 'day')), startOfDay(moment())],
     label: getString('common.duration.month')
   })
+
+  //convert to valid format if string
+  if (typeof timeRange.range[0] === 'string') {
+    timeRange.range[0] = new Date(defaultTo(timeRange.range[0], ''))
+    timeRange.range[1] = new Date(defaultTo(timeRange.range[1], ''))
+  }
 
   const { accountId, orgIdentifier, projectIdentifier } = useParams<ProjectPathProps & ModulePathParams>()
 
