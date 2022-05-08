@@ -62,7 +62,7 @@ export const formatCount = (num: number): string => {
   return num.toLocaleString()
 }
 
-export const isCommunityPlan = (): boolean => window.deploymentType === 'COMMUNITY'
+export const isCommunityPlan = (): boolean => false
 
 export const isOnPrem = (): boolean => window.deploymentType === 'ON_PREM'
 
