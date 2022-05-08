@@ -40,7 +40,7 @@ describe('OverviewGlanceCards', () => {
     )
 
     await waitFor(() => expect(queryByText('projectsText')).toBeInTheDocument())
-    expect(getData).toBeCalledTimes(0)
+    expect(getData).toBeCalledTimes(1)
 
     expect(queryByText('+137')).toBeInTheDocument()
     expect(container).toMatchSnapshot()
