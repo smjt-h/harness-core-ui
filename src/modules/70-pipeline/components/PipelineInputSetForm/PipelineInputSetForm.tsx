@@ -27,6 +27,7 @@ import { PipelineActions } from '@pipeline/factories/PubSubPipelineAction/types'
 import type { AccountPathProps } from '@common/interfaces/RouteInterfaces'
 import { useDeepCompareEffect } from '@common/hooks'
 import { TEMPLATE_INPUT_PATH } from '@pipeline/utils/templateUtils'
+import { isCodebaseFieldsRuntimeInputs } from '@pipeline/utils/CIUtils'
 import { StageInputSetForm } from './StageInputSetForm'
 import { StageAdvancedInputSetForm } from './StageAdvancedInputSetForm'
 import { CICodebaseInputSetForm } from './CICodebaseInputSetForm'
@@ -221,7 +222,7 @@ export function PipelineInputSetFormInternal(props: PipelineInputSetFormProps): 
       Object.is(get(stage, 'stage.spec.cloneCodebase'), true) ||
       stage.parallel?.some(parallelStage => Object.is(get(parallelStage, 'stage.spec.cloneCodebase'), true))
   )
-  const isCodebaseFieldsRuntimeInputs = Object.keys(template?.properties?.ci?.codebase || {})?.length > 1 // show codebase when more fields needed
+  const codebaseHasRuntimeInputs = isCodebaseFieldsRuntimeInputs(template)
   const { expressions } = useVariablesExpression()
 
   const isInputStageDisabled = (stageId: string): boolean => {
@@ -294,7 +295,7 @@ export function PipelineInputSetFormInternal(props: PipelineInputSetFormProps): 
           />
         </>
       )}
-      {(isCloneCodebaseEnabledAtLeastAtOneStage || isCodebaseFieldsRuntimeInputs) &&
+      {(isCloneCodebaseEnabledAtLeastAtOneStage || codebaseHasRuntimeInputs) &&
         getMultiTypeFromValue(finalTemplate?.properties?.ci?.codebase?.build as unknown as string) ===
           MultiTypeInputType.RUNTIME && (
           <>

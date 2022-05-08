@@ -287,6 +287,12 @@ function CICodebaseInputSetFormInternal({
           : connectorDetails?.data?.connector.spec.type
       )
       setConnectorUrl(connectorDetails?.data?.connector.spec.url)
+      if (
+        connectorDetails?.data?.connector?.spec?.type === ConnectionType.Repo ||
+        connectorDetails?.data?.connector?.spec?.type === ConnectionType.Region
+      ) {
+        formik.setFieldValue(codeBaseInputFieldFormName.repoName, undefined)
+      }
     }
   }, [loadingConnectorDetails, connectorDetails])
 
@@ -497,7 +503,10 @@ function CICodebaseInputSetFormInternal({
                 {getString('filters.executions.buildType')}
               </Text>
               {showBuildAsDisabledTextField ? (
-                <Container width={containerWidth} className={css.bottomMargin3}>
+                <Container
+                  width={viewTypeMetadata?.isTemplateBuilder ? '361px' : containerWidth}
+                  className={css.bottomMargin3}
+                >
                   <FormInput.MultiTextInput
                     name={buildPath}
                     label=""

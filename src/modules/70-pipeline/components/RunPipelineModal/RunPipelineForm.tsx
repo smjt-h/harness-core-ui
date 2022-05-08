@@ -62,6 +62,11 @@ import { yamlStringify, yamlParse } from '@common/utils/YamlHelperMethods'
 import { PipelineActions } from '@common/constants/TrackingConstants'
 import { useTelemetry } from '@common/hooks/useTelemetry'
 import type { InputSetDTO } from '@pipeline/utils/types'
+import {
+  isCloneCodebaseEnabledAtLeastOneStage,
+  isCodebaseFieldsRuntimeInputs,
+  getPipelineWithoutCodebaseInputs
+} from '@pipeline/utils/CIUtils'
 import { useDeepCompareEffect } from '@common/hooks/useDeepCompareEffect'
 import { clearRuntimeInput, validatePipeline, getErrorsList } from '../PipelineStudio/StepUtil'
 import { PreFlightCheckModal } from '../PreFlightCheckModal/PreFlightCheckModal'
@@ -355,6 +360,18 @@ function RunPipelineFormBasic({
       updatePipelineInVaribalesContext(resolvedPipeline)
     }
   }, [resolvedPipeline])
+
+  useEffect(() => {
+    // only applied for CI, Not cloned codebase
+    if (
+      formikRef?.current?.values?.template?.templateInputs &&
+      isCodebaseFieldsRuntimeInputs(formikRef.current.values.template.templateInputs as PipelineInfoConfig) &&
+      !isCloneCodebaseEnabledAtLeastOneStage(formikRef.current.values.template.templateInputs as PipelineInfoConfig)
+    ) {
+      const newPipeline = getPipelineWithoutCodebaseInputs(formikRef.current.values)
+      formikRef.current.setValues({ ...formikRef.current.values, ...newPipeline })
+    }
+  }, [formikRef?.current?.values?.template?.templateInputs])
 
   const [showPreflightCheckModal, hidePreflightCheckModal] = useModalHook(() => {
     return (

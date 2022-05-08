@@ -363,11 +363,12 @@ export const validateCICodebase = ({
   const errors = {}
   const requiresConnectorRuntimeInputValue =
     template?.properties?.ci?.codebase?.connectorRef && !pipeline?.properties?.ci?.codebase?.connectorRef
-
+  const pipelineHasCloneCodebase = originalPipeline?.stages?.some(stage =>
+    Object.is(get(stage, cloneCodebaseKeyRef), true)
+  )
   const shouldValidateCICodebase =
-    originalPipeline?.stages?.some(
-      stage => Object.is(get(stage, cloneCodebaseKeyRef), true) && !requiresConnectorRuntimeInputValue // ci codebase field is hidden until connector is selected
-    ) || template?.properties?.ci?.codebase?.build
+    (pipelineHasCloneCodebase && !requiresConnectorRuntimeInputValue) || // ci codebase field is hidden until connector is selected
+    template?.properties?.ci?.codebase?.build
   const shouldValidate = !Object.keys(viewTypeMetadata || {}).includes('isTemplateBuilder')
   if (
     shouldValidate &&
@@ -389,7 +390,8 @@ export const validateCICodebase = ({
     if (
       isEmpty(pipeline?.properties?.ci?.codebase?.build?.type) &&
       (!requiresConnectorRuntimeInputValue ||
-        (requiresConnectorRuntimeInputValue && pipeline?.properties?.ci?.codebase?.connectorRef))
+        (requiresConnectorRuntimeInputValue && pipeline?.properties?.ci?.codebase?.connectorRef)) &&
+      pipelineHasCloneCodebase
     ) {
       set(
         errors,
@@ -429,7 +431,7 @@ export const validateCICodebase = ({
   }
 
   if (shouldValidate) {
-    if (requiresConnectorRuntimeInputValue) {
+    if (requiresConnectorRuntimeInputValue && pipelineHasCloneCodebase) {
       set(
         errors,
         'properties.ci.codebase.connectorRef',
