@@ -45,6 +45,7 @@ interface VerifyOutOfClusterDelegateProps {
   type: string
   isStep: boolean
   onClose?: () => void
+  onTestConnectionSuccess?: () => void
   setIsEditMode?: (val: boolean) => void // Remove after removing all usages
   url?: string
   isLastStep?: boolean
@@ -449,6 +450,9 @@ const VerifyOutOfClusterDelegate: React.FC<StepProps<VerifyOutOfClusterStepProps
                 intent="primary"
                 onClick={() => {
                   props.onClose?.()
+                  if (stepDetails.status === 'DONE') {
+                    props.onTestConnectionSuccess?.()
+                  }
                 }}
                 text={getString('finish')}
                 variation={ButtonVariation.SECONDARY}

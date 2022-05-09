@@ -23,6 +23,7 @@ import {
   statusToStatusMapping
 } from '@pipeline/components/PipelineSteps/AdvancedSteps/ConditionalExecutionPanel/ConditionalExecutionPanelUtils'
 import type { NodeRunInfo } from 'services/pipeline-ng'
+import { BARRIER_WITH_OPEN_LINKS } from '@pipeline/utils/executionUtils'
 import type {
   ExecutionPipeline,
   ExecutionPipelineGroupInfo,
@@ -554,7 +555,7 @@ export const focusRunningNode = <T>(engine: DiagramEngine, data: ExecutionPipeli
 export const getTertiaryIconProps = <T>(stage: ExecutionPipelineItem<T>): { tertiaryIcon?: IconName } => {
   const tertiaryIconProps: { tertiaryIcon?: IconName } = {}
   if (stage?.barrierFound) {
-    tertiaryIconProps.tertiaryIcon = 'barrier-open-with-links'
+    tertiaryIconProps.tertiaryIcon = BARRIER_WITH_OPEN_LINKS
   }
   return tertiaryIconProps
 }

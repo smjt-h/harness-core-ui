@@ -193,8 +193,8 @@ exports[`FlagActivation it should render correctly 1`] = `
                           style="border-radius: 50%; width: 12px; height: 12px; background-color: rgb(101, 222, 242); display: inline-block;"
                         />
                         <span
-                          class="StyledProps--font StyledProps--main StyledProps--inline StyledProps--margin-bottom-xsmall"
-                          style="margin-bottom: 0px; font-weight: 600;"
+                          class="StyledProps--font StyledProps--main StyledProps--inline StyledProps--margin-bottom-xsmall StyledProps--color StyledProps--font-size-normal"
+                          style="font-weight: 600;"
                         >
                           False
                         </span>
@@ -213,8 +213,8 @@ exports[`FlagActivation it should render correctly 1`] = `
                           style="border-radius: 50%; width: 12px; height: 12px; background-color: rgb(101, 222, 242); display: inline-block;"
                         />
                         <span
-                          class="StyledProps--font StyledProps--main StyledProps--inline StyledProps--margin-bottom-xsmall"
-                          style="margin-bottom: 0px; font-weight: 600;"
+                          class="StyledProps--font StyledProps--main StyledProps--inline StyledProps--margin-bottom-xsmall StyledProps--color StyledProps--font-size-normal"
+                          style="font-weight: 600;"
                         >
                           False
                         </span>
@@ -263,8 +263,8 @@ exports[`FlagActivation it should render correctly 1`] = `
                                   style="border-radius: 50%; width: 12px; height: 12px; background-color: rgb(64, 101, 160); display: inline-block; transform: translateY(1px); margin-left: 1px;"
                                 />
                                 <span
-                                  class="StyledProps--font StyledProps--main StyledProps--inline StyledProps--margin-bottom-xsmall"
-                                  style="margin-bottom: 0px; font-weight: 600;"
+                                  class="StyledProps--font StyledProps--main StyledProps--inline StyledProps--margin-bottom-xsmall StyledProps--color StyledProps--font-size-normal"
+                                  style="font-weight: 600;"
                                 >
                                   True
                                 </span>

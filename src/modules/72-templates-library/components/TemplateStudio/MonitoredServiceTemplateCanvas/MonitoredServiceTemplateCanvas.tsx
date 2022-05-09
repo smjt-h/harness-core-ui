@@ -29,12 +29,16 @@ const MonitoredServiceTemplateCanvas = (_props: unknown, formikRef: TemplateForm
         spec: {
           serviceRef: formikValue?.serviceRef,
           environmentRef: formikValue?.environmentRef,
-          type: 'MonitoredService'
+          type: 'MonitoredService',
+          sources: formikValue?.sources
         } as JsonNode
       })
     }
   }
-  return <ConfigurationsWithRef isTemplate={true} ref={formikRef} updateTemplate={onUpdate} />
+
+  return (
+    <ConfigurationsWithRef templateValue={state.template} isTemplate={true} ref={formikRef} updateTemplate={onUpdate} />
+  )
 }
 
 export const MonitoredTemplateCanvasWithRef = React.forwardRef(MonitoredServiceTemplateCanvas)

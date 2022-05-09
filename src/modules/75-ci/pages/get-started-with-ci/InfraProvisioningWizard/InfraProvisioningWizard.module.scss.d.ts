@@ -19,6 +19,7 @@ declare const styles: {
   readonly hostingToggle: string
   readonly icons: string
   readonly learnMore: string
+  readonly provisioningFailed: string
   readonly repositories: string
   readonly repositoriesWithError: string
   readonly repositoryRow: string

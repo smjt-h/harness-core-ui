@@ -79,7 +79,7 @@ exports[`<PipelineTemplateCanvas/> tests should call updateTemplate with updated
       <span
         class="bp3-button-text"
       >
-        variablesText
+        common.variables
       </span>
     </button>
     <button

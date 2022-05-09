@@ -24,6 +24,7 @@ const releaseNameRegex = /^[a-z0-9]([-a-z0-9]*[a-z0-9])?(\.[a-z0-9]([-a-z0-9]*[a
 export enum InfraDeploymentType {
   KubernetesDirect = 'KubernetesDirect',
   KubernetesGcp = 'KubernetesGcp',
+  KubernetesAzure = 'KubernetesAzure',
   ServerlessAwsLambda = 'ServerlessAwsLambda',
   ServerlessGoogleFunctions = 'ServerlessGoogleFunctions',
   ServerlessAzureFunctions = 'ServerlessAzureFunctions',

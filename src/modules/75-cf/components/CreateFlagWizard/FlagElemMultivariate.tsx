@@ -5,7 +5,7 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import React, { useState, Dispatch, SetStateAction, useCallback } from 'react'
+import React, { useState, Dispatch, SetStateAction, useCallback, useEffect } from 'react'
 import * as yup from 'yup'
 import { isEqual } from 'lodash-es'
 import { Classes } from '@blueprintjs/core'
@@ -30,7 +30,10 @@ import { FormikEffect, FormikEffectProps } from '@common/components/FormikEffect
 import type { Variation } from 'services/cf'
 import { useStrings } from 'framework/strings'
 import { FeatureFlagMutivariateKind, useValidateVariationValues } from '@cf/utils/CFUtils'
+import { useTelemetry } from '@common/hooks/useTelemetry'
+import { Category, FeatureActions } from '@common/constants/TrackingConstants'
 
+import { FlagTypeVariations } from '../CreateFlagDialog/FlagDialogUtils'
 import type { FlagWizardFormValues } from './FlagWizard'
 import css from './FlagElemVariations.module.scss'
 
@@ -135,6 +138,16 @@ const FlagElemMultivariate: React.FC<FlagElemMultivariateProps> = props => {
     ...prevStepData
   }
 
+  const { trackEvent } = useTelemetry()
+
+  useEffect(() => {
+    trackEvent(FeatureActions.VariationSettings, {
+      category: Category.FEATUREFLAG,
+      flagTypeView: FlagTypeVariations.multiFlag
+    })
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [])
+
   return (
     <Formik
       initialValues={initialValues}
@@ -154,6 +167,10 @@ const FlagElemMultivariate: React.FC<FlagElemMultivariateProps> = props => {
         return validateVariationValues(values.variations, values.kind)
       }}
       onSubmit={vals => {
+        trackEvent(FeatureActions.CreateFeatureFlagSubmit, {
+          category: Category.FEATUREFLAG,
+          data: { ...vals, ...prevStepData, kind: FlagTypeVariations.multiFlag }
+        })
         // TODO: Convert values in data.variations to proper type when backend supports it
         // Right now everything is string
         props.nextStep?.({ ...vals, ...prevStepData })

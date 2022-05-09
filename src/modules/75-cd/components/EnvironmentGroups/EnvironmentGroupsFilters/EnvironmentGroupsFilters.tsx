@@ -35,7 +35,7 @@ import {
 import type { FilterInterface, FilterDataInterface } from '@common/components/Filter/Constants'
 import FilterSelector from '@common/components/Filter/FilterSelector/FilterSelector'
 
-import { useFiltersContext } from '@pipeline/pages/pipeline-deployment-list/FiltersContext/FiltersContext'
+import { useFiltersContext } from '@cd/context/FiltersContext'
 
 import EnvironmentGroupsFilterForm from './EnvironmentGroupsFilterForm'
 import type { EnvironmentGroupListQueryParams } from '../utils'

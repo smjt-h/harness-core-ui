@@ -14,7 +14,12 @@ import { defaultTo, get, isEmpty, set } from 'lodash-es'
 import type { ValidationError } from 'yup'
 import YAML from 'yaml'
 import produce from 'immer'
-import { StageElementConfig, useGetFailureStrategiesYaml } from 'services/cd-ng'
+import {
+  DeploymentStageConfig,
+  StageElementConfig,
+  useGetExecutionStrategyYaml,
+  useGetFailureStrategiesYaml
+} from 'services/cd-ng'
 import ExecutionGraph, {
   ExecutionGraphAddStepEvent,
   ExecutionGraphEditStepEvent,
@@ -31,7 +36,12 @@ import { useFeatureFlag } from '@common/hooks/useFeatureFlag'
 import { FeatureFlag } from '@common/featureFlags'
 import { SaveTemplateButton } from '@pipeline/components/PipelineStudio/SaveTemplateButton/SaveTemplateButton'
 import { useAddStepTemplate } from '@pipeline/hooks/useAddStepTemplate'
-import { getSelectedDeploymentType, isServerlessDeploymentType, StageType } from '@pipeline/utils/stageHelpers'
+import {
+  getSelectedDeploymentType,
+  isServerlessDeploymentType,
+  ServiceDeploymentType,
+  StageType
+} from '@pipeline/utils/stageHelpers'
 import { getCDStageValidationSchema } from '@cd/components/PipelineSteps/PipelineStepsUtil'
 import type { DeploymentStageElementConfig } from '@pipeline/utils/pipelineTypes'
 import { isContextTypeNotStageTemplate } from '@pipeline/components/PipelineStudio/PipelineUtils'
@@ -82,11 +92,16 @@ export default function DeployStageSetupShell(): JSX.Element {
     getStagePathFromPipeline,
     setSelectedSectionId
   } = pipelineContext
+  const query = useQueryParams()
   const [incompleteTabs, setIncompleteTabs] = React.useState<{ [key in DeployTabs]?: boolean }>({})
   const [selectedTabId, setSelectedTabId] = React.useState<DeployTabs>(
     selectedStepId ? DeployTabs.EXECUTION : DeployTabs.SERVICE
   )
-  const query = useQueryParams()
+
+  const { stage: selectedStage } = getStageFromPipeline<DeploymentStageElementConfig>(defaultTo(selectedStageId, ''))
+
+  const selectedStrategy = selectedStage === ServiceDeploymentType.ServerlessAwsLambda ? 'Basic' : 'Rolling'
+
   React.useEffect(() => {
     const sectionId = (query as any).sectionId || ''
     if (sectionId?.length && TabsOrder.includes(sectionId)) {
@@ -118,23 +133,54 @@ export default function DeployStageSetupShell(): JSX.Element {
     }
   }, [selectedTabId])
 
-  const { stage: data } = getStageFromPipeline<DeploymentStageElementConfig>(selectedStageId || '')
-  const deploymentType = getSelectedDeploymentType(
-    data,
+  const selectedDeploymentType = getSelectedDeploymentType(
+    selectedStage,
     getStageFromPipeline,
-    !!data?.stage?.spec?.serviceConfig?.useFromStage?.stage
+    !!selectedStage?.stage?.spec?.serviceConfig?.useFromStage?.stage
   )
   const { data: stageYamlSnippet, loading, refetch } = useGetFailureStrategiesYaml({ lazy: true })
+
+  const { data: yamlSnippet, refetch: refetchYamlSnippet } = useGetExecutionStrategyYaml({
+    queryParams: {
+      serviceDefinitionType: selectedDeploymentType,
+      strategyType: selectedDeploymentType === ServiceDeploymentType.ServerlessAwsLambda ? 'Basic' : 'Rolling'
+    },
+    lazy: true
+  })
+
+  React.useEffect(() => {
+    if (selectedDeploymentType) {
+      refetchYamlSnippet()
+    }
+  }, [selectedDeploymentType, refetchYamlSnippet])
+
+  React.useEffect(() => {
+    if (
+      isServerlessDeploymentType(selectedDeploymentType) &&
+      yamlSnippet?.data &&
+      selectedStage &&
+      isEmpty(selectedStage.stage?.spec?.execution)
+    ) {
+      updateStage(
+        produce(selectedStage, draft => {
+          const jsonFromYaml = YAML.parse(defaultTo(yamlSnippet?.data, '{}')) as StageElementConfig
+          set(draft, 'stage.failureStrategies', jsonFromYaml.failureStrategies)
+          set(draft, 'stage.spec.execution', defaultTo((jsonFromYaml.spec as DeploymentStageConfig)?.execution, {}))
+        }).stage as StageElementConfig
+      )
+    }
+  }, [yamlSnippet?.data, selectedStrategy, selectedDeploymentType, selectedStage])
+
   React.useEffect(() => {
     // do the following one if it is a new stage
-    if (!loading && data?.stage && isEmpty(data?.stage?.spec?.execution)) {
+    if (!loading && selectedStage?.stage && isEmpty(selectedStage?.stage?.spec?.execution)) {
       if (!stageYamlSnippet?.data) {
         // fetch data on first load of new stage
         refetch()
       } else {
         // update the new stage with the fetched data
         updateStage(
-          produce(data?.stage as StageElementConfig, draft => {
+          produce(selectedStage?.stage as StageElementConfig, draft => {
             const jsonFromYaml = YAML.parse(defaultTo(stageYamlSnippet?.data, '')) as StageElementConfig
             if (!draft.failureStrategies) {
               draft.failureStrategies = jsonFromYaml.failureStrategies
@@ -147,9 +193,9 @@ export default function DeployStageSetupShell(): JSX.Element {
 
   const validate = React.useCallback(() => {
     try {
-      getCDStageValidationSchema(getString, deploymentType, contextType).validateSync(data?.stage, {
+      getCDStageValidationSchema(getString, selectedDeploymentType, contextType).validateSync(selectedStage?.stage, {
         abortEarly: false,
-        context: data?.stage
+        context: selectedStage?.stage
       })
       setIncompleteTabs({})
     } catch (error) {
@@ -178,22 +224,17 @@ export default function DeployStageSetupShell(): JSX.Element {
       }
       setIncompleteTabs(newIncompleteTabs)
     }
-  }, [setIncompleteTabs, data?.stage])
+  }, [setIncompleteTabs, selectedStage?.stage])
 
   React.useEffect(() => {
     if (selectedTabId === DeployTabs.EXECUTION) {
       /* istanbul ignore else */
-      if (data?.stage && data?.stage.type === StageType.DEPLOY) {
-        if (!data?.stage?.spec?.execution) {
-          const stageType = data?.stage?.type
+      if (selectedStage?.stage && selectedStage?.stage.type === StageType.DEPLOY) {
+        if (!selectedStage?.stage?.spec?.execution) {
+          const stageType = selectedStage?.stage?.type
           const openExecutionStrategy = stageType ? stagesMap[stageType].openExecutionStrategy : true
-          const selectedDeploymentType = getSelectedDeploymentType(
-            data,
-            getStageFromPipeline,
-            !!data.stage.spec?.serviceConfig.useFromStage?.stage
-          )
           const isServerlessDeploymentTypeSelected = isServerlessDeploymentType(selectedDeploymentType)
-          // if !data?.stage?.spec?.execution and openExecutionStrategy===true show ExecutionStrategy drawer
+          // Show executiomn strategies when openExecutionStrategy is true and deployment type is not serverless
           if (openExecutionStrategy && !isServerlessDeploymentTypeSelected) {
             updatePipelineView({
               ...pipelineView,
@@ -208,27 +249,24 @@ export default function DeployStageSetupShell(): JSX.Element {
           // set default (empty) values
           // NOTE: this cannot be set in advance as data.stage.spec.execution===undefined is a trigger to open ExecutionStrategy for CD stage
           /* istanbul ignore else */
-          if (data?.stage?.spec?.execution) {
-            if (!data.stage.spec.execution.steps) {
-              data.stage.spec.execution.steps = []
+          if (selectedStage?.stage?.spec?.execution) {
+            if (!selectedStage.stage.spec.execution.steps) {
+              selectedStage.stage.spec.execution.steps = []
             }
-            if (!data.stage.spec.execution.rollbackSteps) {
-              data.stage.spec.execution.rollbackSteps = []
+            if (!selectedStage.stage.spec.execution.rollbackSteps) {
+              selectedStage.stage.spec.execution.rollbackSteps = []
             }
           }
         }
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data, selectedTabId, selectedStageId])
+  }, [selectedStage, selectedTabId, selectedStageId, selectedDeploymentType])
 
   React.useEffect(() => {
     validate()
-  }, [JSON.stringify(data)])
+  }, [JSON.stringify(selectedStage)])
 
-  const selectedStage = selectedStageId
-    ? getStageFromPipeline<DeploymentStageElementConfig>(selectedStageId).stage
-    : undefined
   const originalStage = selectedStageId ? getStageFromPipeline(selectedStageId, originalPipeline).stage : undefined
   const stagePath = getStagePathFromPipeline(selectedStageId || '', 'pipeline.stages')
 
@@ -308,7 +346,7 @@ export default function DeployStageSetupShell(): JSX.Element {
               {getString('executionText')}
             </span>
           }
-          className={css.fullHeight}
+          className={cx(css.fullHeight, css.stepGroup)}
           panel={
             <ExecutionGraph
               allowAddGroup={true}

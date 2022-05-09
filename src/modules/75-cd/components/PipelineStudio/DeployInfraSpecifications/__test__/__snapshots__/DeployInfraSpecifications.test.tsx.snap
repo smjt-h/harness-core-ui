@@ -206,7 +206,7 @@ exports[`Deploy infra specifications test Should match snapshot 1`] = `
         class="bp3-card bp3-elevation-0 Card--card sectionCard"
       >
         <div>
-          Undefined deployment type
+          cd.steps.common.undefinedType
         </div>
       </div>
       <div

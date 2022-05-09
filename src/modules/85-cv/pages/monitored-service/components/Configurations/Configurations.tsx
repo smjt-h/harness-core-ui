@@ -26,6 +26,7 @@ import {
   useSaveMonitoredService,
   useUpdateMonitoredService
 } from 'services/cv'
+import type { NGTemplateInfoConfig } from 'services/template-ng'
 import { PageSpinner, useToaster, NavigationCheck } from '@common/components'
 import type { TemplateFormRef } from '@templates-library/components/TemplateStudio/TemplateStudio'
 import { MonitoredServiceEnum } from '@cv/pages/monitored-service/MonitoredServicePage.constants'
@@ -41,11 +42,12 @@ import css from './Configurations.module.scss'
 
 interface ConfigurationsInterface {
   isTemplate?: boolean
+  templateValue?: NGTemplateInfoConfig
   updateTemplate?: (template: MonitoredServiceForm) => void
 }
 
 export default function Configurations(
-  { isTemplate, updateTemplate }: ConfigurationsInterface,
+  { isTemplate, updateTemplate, templateValue }: ConfigurationsInterface,
   formikRef: TemplateFormRef
 ): JSX.Element {
   const { getString } = useStrings()
@@ -169,7 +171,14 @@ export default function Configurations(
   }, [identifier])
 
   const initialValues: MonitoredServiceForm = useMemo(
-    () => getInitFormData(dataMonitoredServiceById?.data?.monitoredService, defaultMonitoredService, !!identifier),
+    () =>
+      getInitFormData(
+        dataMonitoredServiceById?.data?.monitoredService,
+        defaultMonitoredService,
+        !!identifier,
+        isTemplate,
+        templateValue
+      ),
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [
       dataMonitoredServiceById?.data?.monitoredService.name,

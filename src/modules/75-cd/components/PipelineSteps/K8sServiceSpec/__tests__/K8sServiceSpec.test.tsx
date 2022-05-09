@@ -460,7 +460,7 @@ describe('StepWidget tests', () => {
         />
       </TestWrapper>
     )
-    const variables = await findByText(container, 'variablesText')
+    const variables = await findByText(container, 'common.variables')
     expect(variables).toBeDefined()
     const workflowInfo = await findByText(container, 'workflowVariableInfo')
     expect(workflowInfo).toBeDefined()

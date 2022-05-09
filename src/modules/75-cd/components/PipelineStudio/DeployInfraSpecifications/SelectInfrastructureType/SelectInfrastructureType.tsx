@@ -11,6 +11,7 @@ import { noop } from 'lodash-es'
 import * as Yup from 'yup'
 import { IconName, GroupedThumbnailSelect } from '@wings-software/uicore'
 import { useStrings, UseStringsReturn } from 'framework/strings'
+import { useFeatureFlags } from '@common/hooks/useFeatureFlag'
 import { StageErrorContext } from '@pipeline/context/StageErrorContext'
 import { DeployTabs } from '@pipeline/components/PipelineStudio/CommonUtils/DeployStageSetupShellUtils'
 import { InfraDeploymentType } from '@cd/components/PipelineSteps/PipelineStepsUtil'
@@ -47,6 +48,7 @@ interface SelectInfrastructureTypeProps {
 
 export default function SelectInfrastructureType(props: SelectInfrastructureTypeProps): JSX.Element {
   const { selectedInfrastructureType, onChange, isReadonly, deploymentType } = props
+  const { NG_AZURE } = useFeatureFlags()
   const { getString } = useStrings()
   const infraGroups: InfrastructureGroup[] = isServerlessDeploymentType(deploymentType)
     ? [
@@ -86,13 +88,26 @@ export default function SelectInfrastructureType(props: SelectInfrastructureType
         },
         {
           groupLabel: getString('pipelineSteps.deploy.infrastructure.viaCloudProvider'),
-          items: [
-            {
-              label: getString('pipelineSteps.deploymentTypes.gk8engine'),
-              icon: 'google-kubernetes-engine',
-              value: InfraDeploymentType.KubernetesGcp
-            }
-          ]
+          items: NG_AZURE
+            ? [
+                {
+                  label: getString('pipelineSteps.deploymentTypes.gk8engine'),
+                  icon: 'google-kubernetes-engine',
+                  value: InfraDeploymentType.KubernetesGcp
+                },
+                {
+                  label: getString('cd.steps.azureInfraStep.azure'),
+                  icon: 'microsoft-azure',
+                  value: InfraDeploymentType.KubernetesAzure
+                }
+              ]
+            : [
+                {
+                  label: getString('pipelineSteps.deploymentTypes.gk8engine'),
+                  icon: 'google-kubernetes-engine',
+                  value: InfraDeploymentType.KubernetesGcp
+                }
+              ]
         }
       ]
 

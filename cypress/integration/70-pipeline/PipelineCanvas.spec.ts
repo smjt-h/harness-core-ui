@@ -19,6 +19,7 @@ import {
   pipelineInputSetTemplate,
   ValidObject,
   servicesCallV2,
+  servicesV2,
   servicesV2AccessResponse,
   stepsData,
   StepResourceObject,
@@ -30,10 +31,11 @@ import {
   approvalStageYamlSnippet,
   jiraApprovalStageYamlSnippet,
   snowApprovalStageYamlSnippet,
-  connectorList,
-  serverlessRepositoriesDetails,
-  serverlessBuildDetails
+  serverlessLambdaYamlSnippet,
+  yamlSnippet,
+  executionStratergies
 } from '../../support/70-pipeline/constants'
+import { connectorsListAPI } from '../../support/35-connectors/constants'
 import { getIdentifierFromName } from '../../utils/stringHelpers'
 
 describe.skip('GIT SYNC DISABLED', () => {
@@ -402,77 +404,109 @@ describe('ServerlessAwsLambda as deployment type', () => {
     cy.contains('span', '<+input>').should('be.visible')
   })
 
-  it.only(`artifactPath and artifactPathFilter validation`, () => {
-    cy.intercept('GET', pipelineDetails, { fixture: 'pipeline/api/pipelines/serverlessAwsLambdaPipelineDetails' }).as(
-      'pipelineDetails'
+  it(`select Serverless Lambda deployment type and validate execution tab`, () => {
+    cy.intercept('GET', pipelineDetails, {
+      fixture: 'pipeline/api/pipelines/pipelineDetailsWithoutServiceDefinitionType'
+    }).as('pipelineDetails')
+    cy.intercept('GET', servicesV2, { fixture: 'pipeline/api/services/serviceV2' }).as('servicesCall')
+    cy.intercept('GET', 'ng/api/pipelines/configuration/cd-stage-yaml-snippet?routingId=accountId', {
+      fixture: 'pipeline/api/pipelines/failureStrategiesYaml'
+    }).as('cdFailureStrategiesYaml')
+    cy.intercept('POST', connectorsListAPI, { fixture: 'ng/api/connectors' }).as('connectorsList')
+    cy.intercept('GET', serverlessLambdaYamlSnippet, { fixture: 'ng/api/pipelines/serverlessYamlSnippet' }).as(
+      'serverlessYamlSnippet'
     )
 
+    // Visit Pipeline Studio
     cy.visit(pipelineStudioRoute, { timeout: 30000 })
     cy.get(`div[data-testid="pipeline-studio"]`, {
       timeout: 5000
     }).should('be.visible')
-    // Select a stage - Stage 1
+
+    // Select Stage
     cy.contains('p', 'Stage 1').click()
-    // Scroll a bit so that Artifact List is in view
-    cy.get('.SplitPane  .horizontal').first().parent().scrollTo('0%', '25%', { ensureScrollable: false })
+    cy.wait(1000)
+    cy.wait('@servicesCall')
+    cy.wait('@cdFailureStrategiesYaml')
+    cy.wait('@stepLibrary')
     cy.wait(1000)
 
-    // Edit Artifact
-    cy.contains('p', 'Primary').should('be.visible')
-    cy.get('span[data-icon="Edit"]').last().should('be.visible').click()
+    // Select Serverless Lambda as deployment type
+    cy.contains('p', 'Serverless Lambda').click()
+    cy.wait('@serverlessYamlSnippet')
 
-    // Click on 'Continue >' button
-    cy.contains('.StepWizard--main span', 'Continue').should('be.visible').click()
+    // Got to Execution tab, Serverless Aws Lambda Deploy should be added by default
+    // Switching between Rollback and Execution should work as expected
+    cy.contains('span', 'Execution').click()
+    cy.contains('p', 'Serverless Aws Lambda Deploy')
+    cy.contains('p', 'Rollback').click()
+    cy.contains('p', 'Serverless Aws Lambda Rollback')
+    cy.contains('p', 'Execution').click()
+    cy.contains('p', 'Serverless Aws Lambda Deploy')
 
-    // Make connectors/connector API call
-    cy.intercept('GET', connectorList, { fixture: 'ng/api/connectors/connector' }).as('connectorList')
-    cy.wait(2000)
-    // Make repositoriesDetails API call
-    cy.intercept('GET', serverlessRepositoriesDetails, {
-      fixture: 'ng/api/artifacts/artifactory/repositoriesDetails'
-    }).as('serverlessRepositoriesDetails')
-    cy.wait(2000)
-    // Make getBuildDetails API call
-    cy.intercept('GET', serverlessBuildDetails, {
-      fixture: 'ng/api/artifacts/artifactory/getBuildDetails'
-    }).as('serverlessBuildDetails')
-    cy.wait(2000)
+    // Add another Serverless Lambda Deploy Step
+    cy.contains('p', 'Add step').click()
+    cy.contains('span', 'Add Step').parent().click()
+    cy.contains('section', 'Serverless Lambda Deploy').click()
+    cy.contains('p', 'Serverless Lambda Deploy Step').should('be.visible')
+    cy.get('input[name="name"]').type('Serverless Deploy Step 2')
+    cy.contains('div', 'Optional configurations').click()
+    cy.contains('p', 'Serverless Deploy Command Options').should('be.visible')
+    cy.contains('span', 'Apply Changes').click()
+    cy.contains('p', 'Serverless Deploy Step 2').should('be.visible')
 
-    // Click on 'Continue >' button
-    cy.contains('.StepWizard--main span', 'Continue').should('be.visible').click()
-    // Remove selected artifact path
-    cy.get('span[data-icon="main-delete"]').last().should('be.visible').click()
-    // Click on 'Submit >' button
-    cy.contains('.StepWizard--main span', 'Submit').should('be.visible').click()
-    // Try to Save Pipeline
-    cy.contains('span', 'Save').click()
-    // Below error should appear in toaster and Save should be aborted
-    cy.contains('span', 'Artifact Path and Artifact Path Filter, both can not be empty').should('be.visible')
+    // Add Serverless Lambda Rollback Step
+    cy.contains('p', 'Add step').click()
+    cy.contains('span', 'Add Step').parent().click()
+    cy.contains('section', 'Serverless Lambda Rollback').click()
+    cy.contains('p', 'Serverless Lambda Rollback Step').should('be.visible')
+    cy.get('input[name="name"]').type('Serverless Rollback Step 1')
+    cy.contains('span', 'Apply Changes').click()
+    cy.contains('p', 'Serverless Rollback Step 1').should('be.visible')
   })
 
-  it(`while saving manifest validation error should appear if manifest is not provided`, () => {
-    cy.intercept('GET', pipelineDetails, { fixture: 'pipeline/api/pipelines/serverlessAwsLambdaPipelineDetails' }).as(
-      'pipelineDetails'
+  it(`select Kubernetes deployment type and check for execution strategies`, () => {
+    cy.intercept('GET', pipelineDetails, {
+      fixture: 'pipeline/api/pipelines/pipelineDetailsWithoutServiceDefinitionType'
+    }).as('pipelineDetails')
+    cy.intercept('GET', servicesV2, { fixture: 'pipeline/api/services/serviceV2' }).as('servicesCall')
+    cy.intercept('GET', 'ng/api/pipelines/configuration/cd-stage-yaml-snippet?routingId=accountId', {
+      fixture: 'pipeline/api/pipelines/failureStrategiesYaml'
+    }).as('cdFailureStrategiesYaml')
+    cy.intercept('POST', connectorsListAPI, { fixture: 'ng/api/connectors' }).as('connectorsList')
+    cy.intercept('GET', yamlSnippet, { fixture: 'ng/api/pipelines/kubernetesYamlSnippet' }).as('kubernetesYamlSnippet')
+    cy.intercept('GET', executionStratergies, { fixture: 'pipeline/api/pipelines/strategies.json' }).as(
+      'executionStratergies'
     )
 
+    // Visit Pipeline Studio
     cy.visit(pipelineStudioRoute, { timeout: 30000 })
     cy.get(`div[data-testid="pipeline-studio"]`, {
       timeout: 5000
     }).should('be.visible')
-    // Select a stage - Stage 1
+
+    // Select Stage
     cy.contains('p', 'Stage 1').click()
-    // Scroll a bit so that Artifact List is in view
-    cy.get('.SplitPane  .horizontal').first().parent().scrollTo('0%', '25%', { ensureScrollable: false })
+    cy.wait(1000)
+    cy.wait('@servicesCall')
+    cy.wait('@cdFailureStrategiesYaml')
+    cy.wait('@stepLibrary')
     cy.wait(1000)
 
-    // Edit Artifact
-    cy.contains('span', 'test_manifest').should('be.visible')
-    cy.get('span[data-icon="main-trash"]').first().should('be.visible').click()
-    cy.wait(1000)
-    // Try to Save Pipeline
-    cy.contains('span', 'Save').click()
-    // Below error should appear in toaster and Save should be aborted
-    cy.contains('span', 'Please provide manifest for stage: Stage 1').should('be.visible')
+    // Select Kubernetes as deployment type
+    cy.contains('p', 'Kubernetes').click()
+
+    // Got to Execution tab, 4 diff Execution Strategies should appear
+    // Use Rolling strategy and check if respective step is added
+    cy.contains('span', 'Execution').click()
+    cy.wait('@executionStratergies')
+    cy.wait('@kubernetesYamlSnippet')
+    cy.contains('section', 'Rolling').should('be.visible')
+    cy.contains('section', 'Blue Green').should('be.visible')
+    cy.contains('section', 'Canary').should('be.visible')
+    cy.contains('section', 'Blank Canvas').should('be.visible')
+    cy.contains('span', 'Use Strategy').should('be.visible').click()
+    cy.contains('p', 'Rollout Deployment').should('be.visible')
   })
 })
 

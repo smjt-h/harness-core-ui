@@ -116,6 +116,7 @@ import GitSyncConfigTab from '@gitsync/pages/config/GitSyncConfigTab'
 import ExecutionSecurityView from '@pipeline/pages/execution/ExecutionSecurityView/ExecutionSecurityView'
 import FullPageLogView from '@pipeline/pages/full-page-log-view/FullPageLogView'
 import { PAGE_NAME } from '@common/pages/pageContext/PageName'
+import VariablesPage from '@variables/pages/variables/VariablesPage'
 import CIHomePage from './pages/home/CIHomePage'
 import CIDashboardPage from './pages/dashboard/CIDashboardPage'
 import CIPipelineStudio from './pages/pipeline-studio/CIPipelineStudio'
@@ -502,6 +503,15 @@ export default (
       pageName={PAGE_NAME.SecretsPage}
     >
       <SecretsPage />
+    </RouteWithLayout>
+    <RouteWithLayout
+      exact
+      licenseRedirectData={licenseRedirectData}
+      sidebarProps={CISideNavProps}
+      path={routes.toVariables({ ...accountPathProps, ...projectPathProps, ...pipelineModuleParams })}
+      pageName={PAGE_NAME.VariablesPage}
+    >
+      <VariablesPage />
     </RouteWithLayout>
     <RouteWithLayout
       exact

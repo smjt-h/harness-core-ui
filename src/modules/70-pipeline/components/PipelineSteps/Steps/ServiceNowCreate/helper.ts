@@ -88,19 +88,38 @@ export const getInitialValueForSelectedField = (
 }
 
 export const processFormData = (values: ServiceNowCreateData): ServiceNowCreateData => {
+  let serviceNowSpec
+  if (!values.spec.useServiceNowTemplate) {
+    serviceNowSpec = {
+      spec: {
+        delegateSelectors: values.spec.delegateSelectors,
+        useServiceNowTemplate: false,
+        connectorRef:
+          getMultiTypeFromValue(values.spec.connectorRef as SelectOption) === MultiTypeInputType.FIXED
+            ? (values.spec.connectorRef as SelectOption)?.value?.toString()
+            : values.spec.connectorRef,
+        ticketType: values.spec.ticketType,
+        fields: processFieldsForSubmit(values)
+      }
+    }
+  } else {
+    serviceNowSpec = {
+      spec: {
+        delegateSelectors: values.spec.delegateSelectors,
+        useServiceNowTemplate: true,
+        connectorRef:
+          getMultiTypeFromValue(values.spec.connectorRef as SelectOption) === MultiTypeInputType.FIXED
+            ? (values.spec.connectorRef as SelectOption)?.value?.toString()
+            : values.spec.connectorRef,
+        ticketType: values.spec.ticketType,
+        fields: [],
+        templateName: values.spec.templateName
+      }
+    }
+  }
   return {
     ...values,
-    spec: {
-      delegateSelectors: values.spec.delegateSelectors,
-      useServiceNowTemplate: values.spec.fieldType === FieldType.CreateFromTemplate,
-      connectorRef:
-        getMultiTypeFromValue(values.spec.connectorRef as SelectOption) === MultiTypeInputType.FIXED
-          ? (values.spec.connectorRef as SelectOption)?.value?.toString()
-          : values.spec.connectorRef,
-      ticketType: values.spec.ticketType,
-      fields: values.spec.fieldType === FieldType.ConfigureFields ? processFieldsForSubmit(values) : [],
-      templateName: values.spec.fieldType === FieldType.CreateFromTemplate ? values.spec.templateName : ''
-    }
+    ...serviceNowSpec
   }
 }
 

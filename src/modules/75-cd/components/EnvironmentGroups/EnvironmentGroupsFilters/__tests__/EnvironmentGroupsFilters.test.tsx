@@ -15,7 +15,7 @@ import { TestWrapper } from '@common/utils/testUtils'
 import routes from '@common/RouteDefinitions'
 import { modulePathProps, projectPathProps } from '@common/utils/routeUtils'
 
-import { FilterContextProvider } from '@pipeline/pages/pipeline-deployment-list/FiltersContext/FiltersContext'
+import { FilterContextProvider } from '@cd/context/FiltersContext'
 
 import { EnvironmentGroupsFilters } from '../EnvironmentGroupsFilters'
 

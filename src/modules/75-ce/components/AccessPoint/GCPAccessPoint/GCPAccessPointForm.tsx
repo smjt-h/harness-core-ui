@@ -323,8 +323,18 @@ const GCPAccessPointForm: React.FC<GCPAccessPointFormProps> = ({
             </Layout.Horizontal>
             {tlsSupportEnabled && (
               <Layout.Horizontal className={css.formFieldRow}>
-                <FormInput.Text name="cert_secret_id" label={getString('ce.co.accessPoint.gcpCertificateId')} />
-                <FormInput.Text name="key_secret_id" label={getString('ce.co.accessPoint.gcpSecretId')} />
+                <FormInput.Text
+                  name="cert_secret_id"
+                  label={getString('ce.co.accessPoint.gcpCertificateId')}
+                  tooltipProps={{ dataTooltipId: 'tlsCertificateSecretId' }}
+                  placeholder={getString('ce.co.accessPoint.gcpCertificatePlaceholder')}
+                />
+                <FormInput.Text
+                  name="key_secret_id"
+                  label={getString('ce.co.accessPoint.gcpSecretId')}
+                  tooltipProps={{ dataTooltipId: 'tlsPrivateKeySecretId' }}
+                  placeholder={getString('ce.co.accessPoint.gcpSecretPlaceholder')}
+                />
               </Layout.Horizontal>
             )}
             <Layout.Horizontal style={{ marginTop: 220 }}>

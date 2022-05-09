@@ -148,7 +148,7 @@ describe('<PipelineVariables /> tests', () => {
       </TestWrapper>
     )
 
-    await findByText('variablesText')
+    await findByText('common.variables')
 
     expect(container).toMatchSnapshot()
   })
@@ -185,7 +185,7 @@ describe('<PipelineVariables /> tests', () => {
       </TestWrapper>
     )
 
-    await findByText('variablesText')
+    await findByText('common.variables')
 
     expect(PipelineCardMock).toHaveBeenLastCalledWith(
       expect.objectContaining({
@@ -228,7 +228,7 @@ describe('<PipelineVariables /> tests', () => {
       </TestWrapper>
     )
 
-    await findByText('variablesText')
+    await findByText('common.variables')
 
     expect(StageCardMock).toHaveBeenCalledWith(
       expect.objectContaining({
@@ -270,7 +270,7 @@ describe('<PipelineVariables /> tests', () => {
       </TestWrapper>
     )
 
-    await findByText('variablesText')
+    await findByText('common.variables')
 
     const apply = await findByText('applyChanges')
 

@@ -11,9 +11,9 @@ import { Color } from '@harness/design-system'
 import { useStrings } from 'framework/strings'
 import StringWithTooltip from '@common/components/StringWithTooltip/StringWithTooltip'
 import type { Target } from 'services/cf'
-import TargetAttributes from '@cf/pages/target-detail/components/TargetAttributes/TargetAttributes'
+import TargetAttributes from '@cf/pages/target-detail/components/LeftBar/TargetAttributes/TargetAttributes'
 import { DetailHeading } from '../DetailHeading'
-import { TabSegments } from '../segments/TabSegments'
+import TargetGroups from '../../target-detail/components/LeftBar/TargetGroups/TargetGroups'
 
 import css from './TargetSettings.module.scss'
 
@@ -50,7 +50,7 @@ export const TargetSettings: FC<TargetSettingsProps> = ({ target }) => {
           <Tab
             id="segments"
             title={<Text className={css.tabTitle}>{getString('cf.shared.segments')}</Text>}
-            panel={<TabSegments target={target} />}
+            panel={<TargetGroups target={target} />}
           />
         </Tabs>
       </Container>

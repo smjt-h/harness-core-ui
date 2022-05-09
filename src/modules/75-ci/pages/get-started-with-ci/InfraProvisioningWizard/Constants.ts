@@ -43,9 +43,17 @@ export interface WizardStep {
   stepFooterLabel?: keyof StringsMap
 }
 
+export enum ProvisioningStatus {
+  IN_PROGRESS,
+  FAILURE,
+  SUCCESS
+}
+
 export interface SelectBuildLocationProps {
   selectedBuildLocation: BuildLocationDetails
+  provisioningStatus?: ProvisioningStatus
 }
+
 export const HostedByHarnessBuildLocation: BuildLocationDetails = {
   icon: 'harness',
   location: BuildLocation.HostedByHarness,
@@ -61,14 +69,6 @@ export const AllBuildLocationsForOnPrem: BuildLocationDetails[] = [
     label: 'kubernetesText',
     details: 'ci.getStartedWithCI.k8sBuildLocation',
     approxETAInMins: 12,
-    disabled: true
-  },
-  {
-    icon: 'service-aws',
-    location: BuildLocation.AWS,
-    label: 'common.aws',
-    details: 'ci.getStartedWithCI.awsBuildLocation',
-    approxETAInMins: 15,
     disabled: true
   },
   {

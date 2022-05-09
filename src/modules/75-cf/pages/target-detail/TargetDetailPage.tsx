@@ -14,7 +14,7 @@ import TargetManagementDetailPageTemplate from '@cf/components/TargetManagementD
 import { ContainerSpinner } from '@common/components/ContainerSpinner/ContainerSpinner'
 import { Page } from '@common/exports'
 import useDeleteTargetDialog from '@cf/pages/target-detail/hooks/useDeleteTargetDialog'
-import LeftBar from '@cf/pages/target-detail/components/LeftBar'
+import LeftBar from './components/LeftBar/LeftBar'
 
 const TargetDetailPage: FC = () => {
   const { activeEnvironment: environmentIdentifier } = useActiveEnvironment()

@@ -8,7 +8,7 @@
 import React, { useState } from 'react'
 import { useParams } from 'react-router-dom'
 import { defaultTo as _defaultTo } from 'lodash-es'
-import { Heading, useToaster } from '@harness/uicore'
+import { HarnessDocTooltip, Heading, useToaster } from '@harness/uicore'
 import { AccessPointFormStep, PROVIDER_TYPES } from '@ce/constants'
 import { Utils } from '@ce/common/Utils'
 import { AccessPoint, useCreateAccessPoint, useEditAccessPoint } from 'services/lw'
@@ -133,8 +133,9 @@ const GCPAccessPointConfig: React.FC<GCPAccessPointConfigProps> = ({
 
   return (
     <div className={css.loadBalancerDnsConfigDialog}>
-      <Heading level={2} className={css.configHeading}>
+      <Heading level={2} className={css.configHeading} data-tooltip-id={'gcpConnectorHeader'}>
         {getHeading()}
+        <HarnessDocTooltip useStandAlone={true} tooltipId={'gcpConnectorHeader'} />
       </Heading>
       <div>
         {currentStep === AccessPointFormStep.FIRST && (

@@ -190,12 +190,14 @@ exports[`Test MonitoredTemplateCanvasWithRef should match snapshot for Monitored
                           class="bp3-popover-target"
                         >
                           <div
-                            class="bp3-editable-text bp3-disabled bp3-editable-text-placeholder InputWithIdentifier--idValue"
+                            class="bp3-editable-text bp3-disabled InputWithIdentifier--idValue"
                           >
                             <span
                               class="bp3-editable-text-content"
                               style="height: 1px; line-height: 1px; min-width: 0;"
-                            />
+                            >
+                              Test_Template
+                            </span>
                           </div>
                         </span>
                       </span>
@@ -231,7 +233,7 @@ exports[`Test MonitoredTemplateCanvasWithRef should match snapshot for Monitored
                             name="name"
                             placeholder="common.namePlaceholder"
                             type="text"
-                            value=""
+                            value="Test Template"
                           />
                         </div>
                       </div>
