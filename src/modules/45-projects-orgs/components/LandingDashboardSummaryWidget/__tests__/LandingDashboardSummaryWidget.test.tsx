@@ -49,7 +49,7 @@ describe('LandingDashboard At a Glance', () => {
     )
 
     await waitFor(() => expect(getTopProjectsData).toBeCalledTimes(1))
-    expect(getCountData).toBeCalledTimes(0)
+    expect(getCountData).toBeCalled()
 
     expect(queryByText('+137')).toBeInTheDocument()
     expect(queryByText('deploymentsText')).toBeInTheDocument()

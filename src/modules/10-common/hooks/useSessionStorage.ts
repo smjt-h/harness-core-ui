@@ -63,7 +63,7 @@ export const useSessionStorage = <T>(
     storage.clear()
     storage.setItem('tokenStored', SessionToken.getToken())
 
-    return [defaultValue, setStoredValue]
+    return [defaultValue, setValue]
   }
   storage.setItem('tokenStored', SessionToken.getToken())
 
