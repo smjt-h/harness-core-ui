@@ -4282,6 +4282,7 @@ export interface StringsMap {
   'ce.perspectives.createPerspective.filters.rulesText2': string
   'ce.perspectives.createPerspective.filters.rulesTitle': string
   'ce.perspectives.createPerspective.filters.searchText': string
+  'ce.perspectives.createPerspective.filters.selectAll': string
   'ce.perspectives.createPerspective.filters.selectOperator': string
   'ce.perspectives.createPerspective.filters.selectValues': string
   'ce.perspectives.createPerspective.filters.selectValuesText': string

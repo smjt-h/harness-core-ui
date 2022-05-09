@@ -64,6 +64,33 @@ const BusinessMappingPage: () => React.ReactElement = () => {
     </Layout.Horizontal>
   )
 
+  const NewCostVategoryDrawer = (
+    <Drawer
+      autoFocus
+      enforceFocus
+      hasBackdrop
+      usePortal
+      canOutsideClickClose
+      canEscapeKeyClose
+      position={Position.RIGHT}
+      isOpen={drawerOpen}
+      onClose={
+        /* istanbul ignore next */ () => {
+          setSelectedBM({})
+          setDrawerOpen(false)
+        }
+      }
+    >
+      <BusinessMappingBuilder
+        selectedBM={selectedBM}
+        onSave={() => {
+          setDrawerOpen(false)
+          refetch()
+        }}
+      />
+    </Drawer>
+  )
+
   if (!loading && !businessMappingData.length) {
     return (
       <>
@@ -75,6 +102,7 @@ const BusinessMappingPage: () => React.ReactElement = () => {
             buttonText={getString('ce.businessMapping.newButton')}
             buttonAction={() => setDrawerOpen(true)}
           />
+          {NewCostVategoryDrawer}
         </PageBody>
       </>
     )
@@ -114,31 +142,7 @@ const BusinessMappingPage: () => React.ReactElement = () => {
           ) : null}
           <BusinessMappingList onEdit={onEdit} handleDelete={handleDelete} data={businessMappingData} />
         </Container>
-
-        <Drawer
-          autoFocus
-          enforceFocus
-          hasBackdrop
-          usePortal
-          canOutsideClickClose
-          canEscapeKeyClose
-          position={Position.RIGHT}
-          isOpen={drawerOpen}
-          onClose={
-            /* istanbul ignore next */ () => {
-              setSelectedBM({})
-              setDrawerOpen(false)
-            }
-          }
-        >
-          <BusinessMappingBuilder
-            selectedBM={selectedBM}
-            onSave={() => {
-              setDrawerOpen(false)
-              refetch()
-            }}
-          />
-        </Drawer>
+        {NewCostVategoryDrawer}
       </PageBody>
     </>
   )

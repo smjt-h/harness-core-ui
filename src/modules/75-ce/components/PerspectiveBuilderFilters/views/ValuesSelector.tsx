@@ -6,12 +6,11 @@
  */
 
 import React, { useState, useEffect } from 'react'
-import cx from 'classnames'
-import { Icon, Layout, Text, TextInput } from '@wings-software/uicore'
-import { Popover, PopoverInteractionKind, Position } from '@blueprintjs/core'
+import { TextInput } from '@wings-software/uicore'
+import { Popover, PopoverInteractionKind, Position, TagInput } from '@blueprintjs/core'
 import { useStrings } from 'framework/strings'
 import { QlceViewFilterOperator, Maybe } from 'services/ce/services'
-import MultiValueSelectorComponent from '@ce/components/MultiValueSelectorComponent/MultiValueSelectorComponent'
+import PerspectiveBuilderMultiValueSelector from '@ce/components/MultiValueSelectorComponent/PerspectiveBuilderMultiValueSelector'
 import type { ProviderType } from '../PerspectiveBuilderFilter'
 
 import css from '../PerspectiveBuilderFilter.module.scss'
@@ -57,6 +56,31 @@ const ValuesSelector: React.FC<ValuesSelectorProps> = ({
     setSelectedValues(newSelectedVals)
   }, [selectedVal])
 
+  const handleAddNewTag = (values: string[]): void => {
+    const customValues = Object.assign(
+      {},
+      ...values.map(value => ({
+        [value]: !selectedValues[value]
+      }))
+    )
+    onValueChange(
+      Object.keys({ ...customValues, ...selectedValues }).filter(val => selectedValues[val] || customValues[val])
+    )
+    setSelectedValues(prevVal => ({
+      ...prevVal,
+      ...customValues
+    }))
+    onInputChange('')
+  }
+
+  const handleRemoveTag = (value: string): void => {
+    onValueChange(Object.keys(selectedValues).filter(val => val !== value))
+    setSelectedValues(prevVal => ({
+      ...prevVal,
+      [value]: !selectedValues[value]
+    }))
+  }
+
   return operator === QlceViewFilterOperator.Like ? (
     <TextInput
       wrapperClassName={css.conditionInputWrapper}
@@ -69,6 +93,7 @@ const ValuesSelector: React.FC<ValuesSelectorProps> = ({
     />
   ) : (
     <Popover
+      autoFocus={false}
       disabled={isDisabled}
       interactionKind={PopoverInteractionKind.CLICK}
       position={Position.BOTTOM_LEFT}
@@ -84,39 +109,27 @@ const ValuesSelector: React.FC<ValuesSelectorProps> = ({
       fill={true}
       usePortal={true}
       content={
-        <MultiValueSelectorComponent
+        <PerspectiveBuilderMultiValueSelector
           fetching={fetching}
           valueList={valueList}
           shouldFetchMore={shouldFetchMore}
           setSelectedValues={setSelectedValues}
           selectedValues={selectedValues}
           fetchMore={fetchMore}
-          onInputChange={onInputChange}
           searchText={searchText}
         />
       }
     >
-      <div
-        className={cx(
-          css.operandSelectorContainer,
-          { [css.disabledSelect]: isDisabled },
-          { [css.reducedPadding]: selectedVal?.length }
-        )}
-      >
-        {selectedVal?.length ? (
-          <Layout.Horizontal spacing="xsmall">
-            <Text className={css.selectedValues} width={90} lineClamp={1}>
-              {selectedVal[0]}
-            </Text>
-            {selectedVal.length > 1 ? (
-              <Text className={css.selectedValues} lineClamp={1}>{`+${selectedVal?.length - 1}`}</Text>
-            ) : null}
-          </Layout.Horizontal>
-        ) : (
-          getString('ce.perspectives.createPerspective.filters.selectValues')
-        )}
-        <Icon name="caret-down" />
-      </div>
+      <TagInput
+        values={selectedVal}
+        placeholder={getString('ce.perspectives.createPerspective.filters.selectValues')}
+        onAdd={handleAddNewTag}
+        onRemove={handleRemoveTag}
+        onInputChange={e => onInputChange((e.target as HTMLInputElement).value)}
+        className={css.tagInput}
+        disabled={isDisabled}
+        tagProps={{ className: css.valueTag, onClick: e => e.stopPropagation() }}
+      />
     </Popover>
   )
 }
