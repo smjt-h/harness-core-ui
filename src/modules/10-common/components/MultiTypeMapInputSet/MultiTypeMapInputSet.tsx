@@ -6,7 +6,6 @@
  */
 
 import React from 'react'
-import { useParams } from 'react-router-dom'
 import { v4 as nameSpace, v5 as uuid } from 'uuid'
 import cx from 'classnames'
 import {
@@ -27,8 +26,6 @@ import { useStrings } from 'framework/strings'
 import MultiTypeFieldSelector, {
   MultiTypeFieldSelectorProps
 } from '@common/components/MultiTypeFieldSelector/MultiTypeFieldSelector'
-// eslint-disable-next-line no-restricted-imports
-import { FormMultiTypeConnectorField } from '@connectors/components/ConnectorReferenceField/FormMultiTypeConnectorField'
 import type { ConnectorReferenceProps } from '../MultiTypeMap/MultiTypeMap'
 import css from './MultiTypeMapInputSet.module.scss'
 
@@ -77,17 +74,14 @@ export const MultiTypeMapInputSet = (props: MultiTypeMapProps & ConnectorReferen
     appearance = 'default',
     restrictToSingleEntry,
     showConnectorRef,
+    valueLabel,
     connectorType,
     gitScope,
     expressions,
     connectorRefWidth,
+    connectorRefRenderer,
     ...restProps
   } = props
-  const { accountId, projectIdentifier, orgIdentifier } = useParams<{
-    projectIdentifier: string
-    orgIdentifier: string
-    accountId: string
-  }>()
 
   const [value, setValue] = React.useState<MapUIType>(() => {
     let initialValue = get(formik?.values, name, '')
@@ -219,27 +213,11 @@ export const MultiTypeMapInputSet = (props: MultiTypeMapProps & ConnectorReferen
                   ) : null}
                   <div className={cx(css.group, css.withoutAligning, css.withoutSpacing)}>
                     {showConnectorRef ? (
-                      <FormMultiTypeConnectorField
-                        label={
-                          <Text font={{ variation: FontVariation.FORM_LABEL }}>
-                            {props.valueLabel ?? getString('valueLabel')}
-                          </Text>
-                        }
-                        type={connectorType}
-                        width={connectorRefWidth}
-                        name={`${name}.${key}`}
-                        placeholder={getString('select')}
-                        accountIdentifier={accountId}
-                        projectIdentifier={projectIdentifier}
-                        orgIdentifier={orgIdentifier}
-                        multiTypeProps={{
-                          expressions,
-                          allowableTypes: valueMultiTextInputProps['allowableTypes'],
-                          disabled
-                        }}
-                        gitScope={gitScope}
-                        setRefValue
-                      />
+                      connectorRefRenderer?.({
+                        name: `${name}.${key}`,
+                        valueLabel,
+                        connectorTypes: connectorType
+                      })
                     ) : (
                       <MultiTextInput
                         name=""

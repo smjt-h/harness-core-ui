@@ -57,7 +57,7 @@ export interface CIStepOptionalConfigProps {
 export const getOptionalSubLabel = (
   getString: (key: keyof StringsMap, vars?: Record<string, any> | undefined) => string,
   tooltip?: string
-) => (
+): JSX.Element => (
   <Text
     tooltipProps={tooltip ? { dataTooltipId: tooltip } : {}}
     className={css.inpLabel}
@@ -95,7 +95,7 @@ export const renderMultiTypeListInputSet = ({
   getString: (key: keyof StringsMap, vars?: Record<string, any> | undefined) => string
   readonly?: boolean
   formik?: any
-}) => (
+}): JSX.Element => (
   <MultiTypeListInputSet
     name={name}
     multiTextInputProps={{
@@ -147,9 +147,9 @@ export const renderMultiTypeInputWithAllowedValues = ({
   readonly?: boolean
   getString: (key: keyof StringsMap, vars?: Record<string, any> | undefined) => string
   showOptionalSublabel?: boolean
-}) => {
+}): JSX.Element => {
   if (!name) {
-    return
+    return <></>
   }
   if (template && fieldPath) {
     const items = getAllowedValuesFromTemplate(template, fieldPath)
@@ -169,6 +169,7 @@ export const renderMultiTypeInputWithAllowedValues = ({
       />
     )
   }
+  return <></>
 }
 
 export const CIStepOptionalConfig: React.FC<CIStepOptionalConfigProps> = props => {
@@ -316,7 +317,7 @@ export const CIStepOptionalConfig: React.FC<CIStepOptionalConfigProps> = props =
       labelKey: keyof StringsMap
       inputProps: MultiTypeTextProps['multiTextInputProps']
       fieldPath: string
-    }) => {
+    }): JSX.Element => {
       if (isInputSetView && shouldRenderRunTimeInputViewWithAllowedValues(fieldPath, template)) {
         return renderMultiTypeInputWithAllowedValues({
           name,
@@ -364,7 +365,7 @@ export const CIStepOptionalConfig: React.FC<CIStepOptionalConfigProps> = props =
       tooltipId: string
       labelKey: keyof StringsMap
       allowableTypes: MultiTypeInputType[]
-    }) => (
+    }): JSX.Element => (
       <FormMultiTypeCheckboxField
         name={name}
         label={getString(labelKey).concat(` (${startCase(getString('common.optionalLabel'))})`)}
@@ -395,7 +396,7 @@ export const CIStepOptionalConfig: React.FC<CIStepOptionalConfigProps> = props =
       placeholderKey?: keyof StringsMap
       allowedTypes: MultiTypeInputType[]
       allowedTypesForEntries: MultiTypeInputType[]
-    }) => (
+    }): JSX.Element => (
       <MultiTypeList
         name={name}
         placeholder={placeholderKey ? getString(placeholderKey) : ''}
@@ -435,7 +436,7 @@ export const CIStepOptionalConfig: React.FC<CIStepOptionalConfigProps> = props =
       name: string
       valueLabel?: string
       connectorTypes?: ConnectorInfoDTO['type'] | ConnectorInfoDTO['type'][]
-    }) => {
+    }): JSX.Element => {
       return (
         <FormMultiTypeConnectorField
           label={valueLabel ?? getString('valueLabel')}
