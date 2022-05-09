@@ -95,7 +95,7 @@ const MultiValueSelectorComponent: (props: MultiValueSelectorComponentProps) => 
   const isSelectAllChecked = filteredValues.filter(val => selectedValues[val]).length === filteredValues.length
 
   return (
-    <Container className={cx(css.valueContainer, css.explorerFilter)}>
+    <Container className={css.valueContainer}>
       <Container className={css.searchBoxContainer}>
         <div className={css.searchCheckBox}>
           <Checkbox

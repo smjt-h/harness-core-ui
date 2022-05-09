@@ -51,11 +51,15 @@ const PerspectiveBuilderSelectorComponent: (props: PerspectiveBuilderSelectorCom
           style={{ height: 344 }}
           data={filteredValues}
           overscan={{ main: 20, reverse: 20 }}
-          endReached={e => {
-            allowToFetchMore && fetchMore && fetchMore(e)
-          }}
+          endReached={
+            /* istanbul ignore next */ e => {
+              allowToFetchMore && fetchMore && fetchMore(e)
+            }
+          }
+          initialItemCount={100}
           itemContent={(_, value) => {
             if (!value) return null
+
             const splitAt = `(${searchText})`
             const re = new RegExp(splitAt, 'g')
 
@@ -110,7 +114,7 @@ const PerspectiveBuilderSelectorComponent: (props: PerspectiveBuilderSelectorCom
   const isSelectAllChecked = filteredValues.filter(val => selectedValues[val]).length === filteredValues.length
 
   return (
-    <Container className={css.valueContainer}>
+    <Container className={cx(css.valueContainer, css.createPerspectiveMvs)}>
       {searchText && searchText?.length > 0 && !filteredValues.includes(searchText) ? (
         <>
           <Container
@@ -132,7 +136,6 @@ const PerspectiveBuilderSelectorComponent: (props: PerspectiveBuilderSelectorCom
                     margin={{ left: 'small' }}
                     rightIcon="cross"
                     rightIconProps={{ color: Color.GREY_500, size: 12 }}
-                    // rightIconProps={{ onClick: () => onInputChange('') }}
                   >
                     {item}
                   </Text>

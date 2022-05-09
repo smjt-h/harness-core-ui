@@ -8,12 +8,11 @@
 .valueContainer {
   max-height: 420px;
   width: 320px;
-  padding: var(--spacing-xsmall) !important;
+  padding: var(--spacing-medium) var(--spacing-large) var(--spacing-medium) var(--spacing-medium) !important;
   overflow: scroll;
 
-  &.explorerFilter {
-    padding: var(--spacing-medium) !important;
-    padding-left: var(--spacing-large) !important;
+  &.createPerspectiveMVS {
+    padding: var(--spacing-xsmall) !important;
   }
 
   .searchBoxContainer {
