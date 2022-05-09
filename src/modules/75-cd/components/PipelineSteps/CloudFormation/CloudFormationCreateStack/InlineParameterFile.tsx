@@ -5,7 +5,7 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import React, { useState } from 'react'
+import React, { useState, useMemo } from 'react'
 import * as Yup from 'yup'
 import { useParams } from 'react-router-dom'
 import { map, isEmpty, find } from 'lodash-es'
@@ -18,7 +18,8 @@ import {
   FormInput,
   Text,
   useToaster,
-  MultiSelectOption
+  MultiSelectOption,
+  PageSpinner
 } from '@harness/uicore'
 import { Form, FieldArray } from 'formik'
 import { Classes, Dialog } from '@blueprintjs/core'
@@ -73,16 +74,18 @@ export const InlineParameterFile = ({
   const { showError } = useToaster()
   const { accountId, projectIdentifier, orgIdentifier } = useParams<ProjectPathProps>()
   const [remoteParams, setRemoteParams] = useState<MultiSelectOption[]>()
-  const queryParams = {
-    accountIdentifier: accountId,
-    orgIdentifier: orgIdentifier,
-    projectIdentifier: projectIdentifier,
-    awsConnectorRef: awsConnectorRef,
-    type: RequestTypes[type as keyof typeof RequestTypes],
-    region: region,
-    ...git
-  }
-  const { mutate: getParamsFromAWS } = useCFParametersForAws({
+  const queryParams = useMemo(() => {
+    return {
+      accountIdentifier: accountId,
+      orgIdentifier: orgIdentifier,
+      projectIdentifier: projectIdentifier,
+      awsConnectorRef: awsConnectorRef,
+      type: RequestTypes[type as keyof typeof RequestTypes],
+      region: region,
+      ...git
+    }
+  }, [accountId, orgIdentifier, projectIdentifier, type, region, awsConnectorRef, git])
+  const { mutate: getParamsFromAWS, loading } = useCFParametersForAws({
     queryParams: queryParams
   })
 
@@ -116,6 +119,7 @@ export const InlineParameterFile = ({
       onClose={onClose}
       className={Classes.DIALOG}
     >
+      {loading && <PageSpinner />}
       <Layout.Vertical padding="xxlarge">
         <Formik
           formName="inlineParameterFileForm"
@@ -138,7 +142,9 @@ export const InlineParameterFile = ({
               <Form>
                 <Layout.Horizontal flex={{ alignItems: 'flex-start', justifyContent: 'flex-start' }}>
                   <Layout.Vertical className={css.overrideSelect}>
-                    <Text style={{ color: 'rgb(11, 11, 13)', fontWeight: 'bold' }}>{getString('connectors.parameters')} ({params.length})</Text>
+                    <Text style={{ color: 'rgb(11, 11, 13)', fontWeight: 'bold' }}>
+                      {getString('connectors.parameters')} ({params.length})
+                    </Text>
                   </Layout.Vertical>
                   <Layout.Vertical>
                     <a onClick={getParameters} className={css.configPlaceHolder}>
@@ -176,7 +182,9 @@ export const InlineParameterFile = ({
                             allowCreatingNewItems
                             className={css.overrideSelect}
                             name={`parameterOverrides[${index}].name`}
-                            value={find(remoteParams, ['value', param.name]) || { label: param.name, value: param.name }}
+                            value={
+                              find(remoteParams, ['value', param.name]) || { label: param.name, value: param.name }
+                            }
                           />
                           <FormInput.Text name={`parameterOverrides[${index}].value`} label="" placeholder="Value" />
                           <Button
