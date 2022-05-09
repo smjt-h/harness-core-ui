@@ -138,7 +138,9 @@ export const InlineParameterFile = ({
               <Form>
                 <Layout.Horizontal flex={{ alignItems: 'flex-start', justifyContent: 'flex-start' }}>
                   <Layout.Vertical className={css.overrideSelect}>
-                    <Text style={{ color: 'rgb(11, 11, 13)', fontWeight: 'bold' }}>{getString('connectors.parameters')} ({params.length})</Text>
+                    <Text style={{ color: 'rgb(11, 11, 13)', fontWeight: 'bold' }}>
+                      {getString('connectors.parameters')} ({params.length})
+                    </Text>
                   </Layout.Vertical>
                   <Layout.Vertical>
                     <a onClick={getParameters} className={css.configPlaceHolder}>
@@ -176,7 +178,9 @@ export const InlineParameterFile = ({
                             allowCreatingNewItems
                             className={css.overrideSelect}
                             name={`parameterOverrides[${index}].name`}
-                            value={find(remoteParams, ['value', param.name]) || { label: param.name, value: param.name }}
+                            value={
+                              find(remoteParams, ['value', param.name]) || { label: param.name, value: param.name }
+                            }
                           />
                           <FormInput.Text name={`parameterOverrides[${index}].value`} label="" placeholder="Value" />
                           <Button

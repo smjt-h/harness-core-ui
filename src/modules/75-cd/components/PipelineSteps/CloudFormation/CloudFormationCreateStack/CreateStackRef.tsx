@@ -20,13 +20,12 @@ import {
   Layout,
   Label,
   Text,
-  MultiTypeInput,
   MultiSelectTypeInput,
   MultiSelectOption,
   Button,
   Icon
 } from '@harness/uicore'
-import { map, find } from 'lodash-es'
+import { map } from 'lodash-es'
 import { useStrings } from 'framework/strings'
 import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
 import {
@@ -136,6 +135,39 @@ export const CreateStack = (
     }
   }, [roleData, awsRef])
 
+  const onSelectChange = (
+    e: React.ChangeEvent<HTMLSelectElement>,
+    setFieldValue: (field: string, value: any) => void
+  ): void => {
+    const fieldName = 'spec.configuration.templateFile'
+    if (e.target.value === TemplateTypes.Inline) {
+      setFieldValue(fieldName, {
+        type: TemplateTypes.Inline,
+        spec: {
+          templateBody: ''
+        }
+      })
+    } else if (e.target.value === TemplateTypes.Remote) {
+      setFieldValue(fieldName, {
+        type: TemplateTypes.Remote,
+        spec: {
+          store: {
+            spec: {
+              connectorRef: undefined
+            }
+          }
+        }
+      })
+    } else {
+      setFieldValue(fieldName, {
+        type: TemplateTypes.S3URL,
+        spec: {
+          templateUrl: ''
+        }
+      })
+    }
+  }
+
   return (
     <Formik
       enableReinitialize={true}
@@ -217,7 +249,6 @@ export const CreateStack = (
         const awsRegion = config?.region
         const stackStatus = config?.skipOnStackStatuses
         const awsCapabilities = config?.capabilities
-        const awsRole = config?.roleArn
         const parameterOverrides = config?.parameterOverrides
         return (
           <>
@@ -289,13 +320,13 @@ export const CreateStack = (
                   multiTypeInputProps={{
                     selectProps: {
                       allowCreatingNewItems: false,
-                      items: regions ? regions : []
+                      items: regions
                     },
                     expressions,
                     allowableTypes,
                     width: 300
                   }}
-                  selectItems={regions ? regions : []}
+                  selectItems={regions}
                   placeholder={regionLoading ? getString('loading') : getString('select')}
                 />
               </Layout.Horizontal>
@@ -315,34 +346,7 @@ export const CreateStack = (
                     name="spec.configuration.templateFile.type"
                     disabled={readonly}
                     value={templateFileType}
-                    onChange={e => {
-                      if (e.target.value === TemplateTypes.Inline) {
-                        setFieldValue('spec.configuration.templateFile', {
-                          type: TemplateTypes.Inline,
-                          spec: {
-                            templateBody: ''
-                          }
-                        })
-                      } else if (e.target.value === TemplateTypes.Remote) {
-                        setFieldValue('spec.configuration.templateFile', {
-                          type: TemplateTypes.Remote,
-                          spec: {
-                            store: {
-                              spec: {
-                                connectorRef: undefined
-                              }
-                            }
-                          }
-                        })
-                      } else {
-                        setFieldValue('spec.configuration.templateFile', {
-                          type: TemplateTypes.S3URL,
-                          spec: {
-                            templateUrl: ''
-                          }
-                        })
-                      }
-                    }}
+                    onChange={e => onSelectChange(e, setFieldValue)}
                   >
                     <option value={TemplateTypes.Remote}>{getString('remote')}</option>
                     <option value={TemplateTypes.Inline}>{getString('inline')}</option>
@@ -566,28 +570,24 @@ export const CreateStack = (
                         </div>
                       )}
                     </Layout.Vertical>
-                    <Layout.Vertical className={css.addMarginBottom}>
-                      <Label style={{ color: Color.GREY_900 }} className={css.configLabel}>
-                        {getString('optionalField', { name: getString('connectors.awsKms.roleArnLabel') })}
-                      </Label>
-                      <Layout.Horizontal>
-                        <MultiTypeInput
-                          name="spec.configuration.roleARN"
-                          expressions={expressions}
-                          allowableTypes={allowableTypes}
-                          selectProps={{
-                            addClearBtn: false,
-                            items: awsRoles
-                          }}
-                          disabled={readonly}
-                          width={300}
-                          onChange={({ value }: any) => {
-                            setFieldValue('spec.configuration.roleArn', value)
-                          }}
-                          value={find(awsRoles, ['value', awsRole]) || awsRole}
-                          placeholder={rolesLoading ? getString('loading') : getString('select')}
-                        />
-                      </Layout.Horizontal>
+                    <Layout.Vertical>
+                      <FormInput.MultiTypeInput
+                        label={getString('optionalField', { name: getString('connectors.awsKms.roleArnLabel') })}
+                        name="spec.configuration.roleARN"
+                        placeholder={getString(rolesLoading ? 'common.loading' : 'select')}
+                        disabled={readonly}
+                        useValue
+                        multiTypeInputProps={{
+                          selectProps: {
+                            allowCreatingNewItems: true,
+                            items: awsRoles || []
+                          },
+                          expressions,
+                          allowableTypes,
+                          width: 300
+                        }}
+                        selectItems={awsRoles || []}
+                      />
                     </Layout.Vertical>
                     <Layout.Vertical className={css.addMarginBottom}>
                       <Label style={{ color: Color.GREY_900 }} className={css.configLabel}>
@@ -697,7 +697,7 @@ export const CreateStack = (
                 setFieldValue('spec.configuration.parameterOverrides', inlineValues?.parameterOverrides)
                 setInlineParams(false)
               }}
-              awsConnectorRef={awsConnector?.value}
+              awsConnectorRef={awsConnector}
               type={templateFileType}
               region={awsRegion}
               body={inlineTemplateFile || templateUrl}
