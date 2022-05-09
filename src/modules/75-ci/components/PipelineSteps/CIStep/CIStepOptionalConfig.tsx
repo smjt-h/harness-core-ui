@@ -31,6 +31,7 @@ import {
   SupportedInputTypesForListItems,
   SupportedInputTypesForListTypeFieldInInputSetView
 } from './StepUtils'
+import type { MultiTypeMapInputSetPropsInterface, MultiTypeMapPropsInterface } from './CICommonInterfaces'
 import css from '@pipeline/components/PipelineSteps/Steps/Steps.module.scss'
 
 export interface CIStepOptionalConfigProps {
@@ -180,15 +181,7 @@ export const CIStepOptionalConfig: React.FC<CIStepOptionalConfigProps> = props =
       keyLabel,
       valueLabel,
       restrictToSingleEntry
-    }: {
-      fieldName: string
-      stringKey: keyof StringsMap
-      tooltipId?: string
-      allowableTypes: MultiTypeInputType[]
-      keyLabel?: keyof StringsMap
-      valueLabel?: keyof StringsMap
-      restrictToSingleEntry?: boolean
-    }): React.ReactElement => (
+    }: MultiTypeMapPropsInterface): React.ReactElement => (
       <Container className={cx(css.formGroup, css.bottomMargin5, css.lg)}>
         <MultiTypeMap
           name={fieldName}
@@ -220,14 +213,14 @@ export const CIStepOptionalConfig: React.FC<CIStepOptionalConfigProps> = props =
   )
 
   const renderMultiTypeMapInputSet = React.useCallback(
-    (
-      fieldName: string,
-      stringKey: keyof StringsMap,
-      tooltipId: string,
-      keyLabel?: keyof StringsMap,
-      valueLabel?: keyof StringsMap,
-      restrictToSingleEntry?: boolean
-    ): React.ReactElement => (
+    ({
+      fieldName,
+      stringKey,
+      tooltipId,
+      keyLabel,
+      valueLabel,
+      restrictToSingleEntry
+    }: MultiTypeMapInputSetPropsInterface): React.ReactElement => (
       <Container className={cx(css.formGroup, css.bottomMargin5)}>
         <MultiTypeMapInputSet
           name={fieldName}
@@ -385,14 +378,14 @@ export const CIStepOptionalConfig: React.FC<CIStepOptionalConfigProps> = props =
     <>
       {Object.prototype.hasOwnProperty.call(enableFields, 'spec.baseImageConnectorRefs')
         ? isInputSetView
-          ? renderMultiTypeMapInputSet(
-              `${prefix}spec.baseImageConnectorRefs`,
-              enableFields['spec.baseImageConnectorRefs'].label.labelKey,
-              enableFields['spec.baseImageConnectorRefs'].label?.tooltipId,
-              'name',
-              'ci.connectorRef',
-              true
-            )
+          ? renderMultiTypeMapInputSet({
+              fieldName: `${prefix}spec.baseImageConnectorRefs`,
+              stringKey: enableFields['spec.baseImageConnectorRefs'].label.labelKey,
+              tooltipId: enableFields['spec.baseImageConnectorRefs'].label?.tooltipId,
+              keyLabel: 'name',
+              valueLabel: 'ci.connectorRef',
+              restrictToSingleEntry: true
+            })
           : renderMultiTypeMap({
               fieldName: `${prefix}spec.baseImageConnectorRefs`,
               stringKey: enableFields['spec.baseImageConnectorRefs'].label.labelKey,
@@ -443,7 +436,11 @@ export const CIStepOptionalConfig: React.FC<CIStepOptionalConfigProps> = props =
       ) : null}
       {Object.prototype.hasOwnProperty.call(enableFields, 'spec.settings')
         ? isInputSetView
-          ? renderMultiTypeMapInputSet(`${prefix}spec.settings`, 'settingsLabel', 'pluginSettings')
+          ? renderMultiTypeMapInputSet({
+              fieldName: `${prefix}spec.settings`,
+              stringKey: 'settingsLabel',
+              tooltipId: 'pluginSettings'
+            })
           : renderMultiTypeMap({
               fieldName: `${prefix}spec.settings`,
               stringKey: 'settingsLabel',
@@ -500,7 +497,7 @@ export const CIStepOptionalConfig: React.FC<CIStepOptionalConfigProps> = props =
       )}
       {Object.prototype.hasOwnProperty.call(enableFields, 'spec.envVariables')
         ? isInputSetView
-          ? renderMultiTypeMapInputSet(`${prefix}spec.envVariables`, 'environmentVariables', '')
+          ? renderMultiTypeMapInputSet({ fieldName: `${prefix}spec.envVariables`, stringKey: 'environmentVariables' })
           : renderMultiTypeMap({
               fieldName: `${prefix}spec.envVariables`,
               stringKey: 'environmentVariables',
@@ -555,14 +552,14 @@ export const CIStepOptionalConfig: React.FC<CIStepOptionalConfigProps> = props =
       ) : null}
       {Object.prototype.hasOwnProperty.call(enableFields, 'spec.portBindings')
         ? isInputSetView
-          ? renderMultiTypeMapInputSet(
-              `${prefix}spec.portBindings`,
-              'ci.portBindings',
-              'portBindings',
-              'ci.hostPort',
-              'ci.containerPort',
-              true
-            )
+          ? renderMultiTypeMapInputSet({
+              fieldName: `${prefix}spec.portBindings`,
+              stringKey: 'ci.portBindings',
+              tooltipId: 'portBindings',
+              keyLabel: 'ci.hostPort',
+              valueLabel: 'ci.containerPort',
+              restrictToSingleEntry: true
+            })
           : renderMultiTypeMap({
               fieldName: `${prefix}spec.portBindings`,
               stringKey: 'ci.portBindings',
@@ -620,7 +617,7 @@ export const CIStepOptionalConfig: React.FC<CIStepOptionalConfigProps> = props =
       ) : null}
       {Object.prototype.hasOwnProperty.call(enableFields, 'spec.labels')
         ? isInputSetView
-          ? renderMultiTypeMapInputSet(`${prefix}spec.labels`, 'pipelineSteps.labelsLabel', '')
+          ? renderMultiTypeMapInputSet({ fieldName: `${prefix}spec.labels`, stringKey: 'pipelineSteps.labelsLabel' })
           : renderMultiTypeMap({
               fieldName: `${prefix}spec.labels`,
               stringKey: 'pipelineSteps.labelsLabel',
@@ -629,7 +626,10 @@ export const CIStepOptionalConfig: React.FC<CIStepOptionalConfigProps> = props =
         : null}
       {Object.prototype.hasOwnProperty.call(enableFields, 'spec.buildArgs')
         ? isInputSetView
-          ? renderMultiTypeMapInputSet(`${prefix}spec.buildArgs`, 'pipelineSteps.buildArgsLabel', '')
+          ? renderMultiTypeMapInputSet({
+              fieldName: `${prefix}spec.buildArgs`,
+              stringKey: 'pipelineSteps.buildArgsLabel'
+            })
           : renderMultiTypeMap({
               fieldName: `${prefix}spec.buildArgs`,
               stringKey: 'pipelineSteps.buildArgsLabel',
