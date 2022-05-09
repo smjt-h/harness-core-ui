@@ -27,4 +27,5 @@ describe('useSessionStorage', () => {
     //check if previous value given
     expect(result.current[0]).toBe('testValue2')
   })
+  window.sessionStorage.removeItem('testing')
 })
