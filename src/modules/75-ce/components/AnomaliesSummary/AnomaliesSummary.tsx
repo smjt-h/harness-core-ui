@@ -8,6 +8,7 @@
 import React, { useMemo } from 'react'
 import { Container, Layout, Text, Card } from '@wings-software/uicore'
 import { Color, FontVariation } from '@harness/design-system'
+import cx from 'classnames'
 import { useStrings } from 'framework/strings'
 import {
   HorizontalLayout,
@@ -20,6 +21,9 @@ import { CE_COLOR_CONST } from '@ce/components/CEChart/CEChartOptions'
 import formatCost from '@ce/utils/formatCost'
 import type { AnomalySummary } from 'services/ce'
 import type { CcmMetaData } from 'services/ce/services'
+import { useFeatureFlag } from '@common/hooks/useFeatureFlag'
+import { FeatureFlag } from '@common/featureFlags'
+import AnomaliesError from '@ce/images/anomalies-error.svg'
 import css from '../../pages/anomalies-overview/AnomaliesOverviewPage.module.scss'
 
 interface AnomaliesOverviewProps {
@@ -28,6 +32,7 @@ interface AnomaliesOverviewProps {
   cloudProvidersWiseData: AnomalySummary[]
   statusWiseData: AnomalySummary[]
   allDefaultProviders: CcmMetaData
+  isAnomaliesSummaryError?: boolean | null
 }
 
 const map: Record<string, string> = {
@@ -54,9 +59,11 @@ const AnomaliesSummary: React.FC<AnomaliesOverviewProps> = ({
   perspectiveAnomaliesData,
   cloudProvidersWiseData,
   statusWiseData,
-  allDefaultProviders
+  allDefaultProviders,
+  isAnomaliesSummaryError = false
 }) => {
   const { getString } = useStrings()
+  const isDevFeature = useFeatureFlag(FeatureFlag.CCM_DEV_TEST)
 
   const cloudProviderChartData = useMemo(
     () => transformCloudCost(cloudProvidersWiseData, allDefaultProviders),
@@ -70,6 +77,20 @@ const AnomaliesSummary: React.FC<AnomaliesOverviewProps> = ({
 
   const statusWiseChartData = useMemo(() => transformCloudCost(statusWiseData, allDefaultProviders), [statusWiseData])
 
+  if (isAnomaliesSummaryError) {
+    return (
+      <Container className={cx(css.noResultsContainer, css.summaryError)}>
+        <img src={AnomaliesError} />
+        <Text font={{ variation: FontVariation.SMALL_BOLD }} color={Color.GREY_500} padding={{ top: 'medium' }}>
+          {getString('ce.anomalyDetection.listFetchingError')}
+        </Text>
+        <Text font={{ variation: FontVariation.SMALL }} color={Color.GREY_500}>
+          {getString('ce.anomalyDetection.listFetchingErrorDesc')}
+        </Text>
+      </Container>
+    )
+  }
+
   return (
     <Layout.Horizontal spacing="medium">
       <Layout.Vertical spacing="small">
@@ -78,7 +99,7 @@ const AnomaliesSummary: React.FC<AnomaliesOverviewProps> = ({
             {getString('ce.anomalyDetection.summary.totalCountText')}
           </Text>
           <Text color={Color.RED_600} font={{ variation: FontVariation.H4 }}>
-            {costData?.count}
+            {costData?.count || '-'}
           </Text>
         </Card>
         <Card className={css.costCard}>
@@ -86,13 +107,14 @@ const AnomaliesSummary: React.FC<AnomaliesOverviewProps> = ({
             {getString('ce.anomalyDetection.summary.costImpacted')}
           </Text>
           <Text color={Color.RED_500} font={{ variation: FontVariation.H4 }}>
-            {formatCost(costData?.anomalousCost || 0)}
+            {formatCost(costData?.anomalousCost || '-')}
           </Text>
         </Card>
       </Layout.Vertical>
       <Container className={css.summaryCharts}>
         <HorizontalLayout
           title={getString('ce.anomalyDetection.summary.perspectiveWise')}
+          dataTooltipId="topThreeAnomalies"
           chartData={perspectiveWiseChartData}
           showTrendInChart={false}
           totalCost={{ label: '', value: 0, trend: 0, legendColor: '' }}
@@ -112,6 +134,7 @@ const AnomaliesSummary: React.FC<AnomaliesOverviewProps> = ({
         <HorizontalLayout
           title={getString('ce.anomalyDetection.summary.cloudProvidersWise')}
           chartData={cloudProviderChartData}
+          dataTooltipId="anomaliesByCloudProviders"
           showTrendInChart={false}
           totalCost={{ label: '', value: 0, trend: 0, legendColor: '' }}
           chartSize={120}
@@ -126,25 +149,27 @@ const AnomaliesSummary: React.FC<AnomaliesOverviewProps> = ({
           }
         />
       </Container>
-      <Container className={css.summaryCharts}>
-        <HorizontalLayout
-          title={getString('ce.anomalyDetection.summary.statusWise')}
-          chartData={statusWiseChartData}
-          showTrendInChart={false}
-          totalCost={{ label: '', value: 0, trend: 0, legendColor: '' }}
-          chartSize={120}
-          headingSize={'small'}
-          showGist={false}
-          sideBar={
-            <TableList
-              data={statusWiseChartData.slice(0, LEGEND_LIMIT)}
-              type={ListType.KEY_VALUE}
-              classNames={css.rowGap8}
-              showCost={false}
-            />
-          }
-        />
-      </Container>
+      {isDevFeature ? (
+        <Container className={css.summaryCharts}>
+          <HorizontalLayout
+            title={getString('ce.anomalyDetection.summary.statusWise')}
+            chartData={statusWiseChartData}
+            showTrendInChart={false}
+            totalCost={{ label: '', value: 0, trend: 0, legendColor: '' }}
+            chartSize={120}
+            headingSize={'small'}
+            showGist={false}
+            sideBar={
+              <TableList
+                data={statusWiseChartData.slice(0, LEGEND_LIMIT)}
+                type={ListType.KEY_VALUE}
+                classNames={css.rowGap8}
+                showCost={false}
+              />
+            }
+          />
+        </Container>
+      ) : null}
     </Layout.Horizontal>
   )
 }

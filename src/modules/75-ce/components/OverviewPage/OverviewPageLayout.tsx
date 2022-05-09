@@ -53,6 +53,7 @@ interface HorizontalLayoutProps extends LayoutProps {
   showGist?: boolean
   chartSize?: number
   headingSize?: any
+  dataTooltipId?: string
 }
 
 interface CardProps {
@@ -140,7 +141,8 @@ export const HorizontalLayout = (props: HorizontalLayoutProps) => {
     seeAll,
     showGist = true,
     chartSize = 200,
-    headingSize = 'medium'
+    headingSize = 'medium',
+    dataTooltipId = ''
   } = props
   const len = getNumberOfDigits(+(totalCost.value || 0).toFixed(2))
   const totalCostFontSize = len >= 7 ? '15px' : '18px'
@@ -148,7 +150,11 @@ export const HorizontalLayout = (props: HorizontalLayoutProps) => {
   return (
     <div className={css.horizontalLayout}>
       <Layout.Horizontal style={{ justifyContent: 'space-between', alignItems: 'center' }}>
-        <Text color="grey800" font={{ weight: 'semi-bold', size: headingSize }}>
+        <Text
+          tooltipProps={{ dataTooltipId: dataTooltipId }}
+          color="grey800"
+          font={{ weight: 'semi-bold', size: headingSize }}
+        >
           {title}
         </Text>
         {seeAll}

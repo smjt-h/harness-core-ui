@@ -3637,12 +3637,17 @@ export interface StringsMap {
   'ce.anomalyDetection.addNewAnomalyAlert': string
   'ce.anomalyDetection.alertReciepients': string
   'ce.anomalyDetection.alertType': string
+  'ce.anomalyDetection.checkLater': string
   'ce.anomalyDetection.createNewAnomalyAlert': string
   'ce.anomalyDetection.filters.groupByCloudProvidersPlaceholder': string
   'ce.anomalyDetection.filters.groupByNoneLabel': string
   'ce.anomalyDetection.filters.groupByNonePlaceholder': string
   'ce.anomalyDetection.filters.groupByNoneValue': string
   'ce.anomalyDetection.filters.groupByPerspectivePlaceholder': string
+  'ce.anomalyDetection.listFetchingError': string
+  'ce.anomalyDetection.listFetchingErrorDesc': string
+  'ce.anomalyDetection.noData': string
+  'ce.anomalyDetection.noSearchResults': string
   'ce.anomalyDetection.notificationAlerts.addAlertSuccessMsg': string
   'ce.anomalyDetection.notificationAlerts.addChannelBtn': string
   'ce.anomalyDetection.notificationAlerts.alertChannelHeading': string

@@ -7,7 +7,7 @@
 
 import React, { Dispatch, SetStateAction, useState } from 'react'
 import type { CellProps, Column, Renderer } from 'react-table'
-import { Text, Icon, TableV2, Layout, Button } from '@wings-software/uicore'
+import { Text, Icon, TableV2, Layout, Button, Container } from '@wings-software/uicore'
 import { Color, FontVariation } from '@harness/design-system'
 import qs from 'qs'
 import { Link, useParams } from 'react-router-dom'
@@ -26,6 +26,11 @@ import type { CloudProvider, TimeRangeFilterType } from '@ce/types'
 import { useFeatureFlag } from '@common/hooks/useFeatureFlag'
 import { FeatureFlag } from '@common/featureFlags'
 import useRBACError from '@rbac/utils/useRBACError/useRBACError'
+import NoResults from '@ce/images/no-results.svg'
+import EmptyView from '@ce/images/empty-state.svg'
+import AnomaliesError from '@ce/images/anomalies-error.svg'
+import Sorting from '@ce/images/sorting.svg'
+import Desc from '@ce/images/desc.svg'
 import css from '../../pages/anomalies-overview/AnomaliesOverviewPage.module.scss'
 
 const getResourceIcon = (cloudProvider: string) => {
@@ -57,6 +62,8 @@ interface ListProps {
   sortByObj: SortByObjInterface
   setSortByObj: Dispatch<SetStateAction<SortByObjInterface>>
   timeRange: TimeRangeFilterType
+  searchText?: string
+  isAnomaliesListError?: boolean | null
 }
 
 interface AnomaliesMenu {
@@ -146,26 +153,31 @@ const getServerSortProps = ({
     let newOrder: orderType | undefined
     const sortName = accessor
 
-    /* istanbul ignore next */
-    if (sortName === sortByObj.sort && sortByObj.order) {
-      newOrder = sortByObj.order === 'DESC' ? 'ASC' : 'DESC'
-    } else {
-      // no saved state for sortBy of the same sort type
-      newOrder = 'ASC'
-    }
-
     return {
       enableServerSort: true,
       isServerSorted: sortByObj.sort === accessor,
       isServerSortedDesc: sortByObj.order === 'DESC',
       getSortedColumn: ({ sort }: { sort?: sortType }) => {
-        setSortByObj({ sort, order: newOrder })
+        if (sortName === sortByObj.sort && sortByObj.order) {
+          newOrder = sortByObj.order === 'DESC' ? 'ASC' : 'DESC'
+        } else {
+          // no saved state for sortBy of the same sort type
+          newOrder = 'ASC'
+        }
+        setSortByObj({ sort: sort === 'time' ? 'ANOMALY_TIME' : sort, order: newOrder })
       }
     }
   }
 }
 
-const AnomaliesListGridView: React.FC<ListProps> = ({ listData, sortByObj, setSortByObj, timeRange }) => {
+const AnomaliesListGridView: React.FC<ListProps> = ({
+  listData,
+  sortByObj,
+  setSortByObj,
+  timeRange,
+  searchText,
+  isAnomaliesListError = false
+}) => {
   const { getString } = useStrings()
   const { accountId } = useParams<AccountPathProps>()
 
@@ -200,7 +212,13 @@ const AnomaliesListGridView: React.FC<ListProps> = ({ listData, sortByObj, setSo
               trend: trend
             })}
           </Text>
-        ) : /* istanbul ignore next */ null}
+        ) : (
+          <Text
+            font={{ variation: FontVariation.TINY }}
+            color={Color.GREY_500}
+            tooltipProps={{ dataTooltipId: 'trendNotApplicable' }}
+          >{`(${getString('na')})`}</Text>
+        )}
       </Layout.Horizontal>
     )
   }
@@ -287,12 +305,29 @@ const AnomaliesListGridView: React.FC<ListProps> = ({ listData, sortByObj, setSo
     return <AnomaliesMenu anomalyId={row.original.id || /* istanbul ignore next */ ''} />
   }
 
+  const getSortIcon = (columnName: string) => {
+    if (columnName === sortByObj.sort) {
+      if (sortByObj.order === 'DESC') {
+        return <img src={Desc} className={css.sortingIcon} />
+      } else {
+        return ' 🔼'
+      }
+    } else {
+      return <img src={Sorting} className={css.sortingIcon} />
+    }
+  }
+
   const columns: Column<AnomalyData>[] = React.useMemo(
     () => [
       {
         Header: (
-          <Text font={{ variation: FontVariation.TABLE_HEADERS }}>
+          <Text
+            font={{ variation: FontVariation.TABLE_HEADERS }}
+            tooltipProps={{ dataTooltipId: 'anomalyDate' }}
+            className={css.sortingColumn}
+          >
             {getString('ce.anomalyDetection.tableHeaders.date')}
+            {getSortIcon('ANOMALY_TIME')}
           </Text>
         ),
         accessor: 'time',
@@ -300,14 +335,14 @@ const AnomaliesListGridView: React.FC<ListProps> = ({ listData, sortByObj, setSo
         width: '20%',
         serverSortProps: getServerSortProps({
           enableServerSort: true,
-          accessor: 'TIME',
+          accessor: 'ANOMALY_TIME',
           sortByObj,
           setSortByObj
         })
       },
       {
         Header: (
-          <Text font={{ variation: FontVariation.TABLE_HEADERS }}>
+          <Text font={{ variation: FontVariation.TABLE_HEADERS }} tooltipProps={{ dataTooltipId: 'anomalousSpend' }}>
             {getString('ce.anomalyDetection.tableHeaders.anomalousSpend')}
           </Text>
         ),
@@ -323,7 +358,7 @@ const AnomaliesListGridView: React.FC<ListProps> = ({ listData, sortByObj, setSo
       },
       {
         Header: (
-          <Text font={{ variation: FontVariation.TABLE_HEADERS }}>
+          <Text font={{ variation: FontVariation.TABLE_HEADERS }} tooltipProps={{ dataTooltipId: 'anomalyResource' }}>
             {getString('ce.anomalyDetection.tableHeaders.resource')}
           </Text>
         ),
@@ -353,12 +388,50 @@ const AnomaliesListGridView: React.FC<ListProps> = ({ listData, sortByObj, setSo
         Cell: MenuCell
       }
     ],
-    [timeRange.to, timeRange.from]
+    [timeRange.to, timeRange.from, sortByObj]
   )
+
+  if (searchText && !listData.length) {
+    return (
+      <Container className={css.noResultsContainer}>
+        <img src={NoResults} />
+        <Text font={{ variation: FontVariation.SMALL_BOLD }} color={Color.GREY_500}>
+          {getString('noSearchResultsFoundPeriod')}
+        </Text>
+        <Text font={{ variation: FontVariation.SMALL }} color={Color.GREY_500}>
+          {getString('ce.anomalyDetection.noSearchResults')}
+        </Text>
+      </Container>
+    )
+  }
+
+  if (isAnomaliesListError) {
+    return (
+      <Container className={css.noResultsContainer}>
+        <img src={AnomaliesError} />
+        <Text font={{ variation: FontVariation.SMALL_BOLD }} color={Color.GREY_500} padding={{ top: 'medium' }}>
+          {getString('ce.anomalyDetection.listFetchingError')}
+        </Text>
+        <Text font={{ variation: FontVariation.SMALL }} color={Color.GREY_500}>
+          {getString('ce.anomalyDetection.listFetchingErrorDesc')}
+        </Text>
+      </Container>
+    )
+  }
 
   /* istanbul ignore next */
   if (!listData || !listData.length) {
-    return null
+    return (
+      <Container className={css.noResultsContainer}>
+        <img src={EmptyView} />
+        <Text font={{ variation: FontVariation.SMALL_BOLD }} color={Color.GREY_500}>
+          {getString('ce.anomalyDetection.noData')}
+        </Text>
+        <Text font={{ variation: FontVariation.SMALL }} color={Color.GREY_500}>
+          {getString('ce.anomalyDetection.checkLater')}
+        </Text>
+      </Container>
+    )
   }
 
   return (
