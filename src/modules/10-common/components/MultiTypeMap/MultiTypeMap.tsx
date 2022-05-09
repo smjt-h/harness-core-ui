@@ -6,7 +6,6 @@
  */
 
 import React from 'react'
-import { useParams } from 'react-router-dom'
 import { v4 as nameSpace, v5 as uuid } from 'uuid'
 import cx from 'classnames'
 import {
@@ -27,10 +26,7 @@ import MultiTypeFieldSelector, {
   MultiTypeFieldSelectorProps
 } from '@common/components/MultiTypeFieldSelector/MultiTypeFieldSelector'
 // eslint-disable-next-line no-restricted-imports
-import {
-  FormMultiTypeConnectorField,
-  MultiTypeConnectorFieldProps
-} from '@connectors/components/ConnectorReferenceField/FormMultiTypeConnectorField'
+import type { MultiTypeConnectorFieldProps } from '@connectors/components/ConnectorReferenceField/FormMultiTypeConnectorField'
 import css from './MultiTypeMap.module.scss'
 
 export type MapValue = { id: string; key: string; value: string }[]
@@ -47,6 +43,15 @@ export interface ConnectorReferenceProps {
   gitScope?: MultiTypeConnectorFieldProps['gitScope']
   expressions?: MultiTypeInputProps['expressions']
   connectorRefWidth?: number
+  connectorRefRenderer?: ({
+    name,
+    valueLabel,
+    connectorTypes
+  }: {
+    name: string
+    valueLabel?: string
+    connectorTypes: MultiTypeConnectorFieldProps['type']
+  }) => JSX.Element
 }
 
 export interface MultiTypeMapProps {
@@ -84,6 +89,7 @@ export const MultiTypeMap = (props: MultiTypeMapProps & ConnectorReferenceProps)
     gitScope,
     expressions,
     connectorRefWidth,
+    connectorRefRenderer,
     ...restProps
   } = props
 
@@ -94,11 +100,6 @@ export const MultiTypeMap = (props: MultiTypeMapProps & ConnectorReferenceProps)
   const value = get(formik?.values, name, getDefaultResetValue()) as MultiTypeMapValue
 
   const { getString } = useStrings()
-  const { accountId, projectIdentifier, orgIdentifier } = useParams<{
-    projectIdentifier: string
-    orgIdentifier: string
-    accountId: string
-  }>()
 
   return (
     <div className={cx(css.group, css.withoutSpacing, appearance === 'minimal' ? css.minimalCard : '')} {...restProps}>
@@ -143,27 +144,11 @@ export const MultiTypeMap = (props: MultiTypeMapProps & ConnectorReferenceProps)
                         ) : null}
                         <div className={cx(css.group, css.withoutAligning, css.withoutSpacing)}>
                           {showConnectorRef ? (
-                            <FormMultiTypeConnectorField
-                              label={
-                                <Text font={{ variation: FontVariation.FORM_LABEL }}>
-                                  {valueLabel ?? getString('valueLabel')}
-                                </Text>
-                              }
-                              type={connectorType}
-                              width={connectorRefWidth}
-                              name={`${name}[${index}].value`}
-                              placeholder={getString('select')}
-                              accountIdentifier={accountId}
-                              projectIdentifier={projectIdentifier}
-                              orgIdentifier={orgIdentifier}
-                              multiTypeProps={{
-                                expressions,
-                                allowableTypes: valueMultiTextInputProps['allowableTypes'],
-                                disabled
-                              }}
-                              gitScope={gitScope}
-                              setRefValue
-                            />
+                            connectorRefRenderer?.({
+                              name: `${name}[${index}].value`,
+                              valueLabel,
+                              connectorTypes: connectorType
+                            })
                           ) : (
                             <FormInput.MultiTextInput
                               label=""

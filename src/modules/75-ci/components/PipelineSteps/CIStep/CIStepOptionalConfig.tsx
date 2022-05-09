@@ -6,6 +6,7 @@
  */
 
 import React from 'react'
+import { useParams } from 'react-router-dom'
 import { isEmpty, startCase } from 'lodash-es'
 import cx from 'classnames'
 import { Container, Layout, MultiTypeInputType, Text, FormInput } from '@wings-software/uicore'
@@ -19,6 +20,10 @@ import { MultiTypeMapInputSet } from '@common/components/MultiTypeMapInputSet/Mu
 import MultiTypeList from '@common/components/MultiTypeList/MultiTypeList'
 import { MultiTypeListInputSet } from '@common/components/MultiTypeListInputSet/MultiTypeListInputSet'
 import { useVariablesExpression } from '@pipeline/components/PipelineStudio/PiplineHooks/useVariablesExpression'
+import {
+  FormMultiTypeConnectorField,
+  MultiTypeConnectorFieldProps
+} from '@connectors/components/ConnectorReferenceField/FormMultiTypeConnectorField'
 import { StepViewType } from '@pipeline/components/AbstractSteps/Step'
 import {
   getAllowedValuesFromTemplate,
@@ -174,6 +179,11 @@ export const CIStepOptionalConfig: React.FC<CIStepOptionalConfigProps> = props =
   const { expressions } = useVariablesExpression()
   const gitScope = useGitScope()
   const prefix = isEmpty(path) ? '' : `${path}.`
+  const { accountId, projectIdentifier, orgIdentifier } = useParams<{
+    projectIdentifier: string
+    orgIdentifier: string
+    accountId: string
+  }>()
 
   const stepCss = stepViewType === StepViewType.DeploymentForm ? css.sm : css.lg
 
@@ -190,7 +200,8 @@ export const CIStepOptionalConfig: React.FC<CIStepOptionalConfigProps> = props =
       connectorType,
       gitScope: connectorGitScope,
       expressions: connectorExpressions,
-      connectorRefWidth
+      connectorRefWidth,
+      connectorRefRenderer
     }: {
       fieldName: string
       stringKey: keyof StringsMap
@@ -229,6 +240,7 @@ export const CIStepOptionalConfig: React.FC<CIStepOptionalConfigProps> = props =
           gitScope={connectorGitScope}
           expressions={connectorExpressions}
           connectorRefWidth={connectorRefWidth}
+          connectorRefRenderer={connectorRefRenderer}
         />
       </Container>
     ),
@@ -414,6 +426,39 @@ export const CIStepOptionalConfig: React.FC<CIStepOptionalConfigProps> = props =
     [expressions]
   )
 
+  const renderConnectorRef = React.useCallback(
+    ({
+      name,
+      valueLabel,
+      connectorTypes
+    }: {
+      name: string
+      valueLabel?: string
+      connectorTypes?: MultiTypeConnectorFieldProps['type']
+    }) => {
+      return (
+        <FormMultiTypeConnectorField
+          label={valueLabel ?? getString('valueLabel')}
+          type={connectorTypes}
+          width={ConnectorRefWidth.InputSetView}
+          name={name}
+          placeholder={getString('select')}
+          accountIdentifier={accountId}
+          projectIdentifier={projectIdentifier}
+          orgIdentifier={orgIdentifier}
+          multiTypeProps={{
+            expressions,
+            allowableTypes: isInputSetView ? AllMultiTypeInputTypesForInputSet : AllMultiTypeInputTypesForStep,
+            disabled: readonly
+          }}
+          gitScope={gitScope}
+          setRefValue
+        />
+      )
+    },
+    [gitScope, readonly, expressions]
+  )
+
   return (
     <>
       {Object.prototype.hasOwnProperty.call(enableFields, 'spec.baseImageConnectorRefs')
@@ -443,7 +488,8 @@ export const CIStepOptionalConfig: React.FC<CIStepOptionalConfigProps> = props =
               connectorType: enableFields['spec.baseImageConnectorRefs'].type,
               gitScope,
               expressions,
-              connectorRefWidth: ConnectorRefWidth.InputSetView
+              connectorRefWidth: ConnectorRefWidth.InputSetView,
+              connectorRefRenderer: renderConnectorRef
             })
         : null}
       {/* Tag is not an optional configuration but due to some weird error, it's being placed here for time being till real reason is figured out.*/}
