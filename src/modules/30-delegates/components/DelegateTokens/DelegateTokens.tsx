@@ -52,6 +52,7 @@ export const DelegateListing: React.FC = () => {
   const { accountId, projectIdentifier, orgIdentifier } = useParams<Record<string, string>>()
   const [showRevoked, setShowRevoked] = useState<boolean>(false)
   const [searchString, setSearchString] = useState<string>('')
+  const [itemCount, setItemCount] = useState<number>(0)
 
   const [page, setPage] = useState(0)
 
@@ -72,6 +73,7 @@ export const DelegateListing: React.FC = () => {
   const pageTokens = useMemo(() => {
     const tokens = get(tokensResponse, 'resource', [])
     const searchedTokens = tokens.filter(token => token?.name?.toLowerCase().includes(searchString.toLowerCase()))
+    setItemCount(searchedTokens.length)
     return searchedTokens.splice(page * delegatesPerPage, (page + 1) * delegatesPerPage)
   }, [tokensResponse, page, searchString])
 
@@ -163,7 +165,6 @@ export const DelegateListing: React.FC = () => {
   }
 
   const pagination = useMemo(() => {
-    const itemCount = get(tokensResponse, 'resource', []).length
     return {
       itemCount,
       pageSize: delegatesPerPage,
@@ -171,7 +172,7 @@ export const DelegateListing: React.FC = () => {
       pageIndex: page,
       gotoPage: setPage
     }
-  }, [page, setPage, pageTokens])
+  }, [page, setPage, pageTokens, itemCount])
 
   const columns: CustomColumn<DelegateTokenDetails>[] = useMemo(
     () => [
@@ -288,7 +289,7 @@ export const DelegateListing: React.FC = () => {
           />
         ) : (
           <Container className={css.delegateListContainer}>
-            {pageTokens.length ? (
+            {itemCount ? (
               <TableV2<DelegateTokenDetails>
                 sortable={true}
                 className={css.table}
