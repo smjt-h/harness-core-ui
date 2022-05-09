@@ -242,7 +242,7 @@ export const CIStepOptionalConfig: React.FC<CIStepOptionalConfigProps> = props =
         />
       </Container>
     ),
-    [expressions, gitScope]
+    [expressions, gitScope, readonly]
   )
 
   const renderMultiTypeMapInputSet = React.useCallback(
@@ -300,7 +300,7 @@ export const CIStepOptionalConfig: React.FC<CIStepOptionalConfigProps> = props =
         />
       </Container>
     ),
-    [expressions, gitScope]
+    [expressions, gitScope, readonly]
   )
 
   const renderMultiTypeTextField = React.useCallback(
@@ -456,7 +456,7 @@ export const CIStepOptionalConfig: React.FC<CIStepOptionalConfigProps> = props =
         />
       )
     },
-    [gitScope, readonly, expressions]
+    [gitScope, readonly, expressions, accountId, projectIdentifier, orgIdentifier, getString]
   )
 
   return (
