@@ -90,8 +90,6 @@ const DashboardResourceModalBody: React.FC<RbacResourceModalProps> = ({
     queryParams: { accountId: accountIdentifier, page: page + 1, pageSize: PAGE_SIZE, isAdmin: true }
   })
 
-  const totalFolders: number = folders?.total
-
   const parsedFolders = folders?.resource?.map((folder: { id?: string; name: string; identifier?: string }) => ({
     identifier: folder['id'],
     ...folder
@@ -113,9 +111,9 @@ const DashboardResourceModalBody: React.FC<RbacResourceModalProps> = ({
           }
         ]}
         pagination={{
-          itemCount: totalFolders || 1,
+          itemCount: folders?.items || 1,
           pageSize: PAGE_SIZE,
-          pageCount: Math.ceil(totalFolders / PAGE_SIZE),
+          pageCount: folders?.pages || 1,
           pageIndex: page || 0,
           gotoPage: pageNumber => setPage(pageNumber)
         }}

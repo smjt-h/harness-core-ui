@@ -499,10 +499,17 @@ const HomePage: React.FC = () => {
     refetch()
   }
 
-  const { data: folderDetail } = useGet({
+  const { data: folderDetail, refetch: fetchFolderDetail } = useGet({
     path: 'gateway/dashboard/folderDetail',
-    queryParams: { accountId: accountId, folderId: folderIdOrBlank() }
+    lazy: true,
+    queryParams: { accountId, folderId }
   })
+
+  React.useEffect(() => {
+    if (folderId !== 'shared') {
+      fetchFolderDetail()
+    }
+  }, [accountId, folderId])
 
   React.useEffect(() => {
     if (searchTerm || selectedFilter || sortby?.value || filteredTags?.length > 0) setPage(0)
