@@ -75,10 +75,7 @@ export const MultiTypeMapInputSet = (props: MultiTypeMapProps & ConnectorReferen
     restrictToSingleEntry,
     showConnectorRef,
     valueLabel,
-    connectorType,
-    gitScope,
-    expressions,
-    connectorRefWidth,
+    connectorTypes,
     connectorRefRenderer,
     ...restProps
   } = props
@@ -216,7 +213,7 @@ export const MultiTypeMapInputSet = (props: MultiTypeMapProps & ConnectorReferen
                       connectorRefRenderer?.({
                         name: `${name}.${key}`,
                         valueLabel,
-                        connectorTypes: connectorType
+                        connectorTypes
                       })
                     ) : (
                       <MultiTextInput

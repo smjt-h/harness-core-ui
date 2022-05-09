@@ -196,10 +196,7 @@ export const CIStepOptionalConfig: React.FC<CIStepOptionalConfigProps> = props =
       valueLabel,
       restrictToSingleEntry,
       showConnectorRef,
-      connectorType,
-      gitScope: connectorGitScope,
-      expressions: connectorExpressions,
-      connectorRefWidth,
+      connectorTypes,
       connectorRefRenderer
     }: {
       fieldName: string
@@ -213,7 +210,7 @@ export const CIStepOptionalConfig: React.FC<CIStepOptionalConfigProps> = props =
       <Container className={cx(css.formGroup, css.bottomMargin5, { [css.lg]: !showConnectorRef })}>
         <MultiTypeMap
           name={fieldName}
-          valueMultiTextInputProps={{ expressions: connectorExpressions, allowableTypes }}
+          valueMultiTextInputProps={{ expressions, allowableTypes }}
           multiTypeFieldSelectorProps={{
             label: (
               <Layout.Horizontal flex={{ justifyContent: 'flex-start', alignItems: 'baseline' }}>
@@ -235,10 +232,7 @@ export const CIStepOptionalConfig: React.FC<CIStepOptionalConfigProps> = props =
           valueLabel={valueLabel ? getString(valueLabel) : ''}
           restrictToSingleEntry={restrictToSingleEntry}
           showConnectorRef={showConnectorRef}
-          connectorType={connectorType}
-          gitScope={connectorGitScope}
-          expressions={connectorExpressions}
-          connectorRefWidth={connectorRefWidth}
+          connectorTypes={connectorTypes}
           connectorRefRenderer={connectorRefRenderer}
         />
       </Container>
@@ -255,10 +249,7 @@ export const CIStepOptionalConfig: React.FC<CIStepOptionalConfigProps> = props =
       valueLabel,
       restrictToSingleEntry,
       showConnectorRef,
-      connectorType,
-      gitScope: connectorGitScopeInInputSet,
-      expressions: connectorExpressionsInInputSet,
-      connectorRefWidth,
+      connectorTypes,
       connectorRefRenderer
     }: {
       fieldName: string
@@ -273,7 +264,7 @@ export const CIStepOptionalConfig: React.FC<CIStepOptionalConfigProps> = props =
           name={fieldName}
           valueMultiTextInputProps={{
             allowableTypes: [MultiTypeInputType.EXPRESSION, MultiTypeInputType.FIXED],
-            expressions: connectorExpressionsInInputSet
+            expressions
           }}
           multiTypeFieldSelectorProps={{
             label: (
@@ -293,10 +284,7 @@ export const CIStepOptionalConfig: React.FC<CIStepOptionalConfigProps> = props =
           valueLabel={valueLabel ? getString(valueLabel) : ''}
           restrictToSingleEntry={restrictToSingleEntry}
           showConnectorRef={showConnectorRef}
-          connectorType={connectorType}
-          gitScope={connectorGitScopeInInputSet}
-          expressions={connectorExpressionsInInputSet}
-          connectorRefWidth={connectorRefWidth}
+          connectorTypes={connectorTypes}
           connectorRefRenderer={connectorRefRenderer}
         />
       </Container>
@@ -472,10 +460,7 @@ export const CIStepOptionalConfig: React.FC<CIStepOptionalConfigProps> = props =
               valueLabel: 'ci.connectorRef',
               restrictToSingleEntry: true,
               showConnectorRef: true,
-              connectorType: enableFields['spec.baseImageConnectorRefs'].type,
-              gitScope,
-              expressions,
-              connectorRefWidth: ConnectorRefWidth.InputSetView,
+              connectorTypes: enableFields['spec.baseImageConnectorRefs'].type,
               connectorRefRenderer: renderConnectorRef
             })
           : renderMultiTypeMap({
@@ -487,10 +472,7 @@ export const CIStepOptionalConfig: React.FC<CIStepOptionalConfigProps> = props =
               valueLabel: 'ci.connectorRef',
               restrictToSingleEntry: true,
               showConnectorRef: true,
-              connectorType: enableFields['spec.baseImageConnectorRefs'].type,
-              gitScope,
-              expressions,
-              connectorRefWidth: ConnectorRefWidth.InputSetView,
+              connectorTypes: enableFields['spec.baseImageConnectorRefs'].type,
               connectorRefRenderer: renderConnectorRef
             })
         : null}

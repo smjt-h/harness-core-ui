@@ -14,8 +14,7 @@ import {
   Button,
   getMultiTypeFromValue,
   MultiTypeInputType,
-  MultiTextInputProps,
-  MultiTypeInputProps
+  MultiTextInputProps
 } from '@wings-software/uicore'
 import { FontVariation } from '@harness/design-system'
 import { FieldArray, connect, FormikContext } from 'formik'
@@ -26,8 +25,6 @@ import { useStrings } from 'framework/strings'
 import MultiTypeFieldSelector, {
   MultiTypeFieldSelectorProps
 } from '@common/components/MultiTypeFieldSelector/MultiTypeFieldSelector'
-// eslint-disable-next-line no-restricted-imports
-import type { MultiTypeConnectorFieldProps } from '@connectors/components/ConnectorReferenceField/FormMultiTypeConnectorField'
 import css from './MultiTypeMap.module.scss'
 
 export type MapValue = { id: string; key: string; value: string }[]
@@ -40,10 +37,7 @@ interface MultiTypeMapConfigureOptionsProps
 
 export interface ConnectorReferenceProps {
   showConnectorRef?: boolean
-  connectorType?: MultiTypeConnectorFieldProps['type']
-  gitScope?: MultiTypeConnectorFieldProps['gitScope']
-  expressions?: MultiTypeInputProps['expressions']
-  connectorRefWidth?: number
+  connectorTypes?: ConnectorInfoDTO['type'] | ConnectorInfoDTO['type'][]
   connectorRefRenderer?: ({
     name,
     valueLabel,
@@ -86,10 +80,7 @@ export const MultiTypeMap = (props: MultiTypeMapProps & ConnectorReferenceProps)
     valueLabel,
     restrictToSingleEntry,
     showConnectorRef,
-    connectorType,
-    gitScope,
-    expressions,
-    connectorRefWidth,
+    connectorTypes,
     connectorRefRenderer,
     ...restProps
   } = props
@@ -148,7 +139,7 @@ export const MultiTypeMap = (props: MultiTypeMapProps & ConnectorReferenceProps)
                             connectorRefRenderer?.({
                               name: `${name}[${index}].value`,
                               valueLabel,
-                              connectorTypes: connectorType
+                              connectorTypes
                             })
                           ) : (
                             <FormInput.MultiTextInput
