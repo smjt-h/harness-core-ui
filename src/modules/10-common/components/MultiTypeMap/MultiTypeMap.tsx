@@ -48,6 +48,7 @@ export interface MultiTypeMapProps {
   keyLabel?: string
   valueLabel?: string
   restrictToSingleEntry?: boolean
+  showConnectorRef?: boolean
 }
 
 export const MultiTypeMap = (props: MultiTypeMapProps): React.ReactElement => {
@@ -64,6 +65,7 @@ export const MultiTypeMap = (props: MultiTypeMapProps): React.ReactElement => {
     keyLabel,
     valueLabel,
     restrictToSingleEntry,
+    showConnectorRef,
     ...restProps
   } = props
 
@@ -117,15 +119,19 @@ export const MultiTypeMap = (props: MultiTypeMapProps): React.ReactElement => {
                           </Text>
                         )}
                         <div className={cx(css.group, css.withoutAligning, css.withoutSpacing)}>
-                          <FormInput.MultiTextInput
-                            label=""
-                            name={`${name}[${index}].value`}
-                            multiTextInputProps={{
-                              allowableTypes: [MultiTypeInputType.FIXED, MultiTypeInputType.EXPRESSION],
-                              ...valueMultiTextInputProps
-                            }}
-                            disabled={disabled}
-                          />
+                          {showConnectorRef ? (
+                            <></>
+                          ) : (
+                            <FormInput.MultiTextInput
+                              label=""
+                              name={`${name}[${index}].value`}
+                              multiTextInputProps={{
+                                allowableTypes: [MultiTypeInputType.FIXED, MultiTypeInputType.EXPRESSION],
+                                ...valueMultiTextInputProps
+                              }}
+                              disabled={disabled}
+                            />
+                          )}
                           <Button
                             icon="main-trash"
                             iconProps={{ size: 20 }}

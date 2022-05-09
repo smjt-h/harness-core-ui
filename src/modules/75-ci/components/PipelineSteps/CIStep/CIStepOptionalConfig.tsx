@@ -180,7 +180,8 @@ export const CIStepOptionalConfig: React.FC<CIStepOptionalConfigProps> = props =
       allowableTypes,
       keyLabel,
       valueLabel,
-      restrictToSingleEntry
+      restrictToSingleEntry,
+      showConnectorRef
     }: MultiTypeMapPropsInterface): React.ReactElement => (
       <Container className={cx(css.formGroup, css.bottomMargin5, css.lg)}>
         <MultiTypeMap
@@ -206,6 +207,7 @@ export const CIStepOptionalConfig: React.FC<CIStepOptionalConfigProps> = props =
           keyLabel={keyLabel ? getString(keyLabel) : ''}
           valueLabel={valueLabel ? getString(valueLabel) : ''}
           restrictToSingleEntry={restrictToSingleEntry}
+          showConnectorRef={showConnectorRef}
         />
       </Container>
     ),
@@ -219,7 +221,8 @@ export const CIStepOptionalConfig: React.FC<CIStepOptionalConfigProps> = props =
       tooltipId,
       keyLabel,
       valueLabel,
-      restrictToSingleEntry
+      restrictToSingleEntry,
+      showConnectorRef
     }: MultiTypeMapInputSetPropsInterface): React.ReactElement => (
       <Container className={cx(css.formGroup, css.bottomMargin5)}>
         <MultiTypeMapInputSet
@@ -245,6 +248,7 @@ export const CIStepOptionalConfig: React.FC<CIStepOptionalConfigProps> = props =
           keyLabel={keyLabel ? getString(keyLabel) : ''}
           valueLabel={valueLabel ? getString(valueLabel) : ''}
           restrictToSingleEntry={restrictToSingleEntry}
+          showConnectorRef={showConnectorRef}
         />
       </Container>
     ),
@@ -384,7 +388,8 @@ export const CIStepOptionalConfig: React.FC<CIStepOptionalConfigProps> = props =
               tooltipId: enableFields['spec.baseImageConnectorRefs'].label?.tooltipId,
               keyLabel: 'name',
               valueLabel: 'ci.connectorRef',
-              restrictToSingleEntry: true
+              restrictToSingleEntry: true,
+              showConnectorRef: true
             })
           : renderMultiTypeMap({
               fieldName: `${prefix}spec.baseImageConnectorRefs`,
@@ -393,7 +398,8 @@ export const CIStepOptionalConfig: React.FC<CIStepOptionalConfigProps> = props =
               allowableTypes: isInputSetView ? AllMultiTypeInputTypesForInputSet : AllMultiTypeInputTypesForStep,
               keyLabel: 'name',
               valueLabel: 'ci.connectorRef',
-              restrictToSingleEntry: true
+              restrictToSingleEntry: true,
+              showConnectorRef: true
             })
         : null}
       {/* Tag is not an optional configuration but due to some weird error, it's being placed here for time being till real reason is figured out.*/}

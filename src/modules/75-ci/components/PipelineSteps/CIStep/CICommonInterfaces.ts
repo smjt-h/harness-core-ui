@@ -15,6 +15,7 @@ export interface MultiTypeMapInputSetPropsInterface {
   keyLabel?: keyof StringsMap
   valueLabel?: keyof StringsMap
   restrictToSingleEntry?: boolean
+  showConnectorRef?: boolean
 }
 
 export interface MultiTypeMapPropsInterface extends MultiTypeMapInputSetPropsInterface {

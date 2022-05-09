@@ -53,6 +53,7 @@ export interface MultiTypeMapProps {
   valueLabel?: string
   appearance?: 'default' | 'minimal'
   restrictToSingleEntry?: boolean
+  showConnectorRef?: boolean
 }
 
 function generateNewValue(): { id: string; key: string; value: string } {
@@ -71,6 +72,7 @@ export const MultiTypeMapInputSet = (props: MultiTypeMapProps): React.ReactEleme
     disabled,
     appearance = 'default',
     restrictToSingleEntry,
+    showConnectorRef,
     ...restProps
   } = props
 
@@ -203,18 +205,22 @@ export const MultiTypeMapInputSet = (props: MultiTypeMapProps): React.ReactEleme
                     </Text>
                   )}
                   <div className={cx(css.group, css.withoutAligning, css.withoutSpacing)}>
-                    <MultiTextInput
-                      name=""
-                      textProps={{ name: `${name}[${index}].value` }}
-                      value={valueValue}
-                      intent={(touched || hasSubmitted) && error ? Intent.DANGER : Intent.NONE}
-                      disabled={disabled}
-                      onChange={v => changeValue(index, 'value', v as any)}
-                      data-testid={`value-${name}-[${index}]`}
-                      allowableTypes={[MultiTypeInputType.FIXED, MultiTypeInputType.EXPRESSION]}
-                      {...valueMultiTextInputProps}
-                      style={{ flexShrink: 1 }}
-                    />
+                    {showConnectorRef ? (
+                      <></>
+                    ) : (
+                      <MultiTextInput
+                        name=""
+                        textProps={{ name: `${name}[${index}].value` }}
+                        value={valueValue}
+                        intent={(touched || hasSubmitted) && error ? Intent.DANGER : Intent.NONE}
+                        disabled={disabled}
+                        onChange={v => changeValue(index, 'value', v as any)}
+                        data-testid={`value-${name}-[${index}]`}
+                        allowableTypes={[MultiTypeInputType.FIXED, MultiTypeInputType.EXPRESSION]}
+                        {...valueMultiTextInputProps}
+                        style={{ flexShrink: 1 }}
+                      />
+                    )}
                     {!disabled && (
                       <Button
                         icon="main-trash"
