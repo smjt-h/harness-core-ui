@@ -128,6 +128,7 @@ const AnomaliesSummary: React.FC<AnomaliesOverviewProps> = ({
               classNames={css.rowGap8}
             />
           }
+          strokeSize={'65%'}
         />
       </Container>
       <Container className={css.summaryCharts}>
@@ -147,6 +148,7 @@ const AnomaliesSummary: React.FC<AnomaliesOverviewProps> = ({
               classNames={css.rowGap8}
             />
           }
+          strokeSize={'65%'}
         />
       </Container>
       {isDevFeature ? (
@@ -167,6 +169,7 @@ const AnomaliesSummary: React.FC<AnomaliesOverviewProps> = ({
                 showCost={false}
               />
             }
+            strokeSize={'65%'}
           />
         </Container>
       ) : null}
