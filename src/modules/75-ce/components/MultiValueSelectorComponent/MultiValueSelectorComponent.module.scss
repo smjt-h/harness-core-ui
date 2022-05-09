@@ -32,13 +32,11 @@
   }
 
   .createValueContainer {
-    padding: var(--spacing-small) var(--spacing-large);
+    padding: var(--spacing-small) var(--spacing-medium);
     border-radius: 2px;
     margin-bottom: var(--spacing-xsmall);
 
     &.highlight {
-      padding: var(--spacing-small) var(--spacing-large);
-      border-radius: 2px;
       background-color: var(--primary-1);
     }
 
@@ -50,7 +48,7 @@
   }
 
   .multiSelectOption {
-    padding: var(--spacing-small) var(--spacing-large);
+    padding: var(--spacing-small) var(--spacing-medium);
     border-radius: 2px;
 
     .searchTextHighlight {

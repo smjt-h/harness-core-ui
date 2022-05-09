@@ -56,7 +56,7 @@ const PerspectiveBuilderSelectorComponent: (props: PerspectiveBuilderSelectorCom
               allowToFetchMore && fetchMore && fetchMore(e)
             }
           }
-          initialItemCount={100}
+          initialItemCount={filteredValues.length}
           itemContent={(_, value) => {
             if (!value) {
               return null
