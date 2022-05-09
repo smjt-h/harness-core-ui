@@ -542,6 +542,12 @@
           "in": "query",
           "required": true,
           "type": "string"
+        },
+        {
+          "name": "dry_run",
+          "in": "query",
+          "required": false,
+          "type": "boolean"
         }
       ],
       "get": {

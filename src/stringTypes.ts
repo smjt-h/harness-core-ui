@@ -3910,6 +3910,7 @@ export interface StringsMap {
   'ce.co.autoStoppingRule.limitWarningMessage': string
   'ce.co.autoStoppingRule.providerSelector.description': string
   'ce.co.autoStoppingRule.providerSelector.helpText.selectProvider': string
+  'ce.co.autoStoppingRule.review.activeMode': string
   'ce.co.autoStoppingRule.review.cloudAccountDetails': string
   'ce.co.autoStoppingRule.review.configDetails': string
   'ce.co.autoStoppingRule.review.dnsLinkMapping': string

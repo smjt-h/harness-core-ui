@@ -1392,6 +1392,7 @@ export const useSaveService = ({ account_id, ...props }: UseSaveServiceProps) =>
 
 export interface CumulativeServiceSavingsQueryParams {
   accountIdentifier: string
+  dry_run?: boolean
 }
 
 export interface CumulativeServiceSavingsPathParams {

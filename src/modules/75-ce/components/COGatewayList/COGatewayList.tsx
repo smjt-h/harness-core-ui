@@ -60,6 +60,7 @@ import type { FeatureDetail } from 'framework/featureStore/featureStoreUtil'
 import { NGBreadcrumbs } from '@common/components/NGBreadcrumbs/NGBreadcrumbs'
 import useUrlSearchParams from '@ce/common/hooks/useUrlSearchParams'
 import { RulesMode } from '@ce/constants'
+import { Utils } from '@ce/common/Utils'
 import COGatewayAnalytics from './COGatewayAnalytics'
 import COGatewayCumulativeAnalytics from './COGatewayCumulativeAnalytics'
 import ComputeType from './components/ComputeType'
@@ -475,6 +476,7 @@ interface RulesTableContainerProps {
   refetchRules: (value: string, isSearchActive: boolean) => Promise<void>
   onSearchCallback?: (value: string) => void
   searchParams: SearchParams
+  mode: RulesMode
 }
 
 const POLL_TIMER = 1000 * 60 * 1
@@ -539,7 +541,8 @@ const RulesTableContainer: React.FC<RulesTableContainerProps> = ({
   pageProps,
   onRowClick,
   refetchRules,
-  searchParams
+  searchParams,
+  mode
 }) => {
   const { getString } = useStrings()
   const { setParamsToUrl } = useUrlSearchParams()
@@ -571,6 +574,10 @@ const RulesTableContainer: React.FC<RulesTableContainerProps> = ({
   }
 
   const emptySearchResults = _isEmpty(rules)
+  const currentModeText =
+    mode === RulesMode.DRY
+      ? getString('ce.co.autoStoppingRule.review.dryRunMode')
+      : getString('ce.co.autoStoppingRule.review.activeMode')
 
   return (
     <Container padding={'xlarge'}>
@@ -605,7 +612,9 @@ const RulesTableContainer: React.FC<RulesTableContainerProps> = ({
             <Layout.Vertical spacing="large" style={{ alignItems: 'center' }}>
               <img src={NoDataImage} height={150} />
               <Text color="grey800" font="normal" style={{ lineHeight: '25px' }}>
-                {getString('ce.co.emptyResultText', { string: searchParams.text })}
+                {getString('ce.co.emptyResultText', {
+                  string: Utils.getConditionalResult(searchParams.text.length > 0, searchParams.text, currentModeText)
+                })}
               </Text>
             </Layout.Vertical>
           </>
@@ -617,7 +626,7 @@ const RulesTableContainer: React.FC<RulesTableContainerProps> = ({
               data-testid={'refreshIconContainer'}
             >
               <img src={refreshIcon} width={'12px'} height={'12px'} />
-              <Text>Refresh</Text>
+              <Text>{getString('common.refresh')}</Text>
             </Layout.Horizontal>
             <TableV2<Service>
               data={tableData}
@@ -734,11 +743,12 @@ const COGatewayList: React.FC = () => {
       dry_run: mode === RulesMode.DRY
     }
   })
-
+  console.log('GATEWAY LIST PARAMS SET')
   const { data: graphData, loading: graphLoading } = useCumulativeServiceSavings({
     account_id: accountId,
     queryParams: {
-      accountIdentifier: accountId
+      accountIdentifier: accountId,
+      dry_run: mode === RulesMode.DRY
     }
   })
 
@@ -830,7 +840,13 @@ const COGatewayList: React.FC = () => {
   // no data is available
   // search is not active
   // and no 'mode' query param is present
-  if (!isLoadingPage && _isEmpty(modeQueryText.current) && _isEmpty(tableData) && !searchParams.isActive) {
+  if (
+    !isLoadingPage &&
+    _isEmpty(modeQueryText.current) &&
+    mode !== RulesMode.DRY &&
+    _isEmpty(tableData) &&
+    !searchParams.isActive
+  ) {
     return <EmptyListPage featureDetail={featureDetail} />
   }
 
@@ -936,6 +952,7 @@ const COGatewayList: React.FC = () => {
             onStateToggle: onServiceStateToggle
           }}
           searchParams={searchParams}
+          mode={mode}
         />
       </Page.Body>
     </Container>
