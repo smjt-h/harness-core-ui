@@ -127,7 +127,7 @@ describe('ECR Step', () => {
           account: 'Account',
           imageName: 'Image Name',
           tags: ['tag1', 'tag2', 'tag3'],
-          baseImageConnectorRefs: 'base-image-connector',
+          baseImageConnectorRefs: { ref1: 'base-image-connector' },
           dockerfile: 'Dockerfile',
           context: 'Context',
           labels: {
@@ -273,7 +273,7 @@ describe('ECR Step', () => {
           account: 'Account',
           imageName: 'Image Name',
           tags: ['tag1', 'tag2', 'tag3'],
-          baseImageConnectorRefs: 'base-image-connector',
+          baseImageConnectorRefs: { ref1: 'base-image-connector' },
           dockerfile: 'Dockerfile',
           context: 'Context',
           labels: {
@@ -332,7 +332,7 @@ describe('ECR Step', () => {
               account: 'Account',
               imageName: 'Image Name',
               tags: ['tag1', 'tag2', 'tag3'],
-              baseImageConnectorRefs: 'base-image-connector',
+              baseImageConnectorRefs: { ref1: 'base-image-connector' },
               dockerfile: 'Dockerfile',
               context: 'Context',
               labels: {
@@ -476,7 +476,7 @@ describe('ECR Step', () => {
                 account: 'step-account',
                 imageName: 'step-imageName',
                 tags: 'step-tags',
-                baseImageConnectorRefs: 'base-image-connector',
+                baseImageConnectorRefs: { ref1: 'base-image-connector' },
                 dockerfile: 'step-dockerfile',
                 context: 'step-context',
                 labels: 'step-labels',

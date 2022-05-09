@@ -62,7 +62,6 @@ export interface MultiTypeConnectorFieldConfigureOptionsProps
   extends Omit<ConfigureOptionsProps, 'value' | 'type' | 'variableName'> {
   variableName?: ConfigureOptionsProps['variableName']
 }
-
 export interface MultiTypeConnectorFieldProps extends Omit<ConnectorReferenceFieldProps, 'onChange'> {
   onChange?: ExpressionAndRuntimeTypeProps['onChange']
   formik?: FormikContext<any>
