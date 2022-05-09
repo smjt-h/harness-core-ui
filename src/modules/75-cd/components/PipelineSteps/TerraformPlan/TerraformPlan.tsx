@@ -77,6 +77,7 @@ import DelegateSelectorStep from '@connectors/components/CreateConnector/commonS
 import StepArtifactoryAuthentication from '@connectors/components/CreateConnector/ArtifactoryConnector/StepAuth/StepArtifactoryAuthentication'
 import { Connectors, CONNECTOR_CREDENTIALS_STEP_IDENTIFIER } from '@connectors/constants'
 
+import { useFeatureFlags } from '@common/hooks/useFeatureFlag'
 import {
   CommandTypes,
   onSubmitTFPlanData,
@@ -113,6 +114,7 @@ function TerraformPlanWidget(
 ): React.ReactElement {
   const { initialValues, onUpdate, onChange, allowableTypes, isNewStep, readonly = false, stepViewType } = props
   const { getString } = useStrings()
+  const { TF_MODULE_SOURCE_INHERIT_SSH } = useFeatureFlags()
   const { expressions } = useVariablesExpression()
   const [connectorView, setConnectorView] = useState(false)
   const [selectedConnector, setSelectedConnector] = useState<ConnectorTypes | ''>('')
@@ -617,6 +619,11 @@ function TerraformPlanWidget(
                           const configObject = {
                             ...data.spec?.configuration?.configFiles
                           }
+
+                          if (TF_MODULE_SOURCE_INHERIT_SSH) {
+                            configObject.moduleSource = data.spec?.configuration?.configFiles?.moduleSource
+                          }
+
                           if (prevStepData.identifier && prevStepData.identifier !== data?.identifier) {
                             configObject.store.spec.connectorRef = prevStepData?.identifier
                           }

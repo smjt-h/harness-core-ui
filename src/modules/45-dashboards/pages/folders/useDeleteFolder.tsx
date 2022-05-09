@@ -12,18 +12,13 @@ import { useToaster, useConfirmationDialog } from '@harness/uicore'
 import { useStrings } from 'framework/strings'
 
 import type { AccountPathProps } from '@common/interfaces/RouteInterfaces'
+import type { FolderModel } from 'services/custom-dashboards'
 
 interface UseDeleteFolderReturn {
   openDialog: () => void
 }
 
-interface FolderInterface {
-  id: string
-  name: string
-  title?: string
-  Children?: number
-}
-const useDeleteFolder = (folder: FolderInterface | undefined, onSuccess: () => void): UseDeleteFolderReturn => {
+const useDeleteFolder = (folder: FolderModel | undefined, onSuccess: () => void): UseDeleteFolderReturn => {
   const { accountId } = useParams<AccountPathProps>()
   const { mutate: deleteFolder } = useMutate({
     verb: 'DELETE',

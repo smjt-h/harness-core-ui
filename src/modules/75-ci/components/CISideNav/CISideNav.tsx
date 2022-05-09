@@ -15,6 +15,7 @@ import { ProjectSelector } from '@projects-orgs/components/ProjectSelector/Proje
 import type {
   ConnectorPathProps,
   PipelinePathProps,
+  TemplateStudioPathProps,
   ResourceGroupPathProps,
   RolePathProps,
   SecretsPathProps,
@@ -32,6 +33,7 @@ import type { ModuleLicenseType } from '@common/constants/SubscriptionTypes'
 export default function CISideNav(): React.ReactElement {
   const params = useParams<
     PipelinePathProps &
+      TemplateStudioPathProps &
       ConnectorPathProps &
       SecretsPathProps &
       UserPathProps &
@@ -44,6 +46,7 @@ export default function CISideNav(): React.ReactElement {
     projectIdentifier,
     orgIdentifier,
     pipelineIdentifier,
+    templateIdentifier,
     connectorId,
     secretId,
     userIdentifier,
@@ -112,6 +115,15 @@ export default function CISideNav(): React.ReactElement {
           } else if (userGroupIdentifier) {
             history.push(
               routes.toUserGroups({
+                projectIdentifier: data.identifier,
+                orgIdentifier: data.orgIdentifier || /* istanbul ignore next */ '',
+                accountId,
+                module
+              })
+            )
+          } else if (templateIdentifier) {
+            history.push(
+              routes.toTemplates({
                 projectIdentifier: data.identifier,
                 orgIdentifier: data.orgIdentifier || /* istanbul ignore next */ '',
                 accountId,

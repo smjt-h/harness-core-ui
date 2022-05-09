@@ -31,6 +31,7 @@ import type { ResourceDTO } from 'services/audit'
 import AuditTrailFactory, { ResourceScope } from '@audit-trail/factories/AuditTrailFactory'
 import routes from '@common/RouteDefinitions'
 import type { Module } from '@common/interfaces/RouteInterfaces'
+import { ServiceNowCreateUpdateView } from '@pipeline/components/execution/StepDetails/views/ServiceNowCreateUpdateView/ServiceNowCreateUpdateView'
 import PipelineResourceRenderer from './components/RbacResourceModals/PipelineResourceRenderer/PipelineResourceRenderer'
 import { ModuleName } from '../../framework/types/ModuleName'
 import { JiraCreateUpdateView } from './components/execution/StepDetails/views/JiraCreateUpdateView/JiraCreateUpdateView'
@@ -110,6 +111,13 @@ ExecFactory.registerStepDetails(StepType.JiraApproval, {
 
 ExecFactory.registerStepDetails(StepType.ServiceNowApproval, {
   component: ServiceNowApprovalView
+})
+
+ExecFactory.registerStepDetails(StepType.ServiceNowCreate, {
+  component: ServiceNowCreateUpdateView
+})
+ExecFactory.registerStepDetails(StepType.ServiceNowUpdate, {
+  component: ServiceNowCreateUpdateView
 })
 
 ExecFactory.registerStepDetails(StepType.Policy, {

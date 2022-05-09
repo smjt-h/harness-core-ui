@@ -36,6 +36,8 @@ import { useTemplateSelector } from '@pipeline/utils/useTemplateSelector'
 import { createTemplate } from '@pipeline/utils/templateUtils'
 import type { TemplateStepNode } from 'services/pipeline-ng'
 import type { StringsMap } from 'stringTypes'
+import { FeatureFlag } from '@common/featureFlags'
+import { useFeatureFlag } from '@common/hooks/useFeatureFlag'
 import { usePipelineContext } from '../PipelineContext/PipelineContext'
 import { DrawerData, DrawerSizes, DrawerTypes, PipelineViewData } from '../PipelineContext/PipelineActions'
 import { StepCommandsWithRef as StepCommands, StepFormikRef } from '../StepCommands/StepCommands'
@@ -420,6 +422,7 @@ export function RightDrawer(): React.ReactElement {
   if (data?.stepConfig?.isStepGroup) {
     stepData = stepsFactory.getStepData(StepType.StepGroup)
   }
+  const newPipelineStudioEnabled: boolean = useFeatureFlag(FeatureFlag.NEW_PIPELINE_STUDIO)
 
   const discardChanges = (): void => {
     updatePipelineView({
@@ -598,7 +601,8 @@ export function RightDrawer(): React.ReactElement {
         pipelineStage?.stage?.spec?.execution as any,
         newStepData,
         paletteData.isParallelNodeClicked,
-        paletteData.isRollback
+        paletteData.isRollback,
+        newPipelineStudioEnabled
       )
 
       if (pipelineStage?.stage) {
@@ -873,7 +877,8 @@ export function RightDrawer(): React.ReactElement {
                 provisioner,
                 newStepData,
                 paletteData.isParallelNodeClicked,
-                paletteData.isRollback
+                paletteData.isRollback,
+                newPipelineStudioEnabled
               )
 
               if (pipelineStage?.stage) {

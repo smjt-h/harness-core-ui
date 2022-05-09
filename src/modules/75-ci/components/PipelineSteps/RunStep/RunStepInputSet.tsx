@@ -16,28 +16,17 @@ import { ShellScriptMonacoField } from '@common/components/ShellScriptMonaco/She
 import MultiTypeFieldSelector from '@common/components/MultiTypeFieldSelector/MultiTypeFieldSelector'
 import { FormMultiTypeCheckboxField } from '@common/components/MultiTypeCheckbox/MultiTypeCheckbox'
 import { useVariablesExpression } from '@pipeline/components/PipelineStudio/PiplineHooks/useVariablesExpression'
-import StepCommonFieldsInputSet from '@ci/components/PipelineSteps/StepCommonFields/StepCommonFieldsInputSet'
 import { StepViewType } from '@pipeline/components/AbstractSteps/Step'
-import { shouldRenderRunTimeInputView, shouldRenderRunTimeInputViewWithAllowedValues } from '@pipeline/utils/CIUtils'
+import { shouldRenderRunTimeInputViewWithAllowedValues } from '@pipeline/utils/CIUtils'
 import type { RunStepProps } from './RunStep'
 import { CIStep } from '../CIStep/CIStep'
-import {
-  CIStepOptionalConfig,
-  renderMultiTypeListInputSet,
-  renderMultiTypeInputWithAllowedValues
-} from '../CIStep/CIStepOptionalConfig'
 import { ConnectorRefWithImage } from '../CIStep/ConnectorRefWithImage'
-import { AllMultiTypeInputTypesForInputSet } from '../CIStep/StepUtils'
+import { renderMultiTypeInputWithAllowedValues } from '../CIStep/CIStepOptionalConfig'
+import { RunAndRunTestStepInputCommonFields } from '../CIStep/RunAndRunTestStepInputCommonFields'
 import css from '@pipeline/components/PipelineSteps/Steps/Steps.module.scss'
 
-export const RunStepInputSetBasic: React.FC<RunStepProps> = ({
-  template,
-  path,
-  readonly,
-  stepViewType,
-  allowableTypes,
-  formik
-}) => {
+export const RunStepInputSetBasic: React.FC<RunStepProps> = props => {
+  const { template, path, readonly, stepViewType, allowableTypes } = props
   const { getString } = useStrings()
   const prefix = isEmpty(path) ? '' : `${path}.`
 
@@ -138,51 +127,7 @@ export const RunStepInputSetBasic: React.FC<RunStepProps> = ({
           />
         </div>
       )}
-      {shouldRenderRunTimeInputView(template?.spec?.reports?.spec?.paths) && (
-        <Container className={cx(css.formGroup, stepCss, css.bottomMargin5)}>
-          {renderMultiTypeListInputSet({
-            name: `${prefix}spec.reports.spec.paths`,
-            tooltipId: 'reportPaths',
-            labelKey: 'pipelineSteps.reportPathsLabel',
-            allowedTypes: AllMultiTypeInputTypesForInputSet,
-            placeholderKey: 'pipelineSteps.reportPathsPlaceholder',
-            expressions,
-            getString,
-            readonly,
-            formik
-          })}
-        </Container>
-      )}
-      {shouldRenderRunTimeInputView(template?.spec?.outputVariables) && (
-        <Container className={cx(css.formGroup, stepCss, css.bottomMargin5)}>
-          {renderMultiTypeListInputSet({
-            name: `${prefix}spec.outputVariables`,
-            tooltipId: 'outputVariables',
-            labelKey: 'pipelineSteps.outputVariablesLabel',
-            allowedTypes: AllMultiTypeInputTypesForInputSet,
-            expressions,
-            getString,
-            readonly,
-            formik,
-            withObjectStructure: true,
-            keyName: 'name'
-          })}
-        </Container>
-      )}
-      <CIStepOptionalConfig
-        stepViewType={stepViewType}
-        readonly={readonly}
-        enableFields={{
-          ...(shouldRenderRunTimeInputView(template?.spec?.envVariables) && {
-            'spec.envVariables': { tooltipId: 'environmentVariables' }
-          })
-        }}
-        path={path || ''}
-        formik={formik}
-        isInputSetView={true}
-        template={template}
-      />
-      <StepCommonFieldsInputSet path={path} readonly={readonly} template={template} stepViewType={stepViewType} />
+      <RunAndRunTestStepInputCommonFields {...props} />
     </FormikForm>
   )
 }

@@ -6,20 +6,33 @@
  */
 
 import React, { useState, useEffect } from 'react'
-import { Icon, Container, Text, FontVariation, Layout, CardSelect, PillToggle, Color } from '@harness/uicore'
+import {
+  Icon,
+  Container,
+  Text,
+  FontVariation,
+  Layout,
+  CardSelect,
+  PillToggle,
+  Color,
+  Button,
+  ButtonVariation
+} from '@harness/uicore'
 import { useStrings } from 'framework/strings'
 import {
   Hosting,
   SelectBuildLocationProps,
   BuildLocationDetails,
   AllBuildLocationsForSaaS,
-  AllBuildLocationsForOnPrem
+  AllBuildLocationsForOnPrem,
+  ProvisioningStatus
 } from './Constants'
 
 import css from './InfraProvisioningWizard.module.scss'
 
 export interface SelectBuildLocationRef {
   hosting: Hosting
+  buildInfra: BuildLocationDetails
 }
 
 export type SelectBuildLocationForwardRef =
@@ -31,8 +44,8 @@ const SelectBuildLocationRef = (
   props: SelectBuildLocationProps,
   forwardRef: SelectBuildLocationForwardRef
 ): React.ReactElement => {
-  const { selectedBuildLocation } = props
-  const [selected, setSelected] = useState<BuildLocationDetails>()
+  const { selectedBuildLocation, provisioningStatus } = props
+  const [buildInfra, setBuildInfra] = useState<BuildLocationDetails>()
   const [hosting, setHosting] = useState<Hosting>(Hosting.SaaS)
 
   useEffect(() => {
@@ -43,13 +56,16 @@ const SelectBuildLocationRef = (
       return
     }
 
-    forwardRef.current = {
-      hosting
+    if (buildInfra) {
+      forwardRef.current = {
+        hosting,
+        buildInfra
+      }
     }
-  }, [hosting])
+  }, [hosting, buildInfra])
 
   useEffect(() => {
-    setSelected(selectedBuildLocation)
+    setBuildInfra(selectedBuildLocation)
   }, [selectedBuildLocation])
 
   const { getString } = useStrings()
@@ -95,7 +111,17 @@ const SelectBuildLocationRef = (
                 </Layout.Horizontal>
                 <Text font={{ variation: FontVariation.SMALL }}>{getString(details)}</Text>
               </Layout.Vertical>
-              <Layout.Horizontal flex={{ justifyContent: disabled ? 'space-between' : 'flex-end' }} width="100%">
+              <Layout.Horizontal
+                flex={{
+                  justifyContent:
+                    disabled ||
+                    (item.location === selectedBuildLocation.location &&
+                      provisioningStatus === ProvisioningStatus.FAILURE)
+                      ? 'space-between'
+                      : 'flex-end'
+                }}
+                width="100%"
+              >
                 {disabled ? (
                   <Container className={css.comingSoonPill} flex={{ justifyContent: 'center' }}>
                     <Text font={{ variation: FontVariation.TINY }} color={Color.WHITE}>
@@ -103,15 +129,39 @@ const SelectBuildLocationRef = (
                     </Text>
                   </Container>
                 ) : null}
-                <Text font={{ variation: FontVariation.TINY }}>
-                  ~ {approxETAInMins} {getString('timeMinutes')}
-                </Text>
+                {item.location === selectedBuildLocation.location &&
+                provisioningStatus === ProvisioningStatus.FAILURE ? (
+                  <Layout.Vertical padding={{ top: 'large' }}>
+                    <Layout.Horizontal
+                      className={css.provisioningFailed}
+                      flex
+                      padding={{ left: 'small', top: 'xsmall', right: 'small', bottom: 'xsmall' }}
+                      spacing="xsmall"
+                    >
+                      <Icon name="danger-icon" size={24} />
+                      <Text font={{ weight: 'semi-bold' }} color={Color.RED_600}>
+                        {getString('ci.getStartedWithCI.provisioningFailed')}
+                      </Text>
+                    </Layout.Horizontal>
+                    <Button
+                      variation={ButtonVariation.LINK}
+                      icon="contact-support"
+                      text={getString('common.contactSupport')}
+                      disabled={true}
+                      minimal
+                    />
+                  </Layout.Vertical>
+                ) : (
+                  <Text font={{ variation: FontVariation.TINY }}>
+                    ~ {approxETAInMins} {getString('timeMinutes')}
+                  </Text>
+                )}
               </Layout.Horizontal>
             </Layout.Vertical>
           )
         }}
-        selected={selected}
-        onChange={(item: BuildLocationDetails) => setSelected(item)}
+        selected={buildInfra}
+        onChange={(item: BuildLocationDetails) => setBuildInfra(item)}
       />
     </Layout.Vertical>
   )

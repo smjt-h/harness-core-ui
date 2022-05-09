@@ -29,7 +29,7 @@ import css from './HomePage.module.scss'
 
 const TAGS_SEPARATOR = ','
 
-interface DashboardFormProps {
+export interface DashboardFormProps {
   formData?: DashboardFormRequestProps
   title: string
   loading: boolean
@@ -123,7 +123,7 @@ const DashboardForm: React.FC<DashboardFormProps> = ({
           enableReinitialize
           formName="dashboardForm"
           validationSchema={Yup.object().shape({
-            folderId: Yup.string().trim().required(getString('dashboards.createFolder.folderNameValidation')),
+            folderId: Yup.string().trim().required(getString('dashboards.folderForm.folderNameValidation')),
             name: Yup.string().trim().required(getString('dashboards.createModal.nameValidation'))
           })}
           onSubmit={(completedFormData: DashboardFormikValues) => {

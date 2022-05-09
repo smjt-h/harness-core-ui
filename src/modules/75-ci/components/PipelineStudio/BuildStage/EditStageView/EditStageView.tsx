@@ -15,7 +15,8 @@ import {
   Button,
   Switch,
   TextInput,
-  RUNTIME_INPUT_VALUE
+  RUNTIME_INPUT_VALUE,
+  IconName
 } from '@wings-software/uicore'
 import * as Yup from 'yup'
 import { Color } from '@harness/design-system'
@@ -61,6 +62,7 @@ export interface EditStageView {
     pipeline?: PipelineInfoConfig
   ) => void
   onChange?: (values: Values) => void
+  moduleIcon?: IconName
 }
 
 interface Values {
@@ -73,12 +75,20 @@ interface Values {
   repoName?: string
 }
 
-export const EditStageView: React.FC<EditStageView> = ({ data, template, onSubmit, onChange }): JSX.Element => {
+export const EditStageView: React.FC<EditStageView> = ({
+  data,
+  template,
+  onSubmit,
+  onChange,
+  moduleIcon
+}): JSX.Element => {
   const { getString } = useStrings()
   const [connectionType, setConnectionType] = React.useState('')
   const [connectorUrl, setConnectorUrl] = React.useState('')
   const gitScope = useGitScope()
   const repositoryNameLabel = getString('common.repositoryName')
+
+  const icon: IconName = moduleIcon ? moduleIcon : 'ci-main'
 
   const {
     state: { pipeline },
@@ -232,7 +242,7 @@ export const EditStageView: React.FC<EditStageView> = ({ data, template, onSubmi
             <FormikForm>
               <Text
                 font={{ size: 'medium', weight: 'semi-bold' }}
-                icon="ci-main"
+                icon={icon}
                 iconProps={{ size: 24, margin: { right: 'xsmall' } }}
                 margin={{ bottom: 'medium' }}
                 className={css.addStageHeading}

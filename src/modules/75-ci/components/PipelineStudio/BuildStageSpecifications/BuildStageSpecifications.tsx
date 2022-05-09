@@ -266,11 +266,7 @@ export default function BuildStageSpecifications({ children }: React.PropsWithCh
                             {getString('pipelineSteps.build.stageSpecifications.sharedPaths')}
                           </Text>
                         ),
-                        allowedTypes: [
-                          MultiTypeInputType.FIXED,
-                          MultiTypeInputType.EXPRESSION,
-                          MultiTypeInputType.RUNTIME
-                        ]
+                        allowedTypes: [MultiTypeInputType.FIXED, MultiTypeInputType.RUNTIME]
                       }}
                       disabled={isReadonly}
                     />

@@ -133,7 +133,7 @@ describe('Deploy service stage specifications', () => {
       </TestWrapper>
     )
 
-    await waitFor(() => expect(queryByText('variablesText')).toBeTruthy())
+    await waitFor(() => expect(queryByText('common.variables')).toBeTruthy())
   })
 
   test('Should Deployment Type section be present', async () => {
@@ -170,5 +170,21 @@ describe('Deploy service stage specifications', () => {
     )
 
     expect(errorContextProvider.submitFormsForTab).toBeCalled()
+  })
+
+  test('Deployment types should have Serverless Lambda as a part of it', async () => {
+    getOverrideContextValue().state.selectionState.selectedStageId = 'st1'
+    const { getByText } = render(
+      <TestWrapper defaultFeatureFlagValues={{ SERVERLESS_SUPPORT: true }}>
+        <PipelineContext.Provider value={getOverrideContextValue()}>
+          <DeployServiceSpecifications />
+        </PipelineContext.Provider>
+      </TestWrapper>
+    )
+    expect(getByText('deploymentTypeText')).toBeInTheDocument()
+
+    const serverlessLambda = getByText('pipeline.serviceDeploymentTypes.serverlessAwsLambda')
+    userEvent.click(serverlessLambda)
+    await waitFor(() => expect(getByText('pipelineSteps.serviceTab.manifestList.addManifest')).toBeInTheDocument())
   })
 })

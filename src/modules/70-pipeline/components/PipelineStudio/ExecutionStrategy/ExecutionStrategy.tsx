@@ -8,7 +8,17 @@
 import React, { useState, useEffect, useCallback } from 'react'
 import YAML from 'yaml'
 import { Classes, Switch } from '@blueprintjs/core'
-import { Text, Icon, Layout, Button, Card, IconName, ButtonVariation, Container } from '@wings-software/uicore'
+import {
+  Text,
+  Icon,
+  Layout,
+  Button,
+  Card,
+  IconName,
+  ButtonVariation,
+  Container,
+  PageError
+} from '@wings-software/uicore'
 import { defaultTo, get, isEmpty, set, startCase } from 'lodash-es'
 import { Color } from '@harness/design-system'
 import cx from 'classnames'
@@ -22,6 +32,7 @@ import {
   useGetExecutionStrategyYaml
 } from 'services/cd-ng'
 import { useStrings } from 'framework/strings'
+import { PageSpinner } from '@common/components'
 import type { DeploymentStageElementConfig, StageElementWrapper } from '@pipeline/utils/pipelineTypes'
 import { getSelectedDeploymentType, ServiceDeploymentType } from '@pipeline/utils/stageHelpers'
 import { usePipelineContext } from '../PipelineContext/PipelineContext'
@@ -122,7 +133,7 @@ function ExecutionStrategyRef(
     Basic: getString('pipeline.executionStrategy.strategies.default.learnMoreLink')
   }
 
-  const { data: strategies } = useGetExecutionStrategyList({})
+  const { loading, error: strategiesError, data: strategies, refetch } = useGetExecutionStrategyList({})
 
   // Video related
   let vidWrapper: HTMLElement | null = document.querySelector('[data-testid="player"]')
@@ -214,138 +225,155 @@ function ExecutionStrategyRef(
   }
 
   return (
-    <Layout.Horizontal>
-      <Layout.Vertical width={448} className={css.strategySelectionPanel}>
-        <Layout.Horizontal className={css.header}>
-          <Text className={css.headerText}>{getString('pipeline.executionStrategy.executionStrategies')}</Text>
-        </Layout.Horizontal>
-        <section className={css.patterns}>
-          <section className={css.strategies} data-section-id="strategy-selection">
-            {strategiesByDeploymentType?.map((v: StrategyType) => (
-              <Card
-                className={cx(css.card, selectedStrategy === v && css.active)}
-                elevation={0}
-                key={v}
-                interactive={true}
-                onClick={() => setSelectedStrategy(v)}
-                data-testid={`${v}-Card`}
-              >
-                <Icon name={iconMap[v] as IconName} size={40} border={false} />
-                <section className={css.strategyName}>{getStrategyNameByType(v)}</section>
-                <section className={css.strategyType}>
-                  {v !== 'Default' ? startCase(serviceDefinitionType()) : null}
-                </section>
-              </Card>
-            ))}
-          </section>
-        </section>
-      </Layout.Vertical>
-
-      <Layout.Vertical width={688} className={css.strategyDetailsPanel}>
-        <Container className={css.strategyDetailsBody}>
-          <Layout.Horizontal className={css.header} flex>
-            <Layout.Horizontal>
-              <Text
-                className={css.headerText}
-                data-testid={`${selectedStrategy}DetailsHeader`}
-                tooltipProps={{ dataTooltipId: `${selectedStrategy}DetailsHeader` }}
-              >
-                {getStrategyNameByType(selectedStrategy)}
-              </Text>
-              {selectedStrategy === 'Default' && (
-                <Icon name="blank-canvas-header-icon" size={24} color={Color.PRIMARY_6} />
-              )}
+    <>
+      {loading && (
+        <Container data-test="executionStrategyListLoader">
+          <PageSpinner />
+        </Container>
+      )}
+      {strategiesError && (
+        <Container data-test="executionStrategyListError" height={'100%'}>
+          <PageError onClick={() => refetch()} width={230} />
+        </Container>
+      )}
+      {!loading && !strategiesError && (
+        <Layout.Horizontal>
+          <Layout.Vertical width={448} className={css.strategySelectionPanel}>
+            <Layout.Horizontal className={css.header}>
+              <Text className={css.headerText}>{getString('pipeline.executionStrategy.executionStrategies')}</Text>
             </Layout.Horizontal>
-            <Button
-              variation={ButtonVariation.LINK}
-              href={learnMoreLinkByType[selectedStrategy]}
-              target="_blank"
-              withoutBoxShadow={true}
-            >
-              {getString('learnMore')}
-            </Button>
-          </Layout.Horizontal>
-          <section className={css.preview}>
-            <section className={css.previewContainer}>
-              <section className={css.info} data-testid="info">
-                {infoByType[selectedStrategy]}
-              </section>
-              {!isEmpty(videoByType[selectedStrategy]) ? (
-                <section className={css.player} data-testid="player">
-                  <video
-                    key={selectedStrategy}
-                    className={css.videoPlayer}
-                    autoPlay
-                    poster={imageByType[selectedStrategy]}
-                    data-testid="videoPlayer"
+            <section className={css.patterns}>
+              <section className={css.strategies} data-section-id="strategy-selection">
+                {strategiesByDeploymentType?.map((v: StrategyType) => (
+                  <Card
+                    className={cx(css.card, selectedStrategy === v && css.active)}
+                    elevation={0}
+                    key={v}
+                    interactive={true}
+                    onClick={() => setSelectedStrategy(v)}
+                    data-testid={`${v}-Card`}
                   >
-                    <source src={videoByType[selectedStrategy]} type="video/mp4"></source>
-                    <Text tooltipProps={{ dataTooltipId: 'videoNotSupportedError' }}>
-                      {getString('common.videoNotSupportedError')}
-                    </Text>
-                  </video>
-                  {showPlayButton && (
-                    <div className={css.playerControls}>
-                      <Button
-                        minimal
-                        variation={ButtonVariation.ICON}
-                        className={css.playButton}
-                        onClick={toggleVideo}
-                        data-testid="playButton"
-                        icon="play-circle"
-                        iconProps={{ size: 42 }}
-                        withoutCurrentColor
-                      />
-                    </div>
+                    <Icon name={iconMap[v] as IconName} size={40} border={false} />
+                    <section className={css.strategyName}>{getStrategyNameByType(v)}</section>
+                    <section className={css.strategyType}>
+                      {v !== 'Default' ? startCase(serviceDefinitionType()) : null}
+                    </section>
+                  </Card>
+                ))}
+              </section>
+            </section>
+          </Layout.Vertical>
+
+          <Layout.Vertical width={688} className={css.strategyDetailsPanel}>
+            <Container className={css.strategyDetailsBody}>
+              <Layout.Horizontal className={css.header} flex>
+                <Layout.Horizontal>
+                  <Text
+                    className={css.headerText}
+                    data-testid={`${selectedStrategy}DetailsHeader`}
+                    tooltipProps={{ dataTooltipId: `${selectedStrategy}DetailsHeader` }}
+                  >
+                    {getStrategyNameByType(selectedStrategy)}
+                  </Text>
+                  {selectedStrategy === 'Default' && (
+                    <Icon name="blank-canvas-header-icon" size={24} color={Color.PRIMARY_6} />
+                  )}
+                </Layout.Horizontal>
+                <Button
+                  variation={ButtonVariation.LINK}
+                  href={learnMoreLinkByType[selectedStrategy]}
+                  target="_blank"
+                  withoutBoxShadow={true}
+                >
+                  {getString('learnMore')}
+                </Button>
+              </Layout.Horizontal>
+              <section className={css.preview}>
+                <section className={css.previewContainer}>
+                  <section className={css.info} data-testid="info">
+                    {infoByType[selectedStrategy]}
+                  </section>
+                  {!isEmpty(videoByType[selectedStrategy]) ? (
+                    <section className={css.player} data-testid="player">
+                      <video
+                        key={selectedStrategy}
+                        className={css.videoPlayer}
+                        autoPlay
+                        poster={imageByType[selectedStrategy]}
+                        data-testid="videoPlayer"
+                      >
+                        <source src={videoByType[selectedStrategy]} type="video/mp4"></source>
+                        <Text tooltipProps={{ dataTooltipId: 'videoNotSupportedError' }}>
+                          {getString('common.videoNotSupportedError')}
+                        </Text>
+                      </video>
+                      {showPlayButton && (
+                        <div className={css.playerControls}>
+                          <Button
+                            minimal
+                            variation={ButtonVariation.ICON}
+                            className={css.playButton}
+                            onClick={toggleVideo}
+                            data-testid="playButton"
+                            icon="play-circle"
+                            iconProps={{ size: 42 }}
+                            withoutCurrentColor
+                          />
+                        </div>
+                      )}
+                    </section>
+                  ) : (
+                    <section className={css.image}>
+                      <img src={imageByType[selectedStrategy]} data-testid="blank-canvas-image" />
+                    </section>
+                  )}
+                  {selectedStrategy !== 'Default' && (
+                    <>
+                      <Steps strategy={selectedStrategy} />
+                      <section className={css.enableVerificationSection}>
+                        <Switch
+                          checked={isVerifyEnabled}
+                          onChange={() => setIsVerifyEnabled(prevIsVerifyEnabled => !prevIsVerifyEnabled)}
+                          className={cx(Classes.SMALL, css.toggleVerify)}
+                          data-testid="enable-verification-options-switch"
+                        />
+                        <Text className={css.enableVerification}>
+                          {getString('pipeline.enableVerificationOptions')}
+                        </Text>
+                      </section>
+                    </>
                   )}
                 </section>
-              ) : (
-                <section className={css.image}>
-                  <img src={imageByType[selectedStrategy]} data-testid="blank-canvas-image" />
-                </section>
-              )}
-              {selectedStrategy !== 'Default' && (
-                <>
-                  <Steps strategy={selectedStrategy} />
-                  <section className={css.enableVerificationSection}>
-                    <Switch
-                      checked={isVerifyEnabled}
-                      onChange={() => setIsVerifyEnabled(prevIsVerifyEnabled => !prevIsVerifyEnabled)}
-                      className={cx(Classes.SMALL, css.toggleVerify)}
-                      data-testid="enable-verification-options-switch"
-                    />
-                    <Text className={css.enableVerification}>{getString('pipeline.enableVerificationOptions')}</Text>
-                  </section>
-                </>
-              )}
-            </section>
-          </section>
-        </Container>
-        <Container className={css.strategyDetailsFooter}>
-          <Button
-            variation={ButtonVariation.PRIMARY}
-            text={getString('pipeline.executionStrategy.useStrategy')}
-            onClick={() => {
-              const newStage = produce(selectedStage, draft => {
-                const jsonFromYaml = YAML.parse(defaultTo(yamlSnippet?.data, '')) as StageElementConfig
-                if (draft.stage && draft.stage.spec) {
-                  draft.stage.failureStrategies = jsonFromYaml?.failureStrategies
-                  ;(draft.stage.spec as DeploymentStageConfig).execution = (jsonFromYaml?.spec as DeploymentStageConfig)
-                    ?.execution ?? { steps: [], rollbackSteps: [] }
-                }
-              }).stage
+              </section>
+            </Container>
+            <Container className={css.strategyDetailsFooter}>
+              <Button
+                variation={ButtonVariation.PRIMARY}
+                text={getString('pipeline.executionStrategy.useStrategy')}
+                onClick={() => {
+                  const newStage = produce(selectedStage, draft => {
+                    const jsonFromYaml = YAML.parse(defaultTo(yamlSnippet?.data, '')) as StageElementConfig
+                    if (draft.stage && draft.stage.spec) {
+                      draft.stage.failureStrategies = jsonFromYaml?.failureStrategies
+                      ;(draft.stage.spec as DeploymentStageConfig).execution = (
+                        jsonFromYaml?.spec as DeploymentStageConfig
+                      )?.execution ?? { steps: [], rollbackSteps: [] }
+                    }
+                  }).stage
 
-              if (newStage) {
-                updateStage(newStage).then(() => {
-                  updatePipelineViewState()
-                })
-              }
-            }}
-            disabled={isSubmitDisabled}
-          />
-        </Container>
-      </Layout.Vertical>
-    </Layout.Horizontal>
+                  if (newStage) {
+                    updateStage(newStage).then(() => {
+                      updatePipelineViewState()
+                    })
+                  }
+                }}
+                disabled={isSubmitDisabled}
+              />
+            </Container>
+          </Layout.Vertical>
+        </Layout.Horizontal>
+      )}
+    </>
   )
 }
 

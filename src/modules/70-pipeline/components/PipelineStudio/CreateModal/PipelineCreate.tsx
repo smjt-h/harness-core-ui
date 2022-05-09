@@ -24,6 +24,8 @@ import { noop, omit } from 'lodash-es'
 import { useParams } from 'react-router-dom'
 import { FeatureFlag } from '@common/featureFlags'
 import { useFeatureFlag } from '@common/hooks/useFeatureFlag'
+
+import produce from 'immer'
 import { useStrings } from 'framework/strings'
 import { loggerFor } from 'framework/logging/logging'
 import { ModuleName } from 'framework/types/ModuleName'
@@ -36,8 +38,6 @@ import GitContextForm, { IGitContextFormProps } from '@common/components/GitCont
 import type { EntityGitDetails } from 'services/pipeline-ng'
 import { useTelemetry } from '@common/hooks/useTelemetry'
 import { Category, PipelineActions } from '@common/constants/TrackingConstants'
-import { getTemplateNameWithLabel } from '@pipeline/utils/templateUtils'
-import type { TemplateSummaryResponse } from 'services/template-ng'
 import { DefaultNewPipelineId } from '../PipelineContext/PipelineActions'
 import css from './PipelineCreate.module.scss'
 import { GitSyncForm } from '@common/components/GitSyncForm/GitSyncForm'
@@ -51,6 +51,9 @@ interface CardInterface {
   icon: IconName
   disabled?: boolean
 }
+interface UseTemplate {
+  useTemplate?: boolean
+}
 
 interface PipelineInfoConfigWithGitDetails extends PipelineInfoConfig {
   repo: string
@@ -61,37 +64,35 @@ interface PipelineInfoConfigWithGitDetails extends PipelineInfoConfig {
   repoName?: string
   filePath?: string
 }
+
+type CretePipelinesValue = PipelineInfoConfigWithGitDetails & UseTemplate
+
 export interface PipelineCreateProps {
   afterSave?: (
     values: PipelineInfoConfig,
     storeMetadata: { connectorRef?: string; storeType?: string },
     gitDetails?: EntityGitDetails,
-    usingTemplate?: TemplateSummaryResponse,
-    copyingTemplate?: TemplateSummaryResponse
+    useTemplate?: boolean
   ) => void
-  initialValues?: PipelineInfoConfigWithGitDetails
+  initialValues?: CretePipelinesValue
   closeModal?: () => void
   gitDetails?: IGitContextFormProps
-  usingTemplate?: TemplateSummaryResponse
-  copyingTemplate?: TemplateSummaryResponse
 }
 
 export default function CreatePipelines({
   afterSave,
   initialValues = {
-    identifier: '',
+    identifier: DefaultNewPipelineId,
     name: '',
     description: '',
     tags: {},
     repo: '',
     branch: '',
-    stages: [],
-    storeType: 'inline'
+    storeType: 'inline',
+    stages: []
   },
   closeModal,
-  gitDetails,
-  usingTemplate,
-  copyingTemplate
+  gitDetails
 }: PipelineCreateProps): JSX.Element {
   const { getString } = useStrings()
   const { pipelineIdentifier } = useParams<{ pipelineIdentifier: string }>()
@@ -99,16 +100,27 @@ export default function CreatePipelines({
   const gitSimplification: boolean = useFeatureFlag(FeatureFlag.GIT_SIMPLIFICATION)
   const [storeType, setStoreType] = useState<CardInterface | undefined>()
   const { trackEvent } = useTelemetry()
+  const templatesFeatureFlagEnabled = useFeatureFlag(FeatureFlag.NG_TEMPLATES)
+  const pipelineTemplatesFeatureFlagEnabled = useFeatureFlag(FeatureFlag.NG_PIPELINE_TEMPLATE)
+  const isPipelineTemplateEnabled = templatesFeatureFlagEnabled && pipelineTemplatesFeatureFlagEnabled
+
+  const newInitialValues = React.useMemo(() => {
+    return produce(initialValues, draft => {
+      if (draft.identifier === DefaultNewPipelineId) {
+        draft.identifier = ''
+      }
+    })
+  }, [initialValues])
 
   const PipelineModeCards: CardInterface[] = [
     {
-      type: 'inline',
+      type: 'INLINE',
       title: 'Inline',
       info: 'Pipeline content is stored in Harness',
       icon: 'repository'
     },
     {
-      type: 'remote',
+      type: 'REMOTE',
       title: 'Remote',
       info: 'Pipeline content is stored in a Git repository',
       icon: 'pipeline'
@@ -119,7 +131,8 @@ export default function CreatePipelines({
   if (identifier === DefaultNewPipelineId) {
     initialValues.identifier = ''
   }
-  const isEdit = (initialValues?.identifier?.length || '') > 0
+
+  const isEdit = React.useMemo(() => initialValues?.identifier !== DefaultNewPipelineId, [initialValues])
 
   useEffect(() => {
     !isEdit &&
@@ -131,8 +144,8 @@ export default function CreatePipelines({
 
   return (
     <Container className={css.pipelineCreateForm}>
-      <Formik<PipelineInfoConfigWithGitDetails>
-        initialValues={initialValues}
+      <Formik<CretePipelinesValue>
+        initialValues={newInitialValues}
         formName="pipelineCreate"
         validationSchema={Yup.object().shape({
           name: NameSchema({ requiredErrorMsg: getString('createPipeline.pipelineNameRequired') }),
@@ -147,18 +160,17 @@ export default function CreatePipelines({
         onSubmit={values => {
           logger.info(JSON.stringify(values))
           const formGitDetails =
-            gitSimplification && values.storeType === 'remote'
+            gitSimplification && values.storeType === 'REMOTE'
               ? { repoName: values.repoName, branch: values.branch, yamlPath: values.filePath }
               : values.repo && values.repo.trim().length > 0
               ? { repoIdentifier: values.repo, branch: values.branch }
               : undefined
           afterSave &&
             afterSave(
-              omit(values, 'repo', 'branch', 'storeType', 'connectorRef'),
-              { connectorRef: values.connectorRef?.value, storeType: values.storeType },
+              omit(values, 'repo', 'branch', 'storeType', 'connectorRef', 'useTemplate'),
+              { storeType: values.storeType, connectorRef: values.connectorRef?.value },
               formGitDetails,
-              usingTemplate,
-              copyingTemplate
+              values.useTemplate
             )
         }}
       >
@@ -171,6 +183,29 @@ export default function CreatePipelines({
               }}
               tooltipProps={{ dataTooltipId: 'pipelineCreate' }}
             />
+            {isGitSyncEnabled && (
+              <GitSyncStoreProvider>
+                <GitContextForm formikProps={formikProps} gitDetails={gitDetails} />
+              </GitSyncStoreProvider>
+            )}
+            {!isEdit && isPipelineTemplateEnabled && (
+              <Container padding={{ top: 'xlarge' }}>
+                <Button
+                  text={'Start with Template'}
+                  icon={'template-library'}
+                  iconProps={{
+                    size: 12
+                  }}
+                  variation={ButtonVariation.SECONDARY}
+                  onClick={() => {
+                    formikProps.setFieldValue('useTemplate', true)
+                    window.requestAnimationFrame(() => {
+                      formikProps.submitForm()
+                    })
+                  }}
+                />
+              </Container>
+            )}
 
             {gitSimplification ? (
               <CardSelect
@@ -198,21 +233,10 @@ export default function CreatePipelines({
                 <GitContextForm formikProps={formikProps} gitDetails={gitDetails} />
               </GitSyncStoreProvider>
             ) : null}
-
-            {storeType?.type === 'remote' ? (
+            {storeType?.type === 'REMOTE' ? (
               <GitSyncForm formikProps={formikProps} handleSubmit={noop}></GitSyncForm>
             ) : null}
-            {usingTemplate && (
-              <Text
-                icon={'template-library'}
-                margin={{ top: 'medium', bottom: 'medium' }}
-                font={{ size: 'small' }}
-                iconProps={{ size: 12, margin: { right: 'xsmall' } }}
-                color={Color.BLACK}
-              >
-                {`Using Template: ${getTemplateNameWithLabel(usingTemplate)}`}
-              </Text>
-            )}
+
             <Container padding={{ top: 'xlarge' }}>
               <Button
                 variation={ButtonVariation.PRIMARY}

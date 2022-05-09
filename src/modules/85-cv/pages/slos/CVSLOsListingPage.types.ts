@@ -33,6 +33,7 @@ export interface SLOCardHeaderProps {
 export interface SLOCardContentProps {
   isCardView?: boolean
   serviceLevelObjective: SLODashboardWidget
+  filteredServiceLevelObjective?: SLODashboardWidget
   timeRangeFilters?: TimeRangeFilter[]
   chartTimeRange?: { startTime: number; endTime: number }
   setChartTimeRange?: (timeRange?: SLOCardContentProps['chartTimeRange']) => void

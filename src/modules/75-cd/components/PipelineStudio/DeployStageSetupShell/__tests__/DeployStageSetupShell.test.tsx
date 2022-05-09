@@ -65,7 +65,8 @@ jest.mock('services/cd-ng', () => ({
       status: 'SUCCESS'
     },
     loading: false
-  })
+  }),
+  useGetExecutionStrategyYaml: jest.fn().mockReturnValue({})
 }))
 
 // eslint-disable-next-line @typescript-eslint/explicit-function-return-type

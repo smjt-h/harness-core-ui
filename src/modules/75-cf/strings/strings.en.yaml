@@ -132,6 +132,8 @@ clause:
     matchSegment: 'Match Target Group'
 featureFlags:
   newFlag: + New Flag
+  true: 'True'
+  false: 'False'
   typeOfFlag: Select the Type of Flag You Want to Create
   startVariation: Start by selecting the variation type that the flag will use
   booleanBtnText: This is a simple ON/OFF toggle
@@ -148,7 +150,8 @@ featureFlags:
   defaultServedOff: '{{defaultVariation}} when flag is OFF'
   createdDate: 'Created: {{date}}'
   modifiedDate: 'Modified: {{date}}'
-  prerequisitesDesc: '(what’s required before enabling flags)'
+  prerequisitesDesc: 'What’s required before enabling this flag'
+  newPrerequisite: New Prerequisite
   ifFlagOnServe: 'If the flag is <strong>ON</strong>, serve '
   ifFlagOffServe: 'If the flag is <strong>OFF</strong>, serve '
   bucketBy: Bucket by <strong>{{targetField}}</strong>
@@ -264,6 +267,7 @@ targets:
   deleteTargetMessage: Are you sure you want to delete target <strong>{{name}}</strong>? This action cannot be undone.
   deleteTargetSuccess: Target <strong>{{name}}</strong> deleted.
   pageDescription: This list displays targets manually added or impacted by flags.
+  uploadError: CSV processing failed
 targetDetail:
   title: 'Targets: Individual'
   environmentLine: '<strong>Environment</strong>: {{name}}'
@@ -277,7 +281,7 @@ targetDetail:
   addToSegment: Add to Target Group
   autoAdded: AUTOMATICALLY ADDED THROUGH CONDITIONS
   exclusionList: EXCLUSION LIST
-  excludefromSegment: Exclude from Target Group
+  excludeFromSegment: Exclude from Target Group
   removeSegment: Remove from list
   noSegmentAdded: No Target Group added
   noSegmentMatched: No Target Group matched
@@ -320,8 +324,8 @@ environments:
   modifiedBy: 'Modified by'
   adminEnvironments: 'Admin: Environments'
   delete:
-    message: 'Are you sure you want to delete environment <strong>{{name}}</strong>?'
-    title: '{{ $.common.deleteEnvironment.title }}'
+    message: 'If you want to delete environment <strong>{{name}}</strong>, the SDK keys for this environment will also be deleted. Delete environment <strong>{{name}}</strong>?'
+    title: '{{ $.common.deleteEnvironment.title }}?'
   create:
     title: 'Create an Environment'
     description: 'An environment is the representation of your production or non-production infrastructure'
@@ -340,7 +344,8 @@ environments:
     deleteMessage: 'Are you sure you want to delete Key: {{keyName}}? You cannot recover it afterwards'
     deleteSuccess: 'Successfully deleted Key: {{keyName}}'
     keyType: 'Key Type'
-    noKeysFound: 'No SDK Keys found in this environment. Click the button below to create a Key'
+    noKeysFoundTitle: There are no SDK keys for this environment
+    noKeysFoundMessage: Create an <a href="https://ngdocs.harness.io/article/1j7pdkqh7j-create-a-feature-flag#step_3_create_an_sdk_key" target="_blank" rel="noreferrer"> SDK key</a> for this environment so that your application can connect to our FF client. We support SDK keys for multiple programming languages.
     redactionWarning: Your secret will be redacted once you leave the page. Please make sure to copy and store your secret.
 auditLogs:
   title: Audit Logs

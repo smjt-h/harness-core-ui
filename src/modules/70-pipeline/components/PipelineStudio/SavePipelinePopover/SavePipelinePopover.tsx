@@ -51,7 +51,6 @@ import type {
 import { useTelemetry } from '@common/hooks/useTelemetry'
 import { usePipelineSchema } from '@pipeline/components/PipelineStudio/PipelineSchema/PipelineSchemaContext'
 import { useSaveAsTemplate } from '@pipeline/components/PipelineStudio/SaveTemplateButton/useSaveAsTemplate'
-import { validateServerlessArtifactsManifests } from '@pipeline/utils/stageHelpers'
 import { AppStoreContext } from 'framework/AppStore/AppStoreContext'
 import type { PipelineInfoConfig } from 'services/cd-ng'
 import { FeatureIdentifier } from 'framework/featureStore/FeatureIdentifier'
@@ -59,13 +58,13 @@ import type { GovernanceMetadata } from 'services/pipeline-ng'
 import PipelineErrors from '@pipeline/components/PipelineStudio/PipelineCanvas/PipelineErrors/PipelineErrors'
 import type { AccessControlCheckError } from 'services/rbac'
 import useRBACError from '@rbac/utils/useRBACError/useRBACError'
+import { EvaluationModal } from '@governance/EvaluationModal'
 import css from './SavePipelinePopover.module.scss'
 import type { SaveToGitFormV2Interface } from '@common/components/SaveToGitFormV2/SaveToGitFormV2'
 
 export interface SavePipelinePopoverProps extends PopoverProps {
   className?: string
   toPipelineStudio: PathFn<PipelineType<PipelinePathProps> & PipelineStudioQueryParams>
-  setGovernanceMetadata: (data: GovernanceMetadata | undefined) => void
   isValidYaml: () => boolean
 }
 
@@ -82,13 +81,13 @@ interface SavePipelineMenuItem {
 
 export function SavePipelinePopover({
   toPipelineStudio,
-  setGovernanceMetadata,
   isValidYaml,
   className = '',
   portalClassName,
   ...popoverProps
 }: SavePipelinePopoverProps): React.ReactElement {
   const { isGitSyncEnabled } = React.useContext(AppStoreContext)
+
   const {
     state: { pipeline, yamlHandler, storeMetadata, gitDetails, pipelineView, isUpdated },
     deletePipelineCache,
@@ -106,7 +105,7 @@ export function SavePipelinePopover({
   const { showSuccess, showError, clear } = useToaster()
   const { getRBACErrorMessage } = useRBACError()
   const { getString } = useStrings()
-  const { OPA_PIPELINE_GOVERNANCE, SERVERLESS_SUPPORT } = useFeatureFlags()
+  const { OPA_PIPELINE_GOVERNANCE } = useFeatureFlags()
   const history = useHistory()
   const { projectIdentifier, orgIdentifier, accountId, pipelineIdentifier, module } =
     useParams<PipelineType<PipelinePathProps>>()
@@ -115,6 +114,25 @@ export function SavePipelinePopover({
   const templatesFeatureFlagEnabled = useFeatureFlag(FeatureFlag.NG_TEMPLATES)
   const pipelineTemplatesFeatureFlagEnabled = useFeatureFlag(FeatureFlag.NG_PIPELINE_TEMPLATE)
   const [updatePipelineAPIResponse, setUpdatePipelineAPIResponse] = React.useState<any>()
+  const [governanceMetadata, setGovernanceMetadata] = React.useState<GovernanceMetadata>()
+
+  const [showOPAErrorModal, closeOPAErrorModal] = useModalHook(
+    () => (
+      <EvaluationModal
+        accountId={accountId}
+        metadata={governanceMetadata}
+        headingErrorMessage={getString('pipeline.policyEvaluations.failedToSavePipeline')}
+        closeModal={() => {
+          closeOPAErrorModal()
+          const { status, newPipelineId, updatedGitDetails } = governanceMetadata as GovernanceMetadata
+          if (status === 'warning') {
+            publishPipeline(newPipelineId, updatedGitDetails)
+          }
+        }}
+      />
+    ),
+    [governanceMetadata]
+  )
   const { enabled: templatesFeatureEnabled } = useFeature({
     featureRequest: {
       featureName: FeatureIdentifier.TEMPLATE_SERVICE
@@ -181,6 +199,24 @@ export function SavePipelinePopover({
     [updatePipelineAPIResponse]
   )
 
+  const publishPipeline = async (newPipelineId: string, updatedGitDetails?: SaveToGitFormInterface) => {
+    if (pipelineIdentifier === DefaultNewPipelineId) {
+      await deletePipelineCache(gitDetails)
+
+      showSuccess(getString('pipelines-studio.publishPipeline'))
+
+      navigateToLocation(newPipelineId, updatedGitDetails)
+      // note: without setTimeout does not redirect properly after save
+      await fetchPipeline({ forceFetch: true, forceUpdate: true, newPipelineId })
+    } else {
+      await fetchPipeline({ forceFetch: true, forceUpdate: true })
+    }
+    if (updatedGitDetails?.isNewBranch) {
+      navigateToLocation(newPipelineId, updatedGitDetails)
+      location.reload()
+    }
+  }
+
   const saveAndPublishPipeline = async (
     latestPipeline: PipelineInfoConfig,
     storeMetadata: any,
@@ -198,7 +234,7 @@ export function SavePipelinePopover({
         projectIdentifier,
         orgIdentifier,
         ...(storeMetadata.storeType ? { storeType: storeMetadata.storeType } : {}),
-        ...(storeMetadata.storeType === 'remote' ? { connectorRef: storeMetadata.connectorRef } : {}),
+        ...(storeMetadata.storeType === 'REMOTE' ? { connectorRef: storeMetadata.connectorRef } : {}),
         ...(updatedGitDetails ?? {}),
         ...(lastObject ?? {}),
         ...(updatedGitDetails && updatedGitDetails.isNewBranch ? { baseBranch: branch } : {})
@@ -212,26 +248,14 @@ export function SavePipelinePopover({
 
     if (response && response.status === 'SUCCESS') {
       const governanceData: GovernanceMetadata | undefined = get(response, 'data.governanceMetadata')
-      setGovernanceMetadata(governanceData)
-
+      setGovernanceMetadata({ ...governanceData, newPipelineId, updatedGitDetails })
+      if (OPA_PIPELINE_GOVERNANCE && (governanceData?.status === 'error' || governanceData?.status === 'warning')) {
+        showOPAErrorModal()
+      }
       // Handling cache and page navigation only when Governance is disabled, or Governance Evaluation is successful
       // Otherwise, keep current pipeline editing states, and show Governance evaluation error
-      if (governanceData?.status !== 'error') {
-        if (pipelineIdentifier === DefaultNewPipelineId) {
-          await deletePipelineCache(gitDetails)
-
-          showSuccess(getString('pipelines-studio.publishPipeline'))
-
-          navigateToLocation(newPipelineId, updatedGitDetails)
-          // note: without setTimeout does not redirect properly after save
-          await fetchPipeline({ forceFetch: true, forceUpdate: true, newPipelineId })
-        } else {
-          await fetchPipeline({ forceFetch: true, forceUpdate: true })
-        }
-        if (updatedGitDetails?.isNewBranch) {
-          navigateToLocation(newPipelineId, updatedGitDetails)
-          location.reload()
-        }
+      if (governanceData?.status !== 'error' && governanceData?.status !== 'warning') {
+        await publishPipeline(newPipelineId, updatedGitDetails)
       }
       if (isEdit) {
         trackEvent(isYaml ? PipelineActions.PipelineUpdatedViaYAML : PipelineActions.PipelineUpdatedViaVisual, {})
@@ -283,7 +307,13 @@ export function SavePipelinePopover({
     const response = await saveAndPublishPipeline(
       latestPipeline,
       storeMetadata,
-      { ...updatedGitDetails, isNewBranch: false, createPr: false },
+      {
+        ...updatedGitDetails,
+        isNewBranch: false,
+        createPr: false,
+        repoName: 'aaGit',
+        filePath: 'one' + parseInt((Math.random() * 1000).toString()) + '.yaml'
+      },
       pipelineIdentifier !== DefaultNewPipelineId ? { lastObjectId: objectId } : {}
     )
 
@@ -326,23 +356,11 @@ export function SavePipelinePopover({
       return
     }
 
-    if (SERVERLESS_SUPPORT) {
-      const serverlessArtifactValidationError = validateServerlessArtifactsManifests({
-        pipeline: latestPipeline,
-        getString
-      })
-      if (serverlessArtifactValidationError) {
-        clear()
-        showError(serverlessArtifactValidationError)
-        return
-      }
-    }
-
     // if Git sync enabled then display modal
     console.log('SavePipelinePopover: storeMetadata', storeMetadata)
     console.log('SavePipelinePopover: gitDetails', gitDetails)
-    if (isGitSyncEnabled || storeMetadata.storeType === 'remote') {
-      if ((storeMetadata.storeType !== 'remote' && isEmpty(gitDetails.repoIdentifier)) || isEmpty(gitDetails.branch)) {
+    if (isGitSyncEnabled || storeMetadata.storeType === 'REMOTE') {
+      if ((storeMetadata.storeType !== 'REMOTE' && isEmpty(gitDetails.repoIdentifier)) || isEmpty(gitDetails.branch)) {
         clear()
         showError(getString('pipeline.gitExperience.selectRepoBranch'))
         return

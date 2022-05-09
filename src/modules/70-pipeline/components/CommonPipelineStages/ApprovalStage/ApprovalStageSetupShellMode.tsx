@@ -6,6 +6,7 @@
  */
 
 import React, { useEffect, useRef } from 'react'
+import cx from 'classnames'
 import { unset } from 'lodash-es'
 import YAML from 'yaml'
 import produce from 'immer'
@@ -167,6 +168,7 @@ export function ApprovalStageSetupShellMode(): React.ReactElement {
             </>
           }
           data-testid={tabHeadings[1]}
+          className={cx(css.fullHeight, css.stepGroup)}
         />
         <Icon
           name="chevron-right"

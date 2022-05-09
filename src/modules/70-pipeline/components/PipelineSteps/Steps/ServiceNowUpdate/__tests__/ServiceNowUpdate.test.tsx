@@ -260,7 +260,6 @@ describe('ServiceNow Update process form data tests', () => {
         ticketType: 'INCIDENT',
         ticketNumber: '123',
         useServiceNowTemplate: false,
-        templateName: '',
         fields: [
           {
             name: 'description',
@@ -333,7 +332,6 @@ describe('ServiceNow Update process form data tests', () => {
         ticketNumber: '<+input>',
         useServiceNowTemplate: false,
         ticketType: 'INCIDENT',
-        templateName: '',
         fields: [
           {
             name: 'description',
@@ -352,6 +350,43 @@ describe('ServiceNow Update process form data tests', () => {
             value: '<+a.b>'
           }
         ]
+      }
+    })
+  })
+
+  test('when useServiceNowTemplate is true', () => {
+    const formValues: ServiceNowUpdateData = {
+      name: 'serviceNowUpdate',
+      identifier: 'snup',
+      timeout: '10m',
+      type: 'ServiceNowUpdate',
+      spec: {
+        connectorRef: '<+input>',
+        delegateSelectors: undefined,
+        ticketNumber: '<+input>',
+        ticketType: 'INCIDENT',
+        fieldType: FieldType.CreateFromTemplate,
+        useServiceNowTemplate: true,
+        fields: [],
+        selectedFields: [],
+        templateName: 'snowUpdateTemplate'
+      }
+    }
+
+    const returned = processFormData(formValues)
+    expect(returned).toStrictEqual({
+      name: 'serviceNowUpdate',
+      identifier: 'snup',
+      timeout: '10m',
+      type: 'ServiceNowUpdate',
+      spec: {
+        connectorRef: '<+input>',
+        delegateSelectors: undefined,
+        ticketNumber: '<+input>',
+        useServiceNowTemplate: true,
+        ticketType: 'INCIDENT',
+        templateName: 'snowUpdateTemplate',
+        fields: []
       }
     })
   })

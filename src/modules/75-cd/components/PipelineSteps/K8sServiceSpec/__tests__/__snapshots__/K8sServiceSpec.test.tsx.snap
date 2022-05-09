@@ -535,7 +535,7 @@ exports[`StepWidget tests inputSetMode 1`] = `
       <div
         class="subheading"
       >
-        variablesText
+        common.variables
       </div>
       <div
         class="nestedAccordions"
@@ -590,12 +590,12 @@ exports[`StepWidget tests renders ServiceStep for Service Tab  1`] = `
       </div>
       <div
         class="bp3-card bp3-elevation-0 Card--card sectionCard"
-        id="variablesText"
+        id="common.variables"
       >
         <div
           class="tabSubHeading"
         >
-          variablesText
+          common.variables
         </div>
         <div
           class="Layout--vertical StyledProps--main"
@@ -890,7 +890,7 @@ exports[`StepWidget tests variablesForm 1`] = `
             <p
               class="StyledProps--font StyledProps--main StyledProps--font-variation-small-semi StyledProps--color StyledProps--color-black"
             >
-              variablesText
+              common.variables
             </p>
           </p>
         </div>

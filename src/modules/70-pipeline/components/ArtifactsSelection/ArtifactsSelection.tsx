@@ -44,6 +44,7 @@ import StepAWSAuthentication from '@connectors/components/CreateConnector/AWSCon
 import {
   buildArtifactoryPayload,
   buildAWSPayload,
+  buildAzurePayload,
   buildDockerPayload,
   buildGcpPayload,
   buildNexusPayload
@@ -59,6 +60,7 @@ import { isServerlessDeploymentType } from '@pipeline/utils/stageHelpers'
 import StepNexusAuthentication from '@connectors/components/CreateConnector/NexusConnector/StepAuth/StepNexusAuthentication'
 import StepArtifactoryAuthentication from '@connectors/components/CreateConnector/ArtifactoryConnector/StepAuth/StepArtifactoryAuthentication'
 import { useFeatureFlags } from '@common/hooks/useFeatureFlag'
+import AzureAuthentication from '@connectors/components/CreateConnector/AzureConnector/StepAuth/AzureAuthentication'
 import { getStageIndexFromPipeline, getFlattenedStages } from '../PipelineStudio/StageBuilder/StageBuilderUtil'
 import ArtifactWizard from './ArtifactWizard/ArtifactWizard'
 import { DockerRegistryArtifact } from './ArtifactRepository/ArtifactLastSteps/DockerRegistryArtifact/DockerRegistryArtifact'
@@ -85,6 +87,7 @@ import NexusArtifact from './ArtifactRepository/ArtifactLastSteps/NexusArtifact/
 import Artifactory from './ArtifactRepository/ArtifactLastSteps/Artifactory/Artifactory'
 import { CustomArtifact } from './ArtifactRepository/ArtifactLastSteps/CustomArtifact/CustomArtifact'
 import { showConnectorStep } from './ArtifactUtils'
+import { ACRArtifact } from './ArtifactRepository/ArtifactLastSteps/ACRArtifact/ACRArtifact'
 import css from './ArtifactsSelection.module.scss'
 
 export default function ArtifactsSelection({
@@ -120,7 +123,7 @@ export default function ArtifactsSelection({
   const { expressions } = useVariablesExpression()
 
   const stepWizardTitle = getString('connectors.createNewConnector')
-  const { NG_NEXUS_ARTIFACTORY, CUSTOM_ARTIFACT_NG } = useFeatureFlags()
+  const { NG_NEXUS_ARTIFACTORY, CUSTOM_ARTIFACT_NG, NG_AZURE } = useFeatureFlags()
   const { stage } = getStageFromPipeline<DeploymentStageElementConfig>(selectedStageId || '')
 
   useEffect(() => {
@@ -137,6 +140,10 @@ export default function ArtifactsSelection({
 
     if (CUSTOM_ARTIFACT_NG && !allowedArtifactTypes[deploymentType]?.includes(ENABLED_ARTIFACT_TYPES.CustomArtifact)) {
       allowedArtifactTypes[deploymentType].push(ENABLED_ARTIFACT_TYPES.CustomArtifact)
+    }
+
+    if (NG_AZURE && !allowedArtifactTypes[deploymentType]?.includes(ENABLED_ARTIFACT_TYPES.Acr)) {
+      allowedArtifactTypes[deploymentType].push(ENABLED_ARTIFACT_TYPES.Acr)
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
@@ -546,7 +553,8 @@ export default function ArtifactsSelection({
       }
       if (
         selectedArtifact === ENABLED_ARTIFACT_TYPES.DockerRegistry ||
-        selectedArtifact === ENABLED_ARTIFACT_TYPES.CustomArtifact
+        selectedArtifact === ENABLED_ARTIFACT_TYPES.CustomArtifact ||
+        selectedArtifact === ENABLED_ARTIFACT_TYPES.Acr
       ) {
         iconProps.color = Color.WHITE
       }
@@ -676,6 +684,18 @@ export default function ArtifactsSelection({
             />
           </StepWizard>
         )
+      case ENABLED_ARTIFACT_TYPES.Acr:
+        return (
+          <StepWizard title={stepWizardTitle}>
+            <ConnectorDetailsStep type={ArtifactToConnectorMap[selectedArtifact]} {...connectorDetailStepProps} />
+            <AzureAuthentication name={getString('details')} {...authenticationStepProps} />
+            <DelegateSelectorStep buildPayload={buildAzurePayload} {...delegateStepProps} />
+            <VerifyOutOfClusterDelegate
+              type={ArtifactToConnectorMap[selectedArtifact]}
+              {...verifyOutofClusterDelegateProps}
+            />
+          </StepWizard>
+        )
 
       default:
         return <></>
@@ -694,6 +714,8 @@ export default function ArtifactsSelection({
         return <Artifactory {...artifactLastStepProps()} />
       case ENABLED_ARTIFACT_TYPES.CustomArtifact:
         return <CustomArtifact {...artifactLastStepProps()} />
+      case ENABLED_ARTIFACT_TYPES.Acr:
+        return <ACRArtifact {...artifactLastStepProps()} />
       case ENABLED_ARTIFACT_TYPES.DockerRegistry:
       default:
         return <DockerRegistryArtifact {...artifactLastStepProps()} />

@@ -8,11 +8,31 @@
 import React from 'react'
 import { act, fireEvent, render, getByText as getByTextBody } from '@testing-library/react'
 import { StringsContext } from 'framework/strings'
+import type { ResponseDelegateStatus, ResponseSetupStatus } from 'services/cd-ng'
 import { findDialogContainer, TestWrapper } from '@common/utils/testUtils'
 import routes from '@common/RouteDefinitions'
 import { HostedByHarnessBuildLocation, InfraProvisiongWizardStepId, AllBuildLocationsForSaaS } from '../Constants'
 import { InfraProvisioningWizard } from '../InfraProvisioningWizard'
 import { SelectBuildLocation } from '../SelectBuildLocation'
+
+jest.mock('services/cd-ng', () => ({
+  useGetDelegateInstallStatus: jest.fn().mockImplementation(() => ({
+    refetch: jest.fn(),
+    data: {
+      status: 'SUCCESS',
+      data: 'SUCCESS'
+    } as ResponseDelegateStatus
+  })),
+  useProvisionResourcesForCI: jest.fn().mockImplementation(() => {
+    return {
+      mutate: () =>
+        Promise.resolve({
+          data: 'SUCCESS',
+          status: 'SUCCESS'
+        } as ResponseSetupStatus)
+    }
+  })
+}))
 
 const pathParams = { accountId: 'accountId', orgIdentifier: 'orgId', projectIdentifier: 'projectId' }
 
@@ -73,7 +93,7 @@ describe('Render and test InfraProvisioningWizard', () => {
     dialog = findDialogContainer() as HTMLElement
     expect(dialog).toBeTruthy()
 
-    expect(getByTextBody(dialog, 'ci.getStartedWithCI.provisionSecureEnv')).toBeTruthy()
+    expect(getByTextBody(dialog, 'ci.getStartedWithCI.provisioningSuccessful')).toBeTruthy()
     await act(async () => {
       fireEvent.click(dialog.querySelector('[data-icon="Stroke"]')!)
     })

@@ -90,7 +90,7 @@ export function StageFormInternal({
       {template?.stage?.variables && (
         <div id={`Stage.${allValues?.stage?.identifier}.Variables`} className={cx(css.accordionSummary)}>
           <Text font={{ weight: 'semi-bold' }} padding={{ top: 'medium', bottom: 'medium' }}>
-            {getString('variablesText')}
+            {getString('common.variables')}
           </Text>
           <div className={css.nestedAccordions}>
             <StepWidget<CustomVariablesData, CustomVariableInputSetExtraProps>

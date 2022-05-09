@@ -84,12 +84,13 @@ export const getAllowedTemplateTypes = (
     }
   ]
   if (module === 'cv') {
-    AllowedTemplateTypes.push({
-      label: getString('connectors.cdng.monitoredService.label'),
-      value: TemplateType.MonitoredService,
-      disabled: false
-    })
-    return AllowedTemplateTypes.sort((a, b) => Number(a.disabled) - Number(b.disabled))
+    return [
+      {
+        label: getString('connectors.cdng.monitoredService.label'),
+        value: TemplateType.MonitoredService,
+        disabled: false
+      }
+    ]
   }
   return AllowedTemplateTypes
 }

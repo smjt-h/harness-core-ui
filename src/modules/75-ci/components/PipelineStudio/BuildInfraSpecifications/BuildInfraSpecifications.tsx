@@ -707,7 +707,7 @@ export default function BuildInfraSpecifications({ children }: React.PropsWithCh
                     {getString('pipeline.buildInfra.addCapabilities')}
                   </Text>
                 ),
-                allowedTypes: [MultiTypeInputType.FIXED, MultiTypeInputType.EXPRESSION, MultiTypeInputType.RUNTIME]
+                allowedTypes: [MultiTypeInputType.FIXED, MultiTypeInputType.RUNTIME]
               }}
               disabled={isReadonly}
             />
