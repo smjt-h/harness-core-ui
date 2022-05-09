@@ -227,7 +227,7 @@ export const MultiTypeMapInputSet = (props: MultiTypeMapProps & ConnectorReferen
                         }
                         type={connectorType}
                         width={connectorRefWidth}
-                        name={`${name}[${index}].value`}
+                        name={`${name}.${key}`}
                         placeholder={getString('select')}
                         accountIdentifier={accountId}
                         projectIdentifier={projectIdentifier}
