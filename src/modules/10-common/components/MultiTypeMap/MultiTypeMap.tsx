@@ -16,7 +16,6 @@ import {
   getMultiTypeFromValue,
   MultiTypeInputType,
   MultiTextInputProps,
-  Container,
   MultiTypeInputProps
 } from '@wings-software/uicore'
 import { FontVariation } from '@harness/design-system'
@@ -120,92 +119,90 @@ export const MultiTypeMap = (props: MultiTypeMapProps & ConnectorReferenceProps)
           {...multiTypeFieldSelectorProps}
           disableTypeSelection={multiTypeFieldSelectorProps.disableTypeSelection || disabled}
         >
-          <Container>
-            <FieldArray
-              name={name}
-              render={({ push, remove }) => (
-                <>
-                  {Array.isArray(value) &&
-                    value.map(({ id }, index: number) => (
-                      <div className={cx(css.group, css.withoutAligning)} key={id}>
-                        <div>
-                          {index === 0 && (
-                            <Text font={{ variation: FontVariation.FORM_LABEL }} margin={{ bottom: 'xsmall' }}>
-                              {keyLabel ?? getString('keyLabel')}
-                            </Text>
-                          )}
-                          <FormInput.Text name={`${name}[${index}].key`} disabled={disabled} />
-                        </div>
+          <FieldArray
+            name={name}
+            render={({ push, remove }) => (
+              <>
+                {Array.isArray(value) &&
+                  value.map(({ id }, index: number) => (
+                    <div className={cx(css.group, css.withoutAligning)} key={id}>
+                      <div>
+                        {index === 0 && (
+                          <Text font={{ variation: FontVariation.FORM_LABEL }} margin={{ bottom: 'xsmall' }}>
+                            {keyLabel ?? getString('keyLabel')}
+                          </Text>
+                        )}
+                        <FormInput.Text name={`${name}[${index}].key`} disabled={disabled} />
+                      </div>
 
-                        <div>
-                          {index === 0 && !showConnectorRef ? (
-                            <Text font={{ variation: FontVariation.FORM_LABEL }} margin={{ bottom: 'xsmall' }}>
-                              {valueLabel ?? getString('valueLabel')}
-                            </Text>
-                          ) : null}
-                          <div className={cx(css.group, css.withoutAligning, css.withoutSpacing)}>
-                            {showConnectorRef ? (
-                              <FormMultiTypeConnectorField
-                                label={
-                                  <Text font={{ variation: FontVariation.FORM_LABEL }}>
-                                    {valueLabel ?? getString('valueLabel')}
-                                  </Text>
-                                }
-                                type={connectorType}
-                                width={connectorRefWidth}
-                                name={`${name}[${index}].value`}
-                                placeholder={getString('select')}
-                                accountIdentifier={accountId}
-                                projectIdentifier={projectIdentifier}
-                                orgIdentifier={orgIdentifier}
-                                multiTypeProps={{
-                                  expressions,
-                                  allowableTypes: valueMultiTextInputProps['allowableTypes'],
-                                  disabled
-                                }}
-                                gitScope={gitScope}
-                                setRefValue
-                              />
-                            ) : (
-                              <FormInput.MultiTextInput
-                                label=""
-                                name={`${name}[${index}].value`}
-                                multiTextInputProps={{
-                                  allowableTypes: [MultiTypeInputType.FIXED, MultiTypeInputType.EXPRESSION],
-                                  ...valueMultiTextInputProps
-                                }}
-                                disabled={disabled}
-                              />
-                            )}
-                            <Button
-                              icon="main-trash"
-                              iconProps={{ size: 20 }}
-                              minimal
-                              data-testid={`remove-${name}-[${index}]`}
-                              onClick={() => remove(index)}
-                              disabled={disabled}
-                              className={showConnectorRef ? css.trashBtn : undefined}
+                      <div>
+                        {index === 0 && !showConnectorRef ? (
+                          <Text font={{ variation: FontVariation.FORM_LABEL }} margin={{ bottom: 'xsmall' }}>
+                            {valueLabel ?? getString('valueLabel')}
+                          </Text>
+                        ) : null}
+                        <div className={cx(css.group, css.withoutAligning, css.withoutSpacing)}>
+                          {showConnectorRef ? (
+                            <FormMultiTypeConnectorField
+                              label={
+                                <Text font={{ variation: FontVariation.FORM_LABEL }}>
+                                  {valueLabel ?? getString('valueLabel')}
+                                </Text>
+                              }
+                              type={connectorType}
+                              width={connectorRefWidth}
+                              name={`${name}[${index}].value`}
+                              placeholder={getString('select')}
+                              accountIdentifier={accountId}
+                              projectIdentifier={projectIdentifier}
+                              orgIdentifier={orgIdentifier}
+                              multiTypeProps={{
+                                expressions,
+                                allowableTypes: valueMultiTextInputProps['allowableTypes'],
+                                disabled
+                              }}
+                              gitScope={gitScope}
+                              setRefValue
                             />
-                          </div>
+                          ) : (
+                            <FormInput.MultiTextInput
+                              label=""
+                              name={`${name}[${index}].value`}
+                              multiTextInputProps={{
+                                allowableTypes: [MultiTypeInputType.FIXED, MultiTypeInputType.EXPRESSION],
+                                ...valueMultiTextInputProps
+                              }}
+                              disabled={disabled}
+                            />
+                          )}
+                          <Button
+                            icon="main-trash"
+                            iconProps={{ size: 20 }}
+                            minimal
+                            data-testid={`remove-${name}-[${index}]`}
+                            onClick={() => remove(index)}
+                            disabled={disabled}
+                            className={showConnectorRef ? css.trashBtn : undefined}
+                          />
                         </div>
                       </div>
-                    ))}
+                    </div>
+                  ))}
 
-                  {restrictToSingleEntry && Array.isArray(value) && value?.length === 1 ? null : (
-                    <Button
-                      intent="primary"
-                      minimal
-                      text={getString('plusAdd')}
-                      data-testid={`add-${name}`}
-                      onClick={() => push({ id: uuid('', nameSpace()), key: '', value: '' })}
-                      disabled={disabled}
-                      style={{ padding: 0 }}
-                    />
-                  )}
-                </>
-              )}
-            />
-          </Container>
+                {restrictToSingleEntry && Array.isArray(value) && value?.length === 1 ? null : (
+                  <Button
+                    intent="primary"
+                    minimal
+                    text={getString('plusAdd')}
+                    data-testid={`add-${name}`}
+                    onClick={() => push({ id: uuid('', nameSpace()), key: '', value: '' })}
+                    disabled={disabled}
+                    style={{ padding: 0 }}
+                  />
+                )}
+              </>
+            )}
+          />
         </MultiTypeFieldSelector>
       )}
       {enableConfigureOptions &&
