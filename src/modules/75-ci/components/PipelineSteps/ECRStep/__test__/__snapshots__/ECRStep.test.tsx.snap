@@ -3656,7 +3656,6 @@ exports[`ECR Step InputSet View should render all fields 1`] = `
           <div
             class="group withoutSpacing"
             keylabel="name"
-            valuelabel="ci.connectorRef"
           >
             <div
               class="bp3-form-group"
@@ -3778,11 +3777,7 @@ exports[`ECR Step InputSet View should render all fields 1`] = `
                             class="Tooltip--acenter bp3-label"
                             data-tooltip-id="stepTestUtilForm_spec.baseImageConnectorRefs."
                           >
-                            <p
-                              class="StyledProps--font StyledProps--main StyledProps--font-variation-form-label"
-                            >
-                              ci.connectorRef
-                            </p>
+                            ci.connectorRef
                           </span>
                         </div>
                         <div
@@ -4316,7 +4311,6 @@ exports[`ECR Step InputSet View should render all fields 1`] = `
           <div
             class="group withoutSpacing"
             keylabel=""
-            valuelabel=""
           >
             <div
               class="bp3-form-group"
@@ -4527,7 +4521,6 @@ exports[`ECR Step InputSet View should render all fields 1`] = `
           <div
             class="group withoutSpacing"
             keylabel=""
-            valuelabel=""
           >
             <div
               class="bp3-form-group"

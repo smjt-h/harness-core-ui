@@ -13,7 +13,6 @@ import { Container, Layout, MultiTypeInputType, Text, FormInput } from '@wings-s
 import { Color } from '@harness/design-system'
 import { useStrings } from 'framework/strings'
 import type { StringsMap } from 'stringTypes'
-import type { ConnectorInfoDTO } from 'services/cd-ng'
 import { FormMultiTypeCheckboxField } from '@common/components/MultiTypeCheckbox/MultiTypeCheckbox'
 import { MultiTypeTextField, MultiTypeTextProps } from '@common/components/MultiTypeText/MultiTypeText'
 import MultiTypeMap, { ConnectorReferenceProps } from '@common/components/MultiTypeMap/MultiTypeMap'
@@ -237,7 +236,7 @@ export const CIStepOptionalConfig: React.FC<CIStepOptionalConfigProps> = props =
         />
       </Container>
     ),
-    [expressions, gitScope, readonly]
+    [expressions, gitScope, readonly, getString]
   )
 
   const renderMultiTypeMapInputSet = React.useCallback(
@@ -289,7 +288,7 @@ export const CIStepOptionalConfig: React.FC<CIStepOptionalConfigProps> = props =
         />
       </Container>
     ),
-    [expressions, gitScope, readonly]
+    [expressions, gitScope, readonly, getString]
   )
 
   const renderMultiTypeTextField = React.useCallback(
@@ -339,7 +338,7 @@ export const CIStepOptionalConfig: React.FC<CIStepOptionalConfigProps> = props =
         />
       )
     },
-    []
+    [expressions, template, getString, isInputSetView, readonly]
   )
 
   const renderMultiTypeCheckboxField = React.useCallback(
@@ -366,7 +365,7 @@ export const CIStepOptionalConfig: React.FC<CIStepOptionalConfigProps> = props =
         disabled={readonly}
       />
     ),
-    [expressions]
+    [expressions, getString, readonly]
   )
 
   const renderMultiTypeList = React.useCallback(
@@ -412,7 +411,7 @@ export const CIStepOptionalConfig: React.FC<CIStepOptionalConfigProps> = props =
         disabled={readonly}
       />
     ),
-    [expressions]
+    [expressions, getString, readonly]
   )
 
   const renderConnectorRef = React.useCallback(
@@ -423,7 +422,7 @@ export const CIStepOptionalConfig: React.FC<CIStepOptionalConfigProps> = props =
     }: {
       name: string
       valueLabel?: string
-      connectorTypes?: ConnectorInfoDTO['type'] | ConnectorInfoDTO['type'][]
+      connectorTypes?: ConnectorReferenceProps['connectorTypes']
     }): JSX.Element => {
       return (
         <FormMultiTypeConnectorField

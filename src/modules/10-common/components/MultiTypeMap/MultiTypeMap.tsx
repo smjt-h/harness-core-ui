@@ -45,7 +45,7 @@ export interface ConnectorReferenceProps {
   }: {
     name: string
     valueLabel?: string
-    connectorTypes?: ConnectorInfoDTO['type'] | ConnectorInfoDTO['type'][]
+    connectorTypes?: ConnectorReferenceProps['connectorTypes']
   }) => JSX.Element
 }
 
