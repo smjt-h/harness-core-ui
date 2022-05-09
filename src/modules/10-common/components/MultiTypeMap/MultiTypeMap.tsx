@@ -6,6 +6,7 @@
  */
 
 import React from 'react'
+import { useParams } from 'react-router-dom'
 import { v4 as nameSpace, v5 as uuid } from 'uuid'
 import cx from 'classnames'
 import {
@@ -14,7 +15,9 @@ import {
   Button,
   getMultiTypeFromValue,
   MultiTypeInputType,
-  MultiTextInputProps
+  MultiTextInputProps,
+  Container,
+  MultiTypeInputProps
 } from '@wings-software/uicore'
 import { FontVariation } from '@harness/design-system'
 import { FieldArray, connect, FormikContext } from 'formik'
@@ -24,6 +27,11 @@ import { useStrings } from 'framework/strings'
 import MultiTypeFieldSelector, {
   MultiTypeFieldSelectorProps
 } from '@common/components/MultiTypeFieldSelector/MultiTypeFieldSelector'
+// eslint-disable-next-line no-restricted-imports
+import {
+  FormMultiTypeConnectorField,
+  MultiTypeConnectorFieldProps
+} from '@connectors/components/ConnectorReferenceField/FormMultiTypeConnectorField'
 import css from './MultiTypeMap.module.scss'
 
 export type MapValue = { id: string; key: string; value: string }[]
@@ -32,6 +40,14 @@ export type MultiTypeMapValue = MapValue | string
 interface MultiTypeMapConfigureOptionsProps
   extends Omit<ConfigureOptionsProps, 'value' | 'type' | 'variableName' | 'onChange'> {
   variableName?: ConfigureOptionsProps['variableName']
+}
+
+interface ConnectorReferenceProps {
+  showConnectorRef?: boolean
+  connectorType?: MultiTypeConnectorFieldProps['type']
+  gitScope?: MultiTypeConnectorFieldProps['gitScope']
+  expressions?: MultiTypeInputProps['expressions']
+  connectorRefWidth?: number
 }
 
 export interface MultiTypeMapProps {
@@ -48,10 +64,9 @@ export interface MultiTypeMapProps {
   keyLabel?: string
   valueLabel?: string
   restrictToSingleEntry?: boolean
-  showConnectorRef?: boolean
 }
 
-export const MultiTypeMap = (props: MultiTypeMapProps): React.ReactElement => {
+export const MultiTypeMap = (props: MultiTypeMapProps & ConnectorReferenceProps): React.ReactElement => {
   const {
     name,
     multiTypeFieldSelectorProps,
@@ -66,6 +81,10 @@ export const MultiTypeMap = (props: MultiTypeMapProps): React.ReactElement => {
     valueLabel,
     restrictToSingleEntry,
     showConnectorRef,
+    connectorType,
+    gitScope,
+    expressions,
+    connectorRefWidth,
     ...restProps
   } = props
 
@@ -76,6 +95,11 @@ export const MultiTypeMap = (props: MultiTypeMapProps): React.ReactElement => {
   const value = get(formik?.values, name, getDefaultResetValue()) as MultiTypeMapValue
 
   const { getString } = useStrings()
+  const { accountId, projectIdentifier, orgIdentifier } = useParams<{
+    projectIdentifier: string
+    orgIdentifier: string
+    accountId: string
+  }>()
 
   return (
     <div className={cx(css.group, css.withoutSpacing, appearance === 'minimal' ? css.minimalCard : '')} {...restProps}>
@@ -96,69 +120,92 @@ export const MultiTypeMap = (props: MultiTypeMapProps): React.ReactElement => {
           {...multiTypeFieldSelectorProps}
           disableTypeSelection={multiTypeFieldSelectorProps.disableTypeSelection || disabled}
         >
-          <FieldArray
-            name={name}
-            render={({ push, remove }) => (
-              <>
-                {Array.isArray(value) &&
-                  value.map(({ id }, index: number) => (
-                    <div className={cx(css.group, css.withoutAligning)} key={id}>
-                      <div>
-                        {index === 0 && (
-                          <Text font={{ variation: FontVariation.FORM_LABEL }} margin={{ bottom: 'xsmall' }}>
-                            {keyLabel ?? getString('keyLabel')}
-                          </Text>
-                        )}
-                        <FormInput.Text name={`${name}[${index}].key`} disabled={disabled} />
-                      </div>
-
-                      <div>
-                        {index === 0 && (
-                          <Text font={{ variation: FontVariation.FORM_LABEL }} margin={{ bottom: 'xsmall' }}>
-                            {valueLabel ?? getString('valueLabel')}
-                          </Text>
-                        )}
-                        <div className={cx(css.group, css.withoutAligning, css.withoutSpacing)}>
-                          {showConnectorRef ? (
-                            <></>
-                          ) : (
-                            <FormInput.MultiTextInput
-                              label=""
-                              name={`${name}[${index}].value`}
-                              multiTextInputProps={{
-                                allowableTypes: [MultiTypeInputType.FIXED, MultiTypeInputType.EXPRESSION],
-                                ...valueMultiTextInputProps
-                              }}
-                              disabled={disabled}
-                            />
+          <Container>
+            <FieldArray
+              name={name}
+              render={({ push, remove }) => (
+                <>
+                  {Array.isArray(value) &&
+                    value.map(({ id }, index: number) => (
+                      <div className={cx(css.group, css.withoutAligning)} key={id}>
+                        <div>
+                          {index === 0 && (
+                            <Text font={{ variation: FontVariation.FORM_LABEL }} margin={{ bottom: 'xsmall' }}>
+                              {keyLabel ?? getString('keyLabel')}
+                            </Text>
                           )}
-                          <Button
-                            icon="main-trash"
-                            iconProps={{ size: 20 }}
-                            minimal
-                            data-testid={`remove-${name}-[${index}]`}
-                            onClick={() => remove(index)}
-                            disabled={disabled}
-                          />
+                          <FormInput.Text name={`${name}[${index}].key`} disabled={disabled} />
+                        </div>
+
+                        <div>
+                          {index === 0 && !showConnectorRef ? (
+                            <Text font={{ variation: FontVariation.FORM_LABEL }} margin={{ bottom: 'xsmall' }}>
+                              {valueLabel ?? getString('valueLabel')}
+                            </Text>
+                          ) : null}
+                          <div className={cx(css.group, css.withoutAligning, css.withoutSpacing)}>
+                            {showConnectorRef ? (
+                              <FormMultiTypeConnectorField
+                                label={
+                                  <Text font={{ variation: FontVariation.FORM_LABEL }}>
+                                    {valueLabel ?? getString('valueLabel')}
+                                  </Text>
+                                }
+                                type={connectorType}
+                                width={connectorRefWidth}
+                                name={`${name}[${index}].value`}
+                                placeholder={getString('select')}
+                                accountIdentifier={accountId}
+                                projectIdentifier={projectIdentifier}
+                                orgIdentifier={orgIdentifier}
+                                multiTypeProps={{
+                                  expressions,
+                                  allowableTypes: valueMultiTextInputProps['allowableTypes'],
+                                  disabled
+                                }}
+                                gitScope={gitScope}
+                                setRefValue
+                              />
+                            ) : (
+                              <FormInput.MultiTextInput
+                                label=""
+                                name={`${name}[${index}].value`}
+                                multiTextInputProps={{
+                                  allowableTypes: [MultiTypeInputType.FIXED, MultiTypeInputType.EXPRESSION],
+                                  ...valueMultiTextInputProps
+                                }}
+                                disabled={disabled}
+                              />
+                            )}
+                            <Button
+                              icon="main-trash"
+                              iconProps={{ size: 20 }}
+                              minimal
+                              data-testid={`remove-${name}-[${index}]`}
+                              onClick={() => remove(index)}
+                              disabled={disabled}
+                              className={showConnectorRef ? css.trashBtn : undefined}
+                            />
+                          </div>
                         </div>
                       </div>
-                    </div>
-                  ))}
+                    ))}
 
-                {restrictToSingleEntry && Array.isArray(value) && value?.length === 1 ? null : (
-                  <Button
-                    intent="primary"
-                    minimal
-                    text={getString('plusAdd')}
-                    data-testid={`add-${name}`}
-                    onClick={() => push({ id: uuid('', nameSpace()), key: '', value: '' })}
-                    disabled={disabled}
-                    style={{ padding: 0 }}
-                  />
-                )}
-              </>
-            )}
-          />
+                  {restrictToSingleEntry && Array.isArray(value) && value?.length === 1 ? null : (
+                    <Button
+                      intent="primary"
+                      minimal
+                      text={getString('plusAdd')}
+                      data-testid={`add-${name}`}
+                      onClick={() => push({ id: uuid('', nameSpace()), key: '', value: '' })}
+                      disabled={disabled}
+                      style={{ padding: 0 }}
+                    />
+                  )}
+                </>
+              )}
+            />
+          </Container>
         </MultiTypeFieldSelector>
       )}
       {enableConfigureOptions &&

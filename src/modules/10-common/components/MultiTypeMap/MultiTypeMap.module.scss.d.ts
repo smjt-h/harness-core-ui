@@ -9,6 +9,7 @@
 declare const styles: {
   readonly group: string
   readonly minimalCard: string
+  readonly trashBtn: string
   readonly withoutAligning: string
   readonly withoutSpacing: string
 }

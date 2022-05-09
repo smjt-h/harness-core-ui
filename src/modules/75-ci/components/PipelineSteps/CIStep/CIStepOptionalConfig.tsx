@@ -20,7 +20,12 @@ import MultiTypeList from '@common/components/MultiTypeList/MultiTypeList'
 import { MultiTypeListInputSet } from '@common/components/MultiTypeListInputSet/MultiTypeListInputSet'
 import { useVariablesExpression } from '@pipeline/components/PipelineStudio/PiplineHooks/useVariablesExpression'
 import { StepViewType } from '@pipeline/components/AbstractSteps/Step'
-import { getAllowedValuesFromTemplate, shouldRenderRunTimeInputViewWithAllowedValues } from '@pipeline/utils/CIUtils'
+import {
+  getAllowedValuesFromTemplate,
+  shouldRenderRunTimeInputViewWithAllowedValues,
+  useGitScope
+} from '@pipeline/utils/CIUtils'
+import { ConnectorRefWidth } from '@pipeline/utils/constants'
 import { MultiTypeSelectField } from '@common/components/MultiTypeSelect/MultiTypeSelect'
 import { ArchiveFormatOptions } from '../../../constants/Constants'
 import {
@@ -168,6 +173,7 @@ export const CIStepOptionalConfig: React.FC<CIStepOptionalConfigProps> = props =
   const { readonly, enableFields, stepViewType, path, formik, isInputSetView, template } = props
   const { getString } = useStrings()
   const { expressions } = useVariablesExpression()
+  const gitScope = useGitScope()
   const prefix = isEmpty(path) ? '' : `${path}.`
 
   const stepCss = stepViewType === StepViewType.DeploymentForm ? css.sm : css.lg
@@ -183,7 +189,7 @@ export const CIStepOptionalConfig: React.FC<CIStepOptionalConfigProps> = props =
       restrictToSingleEntry,
       showConnectorRef
     }: MultiTypeMapPropsInterface): React.ReactElement => (
-      <Container className={cx(css.formGroup, css.bottomMargin5, css.lg)}>
+      <Container className={cx(css.formGroup, css.bottomMargin5, { [css.lg]: !showConnectorRef })}>
         <MultiTypeMap
           name={fieldName}
           valueMultiTextInputProps={{ expressions, allowableTypes }}
@@ -208,6 +214,9 @@ export const CIStepOptionalConfig: React.FC<CIStepOptionalConfigProps> = props =
           valueLabel={valueLabel ? getString(valueLabel) : ''}
           restrictToSingleEntry={restrictToSingleEntry}
           showConnectorRef={showConnectorRef}
+          gitScope={gitScope}
+          expressions={expressions}
+          connectorRefWidth={ConnectorRefWidth.InputSetView}
         />
       </Container>
     ),
