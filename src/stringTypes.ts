@@ -4952,6 +4952,7 @@ export interface StringsMap {
   'ci.commitsTab.youHaveNoCommits': string
   'ci.commitsTab.youWillSeeYourCommitsHere': string
   'ci.committed': string
+  'ci.connectorRef': string
   'ci.connectors': string
   'ci.containerPort': string
   'ci.continuous': string

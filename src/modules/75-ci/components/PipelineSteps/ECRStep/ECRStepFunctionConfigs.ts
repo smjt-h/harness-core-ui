@@ -33,7 +33,7 @@ export const transformValuesFieldsConfig = [
     name: 'spec.imageName',
     type: TransformValuesTypes.Text
   },
-  { name: 'spec.baseImageConnectorRefs', type: TransformValuesTypes.List },
+  { name: 'spec.baseImageConnectorRefs', type: TransformValuesTypes.Map },
   {
     name: 'spec.tags',
     type: TransformValuesTypes.List
@@ -128,7 +128,7 @@ export const editViewValidateFieldsConfig = [
   },
   {
     name: 'spec.baseImageConnectorRefs',
-    type: ValidationFieldTypes.List,
+    type: ValidationFieldTypes.Map,
     label: 'ci.baseConnectorImage',
     isRequired: false
   },
@@ -203,7 +203,7 @@ export function getInputSetViewValidateFieldsConfig(
     },
     {
       name: 'spec.baseImageConnectorRefs',
-      type: ValidationFieldTypes.List,
+      type: ValidationFieldTypes.Map,
       label: 'ci.baseConnectorImage',
       isRequired
     },
