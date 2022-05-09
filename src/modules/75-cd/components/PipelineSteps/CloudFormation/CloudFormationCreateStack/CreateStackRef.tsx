@@ -5,7 +5,7 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect, useMemo } from 'react'
 import { useParams } from 'react-router-dom'
 import cx from 'classnames'
 import * as Yup from 'yup'
@@ -110,6 +110,15 @@ export const CreateStack = (
     }
   }, [awsStatesData])
 
+  const queryParams = useMemo(() => {
+    return {
+      accountIdentifier: accountId,
+      orgIdentifier: orgIdentifier,
+      projectIdentifier: projectIdentifier,
+      awsConnectorRef: awsRef
+    }
+  }, [accountId, orgIdentifier, projectIdentifier, awsRef])
+
   const {
     data: roleData,
     refetch,
@@ -117,18 +126,16 @@ export const CreateStack = (
   } = useGetIamRolesForAws({
     lazy: true,
     debounce: 500,
-    queryParams: {
-      accountIdentifier: accountId,
-      orgIdentifier: orgIdentifier,
-      projectIdentifier: projectIdentifier,
-      awsConnectorRef: awsRef
-    }
+    queryParams
   })
 
   useEffect(() => {
     if (roleData) {
-      const roleValues = map(roleData?.data, cap => ({ label: cap, value: cap }))
-      setAwsRoles(roleValues as MultiSelectOption[])
+      const roles = []
+      for (const key in roleData?.data) {
+        roles.push({ label: roleData?.data[key], value: key })
+      }
+      setAwsRoles(roles)
     }
     if (!roleData) {
       refetch()
@@ -573,20 +580,20 @@ export const CreateStack = (
                     <Layout.Vertical>
                       <FormInput.MultiTypeInput
                         label={getString('optionalField', { name: getString('connectors.awsKms.roleArnLabel') })}
-                        name="spec.configuration.roleARN"
+                        name="spec.configuration.roleArn"
                         placeholder={getString(rolesLoading ? 'common.loading' : 'select')}
                         disabled={readonly}
                         useValue
                         multiTypeInputProps={{
                           selectProps: {
                             allowCreatingNewItems: true,
-                            items: awsRoles || []
+                            items: awsRoles
                           },
                           expressions,
                           allowableTypes,
                           width: 300
                         }}
-                        selectItems={awsRoles || []}
+                        selectItems={awsRoles}
                       />
                     </Layout.Vertical>
                     <Layout.Vertical className={css.addMarginBottom}>

@@ -7,8 +7,8 @@
 
 import React, { forwardRef } from 'react'
 import * as Yup from 'yup'
-import { isEmpty, map, set } from 'lodash-es'
-import { IconName, MultiTypeInputType, getMultiTypeFromValue, SelectOption } from '@harness/uicore'
+import { isEmpty, map, set, omit } from 'lodash-es'
+import { IconName, MultiTypeInputType, getMultiTypeFromValue } from '@harness/uicore'
 import { yupToFormErrors, FormikErrors } from 'formik'
 import { StepViewType, StepProps, ValidateInputSetProps } from '@pipeline/components/AbstractSteps/Step'
 import { StepType } from '@pipeline/components/PipelineSteps/PipelineStepInterface'
@@ -156,7 +156,7 @@ export class CFCreateStack extends PipelineStep<CreateStackStepInfo> {
     }
 
     if (isEmpty(data.spec.configuration?.roleArn)) {
-      delete data.spec.configuration?.roleArn
+      omit(data.spec.configuration, 'roleArn')
     }
 
     if (!isEmpty(data.spec.configuration?.parameterOverrides)) {
@@ -166,7 +166,7 @@ export class CFCreateStack extends PipelineStep<CreateStackStepInfo> {
         map(data.spec.configuration?.parameterOverrides, ({ name, value }) => ({ name, value, type: 'String' }))
       )
     } else {
-      delete data.spec.configuration?.parameterOverrides
+      omit(data.spec.configuration, 'parameterOverrides')
     }
 
     if (!isEmpty(data.spec.configuration?.tags)) {
@@ -187,7 +187,7 @@ export class CFCreateStack extends PipelineStep<CreateStackStepInfo> {
   }
 
   private getInitialValues(data: CreateStackStepInfo): CreateStackData {
-    let capabilities, skipOnStackStatuses: string | string[] | SelectOption[] | string | undefined
+    let capabilities, skipOnStackStatuses
     capabilities = data?.spec?.configuration?.capabilities
     if (getMultiTypeFromValue(capabilities) === MultiTypeInputType.FIXED) {
       capabilities = map(data?.spec?.configuration?.capabilities, item => ({ label: item, value: item }))
@@ -196,7 +196,7 @@ export class CFCreateStack extends PipelineStep<CreateStackStepInfo> {
     if (getMultiTypeFromValue(skipOnStackStatuses) === MultiTypeInputType.FIXED) {
       skipOnStackStatuses = map(data?.spec?.configuration?.skipOnStackStatuses, item => ({ label: item, value: item }))
     }
-    const formData = {
+    return {
       ...data,
       spec: {
         ...data?.spec,
@@ -234,24 +234,21 @@ export class CFCreateStack extends PipelineStep<CreateStackStepInfo> {
         }
       }
     }
-    return formData
   }
 
-  renderStep(props: StepProps<CreateStackStepInfo, unknown>): JSX.Element {
-    const {
-      initialValues,
-      onUpdate,
-      onChange,
-      allowableTypes,
-      stepViewType,
-      formikRef,
-      isNewStep,
-      readonly,
-      inputSetData,
-      path,
-      customStepProps
-    } = props
-
+  renderStep({
+    initialValues,
+    onUpdate,
+    onChange,
+    allowableTypes,
+    stepViewType,
+    formikRef,
+    isNewStep,
+    readonly,
+    inputSetData,
+    path,
+    customStepProps
+  }: StepProps<CreateStackStepInfo>): JSX.Element {
     if (stepViewType === StepViewType.InputSet || stepViewType === StepViewType.DeploymentForm) {
       return (
         <CreateStackInputStep
