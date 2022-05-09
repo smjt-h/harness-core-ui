@@ -415,7 +415,7 @@ export const CIStepOptionalConfig: React.FC<CIStepOptionalConfigProps> = props =
               connectorType: enableFields['spec.baseImageConnectorRefs'].type,
               gitScope,
               expressions,
-              connectorRefWidth: ConnectorRefWidth.KeyValuePairView
+              connectorRefWidth: ConnectorRefWidth.InputSetView
             })
           : renderMultiTypeMap({
               fieldName: `${prefix}spec.baseImageConnectorRefs`,
@@ -429,7 +429,7 @@ export const CIStepOptionalConfig: React.FC<CIStepOptionalConfigProps> = props =
               connectorType: enableFields['spec.baseImageConnectorRefs'].type,
               gitScope,
               expressions,
-              connectorRefWidth: ConnectorRefWidth.KeyValuePairView
+              connectorRefWidth: ConnectorRefWidth.InputSetView
             })
         : null}
       {/* Tag is not an optional configuration but due to some weird error, it's being placed here for time being till real reason is figured out.*/}
