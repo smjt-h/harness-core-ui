@@ -12,6 +12,7 @@ import SessionToken from 'framework/utils/SessionToken'
 export function isFunction(arg: unknown): arg is Function {
   return typeof arg === 'function'
 }
+const isInvalidValue = (str: string): boolean => str === 'undefined' || str === 'null' || str === ''
 
 /**
  * Use if you need to store something on session storage :
@@ -39,6 +40,7 @@ export const useSessionStorage = <T>(
         return defaultValue
       }
     } catch (err) {
+      /* istanbul ignore next */
       return defaultValue
     }
   })
@@ -50,6 +52,7 @@ export const useSessionStorage = <T>(
       setStoredValue(valueToSet)
       storage.setItem(keyName, JSON.stringify(valueToSet))
     } catch (err) {
+      /* istanbul ignore next */
       // eslint-disable-next-line no-console
       console.log(err)
     }
@@ -58,7 +61,8 @@ export const useSessionStorage = <T>(
   //this is so that on new login/ re-login sessionStorage data will clear
   const storedToken = storage.getItem('tokenStored')
 
-  if (!isInvalidValue(storedToken as string) && !storedToken && storedToken !== SessionToken.getToken()) {
+  /* istanbul ignore next */
+  if (!isInvalidValue(storedToken as string) && storedToken !== SessionToken.getToken()) {
     setStoredValue(defaultValue)
     storage.clear()
     storage.setItem('tokenStored', SessionToken.getToken())
@@ -69,5 +73,3 @@ export const useSessionStorage = <T>(
 
   return [storedValue, setValue]
 }
-
-const isInvalidValue = (str = ''): boolean => str === 'undefined' || str === 'null' || str === ''

@@ -5,57 +5,26 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import React from 'react'
-import { render, fireEvent } from '@testing-library/react'
-import { TestWrapper } from '@common/utils/testUtils'
+import { renderHook } from '@testing-library/react-hooks'
 import { useSessionStorage } from '../useSessionStorage'
 
 const defaultData = 'testValue'
 
-const Wrapper = (): React.ReactElement => {
-  const [testData, setTestData] = useSessionStorage('testing', defaultData)
-  const click = () => {
-    setTestData('testValue2')
-  }
-
-  return (
-    <>
-      <p>{testData}</p>
-      <button onClick={click}>clickMe</button>
-    </>
-  )
-}
-
 describe('useSessionStorage', () => {
   test('should store currently', async () => {
-    // // const wrapper: React.FC = ({ children }) => <TestWrapper>{children}</TestWrapper>
-    // const { result } = renderHook(() => useSessionStorage('testing', defaultData))
-    // expect(result.current[0]).toBe(defaultData)
+    const { result } = renderHook(() => useSessionStorage('testing', defaultData))
 
-    // result.current[1]('testvalue2')
-    // // const [test, setTest] = result.current
-    // expect(result.current[0]).toBe(defaultData)
+    //check if the value is set
+    expect(result.current[0]).toBe(defaultData)
 
-    // setTest('hi')
+    //change value
+    result.current[1]('testValue2')
+    expect(result.current[0]).toBe('testValue2')
+  })
+  test('should render from stored', async () => {
+    const { result } = renderHook(() => useSessionStorage('testing', defaultData))
 
-    // expect(test).toBe('hi')
-
-    const { container, getByText } = render(
-      <TestWrapper>
-        <Wrapper key={'stg'} />
-      </TestWrapper>
-    )
-
-    fireEvent.click(getByText('clickMe'))
-    expect(container).toMatchInlineSnapshot(`
-      <div>
-        <p>
-          t
-        </p>
-        <button>
-          clickMe
-        </button>
-      </div>
-    `)
+    //check if previous value given
+    expect(result.current[0]).toBe('testValue2')
   })
 })

@@ -11,7 +11,6 @@ import routes from '@common/RouteDefinitions'
 import * as dashboardServices from 'services/dashboard-service'
 import { TestWrapper } from '@common/utils/testUtils'
 import overviewCountMock from '@projects-orgs/components/OverviewGlanceCards/__tests__/overviewMock.json'
-import { DashboardTimeRange } from '@common/factories/LandingDashboardContext'
 import topProjectsData from '@projects-orgs/components/LandingDashboardSummaryWidget/__tests__/topProjectsMock.json'
 import LandingDashboardPage from './LandingDashboardPage'
 
@@ -42,12 +41,6 @@ const getData = jest.fn(() => {
 const getTopProjectsData = jest.fn(() => {
   return Promise.resolve(topProjectsData)
 })
-
-jest.mock('@common/hooks/useSessionStorage', () => ({
-  useSessionStorage: () => {
-    return DashboardTimeRange['30Days']
-  }
-}))
 
 jest
   .spyOn(dashboardServices, 'useGetTopProjects')
