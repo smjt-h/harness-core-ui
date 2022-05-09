@@ -138,16 +138,17 @@ export const CreateStack = (
   const onSelectChange = (
     e: React.ChangeEvent<HTMLSelectElement>,
     setFieldValue: (field: string, value: any) => void
-  ) => {
+  ): void => {
+    const fieldName = 'spec.configuration.templateFile'
     if (e.target.value === TemplateTypes.Inline) {
-      setFieldValue('spec.configuration.templateFile', {
+      setFieldValue(fieldName, {
         type: TemplateTypes.Inline,
         spec: {
           templateBody: ''
         }
       })
     } else if (e.target.value === TemplateTypes.Remote) {
-      setFieldValue('spec.configuration.templateFile', {
+      setFieldValue(fieldName, {
         type: TemplateTypes.Remote,
         spec: {
           store: {
@@ -158,7 +159,7 @@ export const CreateStack = (
         }
       })
     } else {
-      setFieldValue('spec.configuration.templateFile', {
+      setFieldValue(fieldName, {
         type: TemplateTypes.S3URL,
         spec: {
           templateUrl: ''
@@ -696,7 +697,7 @@ export const CreateStack = (
                 setFieldValue('spec.configuration.parameterOverrides', inlineValues?.parameterOverrides)
                 setInlineParams(false)
               }}
-              awsConnectorRef={awsConnector?.value}
+              awsConnectorRef={awsConnector}
               type={templateFileType}
               region={awsRegion}
               body={inlineTemplateFile || templateUrl}
