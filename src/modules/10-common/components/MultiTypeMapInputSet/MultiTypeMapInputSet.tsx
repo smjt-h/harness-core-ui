@@ -26,6 +26,7 @@ import { useStrings } from 'framework/strings'
 import MultiTypeFieldSelector, {
   MultiTypeFieldSelectorProps
 } from '@common/components/MultiTypeFieldSelector/MultiTypeFieldSelector'
+import type { ConnectorReferenceProps } from '../MultiTypeMap/MultiTypeMap'
 import css from './MultiTypeMapInputSet.module.scss'
 
 export type MapType = { [key: string]: string }
@@ -60,7 +61,7 @@ function generateNewValue(): { id: string; key: string; value: string } {
   return { id: uuid('', nameSpace()), key: '', value: '' }
 }
 
-export const MultiTypeMapInputSet = (props: MultiTypeMapProps): React.ReactElement => {
+export const MultiTypeMapInputSet = (props: MultiTypeMapProps & ConnectorReferenceProps): React.ReactElement => {
   const {
     name,
     multiTypeFieldSelectorProps,
@@ -73,6 +74,10 @@ export const MultiTypeMapInputSet = (props: MultiTypeMapProps): React.ReactEleme
     appearance = 'default',
     restrictToSingleEntry,
     showConnectorRef,
+    connectorType,
+    gitScope,
+    expressions,
+    connectorRefWidth,
     ...restProps
   } = props
 

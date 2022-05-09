@@ -42,7 +42,7 @@ interface MultiTypeMapConfigureOptionsProps
   variableName?: ConfigureOptionsProps['variableName']
 }
 
-interface ConnectorReferenceProps {
+export interface ConnectorReferenceProps {
   showConnectorRef?: boolean
   connectorType?: MultiTypeConnectorFieldProps['type']
   gitScope?: MultiTypeConnectorFieldProps['gitScope']

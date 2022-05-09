@@ -187,12 +187,16 @@ export const CIStepOptionalConfig: React.FC<CIStepOptionalConfigProps> = props =
       keyLabel,
       valueLabel,
       restrictToSingleEntry,
-      showConnectorRef
+      showConnectorRef,
+      connectorType,
+      gitScope: connectorGitScope,
+      expressions: connectorExpressions,
+      connectorRefWidth
     }: MultiTypeMapPropsInterface): React.ReactElement => (
       <Container className={cx(css.formGroup, css.bottomMargin5, { [css.lg]: !showConnectorRef })}>
         <MultiTypeMap
           name={fieldName}
-          valueMultiTextInputProps={{ expressions, allowableTypes }}
+          valueMultiTextInputProps={{ expressions: connectorExpressions, allowableTypes }}
           multiTypeFieldSelectorProps={{
             label: (
               <Layout.Horizontal flex={{ justifyContent: 'flex-start', alignItems: 'baseline' }}>
@@ -214,13 +218,14 @@ export const CIStepOptionalConfig: React.FC<CIStepOptionalConfigProps> = props =
           valueLabel={valueLabel ? getString(valueLabel) : ''}
           restrictToSingleEntry={restrictToSingleEntry}
           showConnectorRef={showConnectorRef}
-          gitScope={gitScope}
-          expressions={expressions}
-          connectorRefWidth={ConnectorRefWidth.InputSetView}
+          connectorType={connectorType}
+          gitScope={connectorGitScope}
+          expressions={connectorExpressions}
+          connectorRefWidth={connectorRefWidth}
         />
       </Container>
     ),
-    [expressions]
+    [expressions, gitScope]
   )
 
   const renderMultiTypeMapInputSet = React.useCallback(
@@ -231,14 +236,18 @@ export const CIStepOptionalConfig: React.FC<CIStepOptionalConfigProps> = props =
       keyLabel,
       valueLabel,
       restrictToSingleEntry,
-      showConnectorRef
+      showConnectorRef,
+      connectorType,
+      gitScope: connectorGitScopeInInputSet,
+      expressions: connectorExpressionsInInputSet,
+      connectorRefWidth
     }: MultiTypeMapInputSetPropsInterface): React.ReactElement => (
       <Container className={cx(css.formGroup, css.bottomMargin5)}>
         <MultiTypeMapInputSet
           name={fieldName}
           valueMultiTextInputProps={{
             allowableTypes: [MultiTypeInputType.EXPRESSION, MultiTypeInputType.FIXED],
-            expressions
+            expressions: connectorExpressionsInInputSet
           }}
           multiTypeFieldSelectorProps={{
             label: (
@@ -258,10 +267,14 @@ export const CIStepOptionalConfig: React.FC<CIStepOptionalConfigProps> = props =
           valueLabel={valueLabel ? getString(valueLabel) : ''}
           restrictToSingleEntry={restrictToSingleEntry}
           showConnectorRef={showConnectorRef}
+          connectorType={connectorType}
+          gitScope={connectorGitScopeInInputSet}
+          expressions={connectorExpressionsInInputSet}
+          connectorRefWidth={connectorRefWidth}
         />
       </Container>
     ),
-    [expressions]
+    [expressions, gitScope]
   )
 
   const renderMultiTypeTextField = React.useCallback(
@@ -398,7 +411,11 @@ export const CIStepOptionalConfig: React.FC<CIStepOptionalConfigProps> = props =
               keyLabel: 'name',
               valueLabel: 'ci.connectorRef',
               restrictToSingleEntry: true,
-              showConnectorRef: true
+              showConnectorRef: true,
+              connectorType: enableFields['spec.baseImageConnectorRefs'].type,
+              gitScope,
+              expressions,
+              connectorRefWidth: ConnectorRefWidth.KeyValuePairView
             })
           : renderMultiTypeMap({
               fieldName: `${prefix}spec.baseImageConnectorRefs`,
@@ -408,7 +425,11 @@ export const CIStepOptionalConfig: React.FC<CIStepOptionalConfigProps> = props =
               keyLabel: 'name',
               valueLabel: 'ci.connectorRef',
               restrictToSingleEntry: true,
-              showConnectorRef: true
+              showConnectorRef: true,
+              connectorType: enableFields['spec.baseImageConnectorRefs'].type,
+              gitScope,
+              expressions,
+              connectorRefWidth: ConnectorRefWidth.KeyValuePairView
             })
         : null}
       {/* Tag is not an optional configuration but due to some weird error, it's being placed here for time being till real reason is figured out.*/}

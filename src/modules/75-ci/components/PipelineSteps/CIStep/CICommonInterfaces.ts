@@ -7,15 +7,15 @@
 
 import type { MultiTypeInputType } from '@harness/uicore'
 import type { StringsMap } from 'stringTypes'
+import type { ConnectorReferenceProps } from '@common/components/MultiTypeMap/MultiTypeMap'
 
-export interface MultiTypeMapInputSetPropsInterface {
+export interface MultiTypeMapInputSetPropsInterface extends ConnectorReferenceProps {
   fieldName: string
   stringKey: keyof StringsMap
   tooltipId?: string
   keyLabel?: keyof StringsMap
   valueLabel?: keyof StringsMap
   restrictToSingleEntry?: boolean
-  showConnectorRef?: boolean
 }
 
 export interface MultiTypeMapPropsInterface extends MultiTypeMapInputSetPropsInterface {
