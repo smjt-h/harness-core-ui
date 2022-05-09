@@ -37,7 +37,7 @@ export const ArtifactStepCommon: React.FC<ArtifactStepCommonProps> = ({
           shouldRenderRunTimeInputView(get(template, 'spec.baseImageConnectorRefs')) && {
             'spec.baseImageConnectorRefs': {
               label: { labelKey: 'ci.baseConnectorImage', tooltipId: 'baseConnectorImage' },
-              type: Connectors.AWS
+              type: [Connectors.GCP, Connectors.AWS, Connectors.DOCKER]
             }
           }),
         ...(shouldRenderRunTimeInputView(template?.spec?.tags) && {
