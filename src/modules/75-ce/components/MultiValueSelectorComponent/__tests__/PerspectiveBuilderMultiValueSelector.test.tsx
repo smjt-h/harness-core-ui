@@ -41,4 +41,21 @@ describe('Test Cases For PerspectiveBuilderMultiValueSelector', () => {
 
     expect(container).toMatchSnapshot()
   })
+
+  test('Should Be Render When No Filter Values', async () => {
+    const { queryByText } = render(
+      <TestWrapper>
+        <PerspectiveBuilderMultiValueSelector
+          fetching={false}
+          selectedValues={{ value1: true, value2: false, notvalue3: false }}
+          setSelectedValues={jest.fn()}
+          valueList={[]}
+          fetchMore={jest.fn()}
+          searchText={''}
+        />
+      </TestWrapper>
+    )
+
+    expect(queryByText('create')).toBeNull()
+  })
 })
