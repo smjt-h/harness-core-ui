@@ -236,7 +236,7 @@ export const CIStepOptionalConfig: React.FC<CIStepOptionalConfigProps> = props =
         />
       </Container>
     ),
-    [expressions, gitScope, readonly, getString]
+    [expressions, gitScope, readonly]
   )
 
   const renderMultiTypeMapInputSet = React.useCallback(
@@ -288,7 +288,7 @@ export const CIStepOptionalConfig: React.FC<CIStepOptionalConfigProps> = props =
         />
       </Container>
     ),
-    [expressions, gitScope, readonly, getString]
+    [expressions, gitScope, readonly]
   )
 
   const renderMultiTypeTextField = React.useCallback(
@@ -338,7 +338,7 @@ export const CIStepOptionalConfig: React.FC<CIStepOptionalConfigProps> = props =
         />
       )
     },
-    [expressions, template, getString, isInputSetView, readonly]
+    [expressions, template, isInputSetView, readonly]
   )
 
   const renderMultiTypeCheckboxField = React.useCallback(
@@ -411,7 +411,7 @@ export const CIStepOptionalConfig: React.FC<CIStepOptionalConfigProps> = props =
         disabled={readonly}
       />
     ),
-    [expressions, getString, readonly]
+    [expressions, readonly]
   )
 
   const renderConnectorRef = React.useCallback(
@@ -444,7 +444,7 @@ export const CIStepOptionalConfig: React.FC<CIStepOptionalConfigProps> = props =
         />
       )
     },
-    [gitScope, readonly, expressions, accountId, projectIdentifier, orgIdentifier, getString]
+    [gitScope, readonly, expressions, accountId, projectIdentifier, orgIdentifier]
   )
 
   return (

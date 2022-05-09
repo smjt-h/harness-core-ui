@@ -3656,6 +3656,7 @@ exports[`ECR Step InputSet View should render all fields 1`] = `
           <div
             class="group withoutSpacing"
             keylabel="name"
+            valuelabel="ci.connectorRef"
           >
             <div
               class="bp3-form-group"
@@ -4311,6 +4312,7 @@ exports[`ECR Step InputSet View should render all fields 1`] = `
           <div
             class="group withoutSpacing"
             keylabel=""
+            valuelabel=""
           >
             <div
               class="bp3-form-group"
@@ -4521,6 +4523,7 @@ exports[`ECR Step InputSet View should render all fields 1`] = `
           <div
             class="group withoutSpacing"
             keylabel=""
+            valuelabel=""
           >
             <div
               class="bp3-form-group"

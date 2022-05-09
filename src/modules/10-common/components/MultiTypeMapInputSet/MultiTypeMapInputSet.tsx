@@ -74,7 +74,6 @@ export const MultiTypeMapInputSet = (props: MultiTypeMapProps & ConnectorReferen
     appearance = 'default',
     restrictToSingleEntry,
     showConnectorRef,
-    valueLabel,
     connectorTypes,
     connectorRefRenderer,
     ...restProps
@@ -212,7 +211,7 @@ export const MultiTypeMapInputSet = (props: MultiTypeMapProps & ConnectorReferen
                     {showConnectorRef ? (
                       connectorRefRenderer?.({
                         name: `${name}.${key}`,
-                        valueLabel,
+                        valueLabel: props.valueLabel,
                         connectorTypes
                       })
                     ) : (
