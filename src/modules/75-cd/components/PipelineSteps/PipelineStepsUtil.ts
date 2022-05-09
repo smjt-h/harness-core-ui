@@ -34,7 +34,7 @@ export enum ServiceDeploymentType {
 export enum InfraDeploymentType {
   KubernetesDirect = 'KubernetesDirect',
   KubernetesGcp = 'KubernetesGcp',
-  PDC = 'PDC'
+  PDC = 'Pdc'
 }
 
 export function getNameSpaceSchema(

@@ -5,7 +5,7 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import React, { useEffect, useState, useMemo } from 'react'
+import React, { useState, useMemo } from 'react'
 import {
   IconName,
   Layout,
@@ -20,19 +20,21 @@ import {
 import { Radio, RadioGroup } from '@blueprintjs/core'
 import * as Yup from 'yup'
 import { useParams } from 'react-router-dom'
-import { debounce, noop, isEmpty } from 'lodash-es'
-import { FormikErrors, FormikProps, yupToFormErrors } from 'formik'
+import { debounce, noop, isEmpty, set } from 'lodash-es'
+import type { FormikErrors, FormikProps } from 'formik'
 import { StepViewType, StepProps, ValidateInputSetProps } from '@pipeline/components/AbstractSteps/Step'
 import { ConfigureOptions } from '@common/components/ConfigureOptions/ConfigureOptions'
 import { useVariablesExpression } from '@pipeline/components/PipelineStudio/PiplineHooks/useVariablesExpression'
 
-import { PdcInfrastructure, useGetConnectorListV2, ConnectorResponse } from 'services/cd-ng'
+import type { PdcInfrastructure } from 'services/cd-ng'
 
 import type { VariableMergeServiceResponse } from 'services/pipeline-ng'
 
 import type { CompletionItemInterface } from '@common/interfaces/YAMLBuilderProps'
+import { Scope } from '@common/interfaces/SecretsInterface'
 import { useStrings } from 'framework/strings'
 import type { UseStringsReturn } from 'framework/strings'
+import { ConnectorReferenceField } from '@connectors/components/ConnectorReferenceField/ConnectorReferenceField'
 import { StepType } from '@pipeline/components/PipelineSteps/PipelineStepInterface'
 import { PipelineStep } from '@pipeline/components/PipelineSteps/PipelineStep'
 
@@ -40,7 +42,7 @@ import { StageErrorContext } from '@pipeline/context/StageErrorContext'
 import { DeployTabs } from '@cd/components/PipelineStudio/DeployStageSetupShell/DeployStageSetupShellUtils'
 import DelegateSelectorPanel from '@pipeline/components/PipelineSteps/AdvancedSteps/DelegateSelectorPanel/DelegateSelectorPanel'
 import SSHSecretInput from '@secrets/components/SSHSecretInput/SSHSecretInput'
-import { getNameSpaceSchema, getReleaseNameSchema } from '../PipelineStepsUtil'
+import { getReleaseNameSchema } from '../PipelineStepsUtil'
 import PreviewHostsTable from './PreviewHostsTable/PreviewHostsTable'
 import css from './PDCInfrastructureSpec.module.scss'
 
@@ -65,22 +67,52 @@ interface GcpInfrastructureSpecEditableProps {
 }
 
 interface PDCInfrastructureUI {
-  delegateSelectors: any[]
   hostsType: number
   releaseName: string
-  hosts: string
   sshKey?: {
     identifier: string
   }
   allowSimultaneousDeployments: boolean
+  attributeFilters?: string
+  hosts: string
+  connectorRef?: string
+  delegateSelectors?: string[] | undefined
+  hostFilters: string
+  sshKeyRef: string
 }
 
-const parseHosts = (hosts: string) =>
-  hosts
-    .replace(/,/g, '\n')
+const PreconfiguredHosts = {
+  TRUE: 'true',
+  FALSE: 'false'
+}
+
+const HostScope = {
+  ALL: 'allHosts',
+  SPECIFIC: 'specificHosts'
+}
+
+const SpecificHostOption = {
+  HOST_NAME: 'hostName',
+  ATTRIBUTES: 'attributes'
+}
+
+const parseByComma = (data: string) =>
+  data
+    ?.replace(/,/g, '\n')
     .split('\n')
     .filter(part => part.length)
-    .map(host => host.trim())
+    .map(part => part.trim()) || []
+
+const parseHosts = (hosts: string) => parseByComma(hosts)
+
+const parseAttributes = (attributes: string) =>
+  parseByComma(attributes).reduce((prev, current) => {
+    const [key, value] = current.split(':')
+    if (key && value) {
+      set(prev, key, value)
+    }
+    return prev
+  }, {}) || {}
 
 const GcpInfrastructureSpecEditable: React.FC<GcpInfrastructureSpecEditableProps> = ({
   initialValues,
@@ -96,35 +128,30 @@ const GcpInfrastructureSpecEditable: React.FC<GcpInfrastructureSpecEditableProps
   const delayedOnUpdate = React.useRef(debounce(onUpdate || noop, 300)).current
   const { expressions } = useVariablesExpression()
   const { getString } = useStrings()
-  const [pdcConnectors, setPdcConnectors] = useState([] as ConnectorResponse[])
-  const [hostsType, setHostsType] = useState('0')
-  const [hostsScope, setHostsScope] = useState('0')
-  const [hostSpecifics, setHostSpecifics] = useState('0')
+  const [isPreconfiguredHosts, setIsPreconfiguredHosts] = useState(
+    initialValues.connectorRef ? PreconfiguredHosts.TRUE : PreconfiguredHosts.FALSE
+  )
+  const [hostsScope, setHostsScope] = useState(
+    initialValues.attributeFilters || initialValues.hostFilters ? HostScope.SPECIFIC : HostScope.ALL
+  )
+  const [hostSpecifics, setHostSpecifics] = useState(
+    initialValues.attributeFilters ? SpecificHostOption.ATTRIBUTES : SpecificHostOption.HOST_NAME
+  )
 
   const getInitialValues = (): PDCInfrastructureUI => {
     const values: PDCInfrastructureUI = {
       ...initialValues,
-      hosts: ''
+      hosts: initialValues.hosts ? initialValues.hosts.join('\n') : '',
+      hostFilters: initialValues.hostFilters ? initialValues.hostFilters.join('\n') : '',
+      attributeFilters: initialValues.attributeFilters
+        ? Object.entries(initialValues.attributeFilters)
+            .map((key, value) => `${key}:${value}`)
+            .join('\n')
+        : ''
     }
 
     return values
   }
-
-  const { mutate: getConnectors } = useGetConnectorListV2({
-    queryParams: {
-      accountIdentifier: accountId,
-      projectIdentifier,
-      orgIdentifier
-    }
-  })
-
-  useEffect(() => {
-    const getPDC = async () => {
-      const connectorsResult = await getConnectors({ types: ['Pdc'] })
-      setPdcConnectors(connectorsResult.data?.content || [])
-    }
-    getPDC()
-  }, [])
 
   const { subscribeForm, unSubscribeForm } = React.useContext(StageErrorContext)
 
@@ -137,8 +164,8 @@ const GcpInfrastructureSpecEditable: React.FC<GcpInfrastructureSpecEditableProps
 
   const hostSpecificyOptions = useMemo(
     () => [
-      { value: '0', label: getString('cd.steps.pdcStep.hostNameOption') },
-      { value: '1', label: getString('cd.steps.pdcStep.hostAttributesOption') }
+      { value: SpecificHostOption.HOST_NAME, label: getString('cd.steps.pdcStep.hostNameOption') },
+      { value: SpecificHostOption.ATTRIBUTES, label: getString('cd.steps.pdcStep.hostAttributesOption') }
     ],
     []
   )
@@ -147,13 +174,13 @@ const GcpInfrastructureSpecEditable: React.FC<GcpInfrastructureSpecEditableProps
     <Layout.Vertical spacing="medium">
       <RadioGroup
         className={css.specifyHostsRadioGroup}
-        selectedValue={hostsType}
+        selectedValue={isPreconfiguredHosts}
         onChange={(e: any) => {
-          setHostsType(e.target.value)
+          setIsPreconfiguredHosts(e.target.value)
         }}
       >
-        <Radio value={'0'} label={getString('cd.steps.pdcStep.specifyHostsOption')} />
-        <Radio value={'1'} label={getString('cd.steps.pdcStep.preconfiguredHostsOption')} />
+        <Radio value={PreconfiguredHosts.FALSE} label={getString('cd.steps.pdcStep.specifyHostsOption')} />
+        <Radio value={PreconfiguredHosts.TRUE} label={getString('cd.steps.pdcStep.preconfiguredHostsOption')} />
       </RadioGroup>
       <Formik<PDCInfrastructureUI>
         formName="pdcInfra"
@@ -162,9 +189,21 @@ const GcpInfrastructureSpecEditable: React.FC<GcpInfrastructureSpecEditableProps
         validate={value => {
           const data: Partial<PdcInfrastructure> = {
             releaseName: value.releaseName === '' ? undefined : value.releaseName,
-            connectorRef: value.sshKey?.identifier,
             allowSimultaneousDeployments: value.allowSimultaneousDeployments,
-            hosts: parseHosts(value.hosts)
+            delegateSelectors: value.delegateSelectors,
+            sshKeyRef: value.sshKey?.identifier
+          }
+          if (isPreconfiguredHosts === PreconfiguredHosts.FALSE) {
+            data.hosts = parseHosts(value.hosts)
+          } else {
+            data.connectorRef = value.connectorRef
+            if (hostsScope === HostScope.SPECIFIC) {
+              if (hostSpecifics === SpecificHostOption.HOST_NAME) {
+                data.hostFilters = parseHosts(value.hostFilters || '')
+              } else {
+                data.attributeFilters = parseAttributes(value.attributeFilters || '')
+              }
+            }
           }
           delayedOnUpdate(data)
         }}
@@ -176,7 +215,7 @@ const GcpInfrastructureSpecEditable: React.FC<GcpInfrastructureSpecEditableProps
           return (
             <FormikForm>
               <Layout.Vertical className={css.formRow} spacing="medium" margin={{ bottom: 'large' }}>
-                {hostsType == '0' ? (
+                {isPreconfiguredHosts === PreconfiguredHosts.FALSE ? (
                   <FormInput.TextArea
                     name="hosts"
                     label={'Hosts'}
@@ -187,14 +226,26 @@ const GcpInfrastructureSpecEditable: React.FC<GcpInfrastructureSpecEditableProps
                   />
                 ) : (
                   <Layout.Vertical>
-                    <FormInput.Select
-                      className={css.inputWidth}
-                      items={pdcConnectors.map(pdcConnector => ({
-                        label: pdcConnector.connector?.name || '',
-                        value: pdcConnector.connector?.identifier || ''
-                      }))}
-                      label={getString('cd.steps.pdcStep.pdcConnectorLabel')}
-                      name="pdcConnector"
+                    <ConnectorReferenceField
+                      error={formik.submitCount && formik.errors.connectorRef ? formik.errors.connectorRef : undefined}
+                      name="connectorRef"
+                      type={['Pdc']}
+                      selected={formik.values.connectorRef}
+                      label={getString('connector')}
+                      width={366}
+                      placeholder={getString('connectors.selectConnector')}
+                      accountIdentifier={accountId}
+                      projectIdentifier={projectIdentifier}
+                      orgIdentifier={orgIdentifier}
+                      onChange={(value, scope) => {
+                        formik.setFieldValue('connectorRef', {
+                          label: value.name || '',
+                          value: `${scope !== Scope.PROJECT ? `${scope}.` : ''}${value.identifier}`,
+                          scope: scope,
+                          live: value?.status?.status === 'SUCCESS',
+                          connector: value
+                        })
+                      }}
                     />
                     <Layout.Horizontal className={css.hostSpecificContainer}>
                       <RadioGroup
@@ -202,37 +253,80 @@ const GcpInfrastructureSpecEditable: React.FC<GcpInfrastructureSpecEditableProps
                         selectedValue={hostsScope}
                         onChange={(e: any) => {
                           setHostsScope(e.target.value)
+                          if (e.target.value === HostScope.ALL) {
+                            formik.setFieldValue('attributeFilters', '')
+                            formik.setFieldValue('hostFilters', '')
+                          }
                         }}
                       >
-                        <Radio value={'0'} label={getString('cd.steps.pdcStep.deployAllHostsOption')} />
-                        <Radio value={'1'} label={getString('cd.steps.pdcStep.deploySpecificHostsOption')} />
+                        <Radio value={HostScope.ALL} label={getString('cd.steps.pdcStep.deployAllHostsOption')} />
+                        <Radio
+                          value={HostScope.SPECIFIC}
+                          label={getString('cd.steps.pdcStep.deploySpecificHostsOption')}
+                        />
                       </RadioGroup>
                       <Select
+                        disabled={hostsScope !== HostScope.SPECIFIC}
                         className={css.hostSelect}
                         value={hostSpecificyOptions.find(option => option.value === hostSpecifics)}
                         onChange={option => {
-                          setHostSpecifics(option.value.toString())
+                          const value = option.value.toString()
+                          if (value === SpecificHostOption.HOST_NAME) {
+                            formik.setFieldValue('attributeFilters', '')
+                          } else {
+                            formik.setFieldValue('hostFilters', '')
+                          }
+                          setHostSpecifics(value)
                         }}
                         items={hostSpecificyOptions}
                       ></Select>
                     </Layout.Horizontal>
-                    <FormInput.TextArea
-                      name="hosts"
-                      label={'Hosts'}
-                      placeholder={getString('cd.steps.pdcStep.hostsPlaceholder')}
-                      className={`${css.hostsTextArea} ${css.inputWidth}`}
-                      tooltipProps={{
-                        dataTooltipId: 'pdcHosts'
-                      }}
-                    />
+                    <Layout.Vertical spacing="medium">
+                      {isPreconfiguredHosts === PreconfiguredHosts.FALSE ? (
+                        <FormInput.TextArea
+                          name="hosts"
+                          label={'Hosts'}
+                          placeholder={getString('cd.steps.pdcStep.hostsPlaceholder')}
+                          className={`${css.hostsTextArea} ${css.inputWidth}`}
+                          tooltipProps={{
+                            dataTooltipId: 'pdcHosts'
+                          }}
+                        />
+                      ) : hostsScope === HostScope.ALL ? null : hostSpecifics === SpecificHostOption.HOST_NAME ? (
+                        <FormInput.TextArea
+                          name="hostFilters"
+                          label={'Specific Hosts'}
+                          placeholder={getString('cd.steps.pdcStep.specificHostsPlaceholder')}
+                          className={`${css.hostsTextArea} ${css.inputWidth}`}
+                          tooltipProps={{
+                            dataTooltipId: 'pdcSpecificHosts'
+                          }}
+                        />
+                      ) : (
+                        <FormInput.TextArea
+                          name="attributeFilters"
+                          label={'Specific Attributes'}
+                          placeholder={getString('cd.steps.pdcStep.attributesPlaceholder')}
+                          className={`${css.hostsTextArea} ${css.inputWidth}`}
+                          tooltipProps={{
+                            dataTooltipId: 'pdcSpecificAttributes'
+                          }}
+                        />
+                      )}
+                    </Layout.Vertical>
                   </Layout.Vertical>
                 )}
                 <div className={css.inputWidth}>
                   <SSHSecretInput name={'sshKey'} label={getString('cd.steps.common.specifyCredentials')} />
                 </div>
-                <DelegateSelectorPanel isReadonly={false} formikProps={formik} />
+                <div className={css.inputWidth}>
+                  <DelegateSelectorPanel isReadonly={false} formikProps={formik} />
+                </div>
                 <PreviewHostsTable
-                  hosts={parseHosts(formik.values.hosts)}
+                  hosts={parseHosts(
+                    isPreconfiguredHosts === PreconfiguredHosts.FALSE ? formik.values.hosts : formik.values.hostFilters
+                  )}
+                  tags={formik.values.delegateSelectors}
                   secretIdentifier={formik.values.sshKey?.identifier}
                 />
               </Layout.Vertical>
@@ -276,6 +370,7 @@ const GcpInfrastructureSpecEditable: React.FC<GcpInfrastructureSpecEditableProps
                   }
                 />
               </Accordion>
+
               <Layout.Horizontal spacing="medium" style={{ alignItems: 'center' }} className={css.lastRow}>
                 <FormInput.CheckBox
                   className={css.simultaneousDeployment}
@@ -304,10 +399,7 @@ export class PDCInfrastructureSpec extends PipelineStep<PDCInfrastructureSpecSte
   lastFetched: number
   protected type = StepType.PDC
   protected defaultValues: PdcInfrastructure = {
-    cluster: '',
     connectorRef: '',
-    namespace: '',
-    releaseName: '',
     sshKeyRef: ''
   }
 
@@ -340,51 +432,6 @@ export class PDCInfrastructureSpec extends PipelineStep<PDCInfrastructureSpecSte
       getMultiTypeFromValue(template?.connectorRef) === MultiTypeInputType.RUNTIME
     ) {
       errors.connectorRef = getString?.('fieldRequired', { field: getString('connector') })
-    }
-    if (
-      isEmpty(data.cluster) &&
-      isRequired &&
-      getMultiTypeFromValue(template?.cluster) === MultiTypeInputType.RUNTIME
-    ) {
-      errors.cluster = getString?.('fieldRequired', { field: getString('common.cluster') })
-    }
-    /* istanbul ignore else */ if (
-      getString &&
-      getMultiTypeFromValue(template?.namespace) === MultiTypeInputType.RUNTIME
-    ) {
-      const namespace = Yup.object().shape({
-        namespace: getNameSpaceSchema(getString, isRequired)
-      })
-
-      try {
-        namespace.validateSync(data)
-      } catch (e) {
-        /* istanbul ignore else */
-        if (e instanceof Yup.ValidationError) {
-          const err = yupToFormErrors(e)
-
-          Object.assign(errors, err)
-        }
-      }
-    }
-    /* istanbul ignore else */ if (
-      getString &&
-      getMultiTypeFromValue(template?.releaseName) === MultiTypeInputType.RUNTIME
-    ) {
-      const releaseName = Yup.object().shape({
-        releaseName: getReleaseNameSchema(getString, isRequired)
-      })
-
-      try {
-        releaseName.validateSync(data)
-      } catch (e) {
-        /* istanbul ignore else */
-        if (e instanceof Yup.ValidationError) {
-          const err = yupToFormErrors(e)
-
-          Object.assign(errors, err)
-        }
-      }
     }
     return errors
   }

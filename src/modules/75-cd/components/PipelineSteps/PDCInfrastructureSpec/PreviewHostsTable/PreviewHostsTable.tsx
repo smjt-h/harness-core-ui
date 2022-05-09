@@ -1,23 +1,21 @@
 import React, { useMemo, useCallback, useState } from 'react'
 import type { Column } from 'react-table'
 import { useParams } from 'react-router-dom'
-import { Layout, Table, Button, Label, ButtonSize, ButtonVariation } from '@harness/uicore'
+import { Layout, Table, Button, Label, ButtonSize, ButtonVariation, Text } from '@harness/uicore'
+import { Color } from '@harness/design-system'
 import { useToaster } from '@common/exports'
-import { useValidateSshHosts } from 'services/cd-ng'
+import { ErrorHandler } from '@common/components/ErrorHandler/ErrorHandler'
+import { useValidateSshHosts, HostValidationDTO } from 'services/cd-ng'
 import { useStrings } from 'framework/strings'
 import css from '../PDCInfrastructureSpec.module.scss'
-
-interface HostDetails {
-  hostname: string
-  status?: string
-}
 
 interface PreviewHostsTableProps {
   hosts: string[]
   secretIdentifier?: string
+  tags?: string[]
 }
 
-const PreviewHostsTable = ({ hosts, secretIdentifier }: PreviewHostsTableProps) => {
+const PreviewHostsTable = ({ hosts, secretIdentifier, tags }: PreviewHostsTableProps) => {
   const { getString } = useStrings()
   const { showError } = useToaster()
   const { accountId, projectIdentifier, orgIdentifier } = useParams<{
@@ -26,7 +24,8 @@ const PreviewHostsTable = ({ hosts, secretIdentifier }: PreviewHostsTableProps) 
     accountId: string
   }>()
   const [showPreviewHostBtn, setShowPreviewHostBtn] = useState(true)
-  const [detailHosts, setDetailHosts] = useState([] as HostDetails[])
+  const [detailHosts, setDetailHosts] = useState([] as HostValidationDTO[])
+  const [errors, setErrors] = useState([])
 
   const { mutate: validateHosts } = useValidateSshHosts({
     queryParams: {
@@ -40,36 +39,45 @@ const PreviewHostsTable = ({ hosts, secretIdentifier }: PreviewHostsTableProps) 
   const retryConnection = useCallback(
     async (host: string) => {
       const retryResult = validateHosts([host])
-      setDetailHosts(detailHosts.map(hostItem => (hostItem.hostname === '' ? retryResult.data : hostItem)))
+      setDetailHosts(detailHosts.map(hostItem => (hostItem.host === '' ? retryResult.data : hostItem)))
     },
     [secretIdentifier]
   )
 
-  const columns: Column<HostDetails>[] = useMemo(
+  const columns: Column<HostValidationDTO>[] = useMemo(
     () => [
       {
         Header: getString('cd.steps.pdcStep.no').toUpperCase(),
-        accessor: 'hostname',
+        accessor: 'host',
         id: 'no',
-        width: '10%',
+        width: '6',
         Cell: ({ row }) => row.index + 1
       },
       {
         Header: getString('pipelineSteps.hostLabel').toUpperCase(),
-        accessor: 'hostname',
-        id: 'hostname',
+        accessor: 'host',
+        id: 'host',
         width: '20%',
-        Cell: ({ row }) => row.original.hostname
+        Cell: ({ row }) => row.original.host
+      },
+      {
+        Header: '',
+        accessor: 'status',
+        id: 'status',
+        width: '12%',
+        Cell: ({ row }) => (
+          <Text color={row.original.status === 'SUCCESS' ? Color.GREEN_400 : Color.RED_400}>{row.original.status}</Text>
+        )
       },
       {
         Header: '',
         accessor: 'status',
         id: 'action',
-        width: '70%',
+        width: '62%',
         Cell: ({ row }) =>
-          row.original.status === 'failed' ? (
+          row.original.status === 'FAILED' ? (
             <Button
-              onClick={() => retryConnection(row.original.hostname)}
+              onClick={() => retryConnection(row.original.host || '')}
               size={ButtonSize.SMALL}
               variation={ButtonVariation.SECONDARY}
             >
@@ -82,22 +90,41 @@ const PreviewHostsTable = ({ hosts, secretIdentifier }: PreviewHostsTableProps) 
   )
 
   const refreshHosts = useCallback(() => {
+    setErrors([])
     setDetailHosts(
-      hosts.map(host => ({
-        hostname: host,
-        status: ''
-      }))
+      hosts.map(
+        host =>
+          ({
+            host: host,
+            status: undefined
+          } as HostValidationDTO)
+      )
     )
   }, [hosts])
 
   const testConnection = useCallback(async () => {
+    setErrors([])
     try {
-      const hostResults = await validateHosts(detailHosts.map(host => host.hostname))
-      console.log(hostResults)
-      const updatedHosts = detailHosts.map(host => host)
-      setDetailHosts(updatedHosts)
-    } catch (e) {
-      showError(e.data.message || e.message)
+      const validationHosts = detailHosts.map(host => host.host || '')
+      const hostResults = await validateHosts({ hosts: validationHosts, tags })
+      if (hostResults.status === 'SUCCESS') {
+        const tempMap: any = {}
+        detailHosts.forEach(hostItem => {
+          tempMap[hostItem.host || ''] = hostItem
+        }, {})
+        hostResults.data?.forEach(hostRes => {
+          tempMap[hostRes.host || ''] = hostRes
+        })
+        setDetailHosts(Object.values(tempMap) as [])
+      } else {
+        setErrors(hostResults?.responseMessages || [])
+      }
+    } catch (e: any) {
+      if (e.data?.responseMessages) {
+        setErrors(e.data?.responseMessages)
+      } else {
+        showError(e.data.message || e.message)
+      }
     }
   }, [detailHosts, secretIdentifier])
 
@@ -130,15 +157,18 @@ const PreviewHostsTable = ({ hosts, secretIdentifier }: PreviewHostsTableProps) 
                 {getString('common.refresh')}
               </Button>
             </Layout.Horizontal>
-            <Button
-              onClick={testConnection}
-              size={ButtonSize.SMALL}
-              variation={ButtonVariation.SECONDARY}
-              disabled={detailHosts.length === 0 || !secretIdentifier}
-            >
-              {getString('common.smtp.testConnection')}
-            </Button>
+            <Layout.Horizontal flex={{ alignItems: 'center' }} margin={{ bottom: 'small' }}>
+              <Button
+                onClick={testConnection}
+                size={ButtonSize.SMALL}
+                variation={ButtonVariation.SECONDARY}
+                disabled={detailHosts.length === 0 || !secretIdentifier}
+              >
+                {getString('common.smtp.testConnection')}
+              </Button>
+            </Layout.Horizontal>
           </Layout.Horizontal>
+          {errors.length > 0 && <ErrorHandler responseMessages={errors} />}
           {detailHosts.length > 0 ? (
             <Table columns={columns} data={detailHosts} />
           ) : (

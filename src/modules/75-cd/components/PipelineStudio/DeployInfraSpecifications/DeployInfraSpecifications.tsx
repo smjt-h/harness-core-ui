@@ -16,6 +16,7 @@ import {
   Infrastructure,
   K8SDirectInfrastructure,
   K8sGcpInfrastructure,
+  PdcInfrastructure,
   PipelineInfrastructure,
   StageElementConfig
 } from 'services/cd-ng'
@@ -132,7 +133,7 @@ export default function DeployInfraSpecifications(props: React.PropsWithChildren
   }, [stage])
 
   const onUpdateInfrastructureDefinition = (
-    extendedSpec: K8SDirectInfrastructure | K8sGcpInfrastructure,
+    extendedSpec: K8SDirectInfrastructure | K8sGcpInfrastructure | PdcInfrastructure,
     type: string
   ): void => {
     if (get(stageRef.current, 'stage.spec.infrastructure', null)) {
@@ -281,17 +282,15 @@ export default function DeployInfraSpecifications(props: React.PropsWithChildren
         }
       }
       case InfraDeploymentType.PDC: {
-        const connectorRef = infrastructure?.spec?.connectorRef
-        const namespace = infrastructure?.spec?.namespace
-        const releaseName = infrastructure?.spec?.releaseName ?? DEFAULT_RELEASE_NAME
-        const cluster = infrastructure?.spec?.cluster
+        const { connectorRef, delegateSelectors, hostFilters, hosts, attributeFilters } = infrastructure?.spec
 
         return {
           connectorRef,
-          namespace,
-          releaseName,
-          cluster,
-          allowSimultaneousDeployments
+          allowSimultaneousDeployments,
+          hosts,
+          delegateSelectors,
+          hostFilters,
+          attributeFilters
         }
       }
       default: {
@@ -361,18 +360,20 @@ export default function DeployInfraSpecifications(props: React.PropsWithChildren
             type={StepType.PDC}
             stepViewType={StepViewType.Edit}
             allowableTypes={allowableTypes}
-            onUpdate={value =>
+            onUpdate={value => {
               onUpdateInfrastructureDefinition(
                 {
-                  connectorRef: value.connectorRef,
-                  cluster: value.cluster,
-                  namespace: value.namespace,
-                  releaseName: value.releaseName,
-                  allowSimultaneousDeployments: value.allowSimultaneousDeployments
+                  connectorRef: value.connectorRef?.connector?.identifier,
+                  sshKeyRef: value.sshKeyRef,
+                  attributeFilters: value.attributeFilters,
+                  hostFilters: value.hostFilters,
+                  hosts: value.hosts,
+                  allowSimultaneousDeployments: value.allowSimultaneousDeployments,
+                  delegateSelectors: value.delegateSelectors
                 },
                 InfraDeploymentType.PDC
               )
-            }
+            }}
           />
         )
       }
