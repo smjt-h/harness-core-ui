@@ -308,6 +308,7 @@ export interface StringsMap {
   'common.git.noUserLabel': string
   'common.git.onlyDefaultBranchFound': string
   'common.git.privateKey': string
+  'common.git.projectNamePlaceholder': string
   'common.git.saveResourceLabel': string
   'common.git.selectRepoLabel': string
   'common.git.startPRLabel': string
@@ -766,6 +767,7 @@ export interface StringsMap {
   'common.validation.testRepoIsRequired': string
   'common.validation.typeIsRequired': string
   'common.validation.urlIsRequired': string
+  'common.validation.validationProjectIsRequired': string
   'common.validation.valueIsRequired': string
   'common.validation.valueMustBeANumber': string
   'common.validation.valueMustBeGreaterThanOrEqualToN': string

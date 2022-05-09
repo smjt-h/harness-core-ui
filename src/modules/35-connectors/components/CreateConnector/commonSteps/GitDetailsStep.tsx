@@ -55,6 +55,7 @@ interface DetailsStepInterface {
   connectionType: string
   url: string
   validationRepo?: string
+  validationProject?: string
 }
 
 const getTooltipAnchorForHeading = (connectorType: ConnectorInfoDTO['type']): string => {
@@ -72,6 +73,24 @@ const getTooltipAnchorForHeading = (connectorType: ConnectorInfoDTO['type']): st
     return 'gitlabConnectorDetailsTooltip'
   }
   return 'connectorDetailsTooltip'
+}
+
+const ProjectName: React.FC<Pick<ConnectorDetailsStepProps, 'type'>> = props => {
+  const { getString } = useStrings()
+
+  if (props.type !== Connectors.AZURE_REPO) {
+    return null
+  }
+
+  return (
+    <FormInput.Text
+      name="validationProject"
+      className={css.formElm}
+      label={<Text font={{ variation: FontVariation.FORM_LABEL }}>{getString('projectCard.projectName')}</Text>}
+      placeholder={getString('common.git.projectNamePlaceholder')}
+      tooltipProps={{ dataTooltipId: `${props.type.toLocaleLowerCase()}DetailsStepForm_projectName` }}
+    />
+  )
 }
 
 const GitDetailsStep: React.FC<StepProps<ConnectorConfigDTO> & ConnectorDetailsStepProps> = props => {
@@ -205,6 +224,7 @@ const GitDetailsStep: React.FC<StepProps<ConnectorConfigDTO> & ConnectorDetailsS
           props.type === Connectors.GIT ? props.connectorInfo?.spec?.connectionType : props.connectorInfo?.spec?.type,
         url: props.connectorInfo?.spec?.url,
         validationRepo: props.connectorInfo?.spec?.validationRepo,
+        validationProject: props.connectorInfo?.spec?.validationProject,
         connectionType:
           props.type === Connectors.GIT
             ? props.connectorInfo?.spec?.type
@@ -256,7 +276,19 @@ const GitDetailsStep: React.FC<StepProps<ConnectorConfigDTO> & ConnectorDetailsS
             .when('urlType', {
               is: 'Account',
               then: Yup.string().required(getString('common.validation.testRepoIsRequired'))
-            })
+            }),
+          validationProject: Yup.string().test(
+            'isValidValidationProject',
+            getString('common.validation.validationProjectIsRequired'),
+            function (_validationProject) {
+              const _trimmedProject = _validationProject?.trim() || ''
+              if (props.type !== Connectors.AZURE_REPO) {
+                return true
+              }
+              if (!_trimmedProject) return false
+              return true
+            }
+          )
         })}
         initialValues={{
           ...getInitialValues(),
@@ -319,6 +351,7 @@ const GitDetailsStep: React.FC<StepProps<ConnectorConfigDTO> & ConnectorDetailsS
                   placeholder={getUrlLabelPlaceholder(props.type, formikProps.values.connectionType)}
                   tooltipProps={{ dataTooltipId: `${props.type.toLocaleLowerCase()}DetailsStepForm_url` }}
                 />
+                <ProjectName type={props.type} />
                 {formikProps.values.urlType === 'Account' && (
                   <Container>
                     <Text

@@ -344,6 +344,7 @@ export const buildAzureRepoPayload = (formData: FormData) => {
       type: formData.urlType,
       url: formData.url,
       ...(formData.validationRepo ? { validationRepo: formData.validationRepo } : {}),
+      ...(formData.validationProject ? { validationProject: formData.validationProject } : {}),
       authentication: {
         type: formData.connectionType,
         spec:
