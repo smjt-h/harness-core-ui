@@ -53,7 +53,7 @@ export function TemplatePipelineSpecifications(): JSX.Element {
   const [formikErrors, setFormikErrors] = React.useState<FormikErrors<PipelineInfoConfig>>()
   const [showFormError, setShowFormError] = React.useState<boolean>()
   const dummyPipeline = useRef(pipeline)
-
+  const viewTypeMetadata = { isTemplateBuilder: true }
   const onChange = React.useCallback(
     debounce(async (values: PipelineInfoConfig): Promise<void> => {
       await updatePipeline({ ...pipeline, ...values })
@@ -149,7 +149,8 @@ export function TemplatePipelineSpecifications(): JSX.Element {
         template: inputsTemplate,
         originalPipeline: allValues,
         getString,
-        viewType: StepViewType.DeploymentForm
+        viewType: StepViewType.DeploymentForm,
+        viewTypeMetadata
       })
       const newFormikErrors = set({}, TEMPLATE_INPUT_PATH, errorsResponse)
       setFormikErrors(newFormikErrors)
@@ -214,6 +215,7 @@ export function TemplatePipelineSpecifications(): JSX.Element {
                             readonly={isReadonly}
                             viewType={StepViewType.InputSet}
                             allowableTypes={allowableTypes}
+                            viewTypeMetadata={viewTypeMetadata}
                           />
                         </Container>
                       </Layout.Vertical>

@@ -65,7 +65,7 @@ export const ConnectorRefWithImage: React.FC<ConnectorRefWithImageProps> = props
               </Layout.Horizontal>
             }
             type={[Connectors.GCP, Connectors.AWS, Connectors.DOCKER]}
-            width={385}
+            width={372}
             name={`${prefix}spec.connectorRef`}
             placeholder={getString('select')}
             accountIdentifier={accountId}

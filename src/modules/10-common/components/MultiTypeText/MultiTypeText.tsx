@@ -28,6 +28,7 @@ interface MultiTextTypeInputProps extends Omit<IFormGroupProps, 'label' | 'label
   placeholder?: string
   onChange?: MultiTextInputProps['onChange']
   multiTextInputProps?: Omit<MultiTextInputProps, 'name'>
+  textProps?: { type?: string }
 }
 
 interface MultiTypeTextConfigureOptionsProps

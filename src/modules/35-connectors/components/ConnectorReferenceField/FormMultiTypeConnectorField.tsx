@@ -253,7 +253,11 @@ export const MultiTypeConnectorField = (props: MultiTypeConnectorFieldProps): Re
         live: data?.status?.status === 'SUCCESS'
       }
       props.onChange?.(val, MultiTypeInputValue.SELECT_OPTION, MultiTypeInputType.FIXED)
-      formik?.setFieldValue(name, val)
+      if (setRefValue) {
+        formik?.setFieldValue(name, val.value)
+      } else {
+        formik?.setFieldValue(name, val)
+      }
       setSelectedValue(val)
       setInlineSelection({
         selected: true,

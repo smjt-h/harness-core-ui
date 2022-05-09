@@ -7,16 +7,8 @@
  **/
 // this is an auto-generated file, do not update this manually
 declare const styles: {
-  readonly addStageHeading: string
   readonly bottomMargin3: string
-  readonly cloneCodebaseInfo: string
-  readonly collapseDiv: string
-  readonly configureCodebase: string
-  readonly connector: string
-  readonly grid: string
-  readonly labelBold: string
+  readonly inpLabel: string
   readonly predefinedValue: string
-  readonly repositoryUrl: string
-  readonly stageCreate: string
 }
 export default styles
