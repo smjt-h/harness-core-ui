@@ -13,7 +13,9 @@ import type {
   ExecutionElementConfig,
   CloudformationCreateStackStepInfo,
   NGVariable,
-  CloudformationTags
+  CloudformationTags,
+  CloudformationDeleteStackStepInfo,
+  CloudformationRollbackStepInfo
 } from 'services/cd-ng'
 import type { VariableMergeServiceResponse } from 'services/pipeline-ng'
 
@@ -159,5 +161,123 @@ export interface CreateStackVariableStepProps {
   onUpdate?(data: CreateStackData): void
   metadataMap: Required<VariableMergeServiceResponse>['metadataMap']
   variablesData?: CreateStackData
+  stepType?: string
+}
+
+export enum DeleteStackTypes {
+  Inline = 'Inline',
+  Inherited = 'Inherited'
+}
+
+export interface DeleteStackData extends StepElementConfig {
+  type: string
+  name: string
+  identifier: string
+  timeout: string
+  spec: {
+    configuration: {
+      type: string
+      spec: {
+        connectorRef?: string | Connector
+        region?: string
+        roleArn?: string
+        stackName?: string
+        provisionerIdentifier?: string
+      }
+    }
+  }
+}
+
+export interface CFDeleteStackStepInfo extends StepElementConfig {
+  spec: CloudformationDeleteStackStepInfo
+  name: string
+  identifier: string
+  timeout: string
+  type: string
+}
+
+export interface CloudFormationDeleteStackProps {
+  allowableTypes: MultiTypeInputType[]
+  isNewStep: boolean | undefined
+  readonly: boolean | undefined
+  initialValues: any
+  onUpdate: (values: any) => void
+  onChange: (values: any) => void
+  stepViewType: StepViewType | undefined
+}
+
+export interface DeleteStackProps<T = DeleteStackData> {
+  initialValues: T
+  onUpdate?: (data: T) => void
+  onChange?: (data: T) => void
+  allowableTypes: MultiTypeInputType[]
+  stepViewType?: StepViewType
+  configTypes?: SelectOption[]
+  isNewStep?: boolean
+  inputSetData?: {
+    template?: T
+    path?: string
+  }
+  readonly?: boolean
+  path?: string
+  stepType?: string
+  allValues?: T
+}
+
+export interface DeleteStackVariableStepProps {
+  initialValues: DeleteStackData
+  originalData?: DeleteStackData
+  stageIdentifier?: string
+  onUpdate?(data: DeleteStackData): void
+  metadataMap: Required<VariableMergeServiceResponse>['metadataMap']
+  variablesData?: DeleteStackData
+  stepType?: string
+}
+
+export interface RollbackStackData {
+  type: string
+  name: string
+  identifier: string
+  spec: {
+    configuration: {
+      provisionerIdentifier: string
+    }
+  }
+  timeout: string
+}
+
+export interface RollbackStackProps<T = RollbackStackData> {
+  initialValues: T
+  onUpdate?: (data: T) => void
+  onChange?: (data: T) => void
+  allowableTypes: MultiTypeInputType[]
+  stepViewType?: StepViewType
+  configTypes?: SelectOption[]
+  isNewStep?: boolean
+  inputSetData?: {
+    template?: T
+    path?: string
+  }
+  readonly?: boolean
+  path?: string
+  stepType?: string
+  allValues?: T
+}
+
+export interface RollbackStackStepInfo {
+  spec: CloudformationRollbackStepInfo
+  name: string
+  identifier: string
+  timeout: string
+  type: string
+}
+
+export interface RollbackVariableStepProps {
+  initialValues: RollbackStackData
+  originalData?: RollbackStackData
+  stageIdentifier?: string
+  onUpdate?(data: RollbackStackData): void
+  metadataMap: Required<VariableMergeServiceResponse>['metadataMap']
+  variablesData?: RollbackStackData
   stepType?: string
 }
