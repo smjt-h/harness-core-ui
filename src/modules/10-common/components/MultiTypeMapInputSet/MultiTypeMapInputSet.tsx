@@ -6,6 +6,7 @@
  */
 
 import React from 'react'
+import { useParams } from 'react-router-dom'
 import { v4 as nameSpace, v5 as uuid } from 'uuid'
 import cx from 'classnames'
 import {
@@ -26,6 +27,8 @@ import { useStrings } from 'framework/strings'
 import MultiTypeFieldSelector, {
   MultiTypeFieldSelectorProps
 } from '@common/components/MultiTypeFieldSelector/MultiTypeFieldSelector'
+// eslint-disable-next-line no-restricted-imports
+import { FormMultiTypeConnectorField } from '@connectors/components/ConnectorReferenceField/FormMultiTypeConnectorField'
 import type { ConnectorReferenceProps } from '../MultiTypeMap/MultiTypeMap'
 import css from './MultiTypeMapInputSet.module.scss'
 
@@ -80,6 +83,11 @@ export const MultiTypeMapInputSet = (props: MultiTypeMapProps & ConnectorReferen
     connectorRefWidth,
     ...restProps
   } = props
+  const { accountId, projectIdentifier, orgIdentifier } = useParams<{
+    projectIdentifier: string
+    orgIdentifier: string
+    accountId: string
+  }>()
 
   const [value, setValue] = React.useState<MapUIType>(() => {
     let initialValue = get(formik?.values, name, '')
@@ -204,14 +212,34 @@ export const MultiTypeMapInputSet = (props: MultiTypeMapProps & ConnectorReferen
                   />
                 </div>
                 <div>
-                  {index === 0 && (
+                  {index === 0 && !showConnectorRef ? (
                     <Text margin={{ bottom: 'xsmall' }} font={{ variation: FontVariation.FORM_LABEL }}>
                       {props.valueLabel || getString('valueLabel')}
                     </Text>
-                  )}
+                  ) : null}
                   <div className={cx(css.group, css.withoutAligning, css.withoutSpacing)}>
                     {showConnectorRef ? (
-                      <></>
+                      <FormMultiTypeConnectorField
+                        label={
+                          <Text font={{ variation: FontVariation.FORM_LABEL }}>
+                            {props.valueLabel ?? getString('valueLabel')}
+                          </Text>
+                        }
+                        type={connectorType}
+                        width={connectorRefWidth}
+                        name={`${name}[${index}].value`}
+                        placeholder={getString('select')}
+                        accountIdentifier={accountId}
+                        projectIdentifier={projectIdentifier}
+                        orgIdentifier={orgIdentifier}
+                        multiTypeProps={{
+                          expressions,
+                          allowableTypes: valueMultiTextInputProps['allowableTypes'],
+                          disabled
+                        }}
+                        gitScope={gitScope}
+                        setRefValue
+                      />
                     ) : (
                       <MultiTextInput
                         name=""
@@ -233,6 +261,7 @@ export const MultiTypeMapInputSet = (props: MultiTypeMapProps & ConnectorReferen
                         minimal
                         data-testid={`remove-${name}-[${index}]`}
                         onClick={() => removeValue(index)}
+                        className={showConnectorRef ? css.trashBtn : undefined}
                       />
                     )}
                   </div>
