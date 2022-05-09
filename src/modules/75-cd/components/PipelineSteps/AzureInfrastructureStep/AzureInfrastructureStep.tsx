@@ -544,18 +544,19 @@ const AzureInfrastructureSpecEditable: React.FC<AzureInfrastructureSpecEditableP
   })
 
   React.useEffect(() => {
-    /* istanbul ignore else */
-    if (!loadingSubscriptions) {
-      const subscriptionValues = [] as SelectOption[]
-      defaultTo(subscriptionsData?.data?.subscriptions, []).map(sub =>
-        subscriptionValues.push({ label: `${sub.subscriptionName}: ${sub.subscriptionId}`, value: sub.subscriptionId })
-      )
+    const subscriptionValues = [] as SelectOption[]
+    defaultTo(subscriptionsData?.data?.subscriptions, []).map(sub =>
+      subscriptionValues.push({ label: `${sub.subscriptionName}: ${sub.subscriptionId}`, value: sub.subscriptionId })
+    )
 
-      setSubscriptions(subscriptionValues as SelectOption[])
-      formikRef?.current?.setFieldValue('subscriptionId', getSubscription(initialValues))
-    }
+    setSubscriptions(subscriptionValues as SelectOption[])
+  }, [subscriptionsData])
+
+  useEffect(() => {
+    formikRef?.current?.setFieldValue('subscriptionId', getSubscription(initialValues))
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [subscriptionsData, loadingSubscriptions])
+  }, [subscriptions])
 
   React.useEffect(() => {
     if (initialValues.connectorRef && getMultiTypeFromValue(initialValues.connectorRef) === MultiTypeInputType.FIXED) {

@@ -218,25 +218,25 @@ export function ACRArtifact({
   })
 
   useEffect(() => {
-    /* istanbul ignore else */
-    if (!loadingSubscriptions) {
-      const subscriptionValues = [] as SelectOption[]
-      defaultTo(subscriptionsData?.data?.subscriptions, []).map(sub =>
-        subscriptionValues.push({ label: `${sub.subscriptionName}: ${sub.subscriptionId}`, value: sub.subscriptionId })
-      )
+    const subscriptionValues = [] as SelectOption[]
+    defaultTo(subscriptionsData?.data?.subscriptions, []).map(sub =>
+      subscriptionValues.push({ label: `${sub.subscriptionName}: ${sub.subscriptionId}`, value: sub.subscriptionId })
+    )
 
-      setSubscriptions(subscriptionValues as SelectOption[])
+    setSubscriptions(subscriptionValues as SelectOption[])
+  }, [subscriptionsData])
 
-      const values = getArtifactFormData(
-        initialValues,
-        selectedArtifact as ArtifactType,
-        context === ModalViewFor.SIDECAR
-      ) as ACRArtifactType
+  useEffect(() => {
+    const values = getArtifactFormData(
+      initialValues,
+      selectedArtifact as ArtifactType,
+      context === ModalViewFor.SIDECAR
+    ) as ACRArtifactType
 
-      formikRef?.current?.setFieldValue('subscriptionId', getSubscription(values))
-    }
+    formikRef?.current?.setFieldValue('subscriptionId', getSubscription(values))
+
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [subscriptionsData, loadingSubscriptions])
+  }, [subscriptions])
 
   const {
     data: registiresData,
