@@ -1080,3 +1080,5 @@ lowercase: 'lowercase'
 specialChar: 'special character'
 adminResources: 'Admin:Resources'
 personalAccessToken: 'Personal Access Token'
+
+securityText: Security

@@ -1,3 +1,4 @@
+continuous: '{{$.common.purpose.sto.continuous}}'
 stepDescription:
   ZeroNorth: Run a security tool to test for vulnerabilities.
 zeroNorthImagePlaceholder: shield

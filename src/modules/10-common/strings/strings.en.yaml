@@ -666,6 +666,7 @@ module:
   cf: FF
   ce: CCM
   cv: CV
+  sto: STO
   core: CORE
   pms: PMS
   templateService: TEMPLATESERVICE

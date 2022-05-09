@@ -103,6 +103,9 @@ export function LicenseStoreProvider(props: React.PropsWithChildren<unknown>): R
     },
     CE: {
       edition: Editions.FREE
+    },
+    STO: {
+      edition: Editions.FREE
     }
   }
 

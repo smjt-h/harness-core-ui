@@ -25,8 +25,10 @@ const ProjectSetupMenu: React.FC<ProjectSetupMenuProps> = ({ module }) => {
   const { NG_TEMPLATES, OPA_PIPELINE_GOVERNANCE, NG_VARIABLES } = useFeatureFlags()
   const params = { accountId, orgIdentifier, projectIdentifier, module }
   const isCIorCD = module === 'ci' || module === 'cd'
+  const enableNGTemplates = NG_TEMPLATES && (isCIorCD || module === 'sto')
+  const enableOpaGovernance = OPA_PIPELINE_GOVERNANCE && (isCIorCD || module === 'sto')
   // const isCV = module === 'cv'
-  const getGitSyncEnabled = isCIorCD || !module
+  const getGitSyncEnabled = isCIorCD || module === 'sto' || !module
 
   return (
     <NavExpandable title={getString('common.projectSetup')} route={routes.toSetup(params)}>
@@ -46,10 +48,8 @@ const ProjectSetupMenu: React.FC<ProjectSetupMenuProps> = ({ module }) => {
          To enable templates for CV
          Replace isCIorCD with (isCIorCD || isCV) 
          */}
-        {NG_TEMPLATES && isCIorCD && (
-          <SidebarLink label={getString('common.templates')} to={routes.toTemplates(params)} />
-        )}
-        {OPA_PIPELINE_GOVERNANCE && isCIorCD && (
+        {enableNGTemplates && <SidebarLink label={getString('common.templates')} to={routes.toTemplates(params)} />}
+        {enableOpaGovernance && (
           <SidebarLink label={getString('common.governance')} to={routes.toGovernance(params as GovernancePathProps)} />
         )}
       </Layout.Vertical>

@@ -15,6 +15,7 @@ import { SidebarLink } from '@common/navigation/SideNav/SideNav'
 import { ProjectSelector } from '@projects-orgs/components/ProjectSelector/ProjectSelector'
 import { useAppStore } from 'framework/AppStore/AppStoreContext'
 import { useStrings } from 'framework/strings'
+import ProjectSetupMenu from '@common/navigation/ProjectSetupMenu/ProjectSetupMenu'
 import css from './STOSideNav.module.scss'
 
 export default function STOSideNav(): React.ReactElement {
@@ -116,6 +117,7 @@ const TabPanel: React.FC<TabPanelProps> = ({ isProjectMode }) => {
               <SidebarLink label={getString('stoSteps.targets.testTargets')} to={routes.toSTOTargets({ accountId })} />
             </>
           )}
+          <ProjectSetupMenu module={'sto'} />
         </React.Fragment>
       )}
     </Layout.Vertical>

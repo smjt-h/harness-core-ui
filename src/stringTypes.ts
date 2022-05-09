@@ -398,6 +398,7 @@ export interface StringsMap {
   'common.module.core': string
   'common.module.cv': string
   'common.module.pms': string
+  'common.module.sto': string
   'common.module.templateService': string
   'common.moduleLabel': string
   'common.monthly': string
@@ -5843,6 +5844,7 @@ export interface StringsMap {
   'cv.windowsEndIsRequired': string
   'cv.yourExistingErrorBudgetIs': string
   'cv.zoom': string
+  'stoSteps.continuous': string
   'stoSteps.securityStage.description': string
   'stoSteps.stepDescription.ZeroNorth': string
   'stoSteps.targets.testTargets': string
@@ -8895,6 +8897,10 @@ export interface StringsMap {
    * @deprecated migrate this string to module level file
    */
   secureToken: string
+  /**
+   * @deprecated migrate this string to module level file
+   */
+  securityText: string
   /**
    * @deprecated migrate this string to module level file
    */

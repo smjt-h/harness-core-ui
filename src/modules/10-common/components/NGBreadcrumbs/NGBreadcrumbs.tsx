@@ -95,6 +95,10 @@ export const NGBreadcrumbs: React.FC<Partial<NGBreadcrumbsProps>> = ({
         url = paths.toCF(params)
         label = getString('featureFlagsText')
         break
+      case ModuleName.STO:
+        url = paths.toSTO(params)
+        label = getString('securityText')
+        break
     }
 
     if (projectIdentifier) {
