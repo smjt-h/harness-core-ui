@@ -14,7 +14,7 @@ import { useStrings } from 'framework/strings'
 import type { StringsMap } from 'stringTypes'
 import { FormMultiTypeCheckboxField } from '@common/components/MultiTypeCheckbox/MultiTypeCheckbox'
 import { MultiTypeTextField, MultiTypeTextProps } from '@common/components/MultiTypeText/MultiTypeText'
-import MultiTypeMap from '@common/components/MultiTypeMap/MultiTypeMap'
+import MultiTypeMap, { ConnectorReferenceProps } from '@common/components/MultiTypeMap/MultiTypeMap'
 import { MultiTypeMapInputSet } from '@common/components/MultiTypeMapInputSet/MultiTypeMapInputSet'
 import MultiTypeList from '@common/components/MultiTypeList/MultiTypeList'
 import { MultiTypeListInputSet } from '@common/components/MultiTypeListInputSet/MultiTypeListInputSet'
@@ -36,7 +36,6 @@ import {
   SupportedInputTypesForListItems,
   SupportedInputTypesForListTypeFieldInInputSetView
 } from './StepUtils'
-import type { MultiTypeMapInputSetPropsInterface, MultiTypeMapPropsInterface } from './CICommonInterfaces'
 import css from '@pipeline/components/PipelineSteps/Steps/Steps.module.scss'
 
 export interface CIStepOptionalConfigProps {
@@ -192,7 +191,15 @@ export const CIStepOptionalConfig: React.FC<CIStepOptionalConfigProps> = props =
       gitScope: connectorGitScope,
       expressions: connectorExpressions,
       connectorRefWidth
-    }: MultiTypeMapPropsInterface): React.ReactElement => (
+    }: {
+      fieldName: string
+      stringKey: keyof StringsMap
+      tooltipId?: string
+      allowableTypes: MultiTypeInputType[]
+      keyLabel?: keyof StringsMap
+      valueLabel?: keyof StringsMap
+      restrictToSingleEntry?: boolean
+    } & ConnectorReferenceProps): React.ReactElement => (
       <Container className={cx(css.formGroup, css.bottomMargin5, { [css.lg]: !showConnectorRef })}>
         <MultiTypeMap
           name={fieldName}
@@ -241,7 +248,14 @@ export const CIStepOptionalConfig: React.FC<CIStepOptionalConfigProps> = props =
       gitScope: connectorGitScopeInInputSet,
       expressions: connectorExpressionsInInputSet,
       connectorRefWidth
-    }: MultiTypeMapInputSetPropsInterface): React.ReactElement => (
+    }: {
+      fieldName: string
+      stringKey: keyof StringsMap
+      tooltipId?: string
+      keyLabel?: keyof StringsMap
+      valueLabel?: keyof StringsMap
+      restrictToSingleEntry?: boolean
+    } & ConnectorReferenceProps): React.ReactElement => (
       <Container className={cx(css.formGroup, css.bottomMargin5)}>
         <MultiTypeMapInputSet
           name={fieldName}
