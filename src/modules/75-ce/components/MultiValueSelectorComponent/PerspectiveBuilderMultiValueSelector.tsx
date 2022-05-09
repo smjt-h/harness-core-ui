@@ -58,7 +58,9 @@ const PerspectiveBuilderSelectorComponent: (props: PerspectiveBuilderSelectorCom
           }
           initialItemCount={100}
           itemContent={(_, value) => {
-            if (!value) return null
+            if (!value) {
+              return null
+            }
 
             const splitAt = `(${searchText})`
             const re = new RegExp(splitAt, 'g')
