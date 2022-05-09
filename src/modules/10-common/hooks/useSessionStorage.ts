@@ -58,7 +58,7 @@ export const useSessionStorage = <T>(
   //this is so that on new login/ re-login sessionStorage data will clear
   const storedToken = storage.getItem('tokenStored')
 
-  if (storedToken && storedToken !== SessionToken.getToken()) {
+  if (!isInvalidValue(storedToken as string) && !storedToken && storedToken !== SessionToken.getToken()) {
     setStoredValue(defaultValue)
     storage.clear()
     storage.setItem('tokenStored', SessionToken.getToken())
@@ -69,3 +69,5 @@ export const useSessionStorage = <T>(
 
   return [storedValue, setValue]
 }
+
+const isInvalidValue = (str = ''): boolean => str === 'undefined' || str === 'null' || str === ''
