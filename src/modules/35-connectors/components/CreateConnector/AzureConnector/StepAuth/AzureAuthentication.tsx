@@ -153,7 +153,7 @@ function AzureAuthentication(
       is: DelegateTypes.DELEGATE_OUT_CLUSTER,
       then: Yup.string().required(getString('connectors.tenantIdRequired'))
     }),
-    secretText: Yup.object().when(['delegateType', 'secretType'], {
+    secretText: Yup.mixed().when(['delegateType', 'secretType'], {
       is: (delegateType, secretType) =>
         delegateType === DelegateTypes.DELEGATE_OUT_CLUSTER && secretType === AzureSecretKeyType.SECRET,
       then: Yup.object().required(
@@ -162,7 +162,7 @@ function AzureAuthentication(
         })
       )
     }),
-    secretFile: Yup.object().when(['delegateType', 'secretType'], {
+    secretFile: Yup.mixed().when(['delegateType', 'secretType'], {
       is: (delegateType, secretType) =>
         delegateType === DelegateTypes.DELEGATE_OUT_CLUSTER && secretType === AzureSecretKeyType.CERT,
       then: Yup.object().required(

@@ -23,10 +23,12 @@ import { createOpenHealthSourceTableProps } from './HealthSourceTableContainer.u
 
 export default function HealthSourceTableContainer({
   serviceFormFormik,
-  healthSourceListFromAPI
+  healthSourceListFromAPI,
+  isTemplate
 }: {
   serviceFormFormik: FormikContext<MonitoredServiceForm>
   healthSourceListFromAPI: HealthSource[] | undefined
+  isTemplate?: boolean
 }): JSX.Element {
   const {
     showDrawer: showHealthSourceDrawer,
@@ -34,7 +36,7 @@ export default function HealthSourceTableContainer({
     setDrawerHeaderProps
   } = useDrawer({
     createHeader: props => <HealthSourceDrawerHeader {...props} />,
-    createDrawerContent: props => <HealthSourceDrawerContent {...props} />
+    createDrawerContent: props => <HealthSourceDrawerContent {...props} isTemplate={isTemplate} />
   })
 
   const updateHealthSource = useCallback(

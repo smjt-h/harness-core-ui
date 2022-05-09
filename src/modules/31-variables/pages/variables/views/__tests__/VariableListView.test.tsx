@@ -27,7 +27,11 @@ describe('VariableListView', () => {
   test('render component at account level', async () => {
     const { container, getByText } = render(
       <TestWrapper path={routes.toVariables({ ...accountPathProps })} pathParams={{ accountId: 'dummy' }}>
-        <VariableListView variables={VariableSuccessResponseWithData.data as any} gotoPage={jest.fn()} />
+        <VariableListView
+          variables={VariableSuccessResponseWithData.data as any}
+          gotoPage={jest.fn()}
+          openCreateUpdateVariableModal={jest.fn()}
+        />
       </TestWrapper>
     )
 
@@ -40,6 +44,7 @@ describe('VariableListView', () => {
           <VariableListView
             variables={VariableSuccessResponseWithDataWithNoPagedInfo.data as any}
             gotoPage={jest.fn()}
+            openCreateUpdateVariableModal={jest.fn()}
           />
         </TestWrapper>
       )
@@ -56,6 +61,7 @@ describe('VariableListView', () => {
           variables={VariableSuccessResponseWithDataFor2Pages.data as any}
           gotoPage={gotoPageMock}
           refetch={jest.fn()}
+          openCreateUpdateVariableModal={jest.fn()}
         />
       </TestWrapper>
     )
@@ -72,7 +78,7 @@ describe('VariableListView', () => {
   test('render component at account level - with no variable data', async () => {
     const { container } = render(
       <TestWrapper path={routes.toVariables({ ...accountPathProps })} pathParams={{ accountId: 'dummy' }}>
-        <VariableListView variables={undefined} gotoPage={jest.fn()} />
+        <VariableListView variables={undefined} gotoPage={jest.fn()} openCreateUpdateVariableModal={jest.fn()} />
       </TestWrapper>
     )
 
@@ -82,7 +88,11 @@ describe('VariableListView', () => {
   test('render component at account level - with no variable data', async () => {
     const { container } = render(
       <TestWrapper path={routes.toVariables({ ...accountPathProps })} pathParams={{ accountId: 'dummy' }}>
-        <VariableListView variables={{ content: undefined }} gotoPage={jest.fn()} />
+        <VariableListView
+          variables={{ content: undefined }}
+          gotoPage={jest.fn()}
+          openCreateUpdateVariableModal={jest.fn()}
+        />
       </TestWrapper>
     )
 
@@ -93,6 +103,7 @@ describe('VariableListView', () => {
     const { getByText } = render(
       <TestWrapper path={routes.toVariables({ ...accountPathProps })} pathParams={{ accountId: 'dummy' }}>
         <VariableListView
+          openCreateUpdateVariableModal={jest.fn()}
           variables={VariableSuccessResponseWithDataWithDefaultValue.data as any}
           gotoPage={jest.fn()}
         />

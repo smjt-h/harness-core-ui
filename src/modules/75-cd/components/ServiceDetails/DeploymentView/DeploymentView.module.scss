@@ -8,7 +8,7 @@
 .deploymentTab {
   div[class*='TableV2--body'] {
     overflow: auto;
-    max-height: 300px;
+    max-height: 530px;
   }
   div[class*='TableV2--row TableV2--card'] {
     box-shadow: none;
@@ -17,18 +17,20 @@
 }
 
 .envName {
+  padding: var(--spacing-small) !important;
   display: flex;
   background-color: var(--lime-400) !important;
-  width: 77px;
-  height: 24px;
-  border-radius: 4px;
+  width: var(--spacing-13);
+  height: var(--spacing-xlarge);
+  border-radius: var(--spacing-2);
   align-items: center;
   justify-content: center;
 }
 
 .envNameText {
   font-style: normal;
-  max-width: 60px;
+  font-size: var(--font-size-small) !important;
+  max-width: 88px;
 }
 
 .paddedContainer {

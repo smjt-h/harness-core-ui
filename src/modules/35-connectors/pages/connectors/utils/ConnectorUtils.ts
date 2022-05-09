@@ -660,12 +660,12 @@ export const setupAzureFormData = async (connectorInfo: ConnectorInfoDTO, accoun
     managedIdentity: delegateInCluster && authType,
     tenantId: connectorInfoSpec.credential.spec.tenantId,
     secretType: !delegateInCluster && authType,
-    secretText: !delegateInCluster && authType === AzureSecretKeyType.SECRET && secretKey,
-    secretFile: !delegateInCluster && authType === AzureSecretKeyType.CERT && secretKey,
+    secretText: !delegateInCluster && authType === AzureSecretKeyType.SECRET ? secretKey : undefined,
+    secretFile: !delegateInCluster && authType === AzureSecretKeyType.CERT ? secretKey : undefined,
     clientId:
-      delegateInCluster &&
-      authType === AzureManagedIdentityTypes.USER_MANAGED &&
-      connectorInfoSpec.credential.spec.auth.spec.clientId
+      delegateInCluster && authType === AzureManagedIdentityTypes.USER_MANAGED
+        ? connectorInfoSpec.credential.spec.auth.spec.clientId
+        : undefined
   }
 }
 

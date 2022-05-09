@@ -24,6 +24,7 @@ const SLOTargetChartWithChangeTimeline: React.FC<SLOTargetChartWithChangeTimelin
   sliderTimeRange,
   setSliderTimeRange,
   serviceLevelObjective,
+  filteredServiceLevelObjective,
   chartTimeRange,
   setChartTimeRange,
   resetSlider,
@@ -38,7 +39,7 @@ const SLOTargetChartWithChangeTimeline: React.FC<SLOTargetChartWithChangeTimelin
     monitoredServiceIdentifier,
     serviceIdentifier,
     environmentIdentifier
-  } = serviceLevelObjective
+  } = filteredServiceLevelObjective ?? serviceLevelObjective
 
   const SLOEndTime = sloPerformanceTrend[sloPerformanceTrend.length - 1]?.timestamp
   const errorBudgetEndTime = errorBudgetBurndown[errorBudgetBurndown.length - 1]?.timestamp

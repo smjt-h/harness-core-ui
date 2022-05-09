@@ -12,15 +12,12 @@ import { TemplateType } from '@templates-library/utils/templatesUtils'
 import type { NGTemplateInfoConfig } from 'services/template-ng'
 import { MonitoredTemplateCanvasWithRef } from '@templates-library/components/TemplateStudio/MonitoredServiceTemplateCanvas/MonitoredServiceTemplateCanvas'
 
-export interface NGTemplateInfoConfigWithMonitoredService extends Omit<NGTemplateInfoConfig, 'type'> {
-  type: NGTemplateInfoConfig['type'] | 'MonitoredService'
-}
-export class MonitoredServiceTemplate extends Template<NGTemplateInfoConfigWithMonitoredService> {
+export class MonitoredServiceTemplate extends Template<NGTemplateInfoConfig> {
   protected type = TemplateType.MonitoredService
   protected name = 'Monitored Service Template'
   protected color = Color.TEAL_700
 
-  protected defaultValues: NGTemplateInfoConfigWithMonitoredService = {
+  protected defaultValues: NGTemplateInfoConfig = {
     name: 'Template name',
     identifier: 'Template_name',
     versionLabel: '',

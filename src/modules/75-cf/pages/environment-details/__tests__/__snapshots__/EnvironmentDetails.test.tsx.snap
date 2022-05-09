@@ -50,29 +50,37 @@ exports[`EnvironmentDetails CFEnvironmentDetailsBody should render empty state 1
             style="height: 100%;"
           >
             <div
-              class="Layout--vertical Layout--layout-spacing-xxlarge StyledProps--main centerAlignItems"
-              style="width: 470px;"
+              class="Layout--vertical Layout--layout-spacing-xxxlarge StyledProps--main StyledProps--flex StyledProps--flex-justifyContent-center"
+              style="width: 540px;"
             >
               <img
+                alt=""
+                data-testid="nodata-image"
                 height="220"
                 src="test-file-stub"
                 width="320"
               />
-              <h2
-                class="StyledProps--font StyledProps--font-h2 StyledProps--main centerAlign StyledProps--font-variation-h4 StyledProps--color StyledProps--color-grey600"
-                level="2"
-                style="width: 546px;"
+              <div
+                class="StyledProps--font StyledProps--main"
               >
-                cf.environments.apiKeys.noKeysFoundTitle
-              </h2>
-              <p
-                class="StyledProps--font StyledProps--main centerAlign StyledProps--font-variation-body1 StyledProps--color StyledProps--color-grey600"
-                style="width: 546px;"
-              >
-                <span>
-                  cf.environments.apiKeys.noKeysFoundMessage
-                </span>
-              </p>
+                <div
+                  class="Layout--vertical Layout--layout-spacing-small StyledProps--main"
+                >
+                  <h2
+                    class="StyledProps--font StyledProps--font-h2 StyledProps--main centerAlign StyledProps--font-variation-h4 StyledProps--color StyledProps--color-grey600"
+                    level="2"
+                  >
+                    cf.environments.apiKeys.noKeysFoundTitle
+                  </h2>
+                  <p
+                    class="StyledProps--font StyledProps--main centerAlign StyledProps--font-variation-body1 StyledProps--color StyledProps--color-grey600"
+                  >
+                    <span>
+                      cf.environments.apiKeys.noKeysFoundMessage
+                    </span>
+                  </p>
+                </div>
+              </div>
               <button
                 class="bp3-button Button--button StyledProps--font StyledProps--main StyledProps--intent-primary Button--with-current-color"
                 type="button"

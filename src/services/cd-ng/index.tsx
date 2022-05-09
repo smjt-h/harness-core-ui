@@ -336,6 +336,7 @@ export interface AccessControlCheckError {
     | 'DATA_PROCESSING_ERROR'
     | 'INVALID_AZURE_AKS_REQUEST'
     | 'SERVERLESS_EXECUTION_ERROR'
+    | 'VARIABLE_NOT_FOUND_EXCEPTION'
   correlationId?: string
   detailedMessage?: string
   failedPermissionChecks?: PermissionCheck[]
@@ -1133,6 +1134,7 @@ export type AzureRepoConnector = ConnectorConfigDTO & {
   delegateSelectors?: string[]
   type: 'Account' | 'Repo'
   url: string
+  validationProject?: string
   validationRepo?: string
 }
 
@@ -2871,6 +2873,7 @@ export interface Error {
     | 'DATA_PROCESSING_ERROR'
     | 'INVALID_AZURE_AKS_REQUEST'
     | 'SERVERLESS_EXECUTION_ERROR'
+    | 'VARIABLE_NOT_FOUND_EXCEPTION'
   correlationId?: string
   detailedMessage?: string
   message?: string
@@ -3260,6 +3263,7 @@ export interface Failure {
     | 'DATA_PROCESSING_ERROR'
     | 'INVALID_AZURE_AKS_REQUEST'
     | 'SERVERLESS_EXECUTION_ERROR'
+    | 'VARIABLE_NOT_FOUND_EXCEPTION'
   correlationId?: string
   errors?: ValidationError[]
   message?: string
@@ -6592,6 +6596,7 @@ export interface ResourceDTO {
     | 'DELEGATE_TOKEN'
     | 'GOVERNANCE_POLICY'
     | 'GOVERNANCE_POLICY_SET'
+    | 'VARIABLE'
 }
 
 export interface ResourceGroup {
@@ -7708,6 +7713,7 @@ export interface ResponseMessage {
     | 'DATA_PROCESSING_ERROR'
     | 'INVALID_AZURE_AKS_REQUEST'
     | 'SERVERLESS_EXECUTION_ERROR'
+    | 'VARIABLE_NOT_FOUND_EXCEPTION'
   exception?: Throwable
   failureTypes?: (
     | 'EXPIRED'
@@ -10397,6 +10403,8 @@ export type TokenDTORequestBody = TokenDTO
 export type UserFilterRequestBody = UserFilter
 
 export type UserGroupDTORequestBody = UserGroupDTO
+
+export type VariableRequestDTORequestBody = VariableRequestDTO
 
 export type YamlSchemaDetailsWrapperRequestBody = YamlSchemaDetailsWrapper
 
@@ -36331,7 +36339,7 @@ export interface CreateVariableQueryParams {
 }
 
 export type CreateVariableProps = Omit<
-  MutateProps<ResponseVariableResponseDTO, unknown, CreateVariableQueryParams, VariableRequestDTO, void>,
+  MutateProps<ResponseVariableResponseDTO, unknown, CreateVariableQueryParams, VariableRequestDTORequestBody, void>,
   'path' | 'verb'
 >
 
@@ -36339,7 +36347,7 @@ export type CreateVariableProps = Omit<
  * Create a Variable
  */
 export const CreateVariable = (props: CreateVariableProps) => (
-  <Mutate<ResponseVariableResponseDTO, unknown, CreateVariableQueryParams, VariableRequestDTO, void>
+  <Mutate<ResponseVariableResponseDTO, unknown, CreateVariableQueryParams, VariableRequestDTORequestBody, void>
     verb="POST"
     path={`/variables`}
     base={getConfig('ng/api')}
@@ -36348,7 +36356,7 @@ export const CreateVariable = (props: CreateVariableProps) => (
 )
 
 export type UseCreateVariableProps = Omit<
-  UseMutateProps<ResponseVariableResponseDTO, unknown, CreateVariableQueryParams, VariableRequestDTO, void>,
+  UseMutateProps<ResponseVariableResponseDTO, unknown, CreateVariableQueryParams, VariableRequestDTORequestBody, void>,
   'path' | 'verb'
 >
 
@@ -36356,7 +36364,7 @@ export type UseCreateVariableProps = Omit<
  * Create a Variable
  */
 export const useCreateVariable = (props: UseCreateVariableProps) =>
-  useMutate<ResponseVariableResponseDTO, unknown, CreateVariableQueryParams, VariableRequestDTO, void>(
+  useMutate<ResponseVariableResponseDTO, unknown, CreateVariableQueryParams, VariableRequestDTORequestBody, void>(
     'POST',
     `/variables`,
     { base: getConfig('ng/api'), ...props }
@@ -36370,13 +36378,122 @@ export const createVariablePromise = (
     ResponseVariableResponseDTO,
     unknown,
     CreateVariableQueryParams,
-    VariableRequestDTO,
+    VariableRequestDTORequestBody,
     void
   >,
   signal?: RequestInit['signal']
 ) =>
-  mutateUsingFetch<ResponseVariableResponseDTO, unknown, CreateVariableQueryParams, VariableRequestDTO, void>(
-    'POST',
+  mutateUsingFetch<
+    ResponseVariableResponseDTO,
+    unknown,
+    CreateVariableQueryParams,
+    VariableRequestDTORequestBody,
+    void
+  >('POST', getConfig('ng/api'), `/variables`, props, signal)
+
+export interface UpdateVariableQueryParams {
+  accountIdentifier: string
+}
+
+export type UpdateVariableProps = Omit<
+  MutateProps<ResponseVariableResponseDTO, unknown, UpdateVariableQueryParams, VariableRequestDTORequestBody, void>,
+  'path' | 'verb'
+>
+
+/**
+ * Update a Variable
+ */
+export const UpdateVariable = (props: UpdateVariableProps) => (
+  <Mutate<ResponseVariableResponseDTO, unknown, UpdateVariableQueryParams, VariableRequestDTORequestBody, void>
+    verb="PUT"
+    path={`/variables`}
+    base={getConfig('ng/api')}
+    {...props}
+  />
+)
+
+export type UseUpdateVariableProps = Omit<
+  UseMutateProps<ResponseVariableResponseDTO, unknown, UpdateVariableQueryParams, VariableRequestDTORequestBody, void>,
+  'path' | 'verb'
+>
+
+/**
+ * Update a Variable
+ */
+export const useUpdateVariable = (props: UseUpdateVariableProps) =>
+  useMutate<ResponseVariableResponseDTO, unknown, UpdateVariableQueryParams, VariableRequestDTORequestBody, void>(
+    'PUT',
+    `/variables`,
+    { base: getConfig('ng/api'), ...props }
+  )
+
+/**
+ * Update a Variable
+ */
+export const updateVariablePromise = (
+  props: MutateUsingFetchProps<
+    ResponseVariableResponseDTO,
+    unknown,
+    UpdateVariableQueryParams,
+    VariableRequestDTORequestBody,
+    void
+  >,
+  signal?: RequestInit['signal']
+) =>
+  mutateUsingFetch<
+    ResponseVariableResponseDTO,
+    unknown,
+    UpdateVariableQueryParams,
+    VariableRequestDTORequestBody,
+    void
+  >('PUT', getConfig('ng/api'), `/variables`, props, signal)
+
+export interface DeleteVariableQueryParams {
+  accountIdentifier: string
+  orgIdentifier?: string
+  projectIdentifier?: string
+}
+
+export type DeleteVariableProps = Omit<
+  MutateProps<ResponseBoolean, unknown, DeleteVariableQueryParams, string, void>,
+  'path' | 'verb'
+>
+
+/**
+ * Delete a Variable
+ */
+export const DeleteVariable = (props: DeleteVariableProps) => (
+  <Mutate<ResponseBoolean, unknown, DeleteVariableQueryParams, string, void>
+    verb="DELETE"
+    path={`/variables`}
+    base={getConfig('ng/api')}
+    {...props}
+  />
+)
+
+export type UseDeleteVariableProps = Omit<
+  UseMutateProps<ResponseBoolean, unknown, DeleteVariableQueryParams, string, void>,
+  'path' | 'verb'
+>
+
+/**
+ * Delete a Variable
+ */
+export const useDeleteVariable = (props: UseDeleteVariableProps) =>
+  useMutate<ResponseBoolean, unknown, DeleteVariableQueryParams, string, void>('DELETE', `/variables`, {
+    base: getConfig('ng/api'),
+    ...props
+  })
+
+/**
+ * Delete a Variable
+ */
+export const deleteVariablePromise = (
+  props: MutateUsingFetchProps<ResponseBoolean, unknown, DeleteVariableQueryParams, string, void>,
+  signal?: RequestInit['signal']
+) =>
+  mutateUsingFetch<ResponseBoolean, unknown, DeleteVariableQueryParams, string, void>(
+    'DELETE',
     getConfig('ng/api'),
     `/variables`,
     props,

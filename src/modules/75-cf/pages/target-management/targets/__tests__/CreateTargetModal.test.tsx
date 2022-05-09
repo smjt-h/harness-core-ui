@@ -31,7 +31,7 @@ describe('CreateTargetModal', () => {
         path="/account/:accountId/cf/orgs/:orgIdentifier/projects/:projectIdentifier/feature-flags"
         pathParams={{ accountId: 'dummy', orgIdentifier: 'dummy', projectIdentifier: 'dummy' }}
       >
-        <CreateTargetModal loading={false} onSubmitTargets={jest.fn()} onSubmitUpload={jest.fn()} {...props} />
+        <CreateTargetModal loading={false} onSubmitTargets={jest.fn()} onSubmitTargetFile={jest.fn()} {...props} />
       </TestWrapper>
     )
   }
@@ -52,12 +52,12 @@ describe('CreateTargetModal', () => {
 
   test('CreateTargetModal should call callbacks properly', async () => {
     const onSubmitTargets = jest.fn()
-    const onSubmitUpload = jest.fn()
+    const onSubmitTargetFile = jest.fn()
 
     const { container } = renderComponent({
       loading: false,
       onSubmitTargets: onSubmitTargets,
-      onSubmitUpload: onSubmitUpload
+      onSubmitTargetFile: onSubmitTargetFile
     })
 
     fireEvent.click(getByText(container, 'cf.targets.create'))

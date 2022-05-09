@@ -15,7 +15,8 @@ import {
   testWrapperProps,
   responseSLODashboardDetail2,
   changeEventSummaryRestParams,
-  ChangeEventListResetParams
+  ChangeEventListResetParams,
+  SLODetailsResetParams
 } from './CVSLODetailsPage.mock'
 
 jest.mock('@cv/pages/slos/CVSLODetailsPage/DetailsPanel/views/ServiceDetails', () => ({
@@ -27,6 +28,12 @@ jest.mock('@cv/pages/slos/CVSLODetailsPage/DetailsPanel/views/ServiceDetails', (
 
 jest.mock('services/cv', () => {
   return {
+    useGetSLODetails: jest.fn().mockImplementation(() => ({
+      data: responseSLODashboardDetail2,
+      loading: false,
+      error: null,
+      refetch: jest.fn()
+    })),
     useChangeEventTimeline: jest
       .fn()
       .mockImplementation(() => ({ data: null, loading: false, error: null, refetch: jest.fn(), cancel: jest.fn() })),
@@ -79,6 +86,11 @@ describe('Test cases for TimeRangeFilter', () => {
     renderComponent()
 
     await waitFor(() => {
+      expect(cvServices.useGetSLODetails).toHaveBeenCalledWith(
+        expect.objectContaining({
+          queryParams: SLODetailsResetParams
+        })
+      )
       expect(cvServices.useGetMonitoredServiceChangeEventSummary).toHaveBeenCalledWith(
         expect.objectContaining({
           queryParams: {
@@ -105,6 +117,15 @@ describe('Test cases for TimeRangeFilter', () => {
     expect(screen.getByText('reset')).toBeInTheDocument()
 
     await waitFor(() => {
+      expect(cvServices.useGetSLODetails).toHaveBeenCalledWith(
+        expect.objectContaining({
+          queryParams: {
+            ...SLODetailsResetParams,
+            startTime: 1639989840000,
+            endTime: 1639993440000
+          }
+        })
+      )
       expect(cvServices.useGetMonitoredServiceChangeEventSummary).toHaveBeenCalledWith(
         expect.objectContaining({
           queryParams: {
@@ -129,6 +150,15 @@ describe('Test cases for TimeRangeFilter', () => {
     expect(screen.getByText('reset')).toBeInTheDocument()
 
     await waitFor(() => {
+      expect(cvServices.useGetSLODetails).toHaveBeenCalledWith(
+        expect.objectContaining({
+          queryParams: {
+            ...SLODetailsResetParams,
+            startTime: 1639907040000,
+            endTime: 1639993440000
+          }
+        })
+      )
       expect(cvServices.useGetMonitoredServiceChangeEventSummary).toHaveBeenCalledWith(
         expect.objectContaining({
           queryParams: {
@@ -152,6 +182,15 @@ describe('Test cases for TimeRangeFilter', () => {
     userEvent.click(screen.getByText('1 Week'))
 
     await waitFor(() => {
+      expect(cvServices.useGetSLODetails).toHaveBeenCalledWith(
+        expect.objectContaining({
+          queryParams: {
+            ...SLODetailsResetParams,
+            startTime: 1639388640000,
+            endTime: 1639993440000
+          }
+        })
+      )
       expect(cvServices.useGetMonitoredServiceChangeEventSummary).toHaveBeenCalledWith(
         expect.objectContaining({
           queryParams: {
@@ -176,6 +215,11 @@ describe('Test cases for TimeRangeFilter', () => {
     expect(screen.queryByText('reset')).not.toBeInTheDocument()
 
     await waitFor(() => {
+      expect(cvServices.useGetSLODetails).toHaveBeenCalledWith(
+        expect.objectContaining({
+          queryParams: SLODetailsResetParams
+        })
+      )
       expect(cvServices.useGetMonitoredServiceChangeEventSummary).toHaveBeenCalledWith(
         expect.objectContaining({
           queryParams: {

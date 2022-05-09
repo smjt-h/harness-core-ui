@@ -10,13 +10,16 @@ import { noop } from 'lodash-es'
 import { act } from 'react-dom/test-utils'
 import { render, waitFor } from '@testing-library/react'
 import { TestWrapper } from '@common/utils/testUtils'
-
 import { clickSubmit, fillAtForm, InputTypes } from '@common/utils/JestFormHelper'
-import { useCreateVariable } from 'services/cd-ng'
+import { VariableSuccessResponseWithData } from '@variables/pages/variables/__tests__/mock/variableResponse'
+import { useCreateVariable, useUpdateVariable } from 'services/cd-ng'
 import CreateEditVariable from '../CreateEditVariable'
 
 jest.mock('services/cd-ng')
 const useCreateVariableMock = useCreateVariable as jest.MockedFunction<any>
+const useUpdateVariableMock = useUpdateVariable as jest.MockedFunction<any>
+const updateVariable = jest.fn().mockReturnValueOnce({ status: 'SUCCESS' })
+useUpdateVariableMock.mockReturnValue({ mutate: updateVariable })
 
 describe('CreateEditVariable', () => {
   beforeEach(() => {
@@ -63,7 +66,11 @@ describe('CreateEditVariable', () => {
     useCreateVariableMock.mockImplementation(() => ({ mutate: createVariable }))
     const { container, getByText } = render(
       <TestWrapper>
-        <CreateEditVariable accountId="accountid" closeModal={noop} isEdit={true} />
+        <CreateEditVariable
+          accountId="accountid"
+          closeModal={noop}
+          variable={VariableSuccessResponseWithData.data.content[0].variable as any}
+        />
       </TestWrapper>
     )
 

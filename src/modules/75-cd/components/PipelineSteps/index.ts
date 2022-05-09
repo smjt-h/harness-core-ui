@@ -32,8 +32,8 @@ import { TerraformApply } from './TerraformApply/TerraformApply'
 import { InfraProvisioning } from './InfraProvisioning/InfraProvisioning'
 import { GcpInfrastructureSpec } from './GcpInfrastructureSpec/GcpInfrastructureSpec'
 import { PolicyStep } from './PolicyStep/PolicyStep'
-import { ServerlessAwsLambdaDeployStep } from './ServerlessDeployStep/ServerlessDeployStep'
-import { ServerlessAwsLambdaRollbackStep } from './ServerlessAwsLambdaRollback/ServerlessAwsLambdaRollback'
+import { ServerlessLambdaDeployStep } from './ServerlessLambdaDeploy/ServerlessLambdaDeploy'
+import { ServerlessLambdaRollbackStep } from './ServerlessLambdaRollback/ServerlessLambdaRollback'
 import { ServerlessAwsLambdaSpec } from './ServerlessAWSLambda/ServerlessAwsLambdaSpec'
 import { ServerlessAzureSpec } from './ServerlessAzure/ServerlessAzureSpec'
 import { ServerlessGCPSpec } from './ServerlessGCP/ServerlessGCPSpec'
@@ -67,6 +67,6 @@ factory.registerStep(new TerraformApply())
 factory.registerStep(new TerraformPlan())
 factory.registerStep(new InfraProvisioning())
 factory.registerStep(new PolicyStep())
-factory.registerStep(new ServerlessAwsLambdaDeployStep())
-factory.registerStep(new ServerlessAwsLambdaRollbackStep())
+factory.registerStep(new ServerlessLambdaDeployStep())
+factory.registerStep(new ServerlessLambdaRollbackStep())
 factory.registerStep(new AzureInfrastructureSpec())

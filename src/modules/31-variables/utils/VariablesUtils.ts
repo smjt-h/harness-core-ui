@@ -25,19 +25,42 @@ export interface VariableFormData {
   identifier: string
   description?: string
   type: VariableDTO['type']
+  valueType: VariableConfigDTO['valueType']
+}
+export interface StringFormData extends VariableFormData {
   fixedValue?: string
   allowedValues?: string[]
   defaultValue?: string
-  valueType: VariableConfigDTO['valueType']
 }
-
-export interface VariableFormDataWithScope extends VariableFormData {
+export interface VariableFormDataWithScope extends StringFormData {
   projectIdentifier?: string
   orgIdentifier?: string
 }
 
 export const labelStringMap: Record<VariableType, StringKeys> = {
   [VariableType.String]: 'string'
+}
+
+export function convertVariableDTOToFormData(data: VariableDTO): StringFormData {
+  return {
+    ...pick(data, ['name', 'identifier', 'description', 'type']),
+    ...getVariableTypeFormDataFromDTO(data),
+    valueType: data.spec.valueType
+  }
+}
+
+function getVariableTypeFormDataFromDTO(data: VariableDTO): StringFormData {
+  const variableType = data.type
+  switch (variableType) {
+    case VariableType.String: {
+      const stringConfig: StringVariableConfigDTO = data.spec
+      return {
+        ...pick(stringConfig, ['fixedValue', 'allowedValues', 'defaultValue', 'regex'])
+      } as StringFormData
+    }
+    default:
+      throw Error(` ${variableType} variable type is not supported.`)
+  }
 }
 
 export const getVaribaleTypeOptions = (getString: (key: StringKeys) => string): SelectOption[] => {
@@ -57,6 +80,7 @@ export function convertVariableFormDataToDTO(data: VariableFormDataWithScope): V
     }
   }
 }
+
 function getVariableSpecFromFormData(data: VariableFormDataWithScope): StringVariableConfigDTO {
   const variableType = data.type
   switch (variableType) {

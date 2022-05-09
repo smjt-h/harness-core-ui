@@ -6,6 +6,7 @@
  */
 
 import React, { useState, useMemo } from 'react'
+import { createPortal } from 'react-dom'
 import { usePopper } from 'react-popper'
 import cx from 'classnames'
 import type * as PopperJS from '@popperjs/core'
@@ -39,6 +40,9 @@ export interface DynamicPopoverProps<T> {
   closeOnMouseOut?: boolean
   hoverShowDelay?: number
   hoverHideDelay?: number
+  usePortal?: boolean
+  parentElement?: HTMLElement | null
+  portalClassName?: string
 }
 
 export function DynamicPopover<T>(props: DynamicPopoverProps<T>): JSX.Element {
@@ -51,12 +55,15 @@ export function DynamicPopover<T>(props: DynamicPopoverProps<T>): JSX.Element {
     fixedPosition = false,
     closeOnMouseOut,
     hoverShowDelay = 0,
-    hoverHideDelay = 300
+    hoverHideDelay = 300,
+    usePortal,
+    parentElement = null,
+    portalClassName = ''
   } = props
   const [darkModeState, setDarkMode] = useState<boolean>(darkMode)
   const [useArrowsState, setArrowVisibility] = useState<boolean>(useArrows)
   const [fixedPositionState, setFixedPosition] = useState<boolean>(fixedPosition)
-
+  const [portalEl, setPortalEl] = useState<HTMLElement | null>(null)
   const [popperElement, setPopperElement] = useState<HTMLElement | null>(null)
   const [data, setData] = useState<T>()
   const [arrowElement, setArrowElement] = useState<HTMLElement | null>(null)
@@ -137,6 +144,23 @@ export function DynamicPopover<T>(props: DynamicPopoverProps<T>): JSX.Element {
   }, [bind, handler])
 
   React.useEffect(() => {
+    let portalDiv: HTMLElement | null = null
+    if (usePortal) {
+      if (parentElement) {
+        portalDiv = parentElement // assuming here that consumer will apply the className, if required
+      } else {
+        portalDiv = document.createElement('div')
+        portalDiv.className = portalClassName
+      }
+      document.body.appendChild(portalDiv)
+      setPortalEl(portalDiv)
+    }
+    return () => {
+      portalDiv?.remove()
+    }
+  }, [usePortal, parentElement, portalClassName])
+
+  React.useEffect(() => {
     return () => {
       if (showTimerRef.current) {
         window.clearTimeout(showTimerRef.current)
@@ -149,8 +173,7 @@ export function DynamicPopover<T>(props: DynamicPopoverProps<T>): JSX.Element {
   }, [])
 
   const popperStyle = fixedPositionState ? { ...styles.popper, transform: 'initial' } : styles.popper
-
-  return (
+  const renderPopover = (): React.ReactElement => (
     <>
       {visible && (
         <span
@@ -182,4 +205,5 @@ export function DynamicPopover<T>(props: DynamicPopoverProps<T>): JSX.Element {
       )}
     </>
   )
+  return usePortal && portalEl ? createPortal(renderPopover(), portalEl) : renderPopover()
 }

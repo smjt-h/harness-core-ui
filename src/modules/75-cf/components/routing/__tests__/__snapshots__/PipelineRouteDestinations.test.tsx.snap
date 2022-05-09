@@ -297,6 +297,30 @@ exports[`PipelineRouteDestinations it should return the pipeline routes 1`] = `
         "startTrialRedirect": [Function],
       }
     }
+    pageName="ExecutionPolicyEvaluationsView"
+    path="/account/:accountId/:module/orgs/:orgIdentifier/projects/:projectIdentifier/pipelines/:pipelineIdentifier/executions/:executionIdentifier/policy-evaluations"
+    sidebarProps={
+      Object {
+        "icon": "cf-main",
+        "navComponent": [Function],
+        "title": "Feature Flags",
+      }
+    }
+  >
+    <ExecutionLandingPage>
+      <ExecutionPolicyEvaluationsView />
+    </ExecutionLandingPage>
+  </RouteWithLayout>
+  <RouteWithLayout
+    exact={true}
+    layout={[Function]}
+    licenseRedirectData={
+      Object {
+        "expiredTrialRedirect": [Function],
+        "licenseStateName": "FF_LICENSE_STATE",
+        "startTrialRedirect": [Function],
+      }
+    }
     path="/account/:accountId/:module/orgs/:orgIdentifier/projects/:projectIdentifier/pipelines/:pipelineIdentifier/executions"
     sidebarProps={
       Object {

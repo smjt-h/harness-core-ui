@@ -311,8 +311,10 @@ co:
     vpcLabel: 'VPC'
     securityGroupsLabel: 'Network tags'
     machineType: 'Machine type'
-    gcpCertificateId: 'Certificate Secret Version'
-    gcpSecretId: 'Private Key Secret Version'
+    gcpCertificateId: 'TLS Certificate Secret Version'
+    gcpSecretId: 'TLS Private Key Secret Version'
+    gcpCertificatePlaceholder: 'projects/123456789012/secrets/secretkey/versions/1'
+    gcpSecretPlaceholder: 'projects/123456789012/secrets/privkey/versions/1'
     select:
       accessPoint: 'Select Access Point'
       account: 'Select {{$.ce.co.accessPoint.cloudAccount}}'

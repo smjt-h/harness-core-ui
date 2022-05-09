@@ -5,7 +5,7 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import React, { useMemo, useRef, useState } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 import { FieldArray, FieldArrayRenderProps, FormikProps } from 'formik'
 import {
   Container,
@@ -28,6 +28,8 @@ import { useStrings } from 'framework/strings'
 import formatCost from '@ce/utils/formatCost'
 import { useCreateBudget, Budget, AlertThreshold, useUpdateBudget } from 'services/ce'
 import { EmailSchema } from '@common/utils/Validation'
+import { USER_JOURNEY_EVENTS } from '@ce/TrackingEventsConstants'
+import { useTelemetry } from '@common/hooks/useTelemetry'
 import type { BudgetStepData } from '../types'
 import css from '../PerspectiveCreateBudget.module.scss'
 interface Props {
@@ -37,6 +39,7 @@ interface Props {
   onSuccess: () => void
   budget?: Budget
   isEditMode: boolean
+  initiatorPage?: string
 }
 
 interface ThresholdForm {
@@ -57,7 +60,7 @@ const ConfigureAlerts: React.FC<StepProps<BudgetStepData> & Props> = props => {
   const [loading, setLoading] = useState(false)
   const [hasError, setError] = useState(false)
   const [modalErrorHandler, setModalErrorHandler] = useState<ModalErrorHandlerBinding | undefined>()
-  const { prevStepData, previousStep, accountId, budget, isEditMode } = props
+  const { prevStepData, previousStep, accountId, budget, isEditMode, initiatorPage = '' } = props
   const {
     type,
     perspective,
@@ -68,6 +71,7 @@ const ConfigureAlerts: React.FC<StepProps<BudgetStepData> & Props> = props => {
     startTime,
     budgetAmount = 0
   } = (prevStepData || {}) as BudgetStepData
+  const { trackEvent } = useTelemetry()
 
   const { mutate: updateBudget } = useUpdateBudget({
     id: budget?.uuid || '',
@@ -77,6 +81,10 @@ const ConfigureAlerts: React.FC<StepProps<BudgetStepData> & Props> = props => {
     queryParams: { accountIdentifier: accountId }
   })
 
+  useEffect(() => {
+    trackEvent(USER_JOURNEY_EVENTS.CONFIGURE_BUDGET_ALERTS, { pageName: initiatorPage, isEditMode })
+  }, [])
+
   const getInitialValues = () => {
     return { alertThresholds: budget?.alertThresholds || [makeNewThresold()] }
   }
@@ -84,6 +92,14 @@ const ConfigureAlerts: React.FC<StepProps<BudgetStepData> & Props> = props => {
   const handleSubmit = async ({ alertThresholds }: ThresholdForm) => {
     setError(false)
     setLoading(true)
+
+    trackEvent(USER_JOURNEY_EVENTS.SAVE_BUDGET, {
+      pageName: initiatorPage,
+      isEditMode,
+      alerts: alertThresholds.length,
+      budgetType: type,
+      budgetPeriod: period
+    })
 
     const altThresholds = alertThresholds.map(alt => {
       return {

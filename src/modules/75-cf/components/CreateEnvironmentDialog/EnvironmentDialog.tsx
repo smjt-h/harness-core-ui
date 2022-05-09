@@ -37,6 +37,8 @@ import { ResourceType } from '@rbac/interfaces/ResourceType'
 import { PermissionIdentifier } from '@rbac/interfaces/PermissionIdentifier'
 import usePlanEnforcement from '@cf/hooks/usePlanEnforcement'
 import { FeatureIdentifier } from 'framework/featureStore/FeatureIdentifier'
+import { useTelemetry } from '@common/hooks/useTelemetry'
+import { Category, FeatureActions } from '@common/constants/TrackingConstants'
 import css from './EnvironmentDialog.module.scss'
 
 export interface EnvironmentDialogProps {
@@ -86,6 +88,10 @@ const EnvironmentDialog: React.FC<EnvironmentDialogProps> = ({ disabled, onCreat
   }
 
   const handleSubmit = (values: EnvironmentValues) => {
+    trackEvent(FeatureActions.CreateEnvSubmit, {
+      category: Category.FEATUREFLAG,
+      data: values
+    })
     createEnv({
       name: values.name,
       identifier: values.identifier,
@@ -124,6 +130,7 @@ const EnvironmentDialog: React.FC<EnvironmentDialogProps> = ({ disabled, onCreat
     }
     return errors
   }
+  const { trackEvent } = useTelemetry()
 
   const [openModal, hideModal] = useModalHook(() => {
     return (
@@ -138,7 +145,12 @@ const EnvironmentDialog: React.FC<EnvironmentDialogProps> = ({ disabled, onCreat
           initialValues={initialValues}
           formName="cfEnvDialog"
           onSubmit={handleSubmit}
-          onReset={hideModal}
+          onReset={() => {
+            trackEvent(FeatureActions.CreateEnvCancel, {
+              category: Category.FEATUREFLAG
+            })
+            hideModal()
+          }}
           validationSchema={Yup.object().shape({
             name: NameSchema({ requiredErrorMsg: getString?.('fieldRequired', { field: 'Environment' }) }),
             identifier: IdentifierSchema()
@@ -201,7 +213,12 @@ const EnvironmentDialog: React.FC<EnvironmentDialogProps> = ({ disabled, onCreat
   return (
     <RbacButton
       disabled={disabled}
-      onClick={openModal}
+      onClick={() => {
+        trackEvent(FeatureActions.CreateEnvClick, {
+          category: Category.FEATUREFLAG
+        })
+        openModal()
+      }}
       text={`+ ${getString('newEnvironment')}`}
       intent="primary"
       padding={{

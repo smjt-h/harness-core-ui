@@ -43,12 +43,15 @@ editModal:
   editDashboard: 'Edit Dashboard'
   submitFail: 'Edit dashboard failed, Please try again.'
   success: 'Successfully updated the dashboard'
-createFolder:
+folderForm:
   stepOne: 'About the Folder'
   folderPlaceholder: 'Name your folder'
   folderNameValidation: 'Folder name is a required field'
   folderDescriptionPlaceholder: 'Provide folder purpose'
+createFolder:
   folderSubmitFail: 'Folder creation failed, Please try again.'
+updateFolder:
+  folderUpdateFail: 'Failed to update folder, Please try again.'
 deleteFolder:
   confirmDeleteTitle: 'Delete {{name}} folder'
   confirmDeleteText: 'Deleting the folder {{name}} would mean that you are also deleting all the dashboards associated with it. Are you sure you want to delete the Folder?'

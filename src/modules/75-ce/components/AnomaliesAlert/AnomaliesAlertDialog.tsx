@@ -5,7 +5,7 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Dialog, IDialogProps } from '@blueprintjs/core'
 import { StepWizard, Formik, FormikForm, useToaster, getErrorInfoFromErrorObject, Color } from '@harness/uicore'
 import { useModalHook } from '@harness/use-modal'
@@ -21,6 +21,8 @@ import {
   useCreateNotificationSetting,
   useUpdateNotificationSetting
 } from 'services/ce'
+import { useTelemetry } from '@common/hooks/useTelemetry'
+import { USER_JOURNEY_EVENTS } from '@ce/TrackingEventsConstants'
 import PerspectiveSelection from './PerspectiveSelection'
 import NotificationMethod from './NotificationMethod'
 import css from './AnomaliesAlertDialog.module.scss'
@@ -42,10 +44,13 @@ interface AlertDialogProps {
   hideAnomaliesAlertModal: () => void
   handleSubmit: (data: FormValues) => void
   notificationData: CCMPerspectiveNotificationChannelsDTO
+  source?: string
+  isEditFlow: boolean
 }
 interface AnomalyAlertDialogProps {
   setRefetchingState: React.Dispatch<React.SetStateAction<boolean>>
   selectedAlert: CCMPerspectiveNotificationChannelsDTO
+  source?: string
 }
 
 interface AlertsData {
@@ -60,9 +65,12 @@ interface FormValues {
 export const AnomalyAlertDialog: React.FC<AlertDialogProps> = ({
   hideAnomaliesAlertModal,
   handleSubmit,
-  notificationData
+  notificationData,
+  source,
+  isEditFlow
 }) => {
   const { getString } = useStrings()
+  const { trackEvent } = useTelemetry()
 
   const [{ data: perspectiveData }] = useFetchPerspectiveListQuery()
 
@@ -93,6 +101,13 @@ export const AnomalyAlertDialog: React.FC<AlertDialogProps> = ({
       })
     )
   })
+
+  useEffect(() => {
+    trackEvent(USER_JOURNEY_EVENTS.ANOMALY_ALERTS_OVERVIEW, {
+      pageName: source,
+      isEditFlow: isEditFlow
+    })
+  }, [])
 
   return (
     <Dialog onClose={hideAnomaliesAlertModal} {...modalPropsLight} canOutsideClickClose={true}>
@@ -142,6 +157,7 @@ const useAnomaliesAlertDialog = (props: AnomalyAlertDialogProps) => {
   const { accountId } = useParams<AccountPathProps>()
   const { showError, showSuccess } = useToaster()
   const { getString } = useStrings()
+  const { trackEvent } = useTelemetry()
 
   const { mutate: createNotificationAlert } = useCreateNotificationSetting({
     queryParams: {
@@ -156,6 +172,8 @@ const useAnomaliesAlertDialog = (props: AnomalyAlertDialogProps) => {
       perspectiveId: ''
     }
   })
+
+  const isEditFlow = Boolean(props.selectedAlert && props.selectedAlert.channels?.length) || false
 
   /* istanbul ignore next */
   const handleSubmit = async (data: FormValues) => {
@@ -175,6 +193,12 @@ const useAnomaliesAlertDialog = (props: AnomalyAlertDialogProps) => {
       }
     })
 
+    trackEvent(USER_JOURNEY_EVENTS.SAVE_ANOMALY_ALERTS, {
+      pageName: props.source,
+      isEditFlow: isEditFlow,
+      channelsCount: payload.length
+    })
+
     const queryParams = {
       perspectiveId: data.perspective,
       accountIdentifier: accountId
@@ -182,7 +206,7 @@ const useAnomaliesAlertDialog = (props: AnomalyAlertDialogProps) => {
 
     try {
       let response
-      if (props.selectedAlert && props.selectedAlert.channels?.length) {
+      if (isEditFlow) {
         response = await updateNotificationAlert({ channels: payload as CCMNotificationChannel[] }, { queryParams })
       } else {
         response = await createNotificationAlert({ channels: payload as CCMNotificationChannel[] }, { queryParams })
@@ -191,7 +215,7 @@ const useAnomaliesAlertDialog = (props: AnomalyAlertDialogProps) => {
       hideAnomaliesAlertModal()
       props.setRefetchingState(true)
       if (response) {
-        if (props.selectedAlert && props.selectedAlert.channels?.length) {
+        if (isEditFlow) {
           showSuccess(getString('ce.anomalyDetection.notificationAlerts.updateAlertSuccessMsg'))
         } else {
           showSuccess(getString('ce.anomalyDetection.notificationAlerts.addAlertSuccessMsg'))
@@ -208,6 +232,8 @@ const useAnomaliesAlertDialog = (props: AnomalyAlertDialogProps) => {
         hideAnomaliesAlertModal={hideAnomaliesAlertModal}
         handleSubmit={handleSubmit}
         notificationData={props.selectedAlert}
+        source={props.source}
+        isEditFlow={isEditFlow}
       />
     ),
     [props.selectedAlert]

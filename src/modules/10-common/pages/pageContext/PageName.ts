@@ -69,5 +69,21 @@ export enum PAGE_NAME {
   AccountOverview = 'AccountOverview',
   SubscriptionsPage = 'SubscriptionsPage',
   PlanPage = 'PlanPage',
-  GetStartedWithCI = 'GetStartedWithCI'
+  GetStartedWithCI = 'GetStartedWithCI',
+  CFHomePage = 'CFHomePage',
+  CFTrialHomePage = 'CFTrialHomePage',
+  FeatureFlagsLandingPage = 'FeatureFlagsLandingPage',
+  FeatureFlagsDetailPage = 'FeatureFlagsDetailPage',
+  TargetGroupDetailPage = 'TargetGroupDetailPage',
+  SegmentDetailPage = 'SegmentDetailPage',
+  TargetsPage = 'TargetsPage',
+  TargetDetailPage = 'TargetDetailPage',
+  LegacyTargetDetailPage = 'LegacyTargetDetailPage',
+  SegmentsPage = 'SegmentsPage',
+  EnvironmentsPage = 'EnvironmentsPage',
+  EnvironmentDetails = 'EnvironmentDetails',
+  OnboardingPage = 'OnboardingPage',
+  OnboardingDetailPage = 'OnboardingDetailPage',
+  CFWorkflowsPage = 'CFWorkflowsPage',
+  SecretDetailsHomePage = 'SecretDetailsHomePage'
 }

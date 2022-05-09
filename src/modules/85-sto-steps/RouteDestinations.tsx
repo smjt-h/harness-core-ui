@@ -17,7 +17,7 @@ import ExecutionCard from '@pipeline/components/ExecutionCard/ExecutionCard'
 import { useAppStore } from 'framework/AppStore/AppStoreContext'
 import ChildAppMounter from 'microfrontends/ChildAppMounter'
 import STOSideNav from '@sto-steps/components/STOSideNav/STOSideNav'
-import '@sto-steps/components/PipelineStages/SecurityStage'
+import '@sto-steps/components/PipelineStages/SecurityTestsStage'
 
 const STOApp = React.lazy(() => import('sto/App')) // eslint-disable-line import/no-unresolved
 

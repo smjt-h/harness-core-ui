@@ -812,8 +812,8 @@ stepDescription:
   HelmRollback: Rolls back all the deployed objects to the previous version.
   ServiceNowApproval: Use ServiceNow issues to approve steps and stages.
   Policy: Evaluate policy during pipeline execution
-  ServerlessAwsLambdaDeploy: Create the Lambda functions defined in this Stage.
-  ServerlessAwsLambdaRollback: Deploy the previous successful version as a new version.
+  ServerlessLambdaDeploy: Create the Lambda functions defined in this Stage.
+  ServerlessLambdaRollback: Deploy the previous successful version as a new version.
 executionStrategy:
   executionStrategies: Execution Strategies
   useStrategy: Use Strategy

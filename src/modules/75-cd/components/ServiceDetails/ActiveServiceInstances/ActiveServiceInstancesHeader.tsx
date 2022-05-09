@@ -9,6 +9,7 @@ import React, { useMemo } from 'react'
 import { useParams } from 'react-router-dom'
 import moment from 'moment'
 import { Color } from '@harness/design-system'
+import { isEmpty } from 'lodash-es'
 import { Container, Layout, Text } from '@wings-software/uicore'
 import type { ProjectPathProps, ServicePathProps } from '@common/interfaces/RouteInterfaces'
 import {
@@ -97,16 +98,18 @@ export const ActiveServiceInstancesHeader: React.FC = () => {
     }
   }
   const labelsHtml = (
-    <Layout.Vertical height="100%" padding={{ top: 'xsmall', bottom: 'xsmall', right: 'large' }}>
-      <ul>
-        {pieChartProps.items.map(({ label, formattedValue, value, color }) => (
-          <li style={{ fontWeight: 500, fontSize: 15, color }} key={`${label}_${value}`}>
-            <Text font={{ size: 'xsmall' }} color={Color.GREY_500} key={label}>{`${label} (${
-              formattedValue ? formattedValue : value
-            })`}</Text>
-          </li>
-        ))}
-      </ul>
+    <Layout.Vertical className={css.labelStyles}>
+      {!isEmpty(pieChartProps.items) ? (
+        <ul>
+          {pieChartProps.items.map(({ label, formattedValue, value, color }) => (
+            <li style={{ color }} key={`${label}_${value}`}>
+              <Text className={css.listStyles} key={label}>{`${label} (${
+                formattedValue ? formattedValue : value
+              })`}</Text>
+            </li>
+          ))}
+        </ul>
+      ) : null}
     </Layout.Vertical>
   )
 

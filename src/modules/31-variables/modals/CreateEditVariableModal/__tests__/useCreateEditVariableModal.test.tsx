@@ -14,7 +14,7 @@ import routes from '@common/RouteDefinitions'
 import { accountPathProps, orgPathProps, projectPathProps } from '@common/utils/routeUtils'
 
 import { clickSubmit, fillAtForm, InputTypes } from '@common/utils/JestFormHelper'
-import { useCreateVariable } from 'services/cd-ng'
+import { useCreateVariable, useUpdateVariable } from 'services/cd-ng'
 import { StringFixedPayloadProj } from '@variables/utils/__tests__/mockConstants'
 import useCreateEditVariableModal from '../useCreateEditVariableModal'
 
@@ -22,8 +22,11 @@ const pathParams = { accountId: 'dummy', orgIdentifier: 'default', projectIdenti
 
 jest.mock('services/cd-ng')
 const useCreateVariableMock = useCreateVariable as jest.MockedFunction<any>
+const useUpdateVariableMock = useUpdateVariable as jest.MockedFunction<any>
 const createVariable = jest.fn().mockImplementationOnce(() => ({ status: 'SUCCESS' }))
 useCreateVariableMock.mockImplementation(() => ({ mutate: createVariable }))
+const updateVariable = jest.fn().mockReturnValueOnce({ status: 'SUCCESS' })
+useUpdateVariableMock.mockReturnValue({ mutate: updateVariable })
 describe('Test useCreateEditVariableModal', () => {
   const TestComponent = ({ isEdit = false, onSuccess = noop, variable = undefined }: any) => {
     const { openCreateUpdateVariableModal, closeCreateUpdateVariableModal } = useCreateEditVariableModal({

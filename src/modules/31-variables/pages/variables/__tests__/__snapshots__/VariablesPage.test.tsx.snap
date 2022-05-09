@@ -212,7 +212,7 @@ exports[`Variables Page render page at account level 1`] = `
           class="TableV2--cell"
           colspan="1"
           role="columnheader"
-          style="width: 30%;"
+          style="width: 20%;"
         >
           <div
             class="Text--withDocsTooltip"
@@ -229,7 +229,7 @@ exports[`Variables Page render page at account level 1`] = `
           class="TableV2--cell"
           colspan="1"
           role="columnheader"
-          style="width: 15%;"
+          style="width: 20%;"
         >
           <div
             class="Text--withDocsTooltip"
@@ -239,6 +239,23 @@ exports[`Variables Page render page at account level 1`] = `
               class="StyledProps--font StyledProps--main StyledProps--font-variation-table-headers"
             >
               variables.defaultValue
+            </p>
+          </div>
+        </div>
+        <div
+          class="TableV2--cell"
+          colspan="1"
+          role="columnheader"
+          style="width: 5%;"
+        >
+          <div
+            class="Text--withDocsTooltip"
+            data-tooltip-id="VariableListViewaction"
+          >
+            <p
+              class="StyledProps--font StyledProps--main StyledProps--font-variation-table-headers"
+            >
+              
             </p>
           </div>
         </div>
@@ -301,7 +318,7 @@ exports[`Variables Page render page at account level 1`] = `
           <div
             class="TableV2--cell"
             role="cell"
-            style="width: 30%;"
+            style="width: 20%;"
           >
             <p
               class="StyledProps--font StyledProps--main StyledProps--color StyledProps--color-grey600 StyledProps--font-variation-form-input-text"
@@ -312,11 +329,53 @@ exports[`Variables Page render page at account level 1`] = `
           <div
             class="TableV2--cell"
             role="cell"
-            style="width: 15%;"
+            style="width: 20%;"
           >
             <p
               class="StyledProps--font StyledProps--main StyledProps--color StyledProps--color-grey600 StyledProps--font-variation-form-input-text"
             />
+          </div>
+          <div
+            class="TableV2--cell"
+            role="cell"
+            style="width: 5%;"
+          >
+            <div
+              class="Layout--horizontal StyledProps--main StyledProps--flex StyledProps--flex-alignItems-flex-end"
+            >
+              <span
+                class="bp3-popover-wrapper"
+              >
+                <span
+                  class="bp3-popover-target"
+                >
+                  <button
+                    class="bp3-button bp3-minimal Button--button StyledProps--font StyledProps--main Button--with-current-color Button--iconOnly Button--without-shadow Button--withLeftIcon"
+                    type="button"
+                  >
+                    <span
+                      class="bp3-icon StyledProps--main"
+                      data-icon="Options"
+                    >
+                      <svg
+                        fill="none"
+                        height="16"
+                        viewBox="0 0 4 16"
+                        width="16"
+                        xmlns="http://www.w3.org/2000/svg"
+                      >
+                        <path
+                          clip-rule="evenodd"
+                          d="M2 12.5a1 1 0 100 2 1 1 0 000-2zm-2 1a2 2 0 114 0 2 2 0 01-4 0zm2-12a1 1 0 100 2 1 1 0 000-2zm-2 1a2 2 0 114 0 2 2 0 01-4 0zM2 7a1 1 0 100 2 1 1 0 000-2zM0 8a2 2 0 114 0 2 2 0 01-4 0z"
+                          fill="currentColor"
+                          fill-rule="evenodd"
+                        />
+                      </svg>
+                    </span>
+                  </button>
+                </span>
+              </span>
+            </div>
           </div>
         </div>
       </div>

@@ -36,11 +36,7 @@ export const ActiveServiceInstances: React.FC = () => {
     serviceId
   }
 
-  const {
-    data: activeInstancedata,
-    loading: loadingActiveInstance,
-    error: errorActiveInstance
-  } = useGetEnvBuildInstanceCount({ queryParams })
+  const { data: activeInstancedata } = useGetEnvBuildInstanceCount({ queryParams })
 
   const queryParamsDeployments: GetEnvArtifactDetailsByServiceIdQueryParams = {
     accountIdentifier: accountId,
@@ -49,30 +45,27 @@ export const ActiveServiceInstances: React.FC = () => {
     serviceId
   }
 
-  const {
-    data: deploymentData,
-    loading: loadingDeployment,
-    error: errorDeployment
-  } = useGetEnvArtifactDetailsByServiceId({ queryParams: queryParamsDeployments })
+  const { data: deploymentData } = useGetEnvArtifactDetailsByServiceId({
+    queryParams: queryParamsDeployments
+  })
 
-  const isDeploymentEmpty = (): boolean => {
+  const isDeploymentTab = (): boolean => {
     return Boolean(
-      loadingDeployment || errorDeployment || !(deploymentData?.data?.environmentInfoByServiceId || []).length
-    )
-  }
-
-  const isActiveInstanceEmpty = (): boolean => {
-    return Boolean(
-      loadingActiveInstance ||
-        errorActiveInstance ||
-        !(activeInstancedata?.data?.envBuildIdAndInstanceCountInfoList || []).length
+      activeInstancedata &&
+        deploymentData &&
+        !(activeInstancedata?.data?.envBuildIdAndInstanceCountInfoList || []).length &&
+        (deploymentData?.data?.environmentInfoByServiceId || []).length
     )
   }
 
   const [defaultTab, setDefaultTab] = useState(ServiceDetailTabs.ACTIVE)
 
   useEffect(() => {
-    if (!isDeploymentEmpty() && isActiveInstanceEmpty()) setDefaultTab(ServiceDetailTabs.DEPLOYMENT)
+    if (isDeploymentTab()) {
+      setDefaultTab(ServiceDetailTabs.DEPLOYMENT)
+    } else {
+      setDefaultTab(ServiceDetailTabs.ACTIVE)
+    }
   }, [deploymentData, activeInstancedata])
 
   const handleTabChange = (data: string): void => {

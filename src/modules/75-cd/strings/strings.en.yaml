@@ -218,3 +218,4 @@ serviceList:
 artifactRepoTooltip: Enter the name of the repository where the artifact source is located.
 serverlessDeployCommandOptions: Serverless Deploy Command Options
 artifactVersion: ARTIFACT VERSION
+useConnectorCredentials: 'Use Connector Credentials'

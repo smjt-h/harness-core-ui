@@ -462,6 +462,7 @@ banners:
     feedbackSuccess: Thanks for sending feedback!
     expired:
       description: Your trial expired {{ expiredDays }} days ago. Contact Sales or extend trial to continue using {{ moduleDescription }}
+      contactSales: Your trial expired {{ expiredDays }} days ago. Contact Sales to continue using {{ moduleDescription }}
       extendTrial: Extend Trial
     contactSales: Contact Sales
     contactSalesForm:
@@ -673,6 +674,8 @@ module:
   core: CORE
   pms: PMS
   templateService: TEMPLATESERVICE
+  sto: STO
+  governance: GOVERNANCE
 customPricing: for Custom Pricing
 specified: Specified
 file: File

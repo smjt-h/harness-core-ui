@@ -1401,9 +1401,13 @@ const routes = {
     ({ recommendation, recommendationName }: { recommendation: string; recommendationName: string }) =>
       `/ce/recommendations/${recommendation}/name/${recommendationName}/details`
   ),
-  toCENodeRecommendationDetails: withAccountId(
+  toOldCENodeRecommendationDetails: withAccountId(
     ({ recommendation, recommendationName }: { recommendation: string; recommendationName: string }) =>
       `/ce/node-recommendations/${recommendation}/name/${recommendationName}/details`
+  ),
+  toCENodeRecommendationDetails: withAccountId(
+    ({ recommendation, recommendationName }: { recommendation: string; recommendationName: string }) =>
+      `/ce/recommendations/node/${recommendation}/name/${recommendationName}/details`
   ),
   toCERecommendationWorkloadDetails: withAccountId(
     ({
@@ -1474,7 +1478,7 @@ const routes = {
   toBusinessMapping: withAccountId(() => `/ce/cost-categories/`),
   toCEECSRecommendationDetails: withAccountId(
     ({ recommendation, recommendationName }: { recommendation: string; recommendationName: string }) =>
-      `/ce/ecs-recommendations/${recommendation}/name/${recommendationName}/details`
+      `/ce/recommendations/ecs/${recommendation}/name/${recommendationName}/details`
   ),
   /********************************************************************************************************************/
   toSTO: withAccountId(() => `/sto`),

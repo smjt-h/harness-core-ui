@@ -5,7 +5,7 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import React, { useState } from 'react'
+import React from 'react'
 import { Classes, Dialog, IDialogProps, Intent } from '@blueprintjs/core'
 import cx from 'classnames'
 import {
@@ -47,7 +47,6 @@ import { PermissionIdentifier } from '@rbac/interfaces/PermissionIdentifier'
 import routes from '@common/RouteDefinitions'
 import {
   EntityGitDetails,
-  GovernanceMetadata,
   useGetTemplateFromPipeline,
   InputSetSummaryResponse,
   useGetInputsetYaml
@@ -58,12 +57,10 @@ import { TagsPopover } from '@common/components'
 import type { IGitContextFormProps } from '@common/components/GitContextForm/GitContextForm'
 import { useDocumentTitle } from '@common/hooks/useDocumentTitle'
 import { PipelineVariablesContextProvider } from '@pipeline/components/PipelineVariablesContext/PipelineVariablesContext'
-import { useFeatureFlags } from '@common/hooks/useFeatureFlag'
 import GenericErrorHandler from '@common/pages/GenericErrorHandler/GenericErrorHandler'
 import NoEntityFound from '@pipeline/pages/utils/NoEntityFound/NoEntityFound'
 import { getFeaturePropsForRunPipelineButton } from '@pipeline/utils/runPipelineUtils'
 import { RunPipelineForm } from '@pipeline/components/RunPipelineModal/RunPipelineForm'
-import { EvaluationModal } from '@governance/EvaluationModal'
 import { createTemplate } from '@pipeline/utils/templateUtils'
 import { getStepFromStage } from '@pipeline/components/PipelineStudio/StepUtil'
 import { updateStepWithinStage } from '@pipeline/components/PipelineStudio/RightDrawer/RightDrawer'
@@ -109,6 +106,7 @@ const runModalProps: IDialogProps = {
 }
 
 export interface PipelineCanvasProps {
+  // diagram?: DiagramFactory
   toPipelineStudio: PathFn<PipelineType<PipelinePathProps> & PipelineStudioQueryParams>
   toPipelineDetail: PathFn<PipelineType<PipelinePathProps>>
   toPipelineList: PathFn<PipelineType<ProjectPathProps>>
@@ -120,10 +118,11 @@ export interface PipelineCanvasProps {
 }
 
 export function PipelineCanvas({
+  // diagram,
   toPipelineList,
   toPipelineStudio,
   getOtherModal
-}: PipelineCanvasProps): React.ReactElement {
+}: PipelineCanvasProps): JSX.Element {
   const { isGitSyncEnabled } = React.useContext(AppStoreContext)
   const {
     state,
@@ -224,11 +223,7 @@ export function PipelineCanvas({
   const [selectedBranch, setSelectedBranch] = React.useState(branch || '')
   const [savedTemplate, setSavedTemplate] = React.useState<TemplateSummaryResponse>()
   const [disableVisualView, setDisableVisualView] = React.useState(entityValidityDetails?.valid === false)
-  const { OPA_PIPELINE_GOVERNANCE } = useFeatureFlags()
-  const [governanceMetadata, setGovernanceMetadata] = useState<GovernanceMetadata>()
   const [useTemplate, setUseTemplate] = React.useState<boolean>(false)
-  const shouldShowGovernanceEvaluation =
-    OPA_PIPELINE_GOVERNANCE && (governanceMetadata?.status === 'error' || governanceMetadata?.status === 'warning')
 
   const { openDialog: openUnsavedChangesDialog } = useConfirmationDialog({
     cancelButtonText: getString('cancel'),
@@ -832,11 +827,7 @@ export function PipelineCanvas({
                   </div>
                 )}
                 {isUpdated && !isReadonly && <div className={css.tagRender}>{getString('unsavedChanges')}</div>}
-                <SavePipelinePopover
-                  toPipelineStudio={toPipelineStudio}
-                  setGovernanceMetadata={setGovernanceMetadata}
-                  isValidYaml={isValidYaml}
-                />
+                <SavePipelinePopover toPipelineStudio={toPipelineStudio} isValidYaml={isValidYaml} />
                 {pipelineIdentifier !== DefaultNewPipelineId && !isReadonly && (
                   <Button
                     disabled={!isUpdated}
@@ -887,13 +878,6 @@ export function PipelineCanvas({
           </div>
         </div>
         {isYaml ? <PipelineYamlView /> : pipeline.template ? <TemplatePipelineBuilder /> : <StageBuilder />}
-        {shouldShowGovernanceEvaluation && (
-          <EvaluationModal
-            accountId={accountId}
-            metadata={governanceMetadata}
-            headingErrorMessage={getString('pipeline.policyEvaluations.failedToSavePipeline')}
-          />
-        )}
       </div>
       <RightBar />
     </PipelineVariablesContextProvider>

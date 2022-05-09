@@ -19,6 +19,7 @@ import {
   pipelineInputSetTemplate,
   ValidObject,
   servicesCallV2,
+  servicesV2,
   servicesV2AccessResponse,
   stepsData,
   StepResourceObject,
@@ -30,10 +31,11 @@ import {
   approvalStageYamlSnippet,
   jiraApprovalStageYamlSnippet,
   snowApprovalStageYamlSnippet,
-  connectorList,
-  serverlessRepositoriesDetails,
-  serverlessBuildDetails
+  serverlessLambdaYamlSnippet,
+  yamlSnippet,
+  executionStratergies
 } from '../../support/70-pipeline/constants'
+import { connectorsListAPI } from '../../support/35-connectors/constants'
 import { getIdentifierFromName } from '../../utils/stringHelpers'
 
 describe.skip('GIT SYNC DISABLED', () => {
@@ -400,6 +402,111 @@ describe('ServerlessAwsLambda as deployment type', () => {
     cy.wait(1000)
     cy.get('.monaco-editor .overflow-guard').scrollTo('0%', '25%', { ensureScrollable: false })
     cy.contains('span', '<+input>').should('be.visible')
+  })
+
+  it(`select Serverless Lambda deployment type and validate execution tab`, () => {
+    cy.intercept('GET', pipelineDetails, {
+      fixture: 'pipeline/api/pipelines/pipelineDetailsWithoutServiceDefinitionType'
+    }).as('pipelineDetails')
+    cy.intercept('GET', servicesV2, { fixture: 'pipeline/api/services/serviceV2' }).as('servicesCall')
+    cy.intercept('GET', 'ng/api/pipelines/configuration/cd-stage-yaml-snippet?routingId=accountId', {
+      fixture: 'pipeline/api/pipelines/failureStrategiesYaml'
+    }).as('cdFailureStrategiesYaml')
+    cy.intercept('POST', connectorsListAPI, { fixture: 'ng/api/connectors' }).as('connectorsList')
+    cy.intercept('GET', serverlessLambdaYamlSnippet, { fixture: 'ng/api/pipelines/serverlessYamlSnippet' }).as(
+      'serverlessYamlSnippet'
+    )
+
+    // Visit Pipeline Studio
+    cy.visit(pipelineStudioRoute, { timeout: 30000 })
+    cy.get(`div[data-testid="pipeline-studio"]`, {
+      timeout: 5000
+    }).should('be.visible')
+
+    // Select Stage
+    cy.contains('p', 'Stage 1').click()
+    cy.wait(1000)
+    cy.wait('@servicesCall')
+    cy.wait('@cdFailureStrategiesYaml')
+    cy.wait('@stepLibrary')
+    cy.wait(1000)
+
+    // Select Serverless Lambda as deployment type
+    cy.contains('p', 'Serverless Lambda').click()
+    cy.wait('@serverlessYamlSnippet')
+
+    // Got to Execution tab, Serverless Aws Lambda Deploy should be added by default
+    // Switching between Rollback and Execution should work as expected
+    cy.contains('span', 'Execution').click()
+    cy.contains('p', 'Serverless Aws Lambda Deploy')
+    cy.contains('p', 'Rollback').click()
+    cy.contains('p', 'Serverless Aws Lambda Rollback')
+    cy.contains('p', 'Execution').click()
+    cy.contains('p', 'Serverless Aws Lambda Deploy')
+
+    // Add another Serverless Lambda Deploy Step
+    cy.contains('p', 'Add step').click()
+    cy.contains('span', 'Add Step').parent().click()
+    cy.contains('section', 'Serverless Lambda Deploy').click()
+    cy.contains('p', 'Serverless Lambda Deploy Step').should('be.visible')
+    cy.get('input[name="name"]').type('Serverless Deploy Step 2')
+    cy.contains('div', 'Optional configurations').click()
+    cy.contains('p', 'Serverless Deploy Command Options').should('be.visible')
+    cy.contains('span', 'Apply Changes').click()
+    cy.contains('p', 'Serverless Deploy Step 2').should('be.visible')
+
+    // Add Serverless Lambda Rollback Step
+    cy.contains('p', 'Add step').click()
+    cy.contains('span', 'Add Step').parent().click()
+    cy.contains('section', 'Serverless Lambda Rollback').click()
+    cy.contains('p', 'Serverless Lambda Rollback Step').should('be.visible')
+    cy.get('input[name="name"]').type('Serverless Rollback Step 1')
+    cy.contains('span', 'Apply Changes').click()
+    cy.contains('p', 'Serverless Rollback Step 1').should('be.visible')
+  })
+
+  it(`select Kubernetes deployment type and check for execution strategies`, () => {
+    cy.intercept('GET', pipelineDetails, {
+      fixture: 'pipeline/api/pipelines/pipelineDetailsWithoutServiceDefinitionType'
+    }).as('pipelineDetails')
+    cy.intercept('GET', servicesV2, { fixture: 'pipeline/api/services/serviceV2' }).as('servicesCall')
+    cy.intercept('GET', 'ng/api/pipelines/configuration/cd-stage-yaml-snippet?routingId=accountId', {
+      fixture: 'pipeline/api/pipelines/failureStrategiesYaml'
+    }).as('cdFailureStrategiesYaml')
+    cy.intercept('POST', connectorsListAPI, { fixture: 'ng/api/connectors' }).as('connectorsList')
+    cy.intercept('GET', yamlSnippet, { fixture: 'ng/api/pipelines/kubernetesYamlSnippet' }).as('kubernetesYamlSnippet')
+    cy.intercept('GET', executionStratergies, { fixture: 'pipeline/api/pipelines/strategies.json' }).as(
+      'executionStratergies'
+    )
+
+    // Visit Pipeline Studio
+    cy.visit(pipelineStudioRoute, { timeout: 30000 })
+    cy.get(`div[data-testid="pipeline-studio"]`, {
+      timeout: 5000
+    }).should('be.visible')
+
+    // Select Stage
+    cy.contains('p', 'Stage 1').click()
+    cy.wait(1000)
+    cy.wait('@servicesCall')
+    cy.wait('@cdFailureStrategiesYaml')
+    cy.wait('@stepLibrary')
+    cy.wait(1000)
+
+    // Select Kubernetes as deployment type
+    cy.contains('p', 'Kubernetes').click()
+
+    // Got to Execution tab, 4 diff Execution Strategies should appear
+    // Use Rolling strategy and check if respective step is added
+    cy.contains('span', 'Execution').click()
+    cy.wait('@executionStratergies')
+    cy.wait('@kubernetesYamlSnippet')
+    cy.contains('section', 'Rolling').should('be.visible')
+    cy.contains('section', 'Blue Green').should('be.visible')
+    cy.contains('section', 'Canary').should('be.visible')
+    cy.contains('section', 'Blank Canvas').should('be.visible')
+    cy.contains('span', 'Use Strategy').should('be.visible').click()
+    cy.contains('p', 'Rollout Deployment').should('be.visible')
   })
 })
 

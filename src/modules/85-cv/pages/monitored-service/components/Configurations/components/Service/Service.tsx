@@ -215,6 +215,7 @@ function Service(
                 <HealthSourceTableContainer
                   healthSourceListFromAPI={initialValues.sources?.healthSources}
                   serviceFormFormik={formik}
+                  isTemplate={isTemplate}
                 />
               </>
             )}

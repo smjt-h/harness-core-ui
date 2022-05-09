@@ -51,6 +51,7 @@ const useCreateEditVariableModal = (props: UseCreateUpdateVariableModalProps): U
           projectIdentifier={(variable ? variable.projectIdentifier : projectIdentifier) as string}
           onSuccess={handleSuccess}
           closeModal={hideModal}
+          variable={variable}
         />
       </Dialog>
     ),

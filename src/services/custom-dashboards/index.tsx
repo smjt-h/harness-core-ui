@@ -23,6 +23,21 @@ export interface CreateDashboardResponse {
   resource?: number
 }
 
+export interface CreateFolderRequestBody {
+  name: string
+}
+
+export interface CreateFolderResponse {
+  resource: string
+  responseMessages?: string
+}
+
+export interface ErrorFolderParameters {
+  accountId?: string
+  folderId?: string
+  name?: string
+}
+
 export interface ErrorResponse {
   error?: string
   responseMessages?: string
@@ -33,15 +48,47 @@ export interface FolderChildren {
   name: string
 }
 
+export interface FolderErrorResponse {
+  error?: string
+  resource?: ErrorFolderParameters
+  responseMessages?: string
+}
+
 export interface FolderModel {
   Children?: FolderChildren
+  child_count: number
+  created_at: string
   id: string
   name: string
+  title: string
+  type: string
 }
 
 export interface GetFolderResponse {
   resource?: FolderModel[]
   responseMessages?: string
+}
+
+export interface GetFoldersResponse {
+  items: number
+  pages: number
+  resource?: FolderModel[]
+  responseMessages?: string
+}
+
+export interface PatchFolderRequestBody {
+  folderId: string
+  name: string
+}
+
+export interface PatchFolderResponse {
+  resource: PatchFolderResponseResource
+}
+
+export interface PatchFolderResponseResource {
+  accountId: string
+  folderId: string
+  name: string
 }
 
 export interface UpdateDashboardResponse {
@@ -112,9 +159,9 @@ export const updateDashboardPromise = (
   )
 
 export interface GetFolderQueryParams {
-  page?: number
-  pageSize?: number
   accountId: string
+  pageSize?: number
+  page?: number
 }
 
 export type GetFolderProps = Omit<GetProps<GetFolderResponse, ErrorResponse, GetFolderQueryParams, void>, 'path'>
@@ -151,6 +198,169 @@ export const getFolderPromise = (
   getUsingFetch<GetFolderResponse, ErrorResponse, GetFolderQueryParams, void>(
     getConfig('dashboard/'),
     `/folder`,
+    props,
+    signal
+  )
+
+export interface PatchFolderQueryParams {
+  accountId: string
+}
+
+export type PatchFolderProps = Omit<
+  MutateProps<PatchFolderResponse, FolderErrorResponse, PatchFolderQueryParams, PatchFolderRequestBody, void>,
+  'path' | 'verb'
+>
+
+/**
+ * Update a folder's name.
+ */
+export const PatchFolder = (props: PatchFolderProps) => (
+  <Mutate<PatchFolderResponse, FolderErrorResponse, PatchFolderQueryParams, PatchFolderRequestBody, void>
+    verb="PATCH"
+    path={`/folder`}
+    base={getConfig('dashboard/')}
+    {...props}
+  />
+)
+
+export type UsePatchFolderProps = Omit<
+  UseMutateProps<PatchFolderResponse, FolderErrorResponse, PatchFolderQueryParams, PatchFolderRequestBody, void>,
+  'path' | 'verb'
+>
+
+/**
+ * Update a folder's name.
+ */
+export const usePatchFolder = (props: UsePatchFolderProps) =>
+  useMutate<PatchFolderResponse, FolderErrorResponse, PatchFolderQueryParams, PatchFolderRequestBody, void>(
+    'PATCH',
+    `/folder`,
+    { base: getConfig('dashboard/'), ...props }
+  )
+
+/**
+ * Update a folder's name.
+ */
+export const patchFolderPromise = (
+  props: MutateUsingFetchProps<
+    PatchFolderResponse,
+    FolderErrorResponse,
+    PatchFolderQueryParams,
+    PatchFolderRequestBody,
+    void
+  >,
+  signal?: RequestInit['signal']
+) =>
+  mutateUsingFetch<PatchFolderResponse, FolderErrorResponse, PatchFolderQueryParams, PatchFolderRequestBody, void>(
+    'PATCH',
+    getConfig('dashboard/'),
+    `/folder`,
+    props,
+    signal
+  )
+
+export interface CreateFolderQueryParams {
+  accountId: string
+}
+
+export type CreateFolderProps = Omit<
+  MutateProps<CreateFolderResponse, ErrorResponse, CreateFolderQueryParams, CreateFolderRequestBody, void>,
+  'path' | 'verb'
+>
+
+/**
+ * Create a new folder.
+ */
+export const CreateFolder = (props: CreateFolderProps) => (
+  <Mutate<CreateFolderResponse, ErrorResponse, CreateFolderQueryParams, CreateFolderRequestBody, void>
+    verb="POST"
+    path={`/folder`}
+    base={getConfig('dashboard/')}
+    {...props}
+  />
+)
+
+export type UseCreateFolderProps = Omit<
+  UseMutateProps<CreateFolderResponse, ErrorResponse, CreateFolderQueryParams, CreateFolderRequestBody, void>,
+  'path' | 'verb'
+>
+
+/**
+ * Create a new folder.
+ */
+export const useCreateFolder = (props: UseCreateFolderProps) =>
+  useMutate<CreateFolderResponse, ErrorResponse, CreateFolderQueryParams, CreateFolderRequestBody, void>(
+    'POST',
+    `/folder`,
+    { base: getConfig('dashboard/'), ...props }
+  )
+
+/**
+ * Create a new folder.
+ */
+export const createFolderPromise = (
+  props: MutateUsingFetchProps<
+    CreateFolderResponse,
+    ErrorResponse,
+    CreateFolderQueryParams,
+    CreateFolderRequestBody,
+    void
+  >,
+  signal?: RequestInit['signal']
+) =>
+  mutateUsingFetch<CreateFolderResponse, ErrorResponse, CreateFolderQueryParams, CreateFolderRequestBody, void>(
+    'POST',
+    getConfig('dashboard/'),
+    `/folder`,
+    props,
+    signal
+  )
+
+export interface GetFoldersQueryParams {
+  sortBy?: string
+  accountId: string
+  searchTerm?: string
+  page: number
+  pageSize: number
+}
+
+export type GetFoldersProps = Omit<GetProps<GetFoldersResponse, ErrorResponse, GetFoldersQueryParams, void>, 'path'>
+
+/**
+ * Get a list of folders filtered by search parameters.
+ */
+export const GetFolders = (props: GetFoldersProps) => (
+  <Get<GetFoldersResponse, ErrorResponse, GetFoldersQueryParams, void>
+    path={`/v1/folders`}
+    base={getConfig('dashboard/')}
+    {...props}
+  />
+)
+
+export type UseGetFoldersProps = Omit<
+  UseGetProps<GetFoldersResponse, ErrorResponse, GetFoldersQueryParams, void>,
+  'path'
+>
+
+/**
+ * Get a list of folders filtered by search parameters.
+ */
+export const useGetFolders = (props: UseGetFoldersProps) =>
+  useGet<GetFoldersResponse, ErrorResponse, GetFoldersQueryParams, void>(`/v1/folders`, {
+    base: getConfig('dashboard/'),
+    ...props
+  })
+
+/**
+ * Get a list of folders filtered by search parameters.
+ */
+export const getFoldersPromise = (
+  props: GetUsingFetchProps<GetFoldersResponse, ErrorResponse, GetFoldersQueryParams, void>,
+  signal?: RequestInit['signal']
+) =>
+  getUsingFetch<GetFoldersResponse, ErrorResponse, GetFoldersQueryParams, void>(
+    getConfig('dashboard/'),
+    `/v1/folders`,
     props,
     signal
   )

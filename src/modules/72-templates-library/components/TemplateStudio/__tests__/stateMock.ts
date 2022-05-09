@@ -11,7 +11,6 @@ import type { TemplateContextInterface } from '@templates-library/components/Tem
 import type { JsonNode, NGTemplateInfoConfig } from 'services/template-ng'
 import { TemplateType } from '@templates-library/utils/templatesUtils'
 import { DrawerTypes } from '@templates-library/components/TemplateStudio/TemplateContext/TemplateActions'
-import type { NGTemplateInfoConfigWithMonitoredService } from '@templates-library/components/Templates/MonitoredServiceTemplate/MonitoredServiceTemplate'
 
 export const stepTemplateMock: NGTemplateInfoConfig = {
   name: 'Test Template',
@@ -192,7 +191,7 @@ export const pipelineTemplateMock: NGTemplateInfoConfig = {
   } as JsonNode
 }
 
-export const monitoredServiceTemplateMock: NGTemplateInfoConfigWithMonitoredService = {
+export const monitoredServiceTemplateMock: NGTemplateInfoConfig = {
   name: 'Test Template',
   identifier: 'Test_Template',
   versionLabel: 'v1',

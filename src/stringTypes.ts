@@ -94,6 +94,7 @@ export interface StringsMap {
   'common.banners.trial.contactSalesForm.roleValidation': string
   'common.banners.trial.contactSalesForm.success': string
   'common.banners.trial.description': string
+  'common.banners.trial.expired.contactSales': string
   'common.banners.trial.expired.description': string
   'common.banners.trial.expired.extendTrial': string
   'common.banners.trial.feedbackSuccess': string
@@ -398,7 +399,9 @@ export interface StringsMap {
   'common.module.ci': string
   'common.module.core': string
   'common.module.cv': string
+  'common.module.governance': string
   'common.module.pms': string
+  'common.module.sto': string
   'common.module.templateService': string
   'common.moduleLabel': string
   'common.monthly': string
@@ -1250,11 +1253,17 @@ export interface StringsMap {
   'secrets.titleSelect': string
   'secrets.typeSSH': string
   'variables.allowedValues': string
+  'variables.confirmDelete': string
+  'variables.confirmDeleteTitle': string
   'variables.defaultValue': string
+  'variables.editVariable': string
   'variables.inputValidation': string
   'variables.newVariable': string
   'variables.noVariableExist': string
   'variables.noVariableFound': string
+  'variables.successCreate': string
+  'variables.successDelete': string
+  'variables.successUpdate': string
   'variables.validation.fixedValue': string
   'variables.validation.type': string
   'variables.validation.validation': string
@@ -2202,11 +2211,7 @@ export interface StringsMap {
   'gitsync.syncFailed': string
   'gitsync.syncStatus': string
   'gitsync.syncSucessToaster': string
-  'dashboards.createFolder.folderDescriptionPlaceholder': string
-  'dashboards.createFolder.folderNameValidation': string
-  'dashboards.createFolder.folderPlaceholder': string
   'dashboards.createFolder.folderSubmitFail': string
-  'dashboards.createFolder.stepOne': string
   'dashboards.createModal.dataSource': string
   'dashboards.createModal.descriptionPlaceholder': string
   'dashboards.createModal.fav': string
@@ -2225,6 +2230,10 @@ export interface StringsMap {
   'dashboards.editModal.editDashboard': string
   'dashboards.editModal.submitFail': string
   'dashboards.editModal.success': string
+  'dashboards.folderForm.folderDescriptionPlaceholder': string
+  'dashboards.folderForm.folderNameValidation': string
+  'dashboards.folderForm.folderPlaceholder': string
+  'dashboards.folderForm.stepOne': string
   'dashboards.getStarted.subTextVideo1': string
   'dashboards.getStarted.subTextVideo2': string
   'dashboards.getStarted.subTextVideo3': string
@@ -2253,6 +2262,7 @@ export interface StringsMap {
   'dashboards.sortBy': string
   'dashboards.switchToGridView': string
   'dashboards.switchToListView': string
+  'dashboards.updateFolder.folderUpdateFail': string
   'dashboards.upgrade': string
   'projectsOrgs.aboutProject': string
   'projectsOrgs.aboutTitle': string
@@ -3110,8 +3120,8 @@ export interface StringsMap {
   'pipeline.stepDescription.SHELLSCRIPT': string
   'pipeline.stepDescription.SaveCacheGCS': string
   'pipeline.stepDescription.SaveCacheS3': string
-  'pipeline.stepDescription.ServerlessAwsLambdaDeploy': string
-  'pipeline.stepDescription.ServerlessAwsLambdaRollback': string
+  'pipeline.stepDescription.ServerlessLambdaDeploy': string
+  'pipeline.stepDescription.ServerlessLambdaRollback': string
   'pipeline.stepDescription.ServiceNowApproval': string
   'pipeline.stepDescription.TerraformApply': string
   'pipeline.stepDescription.TerraformDestroy': string
@@ -3615,6 +3625,7 @@ export interface StringsMap {
   'cd.updatedSuccessfully': string
   'cd.updating': string
   'cd.updatingGitOpsServer': string
+  'cd.useConnectorCredentials': string
   'cd.varFile': string
   'cd.varFileDetails': string
   'cd.whatIsHarnessAdapter': string
@@ -3761,7 +3772,9 @@ export interface StringsMap {
   'ce.co.accessPoint.enterDomain': string
   'ce.co.accessPoint.error': string
   'ce.co.accessPoint.gcpCertificateId': string
+  'ce.co.accessPoint.gcpCertificatePlaceholder': string
   'ce.co.accessPoint.gcpSecretId': string
+  'ce.co.accessPoint.gcpSecretPlaceholder': string
   'ce.co.accessPoint.helpCenter.heading': string
   'ce.co.accessPoint.helpCenter.step1': string
   'ce.co.accessPoint.helpCenter.step2': string
@@ -4578,6 +4591,7 @@ export interface StringsMap {
   'cf.featureFlags.defaultWillBeServed': string
   'cf.featureFlags.deleteFlag': string
   'cf.featureFlags.deleteFlagMessage': string
+  'cf.featureFlags.false': string
   'cf.featureFlags.flagFilters.any': string
   'cf.featureFlags.flagFilters.apply': string
   'cf.featureFlags.flagFilters.cancel': string
@@ -4626,6 +4640,7 @@ export interface StringsMap {
   'cf.featureFlags.multi': string
   'cf.featureFlags.multiBtnText': string
   'cf.featureFlags.newFlag': string
+  'cf.featureFlags.newPrerequisite': string
   'cf.featureFlags.percentageRollout': string
   'cf.featureFlags.prerequisitesDesc': string
   'cf.featureFlags.results': string
@@ -4660,6 +4675,7 @@ export interface StringsMap {
   'cf.featureFlags.startVariation': string
   'cf.featureFlags.targeting': string
   'cf.featureFlags.toTarget': string
+  'cf.featureFlags.true': string
   'cf.featureFlags.turnOffHeading': string
   'cf.featureFlags.turnOffMessage': string
   'cf.featureFlags.turnOnHeading': string
@@ -4956,6 +4972,7 @@ export interface StringsMap {
   'cf.targets.pageDescription': string
   'cf.targets.targetSegment': string
   'cf.targets.upload': string
+  'cf.targets.uploadError': string
   'cf.targets.uploadHeadline': string
   'cf.targets.uploadHelp': string
   'cf.targets.uploadStats': string
@@ -5115,7 +5132,6 @@ export interface StringsMap {
   'ci.successful': string
   'ci.templates': string
   'ci.testSummary': string
-  'ci.titleGovernance': string
   'ci.titleResources': string
   'ci.titleSettings': string
   'ci.welcome': string

@@ -323,16 +323,18 @@ export default function DeployServiceSpecifications(props: React.PropsWithChildr
 
   const handleDeploymentTypeChange = useCallback(
     (deploymentType: ServiceDeploymentType): void => {
-      const stageData = produce(stage, draft => {
-        const serviceDefinition = get(draft, 'stage.spec.serviceConfig.serviceDefinition', {})
-        serviceDefinition.type = deploymentType
-      })
-      if (doesStageContainOtherData(stageData?.stage)) {
-        setCurrStageData(stageData?.stage)
-        openStageDataDeleteWarningDialog()
-      } else {
-        setSelectedDeploymentType(deploymentType)
-        updateStage(stageData?.stage as StageElementConfig)
+      if (deploymentType !== selectedDeploymentType) {
+        const stageData = produce(stage, draft => {
+          const serviceDefinition = get(draft, 'stage.spec.serviceConfig.serviceDefinition', {})
+          serviceDefinition.type = deploymentType
+        })
+        if (doesStageContainOtherData(stageData?.stage)) {
+          setCurrStageData(stageData?.stage)
+          openStageDataDeleteWarningDialog()
+        } else {
+          setSelectedDeploymentType(deploymentType)
+          updateStage(stageData?.stage as StageElementConfig)
+        }
       }
     },
     [stage, updateStage]
