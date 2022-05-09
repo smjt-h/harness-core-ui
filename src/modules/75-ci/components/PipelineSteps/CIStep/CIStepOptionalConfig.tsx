@@ -13,6 +13,7 @@ import { Container, Layout, MultiTypeInputType, Text, FormInput } from '@wings-s
 import { Color } from '@harness/design-system'
 import { useStrings } from 'framework/strings'
 import type { StringsMap } from 'stringTypes'
+import type { ConnectorInfoDTO } from 'services/cd-ng'
 import { FormMultiTypeCheckboxField } from '@common/components/MultiTypeCheckbox/MultiTypeCheckbox'
 import { MultiTypeTextField, MultiTypeTextProps } from '@common/components/MultiTypeText/MultiTypeText'
 import MultiTypeMap, { ConnectorReferenceProps } from '@common/components/MultiTypeMap/MultiTypeMap'
@@ -20,10 +21,7 @@ import { MultiTypeMapInputSet } from '@common/components/MultiTypeMapInputSet/Mu
 import MultiTypeList from '@common/components/MultiTypeList/MultiTypeList'
 import { MultiTypeListInputSet } from '@common/components/MultiTypeListInputSet/MultiTypeListInputSet'
 import { useVariablesExpression } from '@pipeline/components/PipelineStudio/PiplineHooks/useVariablesExpression'
-import {
-  FormMultiTypeConnectorField,
-  MultiTypeConnectorFieldProps
-} from '@connectors/components/ConnectorReferenceField/FormMultiTypeConnectorField'
+import { FormMultiTypeConnectorField } from '@connectors/components/ConnectorReferenceField/FormMultiTypeConnectorField'
 import { StepViewType } from '@pipeline/components/AbstractSteps/Step'
 import {
   getAllowedValuesFromTemplate,
@@ -259,7 +257,8 @@ export const CIStepOptionalConfig: React.FC<CIStepOptionalConfigProps> = props =
       connectorType,
       gitScope: connectorGitScopeInInputSet,
       expressions: connectorExpressionsInInputSet,
-      connectorRefWidth
+      connectorRefWidth,
+      connectorRefRenderer
     }: {
       fieldName: string
       stringKey: keyof StringsMap
@@ -297,6 +296,7 @@ export const CIStepOptionalConfig: React.FC<CIStepOptionalConfigProps> = props =
           gitScope={connectorGitScopeInInputSet}
           expressions={connectorExpressionsInInputSet}
           connectorRefWidth={connectorRefWidth}
+          connectorRefRenderer={connectorRefRenderer}
         />
       </Container>
     ),
@@ -434,7 +434,7 @@ export const CIStepOptionalConfig: React.FC<CIStepOptionalConfigProps> = props =
     }: {
       name: string
       valueLabel?: string
-      connectorTypes?: MultiTypeConnectorFieldProps['type']
+      connectorTypes?: ConnectorInfoDTO['type'] | ConnectorInfoDTO['type'][]
     }) => {
       return (
         <FormMultiTypeConnectorField
@@ -474,7 +474,8 @@ export const CIStepOptionalConfig: React.FC<CIStepOptionalConfigProps> = props =
               connectorType: enableFields['spec.baseImageConnectorRefs'].type,
               gitScope,
               expressions,
-              connectorRefWidth: ConnectorRefWidth.InputSetView
+              connectorRefWidth: ConnectorRefWidth.InputSetView,
+              connectorRefRenderer: renderConnectorRef
             })
           : renderMultiTypeMap({
               fieldName: `${prefix}spec.baseImageConnectorRefs`,

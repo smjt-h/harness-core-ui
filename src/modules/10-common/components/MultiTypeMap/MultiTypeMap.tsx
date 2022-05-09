@@ -20,6 +20,7 @@ import {
 import { FontVariation } from '@harness/design-system'
 import { FieldArray, connect, FormikContext } from 'formik'
 import { get } from 'lodash-es'
+import type { ConnectorInfoDTO } from 'services/cd-ng'
 import { ConfigureOptions, ConfigureOptionsProps } from '@common/components/ConfigureOptions/ConfigureOptions'
 import { useStrings } from 'framework/strings'
 import MultiTypeFieldSelector, {
@@ -50,7 +51,7 @@ export interface ConnectorReferenceProps {
   }: {
     name: string
     valueLabel?: string
-    connectorTypes: MultiTypeConnectorFieldProps['type']
+    connectorTypes?: ConnectorInfoDTO['type'] | ConnectorInfoDTO['type'][]
   }) => JSX.Element
 }
 
