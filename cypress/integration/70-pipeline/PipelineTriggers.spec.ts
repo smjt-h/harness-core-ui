@@ -11,7 +11,7 @@ import {
   triggersRoute
 } from '../../support/70-pipeline/constants'
 
-describe('Triggers for Pipeline', () => {
+describe.skip('Triggers for Pipeline', () => {
   beforeEach(() => {
     cy.on('uncaught:exception', () => {
       // returning false here prevents Cypress from

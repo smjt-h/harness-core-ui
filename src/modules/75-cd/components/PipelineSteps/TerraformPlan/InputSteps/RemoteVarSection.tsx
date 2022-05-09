@@ -24,6 +24,7 @@ import { useStrings } from 'framework/strings'
 import List from '@common/components/List/List'
 import { Connectors } from '@connectors/constants'
 import { FormMultiTypeConnectorField } from '@connectors/components/ConnectorReferenceField/FormMultiTypeConnectorField'
+import useRBACError from '@rbac/utils/useRBACError/useRBACError'
 import { useGetRepositoriesDetailsForArtifactory } from 'services/cd-ng'
 import { useVariablesExpression } from '@pipeline/components/PipelineStudio/PiplineHooks/useVariablesExpression'
 
@@ -50,6 +51,7 @@ function TFRemoteSectionRef(
     accountId: string
   }>()
   const { showError } = useToaster()
+  const { getRBACErrorMessage } = useRBACError()
   const { repoIdentifier, branch } = useQueryParams<GitQueryParams>()
   const [connectorRepos, setConnectorRepos] = useState<SelectOption[]>()
   let connectorVal = get(
@@ -85,7 +87,7 @@ function TFRemoteSectionRef(
 
   useEffect(() => {
     if (ArtifactRepoError) {
-      showError(ArtifactRepoError.message)
+      showError(getRBACErrorMessage(ArtifactRepoError))
     }
   }, [ArtifactRepoError])
 

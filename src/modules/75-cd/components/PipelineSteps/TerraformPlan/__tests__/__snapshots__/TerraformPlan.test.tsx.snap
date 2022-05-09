@@ -4723,7 +4723,7 @@ exports[`Test TerraformPlan should render input set view 1`] = `
                 class="Tooltip--acenter"
                 data-tooltip-id="stepTestUtilForm_test.spec.configuration.configFiles.store.spec.folderPath"
               >
-                cd.folderPath
+                common.git.folderPath
               </span>
                
               <span

@@ -12,7 +12,7 @@ import { get, isEmpty, pickBy } from 'lodash-es'
 import { Text, Icon, PageError, PageSpinner, Layout } from '@wings-software/uicore'
 import { FontVariation, Color } from '@harness/design-system'
 import { DeprecatedImageInfo, useGetExecutionConfig } from 'services/ci'
-import { GovernanceMetadata, useGetExecutionDetail, ResponsePipelineExecutionDetail } from 'services/pipeline-ng'
+import { GovernanceMetadata, ResponsePipelineExecutionDetail, useGetExecutionDetailV2 } from 'services/pipeline-ng'
 import type { ExecutionNode } from 'services/pipeline-ng'
 import { ExecutionStatus, isExecutionComplete } from '@pipeline/utils/statusHelpers'
 import {
@@ -21,6 +21,7 @@ import {
   getActiveStep,
   addServiceDependenciesFromLiteTaskEngine
 } from '@pipeline/utils/executionUtils'
+import useRBACError from '@rbac/utils/useRBACError/useRBACError'
 import { useQueryParams, useDeepCompareEffect } from '@common/hooks'
 import { joinAsASentence } from '@common/utils/StringUtils'
 import { String, useStrings } from 'framework/strings'
@@ -100,10 +101,12 @@ export default function ExecutionLandingPage(props: React.PropsWithChildren<unkn
 
   /* cache token required for retrieving logs */
   const [logsToken, setLogsToken] = React.useState('')
+  const { getRBACErrorMessage } = useRBACError()
 
   /* These are used when auto updating selected stage/step when a pipeline is running */
   const [autoSelectedStageId, setAutoSelectedStageId] = React.useState<string>('')
   const [autoSelectedStepId, setAutoSelectedStepId] = React.useState<string>('')
+  const [isPipelineInvalid, setIsPipelineInvalid] = React.useState(false)
 
   /* These are updated only when new data is fetched successfully */
   const [selectedStageId, setSelectedStageId] = React.useState<string>('')
@@ -118,7 +121,7 @@ export default function ExecutionLandingPage(props: React.PropsWithChildren<unkn
     zoom: 100
   })
 
-  const { data, refetch, loading, error } = useGetExecutionDetail({
+  const { data, refetch, loading, error } = useGetExecutionDetailV2({
     planExecutionId: executionIdentifier,
     queryParams: {
       orgIdentifier,
@@ -234,6 +237,7 @@ export default function ExecutionLandingPage(props: React.PropsWithChildren<unkn
         pipelineExecutionDetail: data?.data || null,
         allNodeMap,
         pipelineStagesMap,
+        isPipelineInvalid,
         selectedStageId,
         selectedStepId,
         loading,
@@ -246,6 +250,7 @@ export default function ExecutionLandingPage(props: React.PropsWithChildren<unkn
         setStepsGraphCanvasState,
         setSelectedStageId,
         setSelectedStepId,
+        setIsPipelineInvalid,
         addNewNodeToMap(id, node) {
           setAllNodeMap(nodeMap => ({ ...nodeMap, [id]: node }))
         }
@@ -253,7 +258,7 @@ export default function ExecutionLandingPage(props: React.PropsWithChildren<unkn
     >
       {loading && !data ? <PageSpinner /> : null}
       {error ? (
-        <PageError message={(error?.data as any)?.message?.replace('"', '')} />
+        <PageError message={getRBACErrorMessage(error) as string} />
       ) : (
         <main className={css.main}>
           <div className={css.lhs}>

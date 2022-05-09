@@ -24,6 +24,12 @@ jest.spyOn(cdngServices, 'useGetEnvBuildInstanceCount').mockImplementation(() =>
   } as any
 })
 
+jest.spyOn(cdngServices, 'useGetEnvArtifactDetailsByServiceId').mockImplementation(() => {
+  return {
+    mutate: () => Promise.resolve({ loading: false, data: [] })
+  } as any
+})
+
 jest.spyOn(cdngServices, 'useGetServiceDeploymentsInfo').mockImplementation(() => {
   return { loading: false, error: false, data: [], refetch: jest.fn() } as any
 })

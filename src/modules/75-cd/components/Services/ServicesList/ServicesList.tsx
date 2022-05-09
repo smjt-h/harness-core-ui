@@ -27,6 +27,7 @@ import { defaultTo, pick } from 'lodash-es'
 import type { TableProps } from '@harness/uicore'
 import routes from '@common/RouteDefinitions'
 import type { ModulePathParams, ProjectPathProps } from '@common/interfaces/RouteInterfaces'
+import useRBACError, { RBACError } from '@rbac/utils/useRBACError/useRBACError'
 import { DashboardList } from '@cd/components/DashboardList/DashboardList'
 import type { DashboardListProps } from '@cd/components/DashboardList/DashboardList'
 import type { ChangeValue } from '@cd/components/Services/DeploymentsWidget/DeploymentsWidget'
@@ -302,6 +303,7 @@ const RenderColumnMenu: Renderer<CellProps<any>> = ({ row, column }) => {
   const [deleteError, setDeleteError] = useState('')
   const { accountId, orgIdentifier, projectIdentifier, module } = useParams<ProjectPathProps & ModulePathParams>()
   const { showSuccess, showError } = useToaster()
+  const { getRBACErrorMessage } = useRBACError()
   const { getString } = useStrings()
   const history = useHistory()
 
@@ -385,7 +387,7 @@ const RenderColumnMenu: Renderer<CellProps<any>> = ({ row, column }) => {
             setDeleteError(err?.data?.message || err?.message)
             openDeleteErrorDialog()
           } else {
-            showError(err?.data?.message || err?.message)
+            showError(getRBACErrorMessage(err as RBACError))
           }
         }
       }

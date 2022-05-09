@@ -58,8 +58,13 @@ import GitSyncRepoTab from '@gitsync/pages/repos/GitSyncRepoTab'
 import GitSyncEntityTab from '@gitsync/pages/entities/GitSyncEntityTab'
 import GitSyncErrors from '@gitsync/pages/errors/GitSyncErrors'
 import GitSyncConfigTab from '@gitsync/pages/config/GitSyncConfigTab'
+import VariablesPage from '@variables/pages/variables/VariablesPage'
+import { PAGE_NAME } from '@common/pages/pageContext/PageName'
+import { registerFeatureFlagPipelineStage } from './pages/pipeline-studio/views/FeatureFlagStage'
+import { registerFlagConfigurationPipelineStep } from './components/PipelineSteps'
 import { TargetsPage } from './pages/target-management/targets/TargetsPage'
-import { TargetDetailPage } from './pages/target-details/TargetDetailPage'
+import { TargetDetailPage as LegacyTargetDetailPage } from './pages/target-details/TargetDetailPage'
+import TargetDetailPage from './pages/target-detail/TargetDetailPage'
 import { SegmentsPage } from './pages/target-management/segments/SegmentsPage'
 import { SegmentDetailPage } from './pages/segment-details/SegmentDetailPage'
 import TargetGroupDetailPage from './pages/target-group-detail/TargetGroupDetailPage'
@@ -144,12 +149,20 @@ RbacFactory.registerResourceTypeHandler(ResourceType.TARGETGROUP, {
   }
 })
 
+registerFeatureFlagPipelineStage()
+registerFlagConfigurationPipelineStep()
+
 const CFRoutes: FC = () => {
-  const { FFM_1512 } = useFeatureFlags()
+  const { FF_PIPELINE, FFM_1512, FFM_1827 } = useFeatureFlags()
 
   return (
     <>
-      <RouteWithLayout licenseRedirectData={licenseRedirectData} path={routes.toCF({ ...accountPathProps })} exact>
+      <RouteWithLayout
+        licenseRedirectData={licenseRedirectData}
+        path={routes.toCF({ ...accountPathProps })}
+        exact
+        pageName={PAGE_NAME.CFHomePage}
+      >
         <RedirectToCFHome />
       </RouteWithLayout>
 
@@ -165,6 +178,7 @@ const CFRoutes: FC = () => {
         layout={MinimalLayout}
         path={routes.toModuleTrialHome({ ...accountPathProps, module: 'cf' })}
         exact
+        pageName={PAGE_NAME.CFTrialHomePage}
       >
         <CFTrialHomePage />
       </RouteWithLayout>
@@ -174,6 +188,7 @@ const CFRoutes: FC = () => {
         sidebarProps={CFSideNavProps}
         path={routes.toCFHome({ ...accountPathProps })}
         exact
+        pageName={PAGE_NAME.CFHomePage}
       >
         <CFHomePage />
       </RouteWithLayout>
@@ -183,6 +198,7 @@ const CFRoutes: FC = () => {
         sidebarProps={CFSideNavProps}
         path={routes.toCFFeatureFlags({ ...accountPathProps, ...projectPathProps })}
         exact
+        pageName={PAGE_NAME.FeatureFlagsLandingPage}
       >
         <FeatureFlagsLandingPage />
       </RouteWithLayout>
@@ -196,6 +212,7 @@ const CFRoutes: FC = () => {
           ...featureFlagPathProps
         })}
         exact
+        pageName={PAGE_NAME.FeatureFlagsDetailPage}
       >
         <FeatureFlagsDetailPage />
       </RouteWithLayout>
@@ -209,6 +226,7 @@ const CFRoutes: FC = () => {
           ...segmentPathProps
         })}
         exact
+        pageName={FFM_1512 ? PAGE_NAME.TargetGroupDetailPage : PAGE_NAME.SegmentDetailPage}
       >
         {FFM_1512 ? <TargetGroupDetailPage /> : <SegmentDetailPage />}
       </RouteWithLayout>
@@ -222,8 +240,9 @@ const CFRoutes: FC = () => {
           ...targetPathProps
         })}
         exact
+        pageName={FFM_1827 ? PAGE_NAME.TargetDetailPage : PAGE_NAME.LegacyTargetDetailPage}
       >
-        <TargetDetailPage />
+        {FFM_1827 ? <TargetDetailPage /> : <LegacyTargetDetailPage />}
       </RouteWithLayout>
 
       <RouteWithLayout
@@ -239,6 +258,7 @@ const CFRoutes: FC = () => {
         sidebarProps={CFSideNavProps}
         path={routes.toCFSegments({ ...accountPathProps, ...projectPathProps })}
         exact
+        pageName={PAGE_NAME.SegmentsPage}
       >
         <SegmentsPage />
       </RouteWithLayout>
@@ -248,6 +268,7 @@ const CFRoutes: FC = () => {
         sidebarProps={CFSideNavProps}
         path={routes.toCFTargets({ ...accountPathProps, ...projectPathProps })}
         exact
+        pageName={PAGE_NAME.TargetsPage}
       >
         <TargetsPage />
       </RouteWithLayout>
@@ -257,6 +278,7 @@ const CFRoutes: FC = () => {
         sidebarProps={CFSideNavProps}
         path={routes.toCFEnvironments({ ...accountPathProps, ...projectPathProps })}
         exact
+        pageName={PAGE_NAME.EnvironmentsPage}
       >
         <EnvironmentsPage />
       </RouteWithLayout>
@@ -266,6 +288,7 @@ const CFRoutes: FC = () => {
         sidebarProps={CFSideNavProps}
         path={routes.toCFEnvironmentDetails({ ...accountPathProps, ...projectPathProps, ...environmentPathProps })}
         exact
+        pageName={PAGE_NAME.EnvironmentDetails}
       >
         <EnvironmentDetails />
       </RouteWithLayout>
@@ -275,6 +298,7 @@ const CFRoutes: FC = () => {
         sidebarProps={CFSideNavProps}
         path={routes.toCFOnboarding({ ...accountPathProps, ...projectPathProps, ...environmentPathProps })}
         exact
+        pageName={PAGE_NAME.OnboardingPage}
       >
         <OnboardingPage />
       </RouteWithLayout>
@@ -284,6 +308,7 @@ const CFRoutes: FC = () => {
         sidebarProps={CFSideNavProps}
         path={routes.toCFOnboardingDetail({ ...accountPathProps, ...projectPathProps, ...environmentPathProps })}
         exact
+        pageName={PAGE_NAME.OnboardingDetailPage}
       >
         <OnboardingDetailPage />
       </RouteWithLayout>
@@ -293,6 +318,7 @@ const CFRoutes: FC = () => {
         sidebarProps={CFSideNavProps}
         path={routes.toCFWorkflows({ ...accountPathProps, ...projectPathProps })}
         exact
+        pageName={PAGE_NAME.CFWorkflowsPage}
       >
         <CFWorkflowsPage />
       </RouteWithLayout>
@@ -302,6 +328,7 @@ const CFRoutes: FC = () => {
         path={routes.toConnectors({ ...accountPathProps, ...projectPathProps, ...pipelineModuleParams })}
         sidebarProps={CFSideNavProps}
         exact
+        pageName={PAGE_NAME.ConnectorsPage}
       >
         <ConnectorsPage />
       </RouteWithLayout>
@@ -310,6 +337,7 @@ const CFRoutes: FC = () => {
         sidebarProps={CFSideNavProps}
         path={routes.toCreateConnectorFromYaml({ ...accountPathProps, ...projectPathProps, ...pipelineModuleParams })}
         exact
+        pageName={PAGE_NAME.CreateConnectorFromYamlPage}
       >
         <CreateConnectorFromYamlPage />
       </RouteWithLayout>
@@ -324,6 +352,7 @@ const CFRoutes: FC = () => {
           ...cfModuleParams
         })}
         exact
+        pageName={PAGE_NAME.ConnectorDetailsPage}
       >
         <ConnectorDetailsPage />
       </RouteWithLayout>
@@ -333,8 +362,17 @@ const CFRoutes: FC = () => {
         sidebarProps={CFSideNavProps}
         path={routes.toSecrets({ ...accountPathProps, ...projectPathProps, ...pipelineModuleParams })}
         exact
+        pageName={PAGE_NAME.SecretsPage}
       >
         <SecretsPage />
+      </RouteWithLayout>
+      <RouteWithLayout
+        licenseRedirectData={licenseRedirectData}
+        sidebarProps={CFSideNavProps}
+        path={routes.toVariables({ ...accountPathProps, ...projectPathProps, ...pipelineModuleParams })}
+        exact
+      >
+        <VariablesPage />
       </RouteWithLayout>
 
       <RouteWithLayout
@@ -346,6 +384,7 @@ const CFRoutes: FC = () => {
           ...pipelineModuleParams
         })}
         exact
+        pageName={PAGE_NAME.CreateSecretFromYamlPage}
       >
         <CreateSecretFromYamlPage />
       </RouteWithLayout>
@@ -360,6 +399,7 @@ const CFRoutes: FC = () => {
           ...modulePathProps
         })}
         exact
+        pageName={PAGE_NAME.SecretDetails}
       >
         <RedirectToSecretDetailHome />
       </RouteWithLayout>
@@ -373,6 +413,7 @@ const CFRoutes: FC = () => {
           ...modulePathProps
         })}
         exact
+        pageName={PAGE_NAME.SecretDetails}
       >
         <SecretDetailsHomePage>
           <SecretDetails />
@@ -388,6 +429,7 @@ const CFRoutes: FC = () => {
           ...modulePathProps
         })}
         exact
+        pageName={PAGE_NAME.SecretReferences}
       >
         <SecretDetailsHomePage>
           <SecretReferences />
@@ -399,6 +441,7 @@ const CFRoutes: FC = () => {
         sidebarProps={CFSideNavProps}
         exact
         path={[routes.toGitSyncAdmin({ ...accountPathProps, ...modulePathProps, ...projectPathProps })]}
+        pageName={PAGE_NAME.GitSyncRepoTab}
       >
         <RedirectToGitSyncHome />
       </RouteWithLayout>
@@ -408,6 +451,7 @@ const CFRoutes: FC = () => {
         path={routes.toGitSyncReposAdmin({ ...accountPathProps, ...projectPathProps, ...cfModuleParams })}
         sidebarProps={CFSideNavProps}
         exact
+        pageName={PAGE_NAME.GitSyncRepoTab}
       >
         <GitSyncPage>
           <GitSyncRepoTab />
@@ -419,6 +463,7 @@ const CFRoutes: FC = () => {
         sidebarProps={CFSideNavProps}
         path={routes.toGitSyncEntitiesAdmin({ ...accountPathProps, ...cfModuleParams, ...projectPathProps })}
         exact
+        pageName={PAGE_NAME.GitSyncEntityTab}
       >
         <GitSyncPage>
           <GitSyncEntityTab />
@@ -430,6 +475,7 @@ const CFRoutes: FC = () => {
         sidebarProps={CFSideNavProps}
         path={routes.toGitSyncErrors({ ...accountPathProps, ...cfModuleParams, ...projectPathProps })}
         exact
+        pageName={PAGE_NAME.GitSyncErrors}
       >
         <GitSyncPage>
           <GitSyncErrors />
@@ -441,13 +487,14 @@ const CFRoutes: FC = () => {
         sidebarProps={CFSideNavProps}
         path={routes.toGitSyncConfig({ ...accountPathProps, ...cfModuleParams, ...projectPathProps })}
         exact
+        pageName={PAGE_NAME.GitSyncConfigTab}
       >
         <GitSyncPage>
           <GitSyncConfigTab />
         </GitSyncPage>
       </RouteWithLayout>
       <AdminRouteDestinations />
-      <PipelineRouteDestinations />
+      {FF_PIPELINE && <PipelineRouteDestinations />}
 
       {GovernanceRouteDestinations({
         sidebarProps: CFSideNavProps,

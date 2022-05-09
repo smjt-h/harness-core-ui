@@ -15,7 +15,8 @@ import {
   Button,
   Switch,
   TextInput,
-  RUNTIME_INPUT_VALUE
+  RUNTIME_INPUT_VALUE,
+  IconName
 } from '@wings-software/uicore'
 import * as Yup from 'yup'
 import { Color } from '@harness/design-system'
@@ -26,10 +27,7 @@ import { produce } from 'immer'
 import { parse } from 'yaml'
 import type { PipelineInfoConfig } from 'services/cd-ng'
 import { ConnectorInfoDTO, useGetConnector } from 'services/cd-ng'
-import {
-  PipelineContextType,
-  usePipelineContext
-} from '@pipeline/components/PipelineStudio/PipelineContext/PipelineContext'
+import { usePipelineContext } from '@pipeline/components/PipelineStudio/PipelineContext/PipelineContext'
 import { useStrings } from 'framework/strings'
 import {
   ConnectorReferenceField,
@@ -52,6 +50,7 @@ import type { TemplateSummaryResponse } from 'services/template-ng'
 import { createTemplate, getTemplateNameWithLabel } from '@pipeline/utils/templateUtils'
 import { useTelemetry } from '@common/hooks/useTelemetry'
 import { Category, StageActions } from '@common/constants/TrackingConstants'
+import { isContextTypeNotStageTemplate } from '@pipeline/components/PipelineStudio/PipelineUtils'
 import css from './EditStageView.module.scss'
 
 export interface EditStageView {
@@ -63,6 +62,7 @@ export interface EditStageView {
     pipeline?: PipelineInfoConfig
   ) => void
   onChange?: (values: Values) => void
+  moduleIcon?: IconName
 }
 
 interface Values {
@@ -75,12 +75,20 @@ interface Values {
   repoName?: string
 }
 
-export const EditStageView: React.FC<EditStageView> = ({ data, template, onSubmit, onChange }): JSX.Element => {
+export const EditStageView: React.FC<EditStageView> = ({
+  data,
+  template,
+  onSubmit,
+  onChange,
+  moduleIcon
+}): JSX.Element => {
   const { getString } = useStrings()
   const [connectionType, setConnectionType] = React.useState('')
   const [connectorUrl, setConnectorUrl] = React.useState('')
   const gitScope = useGitScope()
   const repositoryNameLabel = getString('common.repositoryName')
+
+  const icon: IconName = moduleIcon ? moduleIcon : 'ci-main'
 
   const {
     state: { pipeline },
@@ -151,14 +159,14 @@ export const EditStageView: React.FC<EditStageView> = ({ data, template, onSubmi
   const validationSchema = () =>
     Yup.lazy((values: Values): any =>
       Yup.object().shape({
-        ...(contextType === PipelineContextType.Pipeline && {
+        ...(isContextTypeNotStageTemplate(contextType) && {
           name: NameSchemaWithoutHook(getString, {
             requiredErrorMsg: getString('fieldRequired', { field: getString('stageNameLabel') })
           }),
           identifier: IdentifierSchemaWithoutHook(getString)
         }),
         ...(!codebase &&
-          contextType === PipelineContextType.Pipeline &&
+          isContextTypeNotStageTemplate(contextType) &&
           values.cloneCodebase && {
             connectorRef: Yup.mixed().required(getString('fieldRequired', { field: getString('connector') })),
             ...(connectionType === 'Account' && {
@@ -234,14 +242,14 @@ export const EditStageView: React.FC<EditStageView> = ({ data, template, onSubmi
             <FormikForm>
               <Text
                 font={{ size: 'medium', weight: 'semi-bold' }}
-                icon="ci-main"
+                icon={icon}
                 iconProps={{ size: 24, margin: { right: 'xsmall' } }}
                 margin={{ bottom: 'medium' }}
                 className={css.addStageHeading}
               >
                 {getString('pipelineSteps.build.create.aboutYourStage')}
               </Text>
-              {contextType === PipelineContextType.Pipeline &&
+              {isContextTypeNotStageTemplate(contextType) &&
                 (template ? (
                   <NameId
                     identifierProps={{
@@ -288,7 +296,7 @@ export const EditStageView: React.FC<EditStageView> = ({ data, template, onSubmi
                 </div>
               )}
               {/* We don't need to configure CI Codebase if it is already configured or we are skipping Clone Codebase step */}
-              {!codebase && formikProps.values.cloneCodebase && contextType === PipelineContextType.Pipeline && (
+              {!codebase && formikProps.values.cloneCodebase && isContextTypeNotStageTemplate(contextType) && (
                 <div className={css.configureCodebase}>
                   <Text
                     font={{ size: 'normal', weight: 'semi-bold' }}

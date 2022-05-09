@@ -21,9 +21,11 @@ import {
   targetAddedFixture,
   targetGroupsAddedFixture,
   targetGroupsRemovedFixture,
-  targetRemovedFixture
+  targetRemovedFixture,
+  variationAddedFixture,
+  variationRemovedFixture
 } from './fixtures/target_groups_and_targets_fixtures'
-import type { TargetingRulesFormValues } from '../../Types.types'
+import type { TargetingRulesFormValues } from '../../types'
 
 jest.mock('uuid')
 
@@ -142,6 +144,50 @@ describe('usePatchFeatureFlag', () => {
 
       expect(mutateMock).not.toBeCalledWith()
       expect(refetchFlagMock).not.toBeCalled()
+    })
+  })
+
+  describe('Add/Remove Variations', () => {
+    test('it should send correct values when Variation added', async () => {
+      const refetchFlagMock = jest.fn()
+
+      const { result } = renderHookUnderTest({
+        refetchFlag: refetchFlagMock.mockResolvedValueOnce({}),
+        initialValues: {
+          ...defaultInitialValues,
+          targetingRuleItems: []
+        }
+      })
+
+      const newValues: TargetingRulesFormValues = {
+        ...defaultInitialValues,
+        targetingRuleItems: [variationAddedFixture.addedTargetingRules]
+      }
+      result.current.saveChanges(newValues)
+
+      expect(mutateMock).toBeCalledWith(variationAddedFixture.expected)
+      await waitFor(() => expect(refetchFlagMock).toBeCalled())
+    })
+
+    test('it should send correct values when Variation removed', async () => {
+      const refetchFlagMock = jest.fn()
+
+      const { result } = renderHookUnderTest({
+        refetchFlag: refetchFlagMock.mockResolvedValueOnce({}),
+        initialValues: {
+          ...defaultInitialValues,
+          targetingRuleItems: [variationRemovedFixture.initialTargetingRules]
+        }
+      })
+
+      const newValues: TargetingRulesFormValues = {
+        ...defaultInitialValues,
+        targetingRuleItems: [variationRemovedFixture.removedTargetingRules]
+      }
+      result.current.saveChanges(newValues)
+
+      expect(mutateMock).toBeCalledWith(variationRemovedFixture.expected)
+      await waitFor(() => expect(refetchFlagMock).toBeCalled())
     })
   })
 
@@ -265,7 +311,7 @@ describe('usePatchFeatureFlag', () => {
 
       const newValues = {
         ...defaultInitialValues,
-        targetingRuleItems: [percentageRolloutUpdated.newPercentageRolloutAdded]
+        targetingRuleItems: [percentageRolloutUpdated.newPercentageRolloutUpdated]
       }
       result.current.saveChanges(newValues)
 
@@ -286,7 +332,7 @@ describe('usePatchFeatureFlag', () => {
 
       const newValues = {
         ...defaultInitialValues,
-        targetingRuleItems: []
+        targetingRuleItems: [percentageRolloutRemoved.percentageRolloutRemoved]
       }
       result.current.saveChanges(newValues)
 

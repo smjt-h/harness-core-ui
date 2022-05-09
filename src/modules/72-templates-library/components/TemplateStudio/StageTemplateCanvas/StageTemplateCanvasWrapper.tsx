@@ -22,6 +22,7 @@ import { DefaultPipeline } from '@pipeline/components/PipelineStudio/PipelineCon
 import type { ProjectPathProps, GitQueryParams } from '@common/interfaces/RouteInterfaces'
 import { sanitize } from '@common/utils/JSONUtils'
 import { useQueryParams } from '@common/hooks'
+import { PipelineContextType } from '@pipeline/components/PipelineStudio/PipelineContext/PipelineContext'
 
 const StageTemplateCanvasWrapper = (_props: unknown, formikRef: TemplateFormRef) => {
   const {
@@ -52,20 +53,17 @@ const StageTemplateCanvasWrapper = (_props: unknown, formikRef: TemplateFormRef)
     await updateTemplate(template)
   }
 
-  if (pipeline) {
-    return (
-      <TemplatePipelineProvider
-        queryParams={{ accountIdentifier: accountId, orgIdentifier, projectIdentifier, repoIdentifier, branch }}
-        initialValue={pipeline as PipelineInfoConfig}
-        onUpdatePipeline={onUpdatePipeline}
-        isReadOnly={isReadonly}
-      >
-        <StageTemplateCanvasWithRef ref={formikRef} />
-      </TemplatePipelineProvider>
-    )
-  } else {
-    return <></>
-  }
+  return (
+    <TemplatePipelineProvider
+      queryParams={{ accountIdentifier: accountId, orgIdentifier, projectIdentifier, repoIdentifier, branch }}
+      initialValue={pipeline as PipelineInfoConfig}
+      onUpdatePipeline={onUpdatePipeline}
+      contextType={PipelineContextType.StageTemplate}
+      isReadOnly={isReadonly}
+    >
+      <StageTemplateCanvasWithRef ref={formikRef} />
+    </TemplatePipelineProvider>
+  )
 }
 
 export const StageTemplateCanvasWrapperWithRef = React.forwardRef(StageTemplateCanvasWrapper)

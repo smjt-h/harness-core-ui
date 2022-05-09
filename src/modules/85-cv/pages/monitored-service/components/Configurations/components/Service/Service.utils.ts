@@ -14,10 +14,27 @@ import type { MonitoredServiceForm } from './Service.types'
 export const getInitFormData = (
   data: MonitoredServiceDTO | undefined,
   defaultMonitoredService: MonitoredServiceDTO | undefined,
-  isEdit: boolean
+  isEdit: boolean,
+  isTemplate = false,
+  templateValue?: any
 ): MonitoredServiceForm => {
   const monitoredServiceData = isEdit ? data : defaultMonitoredService
 
+  if (isTemplate) {
+    return {
+      isEdit: false,
+      name: templateValue?.name,
+      identifier: templateValue?.identifier,
+      description: '',
+      tags: templateValue?.tags,
+      serviceRef: templateValue?.spec?.serviceRef,
+      type: MonitoredServiceType.APPLICATION as MonitoredServiceForm['type'],
+      environmentRef: templateValue?.spec?.environmentRef,
+      environmentRefList: [],
+      sources: templateValue?.spec?.sources,
+      dependencies: []
+    }
+  }
   const {
     name = '',
     identifier = '',

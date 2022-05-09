@@ -23,6 +23,7 @@ import {
 import { useStrings } from 'framework/strings'
 import List from '@common/components/List/List'
 import { Connectors } from '@connectors/constants'
+import useRBACError from '@rbac/utils/useRBACError/useRBACError'
 import { useVariablesExpression } from '@pipeline/components/PipelineStudio/PiplineHooks/useVariablesExpression'
 import { useGetRepositoriesDetailsForArtifactory } from 'services/cd-ng'
 import { useQueryParams } from '@common/hooks'
@@ -43,6 +44,7 @@ function TFRemoteSectionRef<T extends TerraformData = TerraformData>(
   const { getString } = useStrings()
   const { expressions } = useVariablesExpression()
   const { showError } = useToaster()
+  const { getRBACErrorMessage } = useRBACError()
   const { repoIdentifier, branch } = useQueryParams<GitQueryParams>()
   const [connectorRepos, setConnectorRepos] = useState<SelectOption[]>()
   const { readonly, initialValues, path } = props
@@ -85,7 +87,7 @@ function TFRemoteSectionRef<T extends TerraformData = TerraformData>(
 
   useEffect(() => {
     if (ArtifactRepoError) {
-      showError(ArtifactRepoError.message)
+      showError(getRBACErrorMessage(ArtifactRepoError))
     }
   }, [ArtifactRepoError])
 

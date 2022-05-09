@@ -7,6 +7,7 @@
 
 import factory from '@pipeline/components/PipelineSteps/PipelineStepFactory'
 
+import { AzureInfrastructureSpec } from './AzureInfrastructureStep/AzureInfrastructureStep'
 import { HttpStep } from './HttpStep/HttpStep'
 import { K8RolloutDeployStep } from './K8sRolloutDeployStep/K8sRolloutDeployStep'
 import { ShellScriptStep } from './ShellScriptStep/ShellScriptStep'
@@ -32,6 +33,12 @@ import { InfraProvisioning } from './InfraProvisioning/InfraProvisioning'
 import { GcpInfrastructureSpec } from './GcpInfrastructureSpec/GcpInfrastructureSpec'
 import { PDCInfrastructureSpec } from './PDCInfrastructureSpec/PDCInfrastructureSpec'
 import { PolicyStep } from './PolicyStep/PolicyStep'
+import { ServerlessLambdaDeployStep } from './ServerlessLambdaDeploy/ServerlessLambdaDeploy'
+import { ServerlessLambdaRollbackStep } from './ServerlessLambdaRollback/ServerlessLambdaRollback'
+import { ServerlessAwsLambdaSpec } from './ServerlessAWSLambda/ServerlessAwsLambdaSpec'
+import { ServerlessAzureSpec } from './ServerlessAzure/ServerlessAzureSpec'
+import { ServerlessGCPSpec } from './ServerlessGCP/ServerlessGCPSpec'
+import { ServerlessAwsLambdaServiceSpec } from './ServerlessAwsLambdaServiceSpec/ServerlessAwsLambdaServiceSpec'
 
 factory.registerStep(new HttpStep())
 factory.registerStep(new K8RolloutDeployStep())
@@ -47,9 +54,13 @@ factory.registerStep(new ShellScriptStep())
 factory.registerStep(new KubernetesInfraSpec())
 factory.registerStep(new GcpInfrastructureSpec())
 factory.registerStep(new PDCInfrastructureSpec())
+factory.registerStep(new ServerlessAwsLambdaSpec())
+factory.registerStep(new ServerlessAzureSpec())
+factory.registerStep(new ServerlessGCPSpec())
 factory.registerStep(new DeployEnvironmentStep())
 factory.registerStep(new DeployServiceStep())
 factory.registerStep(new KubernetesServiceSpec())
+factory.registerStep(new ServerlessAwsLambdaServiceSpec())
 factory.registerStep(new HelmDeploy())
 factory.registerStep(new HelmRollback())
 factory.registerStep(new TerraformRollback())
@@ -58,3 +69,6 @@ factory.registerStep(new TerraformApply())
 factory.registerStep(new TerraformPlan())
 factory.registerStep(new InfraProvisioning())
 factory.registerStep(new PolicyStep())
+factory.registerStep(new ServerlessLambdaDeployStep())
+factory.registerStep(new ServerlessLambdaRollbackStep())
+factory.registerStep(new AzureInfrastructureSpec())

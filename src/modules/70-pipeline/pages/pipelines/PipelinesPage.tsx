@@ -79,15 +79,14 @@ import { NavigatedToPage } from '@common/constants/TrackingConstants'
 import { useTelemetry } from '@common/hooks/useTelemetry'
 import { GitSyncStoreProvider } from 'framework/GitRepoStore/GitSyncStoreContext'
 import { NGBreadcrumbs } from '@common/components/NGBreadcrumbs/NGBreadcrumbs'
-import { useFeatureFlags } from '@common/hooks/useFeatureFlag'
 import useRBACError from '@rbac/utils/useRBACError/useRBACError'
+import { deploymentTypeLabel } from '@pipeline/utils/DeploymentTypeUtils'
 import { PipelineGridView } from './views/PipelineGridView'
 import { PipelineListView } from './views/PipelineListView'
 import PipelineFilterForm from '../pipeline-deployment-list/PipelineFilterForm/PipelineFilterForm'
 import pipelineIllustration from './images/deploypipeline-illustration.svg'
 import buildpipelineIllustration from './images/buildpipeline-illustration.svg'
 import flagpipelineIllustration from './images/flagpipeline-illustration.svg'
-import { deploymentTypeLabel } from './PipelineListUtils'
 import css from './PipelinesPage.module.scss'
 
 export enum Sort {
@@ -168,7 +167,6 @@ function PipelinesPage({ mockData }: CDPipelinesPageProps): React.ReactElement {
   const isCIModule = module === 'ci'
   const isCFModule = module === 'cf'
   const searchRef = useRef<ExpandingSearchInputHandle>({} as ExpandingSearchInputHandle)
-  const { NG_NATIVE_HELM } = useFeatureFlags()
   const emptyStagePipelineImage = isCIModule
     ? buildpipelineIllustration
     : isCFModule
@@ -294,7 +292,7 @@ function PipelinesPage({ mockData }: CDPipelinesPageProps): React.ReactElement {
     queryParams: defaultQueryParamsForFilters
   })
   if (errorFetchingFilters && shouldShowError(errorFetchingFilters)) {
-    showError(errorFetchingFilters?.data || errorFetchingFilters?.message, undefined, 'pipeline.fetch.filter.error')
+    showError(getRBACErrorMessage(errorFetchingFilters), undefined, 'pipeline.fetch.filter.error')
   }
 
   useEffect(() => {
@@ -451,9 +449,7 @@ function PipelinesPage({ mockData }: CDPipelinesPageProps): React.ReactElement {
             initialValues={{
               environments: getMultiSelectFormOptions(environmentsResponse?.data?.content),
               services: getMultiSelectFormOptions(servicesResponse?.data?.content),
-              deploymentType: NG_NATIVE_HELM
-                ? deploymentTypeSelectOptions
-                : deploymentTypeSelectOptions.filter(deploymentType => deploymentType.value !== 'NativeHelm')
+              deploymentType: deploymentTypeSelectOptions
             }}
             type="PipelineSetup"
           />
@@ -615,7 +611,7 @@ function PipelinesPage({ mockData }: CDPipelinesPageProps): React.ReactElement {
     } catch (err) {
       setIsDeleting(false)
       /* istanbul ignore next */
-      showError(err?.data?.message || err?.message, undefined, 'pipeline.delete.pipeline.error')
+      showError(getRBACErrorMessage(err), undefined, 'pipeline.delete.pipeline.error')
     }
   }
 
@@ -758,7 +754,6 @@ function PipelinesPage({ mockData }: CDPipelinesPageProps): React.ReactElement {
                 <Text className={css.aboutPipeline} margin={{ top: 'xsmall', bottom: 'xlarge' }}>
                   {getString('pipeline-list.aboutPipeline')}
                 </Text>
-
                 <RbacButton
                   variation={ButtonVariation.PRIMARY}
                   onClick={() => goToPipeline()}

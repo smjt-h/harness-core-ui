@@ -106,7 +106,7 @@ exports[`Test FilterCRUD component Add a new filter with visibke to Everyone 1`]
         <div>
           <ol
             class="filters"
-            style="max-height: 55vh;"
+            style="max-height: calc(85vh - 300px - 0vh);"
           >
             <div
               class="Layout--horizontal Layout--layout-spacing-small StyledProps--main filter StyledProps--flex StyledProps--padding-right-medium"
@@ -702,7 +702,7 @@ exports[`Test FilterCRUD component Add a new filter with visible to OnlyMe 1`] =
         <div>
           <ol
             class="filters"
-            style="max-height: 55vh;"
+            style="max-height: calc(85vh - 300px - 0vh);"
           >
             <div
               class="Layout--horizontal Layout--layout-spacing-small StyledProps--main filter StyledProps--flex StyledProps--padding-right-medium"
@@ -1298,7 +1298,7 @@ exports[`Test FilterCRUD component Add a new filter with visible to OnlyMe 3`] =
         <div>
           <ol
             class="filters"
-            style="max-height: 55vh;"
+            style="max-height: calc(85vh - 300px - 0vh);"
           >
             <div
               class="Layout--horizontal Layout--layout-spacing-small StyledProps--main filter StyledProps--flex StyledProps--padding-right-medium"
@@ -2130,7 +2130,7 @@ exports[`Test FilterCRUD component Enable edit mode 1`] = `
         <div>
           <ol
             class="filters"
-            style="max-height: 55vh;"
+            style="max-height: calc(85vh - 300px - 0vh);"
           >
             <div
               class="Layout--horizontal Layout--layout-spacing-small StyledProps--main filter StyledProps--flex StyledProps--padding-right-medium"

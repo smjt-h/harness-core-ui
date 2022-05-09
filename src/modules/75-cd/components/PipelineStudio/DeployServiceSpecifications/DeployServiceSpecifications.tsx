@@ -16,17 +16,17 @@ import {
   RUNTIME_INPUT_VALUE,
   SelectOption,
   Text,
-  useToaster
+  useConfirmationDialog
 } from '@wings-software/uicore'
-import { Color } from '@harness/design-system'
+import { Color, Intent } from '@harness/design-system'
 import produce from 'immer'
-import { debounce, get, isEmpty, set, unset } from 'lodash-es'
+import { debounce, defaultTo, get, isEmpty, set, unset } from 'lodash-es'
 import { StepViewType } from '@pipeline/components/AbstractSteps/Step'
 import { useStrings } from 'framework/strings'
 
 import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
 import { StepType } from '@pipeline/components/PipelineSteps/PipelineStepInterface'
-import { ServiceConfig, StageElementConfig, useGetServiceList } from 'services/cd-ng'
+import { ServiceConfig, ServiceDefinition, StageElementConfig, useGetServiceList } from 'services/cd-ng'
 import factory from '@pipeline/components/PipelineSteps/PipelineStepFactory'
 import { usePipelineContext } from '@pipeline/components/PipelineStudio/PipelineContext/PipelineContext'
 import {
@@ -41,13 +41,19 @@ import PropagateWidget, {
 } from '@cd/components/PipelineStudio/DeployServiceSpecifications/PropagateWidget/PropagateWidget'
 import { StageErrorContext } from '@pipeline/context/StageErrorContext'
 import { useValidationErrors } from '@pipeline/components/PipelineStudio/PiplineHooks/useValidationErrors'
-import { DeployTabs } from '@cd/components/PipelineStudio/DeployStageSetupShell/DeployStageSetupShellUtils'
+import { DeployTabs } from '@pipeline/components/PipelineStudio/CommonUtils/DeployStageSetupShellUtils'
 import SelectDeploymentType from '@cd/components/PipelineStudio/DeployServiceSpecifications/SelectDeploymentType'
 import type { DeploymentStageElementConfig } from '@pipeline/utils/pipelineTypes'
 import { useDeepCompareEffect } from '@common/hooks'
-import { StageType } from '@pipeline/utils/stageHelpers'
-import { useFeatureFlags } from '@common/hooks/useFeatureFlag'
+import {
+  deleteStageData,
+  doesStageContainOtherData,
+  getStepTypeByDeploymentType,
+  ServiceDeploymentType,
+  StageType
+} from '@pipeline/utils/stageHelpers'
 import { Scope } from '@common/interfaces/SecretsInterface'
+import { getIdentifierFromValue } from '@common/components/EntityReference/EntityReference'
 import stageCss from '../DeployStageSetupShell/DeployStage.module.scss'
 
 export default function DeployServiceSpecifications(props: React.PropsWithChildren<unknown>): JSX.Element {
@@ -56,6 +62,7 @@ export default function DeployServiceSpecifications(props: React.PropsWithChildr
   const {
     state: {
       pipeline,
+      templateTypes,
       selectionState: { selectedStageId }
     },
     allowableTypes,
@@ -65,8 +72,6 @@ export default function DeployServiceSpecifications(props: React.PropsWithChildr
     updateStage
   } = usePipelineContext()
   const scrollRef = React.useRef<HTMLDivElement | null>(null)
-  const { showError } = useToaster()
-  const { NG_NATIVE_HELM } = useFeatureFlags()
 
   // eslint-disable-next-line react-hooks/exhaustive-deps
   const debounceUpdateStage = useCallback(
@@ -78,12 +83,8 @@ export default function DeployServiceSpecifications(props: React.PropsWithChildr
     [updateStage]
   )
   const { stage } = getStageFromPipeline<DeploymentStageElementConfig>(selectedStageId || '')
-  const getDeploymentType = (): string => {
-    return get(
-      stage,
-      'stage.spec.serviceConfig.serviceDefinition.type',
-      !NG_NATIVE_HELM ? 'Kubernetes' : /* istanbul ignore next */ undefined
-    )
+  const getDeploymentType = (): ServiceDeploymentType => {
+    return get(stage, 'stage.spec.serviceConfig.serviceDefinition.type')
   }
 
   const [setupModeType, setSetupMode] = useState('')
@@ -92,13 +93,31 @@ export default function DeployServiceSpecifications(props: React.PropsWithChildr
   })
   const [selectedPropagatedState, setSelectedPropagatedState] = useState<SelectOption>()
   const [serviceIdNameMap, setServiceIdNameMap] = useState<{ [key: string]: string }>()
-  const [selectedDeploymentType, setSelectedDeploymentType] = useState(getDeploymentType())
+  const [selectedDeploymentType, setSelectedDeploymentType] = useState<ServiceDeploymentType | undefined>(
+    getDeploymentType()
+  )
   const [previousStageList, setPreviousStageList] = useState<SelectOption[]>([])
+  const [currStageData, setCurrStageData] = useState<DeploymentStageElementConfig | undefined>()
 
   const { index: stageIndex } = getStageIndexFromPipeline(pipeline, selectedStageId || '')
   const { stages } = getFlattenedStages(pipeline)
   const { submitFormsForTab } = useContext(StageErrorContext)
   const { errorMap } = useValidationErrors()
+
+  const { openDialog: openStageDataDeleteWarningDialog } = useConfirmationDialog({
+    cancelButtonText: getString('cancel'),
+    contentText: getString('pipeline.stageDataDeleteWarningText'),
+    titleText: getString('pipeline.stageDataDeleteWarningTitle'),
+    confirmButtonText: getString('confirm'),
+    intent: Intent.WARNING,
+    onCloseDialog: async isConfirmed => {
+      if (isConfirmed) {
+        deleteStageData(currStageData)
+        await debounceUpdateStage(currStageData)
+        setSelectedDeploymentType(currStageData?.spec?.serviceConfig.serviceDefinition?.type as ServiceDeploymentType)
+      }
+    }
+  })
 
   useEffect(() => {
     if (
@@ -135,23 +154,34 @@ export default function DeployServiceSpecifications(props: React.PropsWithChildr
       const newPreviousStageList: SelectOption[] = []
       const currentStageType = stage?.stage?.type
       stages.forEach((item, index) => {
-        if (
-          index < stageIndex &&
-          currentStageType === item?.stage?.type &&
-          !get(item.stage, `spec.serviceConfig.useFromStage.stage`)
-        ) {
-          let serviceName = (item.stage as DeploymentStageElementConfig)?.spec?.serviceConfig?.service?.name
-          if (isEmpty(serviceName) && serviceIdNameMap) {
-            serviceName =
-              serviceIdNameMap[(item.stage as DeploymentStageElementConfig)?.spec?.serviceConfig?.serviceRef as string]
+        if (index < stageIndex) {
+          if (item.stage?.template) {
+            const stageType = get(templateTypes, getIdentifierFromValue(item.stage.template.templateRef))
+            if (currentStageType === stageType) {
+              newPreviousStageList.push({
+                label: `Stage [${item.stage?.name}] - [Template]`,
+                value: item.stage?.identifier || ''
+              })
+            }
+          } else if (
+            currentStageType === item?.stage?.type &&
+            !get(item.stage, `spec.serviceConfig.useFromStage.stage`)
+          ) {
+            let serviceName = (item.stage as DeploymentStageElementConfig)?.spec?.serviceConfig?.service?.name
+            if (isEmpty(serviceName) && serviceIdNameMap) {
+              serviceName =
+                serviceIdNameMap[
+                  (item.stage as DeploymentStageElementConfig)?.spec?.serviceConfig?.serviceRef as string
+                ]
+            }
+            if (isEmpty(serviceName)) {
+              serviceName = (item.stage as DeploymentStageElementConfig)?.spec?.serviceConfig?.serviceRef || ''
+            }
+            newPreviousStageList.push({
+              label: `Stage [${item.stage?.name}] - Service [${serviceName}]`,
+              value: item.stage?.identifier || ''
+            })
           }
-          if (isEmpty(serviceName)) {
-            serviceName = (item.stage as DeploymentStageElementConfig)?.spec?.serviceConfig?.serviceRef || ''
-          }
-          newPreviousStageList.push({
-            label: `Stage [${item.stage?.name}] - Service [${serviceName}]`,
-            value: item.stage?.identifier || ''
-          })
         }
       })
       setPreviousStageList(newPreviousStageList)
@@ -217,7 +247,6 @@ export default function DeployServiceSpecifications(props: React.PropsWithChildr
           serviceConfig: {
             serviceRef: getScopeBasedDefaultServiceRef(),
             serviceDefinition: {
-              type: !NG_NATIVE_HELM ? 'Kubernetes' : undefined,
               spec: {
                 variables: []
               }
@@ -292,18 +321,24 @@ export default function DeployServiceSpecifications(props: React.PropsWithChildr
     [debounceUpdateStage, stage, stage?.stage?.spec?.serviceConfig?.serviceDefinition]
   )
 
-  const handleDeploymentTypeChange = async (deploymentType: string): Promise<void> => {
-    try {
-      const stageData = produce(stage, draft => {
-        const serviceDefinition = get(draft, 'stage.spec.serviceConfig.serviceDefinition', {})
-        serviceDefinition.type = deploymentType
-      })
-      await debounceUpdateStage(stageData?.stage)
-      setSelectedDeploymentType(deploymentType)
-    } catch (err) {
-      showError(err?.data?.message || err?.message)
-    }
-  }
+  const handleDeploymentTypeChange = useCallback(
+    (deploymentType: ServiceDeploymentType): void => {
+      if (deploymentType !== selectedDeploymentType) {
+        const stageData = produce(stage, draft => {
+          const serviceDefinition = get(draft, 'stage.spec.serviceConfig.serviceDefinition', {})
+          serviceDefinition.type = deploymentType
+        })
+        if (doesStageContainOtherData(stageData?.stage)) {
+          setCurrStageData(stageData?.stage)
+          openStageDataDeleteWarningDialog()
+        } else {
+          setSelectedDeploymentType(deploymentType)
+          updateStage(stageData?.stage as StageElementConfig)
+        }
+      }
+    },
+    [stage, updateStage]
+  )
 
   const getScopeBasedDefaultServiceRef = React.useCallback(() => {
     return scope === Scope.PROJECT ? '' : RUNTIME_INPUT_VALUE
@@ -375,10 +410,11 @@ export default function DeployServiceSpecifications(props: React.PropsWithChildr
                   readonly={isReadonly}
                   initialValues={{
                     stageIndex,
-                    setupModeType
+                    setupModeType,
+                    deploymentType: selectedDeploymentType as ServiceDefinition['type']
                   }}
                   allowableTypes={allowableTypes}
-                  type={StepType.K8sServiceSpec}
+                  type={getStepTypeByDeploymentType(defaultTo(selectedDeploymentType, ''))}
                   stepViewType={StepViewType.Edit}
                 />
               </Layout.Horizontal>

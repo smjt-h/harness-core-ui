@@ -13,8 +13,15 @@ import useActiveEnvironment from '@cf/hooks/useActiveEnvironment'
 import { showToaster } from '@cf/utils/CFUtils'
 import { useStrings } from 'framework/strings'
 import useRBACError from '@rbac/utils/useRBACError/useRBACError'
-import type { TargetingRulesFormValues } from '../Types.types'
-import { PatchFeatureFlagUtils } from './utils/PatchFeatureFlagUtils'
+import type { ErrorHandlerProps } from '@rbac/utils/utils'
+import {
+  FormVariationMap,
+  TargetingRuleItemStatus,
+  TargetingRuleItemType,
+  TargetingRulesFormValues,
+  VariationPercentageRollout
+} from '../types'
+import { PatchFeatureFlagUtils } from '../utils/PatchFeatureFlagUtils'
 export interface UsePatchFeatureFlagProps {
   featureFlagIdentifier: string
   initialValues: TargetingRulesFormValues
@@ -30,7 +37,6 @@ interface UsePatchFeatureFlagReturn {
 const usePatchFeatureFlag = ({
   featureFlagIdentifier,
   initialValues,
-  variations,
   refetchFlag
 }: UsePatchFeatureFlagProps): UsePatchFeatureFlagReturn => {
   const { projectIdentifier, orgIdentifier, accountId: accountIdentifier } = useParams<Record<string, string>>()
@@ -67,45 +73,76 @@ const usePatchFeatureFlag = ({
       patchFeatureUtils.createDefaultServeOffInstruction()
     }
 
-    // for each variation, iterate and compare initial Targets/Target groups against the submitted Targets/Target groups and create instructions
-    variations.forEach((variation: Variation) => {
-      const addedTargetGroups = patchFeatureUtils.addedTargetGroups(variation.identifier)
-      if (addedTargetGroups.length) {
-        patchFeatureUtils.createAddTargetGroupInstructions(variation.identifier, addedTargetGroups)
-      }
+    // API requires delete rule instructions first so handle those initially
+    submittedValues.targetingRuleItems
+      .filter(rule => rule.status === TargetingRuleItemStatus.DELETED)
+      .forEach(rule => {
+        if (rule.type === TargetingRuleItemType.VARIATION) {
+          const item = rule as FormVariationMap
+          patchFeatureUtils.createRemoveTargetGroupsInstructions(item.targetGroups)
+          patchFeatureUtils.createRemoveTargetsInstructions(
+            item.variationIdentifier,
+            item.targets.map(target => target.value)
+          )
+        } else {
+          const item = rule as VariationPercentageRollout
+          patchFeatureUtils.createRemovePercentageRolloutInstruction(item)
+        }
+      })
 
-      const removedTargetGroups = patchFeatureUtils.removedTargetGroups(variation.identifier)
-      if (removedTargetGroups.length) {
-        patchFeatureUtils.createRemoveTargetGroupsInstructions(removedTargetGroups)
-      }
+    // Loop through the non-deleted rules and handle the added/updated ones
+    submittedValues.targetingRuleItems
+      .filter(targetingRule => targetingRule.status !== TargetingRuleItemStatus.DELETED)
+      .forEach((targetingRule: FormVariationMap | VariationPercentageRollout) => {
+        if (targetingRule.type === TargetingRuleItemType.VARIATION) {
+          const item = targetingRule as FormVariationMap
 
-      const addedTargetIds = patchFeatureUtils.addedTargets(variation.identifier)
+          if (targetingRule.status === TargetingRuleItemStatus.ADDED) {
+            patchFeatureUtils.createAddTargetGroupInstructions(
+              item.variationIdentifier,
+              item.targetGroups,
+              item.priority
+            )
 
-      if (addedTargetIds.length) {
-        patchFeatureUtils.createAddTargetsInstructions(variation.identifier, addedTargetIds)
-      }
+            patchFeatureUtils.createAddTargetsInstructions(
+              item.variationIdentifier,
+              item.targets.map(x => x.value)
+            )
+          } else {
+            const removedTargetGroups = patchFeatureUtils.removedTargetGroups(item.variationIdentifier)
+            if (removedTargetGroups.length) {
+              patchFeatureUtils.createRemoveTargetGroupsInstructions(removedTargetGroups)
+            }
 
-      const removedTargetIds = patchFeatureUtils.removedTargets(variation.identifier)
-      if (removedTargetIds.length) {
-        patchFeatureUtils.createRemoveTargetsInstructions(variation.identifier, removedTargetIds)
-      }
-    })
+            const addedTargetGroups = patchFeatureUtils.addedTargetGroups(item.variationIdentifier)
+            if (addedTargetGroups.length) {
+              patchFeatureUtils.createAddTargetGroupInstructions(
+                item.variationIdentifier,
+                addedTargetGroups,
+                item.priority
+              )
+            }
 
-    // handle added/removed/updated percentage rollouts
-    const addedPercentageRollouts = patchFeatureUtils.addedPercentageRollouts()
-    if (addedPercentageRollouts.length) {
-      patchFeatureUtils.createAddPercentageRolloutInstructions(addedPercentageRollouts)
-    }
+            const removedTargetIds = patchFeatureUtils.removedTargets(item.variationIdentifier)
+            if (removedTargetIds.length) {
+              patchFeatureUtils.createRemoveTargetsInstructions(item.variationIdentifier, removedTargetIds)
+            }
 
-    const removedPercentageRollouts = patchFeatureUtils.removedPercentageRollouts()
-    if (removedPercentageRollouts.length) {
-      patchFeatureUtils.createRemovePercentageRolloutInstructions(removedPercentageRollouts)
-    }
-
-    const updatedPercentageRollouts = patchFeatureUtils.updatedPercentageRollouts()
-    if (updatedPercentageRollouts.length) {
-      patchFeatureUtils.createUpdatePercentageRolloutInstructions(updatedPercentageRollouts)
-    }
+            const addedTargetIds = patchFeatureUtils.addedTargets(item.variationIdentifier)
+            if (addedTargetIds.length) {
+              patchFeatureUtils.createAddTargetsInstructions(item.variationIdentifier, addedTargetIds)
+            }
+          }
+        } else {
+          const item = targetingRule as VariationPercentageRollout
+          if (item.status === TargetingRuleItemStatus.ADDED) {
+            patchFeatureUtils.createAddPercentageRolloutInstructions(item, item.priority)
+          } else {
+            const updatedPercentageRollouts = patchFeatureUtils.updatedPercentageRollouts()
+            patchFeatureUtils.createUpdatePercentageRolloutInstructions(updatedPercentageRollouts)
+          }
+        }
+      })
 
     // submit request
     patch.feature.onPatchAvailable(async data => {
@@ -114,9 +151,9 @@ const usePatchFeatureFlag = ({
         patch.feature.reset()
         await refetchFlag()
         showToaster(getString('cf.messages.flagUpdated'))
-      } catch (error: any) {
+      } catch (error: unknown) {
         patch.feature.reset()
-        showError(getRBACErrorMessage(error))
+        showError(getRBACErrorMessage(error as ErrorHandlerProps))
       }
     })
   }

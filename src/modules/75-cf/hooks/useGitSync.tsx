@@ -25,14 +25,17 @@ export interface GitDetails {
   rootFolder: string
   commitMsg: string
 }
+
 export interface GitSyncFormValues {
   gitDetails: GitDetails
   autoCommit: boolean
 }
+
 interface GitSyncFormMeta {
   gitSyncInitialValues: GitSyncFormValues
   gitSyncValidationSchema: ObjectSchema<Record<string, unknown> | undefined>
 }
+
 export interface UseGitSync {
   gitRepoDetails?: GitRepo
   isAutoCommitEnabled: boolean
@@ -169,6 +172,7 @@ export const useGitSync = (): UseGitSync => {
           }
         ]
       }
+
       await patchGitRepo.mutate(instruction)
       await getGitRepo.refetch()
     }

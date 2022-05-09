@@ -16,6 +16,7 @@ import { FormMultiTypeDurationField } from '@common/components/MultiTypeDuration
 import type { InputSetPathProps, PipelineType } from '@common/interfaces/RouteInterfaces'
 import type { PipelineInfoConfig } from 'services/cd-ng'
 import { useGetPipeline } from 'services/pipeline-ng'
+import { StepType } from '@pipeline/components/PipelineSteps/PipelineStepInterface'
 import { useVariablesExpression } from '@pipeline/components/PipelineStudio/PiplineHooks/useVariablesExpression'
 import type { spec } from '../../types'
 import { checkIfRunTimeInput } from '../../utils'
@@ -48,7 +49,12 @@ export function ContinousVerificationInputSetStep(
   const { sensitivity, duration, baseline, trafficsplit, deploymentTag } = (template?.spec?.spec as spec) || {}
   const { data: pipelineData, refetch: fetchPipeline } = useGetPipeline({
     pipelineIdentifier,
-    queryParams: { accountIdentifier: accountId, orgIdentifier, projectIdentifier },
+    queryParams: {
+      accountIdentifier: accountId,
+      orgIdentifier,
+      projectIdentifier,
+      getTemplatesResolvedPipeline: template?.type === StepType.Verify
+    },
     lazy: true
   })
 
@@ -58,10 +64,12 @@ export function ContinousVerificationInputSetStep(
   }, [])
 
   useEffect(() => {
-    if (pipelineData?.data?.yamlPipeline) {
+    if (pipelineData?.data?.resolvedTemplatesPipelineYaml) {
+      setPipeline(parse(pipelineData?.data?.resolvedTemplatesPipelineYaml))
+    } else if (pipelineData?.data?.yamlPipeline) {
       setPipeline(parse(pipelineData?.data?.yamlPipeline))
     }
-  }, [pipelineData?.data?.yamlPipeline])
+  }, [pipelineData?.data?.yamlPipeline, pipelineData?.data?.resolvedTemplatesPipelineYaml])
 
   const { serviceIdentifierFromStage, envIdentifierDataFromStage } = useMemo(() => {
     return getInfraAndServiceFromStage(pipeline)

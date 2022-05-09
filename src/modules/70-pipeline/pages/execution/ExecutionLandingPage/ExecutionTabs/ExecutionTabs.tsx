@@ -36,7 +36,7 @@ export default function ExecutionTabs(props: React.PropsWithChildren<unknown>): 
   const [selectedTabId, setSelectedTabId] = React.useState('')
   const { children } = props
   const { getString } = useStrings()
-  const { pipelineExecutionDetail } = useExecutionContext()
+  const { pipelineExecutionDetail, isPipelineInvalid } = useExecutionContext()
   const params = useParams<PipelineType<ExecutionPathProps>>()
   const location = useLocation()
   const { view } = useQueryParams<ExecutionQueryParams>()
@@ -61,7 +61,11 @@ export default function ExecutionTabs(props: React.PropsWithChildren<unknown>): 
   function handleLogViewChange(e: React.ChangeEvent<HTMLInputElement>): void {
     const { checked } = e.target as HTMLInputElement
 
-    updateQueryParams({ view: checked ? 'log' : 'graph', filterAnomalous: 'false' })
+    updateQueryParams({
+      view: checked ? 'log' : 'graph',
+      filterAnomalous: 'false',
+      type: getString('pipeline.verification.analysisTab.metrics')
+    })
   }
 
   React.useEffect(() => {
@@ -124,8 +128,11 @@ export default function ExecutionTabs(props: React.PropsWithChildren<unknown>): 
           <span>{getString('common.pipeline')}</span>
         </NavLink>
       )
-    },
-    {
+    }
+  ]
+
+  if (!isPipelineInvalid) {
+    tabList.push({
       id: TAB_ID_MAP.INPUTS,
       title: (
         <NavLink
@@ -137,8 +144,8 @@ export default function ExecutionTabs(props: React.PropsWithChildren<unknown>): 
           <span>{getString('inputs')}</span>
         </NavLink>
       )
-    }
-  ]
+    })
+  }
 
   if (opaBasedGovernanceEnabled) {
     tabList.push({
@@ -203,11 +210,7 @@ export default function ExecutionTabs(props: React.PropsWithChildren<unknown>): 
     })
   }
 
-  if (
-    (isCD && stoCDPipelineSecurityEnabled) ||
-    (isCI && stoCIPipelineSecurityEnabled) ||
-    localStorage.STO_PIPELINE_SECURITY_ENABLED
-  ) {
+  if ((isCD && stoCDPipelineSecurityEnabled) || (isCI && stoCIPipelineSecurityEnabled)) {
     tabList.push({
       id: TAB_ID_MAP.STO_SECURITY,
       title: (
@@ -217,7 +220,7 @@ export default function ExecutionTabs(props: React.PropsWithChildren<unknown>): 
           activeClassName={css.activeLink}
         >
           <Icon name="sto-grey" size={16} />
-          <span>{getString('pipeline.security.title')}</span>
+          <span>{getString('common.purpose.sto.continuous')}</span>
         </NavLink>
       )
     })

@@ -353,4 +353,24 @@ export const updatePipelineViewFnArg1 = {
   }
 }
 
+export const mockBarriers = [
+  {
+    identifier: 'demo',
+    name: 'demo',
+    stages: [
+      {
+        name: 'demoStageName'
+      },
+      {
+        name: 'demoStageName2'
+      }
+    ]
+  },
+  {
+    identifier: 'demo2',
+    name: 'dem2',
+    stages: []
+  }
+]
+
 export default pipelineContextMock

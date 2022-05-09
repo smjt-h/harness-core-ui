@@ -121,7 +121,7 @@ describe('Artifact Trigger Tests', () => {
       }
     })
 
-    jest.spyOn(pipelineNg, 'useCreateVariables').mockImplementation(() => ({
+    jest.spyOn(pipelineNg, 'useCreateVariablesV2').mockImplementation(() => ({
       cancel: jest.fn(),
       loading: false,
       error: null,
@@ -174,7 +174,7 @@ describe('Artifact Trigger Tests', () => {
       }
     })
 
-    jest.spyOn(pipelineNg, 'useCreateVariables').mockImplementation(() => ({
+    jest.spyOn(pipelineNg, 'useCreateVariablesV2').mockImplementation(() => ({
       cancel: jest.fn(),
       loading: false,
       error: null,

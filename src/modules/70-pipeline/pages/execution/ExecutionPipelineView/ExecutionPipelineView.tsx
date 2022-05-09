@@ -5,18 +5,47 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import React from 'react'
-import { useLocation } from 'react-router-dom'
+import React, { useEffect } from 'react'
+import { useLocation, useParams } from 'react-router-dom'
+import { useExecutionContext } from '@pipeline/context/ExecutionContext'
+import type { ExecutionPathProps, PipelineType } from '@common/interfaces/RouteInterfaces'
+import { useGetPipeline } from 'services/pipeline-ng'
 
 import ExecutionGraphView from './ExecutionGraphView/ExecutionGraphView'
 import ExecutionLogView from './ExecutionLogView/ExecutionLogView'
 
 export default function ExecutionPipelineView(): React.ReactElement {
+  const { orgIdentifier, projectIdentifier, accountId, pipelineIdentifier } =
+    useParams<PipelineType<ExecutionPathProps>>()
+
+  const { pipelineExecutionDetail, setIsPipelineInvalid } = useExecutionContext()
+
+  const { pipelineExecutionSummary = {} } = pipelineExecutionDetail || {}
+
+  const repoIdentifier = pipelineExecutionSummary?.gitDetails?.repoIdentifier
+  const branch = pipelineExecutionSummary?.gitDetails?.branch
+
   const location = useLocation()
   const queryParams = new URLSearchParams(location.search)
 
   const view = queryParams.get('view')
   const isLogView = view === 'log'
+
+  // Get pipeline data to check if it is valid
+  const { data: pipelineResponse } = useGetPipeline({
+    pipelineIdentifier,
+    queryParams: {
+      accountIdentifier: accountId,
+      orgIdentifier,
+      projectIdentifier,
+      repoIdentifier,
+      branch,
+      getTemplatesResolvedPipeline: true
+    }
+  })
+  useEffect(() => {
+    setIsPipelineInvalid?.(pipelineResponse?.data?.entityValidityDetails?.valid === false)
+  }, [pipelineResponse, setIsPipelineInvalid])
 
   if (isLogView) {
     return <ExecutionLogView />

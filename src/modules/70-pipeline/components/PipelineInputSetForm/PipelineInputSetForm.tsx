@@ -20,7 +20,7 @@ import type {
 import { useStrings } from 'framework/strings'
 import type { AllNGVariables } from '@pipeline/utils/types'
 import type { StepViewType } from '@pipeline/components/AbstractSteps/Step'
-
+import DelegateSelectorPanel from '@pipeline/components/PipelineSteps/AdvancedSteps/DelegateSelectorPanel/DelegateSelectorPanel'
 import { FormMultiTypeDurationField } from '@common/components/MultiTypeDuration/MultiTypeDuration'
 import { PubSubPipelineActions } from '@pipeline/factories/PubSubPipelineAction'
 import { PipelineActions } from '@pipeline/factories/PubSubPipelineAction/types'
@@ -47,12 +47,14 @@ export interface PipelineInputSetFormProps {
   originalPipeline: PipelineInfoConfig
   template: PipelineInfoConfig
   path?: string
+  executionIdentifier?: string
   readonly?: boolean
   maybeContainerClass?: string
   viewType: StepViewType
   isRunPipelineForm?: boolean
   listOfSelectedStages?: string[]
   isRetryFormStageSelected?: boolean
+  allowableTypes?: MultiTypeInputType[]
 }
 
 export const stageTypeToIconMap: Record<string, IconName> = {
@@ -70,7 +72,8 @@ export function StageFormInternal({
   readonly,
   viewType,
   stageClassName = '',
-  allowableTypes
+  allowableTypes,
+  executionIdentifier
 }: {
   allValues?: StageElementWrapperConfig
   template?: StageElementWrapperConfig
@@ -79,6 +82,7 @@ export function StageFormInternal({
   viewType: StepViewType
   stageClassName?: string
   allowableTypes: MultiTypeInputType[]
+  executionIdentifier?: string
 }): JSX.Element {
   const { getString } = useStrings()
   return (
@@ -86,7 +90,7 @@ export function StageFormInternal({
       {template?.stage?.variables && (
         <div id={`Stage.${allValues?.stage?.identifier}.Variables`} className={cx(css.accordionSummary)}>
           <Text font={{ weight: 'semi-bold' }} padding={{ top: 'medium', bottom: 'medium' }}>
-            {getString('variablesText')}
+            {getString('common.variables')}
           </Text>
           <div className={css.nestedAccordions}>
             <StepWidget<CustomVariablesData, CustomVariableInputSetExtraProps>
@@ -102,6 +106,7 @@ export function StageFormInternal({
               customStepProps={{
                 template: { variables: template?.stage?.variables as AllNGVariables[] },
                 path,
+                executionIdentifier,
                 allValues: { variables: (allValues?.stage?.variables || []) as AllNGVariables[] }
               }}
             />
@@ -116,16 +121,18 @@ export function StageFormInternal({
           deploymentStage={allValues?.stage?.spec as DeploymentStageConfig}
           readonly={readonly}
           viewType={viewType}
+          executionIdentifier={executionIdentifier}
           allowableTypes={allowableTypes}
         />
       )}
-      {!isEmpty(template?.stage?.when) && (
+      {(!isEmpty(template?.stage?.when) || !isEmpty(template?.stage?.delegateSelectors)) && (
         <StageAdvancedInputSetForm
           stageIdentifier={allValues?.stage?.identifier}
           path={path}
           deploymentStageTemplate={(template as StageElementWrapperConfig).stage}
           readonly={readonly}
           allowableTypes={allowableTypes}
+          delegateSelectors={template?.stage?.delegateSelectors}
         />
       )}
     </div>
@@ -140,7 +147,8 @@ export function StageForm({
   viewType,
   hideTitle = false,
   stageClassName = '',
-  allowableTypes
+  allowableTypes,
+  executionIdentifier
 }: {
   allValues?: StageElementWrapperConfig
   template?: StageElementWrapperConfig
@@ -149,6 +157,7 @@ export function StageForm({
   viewType: StepViewType
   hideTitle?: boolean
   stageClassName?: string
+  executionIdentifier?: string
   allowableTypes: MultiTypeInputType[]
 }): JSX.Element {
   const isTemplateStage = !!template?.stage?.template
@@ -179,15 +188,32 @@ export function StageForm({
         viewType={viewType}
         allowableTypes={allowableTypes}
         stageClassName={stageClassName}
+        executionIdentifier={executionIdentifier}
       />
     </div>
   )
 }
 
-function PipelineInputSetFormInternal(props: PipelineInputSetFormProps): React.ReactElement {
-  const { originalPipeline, template, path = '', readonly, viewType, maybeContainerClass = '' } = props
+export function PipelineInputSetFormInternal(props: PipelineInputSetFormProps): React.ReactElement {
+  const {
+    originalPipeline,
+    template,
+    path = '',
+    readonly,
+    viewType,
+    maybeContainerClass = '',
+    executionIdentifier,
+    allowableTypes = [MultiTypeInputType.FIXED, MultiTypeInputType.EXPRESSION]
+  } = props
   const { getString } = useStrings()
-  const allowableTypes = [MultiTypeInputType.FIXED, MultiTypeInputType.EXPRESSION]
+
+  const isTemplatePipeline = !!template.template
+  const finalTemplate = isTemplatePipeline ? (template?.template?.templateInputs as PipelineInfoConfig) : template
+  const finalPath = isTemplatePipeline
+    ? !isEmpty(path)
+      ? `${path}.template.templateInputs`
+      : 'template.templateInputs'
+    : path
 
   const isCloneCodebaseEnabledAtLeastAtOneStage = originalPipeline?.stages?.some(
     stage =>
@@ -211,7 +237,7 @@ function PipelineInputSetFormInternal(props: PipelineInputSetFormProps): React.R
 
   return (
     <Layout.Vertical spacing="medium" className={cx(css.container, maybeContainerClass)}>
-      {getMultiTypeFromValue(template?.timeout) === MultiTypeInputType.RUNTIME ? (
+      {getMultiTypeFromValue(finalTemplate?.timeout) === MultiTypeInputType.RUNTIME ? (
         <div className={cx(stepCss.formGroup, stepCss.sm)}>
           <FormMultiTypeDurationField
             multiTypeDurationProps={{
@@ -222,12 +248,21 @@ function PipelineInputSetFormInternal(props: PipelineInputSetFormProps): React.R
             }}
             className={stepCss.checkbox}
             label={getString('pipelineSteps.timeoutLabel')}
-            name="timeout"
+            name={!isEmpty(finalPath) ? `${finalPath}.timeout` : 'timeout'}
             disabled={readonly}
           />
         </div>
       ) : null}
-      {template?.variables && template?.variables?.length > 0 && (
+      {getMultiTypeFromValue(finalTemplate?.delegateSelectors) === MultiTypeInputType.RUNTIME ? (
+        <div className={cx(stepCss.formGroup, stepCss.sm, stepCss.delegate)}>
+          <DelegateSelectorPanel
+            isReadonly={readonly || false}
+            allowableTypes={allowableTypes}
+            name={!isEmpty(finalPath) ? `${finalPath}.delegateSelectors` : 'delegateSelectors'}
+          />
+        </div>
+      ) : null}
+      {finalTemplate?.variables && finalTemplate?.variables?.length > 0 && (
         <>
           <Layout.Horizontal spacing="small" padding={{ top: 'medium', left: 'large', right: 0, bottom: 0 }}>
             <Text
@@ -250,15 +285,16 @@ function PipelineInputSetFormInternal(props: PipelineInputSetFormProps): React.R
             type={StepType.CustomVariable}
             stepViewType={viewType}
             customStepProps={{
-              template: { variables: (template?.variables || []) as AllNGVariables[] },
-              path,
+              template: { variables: (finalTemplate?.variables || []) as AllNGVariables[] },
+              path: finalPath,
+              executionIdentifier,
               allValues: { variables: (originalPipeline?.variables || []) as AllNGVariables[] }
             }}
           />
         </>
       )}
       {isCloneCodebaseEnabledAtLeastAtOneStage &&
-        getMultiTypeFromValue(template?.properties?.ci?.codebase?.build as unknown as string) ===
+        getMultiTypeFromValue(finalTemplate?.properties?.ci?.codebase?.build as unknown as string) ===
           MultiTypeInputType.RUNTIME && (
           <>
             <Layout.Horizontal spacing="small" padding={{ top: 'medium', left: 'large', right: 0, bottom: 0 }}>
@@ -273,16 +309,20 @@ function PipelineInputSetFormInternal(props: PipelineInputSetFormProps): React.R
             </Layout.Horizontal>
             <div className={css.topAccordion}>
               <div className={css.accordionSummary}>
-                <div className={css.nestedAccordions} style={{ width: '50%' }}>
-                  <CICodebaseInputSetForm path={path} readonly={readonly} originalPipeline={props.originalPipeline} />
+                <div className={css.nestedAccordions}>
+                  <CICodebaseInputSetForm
+                    path={finalPath}
+                    readonly={readonly}
+                    originalPipeline={props.originalPipeline}
+                  />
                 </div>
               </div>
             </div>
           </>
         )}
       <>
-        {template?.stages?.map((stageObj, index) => {
-          const pathPrefix = !isEmpty(path) ? `${path}.` : ''
+        {finalTemplate?.stages?.map((stageObj, index) => {
+          const pathPrefix = !isEmpty(finalPath) ? `${finalPath}.` : ''
           if (stageObj.stage) {
             const allValues = getStageFromPipeline(stageObj?.stage?.identifier || '', originalPipeline)
 
@@ -295,6 +335,7 @@ function PipelineInputSetFormInternal(props: PipelineInputSetFormProps): React.R
                   readonly={isInputStageDisabled(stageObj?.stage?.identifier)}
                   viewType={viewType}
                   allowableTypes={allowableTypes}
+                  executionIdentifier={executionIdentifier}
                 />
               </Layout.Vertical>
             )

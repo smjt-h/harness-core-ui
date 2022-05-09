@@ -343,7 +343,7 @@ function RunPipelineFormBasic({
 
   useEffect(() => {
     if (inputSetsError) {
-      showError(inputSetsError.message)
+      showError(getRBACErrorMessage(inputSetsError))
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [inputSetsError])
@@ -677,6 +677,7 @@ function RunPipelineFormBasic({
                     setExistingProvide={setExistingProvide}
                     executionInputSetTemplateYaml={executionInputSetTemplateYaml}
                     pipelineIdentifier={pipelineIdentifier}
+                    executionIdentifier={pipelineExecutionId}
                     template={inputSetYamlResponse}
                     pipeline={pipeline}
                     currentPipeline={{ pipeline: values }}

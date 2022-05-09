@@ -23,6 +23,7 @@ import { defaultTo, isEmpty, pick } from 'lodash-es'
 import { useModalHook } from '@harness/use-modal'
 import { Classes, Intent, Menu, Popover, Position } from '@blueprintjs/core'
 import routes from '@common/RouteDefinitions'
+import useRBACError from '@rbac/utils/useRBACError/useRBACError'
 import { ResourceType } from '@rbac/interfaces/ResourceType'
 import { PermissionIdentifier } from '@rbac/interfaces/PermissionIdentifier'
 import { ServiceTabs } from '@cd/components/ServiceDetails/ServiceDetailsContent/ServiceDetailsContent'
@@ -53,6 +54,7 @@ const ServiceMenu = (props: ServiceItemProps): React.ReactElement => {
   const [deleteError, setDeleteError] = useState('')
   const { accountId, orgIdentifier, projectIdentifier, module } = useParams<ProjectPathProps & ModulePathParams>()
   const { showSuccess, showError } = useToaster()
+  const { getRBACErrorMessage } = useRBACError()
   const { getString } = useStrings()
   const history = useHistory()
 
@@ -142,7 +144,7 @@ const ServiceMenu = (props: ServiceItemProps): React.ReactElement => {
             setDeleteError(err?.data?.message || err?.message)
             openDeleteErrorDialog()
           } else {
-            showError(err?.data?.message || err?.message)
+            showError(getRBACErrorMessage(err))
           }
         }
       }
