@@ -22,7 +22,7 @@ const dummy_repo = 'github.com/harnesssampleapp'
 
 export default function GetStartedWithCI(): React.ReactElement {
   const { getString } = useStrings()
-  const [showWizard, setShowWizard] = useState<boolean>(true)
+  const [showWizard, setShowWizard] = useState<boolean>(false)
   const [showDialog, setShowDialog] = useState<boolean>(false)
 
   const renderBuildPipelineStep = React.useCallback(
