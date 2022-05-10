@@ -30,6 +30,7 @@ import { useStrings } from 'framework/strings'
 import type { StringsMap } from 'stringTypes'
 import {
   ConnectorInfoDTO,
+  ResponseMessage,
   ResponseScmConnectorResponse,
   ResponseSecretResponseWrapper,
   SecretDTOV2,
@@ -49,6 +50,7 @@ import {
   DEFAULT_SCM_CONNECTOR_ID,
   Status
 } from '@common/utils/CIConstants'
+import { ErrorHandler } from '@common/components/ErrorHandler/ErrorHandler'
 import { Connectors } from '@connectors/constants'
 import {
   AllSaaSGitProviders,
@@ -104,6 +106,7 @@ const SelectGitProviderRef = (
   const [testConnectionStatus, setTestConnectionStatus] = useState<TestStatus>(TestStatus.NOT_INITIATED)
   const formikRef = useRef<FormikContext<SelectGitProviderInterface>>()
   const { accountId } = useParams<ProjectPathProps>()
+  const [testConnectionErrors, setTestConnectionErrors] = useState<ResponseMessage[]>()
   const { mutate: createSecret } = usePostSecret({
     queryParams: { accountIdentifier: accountId }
   })
@@ -249,49 +252,61 @@ const SelectGitProviderRef = (
       case TestStatus.FAILED:
       case TestStatus.NOT_INITIATED:
         return (
-          <Button
-            variation={ButtonVariation.PRIMARY}
-            text={getString('common.smtp.testConnection')}
-            size={ButtonSize.SMALL}
-            type="submit"
-            onClick={() => {
-              if (validateGitProviderSetup()) {
-                setTestConnectionStatus(TestStatus.IN_PROGRESS)
-                const defaultSecretId = `${gitProvider?.type as string}_${DEFAULT_ACCESS_TOKEN}`
-                createSecret({
-                  secret: getSecretPayload(defaultSecretId)
-                })
-                  .then((response: ResponseSecretResponseWrapper) => {
-                    const { data, status } = response
-                    if (status === Status.SUCCESS && data?.secret?.identifier) {
-                      if (gitProvider?.type) {
-                        createSCMConnector({
-                          secret: data?.secret,
-                          connector: getSCMConnectorPayload(data?.secret?.identifier, gitProvider.type)
-                        })
-                          .then((createSCMCtrResponse: ResponseScmConnectorResponse) => {
-                            const { data: scmCtrData, status: scmCtrResponse } = createSCMCtrResponse
-                            if (
-                              scmCtrResponse === Status.SUCCESS &&
-                              scmCtrData?.connectorResponseDTO?.connector?.identifier
-                            ) {
-                              setTestConnectionStatus(TestStatus.SUCCESS)
-                            }
+          <Layout.Vertical>
+            <Button
+              variation={ButtonVariation.PRIMARY}
+              text={getString('common.smtp.testConnection')}
+              size={ButtonSize.SMALL}
+              type="submit"
+              onClick={() => {
+                if (validateGitProviderSetup()) {
+                  setTestConnectionStatus(TestStatus.IN_PROGRESS)
+                  const defaultSecretId = `${gitProvider?.type as string}_${DEFAULT_ACCESS_TOKEN}`
+                  createSecret({
+                    secret: getSecretPayload(defaultSecretId)
+                  })
+                    .then((response: ResponseSecretResponseWrapper) => {
+                      const { data, status } = response
+                      if (status === Status.SUCCESS && data?.secret?.identifier) {
+                        if (gitProvider?.type) {
+                          createSCMConnector({
+                            secret: data?.secret,
+                            connector: getSCMConnectorPayload(data?.secret?.identifier, gitProvider.type)
                           })
-                          .catch(_err => {
-                            setTestConnectionStatus(TestStatus.FAILED)
-                          })
+                            .then((createSCMCtrResponse: ResponseScmConnectorResponse) => {
+                              const { data: scmCtrData, status: scmCtrResponse } = createSCMCtrResponse
+                              if (
+                                scmCtrResponse === Status.SUCCESS &&
+                                scmCtrData?.connectorResponseDTO?.connector?.identifier
+                              ) {
+                                setTestConnectionStatus(TestStatus.SUCCESS)
+                              } else {
+                                setTestConnectionStatus(TestStatus.FAILED)
+                              }
+                            })
+                            .catch(err => {
+                              setTestConnectionStatus(TestStatus.FAILED)
+                              setTestConnectionErrors((err?.data as any)?.responseMessages)
+                            })
+                        }
                       }
-                    }
-                  })
-                  .catch(_err => {
-                    setTestConnectionStatus(TestStatus.FAILED)
-                  })
-              }
-            }}
-            className={css.testConnectionBtn}
-            id="test-connection-btn"
-          />
+                    })
+                    .catch(_err => {
+                      setTestConnectionStatus(TestStatus.FAILED)
+                    })
+                }
+              }}
+              className={css.testConnectionBtn}
+              id="test-connection-btn"
+            />
+            {testConnectionStatus === TestStatus.FAILED &&
+            Array.isArray(testConnectionErrors) &&
+            testConnectionErrors.length > 0 ? (
+              <Container padding={{ top: 'medium' }}>
+                <ErrorHandler responseMessages={testConnectionErrors || []} className={css.testConnectionErrors} />
+              </Container>
+            ) : null}
+          </Layout.Vertical>
         )
       case TestStatus.IN_PROGRESS:
         return (

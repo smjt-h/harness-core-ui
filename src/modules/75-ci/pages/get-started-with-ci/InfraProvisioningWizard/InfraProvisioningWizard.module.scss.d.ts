@@ -27,5 +27,6 @@ declare const styles: {
   readonly repositoryTable: string
   readonly selectedCard: string
   readonly testConnectionBtn: string
+  readonly testConnectionErrors: string
 }
 export default styles
