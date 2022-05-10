@@ -8,8 +8,9 @@
 import React, { ReactElement } from 'react'
 import * as yup from 'yup'
 import { Formik, FormikForm } from '@wings-software/uicore'
-import { GitSyncFormValues, useGitSync } from '@cf/hooks/useGitSync'
 import { useStrings } from 'framework/strings'
+import { useFFGitSyncContext } from '@cf/contexts/ff-git-sync-context/FFGitSyncContext'
+import type { GitSyncFormValues } from '@cf/hooks/useGitSync'
 import SaveFlagToGitSubFormModal from '../SaveFlagToGitSubFormModal/SaveFlagToGitSubFormModal'
 
 export interface SaveFlagToGitModalProps {
@@ -20,7 +21,7 @@ export interface SaveFlagToGitModalProps {
 }
 
 const SaveFlagToGitModal = ({ flagName, flagIdentifier, onSubmit, onClose }: SaveFlagToGitModalProps): ReactElement => {
-  const { getGitSyncFormMeta } = useGitSync()
+  const { getGitSyncFormMeta } = useFFGitSyncContext()
   const { getString } = useStrings()
 
   const { gitSyncInitialValues, gitSyncValidationSchema } = getGitSyncFormMeta()
