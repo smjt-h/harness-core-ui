@@ -48,7 +48,7 @@ const SelectRepositoryRef = (
   const { selectedRepository, showError } = props
   const { getString } = useStrings()
   const [repository, setRepository] = useState<Repository | undefined>(selectedRepository)
-  const [query, setQuery] = useState<string>()
+  const [query, setQuery] = useState<string>('')
   const [repositories, setRepositories] = useState<
     {
       name: string
@@ -70,11 +70,9 @@ const SelectRepositoryRef = (
   }, [selectedRepository])
 
   useEffect(() => {
-    if (query) {
-      setLoading(true)
-      setRepositories(repos.filter(item => item.name.includes(query)))
-      setLoading(false)
-    }
+    setLoading(true)
+    setRepositories(repos.filter(item => item.name.includes(query)))
+    setLoading(false)
   }, [query])
 
   useEffect(() => {
@@ -126,10 +124,7 @@ const SelectRepositoryRef = (
           className={css.repositorySearch}
           leftIconProps={{ name: 'search', size: 18, padding: 'xsmall' }}
           onChange={e => {
-            const queryText = (e.currentTarget as HTMLInputElement).value?.trim()
-            if (queryText) {
-              debouncedRepositorySearch(queryText)
-            }
+            debouncedRepositorySearch((e.currentTarget as HTMLInputElement).value)
           }}
           disabled={loading}
         />
