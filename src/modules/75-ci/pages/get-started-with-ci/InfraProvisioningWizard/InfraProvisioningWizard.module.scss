@@ -74,11 +74,13 @@
 }
 
 .repositoryTable {
+  height: fit-content;
+  max-height: 100%;
+  overflow-y: scroll;
+  border-radius: 8px;
+  border: 1px solid var(--grey-200);
   > div {
     max-height: 100%;
-    overflow-y: scroll;
-    border-radius: 8px;
-    border: 1px solid var(--grey-200);
     > div {
       padding: 0 !important;
     }
