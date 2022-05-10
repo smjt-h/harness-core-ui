@@ -61,6 +61,11 @@ export default function SelectInfrastructureType(props: SelectInfrastructureType
               value: InfraDeploymentType.ServerlessAwsLambda
             },
             {
+              label: getString('connectors.title.pdcConnector'),
+              icon: 'pdc',
+              value: InfraDeploymentType.PDC
+            },
+            {
               label: getString('common.gcp'),
               icon: 'gcp',
               value: InfraDeploymentType.ServerlessGoogleFunctions,
@@ -71,16 +76,6 @@ export default function SelectInfrastructureType(props: SelectInfrastructureType
               icon: 'service-azure',
               value: InfraDeploymentType.ServerlessAzureFunctions,
               disabled: true
-            }
-          ]
-        },
-        {
-          groupLabel: '',
-          items: [
-            {
-              label: 'Physical Data Center',
-              icon: 'pdc',
-              value: InfraDeploymentType.PDC
             }
           ]
         }

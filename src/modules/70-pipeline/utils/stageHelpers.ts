@@ -189,7 +189,8 @@ export const isServerlessDeploymentType = (deploymentType: string): boolean => {
     deploymentType === ServiceDeploymentType.ServerlessAzureFunctions ||
     deploymentType === ServiceDeploymentType.ServerlessGoogleFunctions ||
     deploymentType === ServiceDeploymentType.AmazonSAM ||
-    deploymentType === ServiceDeploymentType.AzureFunctions
+    deploymentType === ServiceDeploymentType.AzureFunctions ||
+    deploymentType === ServiceDeploymentType.ssh
   )
 }
 

@@ -21,7 +21,7 @@ export const ConnectorsResponse = {
             orgIdentifier: 'undefined',
             projectIdentifier: 'undefined',
             tags: {},
-            type: 'Aws',
+            type: 'Pdc',
             spec: {
               credential: {
                 crossAccountAccess: null,
@@ -43,7 +43,7 @@ export const ConnectorsResponse = {
             orgIdentifier: 'undefined',
             projectIdentifier: 'undefined',
             tags: { git: '' },
-            type: 'Git',
+            type: 'Pdc',
             spec: {
               url: 'https://github.com',
               branchName: '',

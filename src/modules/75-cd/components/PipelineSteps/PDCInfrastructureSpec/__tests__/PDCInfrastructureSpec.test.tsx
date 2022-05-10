@@ -6,45 +6,34 @@
  */
 
 import React from 'react'
-import { act, fireEvent, getByText, render, waitFor } from '@testing-library/react'
+import { act, fireEvent, getByText, render } from '@testing-library/react'
 import { RUNTIME_INPUT_VALUE } from '@wings-software/uicore'
 import type { CompletionItemInterface } from '@common/interfaces/YAMLBuilderProps'
-import { StepFormikRef, StepViewType } from '@pipeline/components/AbstractSteps/Step'
+import { StepViewType } from '@pipeline/components/AbstractSteps/Step'
 import { StepType } from '@pipeline/components/PipelineSteps/PipelineStepInterface'
 import { factory, TestStepWidget } from '@pipeline/components/PipelineSteps/Steps/__tests__/StepTestUtil'
 import { PDCInfrastructureSpec } from '../PDCInfrastructureSpec'
 import { ConnectorsResponse } from './mock/ConnectorsResponse.mock'
 import { ConnectorResponse } from './mock/ConnectorResponse.mock'
-import { ClusterNamesResponse } from './mock/ClusterNamesResponse.mock'
 
 jest.mock('@common/components/YAMLBuilder/YamlBuilder')
 
 jest.mock('services/cd-ng', () => ({
   useGetConnector: jest.fn(() => ConnectorResponse),
-  useGetClusterNamesForGcp: jest.fn(() => ClusterNamesResponse),
   getConnectorListV2Promise: jest.fn(() => Promise.resolve(ConnectorsResponse.data)),
-  getClusterNamesForGcpPromise: jest.fn(() => Promise.resolve(ClusterNamesResponse.data))
+  useValidateSshHosts: jest.fn(() => jest.fn(() => ({ mutate: jest.fn() })))
 }))
 
 const getRuntimeInputsValues = () => ({
-  connectorRef: RUNTIME_INPUT_VALUE,
-  cluster: RUNTIME_INPUT_VALUE,
-  namespace: RUNTIME_INPUT_VALUE,
-  releaseName: RUNTIME_INPUT_VALUE
+  connectorRef: RUNTIME_INPUT_VALUE
 })
 
 const getInitialValues = () => ({
-  connectorRef: 'connectorRef',
-  cluster: 'cluster',
-  namespace: 'namespace',
-  releaseName: 'releasename'
+  connectorRef: 'connectorRef'
 })
 
 const getEmptyInitialValues = () => ({
-  connectorRef: '',
-  cluster: '',
-  namespace: '',
-  releaseName: ''
+  connectorRef: ''
 })
 
 const getInvalidYaml = () => `p ipe<>line:
@@ -60,10 +49,7 @@ const getYaml = () => `pipeline:
                       infrastructureDefinition:
                           type: PDC
                           spec:
-                              connectorRef: account.connectorRef
-                              cluster: cluster
-                              namespace: namespace
-                              releaseName: releaseName`
+                              connectorRef: account.connectorRef`
 
 const getParams = () => ({
   accountId: 'accountId',
@@ -74,7 +60,6 @@ const getParams = () => ({
 })
 
 const connectorRefPath = 'pipeline.stages.0.stage.spec.infrastructure.infrastructureDefinition.spec.connectorRef'
-const clusterPath = 'pipeline.stages.0.stage.spec.infrastructure.infrastructureDefinition.spec.cluster'
 
 describe('Test PDCInfrastructureSpec snapshot', () => {
   beforeEach(() => {
@@ -173,37 +158,6 @@ describe('Test PDCInfrastructureSpec behavior', () => {
 
     expect(onUpdateHandler).not.toHaveBeenCalled()
   })
-
-  test('should call onUpdate if valid values entered - edit view', async () => {
-    const onUpdateHandler = jest.fn()
-    const ref = React.createRef<StepFormikRef<unknown>>()
-    const { container } = render(
-      <TestStepWidget
-        initialValues={getInitialValues()}
-        template={getRuntimeInputsValues()}
-        allValues={getInitialValues()}
-        type={StepType.PDC}
-        stepViewType={StepViewType.Edit}
-        onUpdate={onUpdateHandler}
-        ref={ref}
-      />
-    )
-
-    await act(async () => {
-      const namespaceInput = container.querySelector(
-        '[placeholder="pipeline.infraSpecifications.namespacePlaceholder"]'
-      )
-      fireEvent.change(namespaceInput!, { target: { value: 'namespace changed' } })
-
-      // TODO: add other fields
-
-      await ref.current?.submitForm()
-    })
-
-    await waitFor(() =>
-      expect(onUpdateHandler).toHaveBeenCalledWith({ ...getInitialValues(), ...{ namespace: 'namespace changed' } })
-    )
-  })
 })
 
 describe('Test PDCInfrastructureSpec autocomplete', () => {
@@ -212,8 +166,8 @@ describe('Test PDCInfrastructureSpec autocomplete', () => {
     let list: CompletionItemInterface[]
 
     list = await step.getConnectorsListForYaml(connectorRefPath, getYaml(), getParams())
-    expect(list).toHaveLength(2)
-    expect(list[0].insertText).toBe('AWS')
+    expect(list).toHaveLength(1)
+    expect(list[0].insertText).toBe('Pdc')
 
     list = await step.getConnectorsListForYaml('invalid path', getYaml(), getParams())
     expect(list).toHaveLength(0)
@@ -221,23 +175,6 @@ describe('Test PDCInfrastructureSpec autocomplete', () => {
     // TODO: create yaml that cause yaml.parse to throw an error
     // its expected that yaml.parse throw an error but is not happening
     list = await step.getConnectorsListForYaml(connectorRefPath, getInvalidYaml(), getParams())
-    expect(list).toHaveLength(0)
-  })
-
-  test('Test cluster names autocomplete', async () => {
-    const step = new PDCInfrastructureSpec() as any
-    let list: CompletionItemInterface[]
-
-    list = await step.getClusterListForYaml(clusterPath, getYaml(), getParams())
-    expect(list).toHaveLength(2)
-    expect(list[0].insertText).toBe('us-west2/abc')
-
-    list = await step.getClusterListForYaml('invalid path', getYaml(), getParams())
-    expect(list).toHaveLength(0)
-
-    // TODO: create yaml that cause yaml.parse to throw an error
-    // its expected that yaml.parse throw an error but is not happening
-    list = await step.getClusterListForYaml(clusterPath, getInvalidYaml(), getParams())
     expect(list).toHaveLength(0)
   })
 })

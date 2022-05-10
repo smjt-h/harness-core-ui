@@ -14,43 +14,42 @@ import {
   FormInput,
   getMultiTypeFromValue,
   MultiTypeInputType,
-  Accordion,
   Select
 } from '@wings-software/uicore'
 import { Radio, RadioGroup } from '@blueprintjs/core'
+import { parse } from 'yaml'
 import * as Yup from 'yup'
 import { useParams } from 'react-router-dom'
-import { debounce, noop, isEmpty, set } from 'lodash-es'
+import { debounce, noop, isEmpty, set, get } from 'lodash-es'
 import type { FormikErrors, FormikProps } from 'formik'
-import { StepViewType, StepProps, ValidateInputSetProps } from '@pipeline/components/AbstractSteps/Step'
-import { ConfigureOptions } from '@common/components/ConfigureOptions/ConfigureOptions'
-import { useVariablesExpression } from '@pipeline/components/PipelineStudio/PiplineHooks/useVariablesExpression'
-
-import type { PdcInfrastructure } from 'services/cd-ng'
-
+import { CompletionItemKind } from 'vscode-languageserver-types'
+import { loggerFor } from 'framework/logging/logging'
+import { ModuleName } from 'framework/types/ModuleName'
+import { useStrings, UseStringsReturn } from 'framework/strings'
+import { PdcInfrastructure, getConnectorListV2Promise } from 'services/cd-ng'
 import type { VariableMergeServiceResponse } from 'services/pipeline-ng'
-
 import type { CompletionItemInterface } from '@common/interfaces/YAMLBuilderProps'
 import { Scope } from '@common/interfaces/SecretsInterface'
-import { useStrings } from 'framework/strings'
-import type { UseStringsReturn } from 'framework/strings'
+import { StepViewType, StepProps, ValidateInputSetProps } from '@pipeline/components/AbstractSteps/Step'
+import { getConnectorName, getConnectorValue } from '@pipeline/components/PipelineSteps/Steps/StepsHelper'
 import { ConnectorReferenceField } from '@connectors/components/ConnectorReferenceField/ConnectorReferenceField'
 import { StepType } from '@pipeline/components/PipelineSteps/PipelineStepInterface'
 import { PipelineStep } from '@pipeline/components/PipelineSteps/PipelineStep'
-
 import { StageErrorContext } from '@pipeline/context/StageErrorContext'
-import { DeployTabs } from '@cd/components/PipelineStudio/DeployStageSetupShell/DeployStageSetupShellUtils'
+import { DeployTabs } from '@pipeline/components/PipelineStudio/CommonUtils/DeployStageSetupShellUtils'
 import DelegateSelectorPanel from '@pipeline/components/PipelineSteps/AdvancedSteps/DelegateSelectorPanel/DelegateSelectorPanel'
 import SSHSecretInput from '@secrets/components/SSHSecretInput/SSHSecretInput'
-import { getReleaseNameSchema } from '../PipelineStepsUtil'
 import PreviewHostsTable from './PreviewHostsTable/PreviewHostsTable'
 import css from './PDCInfrastructureSpec.module.scss'
 
+const logger = loggerFor(ModuleName.CD)
+
 type PdcInfrastructureTemplate = { [key in keyof PdcInfrastructure]: string }
+
+const PdcType = 'Pdc'
 
 function getValidationSchema(getString: UseStringsReturn['getString']): Yup.ObjectSchema {
   return Yup.object().shape({
-    releaseName: getReleaseNameSchema(getString),
     sshKey: Yup.object().required(getString('validation.password'))
   })
 }
@@ -117,8 +116,7 @@ const parseAttributes = (attributes: string) =>
 const GcpInfrastructureSpecEditable: React.FC<GcpInfrastructureSpecEditableProps> = ({
   initialValues,
   onUpdate,
-  readonly,
-  allowableTypes
+  readonly
 }): JSX.Element => {
   const { accountId, projectIdentifier, orgIdentifier } = useParams<{
     projectIdentifier: string
@@ -126,7 +124,6 @@ const GcpInfrastructureSpecEditable: React.FC<GcpInfrastructureSpecEditableProps
     accountId: string
   }>()
   const delayedOnUpdate = React.useRef(debounce(onUpdate || noop, 300)).current
-  const { expressions } = useVariablesExpression()
   const { getString } = useStrings()
   const [isPreconfiguredHosts, setIsPreconfiguredHosts] = useState(
     initialValues.connectorRef ? PreconfiguredHosts.TRUE : PreconfiguredHosts.FALSE
@@ -188,7 +185,6 @@ const GcpInfrastructureSpecEditable: React.FC<GcpInfrastructureSpecEditableProps
         validationSchema={getValidationSchema(getString)}
         validate={value => {
           const data: Partial<PdcInfrastructure> = {
-            releaseName: value.releaseName === '' ? undefined : value.releaseName,
             allowSimultaneousDeployments: value.allowSimultaneousDeployments,
             delegateSelectors: value.delegateSelectors,
             sshKeyRef: value.sshKey?.identifier
@@ -330,46 +326,6 @@ const GcpInfrastructureSpecEditable: React.FC<GcpInfrastructureSpecEditableProps
                   secretIdentifier={formik.values.sshKey?.identifier}
                 />
               </Layout.Vertical>
-              <Accordion
-                panelClassName={css.accordionPanel}
-                detailsClassName={css.accordionDetails}
-                activeId={!isEmpty(formik.errors.releaseName) ? 'advanced' : ''}
-              >
-                <Accordion.Panel
-                  id="advanced"
-                  addDomId={true}
-                  summary={getString('common.advanced')}
-                  details={
-                    <Layout.Horizontal className={css.formRow} spacing="medium">
-                      <FormInput.MultiTextInput
-                        name="releaseName"
-                        tooltipProps={{
-                          dataTooltipId: 'pdcInfraReleasename'
-                        }}
-                        className={css.inputWidth}
-                        label={getString('common.releaseName')}
-                        placeholder={getString('cd.steps.common.releaseNamePlaceholder')}
-                        multiTextInputProps={{ expressions, textProps: { disabled: readonly }, allowableTypes }}
-                        disabled={readonly}
-                      />
-                      {getMultiTypeFromValue(formik.values.releaseName) === MultiTypeInputType.RUNTIME && !readonly && (
-                        <ConfigureOptions
-                          value={formik.values.releaseName as string}
-                          type="String"
-                          variableName="releaseName"
-                          showRequiredField={false}
-                          showDefaultField={false}
-                          showAdvanced={true}
-                          onChange={value => {
-                            formik.setFieldValue('releaseName', value)
-                          }}
-                          isReadonly={readonly}
-                        />
-                      )}
-                    </Layout.Horizontal>
-                  }
-                />
-              </Accordion>
 
               <Layout.Horizontal spacing="medium" style={{ alignItems: 'center' }} className={css.lastRow}>
                 <FormInput.CheckBox
@@ -395,6 +351,7 @@ interface PDCInfrastructureSpecStep extends PdcInfrastructure {
   identifier?: string
 }
 
+const PdcRegex = /^.+stage\.spec\.infrastructure\.infrastructureDefinition\.spec\.connectorRef$/
 export class PDCInfrastructureSpec extends PipelineStep<PDCInfrastructureSpecStep> {
   lastFetched: number
   protected type = StepType.PDC
@@ -414,8 +371,53 @@ export class PDCInfrastructureSpec extends PipelineStep<PDCInfrastructureSpecSte
   constructor() {
     super()
     this.lastFetched = new Date().getTime()
+    this.invocationMap.set(PdcRegex, this.getConnectorsListForYaml.bind(this))
 
     this._hasStepVariables = true
+  }
+
+  protected getConnectorsListForYaml(
+    path: string,
+    yaml: string,
+    params: Record<string, unknown>
+  ): Promise<CompletionItemInterface[]> {
+    let pipelineObj
+    try {
+      pipelineObj = parse(yaml)
+    } catch (err) {
+      logger.error('Error while parsing the yaml', err)
+    }
+    const { accountId, projectIdentifier, orgIdentifier } = params as {
+      accountId: string
+      orgIdentifier: string
+      projectIdentifier: string
+    }
+    if (pipelineObj) {
+      const obj = get(pipelineObj, path.replace('.spec.connectorRef', ''))
+      if (obj.type === PdcType) {
+        return getConnectorListV2Promise({
+          queryParams: {
+            accountIdentifier: accountId,
+            orgIdentifier,
+            projectIdentifier,
+            includeAllConnectorsAvailableAtScope: true
+          },
+          body: { types: ['Pdc'], filterType: 'Connector' }
+        }).then(response => {
+          const data =
+            response?.data?.content?.map(connector => ({
+              label: getConnectorName(connector),
+              insertText: getConnectorValue(connector),
+              kind: CompletionItemKind.Field
+            })) || []
+          return data
+        })
+      }
+    }
+
+    return new Promise(resolve => {
+      resolve([])
+    })
   }
 
   validateInputSet({

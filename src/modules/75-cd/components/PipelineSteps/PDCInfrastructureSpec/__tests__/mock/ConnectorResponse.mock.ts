@@ -17,7 +17,7 @@ export const ConnectorResponse = {
         identifier: 'connectorRef',
         description: '',
         tags: {},
-        type: 'K8sCluster',
+        type: 'Pdc',
         spec: {
           credential: {
             type: 'ManualConfig',
