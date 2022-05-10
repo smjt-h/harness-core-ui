@@ -81,7 +81,6 @@ import { EnhancedInputSetForm } from '@pipeline/components/InputSetForm/InputSet
 import TriggersDetailPage from '@triggers/pages/triggers/TriggersDetailPage'
 import CreateConnectorFromYamlPage from '@connectors/pages/createConnectorFromYaml/CreateConnectorFromYamlPage'
 import CreateSecretFromYamlPage from '@secrets/pages/createSecretFromYaml/CreateSecretFromYamlPage'
-import ServiceDetails from '@cd/components/ServiceDetails/ServiceDetails'
 import { Services } from '@cd/components/Services/Services'
 import ChildAppMounter from 'microfrontends/ChildAppMounter'
 
@@ -147,6 +146,7 @@ import {
 } from './components/PipelineSteps/DeployEnvStep/DeployEnvStep'
 import type { GitOpsCustomMicroFrontendProps } from './interfaces/GitOps.types'
 import { getBannerText } from './utils/renderMessageUtils'
+import ServiceStudio from './components/Services/ServiceStudio/ServiceStudio'
 
 // eslint-disable-next-line import/no-unresolved
 const GitOpsServersList = React.lazy(() => import('gitopsui/MicroFrontendApp'))
@@ -468,7 +468,7 @@ export default (
       licenseRedirectData={licenseRedirectData}
       sidebarProps={CDSideNavProps}
       path={routes.toServices({ ...accountPathProps, ...projectPathProps, ...pipelineModuleParams })}
-      pageName={PAGE_NAME.ServiceDetailPage}
+      pageName={PAGE_NAME.Services}
     >
       <Services />
     </RouteWithLayout>
@@ -476,15 +476,15 @@ export default (
       exact
       licenseRedirectData={licenseRedirectData}
       sidebarProps={CDSideNavProps}
-      path={routes.toServiceDetails({
+      path={routes.toServiceStudio({
         ...accountPathProps,
         ...projectPathProps,
         ...pipelineModuleParams,
         ...servicePathProps
       })}
-      pageName={PAGE_NAME.ServiceDetails}
+      pageName={PAGE_NAME.ServiceStudio}
     >
-      <ServiceDetails />
+      <ServiceStudio />
     </RouteWithLayout>
     <RouteWithLayout
       exact

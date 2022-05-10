@@ -956,8 +956,8 @@ buildInfra:
   priorityClassName: Priority Class
   containerSecurityContext: Container Security Context
   allowPrivilegeEscalation: Allow Privilege Escalation
-  addCapabilities: ADD Capabilities
-  dropCapabilities: DROP Capabilities
+  addCapabilities: Add Capabilities
+  dropCapabilities: Drop Capabilities
   runAsNonRoot: Run as Non Root
   readOnlyRootFilesystem: Read-only Root Filesystem
   privileged: Privileged
