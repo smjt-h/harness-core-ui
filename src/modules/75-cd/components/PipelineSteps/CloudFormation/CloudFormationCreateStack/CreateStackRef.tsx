@@ -20,10 +20,11 @@ import {
   Layout,
   Label,
   Text,
-  MultiSelectTypeInput,
   MultiSelectOption,
+  SelectOption,
   Button,
-  Icon
+  Icon,
+  useToaster
 } from '@harness/uicore'
 import { map } from 'lodash-es'
 import { useStrings } from 'framework/strings'
@@ -74,12 +75,17 @@ export const CreateStack = (
   const [showInlineParams, setInlineParams] = useState(false)
   const [paramIndex, setParamIndex] = useState<number | undefined>()
   const [regions, setRegions] = useState<MultiSelectOption[]>([])
-  const [capabilities, setCapabilities] = useState<MultiSelectOption[]>([])
-  const [awsStates, setAwsStates] = useState<MultiSelectOption[]>([])
+  const [capabilities, setCapabilities] = useState<SelectOption[]>([])
+  const [awsStates, setAwsStates] = useState<SelectOption[]>([])
   const [awsRoles, setAwsRoles] = useState<MultiSelectOption[]>([])
   const [awsRef, setAwsRef] = useState<string>('')
+  const { showError } = useToaster()
 
-  const { data: regionData, loading: regionLoading } = useListAwsRegions({
+  const {
+    data: regionData,
+    loading: regionLoading,
+    error: regionError
+  } = useListAwsRegions({
     queryParams: {
       accountId
     }
@@ -92,21 +98,21 @@ export const CreateStack = (
     }
   }, [regionData])
 
-  const { data: capabilitiesData, loading: capabilitiesLoading } = useCFCapabilitiesForAws({})
+  const { data: capabilitiesData, loading: capabilitiesLoading, error: capabilitiesError } = useCFCapabilitiesForAws({})
 
   useEffect(() => {
     if (capabilitiesData) {
       const capabilitiesValues = map(capabilitiesData?.data, cap => ({ label: cap, value: cap }))
-      setCapabilities(capabilitiesValues as MultiSelectOption[])
+      setCapabilities(capabilitiesValues as SelectOption[])
     }
   }, [capabilitiesData])
 
-  const { data: awsStatesData, loading: statesLoading } = useCFStatesForAws({})
+  const { data: awsStatesData, loading: statesLoading, error: statesError } = useCFStatesForAws({})
 
   useEffect(() => {
     if (awsStatesData) {
       const awsStatesValues = map(awsStatesData?.data, cap => ({ label: cap, value: cap }))
-      setAwsStates(awsStatesValues as MultiSelectOption[])
+      setAwsStates(awsStatesValues as SelectOption[])
     }
   }, [awsStatesData])
 
@@ -122,12 +128,29 @@ export const CreateStack = (
   const {
     data: roleData,
     refetch,
-    loading: rolesLoading
+    loading: rolesLoading,
+    error: rolesError
   } = useGetIamRolesForAws({
     lazy: true,
     debounce: 500,
     queryParams
   })
+
+  useEffect(() => {
+    if (regionError) {
+      showError(regionError?.message)
+    }
+    if (capabilitiesError) {
+      showError(capabilitiesError?.message)
+    }
+    if (statesError) {
+      showError(statesError?.message)
+    }
+    if (rolesError) {
+      showError(rolesError?.message)
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [regionError, capabilitiesError, statesError, rolesError])
 
   useEffect(() => {
     if (roleData) {
@@ -254,8 +277,6 @@ export const CreateStack = (
         const remoteParameterFiles = config?.parameters
         const inlineParameters = config?.parameters?.inline
         const awsRegion = config?.region
-        const stackStatus = config?.skipOnStackStatuses
-        const awsCapabilities = config?.capabilities
         const parameterOverrides = config?.parameterOverrides
         return (
           <>
@@ -565,7 +586,7 @@ export const CreateStack = (
                           <div className={css.configField}>
                             <a
                               data-testid="remoteParamFiles"
-                              className={css.configPlaceHolder}
+                              className={cx(css.configPlaceHolder, css.truncate)}
                               data-name="config-edit"
                               onClick={() => setInlineParams(true)}
                             >
@@ -586,7 +607,8 @@ export const CreateStack = (
                         useValue
                         multiTypeInputProps={{
                           selectProps: {
-                            allowCreatingNewItems: true,
+                            addClearBtn: true,
+                            allowCreatingNewItems: false,
                             items: awsRoles
                           },
                           expressions,
@@ -596,27 +618,20 @@ export const CreateStack = (
                         selectItems={awsRoles}
                       />
                     </Layout.Vertical>
-                    <Layout.Vertical className={css.addMarginBottom}>
-                      <Label style={{ color: Color.GREY_900 }} className={css.configLabel}>
-                        {getString('optionalField', { name: getString('cd.cloudFormation.specifyCapabilities') })}
-                      </Label>
-                      <Layout.Horizontal>
-                        <MultiSelectTypeInput
-                          name="spec.configuration.capabilities"
-                          multiSelectProps={{
-                            items: capabilities,
-                            fill: true
-                          }}
-                          value={awsCapabilities}
-                          disabled={readonly}
-                          style={{ maxWidth: 500 }}
-                          onChange={value => {
-                            setFieldValue('spec.configuration.capabilities', value)
-                          }}
-                          placeholder={capabilitiesLoading ? getString('loading') : getString('select')}
-                        />
-                      </Layout.Horizontal>
-                    </Layout.Vertical>
+                    <FormInput.MultiSelectTypeInput
+                      label={getString('optionalField', { name: getString('cd.cloudFormation.specifyCapabilities') })}
+                      name="spec.configuration.capabilities"
+                      selectItems={capabilities}
+                      placeholder={capabilitiesLoading ? getString('loading') : ''}
+                      multiSelectTypeInputProps={{
+                        allowableTypes: allowableTypes.filter(item => item !== MultiTypeInputType.EXPRESSION),
+                        multiSelectProps: {
+                          items: capabilities,
+                          allowCreatingNewItems: false
+                        }
+                      }}
+                      disabled={readonly}
+                    />
                     <div className={css.divider} />
                     <div className={cx(stepCss.formGroup, stepCss.alignStart, css.addMarginTop, css.addMarginBottom)}>
                       <MultiTypeFieldSelector
@@ -659,26 +674,20 @@ export const CreateStack = (
                         />
                       )}
                     </div>
-                    <Layout.Vertical>
-                      <Label style={{ color: Color.GREY_900 }} className={css.configLabel}>
-                        {getString('optionalField', { name: getString('cd.cloudFormation.continueStatus') })}
-                      </Label>
-                      <Layout.Horizontal>
-                        <MultiSelectTypeInput
-                          style={{ maxWidth: 500 }}
-                          name="spec.configuration.skipOnStackStatuses"
-                          multiSelectProps={{
-                            items: awsStates
-                          }}
-                          disabled={readonly}
-                          value={stackStatus || []}
-                          onChange={value => {
-                            setFieldValue('spec.configuration.skipOnStackStatuses', value)
-                          }}
-                          placeholder={statesLoading ? getString('loading') : getString('select')}
-                        />
-                      </Layout.Horizontal>
-                    </Layout.Vertical>
+                    <FormInput.MultiSelectTypeInput
+                      label={getString('optionalField', { name: getString('cd.cloudFormation.continueStatus') })}
+                      name="spec.configuration.skipOnStackStatuses"
+                      selectItems={awsStates}
+                      placeholder={statesLoading ? getString('loading') : ''}
+                      multiSelectTypeInputProps={{
+                        allowableTypes: allowableTypes.filter(item => item !== MultiTypeInputType.EXPRESSION),
+                        multiSelectProps: {
+                          items: awsStates,
+                          allowCreatingNewItems: false
+                        }
+                      }}
+                      disabled={readonly}
+                    />
                   </div>
                 }
               />

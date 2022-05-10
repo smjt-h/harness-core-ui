@@ -7,7 +7,7 @@
 
 import React, { useState, useEffect } from 'react'
 import { useParams } from 'react-router-dom'
-import { isEmpty, map } from 'lodash-es'
+import { isEmpty, map, get } from 'lodash-es'
 import cx from 'classnames'
 import {
   FormInput,
@@ -17,7 +17,8 @@ import {
   MultiSelectOption,
   MultiSelectTypeInput,
   Label,
-  Layout
+  Layout,
+  useToaster
 } from '@harness/uicore'
 import { connect, FormikContext } from 'formik'
 import { useStrings } from 'framework/strings'
@@ -39,8 +40,9 @@ import stepCss from '@pipeline/components/PipelineSteps/Steps/Steps.module.scss'
 function CreateStackInputStepRef<T extends CreateStackData = CreateStackData>(
   props: CreateStackProps<T> & { formik?: FormikContext<any> }
 ): React.ReactElement {
-  const { inputSetData, readonly, path, allowableTypes, formik } = props
+  const { inputSetData, readonly, path, allowableTypes, formik, allValues } = props
   const { getString } = useStrings()
+  const { showError } = useToaster()
   const { expressions } = useVariablesExpression()
   const { accountId, projectIdentifier, orgIdentifier } = useParams<ProjectPathProps>()
   const [regions, setRegions] = useState<MultiSelectOption[]>([])
@@ -49,7 +51,7 @@ function CreateStackInputStepRef<T extends CreateStackData = CreateStackData>(
   const [capabilities, setCapabilities] = useState<MultiSelectOption[]>([])
   const [selectedCapabilities, setSelectedCapabilities] = useState<MultiSelectOption[]>([])
   const [selectedStackStatus, setSelectedStackStatus] = useState<MultiSelectOption[]>([])
-  const [awsRef, setAwsRef] = useState(inputSetData?.template?.spec?.configuration?.connectorRef)
+  const [awsRef, setAwsRef] = useState(get(allValues, 'spec.configuration.connectorRef'))
 
   useEffect(() => {
     if (selectedCapabilities.length > 0) {
@@ -98,13 +100,21 @@ function CreateStackInputStepRef<T extends CreateStackData = CreateStackData>(
   const {
     data: regionData,
     loading: regionsLoading,
-    refetch: getRegions
+    refetch: getRegions,
+    error
   } = useListAwsRegions({
     lazy: true,
     queryParams: {
       accountId
     }
   })
+
+  useEffect(() => {
+    if (error) {
+      showError(error?.message)
+    }
+  }, [error])
+
   const regionRequired = isRuntime(inputSetData?.template?.spec?.configuration?.region as string)
   useEffect(() => {
     if (regionData) {
@@ -117,7 +127,11 @@ function CreateStackInputStepRef<T extends CreateStackData = CreateStackData>(
     }
   }, [regionData, regionRequired])
 
-  const { data: roleData, refetch: getRoles } = useGetIamRolesForAws({
+  const {
+    data: roleData,
+    refetch: getRoles,
+    loading: rolesLoading
+  } = useGetIamRolesForAws({
     lazy: true,
     debounce: 500,
     queryParams: {
@@ -129,10 +143,14 @@ function CreateStackInputStepRef<T extends CreateStackData = CreateStackData>(
   })
 
   const roleRequired = isRuntime(inputSetData?.template?.spec?.configuration?.roleArn as string)
+
   useEffect(() => {
     if (roleData) {
-      const roleValues = map(roleData?.data, cap => ({ label: cap, value: cap }))
-      setAwsRoles(roleValues as MultiSelectOption[])
+      const roles = []
+      for (const key in roleData?.data) {
+        roles.push({ label: roleData?.data[key], value: key })
+      }
+      setAwsRoles(roles)
     }
     if (!roleData && roleRequired && awsRef) {
       getRoles()
@@ -211,8 +229,8 @@ function CreateStackInputStepRef<T extends CreateStackData = CreateStackData>(
           />
         </div>
       )}
-      <TemplateFileInputs {...props} />
-      <ParameterFileInputs {...props} />
+      {inputSetData?.template?.spec?.configuration?.templateFile && <TemplateFileInputs {...props} />}
+      {inputSetData?.template?.spec?.configuration?.parameters && <ParameterFileInputs {...props} />}
       {isRuntime(inputSetData?.template?.spec?.configuration?.stackName as string) && (
         <div className={cx(stepCss.formGroup, stepCss.md)}>
           <FormInput.MultiTextInput
@@ -230,18 +248,19 @@ function CreateStackInputStepRef<T extends CreateStackData = CreateStackData>(
         <div className={cx(stepCss.formGroup, stepCss.sm)}>
           <FormInput.MultiTypeInput
             label={getString('connectors.awsKms.roleArnLabel')}
-            name={`${path}.spec.configuration.roleARN`}
+            name={`${path}.spec.configuration.roleArn`}
             disabled={readonly}
             useValue
+            placeholder={getString(rolesLoading ? 'common.loading' : 'select')}
             multiTypeInputProps={{
               selectProps: {
                 allowCreatingNewItems: false,
-                items: awsRoles ? awsRoles : []
+                items: awsRoles
               },
               expressions,
               allowableTypes
             }}
-            selectItems={awsRoles ? awsRoles : []}
+            selectItems={awsRoles}
           />
         </div>
       )}
@@ -252,7 +271,8 @@ function CreateStackInputStepRef<T extends CreateStackData = CreateStackData>(
             name={`${path}.spec.configuration.capabilities`}
             disabled={readonly}
             multiSelectProps={{
-              items: capabilities
+              items: capabilities,
+              allowCreatingNewItems: false
             }}
             width={500}
             value={selectedCapabilities}
@@ -294,7 +314,8 @@ function CreateStackInputStepRef<T extends CreateStackData = CreateStackData>(
             name={`${path}.spec.configuration.skipOnStackStatuses`}
             disabled={readonly}
             multiSelectProps={{
-              items: awsStatuses
+              items: awsStatuses,
+              allowCreatingNewItems: false
             }}
             width={500}
             value={selectedStackStatus}

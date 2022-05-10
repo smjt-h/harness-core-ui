@@ -34,6 +34,7 @@ declare const styles: {
   readonly overridesInputHeader: string
   readonly squareCardContainer: string
   readonly templateDropdown: string
+  readonly truncate: string
   readonly wizard: string
 }
 export default styles

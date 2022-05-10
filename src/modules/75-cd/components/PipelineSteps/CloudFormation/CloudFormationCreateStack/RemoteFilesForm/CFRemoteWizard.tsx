@@ -136,16 +136,15 @@ const CFRemoteWizard = ({
 
   const onSubmit = (values: any) => {
     const config = values?.spec?.configuration
-
     if (isNumber(index)) {
       let paths = config?.parameters?.store?.spec?.paths
       paths = getMultiTypeFromValue(paths[0]) === MultiTypeInputType.RUNTIME ? paths[0] : paths
       const data = {
-        identifier: values?.spec?.configuration?.parameters?.identifier,
+        identifier: config?.parameters?.identifier,
         store: {
-          ...values?.spec?.configuration?.parameters?.store,
+          ...config?.parameters?.store,
           spec: {
-            ...values?.spec?.configuration?.parameters?.store?.spec,
+            ...config?.parameters?.store?.spec,
             paths
           }
         }

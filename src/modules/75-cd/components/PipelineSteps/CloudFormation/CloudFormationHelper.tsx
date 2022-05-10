@@ -159,32 +159,32 @@ export const GetNewConnector = (
 export const FormatFilePaths = (values: any, prevStepData: any, index?: number) => {
   // checking for number as index 0 produces false
   if (isNumber(index)) {
-    let param = get(values, `spec.configuration.parameters[${index}]`)
+    const param = get(values, `spec.configuration.parameters[${index}]`)
     const connector = prevStepData?.spec?.configuration?.parameters?.store?.spec
-    param = {
-      identifier: param?.identifier,
-      store: {
-        type: prevStepData?.selectedConnector === 'S3' ? 'S3Url' : prevStepData?.selectedConnector,
-        spec: {
-          connectorRef: connector?.connectorRef?.value,
-          ...(connector?.region
-            ? {
-                region: connector?.region,
-                paths: param?.store?.spec?.urls || ['']
-              }
-            : { paths: param?.store?.spec?.paths || [''], ...param?.store?.spec })
-        }
-      }
-    }
     return {
       spec: {
         configuration: {
-          parameters: param
+          parameters: {
+            identifier: param?.identifier,
+            store: {
+              type: prevStepData?.selectedConnector === 'S3' ? 'S3Url' : prevStepData?.selectedConnector,
+              spec: {
+                connectorRef: connector?.connectorRef?.value || connector?.connectorRef,
+                ...(connector?.region
+                  ? {
+                      region: connector?.region,
+                      paths: param?.store?.spec?.paths || param?.store?.spec?.urls
+                    }
+                  : { paths: param?.store?.spec?.paths, ...param?.store?.spec })
+              }
+            }
+          }
         }
       }
     }
   }
-  const templateFile = get(values, 'spec.configuration.templateFile.spec.store.spec.paths')
+  const filePath = get(values, 'spec.configuration.templateFile.spec.store.spec.paths')
+  const connectorRef = prevStepData?.spec?.configuration?.templateFile?.spec?.store?.spec?.connectorRef
   return {
     spec: {
       configuration: {
@@ -195,8 +195,8 @@ export const FormatFilePaths = (values: any, prevStepData: any, index?: number) 
               ...values?.spec?.configuration?.templateFile?.spec?.store,
               spec: {
                 ...values?.spec?.configuration?.templateFile?.spec?.store?.spec,
-                paths: [templateFile || ''],
-                connectorRef: prevStepData?.spec?.configuration?.templateFile?.spec?.store?.spec?.connectorRef?.value
+                paths: isRuntime(filePath) ? [filePath] : filePath,
+                connectorRef: connectorRef?.value || connectorRef
               }
             }
           }

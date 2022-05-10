@@ -5,8 +5,8 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import React, { useState } from 'react'
-import { map, get } from 'lodash-es'
+import React, { useState, useEffect } from 'react'
+import { map, get, some } from 'lodash-es'
 import { useParams } from 'react-router-dom'
 import cx from 'classnames'
 import { FormikContext, FieldArray } from 'formik'
@@ -18,12 +18,14 @@ import {
   Layout,
   Icon,
   Button,
-  ButtonVariation
+  ButtonVariation,
+  MultiSelectOption
 } from '@harness/uicore'
 import { useStrings } from 'framework/strings'
 import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
 import { FormMultiTypeConnectorField } from '@connectors/components/ConnectorReferenceField/FormMultiTypeConnectorField'
 import { useVariablesExpression } from '@pipeline/components/PipelineStudio/PiplineHooks/useVariablesExpression'
+import { useListAwsRegions } from 'services/portal'
 import { ConnectorMap, ConnectorLabelMap, ConnectorTypes, isRuntime } from '../../CloudFormationHelper'
 import type { CreateStackData, CreateStackProps } from '../../CloudFormationInterfaces'
 import { onDragStart, onDragEnd, onDragLeave, onDragOver, onDrop } from '../../DragHelper'
@@ -38,6 +40,31 @@ export default function ParameterFileInputs<T extends CreateStackData = CreateSt
   const { expressions } = useVariablesExpression()
   const { accountId, projectIdentifier, orgIdentifier } = useParams<ProjectPathProps>()
   const [isAccount, setIsAccount] = useState<boolean>(false)
+  const [regions, setRegions] = useState<MultiSelectOption[]>([])
+
+  const {
+    data: regionData,
+    loading: regionsLoading,
+    refetch: getRegions
+  } = useListAwsRegions({
+    lazy: true,
+    queryParams: {
+      accountId
+    }
+  })
+
+  const regionRequired = some(inputSetData?.template?.spec?.configuration?.parameters, 'store.spec.region')
+  useEffect(() => {
+    if (regionData) {
+      const regionValues = map(regionData?.resource, reg => ({ label: reg.name, value: reg.value }))
+      setRegions(regionValues as MultiSelectOption[])
+    }
+
+    if (!regionData && regionRequired) {
+      getRegions()
+    }
+  }, [regionData, regionRequired])
+
   return (
     <>
       {inputSetData?.template?.spec?.configuration?.parameters && (
@@ -46,17 +73,19 @@ export default function ParameterFileInputs<T extends CreateStackData = CreateSt
         </Container>
       )}
       {map(inputSetData?.template?.spec?.configuration?.parameters, (param, i) => {
-        const filePaths = get(formik?.values, `${path}.spec.configuration.parameters[${i}].store.spec.paths`) || []
-        const newConnectorLabel = `${
-          !!param?.store?.type && getString(ConnectorLabelMap[param?.store?.type as ConnectorTypes])
-        } ${getString('connector')}`
+        const pathNeeded = param?.store?.spec?.paths
+        const urlsNeeded = param?.store?.spec?.urls
+        const pathName = `${path}.spec.configuration.parameters[${i}].store.spec.${pathNeeded ? 'paths' : 'urls'}`
+        const filePaths = get(formik?.values, pathName) || ['']
+        const type = param?.store?.type === 'S3Url' ? 'S3' : param?.store?.type
+        const newConnectorLabel = `${getString(ConnectorLabelMap[type as ConnectorTypes])} ${getString('connector')}`
         return (
           <>
             {isRuntime(param?.store?.spec?.connectorRef as string) && (
               <div className={cx(stepCss.formGroup, stepCss.sm)}>
                 <FormMultiTypeConnectorField
                   label={<Text color={Color.GREY_900}>{newConnectorLabel}</Text>}
-                  type={ConnectorMap[param?.store?.type]}
+                  type={ConnectorMap[type]}
                   name={`${path}.spec.configuration.parameters[${i}].store.spec.connectorRef`}
                   placeholder={getString('select')}
                   accountIdentifier={accountId}
@@ -78,14 +107,21 @@ export default function ParameterFileInputs<T extends CreateStackData = CreateSt
             )}
             {isRuntime(param?.store?.spec?.region as string) && (
               <div className={cx(stepCss.formGroup, stepCss.sm)}>
-                <FormInput.MultiTextInput
-                  name={`${path}.spec.configuration.parameters[${i}].store.spec.commitId`}
-                  label={getString('pipelineSteps.deploy.inputSet.branch')}
+                <FormInput.MultiTypeInput
+                  name={`${path}.spec.configuration.parameters[${i}].store.spec.region`}
+                  label={getString('regionLabel')}
+                  placeholder={getString(regionsLoading ? 'common.loading' : 'pipeline.regionPlaceholder')}
                   disabled={readonly}
-                  multiTextInputProps={{
+                  useValue
+                  multiTypeInputProps={{
+                    selectProps: {
+                      allowCreatingNewItems: true,
+                      items: regions ? regions : []
+                    },
                     expressions,
                     allowableTypes
                   }}
+                  selectItems={regions ? regions : []}
                 />
               </div>
             )}
@@ -134,14 +170,14 @@ export default function ParameterFileInputs<T extends CreateStackData = CreateSt
                 />
               </div>
             )}
-            {isRuntime(param?.store?.spec?.paths as string) && (
+            {isRuntime(pathNeeded as string) || isRuntime(urlsNeeded as string) ? (
               <div className={cx(stepCss.formGroup, stepCss.md)}>
                 <Layout.Vertical>
                   <Container padding={{ bottom: 'small' }}>
                     <Text font={{ weight: 'bold' }}>{getString('filePaths')}</Text>
                   </Container>
                   <FieldArray
-                    name={`${path}.spec.configuration.parameters[${i}].store.spec.paths`}
+                    name={pathName}
                     render={arrayHelpers => (
                       <>
                         {map(filePaths, (_: string, n: number) => (
@@ -165,7 +201,7 @@ export default function ParameterFileInputs<T extends CreateStackData = CreateSt
                               <Icon name="drag-handle-vertical" className={css.drag} />
                               <Text width={12}>{`${n + 1}.`}</Text>
                               <FormInput.MultiTextInput
-                                name={`${path}.spec.configuration.parameters[${i}].store.spec.paths[${n}]`}
+                                name={`${pathName}[${n}]`}
                                 label=""
                                 multiTextInputProps={{
                                   expressions,
@@ -195,7 +231,7 @@ export default function ParameterFileInputs<T extends CreateStackData = CreateSt
                   />
                 </Layout.Vertical>
               </div>
-            )}
+            ) : null}
           </>
         )
       })}

@@ -8,7 +8,7 @@
 import React from 'react'
 import * as Yup from 'yup'
 import cx from 'classnames'
-import { map, isNumber } from 'lodash-es'
+import { map, isNumber, isEmpty } from 'lodash-es'
 import { FieldArray, Form } from 'formik'
 import {
   Button,
@@ -52,7 +52,7 @@ const RemoteStepTwo: React.FC<StepProps<any> & RemoteStepTwoProps> = ({
   const title = getString(isNumber(index) ? 'filePaths' : 'common.git.filePath')
   const pathSchema = Yup.lazy((value): Yup.Schema<unknown> => {
     if (getMultiTypeFromValue(value as any) === MultiTypeInputType.FIXED) {
-      return Yup.array().of(Yup.string().required(getString('cd.pathCannotBeEmpty')))
+      return Yup.array().of(Yup.string().min(1).required(getString('cd.pathCannotBeEmpty')))
     }
     return Yup.string().required(getString('cd.pathCannotBeEmpty'))
   })
@@ -125,11 +125,13 @@ const RemoteStepTwo: React.FC<StepProps<any> & RemoteStepTwoProps> = ({
         {({ values }) => {
           let name = 'spec.configuration.templateFile.spec.store.spec.paths[0]'
           let filePaths = values?.spec?.configuration?.templateFile?.spec?.store?.spec?.paths
-          let connector = prevStepData?.spec?.configuration?.templateFile?.spec?.store?.spec?.connectorRef
+          const connector = prevStepData?.selectedConnector
           if (isNumber(index)) {
             name = `spec.configuration.parameters.store.spec.paths`
             filePaths = values?.spec?.configuration?.parameters?.store?.spec?.paths
-            connector = prevStepData?.spec?.configuration?.parameters?.store?.spec?.connectorRef
+          }
+          if (isEmpty(filePaths)) {
+            filePaths = ['']
           }
           return (
             <Form>
@@ -139,7 +141,7 @@ const RemoteStepTwo: React.FC<StepProps<any> & RemoteStepTwoProps> = ({
                     <FormInput.Text name="spec.configuration.parameters.identifier" label={getString('identifier')} />
                   </div>
                 )}
-                {connector?.connector?.type !== 'Aws' && (
+                {connector !== 'S3' && (
                   <ParameterRepoDetails
                     allowableTypes={allowableTypes}
                     index={index}

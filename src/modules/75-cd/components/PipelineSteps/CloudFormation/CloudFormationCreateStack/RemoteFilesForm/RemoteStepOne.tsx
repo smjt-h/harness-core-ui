@@ -36,7 +36,8 @@ import {
   ConnectorIcons,
   ConnectorMap,
   ConnectorLabelMap,
-  ConnectorTypes
+  ConnectorTypes,
+  isRuntime
 } from '../../CloudFormationHelper'
 
 import stepCss from '@pipeline/components/PipelineSteps/Steps/Steps.module.scss'
@@ -101,7 +102,7 @@ const ConnectorStepOne: React.FC<StepProps<any> & ConnectorStepOneProps> = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [showNewConnector])
 
-  const isS3 = selectedConnector && selectedConnector === 'S3'
+  const isS3 = !!selectedConnector && selectedConnector === 'S3'
   const errorMsg = Yup.string().required(getString('pipelineSteps.build.create.connectorRequiredError'))
   const connectorSchema = {
     store: Yup.object().shape({
@@ -155,12 +156,15 @@ const ConnectorStepOne: React.FC<StepProps<any> & ConnectorStepOneProps> = ({
           let connectorRef = values?.spec?.configuration?.templateFile?.spec?.store?.spec?.connectorRef
           let name = 'spec.configuration.templateFile.spec.store.spec.connectorRef'
           let isFixedValue = getMultiTypeFromValue(connectorRef) === MultiTypeInputType.FIXED
+          let region
           if (isNumber(index)) {
             connectorRef = values?.spec?.configuration?.parameters?.store?.spec?.connectorRef
             isFixedValue = getMultiTypeFromValue(connectorRef) === MultiTypeInputType.FIXED
             name = `spec.configuration.parameters.store.spec.connectorRef`
+            region = values?.spec?.configuration?.parameters?.store?.spec?.region
           }
-          const disabled = !selectedConnector || (isFixedValue && !connectorRef?.connector)
+          const disabled =
+            !selectedConnector || (isFixedValue && !connectorRef?.connector) || (isS3 && !isRuntime(region) && !region)
           return (
             <>
               <Layout.Horizontal className={css.horizontalFlex} margin={{ top: 'xlarge', bottom: 'xlarge' }}>
@@ -233,9 +237,9 @@ const ConnectorStepOne: React.FC<StepProps<any> & ConnectorStepOneProps> = ({
                             items: regions
                           }}
                           width={300}
-                          value={find(regions, ['value', values?.spec?.configuration?.parameters?.store?.spec?.region])}
-                          onChange={({ value }: any) => {
-                            setFieldValue(`spec.configuration.parameters.store.spec.region`, value)
+                          value={find(regions, ['value', region]) || region}
+                          onChange={(reg: any) => {
+                            setFieldValue('spec.configuration.parameters.store.spec.region', reg?.value || reg)
                           }}
                         />
                       </Layout.Horizontal>
