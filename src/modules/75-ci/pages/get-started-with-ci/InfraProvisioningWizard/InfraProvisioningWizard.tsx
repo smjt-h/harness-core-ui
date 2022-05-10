@@ -19,7 +19,7 @@ import {
 } from 'services/cd-ng'
 import { createPipelineV2Promise, ResponsePipelineSaveResponse } from 'services/pipeline-ng'
 import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
-import { DEFAULT_PIPELINE_PAYLOAD, DEFAULT_STAGE_ID } from '@common/utils/CIConstants'
+import { DEFAULT_PIPELINE_PAYLOAD } from '@common/utils/CIConstants'
 import { yamlStringify } from '@common/utils/YamlHelperMethods'
 import { InfraProvisioningCarousel } from '../InfraProvisioningCarousel/InfraProvisioningCarousel'
 import {
@@ -129,6 +129,7 @@ export const InfraProvisioningWizard: React.FC<InfraProvisioningWizardProps> = p
       if (!repoName || !namespace || !selectGitProviderRef.current?.validatedConnectorRef) {
         return
       }
+
       const payload = { ...DEFAULT_PIPELINE_PAYLOAD }
       payload.pipeline.name = `${getString('buildText')} ${repoName}`
       payload.pipeline.identifier = `${getString('buildText')}${repoName}_${UNIQUE_PIPELINE_ID}`
@@ -136,6 +137,7 @@ export const InfraProvisioningWizard: React.FC<InfraProvisioningWizardProps> = p
       payload.pipeline.orgIdentifier = orgIdentifier
       payload.pipeline.properties.ci.codebase.connectorRef = selectGitProviderRef.current?.validatedConnectorRef
       payload.pipeline.properties.ci.codebase.repoName = `${namespace}/${repoName}`
+
       try {
         return yamlStringify(payload)
       } catch (e) {
@@ -282,7 +284,7 @@ export const InfraProvisioningWizard: React.FC<InfraProvisioningWizardProps> = p
                       orgIdentifier,
                       projectIdentifier,
                       pipelineIdentifier: data?.identifier,
-                      stageId: DEFAULT_STAGE_ID
+                      stageId: getString('buildText')
                     })
                   )
                 }

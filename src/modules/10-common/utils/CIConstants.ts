@@ -10,19 +10,17 @@ export const DEFAULT_PROJECT_NAME = 'Default Project'
 
 export const DEFAULT_PROJECT_ID = 'Default_Project_'.concat(new Date().getTime().toString())
 
-export const DEFAULT_ORG_NAME = 'Default_Org'
+export const DEFAULT_ORG_NAME = 'Default Organization'
 
 export const UNIQUE_ORG_ID = 'Default_Org_'.concat(new Date().getTime().toString())
 
-export const DEFAULT_PIPELINE_ID = 'Default_Pipeline_'.concat(new Date().getTime().toString())
-
-export const DEFAULT_STAGE_ID = 'Build'
+const DEFAULT_STAGE_ID = 'Build'
 
 export const ACCOUNT_SCOPE_PREFIX = 'account.'
 
 const KUBERNETES_INFRA_REF = 'Harness_Kubernetes_Cluster'
 
-const DOCKER_REGISTRY_CTR_REF = 'harnessImage'
+const DOCKER_REGISTRY_CONNECTOR_REF = 'harnessImage'
 
 export const DEFAULT_HARNESS_KMS = 'harnessSecretManager'
 
@@ -64,7 +62,7 @@ export const DEFAULT_PIPELINE_PAYLOAD = {
                     name: 'Echo Welcome Message',
                     identifier: 'Run',
                     spec: {
-                      connectorRef: ACCOUNT_SCOPE_PREFIX.concat(DOCKER_REGISTRY_CTR_REF),
+                      connectorRef: ACCOUNT_SCOPE_PREFIX.concat(DOCKER_REGISTRY_CONNECTOR_REF),
                       image: 'alpine',
                       shell: 'Sh',
                       command: 'echo "Welcome to Harness CI" '
