@@ -66,14 +66,14 @@
 
 .repositories {
   height: 73%;
+  width: 676px;
 }
 
 .repositoriesWithError {
-  height: 71% !important;
+  height: 68% !important;
 }
 
 .repositoryTable {
-  width: 676px !important;
   > div {
     height: 100%;
     overflow-y: scroll;

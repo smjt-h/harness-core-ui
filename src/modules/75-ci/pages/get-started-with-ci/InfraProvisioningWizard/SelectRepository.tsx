@@ -25,6 +25,7 @@ import { useStrings } from 'framework/strings'
 import { repos } from './mocks/repositories'
 
 import css from './InfraProvisioningWizard.module.scss'
+import { Spinner } from '@blueprintjs/core'
 
 export interface SelectRepositoryRef {
   repository: Repository
@@ -47,7 +48,13 @@ const SelectRepositoryRef = (
   const { selectedRepository, showError } = props
   const { getString } = useStrings()
   const [repository, setRepository] = useState<Repository | undefined>(selectedRepository)
-  const [, setQuery] = useState<string>()
+  const [query, setQuery] = useState<string>()
+  const [repositories, setRepositories] = useState<
+    {
+      name: string
+    }[]
+  >(repos)
+  const [loading, setLoading] = useState<boolean>(false)
 
   const debouncedRepositorySearch = useCallback(
     debounce((query: string): void => {
@@ -61,6 +68,14 @@ const SelectRepositoryRef = (
       setRepository(selectedRepository)
     }
   }, [selectedRepository])
+
+  useEffect(() => {
+    if (query) {
+      setLoading(true)
+      setRepositories(repos.filter(item => item.name.includes(query)))
+      setLoading(false)
+    }
+  }, [query])
 
   useEffect(() => {
     if (!forwardRef) {
@@ -77,6 +92,23 @@ const SelectRepositoryRef = (
       }
     }
   })
+
+  const renderView = React.useCallback((): JSX.Element => {
+    if (loading) {
+      return <Spinner />
+    } else {
+      if (repositories.length > 0) {
+        return <RepositorySelectionTable repositories={repositories} onRowClick={setRepository} />
+      } else {
+        return (
+          <Text flex={{ justifyContent: 'center' }} padding={{ top: 'medium' }}>
+            {getString('noSearchResultsFoundPeriod')}
+          </Text>
+        )
+      }
+    }
+    return <></>
+  }, [loading, repositories])
 
   const showValidationErrorForRepositoryNotSelected = showError && !repository?.name
 
@@ -99,8 +131,9 @@ const SelectRepositoryRef = (
               debouncedRepositorySearch(queryText)
             }
           }}
+          disabled={loading}
         />
-        <RepositorySelectionTable repositories={repos} onRowClick={setRepository} />
+        {renderView()}
         {showValidationErrorForRepositoryNotSelected ? (
           <Container padding={{ top: 'xsmall' }}>
             <FormError
