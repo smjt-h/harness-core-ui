@@ -26,7 +26,6 @@
 
 .summaryCharts {
   background-color: var(--grey-0);
-  width: 100%;
   padding: var(--spacing-medium);
   border-radius: 4px;
   width: 350px;
@@ -71,10 +70,11 @@
 }
 
 .sortingIcon {
-  padding-left: var(--spacing-small);
+  padding-left: var(--spacing-small) !important;
 }
 
 .sortingColumn {
   display: flex;
   cursor: pointer;
+  align-items: center;
 }

@@ -107,7 +107,7 @@ const AnomaliesSummary: React.FC<AnomaliesOverviewProps> = ({
             {getString('ce.anomalyDetection.summary.costImpacted')}
           </Text>
           <Text color={Color.RED_500} font={{ variation: FontVariation.H4 }}>
-            {formatCost(costData?.anomalousCost || '-')}
+            {formatCost(costData?.anomalousCost || 0) || '-'}
           </Text>
         </Card>
       </Layout.Vertical>

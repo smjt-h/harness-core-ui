@@ -29,8 +29,6 @@ import useRBACError from '@rbac/utils/useRBACError/useRBACError'
 import NoResults from '@ce/images/no-results.svg'
 import EmptyView from '@ce/images/empty-state.svg'
 import AnomaliesError from '@ce/images/anomalies-error.svg'
-import Sorting from '@ce/images/sorting.svg'
-import Desc from '@ce/images/desc.svg'
 import css from '../../pages/anomalies-overview/AnomaliesOverviewPage.module.scss'
 
 const getResourceIcon = (cloudProvider: string) => {
@@ -157,17 +155,36 @@ const getServerSortProps = ({
       enableServerSort: true,
       isServerSorted: sortByObj.sort === accessor,
       isServerSortedDesc: sortByObj.order === 'DESC',
-      getSortedColumn: ({ sort }: { sort?: sortType }) => {
+      getSortedColumn: () => {
         if (sortName === sortByObj.sort && sortByObj.order) {
           newOrder = sortByObj.order === 'DESC' ? 'ASC' : 'DESC'
         } else {
           // no saved state for sortBy of the same sort type
           newOrder = 'ASC'
         }
-        setSortByObj({ sort: sort === 'time' ? 'ANOMALY_TIME' : sort, order: newOrder })
+        setSortByObj({ sort: sortName, order: newOrder })
       }
     }
   }
+}
+
+const getSortIcon = (columnName: string, sortByObj: SortByObjInterface) => {
+  if (columnName === sortByObj.sort) {
+    if (sortByObj.order === 'DESC') {
+      return <Icon name="main-caret-down" size={10} color={Color.PRIMARY_7} className={css.sortingIcon} />
+    } else {
+      return <Icon name="main-caret-up" size={10} color={Color.PRIMARY_7} className={css.sortingIcon} />
+    }
+  } else {
+    return <Icon name="main-sort" size={12} color={Color.GREY_1000} className={css.sortingIcon} />
+  }
+}
+
+const map: Record<string, string> = {
+  AZURE: 'defaultAzurePerspectiveId',
+  AWS: 'defaultAwsPerspectiveId',
+  GCP: 'defaultGcpPerspectiveId',
+  CLUSTER: 'defaultClusterPerspectiveId'
 }
 
 const AnomaliesListGridView: React.FC<ListProps> = ({
@@ -221,13 +238,6 @@ const AnomaliesListGridView: React.FC<ListProps> = ({
         )}
       </Layout.Horizontal>
     )
-  }
-
-  const map: Record<string, string> = {
-    AZURE: 'defaultAzurePerspectiveId',
-    AWS: 'defaultAwsPerspectiveId',
-    GCP: 'defaultGcpPerspectiveId',
-    CLUSTER: 'defaultClusterPerspectiveId'
   }
 
   const ResourceCell: Renderer<CellProps<AnomalyData>> = ({ row }) => {
@@ -305,18 +315,6 @@ const AnomaliesListGridView: React.FC<ListProps> = ({
     return <AnomaliesMenu anomalyId={row.original.id || /* istanbul ignore next */ ''} />
   }
 
-  const getSortIcon = (columnName: string) => {
-    if (columnName === sortByObj.sort) {
-      if (sortByObj.order === 'DESC') {
-        return <img src={Desc} className={css.sortingIcon} />
-      } else {
-        return ' 🔼'
-      }
-    } else {
-      return <img src={Sorting} className={css.sortingIcon} />
-    }
-  }
-
   const columns: Column<AnomalyData>[] = React.useMemo(
     () => [
       {
@@ -327,7 +325,7 @@ const AnomaliesListGridView: React.FC<ListProps> = ({
             className={css.sortingColumn}
           >
             {getString('ce.anomalyDetection.tableHeaders.date')}
-            {getSortIcon('ANOMALY_TIME')}
+            {getSortIcon('ANOMALY_TIME', sortByObj)}
           </Text>
         ),
         accessor: 'time',
@@ -342,8 +340,13 @@ const AnomaliesListGridView: React.FC<ListProps> = ({
       },
       {
         Header: (
-          <Text font={{ variation: FontVariation.TABLE_HEADERS }} tooltipProps={{ dataTooltipId: 'anomalousSpend' }}>
+          <Text
+            font={{ variation: FontVariation.TABLE_HEADERS }}
+            tooltipProps={{ dataTooltipId: 'anomalousSpend' }}
+            className={css.sortingColumn}
+          >
             {getString('ce.anomalyDetection.tableHeaders.anomalousSpend')}
+            {getSortIcon('ANOMALOUS_SPEND', sortByObj)}
           </Text>
         ),
         accessor: 'actualAmount',
@@ -351,7 +354,7 @@ const AnomaliesListGridView: React.FC<ListProps> = ({
         width: '20%',
         serverSortProps: getServerSortProps({
           enableServerSort: true,
-          accessor: 'ACTUAL_COST',
+          accessor: 'ANOMALOUS_SPEND',
           sortByObj,
           setSortByObj
         })
@@ -391,7 +394,7 @@ const AnomaliesListGridView: React.FC<ListProps> = ({
     [timeRange.to, timeRange.from, sortByObj]
   )
 
-  if (searchText && !listData.length) {
+  if (searchText && listData && !listData.length) {
     return (
       <Container className={css.noResultsContainer}>
         <img src={NoResults} />

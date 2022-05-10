@@ -18,11 +18,20 @@ exports[`test case for anomalies detection overview page should be able to rende
         <p
           class="StyledProps--font StyledProps--main StyledProps--font-variation-table-headers"
         >
-          <p
-            class="StyledProps--font StyledProps--main StyledProps--font-variation-table-headers"
+          <div
+            class="Text--withDocsTooltip"
+            data-tooltip-id="anomalyDate"
           >
-            ce.anomalyDetection.tableHeaders.date
-          </p>
+            <p
+              class="StyledProps--font StyledProps--main sortingColumn StyledProps--font-variation-table-headers"
+            >
+              ce.anomalyDetection.tableHeaders.date
+              <img
+                class="sortingIcon"
+                src="test-file-stub"
+              />
+            </p>
+          </div>
         </p>
       </div>
       <div
@@ -34,11 +43,16 @@ exports[`test case for anomalies detection overview page should be able to rende
         <p
           class="StyledProps--font StyledProps--main StyledProps--font-variation-table-headers"
         >
-          <p
-            class="StyledProps--font StyledProps--main StyledProps--font-variation-table-headers"
+          <div
+            class="Text--withDocsTooltip"
+            data-tooltip-id="anomalousSpend"
           >
-            ce.anomalyDetection.tableHeaders.anomalousSpend
-          </p>
+            <p
+              class="StyledProps--font StyledProps--main StyledProps--font-variation-table-headers"
+            >
+              ce.anomalyDetection.tableHeaders.anomalousSpend
+            </p>
+          </div>
         </p>
       </div>
       <div
@@ -50,11 +64,16 @@ exports[`test case for anomalies detection overview page should be able to rende
         <p
           class="StyledProps--font StyledProps--main StyledProps--font-variation-table-headers"
         >
-          <p
-            class="StyledProps--font StyledProps--main StyledProps--font-variation-table-headers"
+          <div
+            class="Text--withDocsTooltip"
+            data-tooltip-id="anomalyResource"
           >
-            ce.anomalyDetection.tableHeaders.resource
-          </p>
+            <p
+              class="StyledProps--font StyledProps--main StyledProps--font-variation-table-headers"
+            >
+              ce.anomalyDetection.tableHeaders.resource
+            </p>
+          </div>
         </p>
       </div>
       <div
@@ -747,11 +766,20 @@ exports[`test case for anomalies detection overview page should be able to rende
         <p
           class="StyledProps--font StyledProps--main StyledProps--font-variation-table-headers"
         >
-          <p
-            class="StyledProps--font StyledProps--main StyledProps--font-variation-table-headers"
+          <div
+            class="Text--withDocsTooltip"
+            data-tooltip-id="anomalyDate"
           >
-            ce.anomalyDetection.tableHeaders.date
-          </p>
+            <p
+              class="StyledProps--font StyledProps--main sortingColumn StyledProps--font-variation-table-headers"
+            >
+              ce.anomalyDetection.tableHeaders.date
+              <img
+                class="sortingIcon"
+                src="test-file-stub"
+              />
+            </p>
+          </div>
         </p>
       </div>
       <div
@@ -763,11 +791,16 @@ exports[`test case for anomalies detection overview page should be able to rende
         <p
           class="StyledProps--font StyledProps--main StyledProps--font-variation-table-headers"
         >
-          <p
-            class="StyledProps--font StyledProps--main StyledProps--font-variation-table-headers"
+          <div
+            class="Text--withDocsTooltip"
+            data-tooltip-id="anomalousSpend"
           >
-            ce.anomalyDetection.tableHeaders.anomalousSpend
-          </p>
+            <p
+              class="StyledProps--font StyledProps--main StyledProps--font-variation-table-headers"
+            >
+              ce.anomalyDetection.tableHeaders.anomalousSpend
+            </p>
+          </div>
         </p>
       </div>
       <div
@@ -779,11 +812,16 @@ exports[`test case for anomalies detection overview page should be able to rende
         <p
           class="StyledProps--font StyledProps--main StyledProps--font-variation-table-headers"
         >
-          <p
-            class="StyledProps--font StyledProps--main StyledProps--font-variation-table-headers"
+          <div
+            class="Text--withDocsTooltip"
+            data-tooltip-id="anomalyResource"
           >
-            ce.anomalyDetection.tableHeaders.resource
-          </p>
+            <p
+              class="StyledProps--font StyledProps--main StyledProps--font-variation-table-headers"
+            >
+              ce.anomalyDetection.tableHeaders.resource
+            </p>
+          </div>
         </p>
       </div>
       <div
