@@ -467,6 +467,8 @@ export const VariationSelect: React.FC<VariationSelectProps> = ({
         <SaveFlagToGitModal
           flagName={feature?.name || ''}
           flagIdentifier={feature?.identifier || ''}
+          gitSyncInitialValues={gitSync.getGitSyncFormMeta().gitSyncInitialValues}
+          gitSyncValidationSchema={gitSync.getGitSyncFormMeta().gitSyncValidationSchema}
           onSubmit={saveVariationChange}
           onClose={() => {
             setIsGitSyncModalOpen(false)

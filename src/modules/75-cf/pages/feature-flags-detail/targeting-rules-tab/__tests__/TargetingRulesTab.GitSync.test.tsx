@@ -13,7 +13,6 @@ import { TestWrapper } from '@common/utils/testUtils'
 
 import * as cfServicesMock from 'services/cf'
 import { FFGitSyncProvider } from '@cf/contexts/ff-git-sync-context/FFGitSyncContext'
-import type { UseGitSync } from '@cf/hooks/useGitSync'
 import type { GitRepo } from 'services/cf'
 import * as useFeatureFlagMock from '@common/hooks/useFeatureFlag'
 import type { TargetingRulesTabProps } from '../TargetingRulesTab'
@@ -24,7 +23,7 @@ import mockFeature from './data/mockFeature'
 
 jest.mock('uuid')
 
-const renderComponent = (props: Partial<TargetingRulesTabProps | UseGitSync> = {}): void => {
+const renderComponent = (props: Partial<TargetingRulesTabProps> = {}): void => {
   render(
     <TestWrapper
       path="/account/:accountId/cf/orgs/:orgIdentifier/projects/:projectIdentifier/feature-flags"

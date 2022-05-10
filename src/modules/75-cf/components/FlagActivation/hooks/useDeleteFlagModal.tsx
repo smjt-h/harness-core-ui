@@ -56,6 +56,8 @@ const useDeleteFlagModal = (props: UseDeleteFlagModalProps): UseDeleteFlagModalR
       <SaveFlagToGitModal
         flagName={featureFlag.name}
         flagIdentifier={featureFlag.identifier}
+        gitSyncInitialValues={gitSync.getGitSyncFormMeta().gitSyncInitialValues}
+        gitSyncValidationSchema={gitSync.getGitSyncFormMeta().gitSyncValidationSchema}
         onSubmit={handleDeleteFlag}
         onClose={() => {
           hideGitModal()

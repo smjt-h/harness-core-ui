@@ -175,6 +175,8 @@ export const useGitSync = (): UseGitSync => {
     <SaveFlagToGitModal
       flagName="test"
       flagIdentifier="test"
+      gitSyncInitialValues={getGitSyncFormMeta().gitSyncInitialValues}
+      gitSyncValidationSchema={getGitSyncFormMeta().gitSyncValidationSchema}
       onSubmit={onSaveGitSyncSubmit}
       onClose={hideGitSyncModal}
     />

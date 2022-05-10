@@ -64,6 +64,8 @@ const FlagOptionsMenuButton = (props: FlagOptionsMenuButtonProps): ReactElement 
       <SaveFlagToGitModal
         flagName={flagData.name}
         flagIdentifier={flagData.identifier}
+        gitSyncInitialValues={gitSync.getGitSyncFormMeta().gitSyncInitialValues}
+        gitSyncValidationSchema={gitSync.getGitSyncFormMeta().gitSyncValidationSchema}
         onSubmit={handleDeleteFlag}
         onClose={() => {
           hideGitModal()

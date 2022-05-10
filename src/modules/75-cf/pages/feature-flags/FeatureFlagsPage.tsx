@@ -318,6 +318,8 @@ export const RenderColumnFlag: React.FC<RenderColumnFlagProps> = ({
           <SaveFlagToGitModal
             flagName={data.name}
             flagIdentifier={data.identifier}
+            gitSyncInitialValues={gitSync.getGitSyncFormMeta().gitSyncInitialValues}
+            gitSyncValidationSchema={gitSync.getGitSyncFormMeta().gitSyncValidationSchema}
             onSubmit={handleFlagToggle}
             onClose={() => {
               setIsSaveToggleModalOpen(false)
