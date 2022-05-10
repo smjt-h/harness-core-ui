@@ -52,7 +52,6 @@ export const DelegateListing: React.FC = () => {
   const { accountId, projectIdentifier, orgIdentifier } = useParams<Record<string, string>>()
   const [showRevoked, setShowRevoked] = useState<boolean>(false)
   const [searchString, setSearchString] = useState<string>('')
-  const [itemCount, setItemCount] = useState<number>(0)
 
   const [page, setPage] = useState(0)
 
@@ -70,12 +69,14 @@ export const DelegateListing: React.FC = () => {
     } as GetDelegateTokensQueryParams
   })
 
-  const pageTokens = useMemo(() => {
+  const filteredTokens = useMemo(() => {
     const tokens = get(tokensResponse, 'resource', [])
-    const searchedTokens = tokens.filter(token => token?.name?.toLowerCase().includes(searchString.toLowerCase()))
-    setItemCount(searchedTokens.length)
-    return searchedTokens.splice(page * delegatesPerPage, (page + 1) * delegatesPerPage)
-  }, [tokensResponse, page, searchString])
+    return tokens.filter(token => token?.name?.toLowerCase().includes(searchString.toLowerCase()))
+  }, [tokensResponse, searchString])
+
+  const pageTokens = useMemo(() => {
+    return filteredTokens.slice(page * delegatesPerPage, (page + 1) * delegatesPerPage)
+  }, [filteredTokens, page])
 
   const getTokens = () => {
     const queryParams = {
@@ -165,6 +166,7 @@ export const DelegateListing: React.FC = () => {
   }
 
   const pagination = useMemo(() => {
+    const itemCount = filteredTokens.length
     return {
       itemCount,
       pageSize: delegatesPerPage,
@@ -172,7 +174,7 @@ export const DelegateListing: React.FC = () => {
       pageIndex: page,
       gotoPage: setPage
     }
-  }, [page, setPage, pageTokens, itemCount])
+  }, [page, setPage, filteredTokens])
 
   const columns: CustomColumn<DelegateTokenDetails>[] = useMemo(
     () => [
@@ -289,7 +291,7 @@ export const DelegateListing: React.FC = () => {
           />
         ) : (
           <Container className={css.delegateListContainer}>
-            {itemCount ? (
+            {filteredTokens.length ? (
               <TableV2<DelegateTokenDetails>
                 sortable={true}
                 className={css.table}
