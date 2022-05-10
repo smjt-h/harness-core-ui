@@ -11,7 +11,7 @@ const useUrlSearchParams = () => {
   const location = useLocation()
   const history = useHistory()
 
-  const getUrlQueryPrams = (additionalParams: Record<string, any> = {}) => {
+  const getUrlQueryPrams = (/* istanbul ignore next*/ additionalParams: Record<string, any> = {}) => {
     const params = new URLSearchParams(location.search)
     Object.keys(additionalParams).forEach(key => {
       const val = additionalParams[key]
@@ -24,7 +24,7 @@ const useUrlSearchParams = () => {
     return params
   }
 
-  const setParamsToUrl = (paramsToSet: Record<string, any> = {}) => {
+  const setParamsToUrl = (/* istanbul ignore next*/ paramsToSet: Record<string, any> = {}) => {
     const params = getUrlQueryPrams(paramsToSet)
     history.replace({ pathname: location.pathname, search: params.toString() })
   }

@@ -62,6 +62,9 @@ describe('url search params tests', () => {
     const { result } = renderHook(() => useUrlSearchParams(), {
       wrapper
     })
-    result.current.setParamsToUrl({ search: '' })
+    const params = result.current.getUrlQueryPrams({ search: '' })
+    const urlSearchParams = new URLSearchParams()
+    urlSearchParams.set('search', 'text')
+    expect(params.get('search')).not.toEqual(urlSearchParams.get('search'))
   })
 })
