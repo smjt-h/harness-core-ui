@@ -5,25 +5,25 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import React, { useEffect, useState } from 'react'
-import { Color, FontVariation } from '@harness/design-system'
-import { Button, ButtonSize, HarnessDocTooltip, Layout, PillToggle, Text, Toggle } from '@harness/uicore'
+import React, {useEffect, useState} from 'react'
+import {Color, FontVariation} from '@harness/design-system'
+import {Button, ButtonSize, Layout, PillToggle, Text, Toggle} from '@harness/uicore'
 import cx from 'classnames'
-import { Classes, Dialog, IDialogProps, NumericInput, Slider } from '@blueprintjs/core'
-import { useModalHook } from '@harness/use-modal'
-import { ButtonVariation, Container } from '@wings-software/uicore'
-import { useParams } from 'react-router-dom'
+import {Classes, Dialog, IDialogProps, NumericInput, Slider} from '@blueprintjs/core'
+import {useModalHook} from '@harness/use-modal'
+import {ButtonVariation, Container} from '@wings-software/uicore'
+import {useParams} from 'react-router-dom'
 import moment from 'moment'
-import { isNaN } from 'lodash-es'
-import { Editions } from '@common/constants/SubscriptionTypes'
-import { acquireCurrentPlan, ffUnitTypes, PlanType } from '@common/components/CostCalculator/CostCalculatorUtils'
-import { ReviewPage } from '@common/components/CostCalculator/ReviewAndBuyPlanUpgrades'
-import type { AccountPathProps } from '@common/interfaces/RouteInterfaces'
-import { useCreateFfSubscription, useRetrieveProductPrices } from 'services/cd-ng/index'
-import { useGetUsageAndLimit } from '@common/hooks/useGetUsageAndLimit'
-import { ModuleName } from 'framework/types/ModuleName'
-import { ContainerSpinner } from '@common/components/ContainerSpinner/ContainerSpinner'
-import { useLicenseStore } from 'framework/LicenseStore/LicenseStoreContext'
+import {isNaN} from 'lodash-es'
+import {Editions} from '@common/constants/SubscriptionTypes'
+import {acquireCurrentPlan, ffUnitTypes, PlanType} from '@common/components/CostCalculator/CostCalculatorUtils'
+import {ReviewPage} from '@common/components/CostCalculator/ReviewAndBuyPlanUpgrades'
+import type {AccountPathProps} from '@common/interfaces/RouteInterfaces'
+import {useCreateFfSubscription, useListSubscriptions, useRetrieveProductPrices} from 'services/cd-ng/index'
+import {useGetUsageAndLimit} from '@common/hooks/useGetUsageAndLimit'
+import {ModuleName} from 'framework/types/ModuleName'
+import {ContainerSpinner} from '@common/components/ContainerSpinner/ContainerSpinner'
+import {useLicenseStore} from 'framework/LicenseStore/LicenseStoreContext'
 import recommendedIcon from './images/recommendedbig.png'
 import usageIcon from './images/usagebig.png'
 import plannedUsageIcon from './images/currentbig.png'
@@ -37,15 +37,6 @@ interface InfoBoxParams {
   using: number
 }
 
-const FormatTooltip = ({ text }: { text: string }) => {
-  return (
-    <Container background={Color.PRIMARY_9} border={{ radius: 8 }}>
-      <Text font={{ size: 'normal' }} color={Color.WHITE} padding={16}>
-        {text}
-      </Text>
-    </Container>
-  )
-}
 
 const InfoBox = ({ title, units, using, recommended, planned }: InfoBoxParams) => {
   const newUnits = units ? units : ''
@@ -64,8 +55,6 @@ const InfoBox = ({ title, units, using, recommended, planned }: InfoBoxParams) =
         >
           {title}
         </Text>
-        <HarnessDocTooltip tooltipId={'dummy'} labelText={'Another dummy'} />
-        {/*<Text rightIcon={'main-info'} rightIconProps={{color: Color.PRIMARY_7, size: 12}} tooltip={FormatTooltip({text: 'Somedummy data'})}/>*/}
       </Layout.Horizontal>
 
       <Layout.Horizontal flex={{ justifyContent: 'space-around' }} padding={{ bottom: 'xlarge' }}>
@@ -130,12 +119,15 @@ interface CostSliderParams {
 }
 
 interface EditionBox {
-  editionType: string
+  editionType: Editions | PlanType
 }
 
 export const GetEditionBox = ({ editionType }: EditionBox) => {
+
+  const backGround = Object.values(Editions).includes(editionType as Editions) ? css.editionBg : css.planBg;
+
   return (
-    <Container className={cx(css.subscriptionType)}>
+    <Container className={cx(css.editionPlanBox, backGround)}>
       <Text font={{ variation: FontVariation.TABLE_HEADERS }} color={Color.WHITE}>
         {editionType.toUpperCase()}
       </Text>
@@ -150,7 +142,7 @@ const CustomProgress = (usage: number, planned: number, recommended: number) => 
     ['recommended', Math.round(recommended * 100)]
   ]
   const sortedPercent = percent.sort((a, b) => a[1] - b[1])
-  sortedPercent[2][1] = sortedPercent[2][1] - sortedPercent[2][1]
+  sortedPercent[2][1] = sortedPercent[2][1] - sortedPercent[1][1]
   sortedPercent[1][1] = sortedPercent[1][1] - sortedPercent[0][1]
   sortedPercent.forEach((x, i: number) => {
     if (x[1] <= 2) {
@@ -297,6 +289,8 @@ export const CostCalculator = (): JSX.Element => {
   })
   const [clientSecret, setClientSecret] = useState<string>('')
   const [reviewClicked, setReviewClicked] = useState<boolean>(false)
+  const asda = useListSubscriptions({ queryParams: {accountIdentifier : accountId, moduleType: 'CF'}})
+  console.log(asda.data?.data);
 
   useEffect(() => {
     if (!reviewClicked) {
@@ -306,7 +300,7 @@ export const CostCalculator = (): JSX.Element => {
       accountId: accountId,
       edition: editionSelected,
       numberOfDevelopers: developerSelected,
-      numberOfMau: mausSelected,
+      numberOfMau: Math.round(mausSelected / 25),
       paymentFreq: paymentFrequencySelected,
       premiumSupport: !premiumSupportDisabled
     })
@@ -394,13 +388,8 @@ export const CostCalculator = (): JSX.Element => {
     return <ContainerSpinner />
   }
 
-  // const currentDate = moment()
   const nextMonthStart = moment().add(1, 'month').startOf('month')
   const nextYearStart = moment().add(1, 'year').startOf('year')
-  // const dayDiffMonth = -currentDate.diff(nextMonthStart, 'days')
-  // const monthDiffYear = -currentDate.diff(nextYearStart, 'month')
-  // const fractionCostMonth = dayDiffMonth / currentDate.daysInMonth()
-  // const fractionCostYear = monthDiffYear / 12
 
   let prorateDate
   // let timeDiff
@@ -466,7 +455,7 @@ export const CostCalculator = (): JSX.Element => {
             >
               {title}
             </Text>
-            <GetEditionBox editionType={edition as string} />
+            <GetEditionBox editionType={edition} />
             <div style={{ width: '100%' }} />
             <Text
               font={{ variation: FontVariation.SMALL }}

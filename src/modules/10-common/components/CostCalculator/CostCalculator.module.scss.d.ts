@@ -15,8 +15,13 @@ declare const styles: {
   readonly currentMauPlan: string
   readonly currentPlanContainer: string
   readonly developerUnitPrice: string
+  readonly dueToday: string
   readonly dueTodayPadding: string
+  readonly dueTodayPrice: string
+  readonly dueTodaySummary: string
   readonly duetodaybox: string
+  readonly editionBg: string
+  readonly editionPlanBox: string
   readonly infocard: string
   readonly infocardItem: string
   readonly infocardItemIcongap: string
@@ -27,14 +32,17 @@ declare const styles: {
   readonly nextPaymentPadding: string
   readonly paymentBox: string
   readonly pillboxgap: string
+  readonly planBg: string
   readonly premiumSupport: string
   readonly pricingdisplayItem: string
+  readonly proratedAmount: string
   readonly reviewContainer: string
+  readonly reviewContainerItem: string
   readonly reviewItems: string
+  readonly reviewProratedDueToday: string
   readonly reviewText: string
   readonly sliderDotContainer: string
   readonly subscriptionReviewContainer: string
-  readonly subscriptionType: string
   readonly subscriptonBox: string
   readonly supportInfoBoxText: string
   readonly tax: string

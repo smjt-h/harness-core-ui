@@ -6,14 +6,14 @@
  */
 
 import React from 'react'
-import { Button, ButtonVariation, Container, Layout, Text } from '@harness/uicore'
+import {Button, ButtonSize, ButtonVariation, Container, Layout, Text} from '@harness/uicore'
 import cx from 'classnames'
-import { FontVariation } from '@harness/design-system'
-import { loadStripe } from '@stripe/stripe-js'
-import { Elements, PaymentElement } from '@stripe/react-stripe-js'
-import type { PlanType } from '@common/components/CostCalculator/CostCalculatorUtils'
-import type { Editions } from '@common/constants/SubscriptionTypes'
-import { GetEditionBox } from '@common/components/CostCalculator/CostCalculator'
+import {FontVariation} from '@harness/design-system'
+import {loadStripe} from '@stripe/stripe-js'
+import {Elements, PaymentElement, useElements, useStripe} from '@stripe/react-stripe-js'
+import type {PlanType} from '@common/components/CostCalculator/CostCalculatorUtils'
+import type {Editions} from '@common/constants/SubscriptionTypes'
+import {GetEditionBox} from '@common/components/CostCalculator/CostCalculator'
 import css from '@common/components/CostCalculator/CostCalculator.module.scss'
 
 interface ReviewPageParams {
@@ -34,12 +34,61 @@ interface ReviewPageParams {
 }
 
 const stripePromise = loadStripe(
-  'pk_live_51IykZ0Iqk5P9Eha39LKDxAE4molfPO3dN5ucM9MqiIBIohtP9F80QNOqxT2YUej1d4N6J6hfCK4uUEmoCQx2tkQ300TajVoKTt'
+  'pk_test_51IykZ0Iqk5P9Eha3uhZUAnFuUWzaLLSa2elWpGBCF7uGpDU5rOcuX8PQew7hI947J9Lefh4qmQniY11HyXcUyBXD00aayEoMmU'
 )
 
 interface JustStripeDataParams {
   clientSecret: string
 }
+
+const DoCheckout = () => {
+
+  const stripe = useStripe();
+  const elements = useElements();
+
+
+  const handleSubmit = async (event: { preventDefault: () => void }) => {
+    // We don't want to let default form submission happen here,
+    // which would refresh the page.
+    event.preventDefault();
+
+    if (!stripe || !elements) {
+      // Stripe.js has not yet loaded.
+      // Make sure to disable form submission until Stripe.js has loaded.
+      return;
+    }
+
+    const result = await stripe.confirmPayment({
+      //`Elements` instance that was used to create the Payment Element
+      elements,
+      confirmParams: {
+        return_url: window.location.href,  //"https://example.com/order/123/complete",
+      },
+    });
+
+    if (result.error) {
+      // Show error to your customer (for example, payment details incomplete)
+      console.log(result.error.message);
+    } else {
+      // Your customer will be redirected to your `return_url`. For some payment
+      // methods like iDEAL, your customer will be redirected to an intermediate
+      // site first to authorize the payment, then redirected to the `return_url`.
+    }
+  };
+
+
+  return (
+      <><Layout.Vertical padding={{left: 'xlarge', right: 'xlarge'}}>
+        <Text font={{variation: FontVariation.H4}}>
+          Payment Information
+        </Text>
+        <PaymentElement/>
+      </Layout.Vertical>
+        <Button intent={'primary'} size={ButtonSize.LARGE} disabled={!stripe} onClick={handleSubmit}>Subscribe and Pay</Button></>
+  )
+
+}
+
 
 const JustStripeData = ({ clientSecret }: JustStripeDataParams) => {
   const options = {
@@ -47,12 +96,11 @@ const JustStripeData = ({ clientSecret }: JustStripeDataParams) => {
     clientSecret: clientSecret
   }
 
+
+
   return (
     <Elements stripe={stripePromise} options={options}>
-      <form>
-        <PaymentElement />
-        <button>Submit</button>
-      </form>
+      <DoCheckout/>
     </Elements>
   )
 }
@@ -86,7 +134,6 @@ export const ReviewPage = ({
       >
         {reviewTitle}
       </Text>
-      <Layout.Horizontal>
         <Layout.Vertical>
           <Container className={cx(css.reviewContainer)}>
             <Layout.Horizontal className={cx(css.currentPlanContainer, css.pillboxgap)}>
@@ -94,16 +141,16 @@ export const ReviewPage = ({
               <GetEditionBox editionType={previousEdition} />
               {previousPlan && <GetEditionBox editionType={previousPlan} />}
             </Layout.Horizontal>
-            <Text font={{ size: 'medium' }} className={cx(css.currentDeveloperPlan, css.reviewText)}>
+            <Text font={{ size: 'normal' }} className={cx(css.currentDeveloperPlan, css.reviewText)}>
               Developers
             </Text>
-            <Text font={{ size: 'medium' }} className={cx(css.currentDeveloperPlan, css.reviewItems)}>
+            <Text font={{ size: 'normal' }} className={cx(css.currentDeveloperPlan, css.reviewItems)}>
               {previousDevelopers}
             </Text>
-            <Text font={{ size: 'medium' }} className={cx(css.currentMauPlan, css.reviewText)}>
+            <Text font={{ size: 'normal' }} className={cx(css.currentMauPlan, css.reviewText)}>
               MAUs
             </Text>
-            <Text font={{ size: 'medium' }} className={cx(css.currentMauPlan, css.reviewItems)}>
+            <Text font={{ size: 'normal' }} className={cx(css.currentMauPlan, css.reviewItems)}>
               {previousMau}
             </Text>
             <Layout.Horizontal className={cx(css.changingText, css.pillboxgap)}>
@@ -112,66 +159,69 @@ export const ReviewPage = ({
               <GetEditionBox editionType={newPlan} />
             </Layout.Horizontal>
 
-            <Text font={{ size: 'medium' }} className={cx(css.changedDevelopers, css.reviewText)}>
+            <Text font={{ size: 'normal' }} className={cx(css.changedDevelopers, css.reviewText)}>
               Developers
             </Text>
-            <Text font={{ size: 'medium' }} className={cx(css.changedDevelopers, css.reviewItems)}>
+            <Text font={{ size: 'normal' }} className={cx(css.changedDevelopers, css.reviewItems)}>
               {newDevelopers}
             </Text>
-            <Text font={{ size: 'medium' }} className={cx(css.developerUnitPrice, css.reviewText)}>
+            <Text font={{ size: 'normal' }} className={cx(css.developerUnitPrice, css.reviewText)}>
               Unit price
             </Text>
-            <Text font={{ size: 'medium' }} className={cx(css.developerUnitPrice, css.reviewItems)}>
+            <Text font={{ size: 'normal' }} className={cx(css.developerUnitPrice, css.reviewItems)}>
               {developerCost / newDevelopers}
             </Text>
-            <Text font={{ size: 'medium' }} className={cx(css.changedMaus, css.reviewText)}>
+            <Text font={{ size: 'normal' }} className={cx(css.changedMaus, css.reviewText)}>
               MAUs
             </Text>
-            <Text font={{ size: 'medium' }} className={cx(css.changedMaus, css.reviewItems)}>
+            <Text font={{ size: 'normal' }} className={cx(css.changedMaus, css.reviewItems)}>
               {newMau}
             </Text>
-            <Text font={{ size: 'medium' }} className={cx(css.mauUnitPrice, css.reviewText)}>
+            <Text font={{ size: 'normal' }} className={cx(css.mauUnitPrice, css.reviewText)}>
               Unit price
             </Text>
-            <Text font={{ size: 'medium' }} className={cx(css.mauUnitPrice, css.reviewItems)}>
+            <Text font={{ size: 'normal' }} className={cx(css.mauUnitPrice, css.reviewItems)}>
               {mauCost / newMau}
             </Text>
-            <Text font={{ size: 'medium' }} className={cx(css.premiumSupport, css.reviewText)}>
+            <Text font={{ size: 'normal' }} className={cx(css.premiumSupport, css.reviewText)}>
               Support
             </Text>
-            <Text font={{ size: 'medium' }} className={cx(css.premiumSupport, css.reviewItems)}>
+            <Text font={{ size: 'normal' }} className={cx(css.premiumSupport, css.reviewItems)}>
               {supportCost}
             </Text>
-            <Text font={{ size: 'medium' }} className={cx(css.tax, css.reviewText)}>
+            <Text font={{ size: 'normal' }} className={cx(css.tax, css.reviewText)}>
               Tax
             </Text>
-            <Text font={{ size: 'medium' }} className={cx(css.tax, css.reviewItems)}>
+            <Text font={{ size: 'normal' }} className={cx(css.tax, css.reviewItems)}>
               {supportCost}
             </Text>
-            <Text font={{ size: 'medium', weight: 'bold' }} className={cx(css.newRate, css.reviewText)}>
+            <Text font={{ size: 'normal', weight: 'bold' }} className={cx(css.newRate, css.reviewText)}>
               New total
             </Text>
-            <Text font={{ size: 'medium', weight: 'bold' }} className={cx(css.newRate, css.reviewItems)}>
+            <Text font={{ size: 'normal', weight: 'bold' }} className={cx(css.newRate, css.reviewItems)}>
+              {total}
+            </Text>
+            <Text font={{ size: 'normal', weight: 'bold' }} className={cx(css.proratedAmount, css.reviewText)}>
+              Prorated amount
+            </Text>
+            <Text font={{ size: 'normal', weight: 'bold' }} className={cx(css.proratedAmount, css.reviewItems)}>
+              {total}
+            </Text>
+          </Container>
+          <Container className={cx(css.reviewProratedDueToday)}>
+            <Text font={{variation: FontVariation.H4}} className={cx(css.dueToday)}>
+              Prorated Amount Due Today
+            </Text>
+            <Text font={{variation: FontVariation.SMALL}} className={cx(css.dueTodaySummary)}>
+              Your plan changes take effect today. Full renewal amount will be charged at your next billing cycle.
+            </Text>
+            <Text font={{variation: FontVariation.H4}} className={cx(css.dueTodayPrice)}>
               {total}
             </Text>
           </Container>
         </Layout.Vertical>
-      </Layout.Horizontal>
     </Layout.Vertical>
         <Layout.Vertical className={cx(css.paymentBox)}>
-          {/*<Text font={{ variation: FontVariation.H4 }} className={cx(css.textwrap)}>*/}
-          {/*  Payment Methods*/}
-          {/*</Text>*/}
-          {/*<Text font={{ size: 'medium' }}>Charge the credit card on file</Text>*/}
-          {/*<Layout.Horizontal>*/}
-          {/*  <Text font={{ variation: FontVariation.BLOCKQUOTE }} background={Color.PRIMARY_6} color={Color.WHITE}>*/}
-          {/*    visa*/}
-          {/*  </Text>*/}
-          {/*  <Text font={{ size: 'medium' }}>****1423</Text>*/}
-          {/*</Layout.Horizontal>*/}
-
-          {/*<div style={{ height: '100%' }} />*/}
-          {/*<Button variation={ButtonVariation.PRIMARY}>Make a Payment</Button>*/}
           <JustStripeData clientSecret={clientSecret} />
         </Layout.Vertical>
         <Layout.Vertical className={cx(css.backButtonBox)} flex={{alignItems: "flex-start", justifyContent: 'left'}}>
