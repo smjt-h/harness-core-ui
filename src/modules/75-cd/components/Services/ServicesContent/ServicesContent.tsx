@@ -8,7 +8,6 @@
 import React, { useEffect } from 'react'
 import { useParams } from 'react-router-dom'
 import moment from 'moment'
-import { defaultTo } from 'lodash-es'
 import { Card, Layout } from '@wings-software/uicore'
 import { Page } from '@common/exports'
 import { GetServiceDetailsQueryParams, useGetServiceDetails } from 'services/cd-ng'
@@ -25,6 +24,7 @@ import { useClearStorage } from '@common/hooks/useClearStorage'
 import { useLocalStorage } from '@common/hooks'
 import type { ModulePathParams, ProjectPathProps } from '@common/interfaces/RouteInterfaces'
 import { useDocumentTitle } from '@common/hooks/useDocumentTitle'
+import { validTimeFormat } from '@cd/pages/dashboard/CDDashboardPage'
 import { useStrings } from 'framework/strings'
 import css from '@cd/components/Services/ServicesContent/ServicesContent.module.scss'
 
@@ -33,7 +33,7 @@ export const ServicesContent: React.FC = () => {
   const { getString } = useStrings()
 
   useClearStorage('tokenServiceDash', 'timeRangeServiceDashboard')
-  const [timeRange, setTimeRange] = useLocalStorage<TimeRangeSelectorProps>(
+  const [timeFilterRange, setTimeFilterRange] = useLocalStorage<TimeRangeSelectorProps>(
     'timeRangeServiceDashboard',
     {
       range: [startOfDay(moment().subtract(1, 'month').add(1, 'day')), startOfDay(moment())],
@@ -42,11 +42,9 @@ export const ServicesContent: React.FC = () => {
     window.sessionStorage
   )
 
-  //convert to valid format if string
-  if (typeof timeRange.range[0] === 'string') {
-    timeRange.range[0] = new Date(defaultTo(timeRange.range[0], ''))
-    timeRange.range[1] = new Date(defaultTo(timeRange.range[1], ''))
-  }
+  const resultTimeFilterRange = validTimeFormat(timeFilterRange)
+  timeFilterRange.range[0] = resultTimeFilterRange.range[0]
+  timeFilterRange.range[1] = resultTimeFilterRange.range[1]
 
   const { accountId, orgIdentifier, projectIdentifier } = useParams<ProjectPathProps & ModulePathParams>()
 
@@ -54,8 +52,8 @@ export const ServicesContent: React.FC = () => {
     accountIdentifier: accountId,
     orgIdentifier,
     projectIdentifier,
-    startTime: timeRange?.range[0]?.getTime() || 0,
-    endTime: timeRange?.range[1]?.getTime() || 0
+    startTime: timeFilterRange?.range[0]?.getTime() || 0,
+    endTime: timeFilterRange?.range[1]?.getTime() || 0
   }
 
   useDocumentTitle([getString('services')])
@@ -98,7 +96,7 @@ export const ServicesContent: React.FC = () => {
   return (
     <Page.Body className={css.pageBody}>
       <Layout.Vertical className={css.container}>
-        <DeploymentsTimeRangeContext.Provider value={{ timeRange, setTimeRange }}>
+        <DeploymentsTimeRangeContext.Provider value={{ timeRange: timeFilterRange, setTimeRange: setTimeFilterRange }}>
           {view === Views.INSIGHT && (
             <Layout.Horizontal margin={{ bottom: 'large' }}>
               <ServiceInstancesWidget {...serviceInstanceProps} />
