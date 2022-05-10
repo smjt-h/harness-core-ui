@@ -16,7 +16,6 @@ import routes from '@common/RouteDefinitions'
 import type { DeleteFeatureFlagQueryParams, Feature, GitSyncErrorResponse } from 'services/cf'
 import { useConfirmAction, useQueryParams } from '@common/hooks'
 import { GitSyncFormValues, GIT_SYNC_ERROR_CODE, UseGitSync } from '@cf/hooks/useGitSync'
-import { AUTO_COMMIT_MESSAGES } from '@cf/constants/GitSyncConstants'
 import { getErrorMessage, showToaster } from '@cf/utils/CFUtils'
 import SaveFlagToGitModal from '../../SaveFlagToGitModal/SaveFlagToGitModal'
 
@@ -71,8 +70,6 @@ const useDeleteFlagModal = (props: UseDeleteFlagModalProps): UseDeleteFlagModalR
     let commitMsg = ''
 
     if (gitSync.isGitSyncEnabled) {
-      const { gitSyncInitialValues } = gitSync.getGitSyncFormMeta(AUTO_COMMIT_MESSAGES.DELETED_FLAG)
-
       if (gitSync.isAutoCommitEnabled) {
         commitMsg = gitSyncInitialValues.gitDetails.commitMsg
       } else {
