@@ -1198,6 +1198,7 @@ const TriggersWizardPage: React.FC = (): JSX.Element => {
                 pipeline: { ...clearRuntimeInput(latestPipeline.pipeline) },
                 template: latestYamlTemplate,
                 originalPipeline: orgPipeline,
+                resolvedPipeline,
                 getString,
                 viewType: StepViewType.TriggerForm,
                 viewTypeMetadata: { isTrigger: true }
