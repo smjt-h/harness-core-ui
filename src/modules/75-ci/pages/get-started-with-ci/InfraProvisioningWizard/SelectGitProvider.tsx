@@ -65,6 +65,8 @@ export interface SelectGitProviderRef {
   setFieldTouched(field: keyof SelectGitProviderInterface & string, isTouched?: boolean, shouldValidate?: boolean): void
   validate: () => boolean
   showValidationErrors: () => void
+  validatedConnectorRef?: string
+  validatedSecretRef?: string
 }
 
 export type SelectGitProviderForwardRef =
@@ -100,18 +102,14 @@ const SelectGitProviderRef = (
   const formikRef = useRef<FormikContext<SelectGitProviderInterface>>()
   const { accountId } = useParams<ProjectPathProps>()
   const [testConnectionErrors, setTestConnectionErrors] = useState<ResponseMessage[]>()
+  const [connectorRef, setConnectorRef] = useState<string>()
+  const [secretRef, setSecretRef] = useState<string>()
   const { mutate: createSecret } = usePostSecret({
     queryParams: { accountIdentifier: accountId }
   })
   const { mutate: createSCMConnector } = useCreateDefaultScmConnector({
     queryParams: { accountIdentifier: accountId }
   })
-
-  // for testing, do not commit
-  useEffect(() => {
-    setGitProvider(AllSaaSGitProviders.filter(p => p.type === 'Github')[0])
-    setAuthMethod(GitAuthenticationMethod.AccessToken)
-  }, [])
 
   useEffect(() => {
     if (authMethod === GitAuthenticationMethod.AccessToken) {
@@ -142,7 +140,9 @@ const SelectGitProviderRef = (
 
   const setForwardRef = ({
     values,
-    setFieldTouched
+    setFieldTouched,
+    validatedConnectorRef,
+    validatedSecretRef
   }: {
     values: SelectGitProviderInterface
     setFieldTouched(
@@ -150,6 +150,8 @@ const SelectGitProviderRef = (
       isTouched?: boolean,
       shouldValidate?: boolean
     ): void
+    validatedConnectorRef?: string
+    validatedSecretRef?: string
   }): void => {
     if (!forwardRef) {
       return
@@ -160,10 +162,12 @@ const SelectGitProviderRef = (
 
     if (values) {
       forwardRef.current = {
-        values: values,
+        values,
         setFieldTouched: setFieldTouched,
         validate: validateGitProviderSetup,
-        showValidationErrors: markFieldsTouchedToShowValidationErrors
+        showValidationErrors: markFieldsTouchedToShowValidationErrors,
+        validatedConnectorRef,
+        validatedSecretRef
       }
     }
   }
@@ -172,10 +176,12 @@ const SelectGitProviderRef = (
     if (formikRef.current?.values && formikRef.current?.setFieldTouched) {
       setForwardRef({
         values: formikRef.current.values,
-        setFieldTouched: formikRef.current.setFieldTouched
+        setFieldTouched: formikRef.current.setFieldTouched,
+        validatedConnectorRef: connectorRef,
+        validatedSecretRef: secretRef
       })
     }
-  })
+  }, [formikRef.current?.values, formikRef.current?.setFieldTouched, connectorRef, secretRef])
 
   const getSecretPayload = React.useCallback((): SecretDTOV2 => {
     const UNIQUE_SECRET_ID = new Date().getTime().toString()
@@ -275,6 +281,14 @@ const SelectGitProviderRef = (
                                 scmCtrData?.connectorValidationResult?.status === Status.SUCCESS
                               ) {
                                 setTestConnectionStatus(TestStatus.SUCCESS)
+                                if (formikRef.current?.values && formikRef.current?.setFieldTouched) {
+                                  setConnectorRef(
+                                    `${ACCOUNT_SCOPE_PREFIX}${scmCtrData?.connectorResponseDTO?.connector?.identifier}`
+                                  )
+                                  setSecretRef(
+                                    `${ACCOUNT_SCOPE_PREFIX}${scmCtrData?.secretResponseWrapper?.secret?.identifier}`
+                                  )
+                                }
                               } else {
                                 setTestConnectionStatus(TestStatus.FAILED)
                               }
@@ -624,10 +638,6 @@ const SelectGitProviderRef = (
       >
         {formikProps => {
           formikRef.current = formikProps
-          setForwardRef({
-            values: formikProps.values,
-            setFieldTouched: formikProps.setFieldTouched
-          })
           return (
             <Form>
               <Container

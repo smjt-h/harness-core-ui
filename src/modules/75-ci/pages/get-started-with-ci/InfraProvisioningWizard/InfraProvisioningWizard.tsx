@@ -114,13 +114,14 @@ export const InfraProvisioningWizard: React.FC<InfraProvisioningWizardProps> = p
   const constructPipelinePayload = React.useCallback(
     (repository: UserRepoResponse): string | undefined => {
       const { name: repoName, namespace } = repository
-      if (!repoName || !namespace) {
+      if (!repoName || !namespace || !selectGitProviderRef.current?.validatedConnectorRef) {
         return
       }
       const payload = { ...DEFAULT_PIPELINE_PAYLOAD }
       payload.pipeline.name = `Build ${repoName}`
       payload.pipeline.projectIdentifier = projectIdentifier
       payload.pipeline.orgIdentifier = orgIdentifier
+      payload.pipeline.properties.ci.codebase.connectorRef = selectGitProviderRef.current?.validatedConnectorRef
       payload.pipeline.properties.ci.codebase.repoName = `${namespace}/${repoName}`
       try {
         return yamlStringify(payload)
@@ -128,7 +129,7 @@ export const InfraProvisioningWizard: React.FC<InfraProvisioningWizardProps> = p
         // Ignore error
       }
     },
-    [projectIdentifier, orgIdentifier]
+    [projectIdentifier, orgIdentifier, selectGitProviderRef.current?.validatedConnectorRef]
   )
 
   const goToSelectGitProviderStepAfterBuildLocationSelection = React.useCallback(() => {
@@ -226,7 +227,13 @@ export const InfraProvisioningWizard: React.FC<InfraProvisioningWizardProps> = p
     [
       InfraProvisiongWizardStepId.SelectRepository,
       {
-        stepRender: <SelectRepository ref={selectRepositoryRef} showError={showError} />,
+        stepRender: (
+          <SelectRepository
+            ref={selectRepositoryRef}
+            showError={showError}
+            validatedConnectorRef={selectGitProviderRef.current?.validatedConnectorRef}
+          />
+        ),
         onClickBack: () => {
           setCurrentWizardStepId(InfraProvisiongWizardStepId.SelectGitProvider)
           updateStepStatus(

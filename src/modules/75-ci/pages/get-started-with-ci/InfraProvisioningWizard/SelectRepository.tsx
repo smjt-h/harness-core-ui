@@ -40,27 +40,46 @@ export type SelectRepositoryForwardRef =
 interface SelectRepositoryProps {
   selectedRepository?: UserRepoResponse
   showError?: boolean
+  validatedConnectorRef?: string
 }
 
 const SelectRepositoryRef = (
   props: SelectRepositoryProps,
   forwardRef: SelectRepositoryForwardRef
 ): React.ReactElement => {
-  const { selectedRepository, showError } = props
+  const { selectedRepository, showError, validatedConnectorRef } = props
   const { getString } = useStrings()
   const [repository, setRepository] = useState<UserRepoResponse | undefined>(selectedRepository)
   const [query, setQuery] = useState<string>('')
   const [repositories, setRepositories] = useState<UserRepoResponse[]>()
   const [loading, setLoading] = useState<boolean>(false)
   const { accountId, projectIdentifier, orgIdentifier } = useParams<ProjectPathProps>()
-  const { data: repoData, loading: fetchingRepositories } = useGetAllUserRepos({
+  const {
+    data: repoData,
+    loading: fetchingRepositories,
+    refetch: fetchRepositories
+  } = useGetAllUserRepos({
     queryParams: {
       accountIdentifier: accountId,
       projectIdentifier,
       orgIdentifier,
-      connectorRef: 'account.github_pat'
-    }
+      connectorRef: ''
+    },
+    lazy: true
   })
+
+  useEffect(() => {
+    if (validatedConnectorRef) {
+      fetchRepositories({
+        queryParams: {
+          accountIdentifier: accountId,
+          projectIdentifier,
+          orgIdentifier,
+          connectorRef: validatedConnectorRef
+        }
+      })
+    }
+  }, [validatedConnectorRef])
 
   useEffect(() => {
     setRepositories(repoData?.data)

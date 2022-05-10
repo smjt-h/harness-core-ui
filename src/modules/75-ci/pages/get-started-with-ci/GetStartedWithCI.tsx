@@ -12,7 +12,7 @@ import { useStrings } from 'framework/strings'
 import type { StringsMap } from 'stringTypes'
 import { InfraProvisioningWizard } from './InfraProvisioningWizard/InfraProvisioningWizard'
 import { InfraProvisioningCarousel } from './InfraProvisioningCarousel/InfraProvisioningCarousel'
-import { InfraProvisiongWizardStepId, ProvisioningStatus } from './InfraProvisioningWizard/Constants'
+import { ProvisioningStatus } from './InfraProvisioningWizard/Constants'
 
 import samplePipelineImg from '../../assets/images/sample-pipeline.svg'
 
@@ -109,7 +109,7 @@ export default function GetStartedWithCI(): React.ReactElement {
   const Divider = <div className={css.divider}></div>
 
   return showWizard ? (
-    <InfraProvisioningWizard lastConfiguredWizardStepId={InfraProvisiongWizardStepId.SelectRepository} />
+    <InfraProvisioningWizard />
   ) : (
     <Layout.Vertical flex>
       <Icon name="ci-main" size={50} className={css.ciIcon} />
