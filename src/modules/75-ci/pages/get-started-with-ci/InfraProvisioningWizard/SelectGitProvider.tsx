@@ -183,6 +183,8 @@ const SelectGitProviderRef = (
     }
   }, [formikRef.current?.values, formikRef.current?.setFieldTouched, connectorRef, secretRef])
 
+  //#region scm validation
+
   const getSecretPayload = React.useCallback((): SecretDTOV2 => {
     const UNIQUE_SECRET_ID = new Date().getTime().toString()
     const gitProviderLabel = gitProvider?.type as string
@@ -340,6 +342,8 @@ const SelectGitProviderRef = (
         return <></>
     }
   }
+
+  //#endregion
 
   //#region form view
 
