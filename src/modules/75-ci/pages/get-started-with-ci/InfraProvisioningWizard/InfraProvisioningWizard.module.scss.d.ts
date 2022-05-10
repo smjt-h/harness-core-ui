@@ -13,12 +13,14 @@ declare const styles: {
   readonly card: string
   readonly comingSoonPill: string
   readonly footer: string
+  readonly genericGitIcon: string
   readonly gitProviderCard: string
   readonly githubIcon: string
   readonly gitlabIcon: string
   readonly hostingToggle: string
   readonly icons: string
   readonly learnMore: string
+  readonly provisioningFailed: string
   readonly repositories: string
   readonly repositoriesWithError: string
   readonly repositoryRow: string

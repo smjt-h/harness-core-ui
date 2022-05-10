@@ -5,7 +5,7 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import { convertVariableFormDataToDTO } from '../VariablesUtils'
+import { convertVariableFormDataToDTO, getValueFromVariableAndValidationType } from '../VariablesUtils'
 import {
   StringFixedFormAccount,
   StringFixedFormOrg,
@@ -26,5 +26,26 @@ describe('Connector Utils', () => {
 
   test('getVaribaleTypeOptions Org String Fixed', () => {
     expect(convertVariableFormDataToDTO(StringFixedFormOrg)).toEqual(StringFixedPayloadOrg)
+  })
+  test('getValueFromVariableAndValidationType throw Error', () => {
+    expect(() =>
+      getValueFromVariableAndValidationType({
+        name: 'name',
+        identifier: 'identifier',
+        type: 'Unsuppported Type',
+        spec: { valueType: 'FIXED' }
+      } as any)
+    ).toThrow('Unsupported Variable type.')
+  })
+
+  test('getValueFromVariableAndValidationType throw Error', () => {
+    expect(() =>
+      getValueFromVariableAndValidationType({
+        name: 'name',
+        identifier: 'identifier',
+        type: 'String',
+        spec: { valueType: 'Unsopported' }
+      } as any)
+    ).toThrow('Unsupported validation type for String variable.')
   })
 })

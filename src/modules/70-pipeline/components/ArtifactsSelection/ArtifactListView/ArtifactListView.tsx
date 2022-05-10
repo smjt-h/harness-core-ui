@@ -32,7 +32,12 @@ import { showConnectorStep } from '../ArtifactUtils'
 import css from '../ArtifactsSelection.module.scss'
 
 const getPrimaryArtifactLocation = (primaryArtifact: PrimaryArtifact): string => {
-  return primaryArtifact.spec.imagePath ?? primaryArtifact.spec.artifactPath ?? primaryArtifact.spec.artifactPathFilter
+  return (
+    primaryArtifact.spec.imagePath ??
+    primaryArtifact.spec.artifactPath ??
+    primaryArtifact.spec.artifactPathFilter ??
+    primaryArtifact.spec.repository
+  )
 }
 
 function ArtifactRepositoryTooltip({
@@ -210,7 +215,9 @@ function ArtifactListView({
                     </div>
                     <div className={css.locationField}>
                       <Text width={340} lineClamp={1} style={{ color: Color.GREY_500 }}>
-                        <span className={css.noWrap}>{sidecar?.spec.imagePath ?? sidecar?.spec.artifactPath}</span>
+                        <span className={css.noWrap}>
+                          {sidecar?.spec.imagePath ?? sidecar?.spec.artifactPath ?? sidecar?.spec.repository}
+                        </span>
                       </Text>
                     </div>
                     {overrideSetIdentifier?.length === 0 && !isReadonly && (

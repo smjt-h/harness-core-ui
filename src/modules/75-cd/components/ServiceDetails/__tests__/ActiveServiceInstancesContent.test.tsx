@@ -110,11 +110,39 @@ jest.spyOn(cdngServices, 'useGetInstanceGrowthTrend').mockImplementation(() => {
   } as any
 })
 describe('ActiveInstance Tab states ', () => {
+  //tab should be defaulted to activeInstances
+  test('when both are not empty - (activeInstance and deployments) ', () => {
+    jest.spyOn(cdngServices, 'useGetEnvArtifactDetailsByServiceId').mockImplementation(() => {
+      return {
+        data: dataMock
+      } as any
+    })
+    jest.spyOn(cdngServices, 'useGetEnvBuildInstanceCount').mockImplementation(() => {
+      return { loading: false, error: false, data: mockData, refetch: jest.fn() } as any
+    })
+    const { getByText } = render(
+      <TestWrapper>
+        <ActiveServiceInstances />
+      </TestWrapper>
+    )
+
+    // activeInstance Tab should be visible
+    expect(getByText('common.instanceLabel')).toBeTruthy()
+  })
+
   //tab should be defaulted to deployments
   test('when activeInstance is empty and deployments is not ', () => {
     jest.spyOn(cdngServices, 'useGetEnvArtifactDetailsByServiceId').mockImplementation(() => {
       return {
         data: dataMock
+      } as any
+    })
+    jest.spyOn(cdngServices, 'useGetEnvBuildInstanceCount').mockImplementation(() => {
+      return {
+        loading: false,
+        error: false,
+        data: noData,
+        refetch: jest.fn()
       } as any
     })
     const { getByText } = render(

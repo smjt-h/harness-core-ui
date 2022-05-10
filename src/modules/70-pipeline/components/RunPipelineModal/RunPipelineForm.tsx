@@ -62,6 +62,11 @@ import { yamlStringify, yamlParse } from '@common/utils/YamlHelperMethods'
 import { PipelineActions } from '@common/constants/TrackingConstants'
 import { useTelemetry } from '@common/hooks/useTelemetry'
 import type { InputSetDTO } from '@pipeline/utils/types'
+import {
+  isCloneCodebaseEnabledAtLeastOneStage,
+  isCodebaseFieldsRuntimeInputs,
+  getPipelineWithoutCodebaseInputs
+} from '@pipeline/utils/CIUtils'
 import { useDeepCompareEffect } from '@common/hooks/useDeepCompareEffect'
 import { clearRuntimeInput, validatePipeline, getErrorsList } from '../PipelineStudio/StepUtil'
 import { PreFlightCheckModal } from '../PreFlightCheckModal/PreFlightCheckModal'
@@ -356,6 +361,18 @@ function RunPipelineFormBasic({
     }
   }, [resolvedPipeline])
 
+  useEffect(() => {
+    // only applied for CI, Not cloned codebase
+    if (
+      formikRef?.current?.values?.template?.templateInputs &&
+      isCodebaseFieldsRuntimeInputs(formikRef.current.values.template.templateInputs as PipelineInfoConfig) &&
+      !isCloneCodebaseEnabledAtLeastOneStage(formikRef.current.values.template.templateInputs as PipelineInfoConfig)
+    ) {
+      const newPipeline = getPipelineWithoutCodebaseInputs(formikRef.current.values)
+      formikRef.current.setValues({ ...formikRef.current.values, ...newPipeline })
+    }
+  }, [formikRef?.current?.values?.template?.templateInputs])
+
   const [showPreflightCheckModal, hidePreflightCheckModal] = useModalHook(() => {
     return (
       <Dialog
@@ -525,7 +542,7 @@ function RunPipelineFormBasic({
       formikRef.current.setValues(inputSet.pipeline)
 
       if (isInputSetApplied) {
-        formikRef.current.validateForm()
+        formikRef.current.validateForm(inputSet.pipeline)
       }
     }
   }, [inputSet, isInputSetApplied])
@@ -569,6 +586,7 @@ function RunPipelineFormBasic({
               pipeline: { ...clearRuntimeInput(latestPipeline.pipeline) },
               template: latestYamlTemplate,
               originalPipeline: orgPipeline,
+              resolvedPipeline,
               getString,
               viewType: StepViewType.DeploymentForm
             }) as any) || formErrors
@@ -597,7 +615,7 @@ function RunPipelineFormBasic({
   }
 
   const formRefDom = React.useRef<HTMLElement | undefined>()
-  const handleValidation = async (values: any): Promise<void> => {
+  const handleValidation = async (values: any) => {
     if (values?.pipeline) {
       values = values.pipeline
     }
@@ -608,7 +626,7 @@ function RunPipelineFormBasic({
       pipeline
     )
     // https://github.com/formium/formik/issues/1392
-    throw runPipelineFormErrors
+    return runPipelineFormErrors
   }
 
   if (shouldShowPageSpinner()) {
@@ -731,7 +749,7 @@ function RunPipelineFormBasic({
                           setRunClicked(true)
                           // _formSubmitCount is custom state var used to track submitCount.
                           // enableReinitialize prop resets the submitCount, so error checks fail.
-                          setFormikState({ _formSubmitCount: 1 } as any)
+                          setFormikState(prevState => ({ ...prevState, _formSubmitCount: 1 }))
                           if (
                             (!selectedInputSets || selectedInputSets.length === 0) &&
                             existingProvide === 'existing'

@@ -19,6 +19,8 @@ declare const styles: {
   readonly hover: string
   readonly instanceCount: string
   readonly instanceTable: string
+  readonly labelStyles: string
+  readonly listStyles: string
   readonly overflow: string
   readonly paddedContainer: string
   readonly pieChartLabelContainerStyles: string

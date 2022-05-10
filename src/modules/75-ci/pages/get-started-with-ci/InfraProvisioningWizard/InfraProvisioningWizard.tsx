@@ -5,11 +5,13 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { useHistory, useParams } from 'react-router-dom'
 import { Container, Button, ButtonVariation, Layout, MultiStepProgressIndicator } from '@harness/uicore'
 import { useStrings } from 'framework/strings'
+import { useSideNavContext } from 'framework/SideNavStore/SideNavContext'
 import routes from '@common/RouteDefinitions'
+import { ResponseSetupStatus, useGetDelegateInstallStatus, useProvisionResourcesForCI } from 'services/cd-ng'
 import { createPipelineV2Promise, ResponsePipelineSaveResponse } from 'services/pipeline-ng'
 import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
 import { DEFAULT_PIPELINE_PAYLOAD } from '@common/utils/CIConstants'
@@ -18,16 +20,20 @@ import { InfraProvisioningCarousel } from '../InfraProvisioningCarousel/InfraPro
 import {
   InfraProvisioningWizardProps,
   WizardStep,
-  HostedByHarnessBuildLocation,
   InfraProvisiongWizardStepId,
   StepStatus,
-  GitAuthenticationMethod
+  GitAuthenticationMethod,
+  BuildLocation,
+  ProvisioningStatus,
+  Hosting
 } from './Constants'
 import { SelectBuildLocation, SelectBuildLocationRef } from './SelectBuildLocation'
 import { SelectGitProvider, SelectGitProviderRef } from './SelectGitProvider'
 import { SelectRepository, SelectRepositoryRef } from './SelectRepository'
 
 import css from './InfraProvisioningWizard.module.scss'
+
+const DELEGATE_INSTALLATION_REFETCH_DELAY = 10000
 
 export const InfraProvisioningWizard: React.FC<InfraProvisioningWizardProps> = props => {
   const { lastConfiguredWizardStepId = InfraProvisiongWizardStepId.SelectBuildLocation } = props
@@ -42,6 +48,44 @@ export const InfraProvisioningWizard: React.FC<InfraProvisioningWizardProps> = p
   const [showError, setShowError] = useState<boolean>(false)
   const { accountId, projectIdentifier, orgIdentifier } = useParams<ProjectPathProps>()
   const history = useHistory()
+  const [startPolling, setStartPolling] = useState<boolean>(false)
+  const [ciProvisioningStatus, setCIProvisioningStatus] = useState<ProvisioningStatus>()
+  const { setShowGetStartedTab } = useSideNavContext()
+
+  const { mutate: startProvisioning } = useProvisionResourcesForCI({
+    queryParams: {
+      accountIdentifier: accountId
+    },
+    requestOptions: {
+      headers: {
+        'content-type': 'application/json'
+      }
+    }
+  })
+
+  const { refetch: fetchProvisioningStatus, data: provisioningStatus } = useGetDelegateInstallStatus({
+    queryParams: {
+      accountIdentifier: accountId
+    },
+    lazy: true
+  })
+
+  useEffect(() => {
+    const { status, data } = provisioningStatus || {}
+    if (status === ProvisioningStatus[ProvisioningStatus.SUCCESS]) {
+      setCIProvisioningStatus(ProvisioningStatus.SUCCESS)
+    }
+    if (data === ProvisioningStatus[ProvisioningStatus.SUCCESS]) {
+      setStartPolling(false)
+    }
+  }, [provisioningStatus])
+
+  useEffect(() => {
+    if (startPolling) {
+      const timerId = setInterval(fetchProvisioningStatus, DELEGATE_INSTALLATION_REFETCH_DELAY)
+      return () => clearInterval(timerId)
+    }
+  })
 
   const [wizardStepStatus, setWizardStepStatus] = useState<Map<InfraProvisiongWizardStepId, StepStatus>>(
     new Map<InfraProvisiongWizardStepId, StepStatus>([
@@ -72,16 +116,48 @@ export const InfraProvisioningWizard: React.FC<InfraProvisioningWizardProps> = p
     }
   }, [projectIdentifier, orgIdentifier])
 
+  const goToSelectGitProviderStepAfterBuildLocationSelection = React.useCallback(() => {
+    updateStepStatus([InfraProvisiongWizardStepId.SelectBuildLocation], StepStatus.Success)
+    updateStepStatus([InfraProvisiongWizardStepId.SelectGitProvider], StepStatus.InProgress)
+    setCurrentWizardStepId(InfraProvisiongWizardStepId.SelectGitProvider)
+  }, [])
+
   const WizardSteps: Map<InfraProvisiongWizardStepId, WizardStep> = new Map([
     [
       InfraProvisiongWizardStepId.SelectBuildLocation,
       {
         stepRender: (
-          <SelectBuildLocation ref={selectBuildLocationRef} selectedBuildLocation={HostedByHarnessBuildLocation} />
+          <SelectBuildLocation
+            ref={selectBuildLocationRef}
+            selectedHosting={selectBuildLocationRef.current?.hosting}
+            selectedBuildLocation={selectBuildLocationRef.current?.buildLocation}
+            provisioningStatus={ciProvisioningStatus}
+          />
         ),
         onClickNext: () => {
-          updateStepStatus([InfraProvisiongWizardStepId.SelectBuildLocation], StepStatus.InProgress)
-          setShowDialog(true)
+          if (selectBuildLocationRef.current?.buildLocation.location === BuildLocation.HostedByHarness) {
+            setShowDialog(true)
+            setCIProvisioningStatus(ProvisioningStatus.IN_PROGRESS)
+            updateStepStatus([InfraProvisiongWizardStepId.SelectBuildLocation], StepStatus.InProgress)
+            startProvisioning()
+              .then((startProvisioningResponse: ResponseSetupStatus) => {
+                const { status: startProvisioningStatus, data: startProvisioningData } = startProvisioningResponse
+                if (
+                  startProvisioningStatus === ProvisioningStatus[ProvisioningStatus.SUCCESS] &&
+                  startProvisioningData === ProvisioningStatus[ProvisioningStatus.SUCCESS]
+                ) {
+                  fetchProvisioningStatus()
+                  setStartPolling(true)
+                } else {
+                  setCIProvisioningStatus(ProvisioningStatus.FAILURE)
+                }
+              })
+              .catch(() => {
+                setCIProvisioningStatus(ProvisioningStatus.FAILURE)
+              })
+          } else {
+            goToSelectGitProviderStepAfterBuildLocationSelection()
+          }
         },
         stepFooterLabel: 'ci.getStartedWithCI.configInfra'
       }
@@ -112,8 +188,9 @@ export const InfraProvisioningWizard: React.FC<InfraProvisioningWizardProps> = p
             setFieldTouched?.('accessToken', true)
           }
           if (
-            (gitAuthenticationMethod === GitAuthenticationMethod.AccessToken && accessToken && gitProvider) ||
-            (gitAuthenticationMethod === GitAuthenticationMethod.OAuth && gitProvider)
+            selectBuildLocationRef.current?.hosting === Hosting.SaaS &&
+            ((gitAuthenticationMethod === GitAuthenticationMethod.AccessToken && accessToken && gitProvider) ||
+              (gitAuthenticationMethod === GitAuthenticationMethod.OAuth && gitProvider))
           ) {
             setCurrentWizardStepId(InfraProvisiongWizardStepId.SelectRepository)
             updateStepStatus([InfraProvisiongWizardStepId.SelectGitProvider], StepStatus.Success)
@@ -161,6 +238,7 @@ export const InfraProvisioningWizard: React.FC<InfraProvisioningWizardProps> = p
                 setDisable(false)
                 const { status, data } = createPipelineResponse
                 if (status === 'SUCCESS' && data?.identifier) {
+                  setShowGetStartedTab(false)
                   history.push(
                     routes.toPipelineStudio({
                       accountId: accountId,
@@ -216,12 +294,14 @@ export const InfraProvisioningWizard: React.FC<InfraProvisioningWizardProps> = p
       {showDialog ? (
         <InfraProvisioningCarousel
           show={showDialog}
-          provisioningStatus="IN_PROGRESS"
+          provisioningStatus={ciProvisioningStatus}
           onClose={() => {
             setShowDialog(false)
-            updateStepStatus([InfraProvisiongWizardStepId.SelectBuildLocation], StepStatus.Success)
-            updateStepStatus([InfraProvisiongWizardStepId.SelectGitProvider], StepStatus.InProgress)
-            setCurrentWizardStepId(InfraProvisiongWizardStepId.SelectGitProvider)
+            if (ciProvisioningStatus === ProvisioningStatus.SUCCESS) {
+              goToSelectGitProviderStepAfterBuildLocationSelection()
+            } else if (ciProvisioningStatus === ProvisioningStatus.FAILURE) {
+              updateStepStatus([InfraProvisiongWizardStepId.SelectBuildLocation], StepStatus.Failed)
+            }
           }}
         />
       ) : null}

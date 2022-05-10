@@ -5,7 +5,7 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import React, { useState, useEffect, useMemo } from 'react'
+import React, { useState, useEffect, useMemo, useRef } from 'react'
 import type { FormikErrors, FormikProps } from 'formik'
 import { useHistory, useParams } from 'react-router-dom'
 import {
@@ -41,6 +41,12 @@ import {
   NGTriggerSourceV2,
   useGetSchemaYaml
 } from 'services/pipeline-ng'
+import {
+  CodebaseTypes,
+  isCloneCodebaseEnabledAtLeastOneStage,
+  isCodebaseFieldsRuntimeInputs,
+  getPipelineWithoutCodebaseInputs
+} from '@pipeline/utils/CIUtils'
 import { useStrings } from 'framework/strings'
 import { usePermission } from '@rbac/hooks/usePermission'
 import { PermissionIdentifier } from '@rbac/interfaces/PermissionIdentifier'
@@ -235,7 +241,8 @@ const getArtifactManifestTriggerYaml = ({
   } = val
 
   replaceRunTimeVariables({ manifestType, artifactType, selectedArtifact })
-  let newPipelineObj = { ...pipelineRuntimeInput }
+  let newPipeline = cloneDeep(pipelineRuntimeInput)
+  const newPipelineObj = newPipeline.template ? newPipeline.template.templateInputs : newPipeline
   const filteredStage = newPipelineObj.stages?.find((item: any) => item.stage?.identifier === stageId)
   if (manifestType) {
     replaceStageManifests({ filteredStage, selectedArtifact })
@@ -244,11 +251,14 @@ const getArtifactManifestTriggerYaml = ({
   }
 
   // Manually clear null or undefined artifact identifier
-  newPipelineObj = clearUndefinedArtifactId(newPipelineObj)
+  newPipeline = clearUndefinedArtifactId(newPipeline)
 
+  // For CI Only with CLone Codebase Not Enabled
+  // if()
+  // getInputYamlWithoutCodebaseInputs
   // actions will be required thru validation
   const stringifyPipelineRuntimeInput = yamlStringify({
-    pipeline: clearNullUndefined(newPipelineObj)
+    pipeline: clearNullUndefined(newPipeline)
   })
 
   // clears any runtime inputs
@@ -1143,6 +1153,19 @@ const TriggersWizardPage: React.FC = (): JSX.Element => {
   }
 
   const [formErrors, setFormErrors] = useState<FormikErrors<FlatValidFormikValuesInterface>>({})
+  const formikRef = useRef<FormikProps<any>>()
+
+  // Fix https://harness.atlassian.net/browse/CI-3411
+  useEffect(() => {
+    const formik = formikRef?.current
+
+    if (Object.keys(formErrors || {}).length > 0) {
+      Object.entries(flattenKeys(formErrors)).forEach(([fieldName, fieldError]) => {
+        formik?.setFieldTouched(fieldName, true, true)
+        setTimeout(() => formik?.setFieldError(fieldName, fieldError), 0)
+      })
+    }
+  }, [formErrors, formikRef])
 
   const yamlTemplate = useMemo(() => {
     return parse(defaultTo(template?.data?.inputSetTemplateYaml, ''))?.pipeline
@@ -1176,7 +1199,8 @@ const TriggersWizardPage: React.FC = (): JSX.Element => {
                 template: latestYamlTemplate,
                 originalPipeline: orgPipeline,
                 getString,
-                viewType: StepViewType.TriggerForm
+                viewType: StepViewType.TriggerForm,
+                viewTypeMetadata: { isTrigger: true }
               }) as any) || formErrors
             resolve(validatedErrors)
           } catch (e) {
@@ -1277,9 +1301,17 @@ const TriggersWizardPage: React.FC = (): JSX.Element => {
   }
 
   const getInitialValues = (triggerType: NGTriggerSourceV2['type']): FlatInitialValuesInterface | any => {
-    if (triggerType === TriggerTypes.WEBHOOK) {
-      const newPipeline: any = { ...(currentPipeline?.pipeline || {}) }
+    let newPipeline: any = { ...(currentPipeline?.pipeline || {}) }
+    // only applied for CI, Not cloned codebase
+    if (
+      newPipeline?.template?.templateInputs &&
+      isCodebaseFieldsRuntimeInputs(newPipeline.template.templateInputs as PipelineInfoConfig) &&
+      !isCloneCodebaseEnabledAtLeastOneStage(newPipeline.template.templateInputs as PipelineInfoConfig)
+    ) {
+      newPipeline = getPipelineWithoutCodebaseInputs(newPipeline)
+    }
 
+    if (triggerType === TriggerTypes.WEBHOOK) {
       return {
         triggerType: triggerTypeOnNew,
         sourceRepo: sourceRepoOnNew,
@@ -1297,7 +1329,7 @@ const TriggersWizardPage: React.FC = (): JSX.Element => {
         identifier: '',
         tags: {},
         selectedScheduleTab: scheduleTabsId.MINUTES,
-        pipeline: currentPipeline?.pipeline,
+        pipeline: newPipeline,
         originalPipeline,
         resolvedPipeline,
         ...getDefaultExpressionBreakdownValues(scheduleTabsId.MINUTES)
@@ -1311,7 +1343,7 @@ const TriggersWizardPage: React.FC = (): JSX.Element => {
         tags: {},
         artifactType,
         manifestType,
-        pipeline: currentPipeline?.pipeline,
+        pipeline: newPipeline,
         originalPipeline,
         resolvedPipeline,
         inputSetTemplateYamlObj,
@@ -1342,8 +1374,19 @@ const TriggersWizardPage: React.FC = (): JSX.Element => {
           !onEditInitialValues.resolvedPipeline))
     ) {
       try {
-        const newOriginalPipeline = parse(yamlPipeline)?.pipeline
-        const newResolvedPipeline = parse(resolvedYamlPipeline)?.pipeline
+        let newOriginalPipeline = parse(yamlPipeline)?.pipeline
+        let newResolvedPipeline = parse(resolvedYamlPipeline)?.pipeline
+        // only applied for CI, Not cloned codebase
+        if (
+          newOriginalPipeline?.template?.templateInputs &&
+          isCodebaseFieldsRuntimeInputs(newOriginalPipeline.template.templateInputs as PipelineInfoConfig) &&
+          !isCloneCodebaseEnabledAtLeastOneStage(newOriginalPipeline.template.templateInputs as PipelineInfoConfig)
+        ) {
+          const newOriginalPipelineWithoutCodebaseInputs = getPipelineWithoutCodebaseInputs(newOriginalPipeline)
+          const newResolvedPipelineWithoutCodebaseInputs = getPipelineWithoutCodebaseInputs(newResolvedPipeline)
+          newOriginalPipeline = newOriginalPipelineWithoutCodebaseInputs
+          newResolvedPipeline = newResolvedPipelineWithoutCodebaseInputs
+        }
         const additionalValues: {
           inputSetTemplateYamlObj?: {
             pipeline: PipelineInfoConfig | Record<string, never>
@@ -1588,13 +1631,14 @@ const TriggersWizardPage: React.FC = (): JSX.Element => {
       | FlatValidScheduleFormikValuesInterface
   ): FormikErrors<Record<string, any>> => {
     const pipeline = get(formData, 'resolvedPipeline') as PipelineInfoConfig
-    const isCloneCodebaseEnabledAtLeastAtOneStage = pipeline?.stages?.some(stage =>
-      get(stage, 'stage.spec.cloneCodebase')
-    )
+    const isCloneCodebaseEnabledAtLeastAtOneStage = isCloneCodebaseEnabledAtLeastOneStage(pipeline)
     if (!isCloneCodebaseEnabledAtLeastAtOneStage) {
       return {}
     }
-    if (isEmpty(get(formData, 'pipeline.properties.ci.codebase.build.type'))) {
+    if (
+      isEmpty(get(formData, 'pipeline.properties.ci.codebase.build.type')) &&
+      isEmpty(get(formData, 'pipeline.template.templateInputs.properties.ci.codebase.build.type'))
+    ) {
       return {
         'pipeline.properties.ci.codebase.build.type': getString(
           'pipeline.failureStrategies.validation.ciCodebaseRequired'
@@ -1602,19 +1646,28 @@ const TriggersWizardPage: React.FC = (): JSX.Element => {
       }
     }
     const ciCodeBaseType = get(formData, 'pipeline.properties.ci.codebase.build.type')
-    if (ciCodeBaseType === 'branch' && isEmpty(get(formData, 'pipeline.properties.ci.codebase.build.spec.branch'))) {
+    if (
+      ciCodeBaseType === CodebaseTypes.branch &&
+      isEmpty(get(formData, 'pipeline.properties.ci.codebase.build.spec.branch'))
+    ) {
       return {
         'pipeline.properties.ci.codebase.build.spec.branch': getString(
           'pipeline.failureStrategies.validation.gitBranchRequired'
         )
       }
-    } else if (ciCodeBaseType === 'tag' && isEmpty(get(formData, 'pipeline.properties.ci.codebase.build.spec.tag'))) {
+    } else if (
+      ciCodeBaseType === CodebaseTypes.tag &&
+      isEmpty(get(formData, 'pipeline.properties.ci.codebase.build.spec.tag'))
+    ) {
       return {
         'pipeline.properties.ci.codebase.build.spec.tag': getString(
           'pipeline.failureStrategies.validation.gitTagRequired'
         )
       }
-    } else if (ciCodeBaseType === 'PR' && isEmpty(get(formData, 'pipeline.properties.ci.codebase.build.spec.number'))) {
+    } else if (
+      ciCodeBaseType === CodebaseTypes.PR &&
+      isEmpty(get(formData, 'pipeline.properties.ci.codebase.build.spec.number'))
+    ) {
       return {
         'pipeline.properties.ci.codebase.build.spec.number': getString(
           'pipeline.failureStrategies.validation.gitPRRequired'
@@ -1655,6 +1708,8 @@ const TriggersWizardPage: React.FC = (): JSX.Element => {
     formikProps: FormikProps<any>
     latestYaml?: any // validate from YAML view
   }): Promise<FormikErrors<FlatValidWebhookFormikValuesInterface>> => {
+    if (!formikProps) return {}
+    formikRef.current = formikProps
     const { values, setErrors, setSubmitting } = formikProps
     let latestPipelineFromYamlView
     const latestPipeline = {
@@ -1864,4 +1919,18 @@ const TriggersWizardPage: React.FC = (): JSX.Element => {
     </>
   )
 }
+
+// @see https://github.com/lodash/lodash/issues/2240#issuecomment-995160298
+function flattenKeys(object: any = {}, initialPathPrefix = 'pipeline'): Record<string, any> {
+  if (!object || typeof object !== 'object') {
+    return [{ [initialPathPrefix]: object }]
+  }
+
+  const prefix = initialPathPrefix ? (Array.isArray(object) ? initialPathPrefix : `${initialPathPrefix}.`) : ''
+
+  return Object.keys(object)
+    .flatMap(key => flattenKeys(object[key], Array.isArray(object) ? `${prefix}[${key}]` : `${prefix}${key}`))
+    .reduce((acc, path) => ({ ...acc, ...path }), {})
+}
+
 export default TriggersWizardPage

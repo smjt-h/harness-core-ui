@@ -5,7 +5,7 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import React, { useState } from 'react'
+import React from 'react'
 import { Classes, Dialog, IDialogProps, Intent } from '@blueprintjs/core'
 import cx from 'classnames'
 import {
@@ -25,7 +25,7 @@ import {
 import { useModalHook } from '@harness/use-modal'
 import { useHistory, useParams, matchPath } from 'react-router-dom'
 import { parse } from 'yaml'
-import { defaultTo, isEmpty, isEqual, merge, omit, set } from 'lodash-es'
+import { defaultTo, isEmpty, isEqual, merge, omit } from 'lodash-es'
 import produce from 'immer'
 import type { PipelineInfoConfig } from 'services/cd-ng'
 import { useStrings } from 'framework/strings'
@@ -47,31 +47,26 @@ import { PermissionIdentifier } from '@rbac/interfaces/PermissionIdentifier'
 import routes from '@common/RouteDefinitions'
 import {
   EntityGitDetails,
-  GovernanceMetadata,
   useGetTemplateFromPipeline,
   InputSetSummaryResponse,
   useGetInputsetYaml
 } from 'services/pipeline-ng'
-import { useGlobalEventListener, useMutateAsGet, useQueryParams, useUpdateQueryParams } from '@common/hooks'
+import { useMutateAsGet, useQueryParams, useUpdateQueryParams } from '@common/hooks'
 import type { GitFilterScope } from '@common/components/GitFilters/GitFilters'
 import { TagsPopover } from '@common/components'
 import type { IGitContextFormProps } from '@common/components/GitContextForm/GitContextForm'
 import { useDocumentTitle } from '@common/hooks/useDocumentTitle'
 import { PipelineVariablesContextProvider } from '@pipeline/components/PipelineVariablesContext/PipelineVariablesContext'
-import { useFeatureFlags } from '@common/hooks/useFeatureFlag'
 import GenericErrorHandler from '@common/pages/GenericErrorHandler/GenericErrorHandler'
 import NoEntityFound from '@pipeline/pages/utils/NoEntityFound/NoEntityFound'
 import { getFeaturePropsForRunPipelineButton } from '@pipeline/utils/runPipelineUtils'
 import { RunPipelineForm } from '@pipeline/components/RunPipelineModal/RunPipelineForm'
-import { EvaluationModal } from '@governance/EvaluationModal'
 import { createTemplate } from '@pipeline/utils/templateUtils'
-import { getStepFromStage } from '@pipeline/components/PipelineStudio/StepUtil'
-import { updateStepWithinStage } from '@pipeline/components/PipelineStudio/RightDrawer/RightDrawer'
-import type { TemplateSummaryResponse } from 'services/template-ng'
 import StageBuilder from '@pipeline/components/PipelineStudio/StageBuilder/StageBuilder'
 import { TemplatePipelineBuilder } from '@pipeline/components/PipelineStudio/PipelineTemplateBuilder/TemplatePipelineBuilder/TemplatePipelineBuilder'
 import { SavePipelinePopover } from '@pipeline/components/PipelineStudio/SavePipelinePopover/SavePipelinePopover'
 import { useTemplateSelector } from '@pipeline/utils/useTemplateSelector'
+import { useSaveTemplateListener } from '@pipeline/components/PipelineStudio/hooks/useSaveTemplateListener'
 import { usePipelineContext } from '../PipelineContext/PipelineContext'
 import CreatePipelines from '../CreateModal/PipelineCreate'
 import { DefaultNewPipelineId, DrawerTypes } from '../PipelineContext/PipelineActions'
@@ -109,6 +104,7 @@ const runModalProps: IDialogProps = {
 }
 
 export interface PipelineCanvasProps {
+  // diagram?: DiagramFactory
   toPipelineStudio: PathFn<PipelineType<PipelinePathProps> & PipelineStudioQueryParams>
   toPipelineDetail: PathFn<PipelineType<PipelinePathProps>>
   toPipelineList: PathFn<PipelineType<ProjectPathProps>>
@@ -120,18 +116,14 @@ export interface PipelineCanvasProps {
 }
 
 export function PipelineCanvas({
+  // diagram,
   toPipelineList,
   toPipelineStudio,
   getOtherModal
-}: PipelineCanvasProps): React.ReactElement {
+}: PipelineCanvasProps): JSX.Element {
   const { isGitSyncEnabled } = React.useContext(AppStoreContext)
   const {
     state,
-    state: {
-      selectionState: { selectedStageId },
-      templateTypes,
-      pipelineView: { drawerData }
-    },
     updatePipeline,
     updateGitDetails,
     deletePipelineCache,
@@ -139,12 +131,9 @@ export function PipelineCanvas({
     view,
     setView,
     isReadonly,
-    updateStage,
     updatePipelineView,
     setSelectedStageId,
-    setSelectedSectionId,
-    getStageFromPipeline,
-    setTemplateTypes
+    setSelectedSectionId
   } = usePipelineContext()
   const {
     repoIdentifier,
@@ -222,13 +211,8 @@ export function PipelineCanvas({
   const [isYamlError, setYamlError] = React.useState(false)
   const [blockNavigation, setBlockNavigation] = React.useState(false)
   const [selectedBranch, setSelectedBranch] = React.useState(branch || '')
-  const [savedTemplate, setSavedTemplate] = React.useState<TemplateSummaryResponse>()
   const [disableVisualView, setDisableVisualView] = React.useState(entityValidityDetails?.valid === false)
-  const { OPA_PIPELINE_GOVERNANCE } = useFeatureFlags()
-  const [governanceMetadata, setGovernanceMetadata] = useState<GovernanceMetadata>()
   const [useTemplate, setUseTemplate] = React.useState<boolean>(false)
-  const shouldShowGovernanceEvaluation =
-    OPA_PIPELINE_GOVERNANCE && (governanceMetadata?.status === 'error' || governanceMetadata?.status === 'warning')
 
   const { openDialog: openUnsavedChangesDialog } = useConfirmationDialog({
     cancelButtonText: getString('cancel'),
@@ -285,74 +269,7 @@ export function PipelineCanvas({
     return true
   }
 
-  useGlobalEventListener('TEMPLATE_SAVED', event => {
-    const { detail: newTemplate } = event
-    if (newTemplate) {
-      setSavedTemplate(newTemplate)
-      window.requestAnimationFrame(() => {
-        openUseTemplateDialog()
-      })
-    }
-  })
-
-  const { openDialog: openUseTemplateDialog } = useConfirmationDialog({
-    intent: Intent.WARNING,
-    cancelButtonText: getString('no'),
-    contentText: getString('pipeline.templateSaved', {
-      name: savedTemplate?.name,
-      entity: savedTemplate?.templateEntityType?.toLowerCase()
-    }),
-    titleText: `Use Template ${savedTemplate?.name}?`,
-    confirmButtonText: getString('yes'),
-    onCloseDialog: async isConfirmed => {
-      if (isConfirmed) {
-        onUseTemplateConfirm()
-      }
-    }
-  })
-
-  const onUseTemplateConfirm = async () => {
-    if (savedTemplate?.templateEntityType === 'Pipeline') {
-      const processNode = createTemplate(pipeline, savedTemplate)
-      await updatePipeline(processNode)
-    } else if (selectedStageId) {
-      const { stage: selectedStage } = getStageFromPipeline(selectedStageId)
-      if (savedTemplate?.templateEntityType === 'Stage') {
-        if (selectedStage?.stage) {
-          const processNode = createTemplate(selectedStage.stage, savedTemplate)
-          await updateStage(processNode)
-        }
-      } else if (savedTemplate?.templateEntityType === 'Step') {
-        const selectedStepId = drawerData.data?.stepConfig?.node.identifier
-        if (selectedStepId) {
-          const selectedStep = getStepFromStage(selectedStepId, [
-            ...defaultTo(selectedStage?.stage?.spec?.execution?.steps, []),
-            ...defaultTo(selectedStage?.stage?.spec?.execution?.rollbackSteps, [])
-          ])
-          if (selectedStep?.step) {
-            const processNode = createTemplate(selectedStep?.step, savedTemplate)
-            const newPipelineView = produce(pipelineView, draft => {
-              set(draft, 'drawerData.data.stepConfig.node', processNode)
-            })
-            updatePipelineView(newPipelineView)
-            const stageData = produce(selectedStage, draft => {
-              if (draft?.stage?.spec?.execution) {
-                updateStepWithinStage(draft.stage.spec.execution, selectedStepId, processNode as any)
-              }
-            })
-            if (stageData?.stage) {
-              await updateStage(stageData.stage)
-            }
-            drawerData.data?.stepConfig?.onUpdate?.(processNode)
-          }
-        }
-      }
-      if (savedTemplate?.identifier && savedTemplate?.childType) {
-        templateTypes[savedTemplate.identifier] = savedTemplate.childType
-        setTemplateTypes(templateTypes)
-      }
-    }
-  }
+  useSaveTemplateListener()
 
   const [showModal, hideModal] = useModalHook(() => {
     if (getOtherModal) {
@@ -514,17 +431,16 @@ export function PipelineCanvas({
   }
 
   React.useEffect(() => {
-    if (
-      pipeline.identifier !== DefaultNewPipelineId &&
-      useTemplate &&
-      !pipeline.template &&
-      (!isGitSyncEnabled || !isEmpty(gitDetails))
-    ) {
-      getPipelineTemplate().catch(_error => {
-        onCloseCreate()
-      })
+    if (useTemplate && (!isGitSyncEnabled || !isEmpty(gitDetails))) {
+      getPipelineTemplate()
+        .catch(_error => {
+          onCloseCreate()
+        })
+        .finally(() => {
+          setUseTemplate(false)
+        })
     }
-  }, [pipeline.identifier, gitDetails, useTemplate])
+  }, [useTemplate, gitDetails])
 
   function handleViewChange(newView: SelectedView): boolean {
     if (newView === view) return false
@@ -833,11 +749,7 @@ export function PipelineCanvas({
                   </div>
                 )}
                 {isUpdated && !isReadonly && <div className={css.tagRender}>{getString('unsavedChanges')}</div>}
-                <SavePipelinePopover
-                  toPipelineStudio={toPipelineStudio}
-                  setGovernanceMetadata={setGovernanceMetadata}
-                  isValidYaml={isValidYaml}
-                />
+                <SavePipelinePopover toPipelineStudio={toPipelineStudio} isValidYaml={isValidYaml} />
                 {pipelineIdentifier !== DefaultNewPipelineId && !isReadonly && (
                   <Button
                     disabled={!isUpdated}
@@ -888,13 +800,6 @@ export function PipelineCanvas({
           </div>
         </div>
         {isYaml ? <PipelineYamlView /> : pipeline.template ? <TemplatePipelineBuilder /> : <StageBuilder />}
-        {shouldShowGovernanceEvaluation && (
-          <EvaluationModal
-            accountId={accountId}
-            metadata={governanceMetadata}
-            headingErrorMessage={getString('pipeline.policyEvaluations.failedToSavePipeline')}
-          />
-        )}
       </div>
       <RightBar />
     </PipelineVariablesContextProvider>

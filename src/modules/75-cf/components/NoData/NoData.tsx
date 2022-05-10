@@ -6,7 +6,7 @@
  */
 
 import React, { ReactNode } from 'react'
-import { Button, ButtonProps, Heading, Layout, Text } from '@wings-software/uicore'
+import { Button, ButtonProps, ButtonVariation, Container, Heading, Layout, Text } from '@wings-software/uicore'
 import type { LayoutProps } from '@wings-software/uicore/dist/layouts/Layout'
 import { Color, FontVariation } from '@harness/design-system'
 import css from './NoData.module.scss'
@@ -33,23 +33,33 @@ export const NoData: React.FC<NoDataProps> = ({
   ...props
 }) => {
   return (
-    <Layout.Vertical className={css.centerAlignItems} spacing="xxlarge" width={width || 470} {...props}>
-      <img src={imageURL} width={320} height={220} />
-      <Heading
-        className={css.centerAlign}
-        level={2}
-        font={{ variation: FontVariation.H4 }}
-        width={546}
-        color={Color.GREY_600}
-      >
-        {message}
-      </Heading>
-      {description && (
-        <Text className={css.centerAlign} font={{ variation: FontVariation.BODY1 }} width={546} color={Color.GREY_600}>
-          {description}
-        </Text>
+    <Layout.Vertical flex={{ justifyContent: 'center' }} spacing="xxxlarge" width={width || 540} {...props}>
+      <img src={imageURL} width={320} height={220} alt="" data-testid="nodata-image" />
+
+      <Container>
+        <Layout.Vertical spacing="small">
+          <Heading className={css.centerAlign} level={2} font={{ variation: FontVariation.H4 }} color={Color.GREY_600}>
+            {message}
+          </Heading>
+
+          {description && (
+            <Text className={css.centerAlign} font={{ variation: FontVariation.BODY1 }} color={Color.GREY_600}>
+              {description}
+            </Text>
+          )}
+        </Layout.Vertical>
+      </Container>
+
+      {buttonText && (
+        <Button
+          intent="primary"
+          variation={ButtonVariation.PRIMARY}
+          text={buttonText}
+          width={buttonWidth}
+          onClick={onClick}
+        />
       )}
-      {buttonText ? <Button intent="primary" text={buttonText} width={buttonWidth} onClick={onClick} /> : null}
+
       {children}
     </Layout.Vertical>
   )

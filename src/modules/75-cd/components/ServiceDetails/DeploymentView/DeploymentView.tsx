@@ -96,13 +96,13 @@ export const Deployments: React.FC = () => {
       {
         Header: getString('environment'),
         id: 'envName',
-        width: '30%',
+        width: '35%',
         Cell: RenderEnvironment
       },
       {
         Header: getString('cd.artifactVersion'),
         id: 'artifactList',
-        width: '70%',
+        width: '65%',
         Cell: RenderArtifactVersion
       }
     ]

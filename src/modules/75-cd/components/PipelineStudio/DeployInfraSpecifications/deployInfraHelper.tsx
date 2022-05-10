@@ -97,6 +97,24 @@ export const getInfrastructureDefaultValue = (
         allowSimultaneousDeployments
       }
     }
+    case InfraDeploymentType.KubernetesAzure: {
+      const connectorRef = infrastructure?.spec?.connectorRef
+      const subscriptionId = infrastructure?.spec?.subscriptionId
+      const resourceGroup = infrastructure?.spec?.resourceGroup
+      const cluster = infrastructure?.spec?.cluster
+      const namespace = infrastructure?.spec?.namespace
+      const releaseName = infrastructure?.spec?.releaseName ?? DEFAULT_RELEASE_NAME
+
+      return {
+        connectorRef,
+        namespace,
+        subscriptionId,
+        resourceGroup,
+        cluster,
+        releaseName,
+        allowSimultaneousDeployments
+      }
+    }
     default: {
       return {}
     }

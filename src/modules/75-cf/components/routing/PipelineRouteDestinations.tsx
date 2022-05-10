@@ -8,6 +8,7 @@
 import React, { FC } from 'react'
 import { Redirect, Route, useParams } from 'react-router-dom'
 import { RouteWithLayout } from '@common/router'
+import { MinimalLayout } from '@common/layouts'
 import { CFSideNavProps } from '@cf/constants'
 import routes from '@common/RouteDefinitions'
 import {
@@ -26,6 +27,8 @@ import PipelinesPage from '@pipeline/pages/pipelines/PipelinesPage'
 import DeploymentsList from '@pipeline/pages/deployments-list/DeploymentsList'
 import InputSetList from '@pipeline/pages/inputSet-list/InputSetList'
 import { EnhancedInputSetForm } from '@pipeline/components/InputSetForm/InputSetForm'
+import { PAGE_NAME } from '@common/pages/pageContext/PageName'
+import ExecutionPolicyEvaluationsView from '@pipeline/pages/execution/ExecutionPolicyEvaluationsView/ExecutionPolicyEvaluationsView'
 import TriggersPage from '@triggers/pages/triggers/TriggersPage'
 import TriggersDetailPage from '@triggers/pages/triggers/TriggersDetailPage'
 import TriggerDetails from '@triggers/pages/trigger-details/TriggerDetails'
@@ -187,6 +190,23 @@ const PipelineRouteDestinations: FC = () => (
       exact
     >
       <RedirectToPipelineDetailHome />
+    </RouteWithLayout>
+
+    <RouteWithLayout
+      exact
+      licenseRedirectData={licenseRedirectData}
+      sidebarProps={CFSideNavProps}
+      layout={MinimalLayout}
+      path={routes.toExecutionPolicyEvaluationsView({
+        ...accountPathProps,
+        ...executionPathProps,
+        ...pipelineModuleParams
+      })}
+      pageName={PAGE_NAME.ExecutionPolicyEvaluationsView}
+    >
+      <ExecutionLandingPage>
+        <ExecutionPolicyEvaluationsView />
+      </ExecutionLandingPage>
     </RouteWithLayout>
 
     <RouteWithLayout

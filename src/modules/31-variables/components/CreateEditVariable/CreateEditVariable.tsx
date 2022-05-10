@@ -7,7 +7,6 @@
 
 import React, { useState } from 'react'
 import * as Yup from 'yup'
-import { noop } from 'lodash-es'
 import {
   Button,
   ButtonVariation,
@@ -24,64 +23,73 @@ import { NameIdDescription } from '@common/components/NameIdDescriptionTags/Name
 import { IdentifierSchema, NameSchema } from '@common/utils/Validation'
 
 import {
+  convertVariableDTOToFormData,
   convertVariableFormDataToDTO,
   getVaribaleTypeOptions,
+  StringFormData,
   Validation,
-  VariableFormData,
   VariableFormDataWithScope,
   VariableType
 } from '@variables/utils/VariablesUtils'
 
-import { useCreateVariable, VariableDTO, VariableRequestDTO } from 'services/cd-ng'
+import { useCreateVariable, useUpdateVariable, VariableDTO, VariableRequestDTO } from 'services/cd-ng'
 import useRBACError from '@rbac/utils/useRBACError/useRBACError'
 import VariableValidation from '../VariableValidation/VariableValidation'
 import css from './CreateEditVariable.module.scss'
 
 interface CreateEditVariableProps {
   accountId: string
-  isEdit?: boolean
   orgIdentifier?: string
   projectIdentifier?: string
   onSuccess?: (data: VariableDTO) => void
   closeModal: () => void
+  variable?: VariableDTO
 }
 
 const CreateEditVariable: React.FC<CreateEditVariableProps> = props => {
+  const isEdit = !!props.variable
   const { getString } = useStrings()
   const { getRBACErrorMessage } = useRBACError()
   const { mutate: createVariable, loading: creating } = useCreateVariable({
+    queryParams: { accountIdentifier: props.accountId }
+  })
+  const { mutate: updateVariable, loading: updating } = useUpdateVariable({
     queryParams: { accountIdentifier: props.accountId }
   })
   const { showSuccess } = useToaster()
   const [modalErrorHandler, setModalErrorHandler] = useState<ModalErrorHandlerBinding>()
   const handleCreateUpdate = async (payload: VariableRequestDTO) => {
     try {
-      // Edit Mode is not suppported for now.
-      const response = await (props.isEdit ? noop : createVariable(payload))
-      if (response) {
+      const response = await (isEdit ? updateVariable(payload) : createVariable(payload))
+      if (response.status === 'SUCCESS') {
         props.onSuccess?.(payload.variable as VariableDTO)
-        showSuccess(`Variable '${(payload.variable as VariableDTO).name}' created successfully`)
+        showSuccess(
+          getString(isEdit ? 'variables.successUpdate' : 'variables.successCreate', { name: payload.variable?.name })
+        )
       }
     } catch (error) {
       modalErrorHandler?.showDanger(getRBACErrorMessage(error))
     }
   }
+  const defaultInitialValues = {
+    name: '',
+    identifier: '',
+    defaultValue: '',
+    description: '',
+    type: VariableType.String,
+    fixedValue: '',
+    allowedValues: [],
+    valueType: Validation.FIXED
+  }
+
+  const initialValues = props.variable ? convertVariableDTOToFormData(props.variable) : defaultInitialValues
 
   return (
     <>
       <ModalErrorHandler bind={setModalErrorHandler} />
-      <Formik<VariableFormData>
+      <Formik<StringFormData>
         formName={'variable-form'}
-        initialValues={{
-          name: '',
-          identifier: '',
-          defaultValue: '',
-          description: '',
-          type: VariableType.String,
-          fixedValue: '',
-          allowedValues: [],
-          valueType: Validation.FIXED
-        }}
+        initialValues={initialValues}
         enableReinitialize
         validationSchema={Yup.object().shape({
           name: NameSchema(),
@@ -107,7 +115,7 @@ const CreateEditVariable: React.FC<CreateEditVariableProps> = props => {
         {formik => (
           <FormikForm data-testid="add-edit-variable" className={css.variableFormWrap}>
             <Layout.Vertical className={css.variableForm}>
-              <NameIdDescription formikProps={formik} />
+              <NameIdDescription formikProps={formik} identifierProps={{ isIdentifierEditable: !isEdit }} />
               <FormInput.Select
                 name="type"
                 items={getVaribaleTypeOptions(getString)}
@@ -119,7 +127,7 @@ const CreateEditVariable: React.FC<CreateEditVariableProps> = props => {
             <Layout.Horizontal spacing="small" padding={{ top: 'small' }}>
               <Button
                 type="submit"
-                loading={creating}
+                disabled={creating || updating}
                 variation={ButtonVariation.PRIMARY}
                 text={getString('save')}
                 data-testid="addVariableSave"

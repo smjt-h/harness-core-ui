@@ -100,7 +100,7 @@ title:
   awsKms: 'AWS Key Management Service'
   awsSecretManager: 'AWS Secrets Manager'
   delegateSelection: 'Delegate Selection'
-  ceAzureConnector: 'Azure Connector'
+  ceAzureConnector: '{{$.common.azureConnector}}'
   datadog: 'Datadog'
   azureKeyVault: 'Azure Key Vault'
   sumologic: 'SumoLogic'
@@ -428,9 +428,9 @@ awsKms:
     externalIdLengthError: 'External Id must have between 2 and 1224 characters'
   awsSTS: 'Assume Role using STS on Delegate'
 delegate:
-  configure: Configure what Delegates are allowed to connect to this Connector
-  delegateSelectorAny: Connect via any available Delegate
-  delegateSelectorSelective: Connect only via Delegates with all of the following tags
+  configure: Select the Delegates this Connector will use
+  delegateSelectorAny: Use any available Delegate
+  delegateSelectorSelective: Only use Delegates with all of the following tags
   hearbeat: heartbeat
   matchesSelectors: Matches
   testDelegateConnectivity: Test Delegate Connectivity
@@ -491,7 +491,7 @@ azureKeyVault:
     setupVault: Setup Vault
   validation:
     tenantId: '{{ $.connectors.tenantIdRequired }}'
-    subscription: Subscription is required
+    subscription: '{{ $.common.validation.subscription }}'
     vaultName: Vault Name is required
 ceAws:
   steps:
@@ -709,7 +709,7 @@ ceAzure:
   existingExports:
     instruction: 'The following {{ reportCount }} Billing Exports are connected with your Harness Account.'
     createNewExportBtn: 'Create new Billing Export'
-    subscriptionId: Subscription Id
+    subscriptionId: '{{ $.common.subscriptionId }}'
     tenantId: '{{ $.connectors.tenantId }}'
     hints:
       nextStepHint1: 'If the Azure tenant ID you entered is covered by any of the above, select and click “Continue >” to proceed.'
@@ -828,3 +828,6 @@ ceGcp:
     error: 'Could not verify connectivity'
 connectorReferenceText: "can't be deleted as it is being referenced by other entities. To see the list of entities referencing this connector,"
 cantDeleteConnector: "Can't Delete Connector"
+policyEvaluations:
+  failedToSave: Connector cannot be saved due to the policy evaluation failures
+  warning: Connector saved with policy warnings

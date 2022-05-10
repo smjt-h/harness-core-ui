@@ -7,7 +7,7 @@
 
 import React, { useEffect, useRef } from 'react'
 import { Spinner } from '@blueprintjs/core'
-import { Field, FormikContext, FormikProps } from 'formik'
+import { Field, FormikContextType, FormikProps } from 'formik'
 import { Container, Formik, FormikForm, FormInput } from '@wings-software/uicore'
 import { cloneDeep, defaultTo, get, isEmpty, set } from 'lodash-es'
 import { useParams } from 'react-router-dom'
@@ -33,6 +33,8 @@ import { getStepPaletteModuleInfosFromStage } from '@pipeline/utils/stepUtils'
 import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
 import { useTemplateSelector } from '@pipeline/utils/useTemplateSelector'
 import { getFlattenedStages } from '@pipeline/components/PipelineStudio/StageBuilder/StageBuilderUtil'
+import { FeatureFlag } from '@common/featureFlags'
+import { useFeatureFlag } from '@common/hooks/useFeatureFlag'
 import useChooseProvisioner from './ChooseProvisioner'
 import type { InfraProvisioningData, InfraProvisioningDataUI, InfraProvisioningProps } from './InfraProvisioning'
 import { transformValuesFieldsConfig } from './InfraProvisioningFunctionConfigs'
@@ -64,7 +66,9 @@ export const InfraProvisioningBase = (
   const executionRef = React.useRef<ExecutionGraphRefObj | null>(null)
   const { getTemplate } = useTemplateSelector()
   const { accountId } = useParams<ProjectPathProps>()
-  const formikRef = useRef<FormikContext<InfraProvisioningDataUI>>()
+  const formikRef = useRef<FormikContextType<InfraProvisioningDataUI>>()
+
+  const newPipelineStudioEnabled: boolean = useFeatureFlag(FeatureFlag.NEW_PIPELINE_STUDIO)
   const { showModal } = useChooseProvisioner({
     onSubmit: (data: any) => {
       onUpdate?.(data)
@@ -144,7 +148,14 @@ export const InfraProvisioningBase = (
         provisioner.rollbackSteps = []
       }
 
-      addStepOrGroup(event.entity, provisioner, newStepData, event.isParallel, event.isRollback)
+      addStepOrGroup(
+        event.entity,
+        provisioner,
+        newStepData,
+        event.isParallel,
+        event.isRollback,
+        newPipelineStudioEnabled
+      )
       if (pipelineStage?.stage) {
         await updateStage(pipelineStage?.stage)
       }

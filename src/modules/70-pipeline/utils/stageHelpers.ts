@@ -6,9 +6,10 @@
  */
 
 import { defaultTo, get, isEmpty } from 'lodash-es'
-import { getMultiTypeFromValue, MultiTypeInputType } from '@wings-software/uicore'
+import { v4 as uuid } from 'uuid'
+import { getMultiTypeFromValue, IconName, MultiTypeInputType } from '@wings-software/uicore'
 import type { GraphLayoutNode, PipelineExecutionSummary } from 'services/pipeline-ng'
-import type { StringKeys, UseStringsReturn } from 'framework/strings'
+import type { StringKeys } from 'framework/strings'
 import type {
   Infrastructure,
   GetExecutionStrategyYamlQueryParams,
@@ -19,16 +20,11 @@ import type {
 import { connectorTypes } from '@pipeline/utils/constants'
 import { ManifestDataType } from '@pipeline/components/ManifestSelection/Manifesthelper'
 import type { ManifestTypes } from '@pipeline/components/ManifestSelection/ManifestInterface'
-import { getFlattenedStages } from '@pipeline/components/PipelineStudio/StageBuilder/StageBuilderUtil'
-import type { StringsMap } from 'framework/strings/StringsContext'
 import { StepType } from '@pipeline/components/PipelineSteps/PipelineStepInterface'
+import type { DependencyElement } from 'services/ci'
+import type { PipelineGraphState } from '@pipeline/components/PipelineDiagram/types'
 import type { InputSetDTO } from './types'
-import type {
-  DeploymentStageElementConfig,
-  DeploymentStageElementConfigWrapper,
-  PipelineStageWrapper,
-  StageElementWrapper
-} from './pipelineTypes'
+import type { DeploymentStageElementConfig, PipelineStageWrapper, StageElementWrapper } from './pipelineTypes'
 
 export enum StageType {
   DEPLOY = 'Deployment',
@@ -38,7 +34,7 @@ export enum StageType {
   APPROVAL = 'Approval',
   CUSTOM = 'Custom',
   Template = 'Template',
-  SECURITY = 'Security'
+  SECURITY = 'SecurityTests'
 }
 
 export enum ServiceDeploymentType {
@@ -73,11 +69,6 @@ export type ServerlessInfraTypes =
   | ServerlessGCPInfrastructure
   | ServerlessAzureInfrastructure
   | ServerlessAwsLambdaInfrastructure
-
-interface ValidateServerlessArtifactsProps {
-  pipeline: PipelineInfoConfig
-  getString: UseStringsReturn['getString']
-}
 
 export const changeEmptyValuesToRunTimeInput = (inputset: any, propertyKey: string): InputSetDTO => {
   if (inputset) {
@@ -277,131 +268,6 @@ export const getCustomStepProps = (type: string, getString: (key: StringKeys) =>
   }
 }
 
-const isPrimaryArtifactFieldPresent = (stage: DeploymentStageElementConfigWrapper, fieldName: string): boolean => {
-  // return true because if artifact itself is not present then some field inside artifact would not be present
-  // And that is fine as artifact itself is optional field.
-  // Only when artifact is present and some of its required field is not present we need to show error and stop save precess
-  if (!stage.stage?.spec?.serviceConfig.serviceDefinition?.spec.artifacts?.primary) {
-    return true
-  }
-  const primaryArtifactSpecField =
-    stage.stage?.spec?.serviceConfig.serviceDefinition?.spec.artifacts?.primary?.spec[fieldName]
-  return primaryArtifactSpecField && primaryArtifactSpecField.toString().trim().length > 0
-}
-
-const isPrimaryArtifactFieldPresentInPropagatedStage = (
-  stage: DeploymentStageElementConfigWrapper,
-  fieldName: string
-): boolean => {
-  const primaryArtifactSpecField = stage.stage?.spec?.serviceConfig.stageOverrides?.artifacts?.primary?.spec[fieldName]
-  return primaryArtifactSpecField && primaryArtifactSpecField.toString().trim().length > 0
-}
-
-const isManifestFieldPresent = (stage: DeploymentStageElementConfigWrapper): boolean => {
-  return !!stage.stage?.spec?.serviceConfig.serviceDefinition?.spec.manifests?.length
-}
-
-const isManifestFieldPresentInPropagatedStage = (stage: DeploymentStageElementConfigWrapper): boolean => {
-  if (!stage.stage?.spec?.serviceConfig.stageOverrides?.manifests) {
-    return true
-  }
-  return !!stage.stage?.spec?.serviceConfig.stageOverrides?.manifests?.length
-}
-
-const validateServerlessArtifactsManifestsForPropagatedStage = (
-  stages: DeploymentStageElementConfigWrapper[],
-  stage: DeploymentStageElementConfigWrapper
-): string => {
-  // Stage from which current stage is propagated
-  const propagateFromStage = stages.find(
-    currStage => currStage.stage?.identifier === stage.stage?.spec?.serviceConfig?.useFromStage?.stage
-  )
-  if (isServerlessDeploymentType(propagateFromStage?.stage?.spec?.serviceConfig?.serviceDefinition?.type as string)) {
-    // When artifacts / manifests are overriden over the propagate (previous) stage, else do not validate for fields
-    // as fields are already validated in propagate (previous) stage
-    if (!isManifestFieldPresentInPropagatedStage(stage)) {
-      return 'pipeline.artifactsSelection.validation.manifestRequiredForStage'
-    }
-    if (
-      stage.stage.spec?.serviceConfig.stageOverrides?.artifacts?.primary &&
-      !isPrimaryArtifactFieldPresentInPropagatedStage(stage, 'artifactDirectory')
-    ) {
-      return 'pipeline.artifactsSelection.validation.artifactDirectory'
-    }
-    if (
-      stage.stage.spec?.serviceConfig.stageOverrides?.artifacts?.primary &&
-      !isPrimaryArtifactFieldPresentInPropagatedStage(stage, 'artifactPath')
-    ) {
-      if (!isPrimaryArtifactFieldPresentInPropagatedStage(stage, 'artifactPathFilter')) {
-        return 'pipeline.artifactsSelection.validation.artifactPathAndArtifactPathFilter'
-      } else {
-        return ''
-      }
-    } else {
-      return ''
-    }
-  }
-  return ''
-}
-
-const validateServerlessArtifactsManifestsForStage = (
-  stages: DeploymentStageElementConfigWrapper[],
-  stage: DeploymentStageElementConfigWrapper
-): string => {
-  // When the stage is prapagated from other stage
-  if (stage.stage?.spec?.serviceConfig?.useFromStage) {
-    return validateServerlessArtifactsManifestsForPropagatedStage(stages, stage)
-  } else {
-    if (isServerlessDeploymentType(stage.stage?.spec?.serviceConfig?.serviceDefinition?.type as string)) {
-      if (!isManifestFieldPresent(stage)) {
-        return 'pipeline.artifactsSelection.validation.manifestRequiredForStage'
-      }
-      if (!isPrimaryArtifactFieldPresent(stage, 'artifactDirectory')) {
-        return 'pipeline.artifactsSelection.validation.artifactDirectory'
-      }
-      if (!isPrimaryArtifactFieldPresent(stage, 'artifactPath')) {
-        if (!isPrimaryArtifactFieldPresent(stage, 'artifactPathFilter')) {
-          return 'pipeline.artifactsSelection.validation.artifactPathAndArtifactPathFilter'
-        } else {
-          return ''
-        }
-      } else {
-        return ''
-      }
-    }
-  }
-
-  if (stage.parallel) {
-    for (const currStage of stage.parallel) {
-      const stageArtifactValidationError = validateServerlessArtifactsManifestsForStage(stages, currStage)
-      if (stageArtifactValidationError) {
-        return stageArtifactValidationError
-      }
-    }
-  }
-  return ''
-}
-
-export const validateServerlessArtifactsManifests = ({
-  pipeline,
-  getString
-}: ValidateServerlessArtifactsProps): string => {
-  const flattenedStages = getFlattenedStages(pipeline).stages
-  if (pipeline.stages) {
-    for (const currStage of pipeline.stages) {
-      const stageArtifactValidationError = validateServerlessArtifactsManifestsForStage(
-        flattenedStages as DeploymentStageElementConfigWrapper[],
-        currStage as DeploymentStageElementConfigWrapper
-      )
-
-      if (stageArtifactValidationError.trim().length > 0) {
-        return getString(stageArtifactValidationError as keyof StringsMap, { stageName: currStage.stage?.name })
-      }
-    }
-  }
-  return ''
-}
-
 export const isArtifactManifestPresent = (stage: DeploymentStageElementConfig): boolean => {
   return (
     !!stage.spec?.serviceConfig &&
@@ -448,3 +314,19 @@ export const getStepTypeByDeploymentType = (deploymentType: string): StepType =>
   }
   return StepType.K8sServiceSpec
 }
+export const STATIC_SERVICE_GROUP_NAME = 'static_service_group'
+export const getDefaultBuildDependencies = (serviceDependencies: DependencyElement[]): PipelineGraphState => ({
+  id: uuid() as string,
+  identifier: STATIC_SERVICE_GROUP_NAME as string,
+  name: 'Dependencies',
+  type: STATIC_SERVICE_GROUP_NAME,
+  nodeType: STATIC_SERVICE_GROUP_NAME,
+  icon: '' as IconName,
+  data: {
+    canDelete: false,
+    name: 'Dependencies',
+    type: STATIC_SERVICE_GROUP_NAME,
+    nodeType: STATIC_SERVICE_GROUP_NAME,
+    steps: serviceDependencies.length ? [{ parallel: serviceDependencies.map(d => ({ step: d })) }] : []
+  }
+})

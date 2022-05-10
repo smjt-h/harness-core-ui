@@ -112,7 +112,7 @@ export const ConnectorInfoText = {
   NEXUS: 'Nexus',
   ARTIFACTORY: 'Artifactory',
   DYNATRACE: 'Dynatrace',
-  Azure: 'Azure'
+  AZURE: 'Azure'
 }
 
 export const ConnectorStatus: ConnectorStatusType = {

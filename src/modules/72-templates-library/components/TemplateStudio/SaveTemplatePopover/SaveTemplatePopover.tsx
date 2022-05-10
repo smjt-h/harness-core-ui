@@ -25,7 +25,7 @@ import type { Failure } from 'services/template-ng'
 import { DefaultNewTemplateId } from 'framework/Templates/templates'
 import { AppStoreContext } from 'framework/AppStore/AppStoreContext'
 import useCommentModal from '@common/hooks/CommentModal/useCommentModal'
-import { getTemplateInputsCount, hasSameRunTimeInputs, TemplateType } from '@templates-library/utils/templatesUtils'
+import { TemplateType } from '@templates-library/utils/templatesUtils'
 import css from './SaveTemplatePopover.module.scss'
 
 export interface GetErrorResponse extends Omit<Failure, 'errors'> {
@@ -37,7 +37,7 @@ export interface SaveTemplatePopoverProps {
 
 export function SaveTemplatePopover({ getErrors }: SaveTemplatePopoverProps): React.ReactElement {
   const {
-    state: { template, originalTemplate, yamlHandler, gitDetails, isUpdated, stableVersion, lastPublishedVersion },
+    state: { template, yamlHandler, gitDetails, isUpdated, stableVersion, lastPublishedVersion },
     setLoading,
     fetchTemplate,
     deleteTemplateCache,
@@ -123,13 +123,6 @@ export function SaveTemplatePopover({ getErrors }: SaveTemplatePopoverProps): Re
     onSubmit(true)
   }, [onSubmit])
 
-  const hasSameTemplateInputs = React.useMemo(
-    () =>
-      hasSameRunTimeInputs(originalTemplate, template) &&
-      getTemplateInputsCount(originalTemplate) === getTemplateInputsCount(template),
-    [JSON.stringify(template)]
-  )
-
   const onSaveAsNewLabel = React.useCallback(() => {
     checkErrors(() => {
       setModalProps({
@@ -172,14 +165,14 @@ export function SaveTemplatePopover({ getErrors }: SaveTemplatePopoverProps): Re
           ]
         : [
             {
+              label: getString('save'),
+              disabled: !isUpdated || isReadonly,
+              onClick: onUpdate
+            },
+            {
               label: getString('templatesLibrary.saveAsNewLabelModal.heading'),
               onClick: onSaveAsNewLabel,
               disabled: isReadonly
-            },
-            {
-              label: getString('save'),
-              disabled: !isUpdated || isReadonly || !hasSameTemplateInputs,
-              onClick: onUpdate
             },
             {
               label: getString('common.template.saveAsNewTemplateHeading'),
@@ -188,17 +181,7 @@ export function SaveTemplatePopover({ getErrors }: SaveTemplatePopoverProps): Re
             }
           ]
     )
-  }, [
-    templateIdentifier,
-    template.spec,
-    onSave,
-    onUpdate,
-    onSaveAsNewLabel,
-    onSaveAsNewTemplate,
-    isUpdated,
-    isReadonly,
-    hasSameTemplateInputs
-  ])
+  }, [templateIdentifier, template.spec, onSave, onUpdate, onSaveAsNewLabel, onSaveAsNewTemplate])
 
   React.useEffect(() => {
     setMenuOpen(false)

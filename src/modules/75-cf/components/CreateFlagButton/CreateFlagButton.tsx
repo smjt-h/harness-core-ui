@@ -10,10 +10,11 @@ import { ButtonVariation } from '@wings-software/uicore'
 import RbacButton from '@rbac/components/Button/Button'
 import { ResourceType } from '@rbac/interfaces/ResourceType'
 import { PermissionIdentifier } from '@rbac/interfaces/PermissionIdentifier'
-import { useFeatureFlagTelemetry } from '@cf/hooks/useFeatureFlagTelemetry'
 import usePlanEnforcement from '@cf/hooks/usePlanEnforcement'
 import { FeatureIdentifier } from 'framework/featureStore/FeatureIdentifier'
 import { useStrings } from 'framework/strings'
+import { useTelemetry } from '@common/hooks/useTelemetry'
+import { FeatureActions, Category } from '@common/constants/TrackingConstants'
 import css from './CreateFlagButton.module.scss'
 
 export interface CreateFlagButtonProps {
@@ -25,8 +26,8 @@ const CreateFlagButton = (props: CreateFlagButtonProps): ReactElement => {
   const { disabled, showModal } = props
 
   const { getString } = useStrings()
-  const events = useFeatureFlagTelemetry()
   const { isPlanEnforcementEnabled } = usePlanEnforcement()
+  const { trackEvent } = useTelemetry()
 
   const planEnforcementProps = isPlanEnforcementEnabled
     ? {
@@ -45,7 +46,9 @@ const CreateFlagButton = (props: CreateFlagButtonProps): ReactElement => {
       intent="primary"
       variation={ButtonVariation.PRIMARY}
       onClick={() => {
-        events.createFeatureFlagStart()
+        trackEvent(FeatureActions.AddNewFeatureFlag, {
+          category: Category.FEATUREFLAG
+        })
         showModal()
       }}
       className={css.openModalBtn}

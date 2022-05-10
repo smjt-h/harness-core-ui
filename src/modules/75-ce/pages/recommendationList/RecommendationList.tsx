@@ -108,6 +108,10 @@ const RecommendationsList: React.FC<RecommendationListProps> = ({
   }
 
   if (ccmData && !ccmData.k8sClusterConnectorPresent) {
+    trackEvent(USER_JOURNEY_EVENTS.RECOMMENDATION_PAGE_LOADED, {
+      clustersNotConfigured: 'no',
+      count: 0
+    })
     return (
       <Card elevation={1} className={css.errorContainer}>
         <OverviewAddCluster
@@ -119,6 +123,10 @@ const RecommendationsList: React.FC<RecommendationListProps> = ({
   }
 
   if (ccmData && ccmData.k8sClusterConnectorPresent && !ccmData.clusterDataPresent) {
+    trackEvent(USER_JOURNEY_EVENTS.RECOMMENDATION_PAGE_LOADED, {
+      clustersNotConfigured: 'yes',
+      count: 0
+    })
     return (
       <Card elevation={1} className={css.errorContainer}>
         <img src={EmptyView} />
@@ -126,6 +134,11 @@ const RecommendationsList: React.FC<RecommendationListProps> = ({
       </Card>
     )
   }
+
+  trackEvent(USER_JOURNEY_EVENTS.RECOMMENDATION_PAGE_LOADED, {
+    clustersNotConfigured: 'yes',
+    count: data.length
+  })
 
   const NameCell: Renderer<CellProps<RecommendationItemDto>> = cell => {
     const originalRowData = cell.row.original
@@ -285,8 +298,11 @@ const RecommendationsList: React.FC<RecommendationListProps> = ({
       <Layout.Vertical spacing="large">
         {data.length ? (
           <TableV2<RecommendationItemDto>
-            onRowClick={({ id, resourceType, resourceName }) => {
-              trackEvent(USER_JOURNEY_EVENTS.RECOMMENDATION_CLICK, {})
+            onRowClick={({ id, resourceType, resourceName, monthlySaving }) => {
+              trackEvent(USER_JOURNEY_EVENTS.RECOMMENDATION_CLICK, {
+                recommendationID: id,
+                monthlySaving
+              })
               history.push(
                 resourceTypeToRoute[resourceType]({
                   accountId,

@@ -13,7 +13,7 @@ import { useStrings } from 'framework/strings'
 
 import VerifyOutOfClusterDelegate from '@connectors/common/VerifyOutOfClusterDelegate/VerifyOutOfClusterDelegate'
 import { useTelemetry } from '@common/hooks/useTelemetry'
-import { CCM_CONNECTOR_SAVE_EVENT } from '@connectors/trackingConstants'
+import { CCM_CONNECTOR_SAVE_EVENT, CCM_CONNECTOR_SAVE_SUCCESS } from '@connectors/trackingConstants'
 import Overview, { CEAzureDTO } from './Steps/Overview/AzureConnectorOverview'
 import Billing from './Steps/Billing/AzureConnectorBilling'
 import ModalExtension from './ModalExtension'
@@ -53,6 +53,7 @@ const CreateCeAzureConnector: React.FC<CreateConnectorModalProps> = props => {
             trackEvent(CCM_CONNECTOR_SAVE_EVENT, { type: Connectors.CE_AZURE })
             props.onClose()
           }}
+          onTestConnectionSuccess={() => trackEvent(CCM_CONNECTOR_SAVE_SUCCESS, { type: Connectors.CE_AZURE })}
         />
       </StepWizard>
     </ModalExtension>

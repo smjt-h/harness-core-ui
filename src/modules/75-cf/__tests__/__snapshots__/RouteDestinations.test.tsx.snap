@@ -12,6 +12,7 @@ Array [
         "startTrialRedirect": [Function],
       }
     }
+    pageName="CFHomePage"
     path="/account/:accountId/cf"
   >
     <RedirectToCFHome />
@@ -33,6 +34,7 @@ Array [
   <RouteWithLayout
     exact={true}
     layout={[Function]}
+    pageName="CFTrialHomePage"
     path="/account/:accountId/cf/home/trial"
   >
     <CFTrialHomePage />
@@ -47,6 +49,7 @@ Array [
         "startTrialRedirect": [Function],
       }
     }
+    pageName="CFHomePage"
     path="/account/:accountId/cf/home"
     sidebarProps={
       Object {
@@ -68,6 +71,7 @@ Array [
         "startTrialRedirect": [Function],
       }
     }
+    pageName="FeatureFlagsLandingPage"
     path="/account/:accountId/cf/orgs/:orgIdentifier/projects/:projectIdentifier/feature-flags"
     sidebarProps={
       Object {
@@ -89,6 +93,7 @@ Array [
         "startTrialRedirect": [Function],
       }
     }
+    pageName="FeatureFlagsDetailPage"
     path="/account/:accountId/cf/orgs/:orgIdentifier/projects/:projectIdentifier/feature-flags/:featureFlagIdentifier"
     sidebarProps={
       Object {
@@ -110,6 +115,7 @@ Array [
         "startTrialRedirect": [Function],
       }
     }
+    pageName="SegmentDetailPage"
     path="/account/:accountId/cf/orgs/:orgIdentifier/projects/:projectIdentifier/target-management/target-groups/:segmentIdentifier"
     sidebarProps={
       Object {
@@ -131,6 +137,7 @@ Array [
         "startTrialRedirect": [Function],
       }
     }
+    pageName="LegacyTargetDetailPage"
     path="/account/:accountId/cf/orgs/:orgIdentifier/projects/:projectIdentifier/target-management/targets/:targetIdentifier"
     sidebarProps={
       Object {
@@ -166,6 +173,7 @@ Array [
         "startTrialRedirect": [Function],
       }
     }
+    pageName="SegmentsPage"
     path="/account/:accountId/cf/orgs/:orgIdentifier/projects/:projectIdentifier/target-management/target-groups"
     sidebarProps={
       Object {
@@ -187,6 +195,7 @@ Array [
         "startTrialRedirect": [Function],
       }
     }
+    pageName="TargetsPage"
     path="/account/:accountId/cf/orgs/:orgIdentifier/projects/:projectIdentifier/target-management/targets"
     sidebarProps={
       Object {
@@ -208,6 +217,7 @@ Array [
         "startTrialRedirect": [Function],
       }
     }
+    pageName="EnvironmentsPage"
     path="/account/:accountId/cf/orgs/:orgIdentifier/projects/:projectIdentifier/environments"
     sidebarProps={
       Object {
@@ -229,6 +239,7 @@ Array [
         "startTrialRedirect": [Function],
       }
     }
+    pageName="EnvironmentDetails"
     path="/account/:accountId/cf/orgs/:orgIdentifier/projects/:projectIdentifier/environments/:environmentIdentifier"
     sidebarProps={
       Object {
@@ -250,6 +261,7 @@ Array [
         "startTrialRedirect": [Function],
       }
     }
+    pageName="OnboardingPage"
     path="/account/:accountId/cf/orgs/:orgIdentifier/projects/:projectIdentifier/onboarding"
     sidebarProps={
       Object {
@@ -271,6 +283,7 @@ Array [
         "startTrialRedirect": [Function],
       }
     }
+    pageName="OnboardingDetailPage"
     path="/account/:accountId/cf/orgs/:orgIdentifier/projects/:projectIdentifier/onboarding/detail"
     sidebarProps={
       Object {
@@ -292,6 +305,7 @@ Array [
         "startTrialRedirect": [Function],
       }
     }
+    pageName="CFWorkflowsPage"
     path="/account/:accountId/cf/orgs/:orgIdentifier/projects/:projectIdentifier/workflows"
     sidebarProps={
       Object {
@@ -313,6 +327,7 @@ Array [
         "startTrialRedirect": [Function],
       }
     }
+    pageName="ConnectorsPage"
     path="/account/:accountId/:module/orgs/:orgIdentifier/projects/:projectIdentifier/setup/resources/connectors"
     sidebarProps={
       Object {
@@ -334,6 +349,7 @@ Array [
         "startTrialRedirect": [Function],
       }
     }
+    pageName="CreateConnectorFromYamlPage"
     path="/account/:accountId/:module/orgs/:orgIdentifier/projects/:projectIdentifier/setup/resources/connectors/yaml/create-connector"
     sidebarProps={
       Object {
@@ -355,6 +371,7 @@ Array [
         "startTrialRedirect": [Function],
       }
     }
+    pageName="ConnectorDetailsPage"
     path="/account/:accountId/:module(cf)/orgs/:orgIdentifier/projects/:projectIdentifier/setup/resources/connectors/:connectorId"
     sidebarProps={
       Object {
@@ -376,6 +393,7 @@ Array [
         "startTrialRedirect": [Function],
       }
     }
+    pageName="SecretsPage"
     path="/account/:accountId/:module/orgs/:orgIdentifier/projects/:projectIdentifier/setup/resources/secrets"
     sidebarProps={
       Object {
@@ -418,6 +436,7 @@ Array [
         "startTrialRedirect": [Function],
       }
     }
+    pageName="CreateSecretFromYamlPage"
     path="/account/:accountId/:module/orgs/:orgIdentifier/projects/:projectIdentifier/setup/resources/secrets/yaml/create-secret"
     sidebarProps={
       Object {
@@ -439,6 +458,7 @@ Array [
         "startTrialRedirect": [Function],
       }
     }
+    pageName="SecretDetails"
     path="/account/:accountId/:module/orgs/:orgIdentifier/projects/:projectIdentifier/setup/resources/secrets/:secretId"
     sidebarProps={
       Object {
@@ -460,6 +480,7 @@ Array [
         "startTrialRedirect": [Function],
       }
     }
+    pageName="SecretDetails"
     path="/account/:accountId/:module/orgs/:orgIdentifier/projects/:projectIdentifier/setup/resources/secrets/:secretId/overview"
     sidebarProps={
       Object {
@@ -483,6 +504,7 @@ Array [
         "startTrialRedirect": [Function],
       }
     }
+    pageName="SecretReferences"
     path="/account/:accountId/:module/orgs/:orgIdentifier/projects/:projectIdentifier/setup/resources/secrets/:secretId/references"
     sidebarProps={
       Object {
@@ -506,6 +528,7 @@ Array [
         "startTrialRedirect": [Function],
       }
     }
+    pageName="GitSyncRepoTab"
     path={
       Array [
         "/account/:accountId/:module/orgs/:orgIdentifier/projects/:projectIdentifier/setup/git-sync",
@@ -531,6 +554,7 @@ Array [
         "startTrialRedirect": [Function],
       }
     }
+    pageName="GitSyncRepoTab"
     path="/account/:accountId/:module(cf)/orgs/:orgIdentifier/projects/:projectIdentifier/setup/git-sync/repos"
     sidebarProps={
       Object {
@@ -554,6 +578,7 @@ Array [
         "startTrialRedirect": [Function],
       }
     }
+    pageName="GitSyncEntityTab"
     path="/account/:accountId/:module(cf)/orgs/:orgIdentifier/projects/:projectIdentifier/setup/git-sync/entities"
     sidebarProps={
       Object {
@@ -577,6 +602,7 @@ Array [
         "startTrialRedirect": [Function],
       }
     }
+    pageName="GitSyncErrors"
     path="/account/:accountId/:module(cf)/orgs/:orgIdentifier/projects/:projectIdentifier/setup/git-sync/errors"
     sidebarProps={
       Object {
@@ -600,6 +626,7 @@ Array [
         "startTrialRedirect": [Function],
       }
     }
+    pageName="GitSyncConfigTab"
     path="/account/:accountId/:module(cf)/orgs/:orgIdentifier/projects/:projectIdentifier/setup/git-sync/config"
     sidebarProps={
       Object {

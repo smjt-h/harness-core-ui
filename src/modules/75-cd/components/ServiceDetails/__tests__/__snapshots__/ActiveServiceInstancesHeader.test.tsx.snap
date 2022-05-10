@@ -95,24 +95,19 @@ exports[`ActiveServiceInstancesHeader should render ActiveServiceInstancesHeader
         style="height: 100%;"
       >
         <div
-          class="Layout--vertical StyledProps--main StyledProps--padding-top-xsmall StyledProps--padding-bottom-xsmall StyledProps--padding-right-large"
-          style="height: 100%;"
+          class="Layout--vertical StyledProps--main labelStyles"
         >
           <ul>
-            <li
-              style="font-weight: 500; font-size: 15px;"
-            >
+            <li>
               <p
-                class="StyledProps--font StyledProps--main StyledProps--font-size-xsmall StyledProps--color StyledProps--color-grey500"
+                class="StyledProps--font StyledProps--main listStyles"
               >
                 cd.serviceDashboard.nonProd (2)
               </p>
             </li>
-            <li
-              style="font-weight: 500; font-size: 15px;"
-            >
+            <li>
               <p
-                class="StyledProps--font StyledProps--main StyledProps--font-size-xsmall StyledProps--color StyledProps--color-grey500"
+                class="StyledProps--font StyledProps--main listStyles"
               >
                 cd.serviceDashboard.prod (1)
               </p>

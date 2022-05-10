@@ -149,6 +149,23 @@ const RedirectToSubscriptions = (): React.ReactElement => {
   )
 }
 
+const RedirectToNewNodeRecommendationDetailsRoute = (): React.ReactElement => {
+  const { recommendation, recommendationName, accountId } = useParams<{
+    recommendationName: string
+    recommendation: string
+    accountId: string
+  }>()
+  return (
+    <Redirect
+      to={routes.toCENodeRecommendationDetails({
+        accountId,
+        recommendationName,
+        recommendation
+      })}
+    />
+  )
+}
+
 const licenseRedirectData: LicenseRedirectProps = {
   licenseStateName: LICENSE_STATE_NAMES.CCM_LICENSE_STATE,
   startTrialRedirect: RedirectToModuleTrialHome,
@@ -292,6 +309,19 @@ const CERoutes: React.FC = () => {
           exact
         >
           <RecommendationDetailsPage />
+        </RouteWithLayout>
+        <RouteWithLayout
+          licenseRedirectData={licenseRedirectData}
+          sidebarProps={CESideNavProps}
+          path={routes.toOldCENodeRecommendationDetails({
+            ...accountPathProps,
+            ...projectPathProps,
+            recommendationName: ':recommendationName',
+            recommendation: ':recommendation'
+          })}
+          exact
+        >
+          <RedirectToNewNodeRecommendationDetailsRoute />
         </RouteWithLayout>
         <RouteWithLayout
           licenseRedirectData={licenseRedirectData}

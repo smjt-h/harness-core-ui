@@ -6,7 +6,7 @@
  */
 
 import React, { ReactElement } from 'react'
-import { Link, useParams } from 'react-router-dom'
+import { useParams } from 'react-router-dom'
 import moment from 'moment'
 import { Container, FlexExpander, Heading, Layout, Text } from '@harness/uicore'
 import { Color, FontVariation } from '@harness/design-system'
@@ -23,12 +23,13 @@ import {
   Variation
 } from 'services/cf'
 import { VariationWithIcon } from '@cf/components/VariationWithIcon/VariationWithIcon'
-import { useQueryParams } from '@common/hooks'
 import { ResourceType } from '@rbac/interfaces/ResourceType'
 import { PermissionIdentifier } from '@rbac/interfaces/PermissionIdentifier'
 import { useFeatureFlagTypeToStringMapping } from '@cf/utils/CFUtils'
 
 import type { UseGitSync } from '@cf/hooks/useGitSync'
+import useActiveEnvironment from '@cf/hooks/useActiveEnvironment'
+import { NGBreadcrumbs } from '@common/components/NGBreadcrumbs/NGBreadcrumbs'
 import { FlagTypeVariations } from '../CreateFlagDialog/FlagDialogUtils'
 import { VariationTypeIcon } from '../VariationTypeIcon/VariationTypeIcon'
 import { IdentifierText } from '../IdentifierText/IdentifierText'
@@ -46,9 +47,19 @@ interface FlagActivationDetailsProps {
 }
 
 const VariationItem: React.FC<{ variation: Variation; index: number }> = ({ variation, index }) => {
+  const { getString } = useStrings()
   return (
-    <Layout.Horizontal className={css.variationItem} spacing="xsmall" style={{ alignItems: 'center' }}>
-      <VariationWithIcon variation={variation} index={index} />
+    <Layout.Horizontal
+      flex={{ alignItems: 'center', justifyContent: 'space-between' }}
+      spacing="xsmall"
+      className={css.variationItem}
+    >
+      <Layout.Horizontal flex={{ alignItems: 'center' }} spacing="xsmall">
+        <VariationWithIcon variation={variation} index={index} color={Color.GREY_800} fontSize="small" />
+      </Layout.Horizontal>
+      <Text font={{ variation: FontVariation.TINY }} className={css.flagVariationValue}>{`${getString('valueLabel')}: ${
+        variation.value
+      }`}</Text>
     </Layout.Horizontal>
   )
 }
@@ -66,11 +77,11 @@ const VariationsList: React.FC<{
   const typeToStringMapping = useFeatureFlagTypeToStringMapping()
 
   return (
-    <Layout.Vertical padding="large" margin={{ top: 'large' }} className={css.module}>
+    <Layout.Vertical margin={{ bottom: 'xlarge' }}>
       <Layout.Horizontal flex={{ align: 'center-center' }} margin={{ bottom: 'medium' }}>
-        <Text style={{ color: '#1C1C28', fontWeight: 600, fontSize: '14px', lineHeight: '22px' }}>
+        <Heading level={5} font={{ variation: FontVariation.H5 }}>
           <StringWithTooltip stringId="cf.shared.variations" tooltipId="ff_ffVariations_heading" />
-        </Text>
+        </Heading>
         <FlexExpander />
         <EditVariationsModal
           gitSync={gitSync}
@@ -92,12 +103,7 @@ const VariationsList: React.FC<{
       </Layout.Horizontal>
 
       <Layout.Vertical className={css.variationsList}>
-        <Text
-          border={{ bottom: true, color: Color.GREY_300 }}
-          padding={{ bottom: 'small' }}
-          flex
-          style={{ fontSize: '14px', lineHeight: '20px' }}
-        >
+        <Text border={{ bottom: true, color: Color.GREY_300 }} padding={{ bottom: 'small' }} flex>
           <VariationTypeIcon style={{ transform: 'translateY(1px)' }} multivariate={!isFlagTypeBoolean} />
           {isFlagTypeBoolean ? getString('cf.boolean') : getString('cf.multivariate')}
           {!isFlagTypeBoolean && (
@@ -120,16 +126,23 @@ const VariationsList: React.FC<{
 }
 
 const FlagActivationDetails: React.FC<FlagActivationDetailsProps> = props => {
-  const urlQuery: Record<string, string> = useQueryParams()
   const { featureFlag, refetchFlag, gitSyncActionsComponent, gitSync, setGovernanceMetadata } = props
   const { getString } = useStrings()
   const { orgIdentifier, accountId: accountIdentifier, projectIdentifier } = useParams<Record<string, string>>()
-  const featureFlagListURL =
-    routes.toCFFeatureFlags({
-      projectIdentifier,
-      orgIdentifier,
-      accountId: accountIdentifier
-    }) + `${urlQuery?.activeEnvironment ? `?activeEnvironment=${urlQuery.activeEnvironment}` : ''}`
+  const { withActiveEnvironment } = useActiveEnvironment()
+  const breadcrumbs = [
+    {
+      label: getString('cf.continuous'),
+      url: withActiveEnvironment(
+        routes.toCFFeatureFlags({
+          accountId: accountIdentifier,
+          orgIdentifier,
+          projectIdentifier
+        })
+      )
+    }
+  ]
+
   const { mutate: submitPatch } = usePatchFeature({
     identifier: featureFlag.identifier as string,
     queryParams: {
@@ -174,12 +187,8 @@ const FlagActivationDetails: React.FC<FlagActivationDetailsProps> = props => {
 
   return (
     <>
-      <Layout.Horizontal className={css.breadcrumb}>
-        <Link style={{ color: '#0092E4', fontSize: '12px' }} to={featureFlagListURL}>
-          {getString('flag')}
-        </Link>
-
-        <span style={{ display: 'inline-block', paddingLeft: 'var(--spacing-xsmall)' }}>/</span>
+      <Layout.Horizontal>
+        <NGBreadcrumbs customPathParams={{ module: 'cf' }} links={breadcrumbs} />
         <FlexExpander />
         <FlagDetailsOptionsMenuButton
           featureFlag={featureFlag}
@@ -204,13 +213,12 @@ const FlagActivationDetails: React.FC<FlagActivationDetailsProps> = props => {
             {featureFlag.name}
           </Text>
         </Heading>
+        <IdentifierText identifier={featureFlag.identifier} allowCopy lineClamp={1} />
         {featureFlag.description && (
-          <Text margin={{ bottom: 'small' }} style={{ fontSize: '13px', lineHeight: '20px', color: '#22222A' }}>
+          <Text margin={{ bottom: 'small' }} color={Color.GREY_800} font={{ variation: FontVariation.SMALL }}>
             {featureFlag.description}
           </Text>
         )}
-
-        <IdentifierText identifier={featureFlag.identifier} allowCopy lineClamp={1} />
 
         <Layout.Vertical margin={{ top: 'medium', bottom: 'xlarge' }}>
           {renderTime(featureFlag.createdAt, 'cf.featureFlags.createdDate')}

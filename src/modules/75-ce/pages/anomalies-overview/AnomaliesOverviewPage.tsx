@@ -13,7 +13,7 @@ import { Drawer, Position } from '@blueprintjs/core'
 import { useStrings } from 'framework/strings'
 import { NGBreadcrumbs } from '@common/components/NGBreadcrumbs/NGBreadcrumbs'
 import { CcmMetaData, QlceViewTimeFilterOperator, useFetchCcmMetaDataQuery } from 'services/ce/services'
-import { AnomalyData, CCMStringFilter, useGetAnomalyWidgetsData, useListAnomalies } from 'services/ce'
+import { AnomalyData, AnomalySummary, CCMStringFilter, useGetAnomalyWidgetsData, useListAnomalies } from 'services/ce'
 import AnomaliesSummary from '@ce/components/AnomaliesSummary/AnomaliesSummary'
 import AnomalyFilters from '@ce/components/AnomaliesFilter/AnomaliesFilter'
 import AnomaliesListGridView from '@ce/components/AnomaliesListView/AnomaliesListView'
@@ -29,6 +29,8 @@ import type { orderType, sortType } from '@common/components/Table/react-table-c
 import { useQueryParamsState } from '@common/hooks/useQueryParamsState'
 import type { TimeRangeFilterType } from '@ce/types'
 import AnomaliesSettings from '@ce/components/AnomaliesSettings/AnomaliesSettings'
+import { PAGE_NAMES } from '@ce/TrackingEventsConstants'
+import { useTelemetry } from '@common/hooks/useTelemetry'
 
 const getFilters = (filters: Record<string, Record<string, string>>, searchText: string) => {
   const updatedFilters = Object.values(filters).map(item => {
@@ -72,12 +74,13 @@ const AnomaliesOverviewPage: React.FC = () => {
   const { getString } = useStrings()
   const [searchText, setSearchText] = React.useState('')
   const { accountId } = useParams<AccountPathProps>()
-  const [listData, setListData] = useState<AnomalyData[]>([])
-  const [costData, setCostData] = useState([])
+  const [listData, setListData] = useState<AnomalyData[] | null>(null)
+  const [costData, setCostData] = useState<AnomalySummary | null>(null)
   const [perspectiveAnomaliesData, setPerspectiveANomaliesData] = useState([])
   const [cloudProvidersWiseData, setCloudProvidersWiseData] = useState([])
   const [statusWiseData, setStatusWiseData] = useState([])
   const [filters, setFilters] = useState({})
+  const { trackEvent } = useTelemetry()
 
   const [timeRange, setTimeRange] = useQueryParamsState<TimeRangeFilterType>('timeRange', {
     to: DATE_RANGE_SHORTCUTS.LAST_30_DAYS[1].format(CE_DATE_FORMAT_INTERNAL),
@@ -181,6 +184,17 @@ const AnomaliesOverviewPage: React.FC = () => {
     }
     getSummary()
   }, [filters, getAnomalySummary, searchText, timeRange.from, timeRange.to])
+
+  useEffect(() => {
+    if (listData && costData) {
+      trackEvent(PAGE_NAMES.ANOMALY_LANDING_PAGE, {
+        count: listData.length,
+        totalCostImpact: costData?.anomalousCost,
+        stringFilters: getFilters(filters, searchText) as CCMStringFilter[],
+        timeFilters: getTimeFilters(getGMTStartDateTime(timeRange.from), getGMTEndDateTime(timeRange.to))
+      })
+    }
+  }, [listData, costData])
 
   /* istanbul ignore next */
   const parseSummaryData = (summaryData: any) => {

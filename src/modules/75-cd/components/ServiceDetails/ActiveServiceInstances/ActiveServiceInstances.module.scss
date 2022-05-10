@@ -23,12 +23,24 @@
       font-size: var(--font-size-small) !important;
       margin: var(--spacing-tiny) 0 !important;
     }
+    .labelStyles {
+      height: 100%;
+      padding-top: var((--spacing-xsmall));
+      padding-bottom: var((--spacing-xsmall));
+      padding-right: var((--spacing-large));
+
+      .listStyles {
+        font-weight: 500 !important;
+        font-size: var(--font-size-xsmall) !important;
+        color: var(--grey-500);
+      }
+    }
   }
   .instanceTable {
     width: 100%;
     div[class*='TableV2--body'] {
       overflow: auto;
-      max-height: 380px;
+      max-height: 455px;
     }
     div[role='row'] {
       box-shadow: none;
@@ -41,15 +53,17 @@
     }
     .envContainer {
       padding: var(--spacing-small);
-      padding-left: 0px;
+      display: flex;
+      background-color: var(--lime-400) !important;
+      width: 84px;
+      height: var(--spacing-xlarge);
+      border-radius: var(--spacing-2);
+      align-items: center;
+      justify-content: center;
     }
     .environmentRow {
-      text-align: center;
-      padding: var(--spacing-tiny);
-      border-radius: 4px;
-      background: var(--lime-400);
-      max-width: 84px;
-      height: 21px;
+      font-style: normal;
+      max-width: var(--spacing-12);
     }
     .overflow {
       overflow: hidden;

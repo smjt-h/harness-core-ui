@@ -104,6 +104,14 @@ export function getStepPaletteModuleInfosFromStage(
         }
       ]
 
+    case StageType.SECURITY:
+      return [
+        {
+          module: 'sto',
+          shouldShowCommonSteps: false
+        }
+      ]
+
     default:
       return [
         {

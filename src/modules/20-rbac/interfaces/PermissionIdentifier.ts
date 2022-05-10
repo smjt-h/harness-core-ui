@@ -63,6 +63,10 @@ export enum PermissionIdentifier {
   UPDATE_DELEGATE_CONFIGURATION = 'core_delegateconfiguration_edit',
   DELETE_DELEGATE_CONFIGURATION = 'core_delegateconfiguration_delete',
   VIEW_DELEGATE_CONFIGURATION = 'core_delegateconfiguration_view',
+  EDIT_VARIABLE = 'core_variable_edit',
+  DELETE_VARIABLE = 'core_variable_delete',
+  VIEW_VARIABLE = 'core_variable_view',
+  ACCESS_VARIABLE = 'core_variable_access',
 
   // FEATURE FLAG PERMISSIONS
   DELETE_FF_FEATUREFLAG = 'ff_featureflag_delete',

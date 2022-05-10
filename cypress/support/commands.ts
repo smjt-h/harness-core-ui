@@ -31,7 +31,7 @@
 // -- This will overwrite an existing command --
 // Cypress.Commands.overwrite('visit', (originalFn, url, options) => { ... })
 import '@testing-library/cypress/add-commands'
-import { addMatchImageSnapshotCommand } from '../../node_modules/cypress-image-snapshot/command'
+import { addMatchImageSnapshotCommand } from 'cypress-image-snapshot/command'
 import { getConnectorIconByType } from '../utils/connctors-utils'
 import {
   servicesCall,

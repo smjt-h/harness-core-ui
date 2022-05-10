@@ -104,6 +104,19 @@ export interface ImagePathProps {
   selectedDeploymentType: string
 }
 
+export interface ACRArtifactProps {
+  key: string
+  name: string
+  expressions: string[]
+  context: number
+  initialValues: ACRArtifactType
+  handleSubmit: (data: ArtifactConfig) => void
+  artifactIdentifiers: string[]
+  isReadonly?: boolean
+  selectedArtifact: ArtifactType | null
+  allowableTypes: MultiTypeInputType[]
+}
+
 export interface ConnectorRefLabelType {
   firstStepName: string
   secondStepName: string
@@ -118,6 +131,8 @@ export interface ArtifactTagHelperText {
   repository?: string
   repositoryPort?: number
   artifactDirectory?: string
+  subscription?: string
+  registry?: string
 }
 export interface ArtifactImagePathTagViewProps {
   selectedArtifact: ArtifactType
@@ -134,4 +149,15 @@ export interface ArtifactImagePathTagViewProps {
   tagDisabled: boolean
   isArtifactPath?: boolean
   isServerlessDeploymentTypeSelected?: boolean
+}
+
+export interface ACRArtifactType {
+  identifier: string
+  tag: SelectOption | string
+  tagRegex: SelectOption | string
+  tagType: TagTypes
+  repository?: SelectOption | string
+  subscriptionId?: SelectOption | string
+  registry?: SelectOption | string
+  spec?: any
 }
