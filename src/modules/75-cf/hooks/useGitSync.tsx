@@ -58,7 +58,7 @@ export interface UseGitSync {
     featureFlagIdentifier: string,
     autoCommitMessage: string,
     formData: PatchOperation,
-    callback: (requestData: PatchOperation) => Promise<void>
+    onSave: (requestData: PatchOperation) => Promise<void>
   ) => void
   handleAutoCommit: (newAutoCommitValue: boolean) => Promise<void>
   handleGitPause: (newGitPauseValue: boolean) => Promise<void>
@@ -156,12 +156,12 @@ export const useGitSync = (): UseGitSync => {
     featureFlagIdentifier: string
     featureFlagName: string
     instructions: PatchInstruction
-    callback?: (reqData: PatchOperation) => Promise<void>
+    onSave?: (reqData: PatchOperation) => Promise<void>
   }>({
     featureFlagIdentifier: '',
     featureFlagName: '',
     instructions: [],
-    callback: undefined
+    onSave: undefined
   })
 
   const onSaveGitSyncSubmit = async (gitFormValues: GitSyncFormValues): Promise<void> => {
@@ -171,7 +171,7 @@ export const useGitSync = (): UseGitSync => {
     }
 
     setIsLoading(true)
-    await entityDataRef.current.callback?.(reqData)
+    await entityDataRef.current.onSave?.(reqData)
     if (gitFormValues.autoCommit) {
       handleAutoCommit(true)
     }
@@ -192,7 +192,7 @@ export const useGitSync = (): UseGitSync => {
       }
     }
     setIsLoading(true)
-    await entityDataRef.current.callback?.(reqData)
+    await entityDataRef.current.onSave?.(reqData)
     setIsLoading(false)
   }
 
@@ -277,13 +277,13 @@ export const useGitSync = (): UseGitSync => {
     featureFlagIdentifier: string,
     autoCommitMessage: string,
     formData: PatchOperation,
-    callback: (reqData: PatchOperation) => Promise<void>
+    onSave: (reqData: PatchOperation) => Promise<void>
   ): Promise<void> => {
     entityDataRef.current = {
       featureFlagIdentifier,
       featureFlagName,
       instructions: formData.instructions,
-      callback
+      onSave
     }
 
     if (isGitSyncEnabled) {
@@ -293,7 +293,7 @@ export const useGitSync = (): UseGitSync => {
         showGitSyncModal()
       }
     } else {
-      callback(formData)
+      onSave(formData)
     }
   }
 

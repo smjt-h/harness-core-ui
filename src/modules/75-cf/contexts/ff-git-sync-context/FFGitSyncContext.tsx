@@ -46,8 +46,7 @@ export const FFGitSyncContext = React.createContext<UseGitSync>({
 })
 
 export const useFFGitSyncContext = (): UseGitSync => {
-  const context = React.useContext(FFGitSyncContext)
-  return context
+  return React.useContext(FFGitSyncContext)
 }
 
 export const FFGitSyncProvider: React.FC = ({ children }) => {

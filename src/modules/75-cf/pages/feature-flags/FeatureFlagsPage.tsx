@@ -105,7 +105,9 @@ export const RenderColumnFlag: React.FC<RenderColumnFlagProps> = ({
 
   const [isSaveToggleModalOpen, setIsSaveToggleModalOpen] = useState(false)
 
-  const { gitSyncInitialValues } = gitSync.getGitSyncFormMeta(AUTO_COMMIT_MESSAGES.TOGGLED_FLAG)
+  const { gitSyncInitialValues, gitSyncValidationSchema } = gitSync.getGitSyncFormMeta(
+    AUTO_COMMIT_MESSAGES.TOGGLED_FLAG
+  )
 
   const [canToggle] = usePermission(
     {
@@ -318,8 +320,8 @@ export const RenderColumnFlag: React.FC<RenderColumnFlagProps> = ({
           <SaveFlagToGitModal
             flagName={data.name}
             flagIdentifier={data.identifier}
-            gitSyncInitialValues={gitSync.getGitSyncFormMeta().gitSyncInitialValues}
-            gitSyncValidationSchema={gitSync.getGitSyncFormMeta().gitSyncValidationSchema}
+            gitSyncInitialValues={gitSyncInitialValues}
+            gitSyncValidationSchema={gitSyncValidationSchema}
             onSubmit={handleFlagToggle}
             onClose={() => {
               setIsSaveToggleModalOpen(false)

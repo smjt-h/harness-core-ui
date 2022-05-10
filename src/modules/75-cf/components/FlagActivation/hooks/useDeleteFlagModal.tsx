@@ -36,6 +36,7 @@ interface UseDeleteFlagModalReturn {
 
 const useDeleteFlagModal = (props: UseDeleteFlagModalProps): UseDeleteFlagModalReturn => {
   const { featureFlag, gitSync, queryParams, deleteFeatureFlag } = props
+  const { gitSyncInitialValues, gitSyncValidationSchema } = gitSync.getGitSyncFormMeta()
 
   const urlQuery: Record<string, string> = useQueryParams()
   const { projectIdentifier, orgIdentifier, accountId } = useParams<Record<string, string>>()
@@ -56,8 +57,8 @@ const useDeleteFlagModal = (props: UseDeleteFlagModalProps): UseDeleteFlagModalR
       <SaveFlagToGitModal
         flagName={featureFlag.name}
         flagIdentifier={featureFlag.identifier}
-        gitSyncInitialValues={gitSync.getGitSyncFormMeta().gitSyncInitialValues}
-        gitSyncValidationSchema={gitSync.getGitSyncFormMeta().gitSyncValidationSchema}
+        gitSyncInitialValues={gitSyncInitialValues}
+        gitSyncValidationSchema={gitSyncValidationSchema}
         onSubmit={handleDeleteFlag}
         onClose={() => {
           hideGitModal()

@@ -35,7 +35,7 @@ const SettingsMenu = (): ReactElement => {
           data-testid="auto-commit-switch"
           alignIndicator="left"
           checked={isAutoCommitEnabled}
-          onChange={async event => {
+          onChange={event => {
             handleAutoCommit(event.currentTarget.checked)
           }}
           disabled={gitSyncLoading || isGitSyncPaused}
