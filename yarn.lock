@@ -1847,10 +1847,10 @@
   resolved "https://npm.pkg.github.com/download/@harness/design-system/1.0.0/4961fc151ffa0dd1f3d86b37572f9a5cd575d592c646cd5e68d508e1045c9d96#e463410da2c7ad9bff84eaa43fbe4ba9ba347da1"
   integrity sha512-sMsLP5Rxg08t87dJamTgpzEfRAef06C14bZO92SGqiXYtXsK01evjnXaOAiUS4gO36gMGi5cYJAqkJ0XBkERIg==
 
-"@harness/help-panel@1.0.0-beta.67":
-  version "1.0.0-beta.67"
-  resolved "https://npm.pkg.github.com/download/@harness/help-panel/1.0.0-beta.67/d6b46a9e3c644c56ef543fcba42e7eddee5df619c3b886319a8c6f4ad7f1e765#4b4d0cb34a181008b9ebbd21f2d0a76bfa704f68"
-  integrity sha512-z/+KdR5mbzy0+8ubdxbAC91oCS+Afc7zUXp9qEOAi+BDFnWw9lt6+/cD/N05LV/bHHVykAkK9/UosEbvLbgOAg==
+"@harness/help-panel@1.4.0":
+  version "1.4.0"
+  resolved "https://npm.pkg.github.com/download/@harness/help-panel/1.4.0/687a5b6b00fee52a4a8c1de22d171bc7eb9c9af0b129a9d1e210992934ea95d0#da8f2e02b8bbe6ac581b90fccdb0fa60b1e7a93d"
+  integrity sha512-aMEJoqwS0N4j/j1sUnTLKVNxdpjRltItlpLnzIVLpsyggCWzoWU+p1/eynyp0XKjvd/Crfd4DO3ZTxMg/L3ilA==
   dependencies:
     "@contentful/rich-text-react-renderer" "^15.12.0"
     contentful "^9.1.20"

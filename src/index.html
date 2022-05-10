@@ -40,6 +40,9 @@
     <!-- deploymentType -->
     <!-- refinerProjectToken -->
     <!-- refinerFeedbackToken -->
+    <!-- helpPanelAccessToken -->
+    <!-- helpPanelSpace -->
+    <!-- helpPanelEnvironment -->
 
     <!-- adding bugsnag for SAAS build -->
     <% if (!__DEV__) { %>
@@ -72,6 +75,12 @@
     <% if (HARNESS_ENABLE_NG_AUTH_UI) { %>
     <script>
       window.HARNESS_ENABLE_NG_AUTH_UI = true
+    </script>
+    <% } %> <% if (__DEV__) { %>
+    <script>
+      window.helpPanelAccessToken = '5EHT-ZBWYjweBLS62PNKf-vp3ZbXAylRUlPRPcHwqAg'
+      window.helpPanelSpace = 'jj62blws1bo9'
+      window.helpPanelEnvironment = 'QA'
     </script>
     <% } %>
 
