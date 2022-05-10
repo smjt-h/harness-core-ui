@@ -7,19 +7,24 @@
 
 import React from 'react'
 import { useParams } from 'react-router-dom'
-import { Layout, Container, PageError } from '@wings-software/uicore'
+import { PageError } from '@harness/uicore'
+import routes from '@common/RouteDefinitions'
 import { ContainerSpinner } from '@common/components/ContainerSpinner/ContainerSpinner'
 import { useDocumentTitle } from '@common/hooks/useDocumentTitle'
 import type { EnvironmentResponseDTO } from 'services/cd-ng'
 import { useSyncedEnvironment } from '@cf/hooks/useSyncedEnvironment'
 import { useStrings } from 'framework/strings'
 import { getErrorMessage } from '@cf/utils/CFUtils'
-import CFEnvironmentDetailsHeader from './EnvironmentDetailsHeader'
+import AddKeyDialog from '@cf/components/AddKeyDialog/AddKeyDialog'
+import { EnvironmentType } from '@common/constants/EnvironmentType'
+import useActiveEnvironment from '@cf/hooks/useActiveEnvironment'
+import { DetailPageTemplate } from '@cf/components/DetailPageTemplate/DetailPageTemplate'
 import CFEnvironmentDetailsBody from './EnvironmentDetailsBody'
 
 const EnvironmentDetails: React.FC = () => {
   const { getString } = useStrings()
   const { projectIdentifier, environmentIdentifier, orgIdentifier, accountId } = useParams<Record<string, string>>()
+  const { withActiveEnvironment } = useActiveEnvironment()
 
   const { loading, data, error, refetch } = useSyncedEnvironment({
     accountId,
@@ -32,27 +37,44 @@ const EnvironmentDetails: React.FC = () => {
 
   useDocumentTitle(getString('environments'))
 
+  const breadcrumbs = [
+    {
+      label: getString('environments'),
+      url: withActiveEnvironment(
+        routes.toCFEnvironments({
+          accountId,
+          orgIdentifier,
+          projectIdentifier
+        })
+      )
+    }
+  ]
+
   return (
     <>
       {hasData && (
-        <Layout.Vertical height="100vh" style={{ boxSizing: 'border-box', background: '#FDFDFD' }}>
-          <CFEnvironmentDetailsHeader environment={environment} />
-          <CFEnvironmentDetailsBody environment={environment} />
-        </Layout.Vertical>
-      )}
-      {loading && (
-        <Container
-          style={{
-            position: 'fixed',
-            top: '144px',
-            left: '290px',
-            width: 'calc(100% - 290px)',
-            height: 'calc(100% - 144px)'
+        <DetailPageTemplate
+          breadcrumbs={breadcrumbs}
+          title={environment.name}
+          identifier={environment.identifier}
+          subTitle={environment.description}
+          metaData={{
+            environment: getString(environment.type === EnvironmentType.PRODUCTION ? 'production' : 'nonProduction')
           }}
+          subheader={
+            <AddKeyDialog
+              environment={environment}
+              onCreate={(newKey, hideModal) => {
+                console.log(newKey)
+                hideModal()
+              }}
+            />
+          }
         >
-          <ContainerSpinner />
-        </Container>
+          <CFEnvironmentDetailsBody environment={environment} />
+        </DetailPageTemplate>
       )}
+      {loading && <ContainerSpinner flex={{ align: 'center-center' }} />}
       {error && (
         <PageError
           message={getErrorMessage(error)}
