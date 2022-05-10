@@ -154,10 +154,10 @@ function PipelinesPage({ mockData }: CDPipelinesPageProps): React.ReactElement {
   const [pipelineToDelete, setPipelineToDelete] = useState<PMSPipelineSummaryResponse>()
   const queryParams = useQueryParams<QueryParams>({
     processQueryParams(params: StringQueryParams) {
-      let filters = {}
+      let paramsFilters = {}
 
       try {
-        filters = params.filters ? JSON.parse(params.filters) : undefined
+        paramsFilters = params.filters ? JSON.parse(params.filters) : undefined
       } catch (_e) {
         // do nothing
       }
@@ -167,14 +167,22 @@ function PipelinesPage({ mockData }: CDPipelinesPageProps): React.ReactElement {
         page: params.page || defaultPageNumber,
         size: params.size || defaultSizeNumber,
         sort: params.sort?.split(',') || [SortFields.LastUpdatedAt, Sort.DESC],
-        filters,
+        paramsFilters,
         searchTerm: params.searchTerm,
         repoIdentifier: params.repoIdentifier,
         branch: params.branch
       } as QueryParams
     }
   })
-  const { searchTerm: searchParam, repoIdentifier, branch, getDefaultFromOtherRepo, page, sort, size } = queryParams
+  const {
+    searchTerm: searchParam,
+    repoIdentifier,
+    branch: repoBranch,
+    getDefaultFromOtherRepo,
+    page,
+    sort,
+    size
+  } = queryParams
   const { updateQueryParams, replaceQueryParams } = useUpdateQueryParams<Partial<StringQueryParams>>()
 
   const handleRepoChange = (filter: GitFilterScope) => {
@@ -263,9 +271,9 @@ function PipelinesPage({ mockData }: CDPipelinesPageProps): React.ReactElement {
   )
 
   const gitFilter: GitFilterScope = {
-    repo: queryParams.repoIdentifier || '',
-    branch: queryParams.branch,
-    getDefaultFromOtherRepo: queryParams.getDefaultFromOtherRepo
+    repo: repoIdentifier || '',
+    branch: repoBranch,
+    getDefaultFromOtherRepo: getDefaultFromOtherRepo
   }
 
   const defaultQueryParamsForPiplines = {
@@ -625,7 +633,7 @@ function PipelinesPage({ mockData }: CDPipelinesPageProps): React.ReactElement {
     module,
     searchParam,
     repoIdentifier,
-    branch,
+    repoBranch,
     getDefaultFromOtherRepo
   ])
 
