@@ -161,7 +161,7 @@ export default function CreatePipelines({
           logger.info(JSON.stringify(values))
           const formGitDetails =
             gitSimplification && values.storeType === 'REMOTE'
-              ? { repoName: values.repoName, branch: values.branch, yamlPath: values.filePath }
+              ? { repoName: values.repoName, branch: values.branch, filePath: values.filePath }
               : values.repo && values.repo.trim().length > 0
               ? { repoIdentifier: values.repo, branch: values.branch }
               : undefined

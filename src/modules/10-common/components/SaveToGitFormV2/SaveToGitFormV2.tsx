@@ -235,9 +235,11 @@ const SaveToGitFormV2: React.FC<ModalConfigureProps & SaveToGitFormV2Props> = pr
           })}
           onSubmit={formData => {
             props.onSuccess?.({
-              ...pick(formData, ['commitMsg', 'createPr', 'targetBranch']),
+              ...pick(formData, ['commitMsg', 'createPr']),
               isNewBranch,
-              branch: isNewBranch ? formData.branch : defaultInitialFormData.branch
+              branch: isNewBranch ? formData.branch : defaultInitialFormData.branch,
+              ...(isNewBranch ? { baseBranch: defaultInitialFormData.branch } : {}),
+              ...(formData.createPr ? { targetBranch: formData.targetBranch } : {})
             })
           }}
         >

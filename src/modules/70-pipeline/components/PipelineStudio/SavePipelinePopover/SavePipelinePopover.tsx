@@ -237,7 +237,9 @@ export function SavePipelinePopover({
         ...(storeMetadata.storeType === 'REMOTE' ? { connectorRef: storeMetadata.connectorRef } : {}),
         ...(updatedGitDetails ?? {}),
         ...(lastObject ?? {}),
-        ...(updatedGitDetails && updatedGitDetails.isNewBranch ? { baseBranch: branch } : {})
+        ...(updatedGitDetails && storeMetadata.storeType !== 'REMOTE' && updatedGitDetails.isNewBranch
+          ? { baseBranch: branch }
+          : {})
       },
       omit(latestPipeline, 'repo', 'branch'),
       isEdit,
@@ -310,8 +312,6 @@ export function SavePipelinePopover({
       storeMetadata,
       {
         ...updatedGitDetails,
-        isNewBranch: false,
-        createPr: false,
         repoName: gitDetails.repoName,
         filePath: defaultTo(gitDetails.filePath, '')
       },
