@@ -79,12 +79,12 @@ export const EnvironmentTypes = withEnvironment(({ environment }) => {
   return (
     <Text
       className={cx(css.environmentType, {
-        [css.production]: (environment as any).type === EnvironmentType.PRODUCTION
+        [css.production]: (environment as any)?.type === EnvironmentType.PRODUCTION
       })}
       font={{ size: 'small' }}
     >
       {getString(
-        (environment as any).type === EnvironmentType.PRODUCTION ? 'cd.serviceDashboard.prod' : 'cd.preProductionType'
+        (environment as any)?.type === EnvironmentType.PRODUCTION ? 'cd.serviceDashboard.prod' : 'cd.preProductionType'
       )}
     </Text>
   )
