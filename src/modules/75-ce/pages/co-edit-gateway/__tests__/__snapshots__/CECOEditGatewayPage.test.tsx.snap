@@ -571,7 +571,7 @@ exports[`Edit rule page render edit rule page successfully 1`] = `
                           <span
                             class="Toggle--toggleIcon"
                           />
-                          Hide Progress Page
+                          ce.co.autoStoppingRule.review.hideProgressPage
                         </label>
                         <label
                           class="Toggle--toggle StyledProps--main"

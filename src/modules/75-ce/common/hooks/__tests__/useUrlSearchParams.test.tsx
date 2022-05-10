@@ -6,8 +6,8 @@
  */
 
 import React from 'react'
-import { TestWrapper } from '@common/utils/testUtils'
 import { renderHook } from '@testing-library/react-hooks'
+import { TestWrapper } from '@common/utils/testUtils'
 import useUrlSearchParams from '../useUrlSearchParams'
 
 describe('url search params tests', () => {

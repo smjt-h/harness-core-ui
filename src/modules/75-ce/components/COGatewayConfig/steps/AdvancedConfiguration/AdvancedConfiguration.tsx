@@ -69,7 +69,7 @@ const AdvancedConfiguration: React.FC<AdvancedConfigurationProps> = props => {
         <Layout.Horizontal spacing={'large'}>
           {(isK8sSelected || isEcsSelected) && (
             <Toggle
-              label={'Hide Progress Page'}
+              label={getString('ce.co.autoStoppingRule.review.hideProgressPage')}
               checked={props.gatewayDetails.opts.hide_progress_page}
               onToggle={isToggled => {
                 props.setGatewayDetails({
