@@ -30,6 +30,10 @@ export const DEFAULT_ACCESS_TOKEN = 'Default_Access_Token_'.concat(new Date().ge
 
 export const DEFAULT_HARNESS_KMS = 'harnessSecretManager'
 
+export const DEFAULT_SCM_CONNECTOR = 'Default SCM Connector'
+
+export const DEFAULT_SCM_CONNECTOR_ID = 'Default_SCM_Connector'.concat(new Date().getTime().toString())
+
 export const DEFAULT_PIPELINE_PAYLOAD = {
   pipeline: {
     name: '',

@@ -29,7 +29,10 @@ import {
 import { useStrings } from 'framework/strings'
 import type { StringsMap } from 'stringTypes'
 import {
+  ConnectorInfoDTO,
+  ResponseScmConnectorResponse,
   ResponseSecretResponseWrapper,
+  SecretDTOV2,
   SecretTextSpecDTO,
   useCreateDefaultScmConnector,
   usePostSecret
@@ -38,7 +41,14 @@ import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
 import { OAuthProviders, OAuthProviderType } from '@common/constants/OAuthProviders'
 import { joinAsASentence } from '@common/utils/StringUtils'
 import { TestStatus } from '@common/components/TestConnectionWidget/TestConnectionWidget'
-import { DEFAULT_ACCESS_TOKEN, DEFAULT_HARNESS_KMS, Status } from '@common/utils/CIConstants'
+import {
+  ACCOUNT_SCOPE_PREFIX,
+  DEFAULT_ACCESS_TOKEN,
+  DEFAULT_HARNESS_KMS,
+  DEFAULT_SCM_CONNECTOR,
+  DEFAULT_SCM_CONNECTOR_ID,
+  Status
+} from '@common/utils/CIConstants'
 import { Connectors } from '@connectors/constants'
 import {
   AllSaaSGitProviders,
@@ -93,7 +103,7 @@ const SelectGitProviderRef = (
   const [authMethod, setAuthMethod] = useState<GitAuthenticationMethod>()
   const [testConnectionStatus, setTestConnectionStatus] = useState<TestStatus>(TestStatus.NOT_INITIATED)
   const formikRef = useRef<FormikContext<SelectGitProviderInterface>>()
-  const { accountId, projectIdentifier, orgIdentifier } = useParams<ProjectPathProps>()
+  const { accountId } = useParams<ProjectPathProps>()
   const { mutate: createSecret } = usePostSecret({
     queryParams: { accountIdentifier: accountId }
   })
@@ -171,6 +181,69 @@ const SelectGitProviderRef = (
     }
   })
 
+  const getSecretPayload = React.useCallback(
+    (secretId: string): SecretDTOV2 => {
+      return {
+        name: secretId,
+        identifier: secretId,
+        type: 'SecretText',
+        spec: {
+          value: formikRef.current?.values.accessToken,
+          valueType: 'Inline',
+          secretManagerIdentifier: DEFAULT_HARNESS_KMS
+        } as SecretTextSpecDTO
+      }
+    },
+    [formikRef.current?.values.accessToken]
+  )
+
+  const getGitUrl = React.useCallback((): string => {
+    let url = ''
+    switch (gitProvider?.type) {
+      case Connectors.GITHUB:
+        url = getString('common.git.gitHubUrlPlaceholder')
+        break
+      case Connectors.BITBUCKET:
+        url = getString('common.git.bitbucketUrlPlaceholder')
+        break
+      case Connectors.GITLAB:
+        url = getString('common.git.gitLabUrlPlaceholder')
+        break
+    }
+    return url ? url.replace('/account/', '') : ''
+  }, [gitProvider?.type])
+
+  const getSCMConnectorPayload = React.useCallback(
+    (secretId: string, type: GitProvider['type']): ConnectorInfoDTO => {
+      return {
+        name: DEFAULT_SCM_CONNECTOR,
+        identifier: DEFAULT_SCM_CONNECTOR_ID,
+        type,
+        spec: {
+          executeOnDelegate: true,
+          type: 'Account',
+          url: getGitUrl(),
+          authentication: {
+            type: 'Http',
+            spec: {
+              type: 'UsernameToken',
+              spec: {
+                tokenRef: `${ACCOUNT_SCOPE_PREFIX}${secretId}`
+              }
+            }
+          },
+          apiAccess: {
+            type: 'Token',
+            spec: {
+              tokenRef: `${ACCOUNT_SCOPE_PREFIX}${secretId}`
+            }
+          }
+        }
+      }
+    },
+    [gitProvider?.type]
+  )
+
   const TestConnection = (): React.ReactElement => {
     switch (testConnectionStatus) {
       case TestStatus.FAILED:
@@ -186,51 +259,29 @@ const SelectGitProviderRef = (
                 setTestConnectionStatus(TestStatus.IN_PROGRESS)
                 const defaultSecretId = `${gitProvider?.type as string}_${DEFAULT_ACCESS_TOKEN}`
                 createSecret({
-                  secret: {
-                    name: defaultSecretId,
-                    identifier: defaultSecretId,
-                    type: 'SecretText',
-                    spec: {
-                      value: formikRef.current?.values.accessToken,
-                      valueType: 'Inline',
-                      secretManagerIdentifier: DEFAULT_HARNESS_KMS
-                    } as SecretTextSpecDTO
-                  }
+                  secret: getSecretPayload(defaultSecretId)
                 })
                   .then((response: ResponseSecretResponseWrapper) => {
                     const { data, status } = response
                     if (status === Status.SUCCESS && data?.secret?.identifier) {
-                      setTestConnectionStatus(TestStatus.SUCCESS)
-                      // createSCMConnector({
-                      //   secret: data?.secret,
-                      //   connector: {
-                      //     name: 'git6',
-                      //     description: '',
-                      //     identifier: 'git6',
-                      //     type: 'Github',
-                      //     spec: {
-                      //       executeOnDelegate: true,
-                      //       type: 'Account',
-                      //       url: 'https://www.github.com',
-                      //       validationRepo: '',
-                      //       authentication: {
-                      //         type: 'Http',
-                      //         spec: {
-                      //           type: 'UsernameToken',
-                      //           spec: {
-                      //             tokenRef: 'account.git11'
-                      //           }
-                      //         }
-                      //       },
-                      //       apiAccess: {
-                      //         type: 'Token',
-                      //         spec: {
-                      //           tokenRef: 'account.git11'
-                      //         }
-                      //       }
-                      //     }
-                      //   }
-                      // })
+                      if (gitProvider?.type) {
+                        createSCMConnector({
+                          secret: data?.secret,
+                          connector: getSCMConnectorPayload(data?.secret?.identifier, gitProvider.type)
+                        })
+                          .then((createSCMCtrResponse: ResponseScmConnectorResponse) => {
+                            const { data: scmCtrData, status: scmCtrResponse } = createSCMCtrResponse
+                            if (
+                              scmCtrResponse === Status.SUCCESS &&
+                              scmCtrData?.connectorResponseDTO?.connector?.identifier
+                            ) {
+                              setTestConnectionStatus(TestStatus.SUCCESS)
+                            }
+                          })
+                          .catch(_err => {
+                            setTestConnectionStatus(TestStatus.FAILED)
+                          })
+                      }
                     }
                   })
                   .catch(_err => {
