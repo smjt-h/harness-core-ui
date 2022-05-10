@@ -49,6 +49,7 @@ import {
   useGetEnvironmentListForProject,
   useGetServiceDefinitionTypes
 } from 'services/cd-ng'
+import { useDeepCompareEffect, useQueryParams, useUpdateQueryParams } from '@common/hooks'
 import { useDocumentTitle } from '@common/hooks/useDocumentTitle'
 import type { UseGetMockData } from '@common/utils/testUtils'
 import { String, useStrings } from 'framework/strings'
@@ -87,9 +88,10 @@ import PipelineFilterForm from '../pipeline-deployment-list/PipelineFilterForm/P
 import pipelineIllustration from './images/deploypipeline-illustration.svg'
 import buildpipelineIllustration from './images/buildpipeline-illustration.svg'
 import flagpipelineIllustration from './images/flagpipeline-illustration.svg'
+import type { QueryParams, StringQueryParams } from './types'
 import css from './PipelinesPage.module.scss'
-import { useQueryParams, useUpdateQueryParams } from '@common/hooks'
-import type { PipelineListQueryParams, StringQueryParams } from './types'
+import { useFeatureFlag } from '@common/hooks/useFeatureFlag'
+import { FeatureFlag } from '@common/featureFlags'
 
 export enum Sort {
   DESC = 'DESC',
@@ -104,6 +106,8 @@ export enum SortFields {
   Name = 'name'
 }
 
+const defaultPageNumber = 0
+const defaultSizeNumber = 20
 export interface CDPipelinesPageProps {
   mockData?: UseGetMockData<ResponsePagePMSPipelineSummaryResponse>
 }
@@ -128,21 +132,16 @@ function PipelinesPage({ mockData }: CDPipelinesPageProps): React.ReactElement {
       value: SortFields.ZA90
     }
   ]
-
+  const UNSAVED_FILTER_IDENTIFIER = StringUtils.getIdentifierFromName(UNSAVED_FILTER)
   const filterRef = useRef<FilterRef<FilterDTO> | null>(null)
-  const [appliedFilter, setAppliedFilter] = useState<FilterDTO | null>()
   const [filters, setFilters] = useState<FilterDTO[]>()
   const [isRefreshingFilters, setIsRefreshingFilters] = useState<boolean>(false)
-  const [gitFilter, setGitFilter] = useState<GitFilterScope | null>(null)
   const [error, setError] = useState<Error | null>(null)
-
-  const [page, setPage] = useState(0)
   const [view, setView] = useState<Views>(Views.GRID)
-  const [sort, setStort] = useState<string[]>([SortFields.LastUpdatedAt, Sort.DESC])
+  const [appliedFilter, setAppliedFilter] = useState<FilterDTO | null>()
 
   // Set Default to LastUpdated
   const [selectedSort, setSelectedSort] = useState<SelectOption>(sortOptions[1])
-  const [searchParam, setSearchParam] = useState('')
   const [pipelineList, setPipelineList] = useState<PagePMSPipelineSummaryResponse | undefined>()
   const [isFetchingMetaData, setIsFetchingMetaData] = useState<boolean>(false)
 
@@ -155,7 +154,7 @@ function PipelinesPage({ mockData }: CDPipelinesPageProps): React.ReactElement {
   const [isReseting, setIsReseting] = useState<boolean>(false)
   const [isDeleting, setIsDeleting] = useState<boolean>(false)
   const [pipelineToDelete, setPipelineToDelete] = useState<PMSPipelineSummaryResponse>()
-  const queryParams = useQueryParams<PipelineListQueryParams>({
+  const queryParams = useQueryParams<QueryParams>({
     processQueryParams(params: StringQueryParams) {
       let filters = {}
 
@@ -167,27 +166,34 @@ function PipelinesPage({ mockData }: CDPipelinesPageProps): React.ReactElement {
 
       return {
         ...params,
-        page: params.page || '1',
-        size: params.size || '20',
-        sort: [],
+        page: params.page || defaultPageNumber,
+        size: params.size || defaultSizeNumber,
+        sort: params.sort?.split(',') || [SortFields.LastUpdatedAt, Sort.DESC],
         filters,
         searchTerm: params.searchTerm,
         repoIdentifier: params.repoIdentifier,
         branch: params.branch
-      }
+      } as QueryParams
     }
   })
-  const { updateQueryParams } = useUpdateQueryParams<Partial<GetPipelineListQueryParams>>()
+  const { searchTerm: searchParam, repoIdentifier, branch, getDefaultFromOtherRepo, page, sort, size } = queryParams
+  const { updateQueryParams, replaceQueryParams } = useUpdateQueryParams<Partial<StringQueryParams>>()
 
-  const handleFilterChange = (filter: GitFilterScope) => {
-    Object.entries(filter).forEach(entry => {
-      entry[0] = entry[0] === 'repo' ? 'repoIdentifier' : entry[0]
-      if (entry[1]) {
-        updateQueryParams({ [entry[0]]: entry[1] })
-      } else {
-        updateQueryParams({ [entry[0]]: [] as any }) // removes the param
-      }
+  const handleRepoChange = (filter: GitFilterScope) => {
+    updateQueryParams({
+      repoIdentifier: filter.repo || ([] as any),
+      branch: filter.branch || ([] as any),
+      getDefaultFromOtherRepo: filter.getDefaultFromOtherRepo || ([] as any),
+      page: [] as any
     })
+  }
+
+  function handleQueryChange(query: string): void {
+    if (query) {
+      updateQueryParams({ searchTerm: query })
+    } else {
+      updateQueryParams({ searchTerm: [] as any }) // removes the param
+    }
   }
 
   const { projectIdentifier, orgIdentifier, accountId, module } = useParams<
@@ -208,6 +214,25 @@ function PipelinesPage({ mockData }: CDPipelinesPageProps): React.ReactElement {
     : isCFModule
     ? flagpipelineIllustration
     : pipelineIllustration
+
+  const templatesFeatureFlagEnabled = useFeatureFlag(FeatureFlag.NG_TEMPLATES)
+  const pipelineTemplatesFeatureFlagEnabled = useFeatureFlag(FeatureFlag.NG_PIPELINE_TEMPLATE)
+  const isPipelineTemplateEnabled = templatesFeatureFlagEnabled && pipelineTemplatesFeatureFlagEnabled
+
+  useDeepCompareEffect(() => {
+    setAppliedFilter(
+      queryParams.filterIdentifier && queryParams.filterIdentifier !== UNSAVED_FILTER_IDENTIFIER
+        ? getFilterByIdentifier(queryParams.filterIdentifier || '', filters)
+        : queryParams.filters && !isEmpty(queryParams.filters)
+        ? {
+            name: UNSAVED_FILTER,
+            identifier: UNSAVED_FILTER_IDENTIFIER,
+            filterProperties: queryParams.filters,
+            filterVisibility: undefined
+          }
+        : (null as any)
+    )
+  }, [queryParams, filters])
 
   const goToPipelineDetail = useCallback(
     (/* istanbul ignore next */ pipeline?: PMSPipelineSummaryResponse) => {
@@ -243,6 +268,12 @@ function PipelinesPage({ mockData }: CDPipelinesPageProps): React.ReactElement {
     [projectIdentifier, orgIdentifier, history, accountId]
   )
 
+  const gitFilter: GitFilterScope = {
+    repo: queryParams.repoIdentifier || '',
+    branch: queryParams.branch,
+    getDefaultFromOtherRepo: queryParams.getDefaultFromOtherRepo
+  }
+
   const defaultQueryParamsForPiplines = {
     accountIdentifier: accountId,
     projectIdentifier,
@@ -251,7 +282,7 @@ function PipelinesPage({ mockData }: CDPipelinesPageProps): React.ReactElement {
     searchTerm: searchParam,
     page,
     sort,
-    size: 20,
+    size,
     ...(gitFilter?.repo &&
       gitFilter.branch && {
         repoIdentifier: gitFilter.repo,
@@ -303,12 +334,7 @@ function PipelinesPage({ mockData }: CDPipelinesPageProps): React.ReactElement {
   useDocumentTitle([getString('pipelines')])
 
   const reset = (): void => {
-    searchRef.current.clear()
-    setAppliedFilter(null)
-    setGitFilter(null)
-    setError(null)
-    setSearchParam('')
-    setIsReseting(true)
+    replaceQueryParams({})
   }
 
   /* #region FIlter CRUD operations */
@@ -369,7 +395,7 @@ function PipelinesPage({ mockData }: CDPipelinesPageProps): React.ReactElement {
     const saveOrUpdateHandler = filterRef.current?.saveOrUpdateFilterHandler
     if (saveOrUpdateHandler && typeof saveOrUpdateHandler === 'function') {
       const updatedFilter = await saveOrUpdateHandler(isUpdate, requestBodyPayload)
-      setAppliedFilter(updatedFilter)
+      updateQueryParams({ filters: JSON.stringify({ ...(updatedFilter || {}) }) })
     }
     await refetchFilterList()
     setIsRefreshingFilters(false)
@@ -442,17 +468,23 @@ function PipelinesPage({ mockData }: CDPipelinesPageProps): React.ReactElement {
     const onApply = (inputFormData: FormikProps<PipelineFormType>['values']) => {
       if (!isObjectEmpty(inputFormData)) {
         const filterFromFormData = getValidFilterArguments({ ...inputFormData })
-        setAppliedFilter({ ...unsavedFilter, filterProperties: filterFromFormData || {} })
+        updateQueryParams({
+          page: [] as any,
+          filterIdentifier: [] as any,
+          filters: JSON.stringify({ ...(filterFromFormData || {}) })
+        })
         hideFilterDrawer()
       } else {
         showError(getString('filters.invalidCriteria'), undefined, 'pipeline.invalid.criteria.error')
       }
     }
 
-    const handleFilterClick = (identifier: string): void => {
-      if (identifier !== unsavedFilter.identifier) {
-        const selectedFilter = getFilterByIdentifier(identifier, filters)
-        setAppliedFilter(selectedFilter)
+    const handleFilterClick = (filterIdentifier: string): void => {
+      if (filterIdentifier !== unsavedFilter.identifier) {
+        updateQueryParams({
+          filterIdentifier,
+          filters: [] as any /* this will remove the param */
+        })
       }
     }
 
@@ -546,10 +578,10 @@ function PipelinesPage({ mockData }: CDPipelinesPageProps): React.ReactElement {
     event?.preventDefault()
     /* istanbul ignore else */
     if (option.value) {
-      const selectedFilter = getFilterByIdentifier(option.value?.toString(), filters)
-      const aggregatedFilter = selectedFilter?.filterProperties || {}
-      const combinedFilter = Object.assign(selectedFilter, { filterProperties: aggregatedFilter })
-      setAppliedFilter(combinedFilter)
+      updateQueryParams({
+        filterIdentifier: option.value.toString(),
+        filters: [] as any /* this will remove the param */
+      })
     } else {
       reset()
     }
@@ -588,7 +620,7 @@ function PipelinesPage({ mockData }: CDPipelinesPageProps): React.ReactElement {
   useEffect(() => {
     cancel()
     setIsLoading(true)
-    fetchPipelines(defaultQueryParamsForPiplines, appliedFilter?.filterProperties)
+    fetchPipelines(defaultQueryParamsForPiplines, appliedFilter?.filterProperties as PipelineFilterProperties)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [
     page,
@@ -598,9 +630,17 @@ function PipelinesPage({ mockData }: CDPipelinesPageProps): React.ReactElement {
     appliedFilter?.filterProperties,
     module,
     searchParam,
-    sort,
-    gitFilter
+    repoIdentifier,
+    branch,
+    getDefaultFromOtherRepo
   ])
+
+  useDeepCompareEffect(() => {
+    cancel()
+    setIsLoading(true)
+    fetchPipelines(defaultQueryParamsForPiplines, appliedFilter?.filterProperties as PipelineFilterProperties)
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [sort])
 
   const shouldRenderFilterSelector = (): boolean => {
     if (isGitSyncEnabled) {
@@ -655,8 +695,6 @@ function PipelinesPage({ mockData }: CDPipelinesPageProps): React.ReactElement {
     return <PageSpinner />
   }
 
-  console.log('queryParams', queryParams)
-
   return (
     <>
       <Page.Header
@@ -691,9 +729,7 @@ function PipelinesPage({ mockData }: CDPipelinesPageProps): React.ReactElement {
               <GitSyncStoreProvider>
                 <GitFilters
                   onChange={filter => {
-                    handleFilterChange(filter)
-                    setGitFilter(filter)
-                    setPage(0)
+                    handleRepoChange(filter)
                   }}
                   className={css.gitFilter}
                   defaultValue={gitFilter || undefined}
@@ -708,16 +744,18 @@ function PipelinesPage({ mockData }: CDPipelinesPageProps): React.ReactElement {
                 width={200}
                 placeholder={getString('search')}
                 onChange={(text: string) => {
+                  handleQueryChange(text)
                   setIsReseting(true)
-                  setSearchParam(text)
+                  // setSearchParam(text)
                 }}
+                defaultValue={queryParams.searchTerm}
                 ref={searchRef}
                 className={css.expandSearch}
               />
               {shouldRenderFilterSelector() && (
                 <Layout.Horizontal padding={{ left: 'small', right: 'small' }}>
                   <FilterSelector<FilterDTO>
-                    appliedFilter={appliedFilter}
+                    appliedFilter={appliedFilter as FilterDTO}
                     filters={filters}
                     onFilterBtnClick={openFilterDrawer}
                     onFilterSelect={handleFilterSelection}
@@ -753,16 +791,20 @@ function PipelinesPage({ mockData }: CDPipelinesPageProps): React.ReactElement {
               icon={'main-sort'}
               iconProps={{ size: 16, color: Color.GREY_400 }}
               onChange={item => {
+                let sortValue: string[] = []
                 if (item.value === SortFields.AZ09) {
-                  setStort([SortFields.Name, Sort.ASC])
+                  sortValue = [SortFields.Name, Sort.ASC]
                 } else if (item.value === SortFields.ZA90) {
-                  setStort([SortFields.Name, Sort.DESC])
+                  sortValue = [SortFields.Name, Sort.DESC]
                 } else if (item.value === SortFields.LastUpdatedAt) {
-                  setStort([SortFields.LastUpdatedAt, Sort.DESC])
+                  sortValue = [SortFields.LastUpdatedAt, Sort.DESC]
                 } else if (item.value === SortFields.RecentActivity) {
-                  setStort([SortFields.RecentActivity, Sort.DESC])
+                  sortValue = [SortFields.RecentActivity, Sort.DESC]
                 }
-                setPage(0)
+                updateQueryParams({
+                  page: [] as any,
+                  sort: sortValue.toString()
+                })
                 setSelectedSort(item)
               }}
             />
@@ -816,7 +858,7 @@ function PipelinesPage({ mockData }: CDPipelinesPageProps): React.ReactElement {
           <GitSyncStoreProvider>
             {view === Views.GRID ? (
               <PipelineGridView
-                gotoPage={/* istanbul ignore next */ pageNumber => setPage(pageNumber)}
+                gotoPage={/* istanbul ignore next */ pageNumber => updateQueryParams({ page: pageNumber.toString() })}
                 data={pipelineList}
                 goToPipelineDetail={goToPipelineDetail}
                 goToPipelineStudio={goToPipeline}
@@ -828,7 +870,7 @@ function PipelinesPage({ mockData }: CDPipelinesPageProps): React.ReactElement {
               />
             ) : (
               <PipelineListView
-                gotoPage={/* istanbul ignore next */ pageNumber => setPage(pageNumber)}
+                gotoPage={/* istanbul ignore next */ pageNumber => updateQueryParams({ page: pageNumber.toString() })}
                 data={pipelineList}
                 goToPipelineDetail={goToPipelineDetail}
                 goToPipelineStudio={goToPipeline}
