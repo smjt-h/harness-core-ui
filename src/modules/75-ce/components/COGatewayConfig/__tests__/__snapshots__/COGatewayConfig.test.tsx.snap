@@ -47,7 +47,7 @@ exports[`Auto stopping Rule creation Tests Advanced configuration section change
             <span
               class="Toggle--toggleIcon"
             />
-            Hide Progress Page
+            ce.co.autoStoppingRule.review.hideProgressPage
           </label>
           <label
             class="Toggle--toggle StyledProps--main"
@@ -208,7 +208,7 @@ exports[`Auto stopping Rule creation Tests Advanced configuration section should
             <span
               class="Toggle--toggleIcon"
             />
-            Hide Progress Page
+            ce.co.autoStoppingRule.review.hideProgressPage
           </label>
           <label
             class="Toggle--toggle StyledProps--main"
@@ -368,7 +368,7 @@ exports[`Auto stopping Rule creation Tests Advanced configuration section should
             <span
               class="Toggle--toggleIcon"
             />
-            Hide Progress Page
+            ce.co.autoStoppingRule.review.hideProgressPage
           </label>
           <label
             class="Toggle--toggle StyledProps--main"
@@ -3747,7 +3747,7 @@ exports[`Auto stopping Rule creation Tests kubernestes config edit 1`] = `
                   <span
                     class="Toggle--toggleIcon"
                   />
-                  Hide Progress Page
+                  ce.co.autoStoppingRule.review.hideProgressPage
                 </label>
                 <label
                   class="Toggle--toggle StyledProps--main"
