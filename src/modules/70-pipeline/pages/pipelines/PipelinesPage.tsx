@@ -174,15 +174,7 @@ function PipelinesPage({ mockData }: CDPipelinesPageProps): React.ReactElement {
       } as QueryParams
     }
   })
-  const {
-    searchTerm: searchParam,
-    repoIdentifier,
-    branch: repoBranch,
-    getDefaultFromOtherRepo,
-    page,
-    sort,
-    size
-  } = queryParams
+  const { searchTerm, repoIdentifier, branch: repoBranch, getDefaultFromOtherRepo, page, sort, size } = queryParams
   const { updateQueryParams, replaceQueryParams } = useUpdateQueryParams<Partial<StringQueryParams>>()
 
   const handleRepoChange = (filter: GitFilterScope) => {
@@ -281,7 +273,7 @@ function PipelinesPage({ mockData }: CDPipelinesPageProps): React.ReactElement {
     projectIdentifier,
     module,
     orgIdentifier,
-    searchTerm: searchParam,
+    searchTerm,
     page,
     sort,
     size,
@@ -631,7 +623,7 @@ function PipelinesPage({ mockData }: CDPipelinesPageProps): React.ReactElement {
     orgIdentifier,
     appliedFilter?.filterProperties,
     module,
-    searchParam,
+    searchTerm,
     repoIdentifier,
     repoBranch,
     getDefaultFromOtherRepo
@@ -649,7 +641,7 @@ function PipelinesPage({ mockData }: CDPipelinesPageProps): React.ReactElement {
       if (pipelineList?.content?.length) {
         return true
       }
-      if (appliedFilter || searchParam) {
+      if (appliedFilter || searchTerm) {
         return true
       }
       return false
@@ -708,7 +700,7 @@ function PipelinesPage({ mockData }: CDPipelinesPageProps): React.ReactElement {
         }
         breadcrumbs={<NGBreadcrumbs links={[]} />}
       ></Page.Header>
-      {(isReseting || !!pipelineList?.content?.length || appliedFilter || isGitSyncEnabled || searchParam) && (
+      {(isReseting || !!pipelineList?.content?.length || appliedFilter || isGitSyncEnabled || searchTerm) && (
         <Page.SubHeader>
           <Layout.Horizontal>
             <RbacButton
@@ -748,9 +740,8 @@ function PipelinesPage({ mockData }: CDPipelinesPageProps): React.ReactElement {
                 onChange={(text: string) => {
                   handleQueryChange(text)
                   setIsReseting(true)
-                  // setSearchParam(text)
                 }}
-                defaultValue={queryParams.searchTerm}
+                defaultValue={searchTerm}
                 ref={searchRef}
                 className={css.expandSearch}
               />
@@ -816,7 +807,7 @@ function PipelinesPage({ mockData }: CDPipelinesPageProps): React.ReactElement {
           <PageSpinner />
         ) : !pipelineList?.content?.length ? (
           <div className={css.noPipelineSection}>
-            {appliedFilter || searchParam ? (
+            {appliedFilter || searchTerm ? (
               <Layout.Vertical spacing="small" flex>
                 <Icon size={50} name={isCIModule ? 'ci-main' : 'cd-main'} margin={{ bottom: 'large' }} />
                 <Text
