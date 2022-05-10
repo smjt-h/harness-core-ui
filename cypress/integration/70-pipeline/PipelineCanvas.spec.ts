@@ -322,6 +322,7 @@ describe('Execution Stages', () => {
   Object.entries<ValidObject>(stepsData).forEach(([key, value]) => {
     it(`Stage Steps - ${key}`, () => {
       cy.visit(pipelineStudioRoute, { timeout: 30000 })
+      cy.wait(1000)
       cy.wait('@inputSetsTemplateCall', { timeout: 30000 })
       cy.wait('@pipelineDetails', { timeout: 30000 })
       cy.wait(2000)
