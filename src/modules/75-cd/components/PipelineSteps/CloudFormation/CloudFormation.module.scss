@@ -175,3 +175,9 @@
 .overridesInputHeader {
   margin-top: var(--spacing-5) !important;
 }
+
+.truncate {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

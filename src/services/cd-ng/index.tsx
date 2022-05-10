@@ -1141,6 +1141,7 @@ export type AzureRepoConnector = ConnectorConfigDTO & {
   delegateSelectors?: string[]
   type: 'Account' | 'Repo'
   url: string
+  validationProject?: string
   validationRepo?: string
 }
 
@@ -2535,6 +2536,10 @@ export interface Environment {
   type: 'PreProduction' | 'Production'
 }
 
+export interface EnvironmentDeploymentInfo {
+  environmentInfoByServiceId?: EnvironmentInfoByServiceId[]
+}
+
 export interface EnvironmentGroupDeleteResponse {
   accountId?: string
   deleted?: boolean
@@ -2572,6 +2577,17 @@ export interface EnvironmentGroupResponseDTO {
     [key: string]: string
   }
   version?: number
+}
+
+export interface EnvironmentInfoByServiceId {
+  artifactImage?: string
+  environmentId?: string
+  environmentName?: string
+  serviceId?: string
+  serviceName?: string
+  service_endTs?: number
+  service_startTs?: number
+  tag?: string
 }
 
 export interface EnvironmentRequestDTO {
@@ -5230,7 +5246,7 @@ export type K8sAzureInfrastructure = Infrastructure & {
   namespace: string
   releaseName: string
   resourceGroup: string
-  subscription: string
+  subscriptionId: string
 }
 
 export type K8sBGSwapServicesStepInfo = StepSpecType & {
@@ -5622,6 +5638,10 @@ export interface ModuleLicenseDTO {
   trialExtended?: boolean
 }
 
+export interface ModuleSource {
+  useConnectorCredentials: ParameterFieldBoolean
+}
+
 export interface NGAuthSettings {
   settingsType?: 'USER_PASSWORD' | 'SAML' | 'LDAP' | 'OAUTH'
 }
@@ -5811,9 +5831,10 @@ export type NumberNGVariable = NGVariable & {
   value: number
 }
 
-export type OAuthSettings = NGAuthSettings & {
+export interface OAuthSettings {
   allowedProviders?: ('AZURE' | 'BITBUCKET' | 'GITHUB' | 'GITLAB' | 'GOOGLE' | 'LINKEDIN')[]
   filter?: string
+  settingsType?: 'USER_PASSWORD' | 'SAML' | 'LDAP' | 'OAUTH'
 }
 
 export interface OAuthSignupDTO {
@@ -6709,6 +6730,7 @@ export interface ResourceDTO {
     | 'DELEGATE_TOKEN'
     | 'GOVERNANCE_POLICY'
     | 'GOVERNANCE_POLICY_SET'
+    | 'VARIABLE'
 }
 
 export interface ResourceGroup {
@@ -7007,6 +7029,13 @@ export interface ResponseEnvBuildIdAndInstanceCountInfoList {
 export interface ResponseEnvCount {
   correlationId?: string
   data?: EnvCount
+  metaData?: { [key: string]: any }
+  status?: 'SUCCESS' | 'FAILURE' | 'ERROR'
+}
+
+export interface ResponseEnvironmentDeploymentInfo {
+  correlationId?: string
+  data?: EnvironmentDeploymentInfo
   metaData?: { [key: string]: any }
   status?: 'SUCCESS' | 'FAILURE' | 'ERROR'
 }
@@ -7421,6 +7450,13 @@ export interface ResponseListServiceDefinitionType {
 export interface ResponseListServiceNowFieldNG {
   correlationId?: string
   data?: ServiceNowFieldNG[]
+  metaData?: { [key: string]: any }
+  status?: 'SUCCESS' | 'FAILURE' | 'ERROR'
+}
+
+export interface ResponseListServiceNowTemplate {
+  correlationId?: string
+  data?: ServiceNowTemplate[]
   metaData?: { [key: string]: any }
   status?: 'SUCCESS' | 'FAILURE' | 'ERROR'
 }
@@ -9286,7 +9322,7 @@ export type ServiceNowCreateStepInfo = StepSpecType & {
   fields?: ServiceNowField[]
   templateName?: string
   ticketType: string
-  useServiceNowTemplate?: boolean
+  useServiceNowTemplate: boolean
 }
 
 export interface ServiceNowField {
@@ -9316,6 +9352,19 @@ export interface ServiceNowFieldSchemaNG {
   typeStr: string
 }
 
+export interface ServiceNowFieldValueNG {
+  displayValue?: string
+  value?: string
+}
+
+export interface ServiceNowTemplate {
+  fields: {
+    [key: string]: ServiceNowFieldValueNG
+  }
+  name: string
+  sys_id: string
+}
+
 export interface ServiceNowTicketTypeDTO {
   key: string
   name: string
@@ -9328,7 +9377,7 @@ export type ServiceNowUpdateStepInfo = StepSpecType & {
   templateName?: string
   ticketNumber: string
   ticketType: string
-  useServiceNowTemplate?: boolean
+  useServiceNowTemplate: boolean
 }
 
 export interface ServiceOverrides {
@@ -9790,6 +9839,7 @@ export interface TerraformBackendConfigSpec {
 }
 
 export interface TerraformConfigFilesWrapper {
+  moduleSource?: ModuleSource
   store: StoreConfigWrapper
 }
 
@@ -10469,7 +10519,7 @@ export type YamlSchemaDetailsWrapperRequestBody = YamlSchemaDetailsWrapper
 
 export type GetBuildDetailsForAcrArtifactWithYamlBodyRequestBody = string
 
-export type ProcessPollingResultNgBodyRequestBody = string[]
+export type UnsubscribeBodyRequestBody = string[]
 
 export type UpdateEnvironmentGroupBodyRequestBody = string
 
@@ -17215,6 +17265,62 @@ export const getDeploymentsByServiceIdPromise = (
   getUsingFetch<ResponseDeploymentsInfo, Failure | Error, GetDeploymentsByServiceIdQueryParams, void>(
     getConfig('ng/api'),
     `/dashboard/getDeploymentsByServiceId`,
+    props,
+    signal
+  )
+
+export interface GetEnvArtifactDetailsByServiceIdQueryParams {
+  accountIdentifier: string
+  orgIdentifier: string
+  projectIdentifier: string
+  serviceId: string
+}
+
+export type GetEnvArtifactDetailsByServiceIdProps = Omit<
+  GetProps<ResponseEnvironmentDeploymentInfo, Failure | Error, GetEnvArtifactDetailsByServiceIdQueryParams, void>,
+  'path'
+>
+
+/**
+ * Get list of unique environment and Artifact version filter by service_id
+ */
+export const GetEnvArtifactDetailsByServiceId = (props: GetEnvArtifactDetailsByServiceIdProps) => (
+  <Get<ResponseEnvironmentDeploymentInfo, Failure | Error, GetEnvArtifactDetailsByServiceIdQueryParams, void>
+    path={`/dashboard/getEnvArtifactDetailsByServiceId`}
+    base={getConfig('ng/api')}
+    {...props}
+  />
+)
+
+export type UseGetEnvArtifactDetailsByServiceIdProps = Omit<
+  UseGetProps<ResponseEnvironmentDeploymentInfo, Failure | Error, GetEnvArtifactDetailsByServiceIdQueryParams, void>,
+  'path'
+>
+
+/**
+ * Get list of unique environment and Artifact version filter by service_id
+ */
+export const useGetEnvArtifactDetailsByServiceId = (props: UseGetEnvArtifactDetailsByServiceIdProps) =>
+  useGet<ResponseEnvironmentDeploymentInfo, Failure | Error, GetEnvArtifactDetailsByServiceIdQueryParams, void>(
+    `/dashboard/getEnvArtifactDetailsByServiceId`,
+    { base: getConfig('ng/api'), ...props }
+  )
+
+/**
+ * Get list of unique environment and Artifact version filter by service_id
+ */
+export const getEnvArtifactDetailsByServiceIdPromise = (
+  props: GetUsingFetchProps<
+    ResponseEnvironmentDeploymentInfo,
+    Failure | Error,
+    GetEnvArtifactDetailsByServiceIdQueryParams,
+    void
+  >,
+  signal?: RequestInit['signal']
+) =>
+  getUsingFetch<ResponseEnvironmentDeploymentInfo, Failure | Error, GetEnvArtifactDetailsByServiceIdQueryParams, void>(
+    getConfig('ng/api'),
+    `/dashboard/getEnvArtifactDetailsByServiceId`,
     props,
     signal
   )
@@ -27528,7 +27634,7 @@ export type ProcessPollingResultNgProps = Omit<
     void,
     Failure | Error,
     ProcessPollingResultNgQueryParams,
-    ProcessPollingResultNgBodyRequestBody,
+    UnsubscribeBodyRequestBody,
     ProcessPollingResultNgPathParams
   >,
   'path' | 'verb'
@@ -27540,7 +27646,7 @@ export const ProcessPollingResultNg = ({ perpetualTaskId, ...props }: ProcessPol
     void,
     Failure | Error,
     ProcessPollingResultNgQueryParams,
-    ProcessPollingResultNgBodyRequestBody,
+    UnsubscribeBodyRequestBody,
     ProcessPollingResultNgPathParams
   >
     verb="POST"
@@ -27555,7 +27661,7 @@ export type UseProcessPollingResultNgProps = Omit<
     void,
     Failure | Error,
     ProcessPollingResultNgQueryParams,
-    ProcessPollingResultNgBodyRequestBody,
+    UnsubscribeBodyRequestBody,
     ProcessPollingResultNgPathParams
   >,
   'path' | 'verb'
@@ -27567,7 +27673,7 @@ export const useProcessPollingResultNg = ({ perpetualTaskId, ...props }: UseProc
     void,
     Failure | Error,
     ProcessPollingResultNgQueryParams,
-    ProcessPollingResultNgBodyRequestBody,
+    UnsubscribeBodyRequestBody,
     ProcessPollingResultNgPathParams
   >(
     'POST',
@@ -27583,7 +27689,7 @@ export const processPollingResultNgPromise = (
     void,
     Failure | Error,
     ProcessPollingResultNgQueryParams,
-    ProcessPollingResultNgBodyRequestBody,
+    UnsubscribeBodyRequestBody,
     ProcessPollingResultNgPathParams
   > & { perpetualTaskId: string },
   signal?: RequestInit['signal']
@@ -27592,17 +27698,17 @@ export const processPollingResultNgPromise = (
     void,
     Failure | Error,
     ProcessPollingResultNgQueryParams,
-    ProcessPollingResultNgBodyRequestBody,
+    UnsubscribeBodyRequestBody,
     ProcessPollingResultNgPathParams
   >('POST', getConfig('ng/api'), `/polling/delegate-response/${perpetualTaskId}`, props, signal)
 
 export type SubscribeProps = Omit<
-  MutateProps<ResponsePollingResponseDTO, Failure | Error, void, ProcessPollingResultNgBodyRequestBody, void>,
+  MutateProps<ResponsePollingResponseDTO, Failure | Error, void, UnsubscribeBodyRequestBody, void>,
   'path' | 'verb'
 >
 
 export const Subscribe = (props: SubscribeProps) => (
-  <Mutate<ResponsePollingResponseDTO, Failure | Error, void, ProcessPollingResultNgBodyRequestBody, void>
+  <Mutate<ResponsePollingResponseDTO, Failure | Error, void, UnsubscribeBodyRequestBody, void>
     verb="POST"
     path={`/polling/subscribe`}
     base={getConfig('ng/api')}
@@ -27611,28 +27717,22 @@ export const Subscribe = (props: SubscribeProps) => (
 )
 
 export type UseSubscribeProps = Omit<
-  UseMutateProps<ResponsePollingResponseDTO, Failure | Error, void, ProcessPollingResultNgBodyRequestBody, void>,
+  UseMutateProps<ResponsePollingResponseDTO, Failure | Error, void, UnsubscribeBodyRequestBody, void>,
   'path' | 'verb'
 >
 
 export const useSubscribe = (props: UseSubscribeProps) =>
-  useMutate<ResponsePollingResponseDTO, Failure | Error, void, ProcessPollingResultNgBodyRequestBody, void>(
+  useMutate<ResponsePollingResponseDTO, Failure | Error, void, UnsubscribeBodyRequestBody, void>(
     'POST',
     `/polling/subscribe`,
     { base: getConfig('ng/api'), ...props }
   )
 
 export const subscribePromise = (
-  props: MutateUsingFetchProps<
-    ResponsePollingResponseDTO,
-    Failure | Error,
-    void,
-    ProcessPollingResultNgBodyRequestBody,
-    void
-  >,
+  props: MutateUsingFetchProps<ResponsePollingResponseDTO, Failure | Error, void, UnsubscribeBodyRequestBody, void>,
   signal?: RequestInit['signal']
 ) =>
-  mutateUsingFetch<ResponsePollingResponseDTO, Failure | Error, void, ProcessPollingResultNgBodyRequestBody, void>(
+  mutateUsingFetch<ResponsePollingResponseDTO, Failure | Error, void, UnsubscribeBodyRequestBody, void>(
     'POST',
     getConfig('ng/api'),
     `/polling/subscribe`,
@@ -27641,12 +27741,12 @@ export const subscribePromise = (
   )
 
 export type UnsubscribeProps = Omit<
-  MutateProps<boolean, Failure | Error, void, ProcessPollingResultNgBodyRequestBody, void>,
+  MutateProps<boolean, Failure | Error, void, UnsubscribeBodyRequestBody, void>,
   'path' | 'verb'
 >
 
 export const Unsubscribe = (props: UnsubscribeProps) => (
-  <Mutate<boolean, Failure | Error, void, ProcessPollingResultNgBodyRequestBody, void>
+  <Mutate<boolean, Failure | Error, void, UnsubscribeBodyRequestBody, void>
     verb="POST"
     path={`/polling/unsubscribe`}
     base={getConfig('ng/api')}
@@ -27655,22 +27755,21 @@ export const Unsubscribe = (props: UnsubscribeProps) => (
 )
 
 export type UseUnsubscribeProps = Omit<
-  UseMutateProps<boolean, Failure | Error, void, ProcessPollingResultNgBodyRequestBody, void>,
+  UseMutateProps<boolean, Failure | Error, void, UnsubscribeBodyRequestBody, void>,
   'path' | 'verb'
 >
 
 export const useUnsubscribe = (props: UseUnsubscribeProps) =>
-  useMutate<boolean, Failure | Error, void, ProcessPollingResultNgBodyRequestBody, void>(
-    'POST',
-    `/polling/unsubscribe`,
-    { base: getConfig('ng/api'), ...props }
-  )
+  useMutate<boolean, Failure | Error, void, UnsubscribeBodyRequestBody, void>('POST', `/polling/unsubscribe`, {
+    base: getConfig('ng/api'),
+    ...props
+  })
 
 export const unsubscribePromise = (
-  props: MutateUsingFetchProps<boolean, Failure | Error, void, ProcessPollingResultNgBodyRequestBody, void>,
+  props: MutateUsingFetchProps<boolean, Failure | Error, void, UnsubscribeBodyRequestBody, void>,
   signal?: RequestInit['signal']
 ) =>
-  mutateUsingFetch<boolean, Failure | Error, void, ProcessPollingResultNgBodyRequestBody, void>(
+  mutateUsingFetch<boolean, Failure | Error, void, UnsubscribeBodyRequestBody, void>(
     'POST',
     getConfig('ng/api'),
     `/polling/unsubscribe`,
@@ -29270,7 +29369,7 @@ export interface GetListOfBranchesByRefConnectorV2QueryParams {
   accountIdentifier?: string
   orgIdentifier?: string
   projectIdentifier?: string
-  repoURL?: string
+  repoName?: string
   connectorRef?: string
   page?: number
   size?: number
@@ -30101,6 +30200,69 @@ export const getServiceNowIssueCreateMetadataPromise = (
   getUsingFetch<ResponseListServiceNowFieldNG, Failure | Error, GetServiceNowIssueCreateMetadataQueryParams, void>(
     getConfig('ng/api'),
     `/servicenow/createMetadata`,
+    props,
+    signal
+  )
+
+export interface GetServiceNowTemplateMetadataQueryParams {
+  connectorRef: string
+  accountIdentifier: string
+  orgIdentifier?: string
+  projectIdentifier?: string
+  ticketType?: string
+  templateName?: string
+  limit?: number
+  offset?: number
+  branch?: string
+  repoIdentifier?: string
+  getDefaultFromOtherRepo?: boolean
+}
+
+export type GetServiceNowTemplateMetadataProps = Omit<
+  GetProps<ResponseListServiceNowTemplate, Failure | Error, GetServiceNowTemplateMetadataQueryParams, void>,
+  'path'
+>
+
+/**
+ * Get ServiceNow template metadata
+ */
+export const GetServiceNowTemplateMetadata = (props: GetServiceNowTemplateMetadataProps) => (
+  <Get<ResponseListServiceNowTemplate, Failure | Error, GetServiceNowTemplateMetadataQueryParams, void>
+    path={`/servicenow/getTemplate`}
+    base={getConfig('ng/api')}
+    {...props}
+  />
+)
+
+export type UseGetServiceNowTemplateMetadataProps = Omit<
+  UseGetProps<ResponseListServiceNowTemplate, Failure | Error, GetServiceNowTemplateMetadataQueryParams, void>,
+  'path'
+>
+
+/**
+ * Get ServiceNow template metadata
+ */
+export const useGetServiceNowTemplateMetadata = (props: UseGetServiceNowTemplateMetadataProps) =>
+  useGet<ResponseListServiceNowTemplate, Failure | Error, GetServiceNowTemplateMetadataQueryParams, void>(
+    `/servicenow/getTemplate`,
+    { base: getConfig('ng/api'), ...props }
+  )
+
+/**
+ * Get ServiceNow template metadata
+ */
+export const getServiceNowTemplateMetadataPromise = (
+  props: GetUsingFetchProps<
+    ResponseListServiceNowTemplate,
+    Failure | Error,
+    GetServiceNowTemplateMetadataQueryParams,
+    void
+  >,
+  signal?: RequestInit['signal']
+) =>
+  getUsingFetch<ResponseListServiceNowTemplate, Failure | Error, GetServiceNowTemplateMetadataQueryParams, void>(
+    getConfig('ng/api'),
+    `/servicenow/getTemplate`,
     props,
     signal
   )

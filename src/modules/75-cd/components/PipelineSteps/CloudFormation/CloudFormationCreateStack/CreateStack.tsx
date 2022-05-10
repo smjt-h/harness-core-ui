@@ -180,7 +180,7 @@ export class CFCreateStack extends PipelineStep<CreateStackStepInfo> {
         configuration: {
           ...data.spec.configuration,
           connectorRef: awsConnRef,
-          templateFile: templateFile
+          templateFile
         }
       }
     }
