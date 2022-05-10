@@ -9,6 +9,7 @@ import React from 'react'
 import * as yup from 'yup'
 import { useGitSync, UseGitSync } from '@cf/hooks/useGitSync'
 
+/* istanbul ignore next */
 export const FFGitSyncContext = React.createContext<UseGitSync>({
   apiError: '',
   gitSyncLoading: false,
