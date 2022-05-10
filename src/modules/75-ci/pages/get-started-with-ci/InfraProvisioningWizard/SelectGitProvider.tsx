@@ -724,6 +724,8 @@ const SelectGitProviderRef = (
                               setAuthMethod(GitAuthenticationMethod.OAuth)
                             }}
                             intent={authMethod === GitAuthenticationMethod.OAuth ? 'primary' : 'none'}
+                            /* Disabling till OAuth support is ready */
+                            disabled={true}
                           />
                           <Button
                             className={css.authMethodBtn}
