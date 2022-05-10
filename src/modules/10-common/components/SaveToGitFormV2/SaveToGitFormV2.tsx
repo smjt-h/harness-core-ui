@@ -6,7 +6,6 @@
  */
 
 import React, { useRef, useState } from 'react'
-import { Popover, Position } from '@blueprintjs/core'
 import {
   Container,
   Text,
@@ -23,18 +22,13 @@ import {
 } from '@wings-software/uicore'
 import { Color } from '@harness/design-system'
 import * as Yup from 'yup'
-import { debounce, isEmpty, pick, defaultTo } from 'lodash-es'
+import { pick, defaultTo } from 'lodash-es'
 import type { FormikContext } from 'formik'
-import {
-  GitSyncEntityDTO,
-  EntityGitDetails,
-  GitBranchDTO,
-  getListOfBranchesWithStatusPromise,
-  ResponseGitBranchListDTO
-} from 'services/cd-ng'
+import type { GitSyncEntityDTO, EntityGitDetails } from 'services/cd-ng'
 import { useStrings } from 'framework/strings'
 import { getEntityNameFromType } from '@common/utils/StringUtils'
 import css from './SaveToGitFormV2.module.scss'
+import RepoBranchSelectV2 from '../RepoBranchSelectV2/RepoBranchSelectV2'
 
 export interface GitResourceInterface {
   type: GitSyncEntityDTO['entityType']
@@ -66,14 +60,12 @@ export interface SaveToGitFormV2Interface {
 }
 
 const SaveToGitFormV2: React.FC<ModalConfigureProps & SaveToGitFormV2Props> = props => {
-  const { accountId, projectIdentifier, orgIdentifier, isEditing = false, resource } = props
+  const { isEditing = false, resource } = props
   const { getString } = useStrings()
   const [isNewBranch, setIsNewBranch] = React.useState(false)
-  const [branches, setBranches] = React.useState<SelectOption[]>()
   const [modalErrorHandler, setModalErrorHandler] = React.useState<ModalErrorHandlerBinding>()
   const formikRef = useRef<FormikContext<SaveToGitFormV2Interface>>()
-  const [disableCreatePR, setDisableCreatePR] = useState<boolean>()
-  const [showCreatePRWarning, setShowCreatePRWarning] = useState<boolean>(false)
+  const [targetBranch, setTargetBranch] = useState<string>('')
   const [disableBranchSelection, setDisableBranchSelection] = useState<boolean>(true)
 
   const defaultInitialFormData: SaveToGitFormV2Interface = {
@@ -98,107 +90,45 @@ const SaveToGitFormV2: React.FC<ModalConfigureProps & SaveToGitFormV2Props> = pr
     formik.setFieldTouched('targetBranch', false)
     formik.setFieldValue('createPr', false)
     formik.setFieldTouched('createPr', false)
-    setDisableCreatePR(false)
     setDisableBranchSelection(true)
   }
-
-  const fetchBranches = (query?: string): void => {
-    getListOfBranchesWithStatusPromise({
-      queryParams: {
-        accountIdentifier: accountId,
-        orgIdentifier,
-        projectIdentifier,
-        yamlGitConfigIdentifier: resource.gitDetails?.repoIdentifier || '',
-        page: 0,
-        size: 10,
-        searchTerm: query
-      }
-    })
-      .then((response: ResponseGitBranchListDTO) => {
-        const branchesInResponse = response?.data?.branches?.content
-        /* Show error in case no branches exist on a git repo at all */
-        /* A valid git repo should have atleast one branch in it(a.k.a default branch) */
-        if (!query && isEmpty(branchesInResponse)) {
-          setDisableCreatePR(true)
-          setDisableBranchSelection(true)
-          modalErrorHandler?.showDanger(getString('common.git.noBranchesFound'))
-          return
-        }
-        setShowCreatePRWarning(false)
-        const branchOptions = branchesInResponse?.map((branch: GitBranchDTO) => {
-          return { label: branch?.branchName, value: branch?.branchName }
-        }) as SelectOption[]
-        const filteredBranches = isNewBranch
-          ? branchOptions
-          : /* filter out current working branch from list of branches for commit to default branch use-case
-               since PR from a branch to itself is not allowed */
-            branchOptions?.filter((branch: SelectOption) => branch.value !== resource.gitDetails?.branch)
-        if (!isNewBranch && isEmpty(filteredBranches)) {
-          setDisableCreatePR(true)
-          setDisableBranchSelection(true)
-          setShowCreatePRWarning(true)
-        } else {
-          setBranches(filteredBranches)
-          setDisableCreatePR(false)
-          setDisableBranchSelection(false)
-        }
-      })
-      .catch(e => {
-        /* istanbul ignore next */ modalErrorHandler?.showDanger(e.data?.message || e.message)
-      })
-  }
-
-  const debounceFetchBranches = debounce((query?: string): void => {
-    try {
-      fetchBranches(query)
-    } catch (e) {
-      /* istanbul ignore next */ modalErrorHandler?.showDanger(e.data?.message || e.message)
-    }
-  }, 1000)
 
   const CreatePR = React.useMemo(() => {
     return (
       <Layout.Horizontal flex={{ alignItems: 'baseline', justifyContent: 'flex-start' }} padding={{ top: 'small' }}>
         <FormInput.CheckBox
-          disabled={formikRef.current?.values.createPr ? false : disableCreatePR}
           name="createPr"
           label={getString('common.git.startPRLabel')}
           onChange={e => {
             formikRef.current?.setFieldValue('createPr', e.currentTarget.checked)
             if (e.currentTarget.checked) {
-              fetchBranches()
+              setDisableBranchSelection(false)
             } else {
               setDisableBranchSelection(true)
-              setShowCreatePRWarning(false)
             }
           }}
         />
-        {showCreatePRWarning ? (
-          <Popover
-            position={Position.TOP}
-            content={
-              <Text padding="medium" color={Color.RED_400}>
-                {getString('common.git.onlyDefaultBranchFound')}
-              </Text>
-            }
-            isOpen={showCreatePRWarning}
-            popoverClassName={css.tooltip}
-          >
-            <Container margin={{ bottom: 'xlarge' }}></Container>
-          </Popover>
-        ) : null}
-        <FormInput.Select
+
+        <RepoBranchSelectV2
           name="targetBranch"
-          items={defaultTo(branches, [])}
-          disabled={disableBranchSelection || disableCreatePR}
-          data-id="create-pr-branch-select"
-          onQueryChange={(query: string) => debounceFetchBranches(query)}
-          selectProps={{ usePortal: true, popoverClassName: css.gitBranchSelectorPopover }}
-          className={css.branchSelector}
+          noLabel={true}
+          disabled={disableBranchSelection}
+          connectorIdentifierRef={resource.storeMetadata?.connectorRef}
+          repoName={resource.gitDetails?.repoName}
+          modalErrorHandler={modalErrorHandler}
+          onChange={(selected: SelectOption, options?: SelectOption[]) => {
+            if (!options?.find(branch => branch.value === selected.value)) {
+              formikRef.current?.setFieldValue('targetBranch', '')
+            } else {
+              formikRef.current?.setFieldValue('targetBranch', selected.value)
+              setTargetBranch(selected.value as string)
+            }
+          }}
+          selectedValue={targetBranch}
         />
       </Layout.Horizontal>
     )
-  }, [disableCreatePR, disableBranchSelection, branches, isNewBranch, formikRef.current?.values, showCreatePRWarning])
+  }, [disableBranchSelection, isNewBranch, formikRef.current?.values, formikRef.current?.values?.targetBranch])
 
   return (
     <Container height={'inherit'} className={css.modalContainer}>

@@ -27,6 +27,10 @@ import { ErrorHandler } from '@common/components/ErrorHandler/ErrorHandler'
 import css from '@common/components/RepositorySelect/RepositorySelect.module.scss'
 
 export interface RepoBranchSelectProps {
+  name?: string
+  label?: string
+  noLabel?: boolean
+  disabled?: boolean
   modalErrorHandler?: ModalErrorHandlerBinding
   connectorIdentifierRef?: string
   repoName?: string
@@ -44,7 +48,16 @@ const getBranchSelectOptions = (data: GitBranchDetailsDTO[] = []) => {
 }
 
 const RepoBranchSelectV2: React.FC<RepoBranchSelectProps> = props => {
-  const { modalErrorHandler, connectorIdentifierRef, repoName, selectedValue } = props
+  const {
+    modalErrorHandler,
+    connectorIdentifierRef,
+    repoName,
+    selectedValue,
+    name,
+    label,
+    noLabel = false,
+    disabled
+  } = props
   const { getString } = useStrings()
   const { accountId, projectIdentifier, orgIdentifier } = useParams<ProjectPathProps>()
   const [branchSelectOptions, setBranchSelectOptions] = useState<SelectOption[]>([])
@@ -114,10 +127,10 @@ const RepoBranchSelectV2: React.FC<RepoBranchSelectProps> = props => {
   return (
     <Layout.Horizontal>
       <FormInput.Select
-        name="branch"
-        disabled={loading}
+        name={name ?? 'branch'}
+        disabled={disabled || loading}
         items={branchSelectOptions}
-        label={'Select an existing Branch'}
+        label={noLabel ? '' : label ?? 'Select an existing Branch'}
         placeholder={loading ? 'Loading...' : 'Select'}
         value={{ label: selectedValue || '', value: selectedValue || '' }}
         onChange={selected => props.onChange?.(selected, branchSelectOptions)}

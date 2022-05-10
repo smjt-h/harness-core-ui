@@ -384,7 +384,7 @@ export function SavePipelinePopover({
           name: latestPipeline.name,
           identifier: latestPipeline.identifier,
           gitDetails: gitDetails ?? {},
-          storeMetadata: storeMetadata.storetype ? storeMetadata : undefined
+          storeMetadata: storeMetadata.storeType ? storeMetadata : undefined
         },
         payload: { pipeline: omit(latestPipeline, 'repo', 'branch') }
       })

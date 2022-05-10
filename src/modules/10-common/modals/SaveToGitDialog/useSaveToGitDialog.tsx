@@ -6,7 +6,7 @@
  */
 
 import React, { useState } from 'react'
-import { Button, Dialog as UICoreDialog, getErrorInfoFromErrorObject } from '@wings-software/uicore'
+import { Button, getErrorInfoFromErrorObject } from '@wings-software/uicore'
 import { Classes, Dialog, IDialogProps } from '@blueprintjs/core'
 import { useParams } from 'react-router-dom'
 import { defaultTo, noop } from 'lodash-es'
@@ -20,7 +20,7 @@ import SaveToGitFormV2, { SaveToGitFormV2Interface } from '@common/components/Sa
 import { GitSyncStoreProvider } from 'framework/GitRepoStore/GitSyncStoreContext'
 import { getEntityNameFromType } from '@common/utils/StringUtils'
 import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
-import { EntityGitDetails, ResponseMessage, useCreatePR } from 'services/cd-ng'
+import { EntityGitDetails, ResponseMessage, useCreatePR, useCreatePRV2 } from 'services/cd-ng'
 import { String, useStrings } from 'framework/strings'
 import { ProgressOverlay, StepStatus } from '../ProgressOverlay/ProgressOverlay'
 import { useGitDiffEditorDialog } from '../GitDiffEditor/useGitDiffEditorDialog'
@@ -88,6 +88,7 @@ export function useSaveToGitDialog<T = Record<string, string>>(
   const [error, setError] = useState<Record<string, any>>({})
   const [createUpdateStatus, setCreateUpdateStatus] = useState<StepStatus>()
   const { mutate: createPullRequest, loading: creatingPR } = useCreatePR({})
+  const { mutate: createPullRequestV2, loading: creatingPRV2 } = useCreatePRV2({})
 
   /* Stages for an entity updated/created and/or saved to git */
   const entityCreateUpdateStage = {
@@ -148,7 +149,7 @@ export function useSaveToGitDialog<T = Record<string, string>>(
     }
   }
 
-  const handleCreateUpdateError = (e: any, data: SaveToGitFormInterface): void => {
+  const handleCreateUpdateError = (e: any, data: SaveToGitFormInterface | SaveToGitFormV2Interface): void => {
     setError(e)
     setCreateUpdateStatus('ERROR')
     if (data?.createPr) {
@@ -162,7 +163,7 @@ export function useSaveToGitDialog<T = Record<string, string>>(
       const conflictCommitId = defaultTo(e?.metadata?.conflictCommitId, e?.data?.metadata?.conflictCommitId)
 
       openGitDiffDialog(payloadData, {
-        ...data,
+        ...(data as SaveToGitFormInterface),
         resolvedConflictCommitId: defaultTo(conflictCommitId, '')
       })
     }
@@ -209,7 +210,7 @@ export function useSaveToGitDialog<T = Record<string, string>>(
         />
       </Dialog>
     )
-  }, [creatingPR, createUpdateStatus, error, prCreateStatus, prMetaData])
+  }, [creatingPR, creatingPRV2, createUpdateStatus, error, prCreateStatus, prMetaData])
 
   // Modal to show while only creating/updating an entity
   const [showCreateUpdateModal, hideCreateUpdateModal] = useModalHook(() => {
@@ -237,17 +238,33 @@ export function useSaveToGitDialog<T = Record<string, string>>(
     )
   }, [createUpdateStatus, error])
 
-  const createPR = (data: SaveToGitFormInterface): void => {
-    createPullRequest({
-      accountIdentifier: accountId,
-      orgIdentifier,
-      projectIdentifier,
-      sourceBranch: defaultTo(data?.branch, ''),
-      targetBranch: defaultTo(data?.targetBranch, ''),
-      title: defaultTo(data?.commitMsg, ''),
-      useUserFromToken: true,
-      yamlGitConfigRef: defaultTo(data?.repoIdentifier, '')
-    })
+  const createPR = (data: SaveToGitFormInterface | SaveToGitFormV2Interface): void => {
+    const params = resource?.storeMetadata?.storeType
+      ? {
+          accountIdentifier: accountId,
+          orgIdentifier,
+          projectIdentifier,
+          connectorRef: resource?.storeMetadata?.connectorRef,
+          repoName: resource?.gitDetails?.repoName,
+          sourceBranchName: defaultTo(data?.branch, ''),
+          targetBranchName: defaultTo(data?.targetBranch, ''),
+          title: defaultTo(data?.commitMsg, '')
+        }
+      : {
+          accountIdentifier: accountId,
+          orgIdentifier,
+          projectIdentifier,
+          sourceBranch: defaultTo(data?.branch, ''),
+          targetBranch: defaultTo(data?.targetBranch, ''),
+          title: defaultTo(data?.commitMsg, ''),
+          useUserFromToken: true,
+          yamlGitConfigRef: defaultTo(data?.repoIdentifier, '')
+        }
+
+    console.log('cretae pr params', params)
+    const cretePrPromise = resource?.storeMetadata?.storeType ? createPullRequestV2(params) : createPullRequest(params)
+
+    cretePrPromise
       .then(_response => {
         setPRCreateStatus(_response?.status)
       })
@@ -262,6 +279,19 @@ export function useSaveToGitDialog<T = Record<string, string>>(
   }
 
   const createPRHandler = async (data: SaveToGitFormInterface, response: UseSaveSuccessResponse): Promise<void> => {
+    setNextCallback(() => response?.nextCallback)
+    setCreateUpdateStatus(response.status)
+
+    // if entity creation/update succeeds, raise a PR, if specified
+    if (response.status === 'SUCCESS' && data?.createPr) {
+      createPR(data)
+    } else if (data?.createPr) {
+      // if entity creation/update fails, abort PR creation
+      abortPR(response, data)
+    }
+  }
+
+  const createPRHandlerV2 = async (data: SaveToGitFormV2Interface, response: UseSaveSuccessResponse): Promise<void> => {
     setNextCallback(() => response?.nextCallback)
     setCreateUpdateStatus(response.status)
 
@@ -309,7 +339,7 @@ export function useSaveToGitDialog<T = Record<string, string>>(
     props
       .onSuccess?.(data, diffData, objectId, isEditMode)
       .then(async response => {
-        createPRHandler(data, response)
+        createPRHandlerV2(data, response)
       })
       .catch(e => {
         handleCreateUpdateError(e, data)
@@ -324,6 +354,19 @@ export function useSaveToGitDialog<T = Record<string, string>>(
     return (
       <Dialog className={css.gitDialog} {...modalProps}>
         {resource?.storeMetadata?.storeType ? (
+          <SaveToGitFormV2
+            accountId={accountId}
+            orgIdentifier={orgIdentifier}
+            projectIdentifier={projectIdentifier}
+            isEditing={isEditMode}
+            resource={resource}
+            onSuccess={data => {
+              handleSuccessV2(data, payloadData, resource.gitDetails?.objectId)
+              hideModal()
+            }}
+            onClose={closeHandler}
+          />
+        ) : (
           <GitSyncStoreProvider>
             <SaveToGitForm
               accountId={accountId}
@@ -338,19 +381,6 @@ export function useSaveToGitDialog<T = Record<string, string>>(
               onClose={closeHandler}
             />
           </GitSyncStoreProvider>
-        ) : (
-          <SaveToGitFormV2
-            accountId={accountId}
-            orgIdentifier={orgIdentifier}
-            projectIdentifier={projectIdentifier}
-            isEditing={isEditMode}
-            resource={resource}
-            onSuccess={data => {
-              handleSuccessV2(data, payloadData, resource.gitDetails?.objectId)
-              hideModal()
-            }}
-            onClose={closeHandler}
-          />
         )}
         <Button minimal icon="cross" iconProps={{ size: 18 }} className={css.crossIcon} onClick={closeHandler} />
       </Dialog>
