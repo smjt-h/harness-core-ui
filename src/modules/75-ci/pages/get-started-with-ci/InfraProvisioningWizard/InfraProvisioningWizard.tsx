@@ -14,7 +14,7 @@ import routes from '@common/RouteDefinitions'
 import { ResponseSetupStatus, useGetDelegateInstallStatus, useProvisionResourcesForCI } from 'services/cd-ng'
 import { createPipelineV2Promise, ResponsePipelineSaveResponse } from 'services/pipeline-ng'
 import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
-import { DEFAULT_PIPELINE_PAYLOAD } from '@common/utils/CIConstants'
+import { DEFAULT_PIPELINE_PAYLOAD, DEFAULT_STAGE_ID } from '@common/utils/CIConstants'
 import { yamlStringify } from '@common/utils/YamlHelperMethods'
 import { InfraProvisioningCarousel } from '../InfraProvisioningCarousel/InfraProvisioningCarousel'
 import {
@@ -106,16 +106,25 @@ export const InfraProvisioningWizard: React.FC<InfraProvisioningWizardProps> = p
     }
   }, [])
 
-  const constructPipelinePayload = React.useCallback(() => {
-    const payload = { ...DEFAULT_PIPELINE_PAYLOAD }
-    payload.pipeline.projectIdentifier = projectIdentifier
-    payload.pipeline.orgIdentifier = orgIdentifier
-    try {
-      return yamlStringify(payload)
-    } catch (e) {
-      // Ignore error
-    }
-  }, [projectIdentifier, orgIdentifier])
+  const constructPipelinePayload = React.useCallback(
+    (repoName: string): string | undefined => {
+      if (!repoName) {
+        return
+      }
+      const tokens = repoName.split('/')
+      const payload = { ...DEFAULT_PIPELINE_PAYLOAD }
+      payload.pipeline.name = `Build ${tokens[1]}`
+      payload.pipeline.projectIdentifier = projectIdentifier
+      payload.pipeline.orgIdentifier = orgIdentifier
+      payload.pipeline.properties.ci.codebase.repoName = repoName
+      try {
+        return yamlStringify(payload)
+      } catch (e) {
+        // Ignore error
+      }
+    },
+    [projectIdentifier, orgIdentifier]
+  )
 
   const goToSelectGitProviderStepAfterBuildLocationSelection = React.useCallback(() => {
     updateStepStatus([InfraProvisiongWizardStepId.SelectBuildLocation], StepStatus.Success)
@@ -221,14 +230,13 @@ export const InfraProvisioningWizard: React.FC<InfraProvisioningWizardProps> = p
           )
         },
         onClickNext: () => {
-          const shouldShowError = !selectRepositoryRef.current?.repository.name
-          setShowError(shouldShowError)
-          if (!shouldShowError) {
+          const repoName = selectRepositoryRef.current?.repository.name
+          if (repoName) {
             updateStepStatus([InfraProvisiongWizardStepId.SelectRepository], StepStatus.Success)
             setDisable(true)
             setLoading(true)
             createPipelineV2Promise({
-              body: constructPipelinePayload() || '',
+              body: constructPipelinePayload(repoName) || '',
               queryParams: {
                 accountIdentifier: accountId,
                 orgIdentifier,
@@ -248,12 +256,15 @@ export const InfraProvisioningWizard: React.FC<InfraProvisioningWizardProps> = p
                       module: 'ci',
                       orgIdentifier,
                       projectIdentifier,
-                      pipelineIdentifier: data?.identifier
+                      pipelineIdentifier: data?.identifier,
+                      stageId: DEFAULT_STAGE_ID
                     })
                   )
                 }
               })
               .catch(() => setDisable(false))
+          } else {
+            setShowError(true)
           }
         },
         stepFooterLabel: 'ci.getStartedWithCI.createPipeline'

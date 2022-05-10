@@ -18,9 +18,17 @@ export const DEFAULT_PIPELINE_NAME = 'Default Pipeline'
 
 export const DEFAULT_PIPELINE_ID = 'Default_Pipeline_'.concat(new Date().getTime().toString())
 
+export const DEFAULT_STAGE_ID = 'Build'
+
+const ACCOUNT_SCOPE_PREFIX = 'account.'
+
+const KUBERNETES_INFRA_REF = 'Harness_Kubernetes_Cluster'
+
+const DOCKER_REGISTRY_CTR_REF = 'harnessImage'
+
 export const DEFAULT_PIPELINE_PAYLOAD = {
   pipeline: {
-    name: DEFAULT_PIPELINE_NAME,
+    name: '',
     identifier: DEFAULT_PIPELINE_ID,
     projectIdentifier: '',
     orgIdentifier: '',
@@ -28,6 +36,7 @@ export const DEFAULT_PIPELINE_PAYLOAD = {
       ci: {
         codebase: {
           connectorRef: 'connectorRef',
+          repoName: '',
           build: '<+input>'
         }
       }
@@ -35,17 +44,16 @@ export const DEFAULT_PIPELINE_PAYLOAD = {
     stages: [
       {
         stage: {
-          name: 'Stage',
-          identifier: 'Stage',
+          name: DEFAULT_STAGE_ID,
+          identifier: DEFAULT_STAGE_ID,
           type: 'CI',
           spec: {
             cloneCodebase: true,
             infrastructure: {
               type: 'KubernetesDirect',
               spec: {
-                connectorRef: '<+input>',
-                namespace: '<+input>',
-                automountServiceAccountToken: true
+                connectorRef: ACCOUNT_SCOPE_PREFIX.concat(KUBERNETES_INFRA_REF),
+                namespace: '<+input>' // not sure
               }
             },
             execution: {
@@ -53,13 +61,13 @@ export const DEFAULT_PIPELINE_PAYLOAD = {
                 {
                   step: {
                     type: 'Run',
-                    name: 'Run',
+                    name: 'Echo Welcome Message',
                     identifier: 'Run',
                     spec: {
-                      connectorRef: '<+input>',
-                      image: '<+input>',
+                      connectorRef: ACCOUNT_SCOPE_PREFIX.concat(DOCKER_REGISTRY_CTR_REF),
+                      image: 'alpine',
                       shell: 'Sh',
-                      command: '<+input>'
+                      command: 'echo "Welcome to Harness CI" '
                     }
                   }
                 }

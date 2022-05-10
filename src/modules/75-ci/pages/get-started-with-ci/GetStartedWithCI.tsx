@@ -12,7 +12,7 @@ import { useStrings } from 'framework/strings'
 import type { StringsMap } from 'stringTypes'
 import { InfraProvisioningWizard } from './InfraProvisioningWizard/InfraProvisioningWizard'
 import { InfraProvisioningCarousel } from './InfraProvisioningCarousel/InfraProvisioningCarousel'
-import { ProvisioningStatus } from './InfraProvisioningWizard/Constants'
+import { InfraProvisiongWizardStepId, ProvisioningStatus } from './InfraProvisioningWizard/Constants'
 
 import samplePipelineImg from '../../assets/images/sample-pipeline.svg'
 
@@ -22,7 +22,7 @@ const dummy_repo = 'github.com/harnesssampleapp'
 
 export default function GetStartedWithCI(): React.ReactElement {
   const { getString } = useStrings()
-  const [showWizard, setShowWizard] = useState<boolean>(false)
+  const [showWizard, setShowWizard] = useState<boolean>(true)
   const [showDialog, setShowDialog] = useState<boolean>(false)
 
   const renderBuildPipelineStep = React.useCallback(
@@ -109,7 +109,7 @@ export default function GetStartedWithCI(): React.ReactElement {
   const Divider = <div className={css.divider}></div>
 
   return showWizard ? (
-    <InfraProvisioningWizard />
+    <InfraProvisioningWizard lastConfiguredWizardStepId={InfraProvisiongWizardStepId.SelectRepository} />
   ) : (
     <Layout.Vertical flex>
       <Icon name="ci-main" size={50} className={css.ciIcon} />
