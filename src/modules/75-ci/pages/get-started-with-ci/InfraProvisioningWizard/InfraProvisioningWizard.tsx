@@ -7,7 +7,7 @@
 
 import React, { useEffect, useState } from 'react'
 import { useHistory, useParams } from 'react-router-dom'
-import { Container, Button, ButtonVariation, Layout, MultiStepProgressIndicator } from '@harness/uicore'
+import { Container, Button, ButtonVariation, Layout, MultiStepProgressIndicator, PageSpinner } from '@harness/uicore'
 import { useStrings } from 'framework/strings'
 import { useSideNavContext } from 'framework/SideNavStore/SideNavContext'
 import routes from '@common/RouteDefinitions'
@@ -51,6 +51,7 @@ export const InfraProvisioningWizard: React.FC<InfraProvisioningWizardProps> = p
   const [startPolling, setStartPolling] = useState<boolean>(false)
   const [ciProvisioningStatus, setCIProvisioningStatus] = useState<ProvisioningStatus>()
   const { setShowGetStartedTab } = useSideNavContext()
+  const [loading, setLoading] = useState<boolean>(false)
 
   const { mutate: startProvisioning } = useProvisionResourcesForCI({
     queryParams: {
@@ -225,6 +226,7 @@ export const InfraProvisioningWizard: React.FC<InfraProvisioningWizardProps> = p
           if (!shouldShowError) {
             updateStepStatus([InfraProvisiongWizardStepId.SelectRepository], StepStatus.Success)
             setDisable(true)
+            setLoading(true)
             createPipelineV2Promise({
               body: constructPipelinePayload() || '',
               queryParams: {
@@ -236,6 +238,7 @@ export const InfraProvisioningWizard: React.FC<InfraProvisioningWizardProps> = p
             })
               .then((createPipelineResponse: ResponsePipelineSaveResponse) => {
                 setDisable(false)
+                setLoading(false)
                 const { status, data } = createPipelineResponse
                 if (status === 'SUCCESS' && data?.identifier) {
                   setShowGetStartedTab(false)
@@ -290,6 +293,7 @@ export const InfraProvisioningWizard: React.FC<InfraProvisioningWizardProps> = p
           />
         </Container>
         {stepRender}
+        {loading ? <PageSpinner /> : null}
       </Layout.Vertical>
       {showDialog ? (
         <InfraProvisioningCarousel
