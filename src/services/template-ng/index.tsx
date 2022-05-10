@@ -34,7 +34,7 @@ export type AuditFilterProperties = FilterProperties & {
   )[]
   endTime?: number
   environments?: Environment[]
-  modules?: ('CD' | 'CI' | 'CV' | 'CF' | 'CE' | 'STO' | 'CORE' | 'PMS' | 'TEMPLATESERVICE')[]
+  modules?: ('CD' | 'CI' | 'CV' | 'CF' | 'CE' | 'STO' | 'CORE' | 'PMS' | 'TEMPLATESERVICE' | 'GOVERNANCE')[]
   principals?: Principal[]
   resources?: ResourceDTO[]
   scopes?: ResourceScopeDTO[]
@@ -444,6 +444,7 @@ export interface Error {
     | 'AZURE_AUTHENTICATION_ERROR'
     | 'AZURE_CONFIG_ERROR'
     | 'DATA_PROCESSING_ERROR'
+    | 'INVALID_AZURE_AKS_REQUEST'
   correlationId?: string
   detailedMessage?: string
   message?: string
@@ -769,6 +770,7 @@ export interface Failure {
     | 'AZURE_AUTHENTICATION_ERROR'
     | 'AZURE_CONFIG_ERROR'
     | 'DATA_PROCESSING_ERROR'
+    | 'INVALID_AZURE_AKS_REQUEST'
   correlationId?: string
   errors?: ValidationError[]
   message?: string
@@ -796,33 +798,15 @@ export interface FilterProperties {
     | 'Template'
     | 'EnvironmentGroup'
     | 'FileStore'
+    | 'CCMRecommendation'
+    | 'Anomaly'
   tags?: {
     [key: string]: string
   }
 }
 
 export interface JsonNode {
-  array?: boolean
-  bigDecimal?: boolean
-  bigInteger?: boolean
-  binary?: boolean
-  boolean?: boolean
-  containerNode?: boolean
-  double?: boolean
-  float?: boolean
-  floatingPointNumber?: boolean
-  int?: boolean
-  integralNumber?: boolean
-  long?: boolean
-  missingNode?: boolean
-  nodeType?: 'ARRAY' | 'BINARY' | 'BOOLEAN' | 'MISSING' | 'NULL' | 'NUMBER' | 'OBJECT' | 'POJO' | 'STRING'
-  null?: boolean
-  number?: boolean
-  object?: boolean
-  pojo?: boolean
-  short?: boolean
-  textual?: boolean
-  valueNode?: boolean
+  [key: string]: any
 }
 
 export interface NGTag {
@@ -945,6 +929,8 @@ export interface ResourceDTO {
     | 'API_KEY'
     | 'TOKEN'
     | 'DELEGATE_TOKEN'
+    | 'GOVERNANCE_POLICY'
+    | 'GOVERNANCE_POLICY_SET'
 }
 
 export interface ResourceScopeDTO {
@@ -1297,6 +1283,7 @@ export interface ResponseMessage {
     | 'AZURE_AUTHENTICATION_ERROR'
     | 'AZURE_CONFIG_ERROR'
     | 'DATA_PROCESSING_ERROR'
+    | 'INVALID_AZURE_AKS_REQUEST'
   exception?: Throwable
   failureTypes?: (
     | 'EXPIRED'
@@ -1421,6 +1408,8 @@ export interface TemplateFilterProperties {
     | 'Template'
     | 'EnvironmentGroup'
     | 'FileStore'
+    | 'CCMRecommendation'
+    | 'Anomaly'
   tags?: {
     [key: string]: string
   }
@@ -1578,6 +1567,8 @@ export interface GetFilterListQueryParams {
     | 'Template'
     | 'EnvironmentGroup'
     | 'FileStore'
+    | 'CCMRecommendation'
+    | 'Anomaly'
 }
 
 export type GetFilterListProps = Omit<
@@ -1740,6 +1731,8 @@ export interface DeleteFilterQueryParams {
     | 'Template'
     | 'EnvironmentGroup'
     | 'FileStore'
+    | 'CCMRecommendation'
+    | 'Anomaly'
 }
 
 export type DeleteFilterProps = Omit<
@@ -1803,6 +1796,8 @@ export interface GetFilterQueryParams {
     | 'Template'
     | 'EnvironmentGroup'
     | 'FileStore'
+    | 'CCMRecommendation'
+    | 'Anomaly'
 }
 
 export interface GetFilterPathParams {
@@ -2263,6 +2258,9 @@ export interface GetTemplateReferencesQueryParams {
   accountIdentifier: string
   orgIdentifier?: string
   projectIdentifier?: string
+  branch?: string
+  repoIdentifier?: string
+  getDefaultFromOtherRepo?: boolean
 }
 
 export type GetTemplateReferencesProps = Omit<

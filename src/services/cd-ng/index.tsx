@@ -579,7 +579,6 @@ export interface ActivityDetail {
 export interface ActivitySummary {
   endTime?: number
   failedActivitiesCount?: number
-  get_id?: number
   heartBeatFailuresCount?: number
   startTime?: number
   successfulActivitiesCount?: number
@@ -2374,7 +2373,7 @@ export interface EntityDetail {
     | 'ServiceNowCreate'
     | 'ServiceNowUpdate'
     | 'GovernancePolicies'
-    | 'POLICY_STEP'
+    | 'Policy'
     | 'Run'
     | 'RunTests'
     | 'Plugin'
@@ -2499,7 +2498,6 @@ export interface EnvironmentGroupResponseDTO {
   tags?: {
     [key: string]: string
   }
-  version?: number
 }
 
 export interface EnvironmentInfoByServiceId {
@@ -2545,7 +2543,6 @@ export interface EnvironmentResponseDTO {
     [key: string]: string
   }
   type?: 'PreProduction' | 'Production'
-  version?: number
   yaml?: string
 }
 
@@ -3555,13 +3552,10 @@ export interface FilesFilterProperties {
   createdBy?: string
   fileUsage?: 'MANIFEST_FILE' | 'CONFIG' | 'SCRIPT'
   filterType?:
-    | 'Connector'
     | 'DelegateProfile'
     | 'Delegate'
     | 'PipelineSetup'
     | 'PipelineExecution'
-    | 'Deployment'
-    | 'Audit'
     | 'Template'
     | 'EnvironmentGroup'
     | 'FileStore'
@@ -3820,7 +3814,7 @@ export interface GitEntityBranchFilterSummaryProperties {
     | 'ServiceNowCreate'
     | 'ServiceNowUpdate'
     | 'GovernancePolicies'
-    | 'POLICY_STEP'
+    | 'Policy'
     | 'Run'
     | 'RunTests'
     | 'Plugin'
@@ -3900,7 +3894,7 @@ export interface GitEntityFilterProperties {
     | 'ServiceNowCreate'
     | 'ServiceNowUpdate'
     | 'GovernancePolicies'
-    | 'POLICY_STEP'
+    | 'Policy'
     | 'Run'
     | 'RunTests'
     | 'Plugin'
@@ -4013,7 +4007,7 @@ export interface GitFullSyncEntityInfoDTO {
     | 'ServiceNowCreate'
     | 'ServiceNowUpdate'
     | 'GovernancePolicies'
-    | 'POLICY_STEP'
+    | 'Policy'
     | 'Run'
     | 'RunTests'
     | 'Plugin'
@@ -4101,7 +4095,7 @@ export interface GitFullSyncEntityInfoFilterKeys {
     | 'ServiceNowCreate'
     | 'ServiceNowUpdate'
     | 'GovernancePolicies'
-    | 'POLICY_STEP'
+    | 'Policy'
     | 'Run'
     | 'RunTests'
     | 'Plugin'
@@ -4205,7 +4199,6 @@ export interface GitSyncConfig {
 }
 
 export interface GitSyncEntityDTO {
-  accountId?: string
   branch?: string
   entityGitPath?: string
   entityIdentifier?: string
@@ -4268,7 +4261,7 @@ export interface GitSyncEntityDTO {
     | 'ServiceNowCreate'
     | 'ServiceNowUpdate'
     | 'GovernancePolicies'
-    | 'POLICY_STEP'
+    | 'Policy'
     | 'Run'
     | 'RunTests'
     | 'Plugin'
@@ -4352,7 +4345,7 @@ export interface GitSyncEntityListDTO {
     | 'ServiceNowCreate'
     | 'ServiceNowUpdate'
     | 'GovernancePolicies'
-    | 'POLICY_STEP'
+    | 'Policy'
     | 'Run'
     | 'RunTests'
     | 'Plugin'
@@ -4451,7 +4444,7 @@ export interface GitSyncErrorDTO {
     | 'ServiceNowCreate'
     | 'ServiceNowUpdate'
     | 'GovernancePolicies'
-    | 'POLICY_STEP'
+    | 'Policy'
     | 'Run'
     | 'RunTests'
     | 'Plugin'
@@ -4697,9 +4690,7 @@ export type HelmChartManifest = ManifestAttributes & {
   store?: StoreConfigWrapper
 }
 
-export type HelmDeployStepInfo = StepSpecType & {
-  delegateSelectors?: string[]
-}
+export type HelmDeployStepInfo = StepSpecType & { [key: string]: any }
 
 export interface HelmManifestCommandFlag {
   commandType:
@@ -4716,9 +4707,7 @@ export interface HelmManifestCommandFlag {
   flag?: string
 }
 
-export type HelmRollbackStepInfo = StepSpecType & {
-  delegateSelectors?: string[]
-}
+export type HelmRollbackStepInfo = StepSpecType & { [key: string]: any }
 
 export interface HoldingScope {
   nodeSetupId: string
@@ -4830,7 +4819,6 @@ export type HttpStateExecutionData = DelegateResponseData & {
 
 export type HttpStepInfo = StepSpecType & {
   assertion?: string
-  delegateSelectors?: string[]
   headers?: HttpHeaderConfig[]
   method: string
   outputVariables?: NGVariable[]
@@ -4971,7 +4959,6 @@ export type JexlCriteriaSpec = CriteriaSpec & {
 export type JiraApprovalStepInfo = StepSpecType & {
   approvalCriteria: CriteriaSpecWrapper
   connectorRef: string
-  delegateSelectors?: string[]
   issueKey: string
   rejectionCriteria?: CriteriaSpecWrapper
 }
@@ -4986,7 +4973,6 @@ export type JiraConnector = ConnectorConfigDTO & {
 
 export type JiraCreateStepInfo = StepSpecType & {
   connectorRef: string
-  delegateSelectors?: string[]
   fields?: JiraField[]
   issueType: string
   projectKey: string
@@ -5071,34 +5057,13 @@ export interface JiraStatusNG {
 
 export type JiraUpdateStepInfo = StepSpecType & {
   connectorRef: string
-  delegateSelectors?: string[]
   fields?: JiraField[]
   issueKey: string
   transitionTo?: TransitionTo
 }
 
 export interface JsonNode {
-  array?: boolean
-  bigDecimal?: boolean
-  bigInteger?: boolean
-  binary?: boolean
-  boolean?: boolean
-  containerNode?: boolean
-  double?: boolean
-  float?: boolean
-  floatingPointNumber?: boolean
-  int?: boolean
-  integralNumber?: boolean
-  long?: boolean
-  missingNode?: boolean
-  nodeType?: 'ARRAY' | 'BINARY' | 'BOOLEAN' | 'MISSING' | 'NULL' | 'NUMBER' | 'OBJECT' | 'POJO' | 'STRING'
-  null?: boolean
-  number?: boolean
-  object?: boolean
-  pojo?: boolean
-  short?: boolean
-  textual?: boolean
-  valueNode?: boolean
+  [key: string]: any
 }
 
 export type K8SDirectInfrastructure = Infrastructure & {
@@ -5108,7 +5073,6 @@ export type K8SDirectInfrastructure = Infrastructure & {
 }
 
 export type K8sApplyStepInfo = StepSpecType & {
-  delegateSelectors?: string[]
   filePaths?: string[]
   skipDryRun?: boolean
   skipSteadyStateCheck?: boolean
@@ -5124,22 +5088,18 @@ export type K8sAzureInfrastructure = Infrastructure & {
 }
 
 export type K8sBGSwapServicesStepInfo = StepSpecType & {
-  delegateSelectors?: string[]
   skipDryRun?: boolean
 }
 
 export type K8sBlueGreenStepInfo = StepSpecType & {
-  delegateSelectors?: string[]
   skipDryRun?: boolean
 }
 
 export type K8sCanaryDeleteStepInfo = StepSpecType & {
-  delegateSelectors?: string[]
   skipDryRun?: boolean
 }
 
 export type K8sCanaryStepInfo = StepSpecType & {
-  delegateSelectors?: string[]
   instanceSelection: InstanceSelectionWrapper
   skipDryRun?: boolean
 }
@@ -5156,7 +5116,6 @@ export interface K8sContainer {
 }
 
 export type K8sDeleteStepInfo = StepSpecType & {
-  delegateSelectors?: string[]
   deleteResources: DeleteResourcesWrapper
   skipDryRun?: boolean
 }
@@ -5190,17 +5149,14 @@ export type K8sManifest = ManifestAttributes & {
 }
 
 export type K8sRollingRollbackStepInfo = StepSpecType & {
-  delegateSelectors?: string[]
   skipDryRun?: boolean
 }
 
 export type K8sRollingStepInfo = StepSpecType & {
-  delegateSelectors?: string[]
   skipDryRun?: boolean
 }
 
 export type K8sScaleStepInfo = StepSpecType & {
-  delegateSelectors?: string[]
   instanceSelection: InstanceSelectionWrapper
   skipDryRun?: boolean
   skipSteadyStateCheck?: boolean
@@ -7284,7 +7240,7 @@ export interface ResponseListExecutionStatus {
     | 'INTERVENTION_WAITING'
     | 'APPROVAL_WAITING'
     | 'APPROVAL_REJECTED'
-    | 'WAITING'
+    | 'Waiting'
   )[]
   metaData?: { [key: string]: any }
   status?: 'SUCCESS' | 'FAILURE' | 'ERROR'
@@ -9100,7 +9056,6 @@ export interface Serve {
 
 export type ServerlessAwsLambdaDeployStepInfo = StepSpecType & {
   commandOptions?: string
-  delegateSelectors?: string[]
 }
 
 export type ServerlessAwsLambdaInfrastructure = Infrastructure & {
@@ -9116,9 +9071,7 @@ export type ServerlessAwsLambdaManifest = ManifestAttributes & {
   store?: StoreConfigWrapper
 }
 
-export type ServerlessAwsLambdaRollbackStepInfo = StepSpecType & {
-  delegateSelectors?: string[]
-}
+export type ServerlessAwsLambdaRollbackStepInfo = StepSpecType & { [key: string]: any }
 
 export type ServerlessAwsLambdaServiceSpec = ServiceSpec & {}
 
@@ -9259,7 +9212,6 @@ export interface ServiceInstanceUsageDTO {
 export type ServiceNowApprovalStepInfo = StepSpecType & {
   approvalCriteria: CriteriaSpecWrapper
   connectorRef: string
-  delegateSelectors?: string[]
   rejectionCriteria?: CriteriaSpecWrapper
   ticketNumber: string
   ticketType: string
@@ -9275,7 +9227,6 @@ export type ServiceNowConnector = ConnectorConfigDTO & {
 
 export type ServiceNowCreateStepInfo = StepSpecType & {
   connectorRef: string
-  delegateSelectors?: string[]
   fields?: ServiceNowField[]
   templateName?: string
   ticketType: string
@@ -9329,7 +9280,6 @@ export interface ServiceNowTicketTypeDTO {
 
 export type ServiceNowUpdateStepInfo = StepSpecType & {
   connectorRef: string
-  delegateSelectors?: string[]
   fields?: ServiceNowField[]
   templateName?: string
   ticketNumber: string
@@ -9381,7 +9331,6 @@ export interface ServiceResponseDTO {
   tags?: {
     [key: string]: string
   }
-  version?: number
   yaml?: string
 }
 
@@ -9487,7 +9436,6 @@ export interface ShellScriptSourceWrapper {
 }
 
 export type ShellScriptStepInfo = StepSpecType & {
-  delegateSelectors?: string[]
   environmentVariables?: NGVariable[]
   executionTarget?: ExecutionTarget
   metadata?: string
@@ -9788,7 +9736,6 @@ export interface TemplateLinkConfig {
 
 export type TerraformApplyStepInfo = StepSpecType & {
   configuration: TerraformStepConfiguration
-  delegateSelectors?: string[]
   metadata?: string
   provisionerIdentifier: string
 }
@@ -9809,7 +9756,6 @@ export interface TerraformConfigFilesWrapper {
 
 export type TerraformDestroyStepInfo = StepSpecType & {
   configuration: TerraformStepConfiguration
-  delegateSelectors?: string[]
   metadata?: string
   provisionerIdentifier: string
 }
@@ -9836,12 +9782,10 @@ export interface TerraformPlanExecutionData {
 
 export type TerraformPlanStepInfo = StepSpecType & {
   configuration: TerraformPlanExecutionData
-  delegateSelectors?: string[]
   provisionerIdentifier: string
 }
 
 export type TerraformRollbackStepInfo = StepSpecType & {
-  delegateSelectors?: string[]
   provisionerIdentifier: string
 }
 
@@ -9866,6 +9810,7 @@ export interface TerraformVarFileWrapper {
 
 export interface Throwable {
   cause?: Throwable
+  detailMessage?: string
   localizedMessage?: string
   message?: string
   stackTrace?: StackTraceElement[]
@@ -10513,7 +10458,7 @@ export type YamlSchemaDetailsWrapperRequestBody = YamlSchemaDetailsWrapper
 
 export type GetBuildDetailsForAcrArtifactWithYamlBodyRequestBody = string
 
-export type SubscribeBodyRequestBody = string[]
+export type UnsubscribeBodyRequestBody = string[]
 
 export type UpdateEnvironmentGroupBodyRequestBody = string
 
@@ -11052,7 +10997,7 @@ export interface ListActivitiesQueryParams {
     | 'ServiceNowCreate'
     | 'ServiceNowUpdate'
     | 'GovernancePolicies'
-    | 'POLICY_STEP'
+    | 'Policy'
     | 'Run'
     | 'RunTests'
     | 'Plugin'
@@ -11126,7 +11071,7 @@ export interface ListActivitiesQueryParams {
     | 'ServiceNowCreate'
     | 'ServiceNowUpdate'
     | 'GovernancePolicies'
-    | 'POLICY_STEP'
+    | 'Policy'
     | 'Run'
     | 'RunTests'
     | 'Plugin'
@@ -11304,7 +11249,7 @@ export interface GetActivitiesSummaryQueryParams {
     | 'ServiceNowCreate'
     | 'ServiceNowUpdate'
     | 'GovernancePolicies'
-    | 'POLICY_STEP'
+    | 'Policy'
     | 'Run'
     | 'RunTests'
     | 'Plugin'
@@ -11378,7 +11323,7 @@ export interface GetActivitiesSummaryQueryParams {
     | 'ServiceNowCreate'
     | 'ServiceNowUpdate'
     | 'GovernancePolicies'
-    | 'POLICY_STEP'
+    | 'Policy'
     | 'Run'
     | 'RunTests'
     | 'Plugin'
@@ -19744,7 +19689,7 @@ export interface ListReferredByEntitiesQueryParams {
     | 'ServiceNowCreate'
     | 'ServiceNowUpdate'
     | 'GovernancePolicies'
-    | 'POLICY_STEP'
+    | 'Policy'
     | 'Run'
     | 'RunTests'
     | 'Plugin'
@@ -23442,7 +23387,7 @@ export interface ListGitSyncEntitiesByTypePathParams {
     | 'ServiceNowCreate'
     | 'ServiceNowUpdate'
     | 'GovernancePolicies'
-    | 'POLICY_STEP'
+    | 'Policy'
     | 'Run'
     | 'RunTests'
     | 'Plugin'
@@ -23584,7 +23529,7 @@ export const listGitSyncEntitiesByTypePromise = (
       | 'ServiceNowCreate'
       | 'ServiceNowUpdate'
       | 'GovernancePolicies'
-      | 'POLICY_STEP'
+      | 'Policy'
       | 'Run'
       | 'RunTests'
       | 'Plugin'
@@ -27012,7 +26957,7 @@ export interface GetStepYamlSchemaQueryParams {
     | 'ServiceNowCreate'
     | 'ServiceNowUpdate'
     | 'GovernancePolicies'
-    | 'POLICY_STEP'
+    | 'Policy'
     | 'Run'
     | 'RunTests'
     | 'Plugin'
@@ -27562,7 +27507,7 @@ export type ProcessPollingResultNgProps = Omit<
     void,
     Failure | Error,
     ProcessPollingResultNgQueryParams,
-    SubscribeBodyRequestBody,
+    UnsubscribeBodyRequestBody,
     ProcessPollingResultNgPathParams
   >,
   'path' | 'verb'
@@ -27574,7 +27519,7 @@ export const ProcessPollingResultNg = ({ perpetualTaskId, ...props }: ProcessPol
     void,
     Failure | Error,
     ProcessPollingResultNgQueryParams,
-    SubscribeBodyRequestBody,
+    UnsubscribeBodyRequestBody,
     ProcessPollingResultNgPathParams
   >
     verb="POST"
@@ -27589,7 +27534,7 @@ export type UseProcessPollingResultNgProps = Omit<
     void,
     Failure | Error,
     ProcessPollingResultNgQueryParams,
-    SubscribeBodyRequestBody,
+    UnsubscribeBodyRequestBody,
     ProcessPollingResultNgPathParams
   >,
   'path' | 'verb'
@@ -27601,7 +27546,7 @@ export const useProcessPollingResultNg = ({ perpetualTaskId, ...props }: UseProc
     void,
     Failure | Error,
     ProcessPollingResultNgQueryParams,
-    SubscribeBodyRequestBody,
+    UnsubscribeBodyRequestBody,
     ProcessPollingResultNgPathParams
   >(
     'POST',
@@ -27617,7 +27562,7 @@ export const processPollingResultNgPromise = (
     void,
     Failure | Error,
     ProcessPollingResultNgQueryParams,
-    SubscribeBodyRequestBody,
+    UnsubscribeBodyRequestBody,
     ProcessPollingResultNgPathParams
   > & { perpetualTaskId: string },
   signal?: RequestInit['signal']
@@ -27626,17 +27571,17 @@ export const processPollingResultNgPromise = (
     void,
     Failure | Error,
     ProcessPollingResultNgQueryParams,
-    SubscribeBodyRequestBody,
+    UnsubscribeBodyRequestBody,
     ProcessPollingResultNgPathParams
   >('POST', getConfig('ng/api'), `/polling/delegate-response/${perpetualTaskId}`, props, signal)
 
 export type SubscribeProps = Omit<
-  MutateProps<ResponsePollingResponseDTO, Failure | Error, void, SubscribeBodyRequestBody, void>,
+  MutateProps<ResponsePollingResponseDTO, Failure | Error, void, UnsubscribeBodyRequestBody, void>,
   'path' | 'verb'
 >
 
 export const Subscribe = (props: SubscribeProps) => (
-  <Mutate<ResponsePollingResponseDTO, Failure | Error, void, SubscribeBodyRequestBody, void>
+  <Mutate<ResponsePollingResponseDTO, Failure | Error, void, UnsubscribeBodyRequestBody, void>
     verb="POST"
     path={`/polling/subscribe`}
     base={getConfig('ng/api')}
@@ -27645,22 +27590,22 @@ export const Subscribe = (props: SubscribeProps) => (
 )
 
 export type UseSubscribeProps = Omit<
-  UseMutateProps<ResponsePollingResponseDTO, Failure | Error, void, SubscribeBodyRequestBody, void>,
+  UseMutateProps<ResponsePollingResponseDTO, Failure | Error, void, UnsubscribeBodyRequestBody, void>,
   'path' | 'verb'
 >
 
 export const useSubscribe = (props: UseSubscribeProps) =>
-  useMutate<ResponsePollingResponseDTO, Failure | Error, void, SubscribeBodyRequestBody, void>(
+  useMutate<ResponsePollingResponseDTO, Failure | Error, void, UnsubscribeBodyRequestBody, void>(
     'POST',
     `/polling/subscribe`,
     { base: getConfig('ng/api'), ...props }
   )
 
 export const subscribePromise = (
-  props: MutateUsingFetchProps<ResponsePollingResponseDTO, Failure | Error, void, SubscribeBodyRequestBody, void>,
+  props: MutateUsingFetchProps<ResponsePollingResponseDTO, Failure | Error, void, UnsubscribeBodyRequestBody, void>,
   signal?: RequestInit['signal']
 ) =>
-  mutateUsingFetch<ResponsePollingResponseDTO, Failure | Error, void, SubscribeBodyRequestBody, void>(
+  mutateUsingFetch<ResponsePollingResponseDTO, Failure | Error, void, UnsubscribeBodyRequestBody, void>(
     'POST',
     getConfig('ng/api'),
     `/polling/subscribe`,
@@ -27669,12 +27614,12 @@ export const subscribePromise = (
   )
 
 export type UnsubscribeProps = Omit<
-  MutateProps<boolean, Failure | Error, void, SubscribeBodyRequestBody, void>,
+  MutateProps<boolean, Failure | Error, void, UnsubscribeBodyRequestBody, void>,
   'path' | 'verb'
 >
 
 export const Unsubscribe = (props: UnsubscribeProps) => (
-  <Mutate<boolean, Failure | Error, void, SubscribeBodyRequestBody, void>
+  <Mutate<boolean, Failure | Error, void, UnsubscribeBodyRequestBody, void>
     verb="POST"
     path={`/polling/unsubscribe`}
     base={getConfig('ng/api')}
@@ -27683,21 +27628,21 @@ export const Unsubscribe = (props: UnsubscribeProps) => (
 )
 
 export type UseUnsubscribeProps = Omit<
-  UseMutateProps<boolean, Failure | Error, void, SubscribeBodyRequestBody, void>,
+  UseMutateProps<boolean, Failure | Error, void, UnsubscribeBodyRequestBody, void>,
   'path' | 'verb'
 >
 
 export const useUnsubscribe = (props: UseUnsubscribeProps) =>
-  useMutate<boolean, Failure | Error, void, SubscribeBodyRequestBody, void>('POST', `/polling/unsubscribe`, {
+  useMutate<boolean, Failure | Error, void, UnsubscribeBodyRequestBody, void>('POST', `/polling/unsubscribe`, {
     base: getConfig('ng/api'),
     ...props
   })
 
 export const unsubscribePromise = (
-  props: MutateUsingFetchProps<boolean, Failure | Error, void, SubscribeBodyRequestBody, void>,
+  props: MutateUsingFetchProps<boolean, Failure | Error, void, UnsubscribeBodyRequestBody, void>,
   signal?: RequestInit['signal']
 ) =>
-  mutateUsingFetch<boolean, Failure | Error, void, SubscribeBodyRequestBody, void>(
+  mutateUsingFetch<boolean, Failure | Error, void, UnsubscribeBodyRequestBody, void>(
     'POST',
     getConfig('ng/api'),
     `/polling/unsubscribe`,
@@ -36927,7 +36872,7 @@ export interface GetYamlSchemaQueryParams {
     | 'ServiceNowCreate'
     | 'ServiceNowUpdate'
     | 'GovernancePolicies'
-    | 'POLICY_STEP'
+    | 'Policy'
     | 'Run'
     | 'RunTests'
     | 'Plugin'
