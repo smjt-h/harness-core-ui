@@ -14,6 +14,7 @@ import { createDetailsTitle, getOnClickOptions, statusToColorMapping } from './C
 import type { ChangeDetailsDataInterface } from '../../ChangeEventCard.types'
 import StatusChip from './components/StatusChip/StatusChip'
 import css from './ChangeDetails.module.scss'
+import { ChangeSourceTypes } from '@cv/pages/ChangeSource/ChangeSourceDrawer/ChangeSourceDrawer.constants'
 
 export default function ChangeDetails({
   ChangeDetailsData
@@ -21,16 +22,20 @@ export default function ChangeDetails({
   ChangeDetailsData: ChangeDetailsDataInterface
 }): JSX.Element {
   const { getString } = useStrings()
-  const { type, category, details, status } = ChangeDetailsData
+  const { type, category, status } = ChangeDetailsData
+  let { details } = ChangeDetailsData
+  console.log('change Details', ChangeDetailsData)
   const { color, backgroundColor } = statusToColorMapping(status, type) || {}
-
+  if (type === ChangeSourceTypes.HarnessCDNextGen) {
+    details = { source: type, ...details }
+  }
   return (
     <Container>
-      {type && category ? (
-        <Text font={{ size: 'medium', weight: 'bold' }} color={Color.GREY_800}>
-          {createDetailsTitle(type, category)} {getString('details')}
-        </Text>
-      ) : null}
+      (type) && category ? (
+      <Text font={{ size: 'medium', weight: 'bold' }} color={Color.GREY_800}>
+        {createDetailsTitle(type, category)} {getString('details')}
+      </Text>
+      ) : null
       <div className={css.gridContainer}>
         {Object.entries(details).map(item => {
           const value = typeof item[1] === 'string' ? item[1] : item[1]?.name
@@ -50,7 +55,9 @@ export default function ChangeDetails({
           ) : null
         })}
       </div>
-      {status ? <StatusChip status={status} color={color} backgroundColor={backgroundColor} /> : null}
+      {status && type !== ChangeSourceTypes.HarnessCDNextGen ? (
+        <StatusChip status={status} color={color} backgroundColor={backgroundColor} />
+      ) : null}
     </Container>
   )
 }

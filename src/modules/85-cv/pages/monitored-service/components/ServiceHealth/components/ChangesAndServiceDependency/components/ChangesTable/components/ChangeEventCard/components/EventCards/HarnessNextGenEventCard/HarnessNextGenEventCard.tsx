@@ -21,9 +21,11 @@ import ChangeDetails from '../../ChangeDetails/ChangeDetails'
 import ChangeTitle from '../../ChangeTitle/ChangeTitle'
 import DeploymentTimeDuration from '../../DeploymentTimeDuration/DeploymentTimeDuration'
 import css from '../../../ChangeEventCard.module.scss'
+import ChangeTitleForHarness from '../../ChangeTitleForHarnessCD/ChangePipelineForHarnessCD'
 
 export default function HarnessNextGenEventCard({ data }: { data: ChangeEventDTO }): JSX.Element {
   const { getString } = useStrings()
+  console.log('ddddd', data)
   const changeTitleData: ChangeTitleData = useMemo(() => createChangeTitleData(data), [])
   const changeDetailsData: ChangeDetailsDataInterface = useMemo(() => createChangeDetailsData(data), [])
 
@@ -35,22 +37,18 @@ export default function HarnessNextGenEventCard({ data }: { data: ChangeEventDTO
     verificationStatus: string
   }[] = verifyStepSummaries
 
+  const { type } = data || {}
+
   return (
     <Card className={css.main}>
-      <ChangeTitle changeTitleData={changeTitleData} />
+      <ChangeTitleForHarness changeTitleData={changeTitleData} />
       <Divider className={css.divider} />
-      <ChangeDetails ChangeDetailsData={changeDetailsData} />
-      <Divider className={css.divider} />
-      <Container>
-        <Text font={{ size: 'medium', weight: 'bold' }} color={Color.GREY_800}>
-          {getString('cv.changeSource.changeSourceCard.information')}
-        </Text>
-        <ChangeDetails ChangeDetailsData={{ details: changeInfoData }} />
-        <DeploymentTimeDuration
-          startTime={data?.metadata?.deploymentStartTime}
-          endTime={data?.metadata?.deploymentEndTime}
-        />
-      </Container>
+      <ChangeDetails ChangeDetailsData={{ ...changeDetailsData, details: changeInfoData }} />
+      <DeploymentTimeDuration
+        startTime={data?.metadata?.deploymentStartTime}
+        endTime={data?.metadata?.deploymentEndTime}
+        type={type}
+      />
       <Divider className={css.divider} />
       {summary?.length ? (
         <Container margin={{ bottom: 'var(--spacing-small)' }}>

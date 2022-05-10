@@ -12,8 +12,17 @@ import { useStrings } from 'framework/strings'
 import { durationAsString } from './DeploymentTimeDuration.utils'
 import { TIME_FORMAT } from './DeploymentTimeDuration.constant'
 import css from './DeploymentTimeDuration.module.scss'
+import { ChangeSourceTypes } from '@cv/pages/ChangeSource/ChangeSourceDrawer/ChangeSourceDrawer.constants'
 
-export default function DeploymentTimeDuration({ startTime, endTime }: { startTime: number; endTime: number }) {
+export default function DeploymentTimeDuration({
+  startTime,
+  endTime,
+  type
+}: {
+  startTime: number
+  endTime: number
+  type?: ChangeSourceTypes
+}) {
   const { getString } = useStrings()
   const durationString = durationAsString(startTime, endTime)
   const timePassed = durationAsString(endTime, moment().valueOf())
@@ -21,6 +30,12 @@ export default function DeploymentTimeDuration({ startTime, endTime }: { startTi
   return (
     <Container className={css.main}>
       <Layout.Horizontal flex={{ justifyContent: 'space-between' }}>
+        {type === ChangeSourceTypes.HarnessCDNextGen && (
+          <Text icon={'time'} iconProps={{ size: 12 }} font={{ size: 'small' }}>
+            {'start '}
+            {moment(startTime).format(TIME_FORMAT)}
+          </Text>
+        )}
         <Text icon={'time'} iconProps={{ size: 12 }} font={{ size: 'small' }}>
           {getString('cv.changeSource.changeSourceCard.finished')}
           {moment(endTime).format(TIME_FORMAT)}
@@ -29,10 +44,12 @@ export default function DeploymentTimeDuration({ startTime, endTime }: { startTi
           {getString('common.durationPrefix')}
           {durationString}
         </Text>
-        <Text icon={'calendar'} iconProps={{ size: 12 }} font={{ size: 'small' }}>
-          {timePassed || 0}
-          {getString('cv.changeSource.changeSourceCard.ago')}
-        </Text>
+        {type !== ChangeSourceTypes.HarnessCDNextGen && (
+          <Text icon={'calendar'} iconProps={{ size: 12 }} font={{ size: 'small' }}>
+            {timePassed || 0}
+            {getString('cv.changeSource.changeSourceCard.ago')}
+          </Text>
+        )}
       </Layout.Horizontal>
     </Container>
   )
