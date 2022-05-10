@@ -72,7 +72,7 @@ const FlagOptionsMenuButton = (props: FlagOptionsMenuButtonProps): ReactElement 
         }}
       />
     )
-  }, [flagData.name, flagData.identifier])
+  }, [flagData.name, flagData.identifier, gitSync])
 
   const confirmDeleteFlag = useConfirmAction({
     title: getString('cf.featureFlags.deleteFlag'),

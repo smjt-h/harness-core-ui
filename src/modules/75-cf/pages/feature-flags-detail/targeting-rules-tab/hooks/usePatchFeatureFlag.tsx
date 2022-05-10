@@ -26,6 +26,7 @@ import {
 import { PatchFeatureFlagUtils } from '../utils/PatchFeatureFlagUtils'
 export interface UsePatchFeatureFlagProps {
   featureFlagIdentifier: string
+  featureFlagName: string
   initialValues: TargetingRulesFormValues
   variations: Variation[]
   refetchFlag: () => Promise<unknown>
@@ -38,6 +39,7 @@ interface UsePatchFeatureFlagReturn {
 
 const usePatchFeatureFlag = ({
   featureFlagIdentifier,
+  featureFlagName,
   initialValues,
   refetchFlag
 }: UsePatchFeatureFlagProps): UsePatchFeatureFlagReturn => {
@@ -162,7 +164,13 @@ const usePatchFeatureFlag = ({
 
     // submit request
     patch.feature.onPatchAvailable(async formData => {
-      saveWithGit(AUTO_COMMIT_MESSAGES.UPDATED_FLAG_TARGETING, formData, handleSave)
+      saveWithGit(
+        featureFlagName,
+        featureFlagIdentifier,
+        AUTO_COMMIT_MESSAGES.UPDATED_FLAG_TARGETING,
+        formData,
+        handleSave
+      )
     })
   }
   return {

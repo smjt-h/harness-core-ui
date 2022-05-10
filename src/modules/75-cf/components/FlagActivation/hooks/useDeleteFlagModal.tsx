@@ -64,7 +64,7 @@ const useDeleteFlagModal = (props: UseDeleteFlagModalProps): UseDeleteFlagModalR
         }}
       />
     )
-  }, [featureFlag.name, featureFlag.identifier])
+  }, [featureFlag.name, featureFlag.identifier, gitSync])
 
   const handleDeleteFlag = async (gitSyncFormValues?: GitSyncFormValues): Promise<void> => {
     let commitMsg = ''

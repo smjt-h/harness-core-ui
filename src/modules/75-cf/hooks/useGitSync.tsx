@@ -54,6 +54,8 @@ export interface UseGitSync {
   gitSyncLoading: boolean
   apiError: string
   saveWithGit: (
+    featureFlagIdentifier: string,
+    featureFlagName: string,
     autoCommitMessage: string,
     formData: PatchOperation,
     callback: (requestData: PatchOperation) => Promise<void>
@@ -132,9 +134,13 @@ export const useGitSync = (): UseGitSync => {
   }
 
   const entityDataRef = useRef<{
+    featureFlagIdentifier: string
+    featureFlagName: string
     instructions: PatchInstruction
     callback?: (reqData: PatchOperation) => Promise<void>
   }>({
+    featureFlagIdentifier: '',
+    featureFlagName: '',
     instructions: [],
     callback: undefined
   })
@@ -173,8 +179,8 @@ export const useGitSync = (): UseGitSync => {
 
   const [showGitSyncModal, hideGitSyncModal] = useModalHook(() => (
     <SaveFlagToGitModal
-      flagName="test"
-      flagIdentifier="test"
+      flagName={entityDataRef.current.featureFlagName}
+      flagIdentifier={entityDataRef.current.featureFlagIdentifier}
       gitSyncInitialValues={getGitSyncFormMeta().gitSyncInitialValues}
       gitSyncValidationSchema={getGitSyncFormMeta().gitSyncValidationSchema}
       onSubmit={onSaveGitSyncSubmit}
@@ -264,11 +270,15 @@ export const useGitSync = (): UseGitSync => {
   }
 
   const saveWithGit = async (
+    featureFlagIdentifier: string,
+    featureFlagName: string,
     autoCommitMessage: string,
     formData: PatchOperation,
     callback: (reqData: PatchOperation) => Promise<void>
   ): Promise<void> => {
     entityDataRef.current = {
+      featureFlagIdentifier,
+      featureFlagName,
       instructions: formData.instructions,
       callback
     }
