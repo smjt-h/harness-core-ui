@@ -22,7 +22,6 @@ declare const styles: {
   readonly learnMore: string
   readonly provisioningFailed: string
   readonly repositories: string
-  readonly repositoriesWithError: string
   readonly repositoryRow: string
   readonly repositorySearch: string
   readonly repositoryTable: string
