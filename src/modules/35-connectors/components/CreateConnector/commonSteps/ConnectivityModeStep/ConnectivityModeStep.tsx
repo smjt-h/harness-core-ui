@@ -5,7 +5,7 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import {
   Button,
   ButtonVariation,
@@ -36,7 +36,6 @@ import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
 import { useStrings } from 'framework/strings'
 import { useAppStore } from 'framework/AppStore/AppStoreContext'
 import useCreateEditConnector, { BuildPayloadProps } from '@connectors/hooks/useCreateEditConnector'
-import type { ConnectorWizardOptions } from '@connectors/constants'
 import css from './ConnectivityModeStep.module.scss'
 
 interface ConnectivityModeStepData extends BuildPayloadProps {
@@ -58,7 +57,6 @@ interface ConnectivityModeStepProps {
   hideModal?: () => void
   customHandleCreate?: (payload: ConnectorConfigDTO) => Promise<ConnectorInfoDTO | undefined>
   customHandleUpdate?: (payload: ConnectorConfigDTO) => Promise<ConnectorInfoDTO | undefined>
-  setConnectorWizardOptions?: (options: ConnectorWizardOptions) => void
 }
 
 const ConnectivityModeStep: React.FC<StepProps<ConnectorConfigDTO> & ConnectivityModeStepProps> = props => {
@@ -92,15 +90,6 @@ const ConnectivityModeStep: React.FC<StepProps<ConnectorConfigDTO> & Connectivit
       props.setIsEditMode?.(true)
     }
   }
-
-  useEffect(() => {
-    props.setConnectorWizardOptions?.({
-      helpPanel: {
-        referenceId: 'gitHubConnectorConnectToTheProvider',
-        contentWidth: 1100
-      }
-    })
-  }, [])
 
   const { onInitiate, loading } = useCreateEditConnector<ConnectivityModeStepData>({
     accountId,

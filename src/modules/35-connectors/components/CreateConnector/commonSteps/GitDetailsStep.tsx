@@ -5,7 +5,7 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import React, { useRef, useState, useEffect } from 'react'
+import React, { useRef, useState } from 'react'
 import cx from 'classnames'
 import {
   Layout,
@@ -36,7 +36,7 @@ import { GitAuthTypes } from '@connectors/pages/connectors/utils/ConnectorHelper
 import { String, useStrings } from 'framework/strings'
 import { GitUrlType, GitConnectionType, saveCurrentStepData } from '@connectors/pages/connectors/utils/ConnectorUtils'
 import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
-import { Connectors, ConnectorWizardOptions } from '@connectors/constants'
+import { Connectors } from '@connectors/constants'
 import css from './ConnectorDetailsStep.module.scss'
 import commonCss from './ConnectorCommonStyles.module.scss'
 
@@ -48,7 +48,6 @@ interface ConnectorDetailsStepProps extends StepProps<ConnectorInfoDTO> {
   isEditMode?: boolean
   connectorInfo: ConnectorInfoDTO | void
   mock?: ResponseBoolean
-  setConnectorWizardOptions?: (options: ConnectorWizardOptions) => void
 }
 
 interface DetailsStepInterface {
@@ -103,15 +102,6 @@ const GitDetailsStep: React.FC<StepProps<ConnectorConfigDTO> & ConnectorDetailsS
       value: GitConnectionType.SSH
     }
   ]
-
-  useEffect(() => {
-    props.setConnectorWizardOptions?.({
-      helpPanel: {
-        referenceId: 'gitHubConnectorDetails',
-        contentWidth: 1000
-      }
-    })
-  }, [])
 
   const getUrlLabel = (connectorType: ConnectorInfoDTO['type'], urlType: string): string => {
     switch (connectorType) {

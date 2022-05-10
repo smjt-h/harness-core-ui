@@ -5,10 +5,9 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import React, { useState } from 'react'
+import React from 'react'
 import { pick } from 'lodash-es'
-import { HelpPanel } from '@harness/help-panel'
-import { Connectors, ConnectorWizardOptions, CONNECTOR_MODAL_MIN_WIDTH } from '@connectors/constants'
+import { Connectors } from '@connectors/constants'
 import type { ConnectorRequestBody, ConnectorInfoDTO } from 'services/cd-ng'
 import type { IGitContextFormProps } from '@common/components/GitContextForm/GitContextForm'
 import type { ConnectivityModeType } from '@common/components/ConnectivityMode/ConnectivityMode'
@@ -49,7 +48,8 @@ import CreateCeGcpConnector from '../CreateConnector/CEGcpConnector/CreateCeGcpC
 import CreateCustomHealthConnector from '../CreateConnector/CustomHealthConnector/CreateCustomHealthConnector'
 import CreateErrorTrackingConnector from '../CreateConnector/ErrorTrackingConnector/CreateErrorTrackingConnector'
 import CreateAzureConnector from '../CreateConnector/AzureConnector/CreateAzureConnector'
-import css from './CreateConnectorWizard.module.scss'
+import { ConnectorWizardContextProvider } from './ConnectorWizardContext'
+
 interface CreateConnectorWizardProps {
   accountId: string
   projectIdentifier: string
@@ -65,11 +65,7 @@ interface CreateConnectorWizardProps {
   onSuccess: (data?: ConnectorRequestBody) => void | Promise<void>
 }
 
-interface CreateConnectorWizardOptions {
-  setConnectorWizardOptions: (options: ConnectorWizardOptions) => void
-}
-
-export const ConnectorWizard: React.FC<CreateConnectorWizardProps & CreateConnectorWizardOptions> = props => {
+export const ConnectorWizard: React.FC<CreateConnectorWizardProps> = props => {
   const { type } = props
   const { trackEvent } = useTelemetry()
   const onSuccessWithEventTracking = (data?: ConnectorRequestBody): void | Promise<void> => {
@@ -91,13 +87,11 @@ export const ConnectorWizard: React.FC<CreateConnectorWizardProps & CreateConnec
     'orgIdentifier',
     'projectIdentifier',
     'connectivityMode',
-    'setConnectivityMode',
-    'setConnectorWizardOptions'
+    'setConnectivityMode'
   ])
   commonProps = {
     ...commonProps,
-    onSuccess: onSuccessWithEventTracking,
-    setConnectorWizardOptions: props.setConnectorWizardOptions
+    onSuccess: onSuccessWithEventTracking
   }
 
   const { ERROR_TRACKING_ENABLED, NG_AZURE } = useFeatureFlags()
@@ -184,32 +178,9 @@ export const ConnectorWizard: React.FC<CreateConnectorWizardProps & CreateConnec
 }
 
 export const CreateConnectorWizard: React.FC<CreateConnectorWizardProps> = props => {
-  const [connectorWizardOptions, setConnectorWizardOptions] = useState<ConnectorWizardOptions>()
-  const { helpPanel } = connectorWizardOptions || {}
-
-  const setOptions = (options: ConnectorWizardOptions): void => {
-    setConnectorWizardOptions(options)
-  }
-
-  const getHelpPanelMinWidth = () => {
-    if (helpPanel) {
-      const diffWidth = CONNECTOR_MODAL_MIN_WIDTH - helpPanel.contentWidth
-      return diffWidth > 50 ? diffWidth : 50
-    }
-  }
-
   return (
-    <div className={css.createConnectorWizard}>
-      <div className={css.contentContainer} style={{ width: helpPanel ? helpPanel.contentWidth : '100%' }}>
-        <ConnectorWizard {...props} setConnectorWizardOptions={setOptions} />
-      </div>
-      {helpPanel ? (
-        <div className={css.helpPanelContainer}>
-          <div style={{ minWidth: getHelpPanelMinWidth(), height: 560 }}>
-            <HelpPanel referenceId={helpPanel.referenceId} />
-          </div>
-        </div>
-      ) : undefined}
-    </div>
+    <ConnectorWizardContextProvider>
+      <ConnectorWizard {...props} />
+    </ConnectorWizardContextProvider>
   )
 }

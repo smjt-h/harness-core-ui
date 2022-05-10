@@ -33,7 +33,6 @@ import type { SecretReferenceInterface } from '@secrets/utils/SecretField'
 import { useStrings } from 'framework/strings'
 import { AuthTypes } from '@connectors/pages/connectors/utils/ConnectorHelper'
 import TextReference, { ValueType, TextReferenceInterface } from '@secrets/components/TextReference/TextReference'
-import type { ConnectorWizardOptions } from '@connectors/constants'
 import commonStyles from '@connectors/components/CreateConnector/commonSteps/ConnectorCommonStyles.module.scss'
 import css from './Stepk8ClusterDetails.module.scss'
 
@@ -51,7 +50,6 @@ interface K8ClusterDetailsProps {
   accountId: string
   orgIdentifier: string
   projectIdentifier: string
-  setConnectorWizardOptions?: (options: ConnectorWizardOptions) => void
 }
 
 interface KubeFormInterface {
@@ -215,15 +213,6 @@ const RenderK8AuthForm: React.FC<FormikProps<KubeFormInterface> & { isEditMode: 
 const Stepk8ClusterDetails: React.FC<StepProps<Stepk8ClusterDetailsProps> & K8ClusterDetailsProps> = props => {
   const { accountId, prevStepData, nextStep } = props
   const { getString } = useStrings()
-
-  useEffect(() => {
-    props.setConnectorWizardOptions?.({
-      helpPanel: {
-        referenceId: 'getStartedTestId',
-        contentWidth: 1200
-      }
-    })
-  }, [])
 
   const DelegateCards: DelegateCardInterface[] = [
     {

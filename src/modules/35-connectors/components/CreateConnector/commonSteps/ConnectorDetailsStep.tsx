@@ -5,7 +5,7 @@
  * https://polyformproject.org/wp-content/uploads/2020/06/PolyForm-Shield-1.0.0.txt.
  */
 
-import React, { useRef, useState, useEffect } from 'react'
+import React, { useRef, useState } from 'react'
 import {
   Layout,
   Button,
@@ -36,7 +36,6 @@ import { GitSyncStoreProvider } from 'framework/GitRepoStore/GitSyncStoreContext
 import GitContextForm, { GitContextProps, IGitContextFormProps } from '@common/components/GitContextForm/GitContextForm'
 import { saveCurrentStepData } from '@connectors/pages/connectors/utils/ConnectorUtils'
 import { IdentifierSchema, NameSchema } from '@common/utils/Validation'
-import { Connectors, ConnectorWizardOptions } from '@connectors/constants'
 import { getHeadingIdByType } from '../../../pages/connectors/utils/ConnectorHelper'
 import css from './ConnectorDetailsStep.module.scss'
 
@@ -52,18 +51,13 @@ interface ConnectorDetailsStepProps extends StepProps<ConnectorInfoDTO> {
   gitDetails?: IGitContextFormProps
   mock?: ResponseBoolean
   disableGitSync?: boolean
-  setConnectorWizardOptions?: (options: ConnectorWizardOptions) => void
+  setConnectorWizardOptions?: (options: any) => void
 }
 
 type Params = {
   accountId: string
   projectIdentifier: string
   orgIdentifier: string
-}
-
-const connectorTypeHelpPanelMap = {
-  [Connectors.KUBERNETES_CLUSTER]: 'manifestDetails',
-  [Connectors.GITHUB]: 'gitHubConnectorOverview'
 }
 
 const ConnectorDetailsStep: React.FC<StepProps<ConnectorConfigDTO> & ConnectorDetailsStepProps> = props => {
@@ -84,17 +78,6 @@ const ConnectorDetailsStep: React.FC<StepProps<ConnectorConfigDTO> & ConnectorDe
   const [loading, setLoading] = useState(false)
   const isEdit = props.isEditMode || prevStepData?.isEdit
   const { getString } = useStrings()
-
-  useEffect(() => {
-    if (connectorTypeHelpPanelMap[props.type]) {
-      props.setConnectorWizardOptions?.({
-        helpPanel: {
-          referenceId: connectorTypeHelpPanelMap[props.type],
-          contentWidth: 900
-        }
-      })
-    }
-  }, [])
 
   const handleSubmit = async (formData: ConnectorConfigDTO): Promise<void> => {
     mounted.current = true

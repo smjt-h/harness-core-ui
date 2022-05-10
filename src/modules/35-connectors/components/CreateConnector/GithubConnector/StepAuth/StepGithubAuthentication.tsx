@@ -36,7 +36,6 @@ import SSHSecretInput from '@secrets/components/SSHSecretInput/SSHSecretInput'
 import TextReference, { TextReferenceInterface, ValueType } from '@secrets/components/TextReference/TextReference'
 import { useStrings } from 'framework/strings'
 import { GitAuthTypes, GitAPIAuthTypes } from '@connectors/pages/connectors/utils/ConnectorHelper'
-import type { ConnectorWizardOptions } from '@connectors/constants'
 import commonStyles from '@connectors/components/CreateConnector/commonSteps/ConnectorCommonStyles.module.scss'
 import css from './StepGithubAuthentication.module.scss'
 import commonCss from '../../commonSteps/ConnectorCommonStyles.module.scss'
@@ -55,7 +54,6 @@ interface GithubAuthenticationProps {
   accountId: string
   orgIdentifier: string
   projectIdentifier: string
-  setConnectorWizardOptions?: (options: ConnectorWizardOptions) => void
 }
 
 interface GithubFormInterface {
@@ -175,15 +173,6 @@ const StepGithubAuthentication: React.FC<StepProps<StepGithubAuthenticationProps
         value: GitAuthTypes.USER_TOKEN
       }
     ]
-
-    useEffect(() => {
-      props.setConnectorWizardOptions?.({
-        helpPanel: {
-          referenceId: 'gitHubConnectorCredentials',
-          contentWidth: 1000
-        }
-      })
-    }, [])
 
     useEffect(() => {
       if (loadingConnectorSecrets && props.isEditMode) {
