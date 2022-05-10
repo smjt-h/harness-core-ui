@@ -11,7 +11,12 @@ import { Container, Button, ButtonVariation, Layout, MultiStepProgressIndicator,
 import { useStrings } from 'framework/strings'
 import { useSideNavContext } from 'framework/SideNavStore/SideNavContext'
 import routes from '@common/RouteDefinitions'
-import { ResponseSetupStatus, useGetDelegateInstallStatus, useProvisionResourcesForCI } from 'services/cd-ng'
+import {
+  ResponseSetupStatus,
+  useGetDelegateInstallStatus,
+  useProvisionResourcesForCI,
+  UserRepoResponse
+} from 'services/cd-ng'
 import { createPipelineV2Promise, ResponsePipelineSaveResponse } from 'services/pipeline-ng'
 import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
 import { DEFAULT_PIPELINE_PAYLOAD, DEFAULT_STAGE_ID } from '@common/utils/CIConstants'
@@ -107,16 +112,16 @@ export const InfraProvisioningWizard: React.FC<InfraProvisioningWizardProps> = p
   }, [])
 
   const constructPipelinePayload = React.useCallback(
-    (repoName: string): string | undefined => {
-      if (!repoName) {
+    (repository: UserRepoResponse): string | undefined => {
+      const { name: repoName, namespace } = repository
+      if (!repoName || !namespace) {
         return
       }
-      const tokens = repoName.split('/')
       const payload = { ...DEFAULT_PIPELINE_PAYLOAD }
-      payload.pipeline.name = `Build ${tokens[1]}`
+      payload.pipeline.name = `Build ${repoName}`
       payload.pipeline.projectIdentifier = projectIdentifier
       payload.pipeline.orgIdentifier = orgIdentifier
-      payload.pipeline.properties.ci.codebase.repoName = repoName
+      payload.pipeline.properties.ci.codebase.repoName = `${namespace}/${repoName}`
       try {
         return yamlStringify(payload)
       } catch (e) {
@@ -230,13 +235,13 @@ export const InfraProvisioningWizard: React.FC<InfraProvisioningWizardProps> = p
           )
         },
         onClickNext: () => {
-          const repoName = selectRepositoryRef.current?.repository.name
-          if (repoName) {
+          const selectedRepo = selectRepositoryRef.current?.repository
+          if (selectedRepo) {
             updateStepStatus([InfraProvisiongWizardStepId.SelectRepository], StepStatus.Success)
             setDisable(true)
             setLoading(true)
             createPipelineV2Promise({
-              body: constructPipelinePayload(repoName) || '',
+              body: constructPipelinePayload(selectedRepo) || '',
               queryParams: {
                 accountIdentifier: accountId,
                 orgIdentifier,

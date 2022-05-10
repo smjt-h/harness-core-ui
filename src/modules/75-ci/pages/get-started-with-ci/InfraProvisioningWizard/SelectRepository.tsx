@@ -184,7 +184,7 @@ function RepositorySelectionTable({ repositories, onRowClick }: RepositorySelect
         accessor: 'name',
         width: '100%',
         Cell: ({ row }: CellProps<UserRepoResponse>) => {
-          const { name: repositoryName } = row.original
+          const { name: repositoryName, namespace } = row.original
           const isRowSelected = repositoryName === selectedRow?.name
           return (
             <Layout.Horizontal
@@ -199,7 +199,7 @@ function RepositorySelectionTable({ repositories, onRowClick }: RepositorySelect
                 font={{ variation: FontVariation.BODY2 }}
                 color={isRowSelected ? Color.PRIMARY_7 : Color.GREY_900}
               >
-                {repositoryName}
+                {namespace && repositoryName ? `${namespace}/${repositoryName}` : repositoryName ?? ''}
               </Text>
             </Layout.Horizontal>
           )
