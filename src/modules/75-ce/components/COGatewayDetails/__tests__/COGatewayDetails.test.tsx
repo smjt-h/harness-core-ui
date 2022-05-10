@@ -185,6 +185,9 @@ jest.mock('services/lw', () => ({
   })),
   useDeleteStaticSchedule: jest.fn().mockImplementation(() => ({
     mutate: jest.fn()
+  })),
+  useToggleRuleMode: jest.fn().mockImplementation(() => ({
+    mutate: jest.fn()
   }))
 }))
 
