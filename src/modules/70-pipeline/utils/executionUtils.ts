@@ -128,7 +128,8 @@ export const ExecutionStatusIconMap: Record<ExecutionStatus, IconName> = {
   ApprovalRejected: 'circle-cross',
   InterventionWaiting: 'waiting',
   ApprovalWaiting: 'waiting',
-  Pausing: 'pause'
+  Pausing: 'pause',
+  Waiting: 'waiting'
 }
 
 /**
