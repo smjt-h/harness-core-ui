@@ -229,7 +229,7 @@ const COGatewayReview: React.FC<COGatewayReviewProps> = props => {
                   alt=""
                   aria-hidden
                 />
-                <Text>{props.gatewayDetails.fullfilment || 'ondemand'}</Text>
+                <Text>{_defaultTo(props.gatewayDetails.fullfilment, getString('ce.nodeRecommendation.onDemand'))}</Text>
               </Layout.Horizontal>
             </Layout.Horizontal>
           )}

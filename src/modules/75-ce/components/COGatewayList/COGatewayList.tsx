@@ -743,7 +743,7 @@ const COGatewayList: React.FC = () => {
       dry_run: mode === RulesMode.DRY
     }
   })
-  console.log('GATEWAY LIST PARAMS SET')
+
   const { data: graphData, loading: graphLoading } = useCumulativeServiceSavings({
     account_id: accountId,
     queryParams: {

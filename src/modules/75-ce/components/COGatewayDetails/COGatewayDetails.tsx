@@ -55,7 +55,7 @@ const COGatewayDetails: React.FC<COGatewayDetailsProps> = props => {
   const { trackEvent } = useTelemetry()
   const { currentUserInfo } = useAppStore()
 
-  const [selectedTabId, setSelectedTabId] = useState<string>(props.activeTab ?? ASRuleTabs.CONFIGURATION)
+  const [selectedTabId, setSelectedTabId] = useState<string>(_defaultTo(props.activeTab, ASRuleTabs.CONFIGURATION))
   const [validConfig, setValidConfig] = useState<boolean>(false)
   const [validAccessSetup, setValidAccessSetup] = useState<boolean>(false)
   const [saveInProgress, setSaveInProgress] = useState<boolean>(false)
@@ -126,7 +126,7 @@ const COGatewayDetails: React.FC<COGatewayDetailsProps> = props => {
     } catch (e) {
       showError(
         getString('ce.co.autoStoppingRule.configuration.step4.tabs.schedules.unsuccessfulDeletionMessage', {
-          error: e.data?.errors?.join('\n') || e.data?.message
+          error: _defaultTo(e.data?.errors?.join('\n'), e.data?.message)
         })
       )
     }
