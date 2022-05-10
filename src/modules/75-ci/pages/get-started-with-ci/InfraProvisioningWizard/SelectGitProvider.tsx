@@ -184,21 +184,19 @@ const SelectGitProviderRef = (
     }
   })
 
-  const getSecretPayload = React.useCallback(
-    (secretId: string): SecretDTOV2 => {
-      return {
-        name: secretId,
-        identifier: secretId,
-        type: 'SecretText',
-        spec: {
-          value: formikRef.current?.values.accessToken,
-          valueType: 'Inline',
-          secretManagerIdentifier: DEFAULT_HARNESS_KMS
-        } as SecretTextSpecDTO
-      }
-    },
-    [formikRef.current?.values.accessToken]
-  )
+  const getSecretPayload = React.useCallback((): SecretDTOV2 => {
+    const defaultSecretId = `${gitProvider?.type as string}_${DEFAULT_ACCESS_TOKEN}_${new Date().getTime().toString()}`
+    return {
+      name: defaultSecretId,
+      identifier: defaultSecretId,
+      type: 'SecretText',
+      spec: {
+        value: formikRef.current?.values.accessToken,
+        valueType: 'Inline',
+        secretManagerIdentifier: DEFAULT_HARNESS_KMS
+      } as SecretTextSpecDTO
+    }
+  }, [gitProvider?.type, formikRef.current?.values.accessToken])
 
   const getGitUrl = React.useCallback((): string => {
     let url = ''
@@ -262,9 +260,9 @@ const SelectGitProviderRef = (
                 if (validateGitProviderSetup()) {
                   setTestConnectionStatus(TestStatus.IN_PROGRESS)
                   setTestConnectionErrors([])
-                  const defaultSecretId = `${gitProvider?.type as string}_${DEFAULT_ACCESS_TOKEN}`
+
                   createSecret({
-                    secret: getSecretPayload(defaultSecretId)
+                    secret: getSecretPayload()
                   })
                     .then((response: ResponseSecretResponseWrapper) => {
                       const { data, status } = response
@@ -278,7 +276,7 @@ const SelectGitProviderRef = (
                               const { data: scmCtrData, status: scmCtrResponse } = createSCMCtrResponse
                               if (
                                 scmCtrResponse === Status.SUCCESS &&
-                                scmCtrData?.connectorResponseDTO?.connector?.identifier
+                                scmCtrData?.connectorValidationResult?.status === Status.SUCCESS
                               ) {
                                 setTestConnectionStatus(TestStatus.SUCCESS)
                               } else {
