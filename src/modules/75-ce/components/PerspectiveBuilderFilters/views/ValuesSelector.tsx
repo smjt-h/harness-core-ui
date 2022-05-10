@@ -67,7 +67,7 @@ const ValuesSelector: React.FC<ValuesSelectorProps> = ({
       }))
     )
     onValueChange(
-      Object.keys({ ...customValues, ...selectedValues }).filter(val => selectedValues[val] || customValues[val])
+      Object.keys({ ...selectedValues, ...customValues }).filter(val => selectedValues[val] || customValues[val])
     )
     setSelectedValues(prevVal => ({
       ...prevVal,
@@ -120,6 +120,7 @@ const ValuesSelector: React.FC<ValuesSelectorProps> = ({
           selectedValues={selectedValues}
           fetchMore={fetchMore}
           searchText={searchText}
+          createNewTag={handleAddNewTag}
         />
       }
     >

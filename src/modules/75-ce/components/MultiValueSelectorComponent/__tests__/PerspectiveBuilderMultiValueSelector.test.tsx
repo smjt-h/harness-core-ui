@@ -22,6 +22,7 @@ describe('Test Cases For PerspectiveBuilderMultiValueSelector', () => {
           valueList={['value1', 'value2', 'value3']}
           fetchMore={jest.fn()}
           searchText={'val'}
+          createNewTag={jest.fn()}
         />
       </TestWrapper>
     )
@@ -52,6 +53,7 @@ describe('Test Cases For PerspectiveBuilderMultiValueSelector', () => {
           valueList={[]}
           fetchMore={jest.fn()}
           searchText={''}
+          createNewTag={jest.fn()}
         />
       </TestWrapper>
     )

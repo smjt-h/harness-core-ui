@@ -22,6 +22,7 @@ interface PerspectiveBuilderSelectorComponentProps {
   selectedValues: Record<string, boolean>
   fetchMore?: (e: number) => void
   searchText?: string
+  createNewTag: (val: string[]) => void
 }
 
 const PerspectiveBuilderSelectorComponent: (props: PerspectiveBuilderSelectorComponentProps) => JSX.Element = ({
@@ -31,7 +32,8 @@ const PerspectiveBuilderSelectorComponent: (props: PerspectiveBuilderSelectorCom
   setSelectedValues,
   selectedValues,
   fetchMore,
-  searchText
+  searchText,
+  createNewTag
 }) => {
   const { getString } = useStrings()
   const filteredValues = valueList.filter(val => val) as string[]
@@ -119,6 +121,7 @@ const PerspectiveBuilderSelectorComponent: (props: PerspectiveBuilderSelectorCom
             className={cx(css.createValueContainer, {
               [css.highlight]: isCreateNewHighlighted
             })}
+            onClick={() => createNewTag(searchText.split(/,\s*/))}
           >
             <Text inline color={Color.PRIMARY_7}>
               {getString('create')}

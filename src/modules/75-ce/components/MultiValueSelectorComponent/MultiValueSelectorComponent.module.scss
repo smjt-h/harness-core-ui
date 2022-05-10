@@ -35,6 +35,7 @@
     padding: var(--spacing-small) var(--spacing-medium);
     border-radius: 2px;
     margin-bottom: var(--spacing-xsmall);
+    cursor: pointer;
 
     &.highlight {
       background-color: var(--primary-1);
