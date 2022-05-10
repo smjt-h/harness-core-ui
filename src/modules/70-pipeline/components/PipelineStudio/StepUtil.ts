@@ -372,9 +372,11 @@ export const validateCICodebase = ({
     (pipelineHasCloneCodebase && !requiresConnectorRuntimeInputValue) || // ci codebase field is hidden until connector is selected
     template?.properties?.ci?.codebase?.build
   const shouldValidate = !Object.keys(viewTypeMetadata || {}).includes('isTemplateBuilder')
+  const isInputSetForm = viewTypeMetadata?.isInputSet // should not require any values
   if (
     shouldValidate &&
     shouldValidateCICodebase &&
+    !isInputSetForm &&
     has(originalPipeline, 'properties') &&
     has(originalPipeline?.properties, 'ci') &&
     isEmpty(get(originalPipeline, 'properties.ci.codebase.build')) &&
@@ -391,6 +393,7 @@ export const validateCICodebase = ({
     // connectorRef required to display build type
     if (
       isEmpty(pipeline?.properties?.ci?.codebase?.build?.type) &&
+      !isInputSetForm &&
       (!requiresConnectorRuntimeInputValue ||
         (requiresConnectorRuntimeInputValue && pipeline?.properties?.ci?.codebase?.connectorRef)) &&
       pipelineHasCloneCodebase
@@ -433,7 +436,7 @@ export const validateCICodebase = ({
   }
 
   if (shouldValidate) {
-    if (requiresConnectorRuntimeInputValue && pipelineHasCloneCodebase) {
+    if (requiresConnectorRuntimeInputValue && pipelineHasCloneCodebase && !isInputSetForm) {
       set(
         errors,
         'properties.ci.codebase.connectorRef',
@@ -441,7 +444,11 @@ export const validateCICodebase = ({
       )
     }
 
-    if (template?.properties?.ci?.codebase?.repoName && pipeline?.properties?.ci?.codebase?.repoName?.trim() === '') {
+    if (
+      template?.properties?.ci?.codebase?.repoName &&
+      pipeline?.properties?.ci?.codebase?.repoName?.trim() === '' &&
+      !isInputSetForm
+    ) {
       // connector with account url type will remove repoName requirement
       set(
         errors,

@@ -98,7 +98,8 @@ import {
   eventTypes,
   displayPipelineIntegrityResponse,
   getOrderedPipelineVariableValues,
-  clearUndefinedArtifactId
+  clearUndefinedArtifactId,
+  getModifiedTemplateValues
 } from './utils/TriggersWizardPageUtils'
 import {
   ArtifactTriggerConfigPanel,
@@ -253,9 +254,6 @@ const getArtifactManifestTriggerYaml = ({
   // Manually clear null or undefined artifact identifier
   newPipeline = clearUndefinedArtifactId(newPipeline)
 
-  // For CI Only with CLone Codebase Not Enabled
-  // if()
-  // getInputYamlWithoutCodebaseInputs
   // actions will be required thru validation
   const stringifyPipelineRuntimeInput = yamlStringify({
     pipeline: clearNullUndefined(newPipeline)
@@ -1307,7 +1305,8 @@ const TriggersWizardPage: React.FC = (): JSX.Element => {
     if (
       newPipeline?.template?.templateInputs &&
       isCodebaseFieldsRuntimeInputs(newPipeline.template.templateInputs as PipelineInfoConfig) &&
-      !isCloneCodebaseEnabledAtLeastOneStage(newPipeline.template.templateInputs as PipelineInfoConfig)
+      resolvedPipeline &&
+      !isCloneCodebaseEnabledAtLeastOneStage(resolvedPipeline as PipelineInfoConfig)
     ) {
       newPipeline = getPipelineWithoutCodebaseInputs(newPipeline)
     }
@@ -1359,7 +1358,14 @@ const TriggersWizardPage: React.FC = (): JSX.Element => {
   )
 
   useEffect(() => {
-    setInitialValues(Object.assign(getInitialValues(triggerTypeOnNew), onEditInitialValues))
+    if (currentPipeline && onEditInitialValues) {
+      let newInitialValuesForEdit = Object.assign(getInitialValues(triggerTypeOnNew), onEditInitialValues)
+      newInitialValuesForEdit = newInitialValuesForEdit?.pipeline?.template
+        ? getModifiedTemplateValues(newInitialValuesForEdit)
+        : newInitialValuesForEdit
+
+      setInitialValues(newInitialValuesForEdit)
+    }
   }, [onEditInitialValues, currentPipeline])
 
   useEffect(() => {
@@ -1381,7 +1387,8 @@ const TriggersWizardPage: React.FC = (): JSX.Element => {
         if (
           newOriginalPipeline?.template?.templateInputs &&
           isCodebaseFieldsRuntimeInputs(newOriginalPipeline.template.templateInputs as PipelineInfoConfig) &&
-          !isCloneCodebaseEnabledAtLeastOneStage(newOriginalPipeline.template.templateInputs as PipelineInfoConfig)
+          resolvedPipeline &&
+          !isCloneCodebaseEnabledAtLeastOneStage(resolvedPipeline)
         ) {
           const newOriginalPipelineWithoutCodebaseInputs = getPipelineWithoutCodebaseInputs(newOriginalPipeline)
           const newResolvedPipelineWithoutCodebaseInputs = getPipelineWithoutCodebaseInputs(newResolvedPipeline)
