@@ -23,4 +23,6 @@ export type StringQueryParams = Partial<Record<keyof PipelineListQueryParams, st
   getDefaultFromOtherRepo?: boolean
 }
 
-export type QueryParams = Partial<PipelineListQueryParams>
+export type QueryParams = Partial<PipelineListQueryParams> & {
+  filters?: PipelineListQueryParams
+}
