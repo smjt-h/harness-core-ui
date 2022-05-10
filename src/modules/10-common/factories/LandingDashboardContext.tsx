@@ -9,7 +9,8 @@ import React, { createContext, useContext } from 'react'
 import { useParams } from 'react-router-dom'
 import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
 import type { Scope } from 'services/cd-ng'
-import { useSessionStorage } from '@common/hooks/useSessionStorage'
+import { useLocalStorage } from '@common/hooks'
+import { useClearStorage } from '@common/hooks/useClearStorage'
 
 export enum DashboardTimeRange {
   '30Days' = '30Days',
@@ -38,7 +39,12 @@ const LandingDashboardContext = createContext<LandingDashboardContextProps>({
 })
 
 export function LandingDashboardContextProvider(props: React.PropsWithChildren<unknown>): React.ReactElement {
-  const [selectedTimeRange, setSelectedTimeRange] = useSessionStorage('timeRangeHome', DashboardTimeRange['30Days'])
+  useClearStorage('tokenHomeDash', 'timeRangeHome')
+  const [selectedTimeRange, setSelectedTimeRange] = useLocalStorage(
+    'timeRangeHome',
+    DashboardTimeRange['30Days'],
+    window.sessionStorage
+  )
 
   const { accountId, orgIdentifier, projectIdentifier } = useParams<ProjectPathProps>()
 

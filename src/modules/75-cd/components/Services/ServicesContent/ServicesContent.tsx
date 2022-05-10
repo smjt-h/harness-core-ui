@@ -21,7 +21,8 @@ import { MostActiveServicesWidget } from '@cd/components/Services/MostActiveServ
 import { startOfDay, TimeRangeSelectorProps } from '@common/components/TimeRangeSelector/TimeRangeSelector'
 import { DeploymentsWidget } from '@cd/components/Services/DeploymentsWidget/DeploymentsWidget'
 import { ServicesList, ServicesListProps } from '@cd/components/Services/ServicesList/ServicesList'
-import { useSessionStorage } from '@common/hooks/useSessionStorage'
+import { useClearStorage } from '@common/hooks/useClearStorage'
+import { useLocalStorage } from '@common/hooks'
 import type { ModulePathParams, ProjectPathProps } from '@common/interfaces/RouteInterfaces'
 import { useDocumentTitle } from '@common/hooks/useDocumentTitle'
 import { useStrings } from 'framework/strings'
@@ -31,10 +32,15 @@ export const ServicesContent: React.FC = () => {
   const { view, fetchDeploymentList } = useServiceStore()
   const { getString } = useStrings()
 
-  const [timeRange, setTimeRange] = useSessionStorage<TimeRangeSelectorProps>('timeRangeServiceDashboard', {
-    range: [startOfDay(moment().subtract(1, 'month').add(1, 'day')), startOfDay(moment())],
-    label: getString('common.duration.month')
-  })
+  useClearStorage('tokenServiceDash', 'timeRangeServiceDashboard')
+  const [timeRange, setTimeRange] = useLocalStorage<TimeRangeSelectorProps>(
+    'timeRangeServiceDashboard',
+    {
+      range: [startOfDay(moment().subtract(1, 'month').add(1, 'day')), startOfDay(moment())],
+      label: getString('common.duration.month')
+    },
+    window.sessionStorage
+  )
 
   //convert to valid format if string
   if (typeof timeRange.range[0] === 'string') {

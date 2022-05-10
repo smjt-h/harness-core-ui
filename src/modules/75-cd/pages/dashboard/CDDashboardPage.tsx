@@ -37,7 +37,8 @@ import {
 import { DeploymentsTimeRangeContext } from '@cd/components/Services/common'
 
 import { TitleWithToolTipId } from '@common/components/Title/TitleWithToolTipId'
-import { useSessionStorage } from '@common/hooks/useSessionStorage'
+import { useLocalStorage } from '@common/hooks'
+import { useClearStorage } from '@common/hooks/useClearStorage'
 import DeploymentsHealthCards from './DeploymentsHealthCards'
 import DeploymentExecutionsChart from './DeploymentExecutionsChart'
 import WorkloadCard from './DeploymentCards/WorkloadCard'
@@ -89,11 +90,15 @@ export function executionStatusInfoToExecutionSummary(info: ExecutionStatusInfo)
 export const CDDashboardPage: React.FC = () => {
   const { projectIdentifier, orgIdentifier, accountId } = useParams<ProjectPathProps>()
   const { getString } = useStrings()
-
-  const [timeRange, setTimeRange] = useSessionStorage<TimeRangeSelectorProps>('timeRangeCDDashboard', {
-    range: [startOfDay(moment().subtract(1, 'month').add(1, 'day')), startOfDay(moment())],
-    label: getString('common.duration.month')
-  })
+  useClearStorage('tokenCDDashboard', 'timeRangeCDDashboard')
+  const [timeRange, setTimeRange] = useLocalStorage<TimeRangeSelectorProps>(
+    'timeRangeCDDashboard',
+    {
+      range: [startOfDay(moment().subtract(1, 'month').add(1, 'day')), startOfDay(moment())],
+      label: getString('common.duration.month')
+    },
+    window.sessionStorage
+  )
   //convert to valid format if string
   if (typeof timeRange.range[0] === 'string') {
     timeRange.range[0] = new Date(defaultTo(timeRange.range[0], ''))
