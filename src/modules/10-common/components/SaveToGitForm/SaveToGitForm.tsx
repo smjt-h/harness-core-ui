@@ -71,6 +71,7 @@ export interface SaveToGitFormInterface {
   name?: string
   identifier?: string
   repoIdentifier: string
+  repoName?: string
   rootFolder: string
   filePath: string
   isNewBranch: boolean

@@ -18,7 +18,7 @@ import {
   useToaster
 } from '@wings-software/uicore'
 import { useHistory, useParams } from 'react-router-dom'
-import { get, isEmpty, noop, omit } from 'lodash-es'
+import { defaultTo, get, isEmpty, noop, omit } from 'lodash-es'
 import cx from 'classnames'
 import type { PopoverProps } from '@wings-software/uicore/dist/components/Popover/Popover'
 import { parse } from 'yaml'
@@ -302,6 +302,7 @@ export function SavePipelinePopover({
       }
     }
 
+    console.log('saveAngPublishWithGitInfo store gitDetails', gitDetails)
     console.log('saveAngPublishWithGitInfo updatedGitDetails', updatedGitDetails)
     console.log('saveAngPublishWithGitInfo storeMetadata', storeMetadata)
     const response = await saveAndPublishPipeline(
@@ -311,8 +312,8 @@ export function SavePipelinePopover({
         ...updatedGitDetails,
         isNewBranch: false,
         createPr: false,
-        repoName: 'aaGit',
-        filePath: 'one' + parseInt((Math.random() * 1000).toString()) + '.yaml'
+        repoName: gitDetails.repoName,
+        filePath: defaultTo(gitDetails.filePath, '')
       },
       pipelineIdentifier !== DefaultNewPipelineId ? { lastObjectId: objectId } : {}
     )

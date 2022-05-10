@@ -108,7 +108,7 @@ export function GitSyncForm(props: GitSyncFormProps<GitSyncFormFields>): React.R
         }}
         selectedValue={formikProps.values.branch}
       />
-      <FormInput.Text name="yamlPath" label={'Yaml Path'} placeholder={'Enter Yaml path'} />
+      <FormInput.Text name="filePath" label={'Yaml Path'} placeholder={'Enter Yaml path'} />
     </Container>
   )
 }
