@@ -14,8 +14,6 @@ export const DEFAULT_ORG_NAME = 'Default_Org'
 
 export const UNIQUE_ORG_ID = 'Default_Org_'.concat(new Date().getTime().toString())
 
-export const DEFAULT_PIPELINE_NAME = 'Default Pipeline'
-
 export const DEFAULT_PIPELINE_ID = 'Default_Pipeline_'.concat(new Date().getTime().toString())
 
 export const DEFAULT_STAGE_ID = 'Build'
@@ -31,7 +29,7 @@ export const DEFAULT_HARNESS_KMS = 'harnessSecretManager'
 export const DEFAULT_PIPELINE_PAYLOAD = {
   pipeline: {
     name: '',
-    identifier: DEFAULT_PIPELINE_ID,
+    identifier: '',
     projectIdentifier: '',
     orgIdentifier: '',
     properties: {
@@ -55,7 +53,7 @@ export const DEFAULT_PIPELINE_PAYLOAD = {
               type: 'KubernetesDirect',
               spec: {
                 connectorRef: ACCOUNT_SCOPE_PREFIX.concat(KUBERNETES_INFRA_REF),
-                namespace: '<+input>' // not sure
+                namespace: '<+input>' // not sure if needed
               }
             },
             execution: {

@@ -113,12 +113,14 @@ export const InfraProvisioningWizard: React.FC<InfraProvisioningWizardProps> = p
 
   const constructPipelinePayload = React.useCallback(
     (repository: UserRepoResponse): string | undefined => {
+      const UNIQUE_PIPELINE_ID = new Date().getTime().toString()
       const { name: repoName, namespace } = repository
       if (!repoName || !namespace || !selectGitProviderRef.current?.validatedConnectorRef) {
         return
       }
       const payload = { ...DEFAULT_PIPELINE_PAYLOAD }
-      payload.pipeline.name = `Build ${repoName}`
+      payload.pipeline.name = `${getString('buildText')} ${repoName}`
+      payload.pipeline.identifier = `${getString('buildText')}${repoName}_${UNIQUE_PIPELINE_ID}`
       payload.pipeline.projectIdentifier = projectIdentifier
       payload.pipeline.orgIdentifier = orgIdentifier
       payload.pipeline.properties.ci.codebase.connectorRef = selectGitProviderRef.current?.validatedConnectorRef
