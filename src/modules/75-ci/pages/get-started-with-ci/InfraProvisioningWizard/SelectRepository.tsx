@@ -9,7 +9,6 @@ import React, { useCallback, useEffect, useState } from 'react'
 import { useParams } from 'react-router-dom'
 import cx from 'classnames'
 import { debounce } from 'lodash-es'
-import { Spinner } from '@blueprintjs/core'
 import type { Column, CellProps } from 'react-table'
 import {
   Text,
@@ -20,7 +19,8 @@ import {
   RadioButton,
   Color,
   TextInput,
-  FormError
+  FormError,
+  Icon
 } from '@harness/uicore'
 import { useGetAllUserRepos, UserRepoResponse } from 'services/cd-ng'
 import { useStrings } from 'framework/strings'
@@ -108,7 +108,14 @@ const SelectRepositoryRef = (
 
   const renderView = React.useCallback((): JSX.Element => {
     if (fetchingRepositories || loading) {
-      return <Spinner />
+      return (
+        <Layout.Horizontal flex={{ justifyContent: 'flex-start' }} spacing="small" padding={{ top: 'large' }}>
+          <Icon name="steps-spinner" color="primary7" size={25} />
+          {fetchingRepositories ? (
+            <Text font={{ variation: FontVariation.H6 }}>{getString('ci.getStartedWithCI.fetchingRepos')}</Text>
+          ) : null}
+        </Layout.Horizontal>
+      )
     } else {
       if (repositories && repositories?.length > 0) {
         return <RepositorySelectionTable repositories={repositories} onRowClick={setRepository} />

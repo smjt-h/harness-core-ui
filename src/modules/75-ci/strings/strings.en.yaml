@@ -171,6 +171,7 @@ getStartedWithCI:
   provisioningFailed: Provisioning failed
   setUpAuth: Set up Authentication
   genericGit: Generic Git
+  fetchingRepos: Fetching repositories from Git...
   carousel:
     labels:
       harnessCIFeatures: Harness CI
