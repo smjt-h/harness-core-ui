@@ -196,9 +196,9 @@ export function AppWithAuthentication(props: AppProps): React.ReactElement {
                 <FeaturesProvider>
                   <LicenseStoreProvider>
                     <HelpPanelContextProvider
-                      accessToken="5EHT-ZBWYjweBLS62PNKf-vp3ZbXAylRUlPRPcHwqAg"
-                      space="jj62blws1bo9"
-                      environment={HelpPanelEnvironment.qa}
+                      accessToken={window.helpPanelAccessToken}
+                      space={window.helpPanelSpace}
+                      environment={window.helpPanelEnvironment as HelpPanelEnvironment}
                     >
                       <PermissionsProvider>
                         <SideNavProvider>
