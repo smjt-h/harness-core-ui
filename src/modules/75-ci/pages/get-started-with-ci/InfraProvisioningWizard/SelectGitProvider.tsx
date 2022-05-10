@@ -7,7 +7,7 @@
 
 import React, { useEffect, useRef, useState } from 'react'
 import * as Yup from 'yup'
-import type { FormikContext, FormikProps } from 'formik'
+import type { FormikContextType, FormikProps } from 'formik'
 import cx from 'classnames'
 import {
   Text,
@@ -83,7 +83,7 @@ const SelectGitProviderRef = (
   const [gitProvider, setGitProvider] = useState<GitProvider | undefined>()
   const [authMethod, setAuthMethod] = useState<GitAuthenticationMethod>()
   const [testConnectionStatus, setTestConnectionStatus] = useState<TestStatus>(TestStatus.NOT_INITIATED)
-  const formikRef = useRef<FormikContext<SelectGitProviderInterface>>()
+  const formikRef = useRef<FormikContextType<SelectGitProviderInterface>>()
 
   useEffect(() => {
     if (authMethod === GitAuthenticationMethod.AccessToken) {

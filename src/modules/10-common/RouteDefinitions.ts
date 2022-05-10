@@ -718,7 +718,7 @@ const routes = {
     ({ orgIdentifier, projectIdentifier, module }: PipelineType<ProjectPathProps>) =>
       `/${module}/orgs/${orgIdentifier}/projects/${projectIdentifier}/services`
   ),
-  toServiceDetails: withAccountId(
+  toServiceStudio: withAccountId(
     ({ orgIdentifier, projectIdentifier, serviceId, module }: PipelineType<ProjectPathProps & ServicePathProps>) =>
       `/${module}/orgs/${orgIdentifier}/projects/${projectIdentifier}/services/${serviceId}`
   ),

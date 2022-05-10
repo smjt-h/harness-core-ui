@@ -136,7 +136,7 @@ export default function SelectInfrastructureType(props: SelectInfrastructureType
     >
       {formik => {
         window.dispatchEvent(new CustomEvent('UPDATE_ERRORS_STRIP', { detail: DeployTabs.INFRASTRUCTURE }))
-        formikRef.current = formik
+        formikRef.current = formik as FormikProps<unknown> | null
         return (
           <GroupedThumbnailSelect
             className={css.thumbnailSelect}

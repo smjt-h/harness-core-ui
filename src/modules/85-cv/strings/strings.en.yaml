@@ -854,3 +854,7 @@ serviceDetails: Service Details
 theTrendIsDeterminedForTheSelectedPeriodOverPeriod: The trend % is determined for the selected period over period.
 zoom: Zoom
 selectTimeRange: Select time range
+aMaximumOfThreeSLOCanBeComparedWithTheServiceHealth: A maximum of three SLO’s can be compared with the Service Health.
+pleaseSelectSLOToGetTheData: Please select a SLO to get the data.
+noSLOHasBeenCreated: No SLO has been created
+noDataAvailableForTheCurrentSLOCycle: No data available for the current SLO cycle

@@ -430,9 +430,9 @@ awsKms:
     externalIdLengthError: 'External Id must have between 2 and 1224 characters'
   awsSTS: 'Assume Role using STS on Delegate'
 delegate:
-  configure: Configure what Delegates are allowed to connect to this Connector
-  delegateSelectorAny: Connect via any available Delegate
-  delegateSelectorSelective: Connect only via Delegates with all of the following tags
+  configure: Select the Delegates this Connector will use
+  delegateSelectorAny: Use any available Delegate
+  delegateSelectorSelective: Only use Delegates with all of the following tags
   hearbeat: heartbeat
   matchesSelectors: Matches
   testDelegateConnectivity: Test Delegate Connectivity

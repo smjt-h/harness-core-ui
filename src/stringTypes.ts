@@ -2536,9 +2536,15 @@ export interface StringsMap {
   'pipeline.ci.validations.pathRequiredForHostPath': string
   'pipeline.ci.validations.port': string
   'pipeline.ci.validations.serviceDependencyIdentifier': string
-  'pipeline.ciCodebase.buildType': string
+  'pipeline.ciCodebase.ciCodebaseBuildType': string
   'pipeline.ciCodebase.prCloneStrategy': string
   'pipeline.ciCodebase.pullRequestNumber': string
+  'pipeline.ciCodebase.validation.oneOfValues': string
+  'pipeline.ciCodebase.validation.optionalDepth': string
+  'pipeline.ciCodebase.validation.optionalLimitCPU': string
+  'pipeline.ciCodebase.validation.optionalLimitMemory': string
+  'pipeline.ciCodebase.validation.optionalPrCloneStrategy': string
+  'pipeline.ciCodebase.validation.optionalSslVerify': string
   'pipeline.clickHere': string
   'pipeline.clickToExpandErrorDetails': string
   'pipeline.closeStepConfig': string
@@ -3005,6 +3011,7 @@ export interface StringsMap {
   'pipeline.retryHistoryDescription': string
   'pipeline.retryPipeline': string
   'pipeline.rightBar.editCodebaseConfiguration': string
+  'pipeline.rightBar.mergeCommit': string
   'pipeline.runAPipeline': string
   'pipeline.runAllParallelstages': string
   'pipeline.runFailedStages': string
@@ -5171,6 +5178,7 @@ export interface StringsMap {
   'cv.SLOPerformanceTrend': string
   'cv.SLOTarget': string
   'cv.SLOWithName': string
+  'cv.aMaximumOfThreeSLOCanBeComparedWithTheServiceHealth': string
   'cv.abbreviatedCategories.errors': string
   'cv.abbreviatedCategories.infrastructure': string
   'cv.abbreviatedCategories.performance': string
@@ -5691,7 +5699,9 @@ export interface StringsMap {
   'cv.newMetric': string
   'cv.noAnalysis': string
   'cv.noAnomalies': string
+  'cv.noDataAvailableForTheCurrentSLOCycle': string
   'cv.noPreviousErrorBudgetResetHistoryAvailable': string
+  'cv.noSLOHasBeenCreated': string
   'cv.nonAnomalous': string
   'cv.objectiveValue': string
   'cv.onboarding.activitySources.addMoreSources': string
@@ -5748,6 +5758,7 @@ export interface StringsMap {
   'cv.periodLengthIsRequired': string
   'cv.pinABaseline': string
   'cv.pleaseFillTheRequiredFieldsToSeeTheSLIData': string
+  'cv.pleaseSelectSLOToGetTheData': string
   'cv.postDeployment': string
   'cv.preProductionTests': string
   'cv.previousErrorBudgetResetHistory': string

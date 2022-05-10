@@ -124,7 +124,7 @@ export default function CreatePipelines({
           />
           {isGitSyncEnabled && (
             <GitSyncStoreProvider>
-              <GitContextForm formikProps={formikProps} gitDetails={gitDetails} />
+              <GitContextForm formikProps={formikProps as any} gitDetails={gitDetails} />
             </GitSyncStoreProvider>
           )}
           {!isEdit && isPipelineTemplateEnabled && (
