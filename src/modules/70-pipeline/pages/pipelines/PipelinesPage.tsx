@@ -90,8 +90,6 @@ import buildpipelineIllustration from './images/buildpipeline-illustration.svg'
 import flagpipelineIllustration from './images/flagpipeline-illustration.svg'
 import type { QueryParams, StringQueryParams } from './types'
 import css from './PipelinesPage.module.scss'
-import { useFeatureFlag } from '@common/hooks/useFeatureFlag'
-import { FeatureFlag } from '@common/featureFlags'
 
 export enum Sort {
   DESC = 'DESC',
@@ -214,10 +212,6 @@ function PipelinesPage({ mockData }: CDPipelinesPageProps): React.ReactElement {
     : isCFModule
     ? flagpipelineIllustration
     : pipelineIllustration
-
-  const templatesFeatureFlagEnabled = useFeatureFlag(FeatureFlag.NG_TEMPLATES)
-  const pipelineTemplatesFeatureFlagEnabled = useFeatureFlag(FeatureFlag.NG_PIPELINE_TEMPLATE)
-  const isPipelineTemplateEnabled = templatesFeatureFlagEnabled && pipelineTemplatesFeatureFlagEnabled
 
   useDeepCompareEffect(() => {
     setAppliedFilter(
