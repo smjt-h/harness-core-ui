@@ -393,7 +393,7 @@ export class PDCInfrastructureSpec extends PipelineStep<PDCInfrastructureSpecSte
       projectIdentifier: string
     }
     if (pipelineObj) {
-      const obj = get(pipelineObj, path.replace('.spec.connectorRef', ''))
+      const obj = get(pipelineObj, path.replace('.spec.sshKeyRef', ''))
       if (obj.type === PdcType) {
         return getConnectorListV2Promise({
           queryParams: {

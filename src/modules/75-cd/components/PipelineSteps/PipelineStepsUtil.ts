@@ -36,7 +36,8 @@ export enum InfraDeploymentType {
 export const deploymentTypeToInfraTypeMap = {
   [ServiceDeploymentType.ServerlessAwsLambda]: InfraDeploymentType.ServerlessAwsLambda,
   [ServiceDeploymentType.ServerlessAzureFunctions]: InfraDeploymentType.ServerlessAzureFunctions,
-  [ServiceDeploymentType.ServerlessGoogleFunctions]: InfraDeploymentType.ServerlessGoogleFunctions
+  [ServiceDeploymentType.ServerlessGoogleFunctions]: InfraDeploymentType.ServerlessGoogleFunctions,
+  [ServiceDeploymentType.ssh]: InfraDeploymentType.PDC
 }
 
 export function getNameSpaceSchema(
@@ -95,6 +96,10 @@ export function getConnectorSchema(getString: UseStringsReturn['getString']): Yu
   return Yup.string().required(getString('fieldRequired', { field: getString('connector') }))
 }
 
+export function getSshKeySchema(getString: UseStringsReturn['getString']): Yup.StringSchema<string | undefined> {
+  return Yup.string().required(getString('fieldRequired', { field: getString('connector') }))
+}
+
 export function getServiceRefSchema(getString: UseStringsReturn['getString']): Yup.StringSchema<string | undefined> {
   return Yup.string().trim().required(getString('cd.pipelineSteps.serviceTab.serviceIsRequired'))
 }
@@ -128,6 +133,11 @@ const getInfrastructureDefinitionValidationSchema = (
   if (isServerlessDeploymentType(deploymentType)) {
     if (deploymentType === ServiceDeploymentType.ServerlessAwsLambda) {
       return getValidationSchemaWithRegion(getString)
+    }
+    if (deploymentType === ServiceDeploymentType.ssh) {
+      return Yup.object().shape({
+        sshKeyRef: getSshKeySchema(getString)
+      })
     } else {
       return getValidationSchema(getString)
     }
