@@ -172,7 +172,12 @@ export const InfraProvisioningCarousel: React.FC<InfraProvisioningCarouselProps>
               style={{ background: `transparent url(${provisioningFailed}) no-repeat` }}
               className={css.provisioningStatus}
             />
-            <Text font={{ variation: FontVariation.BODY }} className={css.centerAlign} padding={{ bottom: 'small' }}>
+            <Text
+              font={{ variation: FontVariation.BODY }}
+              className={css.centerAlign}
+              padding={{ bottom: 'small' }}
+              style={{ textAlign: 'center' }}
+            >
               <String stringID="ci.getStartedWithCI.troubleShootFailedProvisioning" useRichText={true} />
             </Text>
             <Button

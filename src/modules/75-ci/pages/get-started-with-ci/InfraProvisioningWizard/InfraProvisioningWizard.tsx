@@ -39,6 +39,7 @@ import { SelectRepository, SelectRepositoryRef } from './SelectRepository'
 import css from './InfraProvisioningWizard.module.scss'
 
 const DELEGATE_INSTALLATION_REFETCH_DELAY = 10000
+const MAX_TIMEOUT_DELEGATE_INSTALLATION = 1000 * 60 * 10 // ten minutes
 
 export const InfraProvisioningWizard: React.FC<InfraProvisioningWizardProps> = props => {
   const { lastConfiguredWizardStepId = InfraProvisiongWizardStepId.SelectBuildLocation } = props
@@ -92,6 +93,16 @@ export const InfraProvisioningWizard: React.FC<InfraProvisioningWizardProps> = p
       return () => clearInterval(timerId)
     }
   })
+
+  useEffect(() => {
+    if (ciProvisioningStatus === ProvisioningStatus.IN_PROGRESS) {
+      const timerId = setInterval(
+        () => setCIProvisioningStatus(ProvisioningStatus.FAILURE),
+        MAX_TIMEOUT_DELEGATE_INSTALLATION
+      )
+      return () => clearInterval(timerId)
+    }
+  }, [ciProvisioningStatus])
 
   const [wizardStepStatus, setWizardStepStatus] = useState<Map<InfraProvisiongWizardStepId, StepStatus>>(
     new Map<InfraProvisiongWizardStepId, StepStatus>([
