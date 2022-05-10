@@ -497,35 +497,40 @@ export default function DeployServiceSpecifications(props: React.PropsWithChildr
                   />
                 </Layout.Horizontal>
               </>
-          ) : (
-            checkedItems.overrideSetCheckbox &&
-            selectedPropagatedState?.value &&
-            (templateDetailsLoading ? (
-              <Spinner size={Spinner.SIZE_SMALL} />
-            ) : templateDetailsError ? (
-              <Page.Error
-                message={(templateDetailsError?.data as Error)?.message}
-                onClick={() => fetchTemplateDetails(templateToFetch)}
-              />
             ) : (
-              <StepWidget<K8SDirectServiceStep>
-                factory={factory}
-                readonly={isReadonly}
-                initialValues={{
-                  stageIndex,
-                  setupModeType,
-                  deploymentType: selectedDeploymentType as ServiceDefinition['type']
-                }}
-                allowableTypes={allowableTypes}
-                type={getStepTypeByDeploymentType(defaultTo(selectedDeploymentType, ''))}
-                stepViewType={StepViewType.Edit}
-              />
-            ))
-          )}
-          {((setupModeType === setupMode.PROPAGATE && selectedPropagatedState?.value) ||
-            setupModeType === setupMode.DIFFERENT) && (
-            <Container margin={{ top: 'xxlarge' }}>{props.children}</Container>
-          )}
+              checkedItems.overrideSetCheckbox &&
+              selectedPropagatedState?.value &&
+              (templateDetailsLoading ? (
+                <Card className={stageCss.sectionCard}>
+                  <Spinner size={Spinner.SIZE_SMALL} />
+                </Card>
+              ) : templateDetailsError ? (
+                <Card className={stageCss.sectionCard}>
+                  <Page.Error
+                    message={(templateDetailsError?.data as Error)?.message}
+                    onClick={() => fetchTemplateDetails(templateToFetch)}
+                  />
+                </Card>
+              ) : (
+                <StepWidget<K8SDirectServiceStep>
+                  factory={factory}
+                  readonly={isReadonly}
+                  initialValues={{
+                    stageIndex,
+                    setupModeType,
+                    deploymentType: selectedDeploymentType as ServiceDefinition['type']
+                  }}
+                  allowableTypes={allowableTypes}
+                  type={getStepTypeByDeploymentType(defaultTo(selectedDeploymentType, ''))}
+                  stepViewType={StepViewType.Edit}
+                />
+              ))
+            )}
+            {((setupModeType === setupMode.PROPAGATE && selectedPropagatedState?.value) ||
+              setupModeType === setupMode.DIFFERENT) && (
+              <Container margin={{ top: 'xxlarge' }}>{props.children}</Container>
+            )}
+          </div>
         </div>
       </FormikForm>
     </Formik>
