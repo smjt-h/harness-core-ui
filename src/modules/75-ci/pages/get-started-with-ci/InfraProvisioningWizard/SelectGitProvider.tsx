@@ -261,6 +261,7 @@ const SelectGitProviderRef = (
               onClick={() => {
                 if (validateGitProviderSetup()) {
                   setTestConnectionStatus(TestStatus.IN_PROGRESS)
+                  setTestConnectionErrors([])
                   const defaultSecretId = `${gitProvider?.type as string}_${DEFAULT_ACCESS_TOKEN}`
                   createSecret({
                     secret: getSecretPayload(defaultSecretId)
@@ -293,6 +294,7 @@ const SelectGitProviderRef = (
                     })
                     .catch(_err => {
                       setTestConnectionStatus(TestStatus.FAILED)
+                      setTestConnectionErrors((_err?.data as any)?.responseMessages)
                     })
                 }
               }}
