@@ -2834,6 +2834,7 @@ export interface StringsMap {
   'pipeline.jiraApprovalStep.validations.issueKey': string
   'pipeline.jiraApprovalStep.validations.issueType': string
   'pipeline.jiraApprovalStep.validations.project': string
+  'pipeline.jiraApprovalStep.validations.requiredField': string
   'pipeline.jiraCreateStep.addFields': string
   'pipeline.jiraCreateStep.fetchingFields': string
   'pipeline.jiraCreateStep.fieldSelectorAdd': string

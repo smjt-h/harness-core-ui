@@ -314,7 +314,6 @@ describe.skip('RUN PIPELINE MODAL', () => {
         cy.contains('span', 'Jira Connector is required').should('be.visible').should('have.class', 'FormError--error')
         cy.contains('span', 'Project is required').should('be.visible').should('have.class', 'FormError--error')
         cy.contains('span', 'Issue Type is required').should('be.visible').should('have.class', 'FormError--error')
-        cy.contains('span', 'Summary is required').should('be.visible').should('have.class', 'FormError--error')
       })
 
       it('Submit form after filling details', () => {
@@ -336,7 +335,9 @@ describe.skip('RUN PIPELINE MODAL', () => {
         cy.get('input[name="spec.issueType"]').click({ force: true })
         cy.contains('p', 'Bug').click({ force: true })
         cy.wait(1000)
-        cy.fillField('spec.summary', 'Test_Summary')
+        cy.fillField('spec.selectedRequiredFields[0].value', 'Test_Description')
+        cy.wait(1000)
+        cy.fillField('spec.selectedRequiredFields[1].value', 'Test_Summary')
         cy.wait(1000)
         cy.contains('span', 'Apply Changes').click({ force: true })
       })

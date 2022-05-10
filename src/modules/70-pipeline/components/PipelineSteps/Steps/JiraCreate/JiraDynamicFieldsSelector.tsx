@@ -95,7 +95,7 @@ function SelectFieldList(props: JiraDynamicFieldsSelectorContentInterface) {
       fieldKeys.sort().forEach(keyy => {
         if (issueTypeData?.fields[keyy]) {
           if (
-            (jiraType === 'createMode' && keyy !== 'Summary' && keyy !== 'Description') ||
+            (jiraType === 'createMode' && issueTypeData?.fields[keyy]?.required === false) ||
             jiraType === 'updateMode'
           ) {
             fieldListToSet.push(issueTypeData?.fields[keyy])
