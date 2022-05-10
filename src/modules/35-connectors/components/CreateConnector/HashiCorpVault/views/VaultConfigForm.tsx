@@ -141,7 +141,7 @@ const VaultConfigForm: React.FC<StepProps<StepDetailsProps> & ConnectorDetailsPr
           }),
           default: Yup.boolean().when('readOnly', {
             is: true,
-            then: Yup.boolean().oneOf([false], getString('connectors.hashiCorpVault.preventDefaultWhenReadOnly'))
+            then: Yup.boolean().equals([false], getString('connectors.hashiCorpVault.preventDefaultWhenReadOnly'))
           })
         })}
         onSubmit={formData => {
