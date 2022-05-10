@@ -42,14 +42,7 @@ import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
 import { OAuthProviders, OAuthProviderType } from '@common/constants/OAuthProviders'
 import { joinAsASentence } from '@common/utils/StringUtils'
 import { TestStatus } from '@common/components/TestConnectionWidget/TestConnectionWidget'
-import {
-  ACCOUNT_SCOPE_PREFIX,
-  DEFAULT_ACCESS_TOKEN,
-  DEFAULT_HARNESS_KMS,
-  DEFAULT_SCM_CONNECTOR,
-  DEFAULT_SCM_CONNECTOR_ID,
-  Status
-} from '@common/utils/CIConstants'
+import { ACCOUNT_SCOPE_PREFIX, DEFAULT_HARNESS_KMS, Status } from '@common/utils/CIConstants'
 import { ErrorHandler } from '@common/components/ErrorHandler/ErrorHandler'
 import { Connectors } from '@connectors/constants'
 import {
@@ -185,10 +178,13 @@ const SelectGitProviderRef = (
   })
 
   const getSecretPayload = React.useCallback((): SecretDTOV2 => {
-    const defaultSecretId = `${gitProvider?.type as string}_${DEFAULT_ACCESS_TOKEN}_${new Date().getTime().toString()}`
+    const UNIQUE_SECRET_ID = new Date().getTime().toString()
+    const gitProviderLabel = gitProvider?.type as string
+    const secretName = `${gitProviderLabel} ${getString('ci.getStartedWithCI.accessTokenLabel')}`
+    const secretId = `${secretName.split(' ').join('_')}_${UNIQUE_SECRET_ID}`
     return {
-      name: defaultSecretId,
-      identifier: defaultSecretId,
+      name: secretName,
+      identifier: secretId,
       type: 'SecretText',
       spec: {
         value: formikRef.current?.values.accessToken,
@@ -216,9 +212,10 @@ const SelectGitProviderRef = (
 
   const getSCMConnectorPayload = React.useCallback(
     (secretId: string, type: GitProvider['type']): ConnectorInfoDTO => {
+      const UNIQUE_CONNECTOR_ID = new Date().getTime().toString()
       return {
-        name: DEFAULT_SCM_CONNECTOR,
-        identifier: DEFAULT_SCM_CONNECTOR_ID,
+        name: type,
+        identifier: `${type}_${UNIQUE_CONNECTOR_ID}`,
         type,
         spec: {
           executeOnDelegate: true,
@@ -260,7 +257,6 @@ const SelectGitProviderRef = (
                 if (validateGitProviderSetup()) {
                   setTestConnectionStatus(TestStatus.IN_PROGRESS)
                   setTestConnectionErrors([])
-
                   createSecret({
                     secret: getSecretPayload()
                   })
