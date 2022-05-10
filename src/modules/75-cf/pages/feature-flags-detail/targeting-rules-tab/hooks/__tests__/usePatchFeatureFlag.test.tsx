@@ -53,7 +53,8 @@ const renderHookUnderTest = (props: Partial<UsePatchFeatureFlagProps> = {}) => {
   return renderHook(
     () =>
       usePatchFeatureFlag({
-        featureFlagIdentifier: '',
+        featureFlagName: 'test',
+        featureFlagIdentifier: 'test',
         initialValues: defaultInitialValues,
         refetchFlag: jest.fn(),
         variations: [

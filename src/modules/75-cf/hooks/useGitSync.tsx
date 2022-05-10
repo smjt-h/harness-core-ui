@@ -118,6 +118,25 @@ export const useGitSync = (): UseGitSync => {
 
   const gitSyncLoading = getGitRepo.loading || patchGitRepo.loading || isLoading
 
+  const getGitSyncFormMeta = (autoCommitMessage?: string): GitSyncFormMeta => ({
+    gitSyncInitialValues: {
+      gitDetails: {
+        branch: getGitRepo?.data?.repoDetails?.branch || '',
+        filePath: getGitRepo?.data?.repoDetails?.filePath || '',
+        repoIdentifier: getGitRepo?.data?.repoDetails?.repoIdentifier || '',
+        rootFolder: getGitRepo?.data?.repoDetails?.rootFolder || '',
+        commitMsg:
+          isAutoCommitEnabled && autoCommitMessage
+            ? getString('cf.gitSync.autoCommitMsg', { msg: autoCommitMessage })
+            : ''
+      },
+      autoCommit: isAutoCommitEnabled
+    },
+    gitSyncValidationSchema: yup.object().shape({
+      commitMsg: isGitSyncEnabled ? yup.string().required(getString('cf.gitSync.commitMsgRequired')) : yup.string()
+    })
+  })
+
   useEffect(() => {
     if (getGitRepo.data?.repoDetails?.yamlError) {
       showInvalidYamlModal()
@@ -177,16 +196,19 @@ export const useGitSync = (): UseGitSync => {
     setIsLoading(false)
   }
 
-  const [showGitSyncModal, hideGitSyncModal] = useModalHook(() => (
-    <SaveFlagToGitModal
-      flagName={entityDataRef.current.featureFlagName}
-      flagIdentifier={entityDataRef.current.featureFlagIdentifier}
-      gitSyncInitialValues={getGitSyncFormMeta().gitSyncInitialValues}
-      gitSyncValidationSchema={getGitSyncFormMeta().gitSyncValidationSchema}
-      onSubmit={onSaveGitSyncSubmit}
-      onClose={hideGitSyncModal}
-    />
-  ))
+  const [showGitSyncModal, hideGitSyncModal] = useModalHook(
+    () => (
+      <SaveFlagToGitModal
+        flagName={entityDataRef.current.featureFlagName}
+        flagIdentifier={entityDataRef.current.featureFlagIdentifier}
+        gitSyncInitialValues={getGitSyncFormMeta().gitSyncInitialValues}
+        gitSyncValidationSchema={getGitSyncFormMeta().gitSyncValidationSchema}
+        onSubmit={onSaveGitSyncSubmit}
+        onClose={hideGitSyncModal}
+      />
+    ),
+    [getGitSyncFormMeta]
+  )
 
   const [showErrorModal, hideErrorModal] = useModalHook(
     () => (
@@ -215,25 +237,6 @@ export const useGitSync = (): UseGitSync => {
     ),
     [getGitRepo.data?.repoDetails?.yamlError, getGitRepo.loading]
   )
-
-  const getGitSyncFormMeta = (autoCommitMessage?: string): GitSyncFormMeta => ({
-    gitSyncInitialValues: {
-      gitDetails: {
-        branch: getGitRepo?.data?.repoDetails?.branch || '',
-        filePath: getGitRepo?.data?.repoDetails?.filePath || '',
-        repoIdentifier: getGitRepo?.data?.repoDetails?.repoIdentifier || '',
-        rootFolder: getGitRepo?.data?.repoDetails?.rootFolder || '',
-        commitMsg:
-          isAutoCommitEnabled && autoCommitMessage
-            ? getString('cf.gitSync.autoCommitMsg', { msg: autoCommitMessage })
-            : ''
-      },
-      autoCommit: isAutoCommitEnabled
-    },
-    gitSyncValidationSchema: yup.object().shape({
-      commitMsg: isGitSyncEnabled ? yup.string().required(getString('cf.gitSync.commitMsgRequired')) : yup.string()
-    })
-  })
 
   const handleAutoCommit = async (newAutoCommitValue: boolean): Promise<void> => {
     if (isAutoCommitEnabled !== newAutoCommitValue) {
