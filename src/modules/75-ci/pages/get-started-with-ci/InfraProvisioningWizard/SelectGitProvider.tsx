@@ -6,6 +6,7 @@
  */
 
 import React, { useEffect, useRef, useState } from 'react'
+import { useParams } from 'react-router-dom'
 import * as Yup from 'yup'
 import type { FormikContext, FormikProps } from 'formik'
 import cx from 'classnames'
@@ -27,9 +28,17 @@ import {
 } from '@harness/uicore'
 import { useStrings } from 'framework/strings'
 import type { StringsMap } from 'stringTypes'
+import {
+  ResponseSecretResponseWrapper,
+  SecretTextSpecDTO,
+  useCreateDefaultScmConnector,
+  usePostSecret
+} from 'services/cd-ng'
+import type { ProjectPathProps } from '@common/interfaces/RouteInterfaces'
 import { OAuthProviders, OAuthProviderType } from '@common/constants/OAuthProviders'
 import { joinAsASentence } from '@common/utils/StringUtils'
 import { TestStatus } from '@common/components/TestConnectionWidget/TestConnectionWidget'
+import { DEFAULT_ACCESS_TOKEN, DEFAULT_HARNESS_KMS, Status } from '@common/utils/CIConstants'
 import { Connectors } from '@connectors/constants'
 import {
   AllSaaSGitProviders,
@@ -84,6 +93,19 @@ const SelectGitProviderRef = (
   const [authMethod, setAuthMethod] = useState<GitAuthenticationMethod>()
   const [testConnectionStatus, setTestConnectionStatus] = useState<TestStatus>(TestStatus.NOT_INITIATED)
   const formikRef = useRef<FormikContext<SelectGitProviderInterface>>()
+  const { accountId, projectIdentifier, orgIdentifier } = useParams<ProjectPathProps>()
+  const { mutate: createSecret } = usePostSecret({
+    queryParams: { accountIdentifier: accountId }
+  })
+  const { mutate: createSCMConnector } = useCreateDefaultScmConnector({
+    queryParams: { accountIdentifier: accountId }
+  })
+
+  // for testing, do not commit
+  useEffect(() => {
+    setGitProvider(AllSaaSGitProviders.filter(p => p.type === 'Github')[0])
+    setAuthMethod(GitAuthenticationMethod.AccessToken)
+  }, [])
 
   useEffect(() => {
     if (authMethod === GitAuthenticationMethod.AccessToken) {
@@ -162,8 +184,58 @@ const SelectGitProviderRef = (
             onClick={() => {
               if (validateGitProviderSetup()) {
                 setTestConnectionStatus(TestStatus.IN_PROGRESS)
-                //TODO remove this when api will available for integration
-                setTimeout(() => setTestConnectionStatus(TestStatus.SUCCESS), 3000)
+                const defaultSecretId = `${gitProvider?.type as string}_${DEFAULT_ACCESS_TOKEN}`
+                createSecret({
+                  secret: {
+                    name: defaultSecretId,
+                    identifier: defaultSecretId,
+                    type: 'SecretText',
+                    spec: {
+                      value: formikRef.current?.values.accessToken,
+                      valueType: 'Inline',
+                      secretManagerIdentifier: DEFAULT_HARNESS_KMS
+                    } as SecretTextSpecDTO
+                  }
+                })
+                  .then((response: ResponseSecretResponseWrapper) => {
+                    const { data, status } = response
+                    if (status === Status.SUCCESS && data?.secret?.identifier) {
+                      setTestConnectionStatus(TestStatus.SUCCESS)
+                      // createSCMConnector({
+                      //   secret: data?.secret,
+                      //   connector: {
+                      //     name: 'git6',
+                      //     description: '',
+                      //     identifier: 'git6',
+                      //     type: 'Github',
+                      //     spec: {
+                      //       executeOnDelegate: true,
+                      //       type: 'Account',
+                      //       url: 'https://www.github.com',
+                      //       validationRepo: '',
+                      //       authentication: {
+                      //         type: 'Http',
+                      //         spec: {
+                      //           type: 'UsernameToken',
+                      //           spec: {
+                      //             tokenRef: 'account.git11'
+                      //           }
+                      //         }
+                      //       },
+                      //       apiAccess: {
+                      //         type: 'Token',
+                      //         spec: {
+                      //           tokenRef: 'account.git11'
+                      //         }
+                      //       }
+                      //     }
+                      //   }
+                      // })
+                    }
+                  })
+                  .catch(_err => {
+                    setTestConnectionStatus(TestStatus.FAILED)
+                  })
               }
             }}
             className={css.testConnectionBtn}

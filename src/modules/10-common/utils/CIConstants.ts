@@ -20,11 +20,15 @@ export const DEFAULT_PIPELINE_ID = 'Default_Pipeline_'.concat(new Date().getTime
 
 export const DEFAULT_STAGE_ID = 'Build'
 
-const ACCOUNT_SCOPE_PREFIX = 'account.'
+export const ACCOUNT_SCOPE_PREFIX = 'account.'
 
 const KUBERNETES_INFRA_REF = 'Harness_Kubernetes_Cluster'
 
 const DOCKER_REGISTRY_CTR_REF = 'harnessImage'
+
+export const DEFAULT_ACCESS_TOKEN = 'Default_Access_Token_'.concat(new Date().getTime().toString())
+
+export const DEFAULT_HARNESS_KMS = 'harnessSecretManager'
 
 export const DEFAULT_PIPELINE_PAYLOAD = {
   pipeline: {
