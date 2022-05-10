@@ -30,6 +30,7 @@ import { StepViewType, StepProps, ValidateInputSetProps } from '@pipeline/compon
 import { DeployTabs } from '@pipeline/components/PipelineStudio/CommonUtils/DeployStageSetupShellUtils'
 import { ConfigureOptions } from '@common/components/ConfigureOptions/ConfigureOptions'
 import {
+  AzureSubscriptionDTO,
   getAzureClustersPromise,
   getAzureResourceGroupsBySubscriptionPromise,
   getAzureSubscriptionsPromise,
@@ -134,12 +135,18 @@ const AzureInfrastructureSpecInputForm: React.FC<AzureInfrastructureSpecEditable
   })
 
   useEffect(() => {
-    const subscriptionValues = [] as SelectOption[]
-    defaultTo(subscriptionsData?.data?.subscriptions, []).map(sub =>
-      subscriptionValues.push({ label: `${sub.subscriptionName}: ${sub.subscriptionId}`, value: sub.subscriptionId })
+    setSubscriptions(
+      defaultTo(subscriptionsData?.data?.subscriptions, []).reduce(
+        (subscriptionValues: SelectOption[], subscription: AzureSubscriptionDTO) => {
+          subscriptionValues.push({
+            label: `${subscription.subscriptionName}: ${subscription.subscriptionId}`,
+            value: subscription.subscriptionId
+          })
+          return subscriptionValues
+        },
+        []
+      )
     )
-
-    setSubscriptions(subscriptionValues as SelectOption[])
   }, [subscriptionsData])
 
   useEffect(() => {

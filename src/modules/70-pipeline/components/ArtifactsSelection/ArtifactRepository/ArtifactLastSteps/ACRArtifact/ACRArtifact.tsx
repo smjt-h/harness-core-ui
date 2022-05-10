@@ -29,7 +29,8 @@ import {
   useGetBuildDetailsForACRRepository,
   useGetAzureSubscriptions,
   useGetACRRegistriesBySubscription,
-  useGetACRRepositories
+  useGetACRRepositories,
+  AzureSubscriptionDTO
 } from 'services/cd-ng'
 import { useStrings } from 'framework/strings'
 import { EXPRESSION_STRING } from '@pipeline/utils/constants'
@@ -218,12 +219,18 @@ export function ACRArtifact({
   })
 
   useEffect(() => {
-    const subscriptionValues = [] as SelectOption[]
-    defaultTo(subscriptionsData?.data?.subscriptions, []).map(sub =>
-      subscriptionValues.push({ label: `${sub.subscriptionName}: ${sub.subscriptionId}`, value: sub.subscriptionId })
+    setSubscriptions(
+      defaultTo(subscriptionsData?.data?.subscriptions, []).reduce(
+        (subscriptionValues: SelectOption[], subscription: AzureSubscriptionDTO) => {
+          subscriptionValues.push({
+            label: `${subscription.subscriptionName}: ${subscription.subscriptionId}`,
+            value: subscription.subscriptionId
+          })
+          return subscriptionValues
+        },
+        []
+      )
     )
-
-    setSubscriptions(subscriptionValues as SelectOption[])
   }, [subscriptionsData])
 
   useEffect(() => {
