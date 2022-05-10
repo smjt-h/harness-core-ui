@@ -54,8 +54,8 @@ export interface UseGitSync {
   gitSyncLoading: boolean
   apiError: string
   saveWithGit: (
-    featureFlagIdentifier: string,
     featureFlagName: string,
+    featureFlagIdentifier: string,
     autoCommitMessage: string,
     formData: PatchOperation,
     callback: (requestData: PatchOperation) => Promise<void>
@@ -270,8 +270,8 @@ export const useGitSync = (): UseGitSync => {
   }
 
   const saveWithGit = async (
-    featureFlagIdentifier: string,
     featureFlagName: string,
+    featureFlagIdentifier: string,
     autoCommitMessage: string,
     formData: PatchOperation,
     callback: (reqData: PatchOperation) => Promise<void>
