@@ -240,7 +240,7 @@ export const NewEditServiceModal: React.FC<NewEditServiceModalProps> = ({
         })}
       >
         {formikProps => {
-          formikRef.current = formikProps
+          formikRef.current = formikProps as FormikProps<ServiceResponseDTO> | undefined
           return (
             <>
               {selectedView === SelectedView.VISUAL ? (
@@ -552,7 +552,7 @@ export const DeployServiceWidget: React.FC<DeployServiceProps> = ({
       >
         {formik => {
           window.dispatchEvent(new CustomEvent('UPDATE_ERRORS_STRIP', { detail: DeployTabs.SERVICE }))
-          formikRef.current = formik
+          formikRef.current = formik as FormikProps<unknown> | null
           const { values, setFieldValue } = formik
           return (
             <Layout.Horizontal

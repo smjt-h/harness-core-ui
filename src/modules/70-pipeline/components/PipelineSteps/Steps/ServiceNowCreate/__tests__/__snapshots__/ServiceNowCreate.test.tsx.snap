@@ -1259,6 +1259,7 @@ exports[`ServiceNow Create tests Edit Stage - readonly view: edit-stage-readonly
     class="OverlaySpinner--overlaySpinner"
   >
     <form
+      action="#"
       class="FormikForm--main"
     >
       <div>

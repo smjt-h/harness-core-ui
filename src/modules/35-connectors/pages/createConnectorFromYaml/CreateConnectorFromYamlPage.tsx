@@ -230,7 +230,7 @@ const CreateConnectorFromYamlPage: React.FC = () => {
                     />
                     <GitSyncStoreProvider>
                       <GitContextForm
-                        formikProps={formikProps}
+                        formikProps={formikProps as any}
                         gitDetails={{ ...pick(initialValues, ['repo', 'branch']), getDefaultFromOtherRepo: false }}
                       />
                     </GitSyncStoreProvider>

@@ -13,7 +13,9 @@ exports[`Acr Artifact tests Should render correctly in edit case 1`] = `
     <div
       class="OverlaySpinner--overlaySpinner"
     >
-      <form>
+      <form
+        action="#"
+      >
         <div
           class="connectorForm"
         >
@@ -658,7 +660,9 @@ exports[`Acr Artifact tests Should render correctly in edit case for runtime fie
     <div
       class="OverlaySpinner--overlaySpinner"
     >
-      <form>
+      <form
+        action="#"
+      >
         <div
           class="connectorForm"
         >

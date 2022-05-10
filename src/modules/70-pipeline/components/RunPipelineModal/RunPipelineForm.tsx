@@ -542,7 +542,7 @@ function RunPipelineFormBasic({
       formikRef.current.setValues(inputSet.pipeline)
 
       if (isInputSetApplied) {
-        formikRef.current.validateForm()
+        formikRef.current.validateForm(inputSet.pipeline)
       }
     }
   }, [inputSet, isInputSetApplied])
@@ -615,7 +615,7 @@ function RunPipelineFormBasic({
   }
 
   const formRefDom = React.useRef<HTMLElement | undefined>()
-  const handleValidation = async (values: any): Promise<void> => {
+  const handleValidation = async (values: any) => {
     if (values?.pipeline) {
       values = values.pipeline
     }
@@ -626,7 +626,7 @@ function RunPipelineFormBasic({
       pipeline
     )
     // https://github.com/formium/formik/issues/1392
-    throw runPipelineFormErrors
+    return runPipelineFormErrors
   }
 
   if (shouldShowPageSpinner()) {
@@ -749,7 +749,7 @@ function RunPipelineFormBasic({
                           setRunClicked(true)
                           // _formSubmitCount is custom state var used to track submitCount.
                           // enableReinitialize prop resets the submitCount, so error checks fail.
-                          setFormikState({ _formSubmitCount: 1 } as any)
+                          setFormikState(prevState => ({ ...prevState, _formSubmitCount: 1 }))
                           if (
                             (!selectedInputSets || selectedInputSets.length === 0) &&
                             existingProvide === 'existing'

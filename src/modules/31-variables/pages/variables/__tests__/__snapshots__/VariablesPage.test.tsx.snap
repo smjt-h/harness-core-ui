@@ -519,6 +519,7 @@ exports[`Variables Page render page at project level - click new variable button
     class="OverlaySpinner--overlaySpinner"
   >
     <form
+      action="#"
       class="FormikForm--main variableFormWrap"
       data-testid="add-edit-variable"
     >

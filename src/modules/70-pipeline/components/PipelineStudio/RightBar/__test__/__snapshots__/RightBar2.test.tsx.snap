@@ -45,6 +45,7 @@ exports[`RightBar Renders all ci codebase inputs as runtime inputs 1`] = `
       class="bp3-dialog-body"
     >
       <form
+        action="#"
         class="FormikForm--main"
       >
         <div>
@@ -983,6 +984,7 @@ exports[`RightBar Renders all ci codebase on edit values 1`] = `
       class="bp3-dialog-body"
     >
       <form
+        action="#"
         class="FormikForm--main"
       >
         <div>
@@ -1819,6 +1821,7 @@ exports[`RightBar Renders all ci codebase on edit values 2`] = `
       class="bp3-dialog-body"
     >
       <form
+        action="#"
         class="FormikForm--main"
       >
         <div>
@@ -2683,6 +2686,7 @@ exports[`RightBar Renders validation errors 1`] = `
       class="bp3-dialog-body"
     >
       <form
+        action="#"
         class="FormikForm--main"
       >
         <div>

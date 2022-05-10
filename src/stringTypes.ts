@@ -4935,6 +4935,7 @@ export interface StringsMap {
   'cf.shared.variation': string
   'cf.shared.variations': string
   'cf.targetDetail.addTargetToSegment': string
+  'cf.targetDetail.addTargetToTargetGroup': string
   'cf.targetDetail.addToSegment': string
   'cf.targetDetail.attribute': string
   'cf.targetDetail.attributes': string
@@ -4954,6 +4955,7 @@ export interface StringsMap {
   'cf.targetDetail.noSegmentAdded': string
   'cf.targetDetail.noSegmentExcluded': string
   'cf.targetDetail.noSegmentMatched': string
+  'cf.targetDetail.noTargetGroupsAvailable': string
   'cf.targetDetail.removeFromExcludeList': string
   'cf.targetDetail.removeFromExcludeListTitle': string
   'cf.targetDetail.removeFromIncludeList': string

@@ -194,7 +194,7 @@ export function TemplatePipelineSpecifications(): JSX.Element {
               validate={validateForm}
             >
               {(formik: FormikProps<PipelineInfoConfig>) => {
-                formikRef.current = formik
+                formikRef.current = formik as FormikProps<unknown> | null
                 return (
                   <FormikForm>
                     <Container

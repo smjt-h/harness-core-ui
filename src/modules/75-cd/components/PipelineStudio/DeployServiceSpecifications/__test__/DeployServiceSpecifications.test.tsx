@@ -9,6 +9,8 @@
 import React from 'react'
 import { act, fireEvent, render, waitFor, getByText as getElementByText } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
+import { noop } from 'lodash-es'
+import { Formik } from '@wings-software/uicore'
 
 import { TestWrapper } from '@common/utils/testUtils'
 import {
@@ -92,9 +94,11 @@ describe('Deploy service stage specifications', () => {
   test(`Propagate from option and dropdown to select previous stage and service should be present`, async () => {
     const { getByPlaceholderText, getByText } = render(
       <TestWrapper>
-        <PipelineContext.Provider value={getOverrideContextValue()}>
-          <DeployServiceSpecifications />
-        </PipelineContext.Provider>
+        <Formik initialValues={{}} onSubmit={noop} formName="deployServiceSpecificationsTest">
+          <PipelineContext.Provider value={getOverrideContextValue()}>
+            <DeployServiceSpecifications />
+          </PipelineContext.Provider>
+        </Formik>
       </TestWrapper>
     )
 
@@ -127,9 +131,11 @@ describe('Deploy service stage specifications', () => {
   test(`Variables section is present`, async () => {
     const { queryByText } = render(
       <TestWrapper>
-        <PipelineContext.Provider value={getOverrideContextValue()}>
-          <DeployServiceSpecifications />
-        </PipelineContext.Provider>
+        <Formik initialValues={{}} onSubmit={noop} formName="deployServiceSpecificationsTest">
+          <PipelineContext.Provider value={getOverrideContextValue()}>
+            <DeployServiceSpecifications />
+          </PipelineContext.Provider>
+        </Formik>
       </TestWrapper>
     )
 
@@ -139,9 +145,11 @@ describe('Deploy service stage specifications', () => {
   test('Should Deployment Type section be present', async () => {
     const { findByText } = render(
       <TestWrapper>
-        <PipelineContext.Provider value={getOverrideContextValue()}>
-          <DeployServiceSpecifications />
-        </PipelineContext.Provider>
+        <Formik initialValues={{}} onSubmit={noop} formName="deployServiceSpecificationsTest">
+          <PipelineContext.Provider value={getOverrideContextValue()}>
+            <DeployServiceSpecifications />
+          </PipelineContext.Provider>
+        </Formik>
       </TestWrapper>
     )
 
@@ -161,11 +169,13 @@ describe('Deploy service stage specifications', () => {
 
     render(
       <TestWrapper>
-        <PipelineContext.Provider value={getOverrideContextValue()}>
-          <StageErrorContext.Provider value={errorContextProvider}>
-            <DeployServiceSpecifications />
-          </StageErrorContext.Provider>
-        </PipelineContext.Provider>
+        <Formik initialValues={{}} onSubmit={noop} formName="deployServiceSpecificationsTest">
+          <PipelineContext.Provider value={getOverrideContextValue()}>
+            <StageErrorContext.Provider value={errorContextProvider}>
+              <DeployServiceSpecifications />
+            </StageErrorContext.Provider>
+          </PipelineContext.Provider>
+        </Formik>
       </TestWrapper>
     )
 

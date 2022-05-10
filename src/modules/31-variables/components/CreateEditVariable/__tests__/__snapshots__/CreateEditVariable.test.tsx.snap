@@ -6,6 +6,7 @@ exports[`CreateEditVariable render component check validations 1`] = `
     class="OverlaySpinner--overlaySpinner"
   >
     <form
+      action="#"
       class="FormikForm--main variableFormWrap"
       data-testid="add-edit-variable"
     >

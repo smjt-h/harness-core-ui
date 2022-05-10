@@ -714,8 +714,15 @@ const AzureInfrastructureSpecEditable: React.FC<AzureInfrastructureSpecEditableP
   const { subscribeForm, unSubscribeForm } = React.useContext(StageErrorContext)
 
   React.useEffect(() => {
-    subscribeForm({ tab: DeployTabs.INFRASTRUCTURE, form: formikRef })
-    return () => unSubscribeForm({ tab: DeployTabs.INFRASTRUCTURE, form: formikRef })
+    subscribeForm({
+      tab: DeployTabs.INFRASTRUCTURE,
+      form: formikRef as React.MutableRefObject<FormikProps<unknown> | null>
+    })
+    return () =>
+      unSubscribeForm({
+        tab: DeployTabs.INFRASTRUCTURE,
+        form: formikRef as React.MutableRefObject<FormikProps<unknown> | null>
+      })
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 

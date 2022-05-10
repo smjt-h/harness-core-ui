@@ -624,7 +624,7 @@ describe('Add stage view with enabled licences', () => {
     cy.contains('span', 'Use template').should('be.visible')
     cy.findByTestId('stage-CI').should('be.visible')
     cy.findByTestId('stage-Approval').should('be.visible')
-    cy.findByTestId('stage-Security').should('be.visible')
+    cy.findByTestId('stage-SecurityTests').should('be.visible')
   })
 
   it('should not display chained pipeline', () => {
@@ -683,6 +683,6 @@ describe('Add stage view with disabled licences', () => {
     cy.get('[data-icon="template-library"]').should('not.exist')
     cy.contains('span', 'Use template').should('not.exist')
     cy.findByTestId('stage-CI').should('not.exist')
-    cy.findByTestId('stage-Security').should('not.exist')
+    cy.findByTestId('stage-SecurityTests').should('not.exist')
   })
 })

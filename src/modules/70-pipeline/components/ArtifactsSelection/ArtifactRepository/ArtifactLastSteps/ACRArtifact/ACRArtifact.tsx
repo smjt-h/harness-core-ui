@@ -19,7 +19,7 @@ import {
   ButtonVariation
 } from '@wings-software/uicore'
 import { FontVariation } from '@harness/design-system'
-import { Form, FormikContext, FormikProps } from 'formik'
+import { Form, FormikContextType, FormikProps } from 'formik'
 import { useParams } from 'react-router-dom'
 import * as Yup from 'yup'
 import { defaultTo, get, isEmpty, isNil, merge } from 'lodash-es'
@@ -88,7 +88,7 @@ export function ACRArtifact({
     repository: ''
   })
 
-  const formikRef = React.useRef<FormikContext<ACRArtifactType>>()
+  const formikRef = React.useRef<FormikContextType<ACRArtifactType>>()
 
   const schemaObject = {
     subscriptionId: Yup.lazy((value): Yup.Schema<unknown> => {
