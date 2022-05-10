@@ -8,6 +8,7 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import cx from 'classnames'
 import { debounce } from 'lodash-es'
+import { Spinner } from '@blueprintjs/core'
 import type { Column, CellProps } from 'react-table'
 import {
   Text,
@@ -25,7 +26,6 @@ import { useStrings } from 'framework/strings'
 import { repos } from './mocks/repositories'
 
 import css from './InfraProvisioningWizard.module.scss'
-import { Spinner } from '@blueprintjs/core'
 
 export interface SelectRepositoryRef {
   repository: Repository
