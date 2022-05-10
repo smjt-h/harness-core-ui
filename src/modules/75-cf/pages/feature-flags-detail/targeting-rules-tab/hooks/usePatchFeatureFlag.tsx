@@ -8,12 +8,14 @@
 import { useParams } from 'react-router-dom'
 import { useToaster } from '@harness/uicore'
 import patch from '@cf/utils/instructions'
-import { PatchFeatureQueryParams, usePatchFeature, Variation } from 'services/cf'
+import { PatchFeatureQueryParams, PatchOperation, usePatchFeature, Variation } from 'services/cf'
 import useActiveEnvironment from '@cf/hooks/useActiveEnvironment'
 import { showToaster } from '@cf/utils/CFUtils'
 import { useStrings } from 'framework/strings'
 import useRBACError from '@rbac/utils/useRBACError/useRBACError'
 import type { ErrorHandlerProps } from '@rbac/utils/utils'
+import { AUTO_COMMIT_MESSAGES } from '@cf/constants/GitSyncConstants'
+import { useFFGitSyncContext } from '@cf/contexts/ff-git-sync-context/FFGitSyncContext'
 import {
   FormVariationMap,
   TargetingRuleItemStatus,
@@ -44,6 +46,8 @@ const usePatchFeatureFlag = ({
   const { getRBACErrorMessage } = useRBACError()
   const { showError } = useToaster()
   const { getString } = useStrings()
+
+  const { saveWithGit } = useFFGitSyncContext()
 
   const { mutate: patchFeature, loading } = usePatchFeature({
     identifier: featureFlagIdentifier as string,
@@ -144,8 +148,7 @@ const usePatchFeatureFlag = ({
         }
       })
 
-    // submit request
-    patch.feature.onPatchAvailable(async data => {
+    const handleSave = async (data: PatchOperation): Promise<void> => {
       try {
         await patchFeature(data)
         patch.feature.reset()
@@ -155,6 +158,11 @@ const usePatchFeatureFlag = ({
         patch.feature.reset()
         showError(getRBACErrorMessage(error as ErrorHandlerProps))
       }
+    }
+
+    // submit request
+    patch.feature.onPatchAvailable(async formData => {
+      saveWithGit(AUTO_COMMIT_MESSAGES.UPDATED_FLAG_TARGETING, formData, handleSave)
     })
   }
   return {

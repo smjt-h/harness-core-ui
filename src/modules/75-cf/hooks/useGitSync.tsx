@@ -6,17 +6,26 @@
  */
 
 import { useParams } from 'react-router-dom'
-import React, { useEffect, useMemo, useState } from 'react'
+import React, { useEffect, useMemo, useRef, useState } from 'react'
 import type { ObjectSchema } from 'yup'
 import * as yup from 'yup'
 import { useModalHook } from '@harness/use-modal'
 import type { ModulePathParams, ProjectPathProps } from '@common/interfaces/RouteInterfaces'
-import { GitRepo, GitSyncErrorResponse, useGetGitRepo, usePatchGitRepo } from 'services/cf'
+import {
+  GitRepo,
+  GitSyncErrorResponse,
+  PatchInstruction,
+  PatchOperation,
+  useGetGitRepo,
+  usePatchGitRepo
+} from 'services/cf'
 import { useFeatureFlag } from '@common/hooks/useFeatureFlag'
 import { FeatureFlag } from '@common/featureFlags'
 import { useStrings } from 'framework/strings'
 import GitErrorModal from '@cf/components/GitErrorModal/GitErrorModal'
 import InvalidYamlModal from '@cf/components/InvalidYamlModal/InvalidYamlModal'
+
+import SaveFlagToGitModal from '@cf/components/SaveFlagToGitModal/SaveFlagToGitModal'
 
 export interface GitDetails {
   branch: string
@@ -44,6 +53,11 @@ export interface UseGitSync {
   isGitSyncActionsEnabled: boolean
   gitSyncLoading: boolean
   apiError: string
+  saveWithGit: (
+    autoCommitMessage: string,
+    formData: PatchOperation,
+    callback: (requestData: PatchOperation) => Promise<void>
+  ) => void
   handleAutoCommit: (newAutoCommitValue: boolean) => Promise<void>
   handleGitPause: (newGitPauseValue: boolean) => Promise<void>
   getGitSyncFormMeta: (autoCommitMessage?: string) => GitSyncFormMeta
@@ -78,6 +92,8 @@ export const useGitSync = (): UseGitSync => {
 
   const FF_GITSYNC = useFeatureFlag(FeatureFlag.FF_GITSYNC)
 
+  const [isLoading, setIsLoading] = useState(false)
+
   const isGitSyncEnabled = useMemo<boolean>(
     () => !!(FF_GITSYNC && getGitRepo?.data?.repoSet && getGitRepo?.data?.repoDetails?.enabled),
     [FF_GITSYNC, getGitRepo?.data?.repoDetails?.enabled, getGitRepo?.data?.repoSet]
@@ -98,6 +114,8 @@ export const useGitSync = (): UseGitSync => {
     [FF_GITSYNC, getGitRepo?.data?.repoDetails?.enabled, getGitRepo?.data?.repoSet]
   )
 
+  const gitSyncLoading = getGitRepo.loading || patchGitRepo.loading || isLoading
+
   useEffect(() => {
     if (getGitRepo.data?.repoDetails?.yamlError) {
       showInvalidYamlModal()
@@ -112,6 +130,55 @@ export const useGitSync = (): UseGitSync => {
     setApiError(error.message)
     showErrorModal()
   }
+
+  const entityDataRef = useRef<{
+    instructions: PatchInstruction
+    callback?: (reqData: PatchOperation) => Promise<void>
+  }>({
+    instructions: [],
+    callback: undefined
+  })
+
+  const onSaveGitSyncSubmit = async (gitFormValues: GitSyncFormValues): Promise<void> => {
+    const reqData = {
+      instructions: entityDataRef.current.instructions,
+      gitDetails: gitFormValues.gitDetails
+    }
+
+    setIsLoading(true)
+    await entityDataRef.current.callback?.(reqData)
+    if (gitFormValues.autoCommit) {
+      handleAutoCommit(true)
+    }
+    hideGitSyncModal()
+    await getGitRepo.refetch()
+    setIsLoading(false)
+  }
+
+  const onSaveAutoCommit = async (autoCommitMessage: string): Promise<void> => {
+    const reqData = {
+      instructions: entityDataRef.current.instructions,
+      gitDetails: {
+        branch: getGitRepo.data?.repoDetails?.branch,
+        filePath: getGitRepo.data?.repoDetails?.filePath,
+        repoIdentifier: getGitRepo?.data?.repoDetails?.repoIdentifier,
+        rootFolder: getGitRepo?.data?.repoDetails?.rootFolder,
+        commitMsg: getString('cf.gitSync.autoCommitMsg', { msg: autoCommitMessage })
+      }
+    }
+    setIsLoading(true)
+    await entityDataRef.current.callback?.(reqData)
+    setIsLoading(false)
+  }
+
+  const [showGitSyncModal, hideGitSyncModal] = useModalHook(() => (
+    <SaveFlagToGitModal
+      flagName="test"
+      flagIdentifier="test"
+      onSubmit={onSaveGitSyncSubmit}
+      onClose={hideGitSyncModal}
+    />
+  ))
 
   const [showErrorModal, hideErrorModal] = useModalHook(
     () => (
@@ -194,14 +261,36 @@ export const useGitSync = (): UseGitSync => {
     await getGitRepo.refetch()
   }
 
+  const saveWithGit = async (
+    autoCommitMessage: string,
+    formData: PatchOperation,
+    callback: (reqData: PatchOperation) => Promise<void>
+  ): Promise<void> => {
+    entityDataRef.current = {
+      instructions: formData.instructions,
+      callback
+    }
+
+    if (isGitSyncEnabled) {
+      if (isAutoCommitEnabled) {
+        onSaveAutoCommit(autoCommitMessage)
+      } else {
+        showGitSyncModal()
+      }
+    } else {
+      callback(formData)
+    }
+  }
+
   return {
     gitRepoDetails: getGitRepo?.data?.repoDetails,
     isAutoCommitEnabled,
     isGitSyncEnabled,
     isGitSyncPaused,
     isGitSyncActionsEnabled,
-    gitSyncLoading: getGitRepo.loading || patchGitRepo.loading,
+    gitSyncLoading,
     apiError,
+    saveWithGit,
     handleAutoCommit,
     handleGitPause,
     getGitSyncFormMeta,
