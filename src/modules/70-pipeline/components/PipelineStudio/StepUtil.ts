@@ -407,7 +407,8 @@ export const validateCICodebase = ({
 
     if (
       pipeline?.properties?.ci?.codebase?.build?.type === CodebaseTypes.branch &&
-      isEmpty(pipeline?.properties?.ci?.codebase?.build?.spec?.branch)
+      isEmpty(pipeline?.properties?.ci?.codebase?.build?.spec?.branch) &&
+      !isInputSetForm
     ) {
       set(
         errors,
@@ -418,14 +419,16 @@ export const validateCICodebase = ({
 
     if (
       pipeline?.properties?.ci?.codebase?.build?.type === CodebaseTypes.tag &&
-      isEmpty(pipeline?.properties?.ci?.codebase?.build?.spec?.tag)
+      isEmpty(pipeline?.properties?.ci?.codebase?.build?.spec?.tag) &&
+      !isInputSetForm
     ) {
       set(errors, 'properties.ci.codebase.build.spec.tag', getString?.('fieldRequired', { field: getString('gitTag') }))
     }
 
     if (
       pipeline?.properties?.ci?.codebase?.build?.type === CodebaseTypes.PR &&
-      isEmpty(pipeline?.properties?.ci?.codebase?.build?.spec?.number)
+      isEmpty(pipeline?.properties?.ci?.codebase?.build?.spec?.number) &&
+      !isInputSetForm
     ) {
       set(
         errors,

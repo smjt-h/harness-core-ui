@@ -199,9 +199,9 @@ export default function FormikInputSetForm(props: FormikInputSetFormProps): Reac
       })
     }
   }, [inputSet?.outdated])
+
   useEffect(() => {
     // only do this for CI
-    // const resolvedPipeline =
     if (
       formikRef.current?.values?.pipeline?.template &&
       isCodebaseFieldsRuntimeInputs(

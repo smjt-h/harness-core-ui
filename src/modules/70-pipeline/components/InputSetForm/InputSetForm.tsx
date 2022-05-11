@@ -469,21 +469,6 @@ export function InputSetForm(props: InputSetFormProps): React.ReactElement {
     isEdit ? defaultTo(inputSetResponse?.data?.name, '') : getString('inputSets.newInputSetLabel')
   ])
 
-  // React.useEffect(() => {
-  //   // only do this for CI
-  //   const resolvedPipeline =
-  //   if (
-  //     formikRef.current?.values?.pipeline?.template &&
-  //     isCodebaseFieldsRuntimeInputs(
-  //       formikRef.current?.values.pipeline?.template?.templateInputs as PipelineInfoConfig
-  //     ) &&
-  //     !isCloneCodebaseEnabledAtLeastOneStage(formikRef.current?.values.pipeline)
-  //   ) {
-  //     const newPipeline = getPipelineWithoutCodebaseInputs(formikRef.current.values)
-  //     formikRef.current.setFieldValue('pipeline', newPipeline)
-  //   }
-  // }, [formikRef.current?.values?.pipeline?.template])
-
   const handleModeSwitch = React.useCallback(
     (view: SelectedView) => {
       if (view === SelectedView.VISUAL) {

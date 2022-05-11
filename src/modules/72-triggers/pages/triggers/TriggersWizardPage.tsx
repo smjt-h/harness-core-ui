@@ -1358,14 +1358,14 @@ const TriggersWizardPage: React.FC = (): JSX.Element => {
   )
 
   useEffect(() => {
-    if (currentPipeline && onEditInitialValues) {
-      let newInitialValuesForEdit = Object.assign(getInitialValues(triggerTypeOnNew), onEditInitialValues)
-      newInitialValuesForEdit = newInitialValuesForEdit?.pipeline?.template
-        ? getModifiedTemplateValues(newInitialValuesForEdit)
-        : newInitialValuesForEdit
-
-      setInitialValues(newInitialValuesForEdit)
+    let newInitialValues = Object.assign(getInitialValues(triggerTypeOnNew), onEditInitialValues)
+    if (onEditInitialValues?.identifier) {
+      newInitialValues = newInitialValues?.pipeline?.template
+        ? getModifiedTemplateValues(newInitialValues)
+        : newInitialValues
     }
+
+    setInitialValues(newInitialValues)
   }, [onEditInitialValues, currentPipeline])
 
   useEffect(() => {
